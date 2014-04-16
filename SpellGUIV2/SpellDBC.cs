@@ -50,6 +50,28 @@ namespace SpellGUIV2
                 // Read string block
                 body.string_block = reader.ReadChars(header.string_block_size);
 
+                // Turn the string block into something readable
+                List<string> strings = new List<string>();
+                string temp = "";
+                for (UInt32 i = 0; i < header.string_block_size; ++i)
+                {
+                    char t = body.string_block[i];
+                    if (t == '\0')
+                    {
+                        strings.Add(temp);
+                        temp = "";
+                    }
+                    else
+                    {
+                        temp += t;
+                    }
+                }
+                // We don't need this any more, let it go in memory
+                body.string_block = null;
+                // Update body with new strings
+                body.strings = strings.ToArray<string>();
+                // Let garbage collection take this too
+                strings = null;
             }
             catch (Exception ex)
             {
