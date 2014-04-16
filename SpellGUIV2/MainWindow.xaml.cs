@@ -26,6 +26,7 @@ namespace SpellGUIV2
     {
         public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
         public string LOADED_FILE_STR = "Loaded file: None.";
+        private SpellDBC loadedDBC = null;
 
         public MainWindow()
         {
@@ -60,6 +61,12 @@ namespace SpellGUIV2
             if (!fileName.ToLower().EndsWith(".dbc"))
             {
                 fileName += ".dbc";
+            }
+            loadedDBC = new SpellDBC();
+            if (!loadedDBC.loadDBCFile(fileName))
+            {
+                await this.ShowMessageAsync("ERROR", "Failed to load file.");
+                return;
             }
             LOADED_FILE_STR = fileName;
             txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
