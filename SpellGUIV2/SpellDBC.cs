@@ -72,6 +72,55 @@ namespace SpellGUIV2
                 body.strings = strings.ToArray<string>();
                 // Let garbage collection take this too
                 strings = null;
+
+                reader.Close();
+                fs.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool SaveDBCFile(string fileName)
+        {
+            try
+            {
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+                FileStream fs = new FileStream(fileName, FileMode.Create);
+                BinaryWriter writer = new BinaryWriter(fs);
+
+                // Writer header
+                int count = Marshal.SizeOf(typeof(SpellDBC_Header));
+                byte[] buffer = new byte[count];
+                GCHandle gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                Marshal.StructureToPtr(header, gcHandle.AddrOfPinnedObject(), true);
+                writer.Write(buffer, 0, count);
+                gcHandle.Free();
+
+                // Write records
+                for (UInt32 i = 0; i < header.record_count; ++i)
+                {
+                    count = Marshal.SizeOf(typeof(SpellDBC_Record));
+                    buffer = new byte[count];
+                    gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                    Marshal.StructureToPtr(body.records[i], gcHandle.AddrOfPinnedObject(), true);
+                    writer.Write(buffer, 0, count);
+                    gcHandle.Free();
+                }
+
+                // Write string block
+                for (UInt32 i = 0; i < body.strings.Length; ++i)
+                {
+                    writer.Write(body.strings[i]);
+                }
+
+                writer.Close();
+                fs.Close();
             }
             catch (Exception ex)
             {
@@ -82,6 +131,7 @@ namespace SpellGUIV2
             return true;
         }
     }
+
     public struct SpellDBC_Header
     {
         public UInt32 magic;

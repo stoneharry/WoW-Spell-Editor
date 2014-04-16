@@ -68,6 +68,9 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", "Failed to load file.");
                 return;
             }
+            // Heh, let's invoke some GC collection here
+            GC.Collect();
+            // Update the file loaded
             LOADED_FILE_STR = fileName;
             txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
         }
