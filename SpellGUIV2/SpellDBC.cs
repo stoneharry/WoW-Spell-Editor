@@ -46,6 +46,10 @@ namespace SpellGUIV2
                     body.records[i] = (SpellDBC_Record)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellDBC_Record));
                     handle.Free();               
                 }
+
+                // Read string block
+                body.string_block = reader.ReadChars(header.string_block_size);
+
             }
             catch (Exception ex)
             {
@@ -62,13 +66,14 @@ namespace SpellGUIV2
         public UInt32 record_count;
         public UInt32 field_count;
         public UInt32 record_size;
-        public UInt32 string_block_size;
+        public Int32 string_block_size;
     };
 
     public struct SpellDBC_Body
     {
         public SpellDBC_Record[] records;
         public char[] string_block;
+        public string[] strings;
     };
 
     public struct SpellDBC_Record
@@ -209,24 +214,81 @@ namespace SpellGUIV2
         public UInt32 SpellIconID; //	m_spellIconID; 	
         public UInt32 activeIconID; //	m_activeIconID; 	
         public UInt32 spellPriority; //	m_spellPriority; 	
-        public UInt32 SpellName; //	m_name_lang; 	
-        //string	SpellName_//string; //; 		
-        public UInt32 SpellNameFlag; //; 		
-        public UInt32 Rank; //	m_nameSubtext_lang; 	
-        //string	Rank_//string; //; 		
-        public UInt32 RankFlags; //; 		
-        public UInt32 Description; //	m_description_lang; 	
-        //string	Description_//string; //; 		
-        public UInt32 DescriptionFlags; //; 		
-        public UInt32 ToolTip; //	m_auraDescription_lang; 	
-        //string	ToolTip_//string; //; 		
-        public UInt32 ToolTipFlags; //; 		
+        public UInt32 SpellName1; //	m_name_lang;
+        public UInt32 SpellName2; //	m_name_lang;
+        public UInt32 SpellName3; //	m_name_lang;
+        public UInt32 SpellName4; //	m_name_lang;
+        public UInt32 SpellName5; //	m_name_lang;
+        public UInt32 SpellName6; //	m_name_lang;
+        public UInt32 SpellName7; //	m_name_lang;
+        public UInt32 SpellName8; //	m_name_lang;
+        public UInt32 SpellName9; //	m_name_lang;	
+        public UInt32 SpellNameFlag1; //; 	
+        public UInt32 SpellNameFlag2; //; 	
+        public UInt32 SpellNameFlag3; //; 	
+        public UInt32 SpellNameFlag4; //; 	
+        public UInt32 SpellNameFlag5; //; 	
+        public UInt32 SpellNameFlag6; //; 	
+        public UInt32 SpellNameFlag7; //; 
+        public UInt32 SpellNameFlag8; //; 		
+        public UInt32 Rank1; //	m_nameSubtext_lang;
+        public UInt32 Rank2; //	m_nameSubtext_lang;
+        public UInt32 Rank3; //	m_nameSubtext_lang;
+        public UInt32 Rank4; //	m_nameSubtext_lang;
+        public UInt32 Rank5; //	m_nameSubtext_lang;
+        public UInt32 Rank6; //	m_nameSubtext_lang;
+        public UInt32 Rank7; //	m_nameSubtext_lang;
+        public UInt32 Rank8; //	m_nameSubtext_lang;
+        public UInt32 Rank9; //	m_nameSubtext_lang; 		
+        public UInt32 RankFlags1; //;
+        public UInt32 RankFlags2; //;
+        public UInt32 RankFlags3; //;
+        public UInt32 RankFlags4; //;
+        public UInt32 RankFlags5; //;
+        public UInt32 RankFlags6; //;
+        public UInt32 RankFlags7; //;
+        public UInt32 RankFlags8; //;
+        public UInt32 Description1; //	m_description_lang; 	
+        public UInt32 Description2; //	m_description_lang; 	
+        public UInt32 Description3; //	m_description_lang; 	
+        public UInt32 Description4; //	m_description_lang; 	
+        public UInt32 Description5; //	m_description_lang; 	
+        public UInt32 Description6; //	m_description_lang; 	
+        public UInt32 Description7; //	m_description_lang; 	
+        public UInt32 Description8; //	m_description_lang; 	
+        public UInt32 Description9; //	m_description_lang; 		
+        public UInt32 DescriptionFlags1; //; 	
+        public UInt32 DescriptionFlags2; //; 	
+        public UInt32 DescriptionFlags3; //; 	
+        public UInt32 DescriptionFlags4; //; 	
+        public UInt32 DescriptionFlags5; //; 	
+        public UInt32 DescriptionFlags6; //; 	
+        public UInt32 DescriptionFlags7; //;
+        public UInt32 DescriptionFlags8; //;		
+        public UInt32 ToolTip1; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip2; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip3; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip4; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip5; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip6; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip7; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip8; //	m_auraDescription_lang; 	
+        public UInt32 ToolTip9; //	m_auraDescription_lang; 	
+        public UInt32 ToolTipFlags1; //; 
+        public UInt32 ToolTipFlags2; //; 
+        public UInt32 ToolTipFlags3; //; 
+        public UInt32 ToolTipFlags4; //; 
+        public UInt32 ToolTipFlags5; //; 
+        public UInt32 ToolTipFlags6; //; 
+        public UInt32 ToolTipFlags7; //; 
+        public UInt32 ToolTipFlags8; //;
         public UInt32 ManaCostPercentage; //	m_manaCostPct; 	
         public UInt32 StartRecoveryCategory; //	m_startRecoveryCategory; 	
         public UInt32 StartRecoveryTime; //	m_startRecoveryTime; 	
         public UInt32 MaxTargetLevel; //	m_maxTargetLevel; 	
         public UInt32 SpellFamilyName; //	m_spellClassSet; 	
-        public UInt64 SpellFamilyFlags; //	m_spellClassMask	NOTE:	size	is	12	bytes!!!
+        public UInt32 SpellFamilyFlags; //	m_spellClassMask	NOTE:	size	is	12	bytes!!!
+        public UInt32 SpellFamilyFlags_UNKNOWN;
         public UInt32 SpellFamilyFlags2; //	addition	to	m_spellClassMask			
         public UInt32 MaxAffectedTargets; //	m_maxTargets; 	
         public UInt32 DmgClass; //	m_defenseType; 	
