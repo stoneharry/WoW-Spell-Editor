@@ -53,7 +53,7 @@ namespace SpellGUIV2
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
         {
             string fileName = await this.ShowInputAsync("Load DBC File", "What is the name of your Spell DBC? It must be in the same directory as this program.");
-            if (fileName == null || fileName.Length < 1)
+            if (fileName == null)
             {
                 await this.ShowMessageAsync("ERROR", "File name is bad.");
                 return;
