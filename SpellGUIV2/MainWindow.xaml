@@ -17,11 +17,13 @@
 		    SelectionChanged="TabControl_SelectionChanged">
             <TabItem Header="Load DBC File">
                 <Grid>
-                    <TextBlock HorizontalAlignment="Left"
+                    <TextBlock Name="txtLoadedFile"
+                   HorizontalAlignment="Left"
 			       Margin="10"
 			       TextWrapping="Wrap"
-			       Text="Stuff."
+			       Text="Loaded file: "
 			       VerticalAlignment="Top"/>
+                    <Button Content="Load New DBC File" HorizontalAlignment="Left" Margin="23,31,0,-10" VerticalAlignment="Top" Width="175" Click="LoadNewDBCFile"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Spell Overview">

@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace SpellGUIV2
 {
@@ -24,6 +25,7 @@ namespace SpellGUIV2
     public partial class MainWindow
     {
         public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
+        public string LOADED_FILE_STR = "Loaded file: None.";
 
         public MainWindow()
         {
@@ -43,6 +45,24 @@ namespace SpellGUIV2
             var selected = item.SelectedItem as TabItem;
             // Set title
             this.Title = MAIN_WINDOW_TITLE + selected.Header.ToString();
+            // Set loaded text file
+            txtLoadedFile.Text = LOADED_FILE_STR;
+        }
+
+        private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
+        {
+            string fileName = await this.ShowInputAsync("Load DBC File", "What is the name of your Spell DBC? It must be in the same directory as this program.");
+            if (fileName == null || fileName.Length < 1)
+            {
+                await this.ShowMessageAsync("ERROR", "File name is bad.");
+                return;
+            }
+            if (!fileName.ToLower().EndsWith(".dbc"))
+            {
+                fileName += ".dbc";
+            }
+            LOADED_FILE_STR = fileName;
+            txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
         }
     }
 }
