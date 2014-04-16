@@ -25,6 +25,13 @@ namespace SpellGUIV2
         public MainWindow()
         {
             InitializeComponent();
+            ShowTitleBar = true;
+            ShowIconOnTitleBar = true;
+        }
+
+        private void SaveToNewDBC(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Unfinished.");
         }
     }
 }
