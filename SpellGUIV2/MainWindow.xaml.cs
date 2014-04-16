@@ -20,18 +20,29 @@ namespace SpellGUIV2
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary> 
+
     public partial class MainWindow
     {
+        public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
+
         public MainWindow()
         {
             InitializeComponent();
-            ShowTitleBar = true;
-            ShowIconOnTitleBar = true;
         }
 
         private void SaveToNewDBC(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Unfinished.");
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // ... Get TabControl reference.
+            var item = sender as TabControl;
+            // ... Set Title to selected tab header.
+            var selected = item.SelectedItem as TabItem;
+            // Set title
+            this.Title = MAIN_WINDOW_TITLE + selected.Header.ToString();
         }
     }
 }

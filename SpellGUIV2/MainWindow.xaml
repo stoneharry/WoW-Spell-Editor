@@ -2,20 +2,44 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="Stoneharry's Spell Editor V2" Height="450" Width="825" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Title="Stoneharry's Spell Editor V2"
+        Height="450"
+        Width="825"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        ShowTitleBar="True"
+        ShowIconOnTitleBar="true" Icon="Resources/icon.ico">
+    
     <Grid>
-        
+        <TabControl HorizontalAlignment="Left"
+		    Margin="10,10,0,0"
+		    VerticalAlignment="Top"
+		    SelectionChanged="TabControl_SelectionChanged">
+            <TabItem Header="Load DBC File">
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left"
+			       Margin="10"
+			       TextWrapping="Wrap"
+			       Text="Stuff."
+			       VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Spell Overview">
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left"
+			       Margin="10"
+			       TextWrapping="Wrap"
+			       Text="Test."
+			       VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
             <Button x:Name="SaveToDBC" Click="SaveToNewDBC">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_archive}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Save To New DBC File" />
                 </StackPanel>
             </Button>
