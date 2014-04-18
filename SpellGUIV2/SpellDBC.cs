@@ -50,15 +50,19 @@ namespace SpellGUIV2
                 // Read string block
                 body.string_block = reader.ReadChars(header.string_block_size);
 
+                body.strings = new Dictionary<UInt32, VirtualStrTableEntry>();
+
                 // Turn the string block into something readable
-                List<string> strings = new List<string>();
                 string temp = "";
                 for (UInt32 i = 0; i < header.string_block_size; ++i)
                 {
                     char t = body.string_block[i];
                     if (t == '\0')
                     {
-                        strings.Add(temp);
+                        VirtualStrTableEntry n;
+                        n.value = temp;
+                        n.newValue = 0;
+                        body.strings.Add(i, n);
                         temp = "";
                     }
                     else
@@ -68,10 +72,6 @@ namespace SpellGUIV2
                 }
                 // We don't need this any more, let it go in memory
                 body.string_block = null;
-                // Update body with new strings
-                body.strings = strings.ToArray<string>();
-                // Let garbage collection take this too
-                strings = null;
 
                 reader.Close();
                 fs.Close();
@@ -89,12 +89,18 @@ namespace SpellGUIV2
         {
             try
             {
+                // This gets complicated fast
+                // Each record that contains strings has pointers to the offset in the string block
+                // We need to create the offsets of each string before we generate the main record block
+                // The main record block was written first
+                // Probably a better way to do this, but meh.
+
                 if (File.Exists(fileName))
                     File.Delete(fileName);
                 FileStream fs = new FileStream(fileName, FileMode.Create);
                 BinaryWriter writer = new BinaryWriter(fs);
 
-                // Writer header
+                // Write header
                 int count = Marshal.SizeOf(typeof(SpellDBC_Header));
                 byte[] buffer = new byte[count];
                 GCHandle gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -102,9 +108,55 @@ namespace SpellGUIV2
                 writer.Write(buffer, 0, count);
                 gcHandle.Free();
 
+                UInt32 stringBlockOffset = 0;
                 // Write records
                 for (UInt32 i = 0; i < header.record_count; ++i)
                 {
+                    // Generate new string block offsets
+                    for (UInt32 j = 0; j < 9; ++j)
+                    {
+                        if (body.records[i].SpellName[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].SpellName[j] - 1, out temp);
+                            temp.newValue = stringBlockOffset;
+                            if (temp.value.Length == 0 && stringBlockOffset == 0)
+                                ++stringBlockOffset;
+                            else
+                                stringBlockOffset += (UInt32)temp.value.Length;
+                        }
+                        if (body.records[i].ToolTip[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].ToolTip[j] - 1, out temp);
+                            temp.newValue = stringBlockOffset;
+                            if (temp.value.Length == 0 && stringBlockOffset == 0)
+                                ++stringBlockOffset;
+                            else
+                                stringBlockOffset += (UInt32)temp.value.Length;
+                        }
+                        if (body.records[i].Description[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].Description[j] - 1, out temp);
+                            temp.newValue = stringBlockOffset;
+                            if (temp.value.Length == 0 && stringBlockOffset == 0)
+                                ++stringBlockOffset;
+                            else
+                                stringBlockOffset += (UInt32)temp.value.Length;
+                        }
+                        if (body.records[i].Rank[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].Rank[j] - 1, out temp);
+                            temp.newValue = stringBlockOffset;
+                            if (temp.value.Length == 0 && stringBlockOffset == 0)
+                                ++stringBlockOffset;
+                            else
+                                stringBlockOffset += (UInt32)temp.value.Length;
+                        }
+                    }
+                    // Write main body
                     count = Marshal.SizeOf(typeof(SpellDBC_Record));
                     buffer = new byte[count];
                     gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
@@ -114,9 +166,9 @@ namespace SpellGUIV2
                 }
 
                 // Write string block
-                for (UInt32 i = 0; i < body.strings.Length; ++i)
+                foreach (KeyValuePair<UInt32, VirtualStrTableEntry> entry in body.strings)
                 {
-                    writer.Write(body.strings[i]);
+                    writer.Write(entry.Value.value + "\0");
                 }
 
                 writer.Close();
@@ -132,6 +184,12 @@ namespace SpellGUIV2
         }
     }
 
+    public struct VirtualStrTableEntry
+    {
+        public string value;
+        public UInt32 newValue;
+    };
+
     public struct SpellDBC_Header
     {
         public UInt32 magic;
@@ -145,7 +203,7 @@ namespace SpellGUIV2
     {
         public SpellDBC_Record[] records;
         public char[] string_block;
-        public string[] strings;
+        public Dictionary<UInt32, VirtualStrTableEntry> strings;
     };
 
     public struct SpellDBC_Record
@@ -286,74 +344,22 @@ namespace SpellGUIV2
         public UInt32 SpellIconID; //	m_spellIconID; 	
         public UInt32 activeIconID; //	m_activeIconID; 	
         public UInt32 spellPriority; //	m_spellPriority; 	
-        public UInt32 SpellName1; //	m_name_lang;
-        public UInt32 SpellName2; //	m_name_lang;
-        public UInt32 SpellName3; //	m_name_lang;
-        public UInt32 SpellName4; //	m_name_lang;
-        public UInt32 SpellName5; //	m_name_lang;
-        public UInt32 SpellName6; //	m_name_lang;
-        public UInt32 SpellName7; //	m_name_lang;
-        public UInt32 SpellName8; //	m_name_lang;
-        public UInt32 SpellName9; //	m_name_lang;	
-        public UInt32 SpellNameFlag1; //; 	
-        public UInt32 SpellNameFlag2; //; 	
-        public UInt32 SpellNameFlag3; //; 	
-        public UInt32 SpellNameFlag4; //; 	
-        public UInt32 SpellNameFlag5; //; 	
-        public UInt32 SpellNameFlag6; //; 	
-        public UInt32 SpellNameFlag7; //; 
-        public UInt32 SpellNameFlag8; //; 		
-        public UInt32 Rank1; //	m_nameSubtext_lang;
-        public UInt32 Rank2; //	m_nameSubtext_lang;
-        public UInt32 Rank3; //	m_nameSubtext_lang;
-        public UInt32 Rank4; //	m_nameSubtext_lang;
-        public UInt32 Rank5; //	m_nameSubtext_lang;
-        public UInt32 Rank6; //	m_nameSubtext_lang;
-        public UInt32 Rank7; //	m_nameSubtext_lang;
-        public UInt32 Rank8; //	m_nameSubtext_lang;
-        public UInt32 Rank9; //	m_nameSubtext_lang; 		
-        public UInt32 RankFlags1; //;
-        public UInt32 RankFlags2; //;
-        public UInt32 RankFlags3; //;
-        public UInt32 RankFlags4; //;
-        public UInt32 RankFlags5; //;
-        public UInt32 RankFlags6; //;
-        public UInt32 RankFlags7; //;
-        public UInt32 RankFlags8; //;
-        public UInt32 Description1; //	m_description_lang; 	
-        public UInt32 Description2; //	m_description_lang; 	
-        public UInt32 Description3; //	m_description_lang; 	
-        public UInt32 Description4; //	m_description_lang; 	
-        public UInt32 Description5; //	m_description_lang; 	
-        public UInt32 Description6; //	m_description_lang; 	
-        public UInt32 Description7; //	m_description_lang; 	
-        public UInt32 Description8; //	m_description_lang; 	
-        public UInt32 Description9; //	m_description_lang; 		
-        public UInt32 DescriptionFlags1; //; 	
-        public UInt32 DescriptionFlags2; //; 	
-        public UInt32 DescriptionFlags3; //; 	
-        public UInt32 DescriptionFlags4; //; 	
-        public UInt32 DescriptionFlags5; //; 	
-        public UInt32 DescriptionFlags6; //; 	
-        public UInt32 DescriptionFlags7; //;
-        public UInt32 DescriptionFlags8; //;		
-        public UInt32 ToolTip1; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip2; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip3; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip4; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip5; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip6; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip7; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip8; //	m_auraDescription_lang; 	
-        public UInt32 ToolTip9; //	m_auraDescription_lang; 	
-        public UInt32 ToolTipFlags1; //; 
-        public UInt32 ToolTipFlags2; //; 
-        public UInt32 ToolTipFlags3; //; 
-        public UInt32 ToolTipFlags4; //; 
-        public UInt32 ToolTipFlags5; //; 
-        public UInt32 ToolTipFlags6; //; 
-        public UInt32 ToolTipFlags7; //; 
-        public UInt32 ToolTipFlags8; //;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public UInt32[] SpellName; //	m_name_lang;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public UInt32[] SpellNameFlag; //;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public UInt32[] Rank; //	m_nameSubtext_lang;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public UInt32[] RankFlags; //;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public UInt32[] Description; //	m_description_lang; 	
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public UInt32[] DescriptionFlags; //;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public UInt32[] ToolTip; //	m_auraDescription_lang; 	
+	    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public UInt32[] ToolTipFlags; //;
         public UInt32 ManaCostPercentage; //	m_manaCostPct; 	
         public UInt32 StartRecoveryCategory; //	m_startRecoveryCategory; 	
         public UInt32 StartRecoveryTime; //	m_startRecoveryTime; 	
