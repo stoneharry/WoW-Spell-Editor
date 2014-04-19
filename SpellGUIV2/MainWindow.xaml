@@ -30,11 +30,11 @@
                     <TabControl HorizontalAlignment="Left" Height="100" Margin="0,200,0,0" VerticalAlignment="Top" Width="795">
                         <TabItem Header="enUS/enGB">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank0" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank0" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip0" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip0" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription0" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -42,11 +42,11 @@
                         </TabItem>
                         <TabItem Header="KoKR">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName1" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName1" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank1" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank1" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip1" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip1" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription1" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -54,23 +54,27 @@
                         </TabItem>
                         <TabItem Header="frFR">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName2" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="352*"/>
+                                    <ColumnDefinition Width="439*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Name="SpellName2" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank2" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank2" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged" Grid.ColumnSpan="2"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip2" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
-                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellDescription2" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip2" HorizontalAlignment="Left" Height="59" Margin="11,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged" Grid.Column="1"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="11,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="188,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                                <TextBox Name="SpellDescription2" HorizontalAlignment="Left" Height="59" Margin="188,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="deDE">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName3" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName3" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank3" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank3" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip3" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip3" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription3" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -78,11 +82,11 @@
                         </TabItem>
                         <TabItem Header="zhCN">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName4" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName4" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank4" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank4" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip4" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip4" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription4" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -90,23 +94,27 @@
                         </TabItem>
                         <TabItem Header="zhTW">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName5" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="569*"/>
+                                    <ColumnDefinition Width="222*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Name="SpellName5" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank5" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank5" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip5" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip5" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellDescription5" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                                <TextBox Name="SpellDescription5" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged" Grid.ColumnSpan="2"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="esES / esMX">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName6" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName6" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank6" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank6" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip6" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip6" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription6" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -114,11 +122,11 @@
                         </TabItem>
                         <TabItem Header="???">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName7" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName7" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank7" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank7" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip7" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip7" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription7" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
@@ -126,11 +134,11 @@
                         </TabItem>
                         <TabItem Header="ruRU">
                             <Grid Margin="0,0,0,-54">
-                                <TextBox Name="SpellName8" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellName8" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellRank8" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellRank8" HorizontalAlignment="Left" Height="59" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
-                                <TextBox Name="SpellTooltip8" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
+                                <TextBox Name="SpellTooltip8" HorizontalAlignment="Left" Height="59" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="SpellDescription8" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged"/>
