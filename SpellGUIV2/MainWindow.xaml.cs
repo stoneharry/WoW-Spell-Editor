@@ -251,11 +251,29 @@ namespace SpellGUIV2
                 }
                 else if (name.Equals("Tooltip"))
                 {
-                    loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
+                    if (loadedDBC.body.records[selectedID].ToolTip[ID] == 0)
+                    {
+                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
+                        temp.value = box.Text;
+                        loadedDBC.body.strings.Add(newStringIndex, temp);
+                        loadedDBC.body.records[selectedID].ToolTip[ID] = newStringIndex;
+                        --newStringIndex;
+                    }
+                    else
+                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
                 }
                 else if (name.Equals("Description"))
                 {
-                    loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
+                    if (loadedDBC.body.records[selectedID].Description[ID] == 0)
+                    {
+                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
+                        temp.value = box.Text;
+                        loadedDBC.body.strings.Add(newStringIndex, temp);
+                        loadedDBC.body.records[selectedID].Description[ID] = newStringIndex;
+                        --newStringIndex;
+                    }
+                    else
+                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
                 }
                 else
                 {
