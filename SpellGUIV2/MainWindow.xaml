@@ -8,24 +8,17 @@
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         ShowTitleBar="True"
-        ShowIconOnTitleBar="true" Icon="Resources/icon.ico">
+        ShowIconOnTitleBar="true" Icon="Resources/icon.ico" Loaded="MetroWindow_Loaded">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="401*"/>
+            <ColumnDefinition Width="418*"/>
+        </Grid.ColumnDefinitions>
         <TabControl HorizontalAlignment="Left"
 		    Margin="10,10,0,0"
 		    VerticalAlignment="Top"
-		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799">
-            <TabItem Header="Load DBC File">
-                <Grid>
-                    <TextBlock Name="txtLoadedFile"
-                   HorizontalAlignment="Left"
-			       Margin="10"
-			       TextWrapping="Wrap"
-			       Text="Loaded file: "
-			       VerticalAlignment="Top"/>
-                    <Button Content="Load New DBC File" HorizontalAlignment="Left" Margin="23,31,0,-10" VerticalAlignment="Top" Width="175" Click="LoadNewDBCFile"/>
-                </Grid>
-            </TabItem>
+		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="2">
             <TabItem Header="Select Spell">
                 <Grid>
                     <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="332" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
@@ -151,9 +144,14 @@
 
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
+            <Button x:Name="LoadDBC" Click="LoadNewDBCFile">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Load DBC File" />
+                </StackPanel>
+            </Button>
             <Button x:Name="SaveToDBC" Click="SaveToNewDBC">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Save To New DBC File" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Save To DBC File" />
                 </StackPanel>
             </Button>
         </controls:WindowCommands>

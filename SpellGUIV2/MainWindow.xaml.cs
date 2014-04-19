@@ -108,7 +108,6 @@ namespace SpellGUIV2
             }
             // Update the file loaded
             LOADED_FILE_STR = fileName;
-            txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -119,8 +118,6 @@ namespace SpellGUIV2
             var selected = item.SelectedItem as TabItem;
             // Set title
             this.Title = MAIN_WINDOW_TITLE + selected.Header.ToString();
-            // Set loaded text file
-            txtLoadedFile.Text = LOADED_FILE_STR;
         }
 
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
@@ -143,7 +140,6 @@ namespace SpellGUIV2
             }
             // Update the file loaded
             LOADED_FILE_STR = fileName;
-            txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
             populateSelectSpell();
         }
         
@@ -200,6 +196,11 @@ namespace SpellGUIV2
                 selectedID = (UInt32)(((ListBox)sender).SelectedIndex);
                 updateMainWindow();
             }
+        }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadDBC.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
     }
 }
