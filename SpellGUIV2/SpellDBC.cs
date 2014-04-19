@@ -107,7 +107,7 @@ namespace SpellGUIV2
             {
                 // This gets complicated fast
 
-                int stringBlockOffset = 1;
+                int stringBlockOffset = 0;
                 Dictionary<int, int> stringTable = new Dictionary<int, int>();
                 stringTable.Add("".GetHashCode(), 0);
                 for (UInt32 i = 0; i < header.record_count; ++i)
@@ -174,7 +174,6 @@ namespace SpellGUIV2
                 }
 
                 // Write string block
-                writer.Write(Encoding.UTF8.GetBytes("\0"), 0, 1);
                 foreach (KeyValuePair<UInt32, VirtualStrTableEntry> entry in body.strings)
                 {
                     writer.Write(Encoding.UTF8.GetBytes(entry.Value.value + "\0"), 0, entry.Value.value.Length + 1);

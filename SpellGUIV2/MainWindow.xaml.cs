@@ -30,6 +30,7 @@ namespace SpellGUIV2
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         private UInt32 selectedID = 1;
+        private bool Updating_Strings = false;
 
         public MainWindow()
         {
@@ -155,6 +156,7 @@ namespace SpellGUIV2
 
         private void updateMainWindow()
         {
+            Updating_Strings = true;
             int i;
             for (i = 0; i < 9; ++i)
             {
@@ -180,6 +182,7 @@ namespace SpellGUIV2
                 stringObjectMap.TryGetValue(i + 27, out box);
                 box.Text = loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[i]].value;
             }
+            Updating_Strings = false;
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -201,6 +204,36 @@ namespace SpellGUIV2
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             LoadDBC.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
+
+        private void String_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Updating_Strings || loadedDBC == null)
+                return;
+            TextBox box = (TextBox)sender;
+            string name = box.Name.Substring(5, box.Name.Length - 6);
+            UInt32 ID = UInt32.Parse((box.Name[box.Name.Length - 1].ToString()));
+
+            if (name.Equals("Name"))
+            {
+                loadedDBC.body.strings[loadedDBC.body.records[selectedID].SpellName[ID]].value = box.Text;
+            }
+            else if (name.Equals("Rank"))
+            {
+                loadedDBC.body.strings[loadedDBC.body.records[selectedID].Rank[ID]].value = box.Text;
+            }
+            else if (name.Equals("Tooltip"))
+            {
+                loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
+            }
+            else if (name.Equals("Description"))
+            {
+                loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
+            }
+            else
+            {
+                throw new Exception("ERROR: Text Box: " + name + " ID: " + ID + " is not supported.");
+            }
         }
     }
 }
