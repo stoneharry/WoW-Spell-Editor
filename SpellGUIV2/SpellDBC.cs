@@ -73,6 +73,9 @@ namespace SpellGUIV2
                     }
                 }
 
+                // Clean up for bad computers GC
+                string_block = null;
+
                 for (int i = 0; i < body.records.Length; ++i)
                 {
                     body.records[i].spellName = new string[9];
@@ -105,6 +108,8 @@ namespace SpellGUIV2
         {
             try
             {
+                Dictionary<int, UInt32> offsetStorage = new Dictionary<int, UInt32>();
+                Dictionary<UInt32, string> reverseStorage = new Dictionary<UInt32, string>();
                 // Generate some string offsets...
                 UInt32 stringBlockOffset = 1; // first character is always \0
 
@@ -117,32 +122,64 @@ namespace SpellGUIV2
                             body.records[i].record.SpellName[j] = 0;
                         else
                         {
-                            body.records[i].record.SpellName[j] = stringBlockOffset;
-                            stringBlockOffset += (UInt32)body.records[i].spellName[j].Length + 1;
+                            int key = body.records[i].spellName[j].GetHashCode();
+                            if (offsetStorage.ContainsKey(key))
+                                body.records[i].record.SpellName[j] = offsetStorage[key];
+                            else
+                            {
+                                body.records[i].record.SpellName[j] = stringBlockOffset;
+                                stringBlockOffset += (UInt32)body.records[i].spellName[j].Length + 1;
+                                offsetStorage.Add(key, body.records[i].record.SpellName[j]);
+                                reverseStorage.Add(body.records[i].record.SpellName[j], body.records[i].spellName[j]);
+                            }
                         }
                         // Rank
                         if (body.records[i].spellRank[j].Length == 0)
                             body.records[i].record.Rank[j] = 0;
                         else
                         {
-                            body.records[i].record.Rank[j] = stringBlockOffset;
-                            stringBlockOffset += (UInt32)body.records[i].spellRank[j].Length + 1;
+                            int key = body.records[i].spellRank[j].GetHashCode();
+                            if (offsetStorage.ContainsKey(key))
+                                body.records[i].record.Rank[j] = offsetStorage[key];
+                            else
+                            {
+                                body.records[i].record.Rank[j] = stringBlockOffset;
+                                stringBlockOffset += (UInt32)body.records[i].spellRank[j].Length + 1;
+                                offsetStorage.Add(key, body.records[i].record.Rank[j]);
+                                reverseStorage.Add(body.records[i].record.Rank[j], body.records[i].spellRank[j]);
+                            }
                         }
                         // Tooltip
                         if (body.records[i].spellTool[j].Length == 0)
                             body.records[i].record.ToolTip[j] = 0;
                         else
                         {
-                            body.records[i].record.ToolTip[j] = stringBlockOffset;
-                            stringBlockOffset += (UInt32)body.records[i].spellTool[j].Length + 1;
+                            int key = body.records[i].spellTool[j].GetHashCode();
+                            if (offsetStorage.ContainsKey(key))
+                                body.records[i].record.ToolTip[j] = offsetStorage[key];
+                            else
+                            {
+                                body.records[i].record.ToolTip[j] = stringBlockOffset;
+                                stringBlockOffset += (UInt32)body.records[i].spellTool[j].Length + 1;
+                                offsetStorage.Add(key, body.records[i].record.ToolTip[j]);
+                                reverseStorage.Add(body.records[i].record.ToolTip[j], body.records[i].spellTool[j]);
+                            }
                         }
                         // Desc
                         if (body.records[i].spellDesc[j].Length == 0)
                             body.records[i].record.Description[j] = 0;
                         else
                         {
-                            body.records[i].record.Description[j] = stringBlockOffset;
-                            stringBlockOffset += (UInt32)body.records[i].spellDesc[j].Length + 1;
+                            int key = body.records[i].spellDesc[j].GetHashCode();
+                            if (offsetStorage.ContainsKey(key))
+                                body.records[i].record.Description[j] = offsetStorage[key];
+                            else
+                            {
+                                body.records[i].record.Description[j] = stringBlockOffset;
+                                stringBlockOffset += (UInt32)body.records[i].spellDesc[j].Length + 1;
+                                offsetStorage.Add(key, body.records[i].record.Description[j]);
+                                reverseStorage.Add(body.records[i].record.Description[j], body.records[i].spellDesc[j]);
+                            }
                         }
                     }
                 }
@@ -174,25 +211,12 @@ namespace SpellGUIV2
                     gcHandle.Free();
                 }
 
+                UInt32[] offsets_stored = offsetStorage.Values.ToArray<UInt32>();
                 // Write string block
                 writer.Write(Encoding.UTF8.GetBytes("\0"));
-                for (int i = 0; i < header.record_count; ++i)
+                for (int i = 0; i < offsets_stored.Length; ++i)
                 {
-                    for (UInt32 j = 0; j < 9; ++j)
-                    {
-                        // Name
-                        if (body.records[i].spellName[j].Length != 0)
-                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellName[j] + "\0"), 0, body.records[i].spellName[j].Length + 1);
-                        // Rank
-                        if (body.records[i].spellRank[j].Length != 0)
-                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellRank[j] + "\0"), 0, body.records[i].spellRank[j].Length + 1);
-                        // Tooltip
-                        if (body.records[i].spellTool[j].Length != 0)
-                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellTool[j] + "\0"), 0, body.records[i].spellTool[j].Length + 1);                  
-                        // Desc
-                        if (body.records[i].spellDesc[j].Length != 0)
-                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellDesc[j] + "\0"), 0, body.records[i].spellDesc[j].Length + 1);                   
-                    }
+                    writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsets_stored[i]] + "\0"));
                 }
                 
                 writer.Close();
