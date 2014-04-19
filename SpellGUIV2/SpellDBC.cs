@@ -34,7 +34,6 @@ namespace SpellGUIV2
 
                 // Prepare body
                 body.records = new SpellDBC_Record[header.record_count];
-                body.string_block = new char[header.string_block_size];
 
                 // Read body
                 for (UInt32 i = 0; i < header.record_count; ++i)
@@ -48,21 +47,23 @@ namespace SpellGUIV2
                 }
 
                 // Read string block
-                body.string_block = reader.ReadChars(header.string_block_size);
+                body.string_block = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
 
                 body.strings = new Dictionary<UInt32, VirtualStrTableEntry>();
 
                 // Turn the string block into something readable
                 string temp = "";
+                UInt32 lastString = 0;
                 for (UInt32 i = 0; i < header.string_block_size; ++i)
                 {
-                    char t = body.string_block[i];
+                    char t = body.string_block[(int) i];
                     if (t == '\0')
                     {
                         VirtualStrTableEntry n;
                         n.value = temp;
                         n.newValue = 0;
-                        body.strings.Add(i, n);
+                        body.strings.Add(lastString, n);
+                        lastString += (uint) temp.Length + 1;
                         temp = "";
                     }
                     else
@@ -95,7 +96,7 @@ namespace SpellGUIV2
             {
                 return offset;
             }
-            stringTable.Add(stringBlockOffset, hash);
+            stringTable.Add(hash, stringBlockOffset);
             int retValue = stringBlockOffset;
             stringBlockOffset += value.Length + 1;
             return retValue;
@@ -107,8 +108,9 @@ namespace SpellGUIV2
             {
                 // This gets complicated fast
 
-                int stringBlockOffset = 0;
+                int stringBlockOffset = 1;
                 Dictionary<int, int> stringTable = new Dictionary<int, int>();
+                stringTable.Add("".GetHashCode(), 0);
                 for (UInt32 i = 0; i < header.record_count; ++i)
                 {
                     // Generate new string block offsets
@@ -117,28 +119,28 @@ namespace SpellGUIV2
                         if (body.records[i].SpellName[j] != 0)
                         {
                             VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].SpellName[j] - 1, out temp);
+                            body.strings.TryGetValue(body.records[i].SpellName[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value); 
                             body.records[i].SpellName[j] = temp.newValue;
                         }
                         if (body.records[i].ToolTip[j] != 0)
                         {
                             VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].ToolTip[j] - 1, out temp);
+                            body.strings.TryGetValue(body.records[i].ToolTip[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
                             body.records[i].ToolTip[j] = temp.newValue;
                         }
                         if (body.records[i].Description[j] != 0)
                         {
                             VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Description[j] - 1, out temp);
+                            body.strings.TryGetValue(body.records[i].Description[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
                             body.records[i].Description[j] = temp.newValue;
                         }
                         if (body.records[i].Rank[j] != 0)
                         {
                             VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Rank[j] - 1, out temp);
+                            body.strings.TryGetValue(body.records[i].Rank[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
                             body.records[i].Rank[j] = temp.newValue;
                         }
@@ -147,7 +149,7 @@ namespace SpellGUIV2
 
                 // Here was 2317797
                 // becomes 5142725
-                header.string_block_size = (int)stringBlockOffset;
+                header.string_block_size = stringBlockOffset;
 
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -175,6 +177,7 @@ namespace SpellGUIV2
                 }
 
                 // Write string block
+                writer.Write(Encoding.UTF8.GetBytes("\0"), 0, 1);
                 foreach (KeyValuePair<UInt32, VirtualStrTableEntry> entry in body.strings)
                 {
                     writer.Write(Encoding.UTF8.GetBytes(entry.Value.value + "\0"), 0, entry.Value.value.Length + 1);
@@ -211,7 +214,7 @@ namespace SpellGUIV2
     public struct SpellDBC_Body
     {
         public SpellDBC_Record[] records;
-        public char[] string_block;
+        public string string_block;
         public Dictionary<UInt32, VirtualStrTableEntry> strings;
     };
 
