@@ -82,7 +82,23 @@ namespace SpellGUIV2
                 return false;
             }
 
+            SaveDBCFile("test.dbc");
+
             return true;
+        }
+
+        int GetStringOffset(Dictionary<int, int> stringTable, ref int stringBlockOffset, string value)
+        {
+            int hash = value.GetHashCode();
+            int offset = 0;
+            if (stringTable.TryGetValue(hash, out offset))
+            {
+                return offset;
+            }
+            stringTable.Add(stringBlockOffset, hash);
+            int retValue = stringBlockOffset;
+            stringBlockOffset += value.Length + 1;
+            return retValue;
         }
 
         public bool SaveDBCFile(string fileName)
@@ -90,10 +106,48 @@ namespace SpellGUIV2
             try
             {
                 // This gets complicated fast
-                // Each record that contains strings has pointers to the offset in the string block
-                // We need to create the offsets of each string before we generate the main record block
-                // The main record block was written first
-                // Probably a better way to do this, but meh.
+
+                int stringBlockOffset = 1;
+                Dictionary<int, int> stringTable = new Dictionary<int, int>();
+                for (UInt32 i = 0; i < header.record_count; ++i)
+                {
+                    // Generate new string block offsets
+                    for (UInt32 j = 0; j < 9; ++j)
+                    {
+                        if (body.records[i].SpellName[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].SpellName[j] - 1, out temp);
+                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value); 
+                            body.records[i].SpellName[j] = temp.newValue;
+                        }
+                        if (body.records[i].ToolTip[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].ToolTip[j] - 1, out temp);
+                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
+                            body.records[i].ToolTip[j] = temp.newValue;
+                        }
+                        if (body.records[i].Description[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].Description[j] - 1, out temp);
+                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
+                            body.records[i].Description[j] = temp.newValue;
+                        }
+                        if (body.records[i].Rank[j] != 0)
+                        {
+                            VirtualStrTableEntry temp;
+                            body.strings.TryGetValue(body.records[i].Rank[j] - 1, out temp);
+                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
+                            body.records[i].Rank[j] = temp.newValue;
+                        }
+                    }
+                }
+
+                // Here was 2317797
+                // becomes 5142725
+                header.string_block_size = (int)stringBlockOffset;
 
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -108,54 +162,9 @@ namespace SpellGUIV2
                 writer.Write(buffer, 0, count);
                 gcHandle.Free();
 
-                UInt32 stringBlockOffset = 0;
                 // Write records
                 for (UInt32 i = 0; i < header.record_count; ++i)
                 {
-                    // Generate new string block offsets
-                    for (UInt32 j = 0; j < 9; ++j)
-                    {
-                        if (body.records[i].SpellName[j] != 0)
-                        {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].SpellName[j] - 1, out temp);
-                            temp.newValue = stringBlockOffset;
-                            if (temp.value.Length == 0 && stringBlockOffset == 0)
-                                ++stringBlockOffset;
-                            else
-                                stringBlockOffset += (UInt32)temp.value.Length;
-                        }
-                        if (body.records[i].ToolTip[j] != 0)
-                        {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].ToolTip[j] - 1, out temp);
-                            temp.newValue = stringBlockOffset;
-                            if (temp.value.Length == 0 && stringBlockOffset == 0)
-                                ++stringBlockOffset;
-                            else
-                                stringBlockOffset += (UInt32)temp.value.Length;
-                        }
-                        if (body.records[i].Description[j] != 0)
-                        {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Description[j] - 1, out temp);
-                            temp.newValue = stringBlockOffset;
-                            if (temp.value.Length == 0 && stringBlockOffset == 0)
-                                ++stringBlockOffset;
-                            else
-                                stringBlockOffset += (UInt32)temp.value.Length;
-                        }
-                        if (body.records[i].Rank[j] != 0)
-                        {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Rank[j] - 1, out temp);
-                            temp.newValue = stringBlockOffset;
-                            if (temp.value.Length == 0 && stringBlockOffset == 0)
-                                ++stringBlockOffset;
-                            else
-                                stringBlockOffset += (UInt32)temp.value.Length;
-                        }
-                    }
                     // Write main body
                     count = Marshal.SizeOf(typeof(SpellDBC_Record));
                     buffer = new byte[count];
@@ -166,9 +175,10 @@ namespace SpellGUIV2
                 }
 
                 // Write string block
+                writer.Write(Encoding.UTF8.GetBytes("\0"), 0, 1);
                 foreach (KeyValuePair<UInt32, VirtualStrTableEntry> entry in body.strings)
                 {
-                    writer.Write(entry.Value.value + "\0");
+                    writer.Write(Encoding.UTF8.GetBytes(entry.Value.value + "\0"), 0, entry.Value.value.Length + 1);
                 }
 
                 writer.Close();
