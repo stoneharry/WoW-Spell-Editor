@@ -94,21 +94,6 @@ namespace SpellGUIV2
             {
                 await this.ShowMessageAsync("ERROR", "Failed to save file.");
             }
-
-
-            // Madness happens if we try to save again so quit program
-            Environment.Exit(0);
-            return;
-
-            // Try to load file back
-            loadedDBC = new SpellDBC();
-            if (!loadedDBC.loadDBCFile(fileName))
-            {
-                await this.ShowMessageAsync("ERROR", "Failed to reload file.");
-                return;
-            }
-            // Update the file loaded
-            LOADED_FILE_STR = fileName;
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
