@@ -21,7 +21,9 @@
 		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="2">
             <TabItem Header="Select Spell">
                 <Grid>
-                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="332" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
+                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="311" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
+                    <Label Content="Go to spell ID:" HorizontalAlignment="Left" Margin="10,326,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="100,326,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBox_TextChanged"/>
 
                 </Grid>
             </TabItem>

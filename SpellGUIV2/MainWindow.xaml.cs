@@ -229,5 +229,32 @@ namespace SpellGUIV2
                 }
             }
         }
+
+        private void TextBox_TextChanged(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
+            try
+            {
+                TextBox box = (TextBox)sender;
+                int ID = Int32.Parse(box.Text);
+
+                for (int i = 0; i < SelectSpell.Items.Count; ++i)
+                {
+                    string item = SelectSpell.Items.GetItemAt(i).ToString();
+                    if (Int32.Parse(item.Split(' ')[0]) == ID)
+                    {
+                        SelectSpell.SelectedIndex = i;
+                        SelectSpell.ScrollIntoView(SelectSpell.Items.GetItemAt(i));
+                        break;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Don't care to handle stupid input
+            }
+        }
     }
 }
