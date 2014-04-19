@@ -59,7 +59,7 @@ namespace SpellGUIV2
                     char t = body.string_block[(int) i];
                     if (t == '\0')
                     {
-                        VirtualStrTableEntry n;
+                        VirtualStrTableEntry n = new VirtualStrTableEntry();
                         n.value = temp;
                         n.newValue = 0;
                         body.strings.Add(lastString, n);
@@ -110,7 +110,6 @@ namespace SpellGUIV2
                 int stringBlockOffset = 1;
                 Dictionary<int, int> stringTable = new Dictionary<int, int>();
                 stringTable.Add("".GetHashCode(), 0);
-                //backstringTable.Add()
                 for (UInt32 i = 0; i < header.record_count; ++i)
                 {
                     // Generate new string block offsets
@@ -121,7 +120,6 @@ namespace SpellGUIV2
                             VirtualStrTableEntry temp;
                             body.strings.TryGetValue(body.records[i].SpellName[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.strings[body.records[i].SpellName[j]] = temp;
                             body.records[i].SpellName[j] = temp.newValue;
                         }
                         if (body.records[i].Rank[j] != 0)
@@ -129,7 +127,6 @@ namespace SpellGUIV2
                             VirtualStrTableEntry temp;
                             body.strings.TryGetValue(body.records[i].Rank[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.strings[body.records[i].Rank[j]] = temp;
                             body.records[i].Rank[j] = temp.newValue;
                         }
                         if (body.records[i].Description[j] != 0)
@@ -137,7 +134,6 @@ namespace SpellGUIV2
                             VirtualStrTableEntry temp;
                             body.strings.TryGetValue(body.records[i].Description[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.strings[body.records[i].Description[j]] = temp;
                             body.records[i].Description[j] = temp.newValue;
                         }
                         if (body.records[i].ToolTip[j] != 0)
@@ -145,7 +141,6 @@ namespace SpellGUIV2
                             VirtualStrTableEntry temp;
                             body.strings.TryGetValue(body.records[i].ToolTip[j], out temp);
                             temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.strings[body.records[i].ToolTip[j]] = temp;
                             body.records[i].ToolTip[j] = temp.newValue;
                         }
                     }
@@ -198,7 +193,8 @@ namespace SpellGUIV2
         }
     }
 
-    public struct VirtualStrTableEntry
+    // Class instead of struct allows passing by reference
+    public class VirtualStrTableEntry
     {
         public string value;
         public UInt32 newValue;
