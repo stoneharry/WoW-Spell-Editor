@@ -33,7 +33,7 @@ namespace SpellGUIV2
                 handle.Free();
 
                 // Prepare body
-                body.records = new SpellDBC_Record[header.record_count];
+                body.records = new SpellDBC_RecordMap[header.record_count];
 
                 // Read body
                 for (UInt32 i = 0; i < header.record_count; ++i)
@@ -42,27 +42,28 @@ namespace SpellGUIV2
                     readBuffer = new byte[count];
                     readBuffer = reader.ReadBytes(count);
                     handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-                    body.records[i] = (SpellDBC_Record)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellDBC_Record));
+                    body.records[i].record = (SpellDBC_Record)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellDBC_Record));
                     handle.Free();               
                 }
 
-                // Read string block
-                body.string_block = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
+                string string_block;
+                Dictionary<UInt32, VirtualStrTableEntry> strings = new Dictionary<UInt32, VirtualStrTableEntry>();;
 
-                body.strings = new Dictionary<UInt32, VirtualStrTableEntry>();
+                // Read string block
+                string_block = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
 
                 // Turn the string block into something readable
                 string temp = "";
                 UInt32 lastString = 0;
                 for (UInt32 i = 0; i < header.string_block_size; ++i)
                 {
-                    char t = body.string_block[(int) i];
+                    char t = string_block[(int) i];
                     if (t == '\0')
                     {
                         VirtualStrTableEntry n = new VirtualStrTableEntry();
                         n.value = temp;
                         n.newValue = 0;
-                        body.strings.Add(lastString, n);
+                        strings.Add(lastString, n);
                         lastString += (uint) temp.Length + 1;
                         temp = "";
                     }
@@ -71,8 +72,21 @@ namespace SpellGUIV2
                         temp += t;
                     }
                 }
-                // We don't need this any more, let it go in memory
-                body.string_block = null;
+
+                for (int i = 0; i < body.records.Length; ++i)
+                {
+                    body.records[i].spellName = new string[9];
+                    body.records[i].spellRank = new string[9];
+                    body.records[i].spellDesc = new string[9];
+                    body.records[i].spellTool = new string[9];
+                    for (int j = 0; j < 9; ++j)
+                    {
+                        body.records[i].spellName[j] = strings[body.records[i].record.SpellName[j]].value;
+                        body.records[i].spellRank[j] = strings[body.records[i].record.Rank[j]].value;
+                        body.records[i].spellDesc[j] = strings[body.records[i].record.Description[j]].value;
+                        body.records[i].spellTool[j] = strings[body.records[i].record.ToolTip[j]].value;
+                    }
+                }
 
                 reader.Close();
                 fs.Close();
@@ -86,67 +100,54 @@ namespace SpellGUIV2
             return true;
         }
 
-        int GetStringOffset(Dictionary<int, int> stringTable, ref int stringBlockOffset, string value)
-        {
-            int hash = value.GetHashCode();
-            int offset = 0;
-            if (stringTable.TryGetValue(hash, out offset))
-            {
-                return offset;
-            }
-            ++stringBlockOffset; // skip over null terminator
-            stringTable.Add(hash, stringBlockOffset);
-            int retValue = stringBlockOffset;
-            stringBlockOffset += value.Length;
-            return retValue;
-        }
 
         public bool SaveDBCFile(string fileName)
         {
             try
             {
-                // This gets complicated fast
+                // Generate some string offsets...
+                UInt32 stringBlockOffset = 1; // first character is always \0
 
-                int stringBlockOffset = 0;
-                Dictionary<int, int> stringTable = new Dictionary<int, int>();
-                stringTable.Add("".GetHashCode(), 0);
                 for (UInt32 i = 0; i < header.record_count; ++i)
                 {
-                    // Generate new string block offsets
                     for (UInt32 j = 0; j < 9; ++j)
                     {
-                        if (body.records[i].SpellName[j] != 0)
+                        // Name
+                        if (body.records[i].spellName[j].Length == 0)
+                            body.records[i].record.SpellName[j] = 0;
+                        else
                         {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].SpellName[j], out temp);
-                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.records[i].SpellName[j] = temp.newValue;
+                            body.records[i].record.SpellName[j] = stringBlockOffset;
+                            stringBlockOffset += (UInt32)body.records[i].spellName[j].Length + 1;
                         }
-                        if (body.records[i].Rank[j] != 0)
+                        // Rank
+                        if (body.records[i].spellRank[j].Length == 0)
+                            body.records[i].record.Rank[j] = 0;
+                        else
                         {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Rank[j], out temp);
-                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.records[i].Rank[j] = temp.newValue;
+                            body.records[i].record.Rank[j] = stringBlockOffset;
+                            stringBlockOffset += (UInt32)body.records[i].spellRank[j].Length + 1;
                         }
-                        if (body.records[i].Description[j] != 0)
+                        // Tooltip
+                        if (body.records[i].spellTool[j].Length == 0)
+                            body.records[i].record.ToolTip[j] = 0;
+                        else
                         {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].Description[j], out temp);
-                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.records[i].Description[j] = temp.newValue;
+                            body.records[i].record.ToolTip[j] = stringBlockOffset;
+                            stringBlockOffset += (UInt32)body.records[i].spellTool[j].Length + 1;
                         }
-                        if (body.records[i].ToolTip[j] != 0)
+                        // Desc
+                        if (body.records[i].spellDesc[j].Length == 0)
+                            body.records[i].record.Description[j] = 0;
+                        else
                         {
-                            VirtualStrTableEntry temp;
-                            body.strings.TryGetValue(body.records[i].ToolTip[j], out temp);
-                            temp.newValue = (UInt32)GetStringOffset(stringTable, ref stringBlockOffset, temp.value);
-                            body.records[i].ToolTip[j] = temp.newValue;
+                            body.records[i].record.Description[j] = stringBlockOffset;
+                            stringBlockOffset += (UInt32)body.records[i].spellDesc[j].Length + 1;
                         }
                     }
                 }
 
-                header.string_block_size = stringBlockOffset;
+                header.string_block_size = (int)stringBlockOffset;
 
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -168,23 +169,32 @@ namespace SpellGUIV2
                     count = Marshal.SizeOf(typeof(SpellDBC_Record));
                     buffer = new byte[count];
                     gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                    Marshal.StructureToPtr(body.records[i], gcHandle.AddrOfPinnedObject(), true);
+                    Marshal.StructureToPtr(body.records[i].record, gcHandle.AddrOfPinnedObject(), true);
                     writer.Write(buffer, 0, count);
                     gcHandle.Free();
                 }
 
-                List<VirtualStrTableEntry> strings = body.strings.Values.ToList<VirtualStrTableEntry>();
-                strings = strings.OrderBy(x => x.newValue).ToList();
-
                 // Write string block
                 writer.Write(Encoding.UTF8.GetBytes("\0"));
-                for (int i = 0; i < strings.Count; ++i)
+                for (int i = 0; i < header.record_count; ++i)
                 {
-                    VirtualStrTableEntry entry = strings[i];
-                    if (entry.newValue != 0)
-                        writer.Write(Encoding.UTF8.GetBytes(entry.value + "\0"), 0, entry.value.Length + 1);
+                    for (UInt32 j = 0; j < 9; ++j)
+                    {
+                        // Name
+                        if (body.records[i].spellName[j].Length != 0)
+                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellName[j] + "\0"), 0, body.records[i].spellName[j].Length + 1);
+                        // Rank
+                        if (body.records[i].spellRank[j].Length != 0)
+                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellRank[j] + "\0"), 0, body.records[i].spellRank[j].Length + 1);
+                        // Tooltip
+                        if (body.records[i].spellTool[j].Length != 0)
+                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellTool[j] + "\0"), 0, body.records[i].spellTool[j].Length + 1);                  
+                        // Desc
+                        if (body.records[i].spellDesc[j].Length != 0)
+                            writer.Write(Encoding.UTF8.GetBytes(body.records[i].spellDesc[j] + "\0"), 0, body.records[i].spellDesc[j].Length + 1);                   
+                    }
                 }
-
+                
                 writer.Close();
                 fs.Close();
             }
@@ -216,9 +226,16 @@ namespace SpellGUIV2
 
     public struct SpellDBC_Body
     {
-        public SpellDBC_Record[] records;
-        public string string_block;
-        public Dictionary<UInt32, VirtualStrTableEntry> strings;
+        public SpellDBC_RecordMap[] records;
+    };
+
+    public struct SpellDBC_RecordMap
+    {
+        public SpellDBC_Record record;
+        public string[] spellName;
+        public string[] spellRank;
+        public string[] spellDesc;
+        public string[] spellTool;
     };
 
     public struct SpellDBC_Record

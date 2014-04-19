@@ -31,7 +31,6 @@ namespace SpellGUIV2
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         private UInt32 selectedID = 1;
         private bool Updating_Strings = false;
-        UInt32 newStringIndex = 2147483647;
 
         public MainWindow()
         {
@@ -153,8 +152,8 @@ namespace SpellGUIV2
             SelectSpell.Items.Clear();
             for (UInt32 i = 0; i < loadedDBC.body.records.Length; ++i)
             {
-                SelectSpell.Items.Add(loadedDBC.body.records[i].Id.ToString() + " - " +
-                    loadedDBC.body.strings[loadedDBC.body.records[i].SpellName[0]].value);
+                SelectSpell.Items.Add(loadedDBC.body.records[i].record.Id.ToString() + " - " +
+                    loadedDBC.body.records[i].spellName[0]);
             }
         }
 
@@ -166,25 +165,25 @@ namespace SpellGUIV2
             {
                 TextBox box;
                 stringObjectMap.TryGetValue(i, out box);
-                box.Text = loadedDBC.body.strings[loadedDBC.body.records[selectedID].SpellName[i]].value;
+                box.Text = loadedDBC.body.records[selectedID].spellName[i];
             }
             for (i = 0; i < 9; ++i)
             {
                 TextBox box;
                 stringObjectMap.TryGetValue(i + 9, out box);
-                box.Text = loadedDBC.body.strings[loadedDBC.body.records[selectedID].Rank[i]].value;
+                box.Text = loadedDBC.body.records[selectedID].spellRank[i];
             }
             for (i = 0; i < 9; ++i)
             {
                 TextBox box;
                 stringObjectMap.TryGetValue(i + 18, out box);
-                box.Text = loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[i]].value;
+                box.Text = loadedDBC.body.records[selectedID].spellTool[i];
             }
             for (i = 0; i < 9; ++i)
             {
                 TextBox box;
                 stringObjectMap.TryGetValue(i + 27, out box);
-                box.Text = loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[i]].value;
+                box.Text = loadedDBC.body.records[selectedID].spellDesc[i];
             }
             Updating_Strings = false;
         }
@@ -225,55 +224,19 @@ namespace SpellGUIV2
 
                 if (name.Equals("Name"))
                 {
-                    if (loadedDBC.body.records[selectedID].SpellName[ID] == 0)
-                    {
-                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
-                        temp.value = box.Text;
-                        loadedDBC.body.strings.Add(newStringIndex, temp);
-                        loadedDBC.body.records[selectedID].SpellName[ID] = newStringIndex;
-                        --newStringIndex;
-                    }
-                    else
-                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].SpellName[ID]].value = box.Text;
+                    loadedDBC.body.records[selectedID].spellName[ID] = box.Text;
                 }
                 else if (name.Equals("Rank"))
                 {
-                    if (loadedDBC.body.records[selectedID].Rank[ID] == 0)
-                    {
-                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
-                        temp.value = box.Text;
-                        loadedDBC.body.strings.Add(newStringIndex, temp);
-                        loadedDBC.body.records[selectedID].Rank[ID] = newStringIndex;
-                        --newStringIndex;
-                    }
-                    else
-                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].Rank[ID]].value = box.Text;
+                    loadedDBC.body.records[selectedID].spellRank[ID] = box.Text;
                 }
                 else if (name.Equals("Tooltip"))
                 {
-                    if (loadedDBC.body.records[selectedID].ToolTip[ID] == 0)
-                    {
-                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
-                        temp.value = box.Text;
-                        loadedDBC.body.strings.Add(newStringIndex, temp);
-                        loadedDBC.body.records[selectedID].ToolTip[ID] = newStringIndex;
-                        --newStringIndex;
-                    }
-                    else
-                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
+                    loadedDBC.body.records[selectedID].spellTool[ID] = box.Text;
                 }
                 else if (name.Equals("Description"))
                 {
-                    if (loadedDBC.body.records[selectedID].Description[ID] == 0)
-                    {
-                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
-                        temp.value = box.Text;
-                        loadedDBC.body.strings.Add(newStringIndex, temp);
-                        loadedDBC.body.records[selectedID].Description[ID] = newStringIndex;
-                        --newStringIndex;
-                    }
-                    else
-                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
+                    loadedDBC.body.records[selectedID].spellDesc[ID] = box.Text;
                 }
                 else
                 {
