@@ -33,9 +33,42 @@ namespace SpellGUIV2
             InitializeComponent();
         }
 
-        private void SaveToNewDBC(object sender, RoutedEventArgs e)
+        private async void SaveToNewDBC(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Unfinished.");
+            if (loadedDBC == null)
+            {
+                await this.ShowMessageAsync("ERROR", "There is no DBC loaded.");
+            }
+            string fileName = await this.ShowInputAsync("Save DBC File", "What do you want to call your new spell DBC?");
+            if (fileName == null || fileName.Length < 1)
+            {
+                await this.ShowMessageAsync("ERROR", "File name is bad.");
+                return;
+            }
+            if (!fileName.ToLower().EndsWith(".dbc"))
+            {
+                fileName += ".dbc";
+            }
+            if (!loadedDBC.SaveDBCFile(fileName))
+            {
+                await this.ShowMessageAsync("ERROR", "Failed to save file.");
+            }
+
+
+            // Madness happens if we try to save again so quit program
+            Environment.Exit(0);
+            return;
+
+            // Try to load file back
+            loadedDBC = new SpellDBC();
+            if (!loadedDBC.loadDBCFile(fileName))
+            {
+                await this.ShowMessageAsync("ERROR", "Failed to reload file.");
+                return;
+            }
+            // Update the file loaded
+            LOADED_FILE_STR = fileName;
+            txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -53,7 +86,7 @@ namespace SpellGUIV2
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
         {
             string fileName = await this.ShowInputAsync("Load DBC File", "What is the name of your Spell DBC? It must be in the same directory as this program.");
-            if (fileName == null)
+            if (fileName == null || fileName.Length < 1)
             {
                 await this.ShowMessageAsync("ERROR", "File name is bad.");
                 return;
@@ -68,8 +101,6 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", "Failed to load file.");
                 return;
             }
-            // Heh, let's invoke some GC collection here
-            GC.Collect();
             // Update the file loaded
             LOADED_FILE_STR = fileName;
             txtLoadedFile.Text = "Loaded file: " + LOADED_FILE_STR;
