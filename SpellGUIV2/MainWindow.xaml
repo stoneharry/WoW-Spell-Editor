@@ -9,12 +9,12 @@
         WindowStartupLocation="CenterScreen"
         ShowTitleBar="True"
         ShowIconOnTitleBar="true" Icon="Resources/icon.ico">
-    
+
     <Grid>
         <TabControl HorizontalAlignment="Left"
 		    Margin="10,10,0,0"
 		    VerticalAlignment="Top"
-		    SelectionChanged="TabControl_SelectionChanged">
+		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799">
             <TabItem Header="Load DBC File">
                 <Grid>
                     <TextBlock Name="txtLoadedFile"
@@ -26,13 +26,124 @@
                     <Button Content="Load New DBC File" HorizontalAlignment="Left" Margin="23,31,0,-10" VerticalAlignment="Top" Width="175" Click="LoadNewDBCFile"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Select Spell">
+                <Grid>
+                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="332" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
+
+                </Grid>
+            </TabItem>
             <TabItem Header="Spell Overview">
                 <Grid>
-                    <TextBlock HorizontalAlignment="Left"
-			       Margin="10"
-			       TextWrapping="Wrap"
-			       Text="Test."
-			       VerticalAlignment="Top"/>
+                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,200,0,0" VerticalAlignment="Top" Width="795">
+                        <TabItem Header="enUS/enGB">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank0" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip0" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription0" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="KoKR">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName1" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank1" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip1" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription1" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="frFR">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName2" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank2" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip2" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription2" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="deDE">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName3" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank3" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip3" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription3" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="zhCN">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName4" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank4" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip4" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription4" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="zhTW">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName5" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank5" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip5" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription5" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="esES / esMX">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName6" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank6" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip6" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription6" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="???">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName7" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank7" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip7" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription7" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="ruRU">
+                            <Grid Margin="0,0,0,-54">
+                                <TextBox Name="SpellName8" HorizontalAlignment="Left" Height="22" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellRank8" HorizontalAlignment="Left" Height="22" Margin="186,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Rank" HorizontalAlignment="Left" Margin="186,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellTooltip8" HorizontalAlignment="Left" Height="22" Margin="363,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
+                                <Label Content="Spell Tooltip" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Description" HorizontalAlignment="Left" Margin="540,10,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="SpellDescription8" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
         </TabControl>

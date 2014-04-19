@@ -13,8 +13,8 @@ namespace SpellGUIV2
     {
         private long FileSize;
 
-        private SpellDBC_Header header;
-        private SpellDBC_Body body;
+        public SpellDBC_Header header;
+        public SpellDBC_Body body;
 
         public bool loadDBCFile(string fileName)
         {
