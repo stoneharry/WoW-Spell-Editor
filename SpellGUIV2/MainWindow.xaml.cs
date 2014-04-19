@@ -31,6 +31,7 @@ namespace SpellGUIV2
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         private UInt32 selectedID = 1;
         private bool Updating_Strings = false;
+        UInt32 newStringIndex = 2147483647;
 
         public MainWindow()
         {
@@ -119,6 +120,7 @@ namespace SpellGUIV2
             var selected = item.SelectedItem as TabItem;
             // Set title
             this.Title = MAIN_WINDOW_TITLE + selected.Header.ToString();
+            populateSelectSpell();
         }
 
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
@@ -146,6 +148,8 @@ namespace SpellGUIV2
         
         private void populateSelectSpell()
         {
+            if (loadedDBC == null)
+                return;
             SelectSpell.Items.Clear();
             for (UInt32 i = 0; i < loadedDBC.body.records.Length; ++i)
             {
@@ -206,33 +210,57 @@ namespace SpellGUIV2
             LoadDBC.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
 
+        // Required so that the same string is not inserted twice due to fast typing
+        static object Lock = new object();
         private void String_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (Updating_Strings || loadedDBC == null)
                 return;
-            TextBox box = (TextBox)sender;
-            string name = box.Name.Substring(5, box.Name.Length - 6);
-            UInt32 ID = UInt32.Parse((box.Name[box.Name.Length - 1].ToString()));
 
-            if (name.Equals("Name"))
+            lock (Lock)
             {
-                loadedDBC.body.strings[loadedDBC.body.records[selectedID].SpellName[ID]].value = box.Text;
-            }
-            else if (name.Equals("Rank"))
-            {
-                loadedDBC.body.strings[loadedDBC.body.records[selectedID].Rank[ID]].value = box.Text;
-            }
-            else if (name.Equals("Tooltip"))
-            {
-                loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
-            }
-            else if (name.Equals("Description"))
-            {
-                loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
-            }
-            else
-            {
-                throw new Exception("ERROR: Text Box: " + name + " ID: " + ID + " is not supported.");
+                TextBox box = (TextBox)sender;
+                string name = box.Name.Substring(5, box.Name.Length - 6);
+                UInt32 ID = UInt32.Parse((box.Name[box.Name.Length - 1].ToString()));
+
+                if (name.Equals("Name"))
+                {
+                    if (loadedDBC.body.records[selectedID].SpellName[ID] == 0)
+                    {
+                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
+                        temp.value = box.Text;
+                        loadedDBC.body.strings.Add(newStringIndex, temp);
+                        loadedDBC.body.records[selectedID].SpellName[ID] = newStringIndex;
+                        --newStringIndex;
+                    }
+                    else
+                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].SpellName[ID]].value = box.Text;
+                }
+                else if (name.Equals("Rank"))
+                {
+                    if (loadedDBC.body.records[selectedID].Rank[ID] == 0)
+                    {
+                        VirtualStrTableEntry temp = new VirtualStrTableEntry();
+                        temp.value = box.Text;
+                        loadedDBC.body.strings.Add(newStringIndex, temp);
+                        loadedDBC.body.records[selectedID].Rank[ID] = newStringIndex;
+                        --newStringIndex;
+                    }
+                    else
+                        loadedDBC.body.strings[loadedDBC.body.records[selectedID].Rank[ID]].value = box.Text;
+                }
+                else if (name.Equals("Tooltip"))
+                {
+                    loadedDBC.body.strings[loadedDBC.body.records[selectedID].ToolTip[ID]].value = box.Text;
+                }
+                else if (name.Equals("Description"))
+                {
+                    loadedDBC.body.strings[loadedDBC.body.records[selectedID].Description[ID]].value = box.Text;
+                }
+                else
+                {
+                    throw new Exception("ERROR: Text Box: " + name + " ID: " + ID + " is not supported.");
+                }
             }
         }
     }

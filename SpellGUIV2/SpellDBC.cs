@@ -94,7 +94,7 @@ namespace SpellGUIV2
             {
                 return offset;
             }
-            ++stringBlockOffset; // This line is debug
+            ++stringBlockOffset; // skip over null terminator
             stringTable.Add(hash, stringBlockOffset);
             int retValue = stringBlockOffset;
             stringBlockOffset += value.Length;
@@ -173,10 +173,16 @@ namespace SpellGUIV2
                     gcHandle.Free();
                 }
 
+                List<VirtualStrTableEntry> strings = body.strings.Values.ToList<VirtualStrTableEntry>();
+                strings = strings.OrderBy(x => x.newValue).ToList();
+
                 // Write string block
-                foreach (KeyValuePair<UInt32, VirtualStrTableEntry> entry in body.strings)
+                writer.Write(Encoding.UTF8.GetBytes("\0"));
+                for (int i = 0; i < strings.Count; ++i)
                 {
-                    writer.Write(Encoding.UTF8.GetBytes(entry.Value.value + "\0"), 0, entry.Value.value.Length + 1);
+                    VirtualStrTableEntry entry = strings[i];
+                    if (entry.newValue != 0)
+                        writer.Write(Encoding.UTF8.GetBytes(entry.value + "\0"), 0, entry.value.Length + 1);
                 }
 
                 writer.Close();
