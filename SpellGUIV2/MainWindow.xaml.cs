@@ -120,9 +120,9 @@ namespace SpellGUIV2
             try
             {
                 loadedIconDBC = new SpellIconDBC(this, loadedDBC);
-                var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
+                //var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
                 await loadedIconDBC.loadImages();
-                await progress.CloseAsync();
+                //await progress.CloseAsync();
             }
             catch (Exception ex)
             {
