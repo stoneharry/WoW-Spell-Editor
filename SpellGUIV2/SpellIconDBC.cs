@@ -58,7 +58,7 @@ namespace SpellGUIV2
             updateMainWindowIcons();
         }
 
-        private void updateMainWindowIcons()
+        public void updateMainWindowIcons()
         {
             UInt32 iconInt = spell.body.records[main.selectedID].record.SpellIconID;
             UInt32 selectedRecord = UInt32.MaxValue;
@@ -97,20 +97,42 @@ namespace SpellGUIV2
                System.Windows.Int32Rect.Empty,
                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
 
-            for (int i = -5; i < 6; ++i)
+            file.Close();
+
+            string[] icons = body.StringBlock.Split('\0');
+            int iconIndex = 1;
+
+            int columnsUsed = icons.Length / 11;
+            int rowsToDo = columnsUsed / 2;
+
+            for (int j = -rowsToDo; j <= rowsToDo; ++j) // Rows
             {
-                for (int j = -1; j < 3; ++j)
+                for (int i = -5; i < 6; ++i) // Columns
                 {
+                    if (iconIndex >= icons.Length - 1)
+                        break;
+                    if (!File.Exists(icons[iconIndex] + ".blp"))
+                    {
+                        Console.WriteLine("Warning: Icon not found: " + icons[iconIndex] + ".blp");
+                        ++iconIndex;
+                        continue;
+                    }
+                    file = new FileStream(icons[iconIndex++] + ".blp", FileMode.Open);
+                    
+                    image = new SereniaBLPLib.BlpFile(file);
+                    bit = image.getBitmap(0);
+
                     System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
                     temp.Width = 64;
                     temp.Height = 64;
-                    temp.Margin = new System.Windows.Thickness(i + (138 * i), j + (138 * j), 0, 0);
+                    temp.Margin = new System.Windows.Thickness(139 * i, 139 * j, 0, 0);
                     temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                        bit.GetHbitmap(),
                        IntPtr.Zero,
                        System.Windows.Int32Rect.Empty,
                        BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
                     main.IconGrid.Children.Add(temp);
+                    file.Close();
                 }
             }
         }

@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="Stoneharry's Spell Editor V2"
-        Height="450"
-        Width="825"
+        Height="642"
+        Width="826"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         ShowTitleBar="True"
@@ -20,16 +20,16 @@
 		    VerticalAlignment="Top"
 		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="2">
             <TabItem Header="Select Spell">
-                <Grid>
-                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="311" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
-                    <Label Content="Go to spell ID:" HorizontalAlignment="Left" Margin="10,326,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="100,326,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBox_TextChanged"/>
+                <Grid Margin="0,0,0,-198">
+                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="499" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
+                    <Label Content="Go to spell ID:" HorizontalAlignment="Left" Margin="10,514,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="100,514,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBox_TextChanged"/>
 
                 </Grid>
             </TabItem>
             <TabItem Header="Spell Overview">
-                <Grid>
-                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,200,0,0" VerticalAlignment="Top" Width="795">
+                <Grid Margin="0,0,0,-197">
+                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,404,0,0" VerticalAlignment="Top" Width="795">
                         <TabItem Header="enUS/enGB">
                             <Grid Margin="0,0,0,-54">
                                 <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
@@ -150,9 +150,12 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
-                <Grid Name="IconGrid" Margin="0,0,0,-3">
-                    <Image Name="CurrentIcon" Height="64" Width="64" Margin="91,0,640,291"/>
+                <Grid Margin="0,0,0,-193">
+                    <Image Name="CurrentIcon" Height="64" Width="64" Margin="91,0,640,481"/>
                     <Label Content="Current Icon" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <ScrollViewer Margin="0,69,0,0">
+                        <Grid Name="IconGrid"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>
