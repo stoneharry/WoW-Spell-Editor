@@ -30,7 +30,7 @@ namespace SpellGUIV2
         private SpellIconDBC loadedIconDBC = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
-        private UInt32 selectedID = 1;
+        public UInt32 selectedID = 1;
         private bool Updating_Strings = false;
 
         public MainWindow()

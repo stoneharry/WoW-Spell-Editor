@@ -150,7 +150,54 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
-                <Image Name="Icon0" Height="64" Width="64" Margin="20,12,675,240"/>
+                <Grid>
+                    <Image Name="CurrentIcon" Height="64" Width="64" Margin="91,10,640,278"/>
+                    <Label Content="Current Icon" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Image Name="Icon0" Height="64" Width="64" Margin="10,81,721,207"/>
+                    <Image Name="Icon1" Height="64" Width="64" Margin="79,81,652,207"/>
+                    <Image Name="Icon2" Height="64" Width="64" Margin="148,81,583,207"/>
+                    <Image Name="Icon3" Height="64" Width="64" Margin="217,81,514,207"/>
+                    <Image Name="Icon4" Height="64" Width="64" Margin="286,81,445,207"/>
+                    <Image Name="Icon5" Height="64" Width="64" Margin="355,81,376,207"/>
+                    <Image Name="Icon6" Height="64" Width="64" Margin="424,81,307,207"/>
+                    <Image Name="Icon7" Height="64" Width="64" Margin="493,81,238,207"/>
+                    <Image Name="Icon8" Height="64" Width="64" Margin="562,81,169,207"/>
+                    <Image Name="Icon9" Height="64" Width="64" Margin="631,81,100,207"/>
+                    <Image Name="Icon10" Height="64" Width="64" Margin="700,81,31,207"/>
+                    <Image Name="Icon11" Height="64" Width="64" Margin="10,219,721,69"/>
+                    <Image Name="Icon12" Height="64" Width="64" Margin="79,219,652,69"/>
+                    <Image Name="Icon13" Height="64" Width="64" Margin="148,219,583,69"/>
+                    <Image Name="Icon14" Height="64" Width="64" Margin="217,219,514,69"/>
+                    <Image Name="Icon15" Height="64" Width="64" Margin="286,219,445,69"/>
+                    <Image Name="Icon16" Height="64" Width="64" Margin="355,219,376,69"/>
+                    <Image Name="Icon17" Height="64" Width="64" Margin="424,219,307,69"/>
+                    <Image Name="Icon18" Height="64" Width="64" Margin="493,219,238,69"/>
+                    <Image Name="Icon19" Height="64" Width="64" Margin="562,219,169,69"/>
+                    <Image Name="Icon20" Height="64" Width="64" Margin="631,219,100,69"/>
+                    <Image Name="Icon21" Height="64" Width="64" Margin="700,219,31,69"/>
+                    <Image Name="Icon22" Height="64" Width="64" Margin="10,219,721,69"/>
+                    <Image Name="Icon23" Height="64" Width="64" Margin="79,219,652,69"/>
+                    <Image Name="Icon24" Height="64" Width="64" Margin="148,219,583,69"/>
+                    <Image Name="Icon25" Height="64" Width="64" Margin="217,219,514,69"/>
+                    <Image Name="Icon26" Height="64" Width="64" Margin="286,219,445,69"/>
+                    <Image Name="Icon27" Height="64" Width="64" Margin="355,219,376,69"/>
+                    <Image Name="Icon28" Height="64" Width="64" Margin="424,219,307,69"/>
+                    <Image Name="Icon29" Height="64" Width="64" Margin="493,219,238,69"/>
+                    <Image Name="Icon30" Height="64" Width="64" Margin="562,219,169,69"/>
+                    <Image Name="Icon31" Height="64" Width="64" Margin="631,219,100,69"/>
+                    <Image Name="Icon32" Height="64" Width="64" Margin="700,219,31,69"/>
+                    <Image Name="Icon33" Height="64" Width="64" Margin="10,288,721,0"/>
+                    <Image Name="Icon34" Height="64" Width="64" Margin="79,288,652,0"/>
+                    <Image Name="Icon35" Height="64" Width="64" Margin="148,288,583,0"/>
+                    <Image Name="Icon36" Height="64" Width="64" Margin="217,288,514,0"/>
+                    <Image Name="Icon37" Height="64" Width="64" Margin="286,288,445,0"/>
+                    <Image Name="Icon38" Height="64" Width="64" Margin="355,288,376,0"/>
+                    <Image Name="Icon39" Height="64" Width="64" Margin="424,288,307,0"/>
+                    <Image Name="Icon40" Height="64" Width="64" Margin="493,288,238,0"/>
+                    <Image Name="Icon41" Height="64" Width="64" Margin="562,288,169,0"/>
+                    <Image Name="Icon42" Height="64" Width="64" Margin="631,288,100,0"/>
+                    <Image Name="Icon43" Height="64" Width="64" Margin="700,288,31,0"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

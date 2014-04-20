@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Media.Imaging;
 
 namespace SpellGUIV2
 {
@@ -49,38 +50,58 @@ namespace SpellGUIV2
                 handle.Free();
             }
 
-            string StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
-            body.lookup = new Dictionary<UInt32, string>();
+            body.StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
 
-            string temp = "";
-            UInt32 lastString = 0;
-            for (UInt32 i = 0; i < header.string_block_size; ++i)
-            {
-                char t = StringBlock[(int)i];
-                if (t == '\0')
-                {
-                    body.lookup.Add(lastString, temp);
-                    lastString += (uint)temp.Length + 1;
-                    temp = "";
-                }
-                else
-                {
-                    temp += t;
-                }
-            }
+            reader.Close();
+            fs.Close();
 
             updateMainWindowIcons();
         }
 
         private void updateMainWindowIcons()
         {
+            UInt32 iconInt = spell.body.records[main.selectedID].record.SpellIconID;
+            UInt32 selectedRecord = UInt32.MaxValue;
+            for (UInt32 i = 0; i < header.record_count; ++i)
+            {
+                if (body.records[i].ID == iconInt)
+                {
+                    selectedRecord = i;
+                    break;
+                }
+            }
 
+            int offset = (int)body.records[selectedRecord].name;
+            string icon = "";
+            while (body.StringBlock[offset] != '\0')
+            {
+                icon += body.StringBlock[offset++];
+            }
+
+            if (selectedRecord == UInt32.MaxValue)
+                throw new Exception("The icon for this spell does not exist in the SpellIcon.dbc");
+
+            if (!File.Exists(icon + ".blp"))
+                throw new Exception("File could not be found: " + "Icons\\" + icon + ".blp");
+
+            FileStream file = new FileStream(icon + ".blp", FileMode.Open);
+
+            SereniaBLPLib.BlpFile image;
+            image = new SereniaBLPLib.BlpFile(file);
+
+            Bitmap bit = image.getBitmap(0);
+
+            main.CurrentIcon.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+               bit.GetHbitmap(),
+               IntPtr.Zero,
+               System.Windows.Int32Rect.Empty,
+               BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
         }
 
         public struct IconDBC_Map
         {
             public IconDBC_Record[] records;
-            public Dictionary<UInt32, string> lookup;
+            public string StringBlock;
         }
 
         public struct IconDBC_Record
