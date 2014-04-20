@@ -96,6 +96,23 @@ namespace SpellGUIV2
                IntPtr.Zero,
                System.Windows.Int32Rect.Empty,
                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+
+            for (int i = -5; i < 6; ++i)
+            {
+                for (int j = -1; j < 3; ++j)
+                {
+                    System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+                    temp.Width = 64;
+                    temp.Height = 64;
+                    temp.Margin = new System.Windows.Thickness(i + (138 * i), j + (138 * j), 0, 0);
+                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                       bit.GetHbitmap(),
+                       IntPtr.Zero,
+                       System.Windows.Int32Rect.Empty,
+                       BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                    main.IconGrid.Children.Add(temp);
+                }
+            }
         }
 
         public struct IconDBC_Map
