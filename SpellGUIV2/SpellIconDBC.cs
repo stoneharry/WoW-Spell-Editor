@@ -67,7 +67,7 @@ namespace SpellGUIV2
             }); 
         }
 
-        public void updateMainWindowIcons()
+        public async void updateMainWindowIcons()
         {
             UInt32 iconInt = spell.body.records[main.selectedID].record.SpellIconID;
             UInt32 selectedRecord = UInt32.MaxValue;
@@ -100,7 +100,7 @@ namespace SpellGUIV2
 
             Bitmap bit = image.getBitmap(0);
 
-            Task.Factory.StartNew(() =>
+            await Task.Factory.StartNew(() =>
             {
                 main.CurrentIcon.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                    bit.GetHbitmap(),
@@ -124,7 +124,6 @@ namespace SpellGUIV2
 
                 for (int j = -rowsToDo; j <= rowsToDo; ++j) // Rows
                 {
-                    Thread.Sleep(10);
                     for (int i = -5; i < 6; ++i) // Columns
                     {
                         ++iconIndex;
@@ -140,7 +139,7 @@ namespace SpellGUIV2
                         image = new SereniaBLPLib.BlpFile(file);
                         bit = image.getBitmap(0);
 
-                        Task.Factory.StartNew(() =>
+                        await Task.Factory.StartNew(() =>
                         {
                             System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
                             temp.Width = 64;
@@ -157,7 +156,6 @@ namespace SpellGUIV2
                         }, CancellationToken.None, TaskCreationOptions.None, main.uiScheduler);
                         image.close();
                         file.Close();
-                        Thread.Sleep(10);
                     }
                 }
             }
