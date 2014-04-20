@@ -124,7 +124,7 @@ namespace SpellGUIV2
 
                 for (int j = -rowsToDo; j <= rowsToDo; ++j) // Rows
                 {
-                    Thread.Sleep(5);
+                    Thread.Sleep(10);
                     for (int i = -5; i < 6; ++i) // Columns
                     {
                         ++iconIndex;
@@ -157,7 +157,7 @@ namespace SpellGUIV2
                         }, CancellationToken.None, TaskCreationOptions.None, main.uiScheduler);
                         image.close();
                         file.Close();
-                        Thread.Sleep(5);
+                        Thread.Sleep(10);
                     }
                 }
             }
