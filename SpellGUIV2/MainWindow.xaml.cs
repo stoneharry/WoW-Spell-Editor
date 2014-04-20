@@ -32,6 +32,7 @@ namespace SpellGUIV2
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
         private bool Updating_Strings = false;
+        public TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         public MainWindow()
         {
@@ -119,6 +120,9 @@ namespace SpellGUIV2
             try
             {
                 loadedIconDBC = new SpellIconDBC(this, loadedDBC);
+                var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
+                await loadedIconDBC.loadImages();
+                await progress.CloseAsync();
             }
             catch (Exception ex)
             {
@@ -277,6 +281,11 @@ namespace SpellGUIV2
             {
                 // Don't care to handle stupid input
             }
+        }
+
+        private void NewIconClick(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Unfinished");
         }
     }
 }

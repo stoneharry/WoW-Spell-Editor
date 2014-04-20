@@ -156,6 +156,9 @@
                     <ScrollViewer Margin="0,69,0,0">
                         <Grid Name="IconGrid"/>
                     </ScrollViewer>
+                    <Label Content="New Icon" HorizontalAlignment="Left" Margin="235,10,0,0" VerticalAlignment="Top"/>
+                    <Image Name="NewIcon" Height="64" Width="64" Margin="300,0,431,481"/>
+                    <Button Content="Confirm" HorizontalAlignment="Left" Margin="369,19,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.267,0.44" Click="NewIconClick"/>
                 </Grid>
             </TabItem>
         </TabControl>
