@@ -149,6 +149,9 @@
                     </TabControl>
                 </Grid>
             </TabItem>
+            <TabItem Header="Icon Editor">
+                <Image Name="Icon0" Height="64" Width="64" Margin="20,12,675,240"/>
+            </TabItem>
         </TabControl>
     </Grid>
 

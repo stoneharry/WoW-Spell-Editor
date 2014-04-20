@@ -27,6 +27,7 @@ namespace SpellGUIV2
         public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
         public string LOADED_FILE_STR = "Loaded file: None.";
         private SpellDBC loadedDBC = null;
+        private SpellIconDBC loadedIconDBC = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         private UInt32 selectedID = 1;
@@ -104,7 +105,28 @@ namespace SpellGUIV2
             var selected = item.SelectedItem as TabItem;
             // Set title
             this.Title = MAIN_WINDOW_TITLE + selected.Header.ToString();
-            populateSelectSpell();
+
+            if (item.SelectedIndex == 0)
+                populateSelectSpell();
+            else if (item.SelectedIndex == 2)
+                prepareIconEditor();
+        }
+
+        private async void prepareIconEditor()
+        {
+            bool error = false;
+            string errorMsg = "";
+            try
+            {
+                loadedIconDBC = new SpellIconDBC(this, loadedDBC);
+            }
+            catch (Exception ex)
+            {
+                error = true;
+                errorMsg = ex.Message;
+            }
+            if (error)
+                await this.ShowMessageAsync("ERROR", errorMsg);
         }
 
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
