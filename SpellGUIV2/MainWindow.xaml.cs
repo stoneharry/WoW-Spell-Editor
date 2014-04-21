@@ -32,6 +32,7 @@ namespace SpellGUIV2
         public UInt32 selectedID = 1;
         private bool Updating_Strings = false;
         public TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        public UInt32 NewIconID = 1;
 
         public string ERROR_STR = "";
 
@@ -279,7 +280,7 @@ namespace SpellGUIV2
 
         private void NewIconClick(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Unfinished");
+            loadedDBC.body.records[selectedID].record.SpellIconID = NewIconID;
         }
     }
 }

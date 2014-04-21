@@ -83,17 +83,19 @@ namespace SpellGUIV2
                 }
             }
 
-            int offset = (int)body.records[selectedRecord].name;
             string icon = "";
-            while (body.StringBlock[offset] != '\0')
-            {
-                icon += body.StringBlock[offset++];
-            }
+            int offset = 0;
 
             try
             {
                 if (selectedRecord == UInt32.MaxValue)
                     throw new Exception("The icon for this spell does not exist in the SpellIcon.dbc");
+
+                offset = (int)body.records[selectedRecord].name;
+                while (body.StringBlock[offset] != '\0')
+                {
+                    icon += body.StringBlock[offset++];
+                }
 
                 if (!File.Exists(icon + ".blp"))
                     throw new Exception("File could not be found: " + "Icons\\" + icon + ".blp");
@@ -127,6 +129,8 @@ namespace SpellGUIV2
             {
                 loadedAllIcons = true;
 
+                int currentOffset = 1;
+
                 string[] icons = body.StringBlock.Split('\0');
                 int iconIndex = 0;
 
@@ -140,6 +144,8 @@ namespace SpellGUIV2
                         ++iconIndex;
                         if (iconIndex >= icons.Length - 1)
                             break;
+                        int thisIconsOffset = currentOffset;
+                        currentOffset += icons[iconIndex].Length + 1;
                         if (!File.Exists(icons[iconIndex] + ".blp"))
                         {
                             Console.WriteLine("Warning: Icon not found: " + icons[iconIndex] + ".blp");
@@ -161,7 +167,7 @@ namespace SpellGUIV2
                                IntPtr.Zero,
                                System.Windows.Int32Rect.Empty,
                                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                            temp.Name = "Index_" + iconIndex;
+                            temp.Name = "Index_" + thisIconsOffset;
                             temp.MouseDown += this.imageDown;
                             main.IconGrid.Children.Add(temp);
                         }, CancellationToken.None, TaskCreationOptions.None, main.uiScheduler);
@@ -175,6 +181,22 @@ namespace SpellGUIV2
         void imageDown(object sender, EventArgs e)
         {
             main.NewIcon.Source = ((System.Windows.Controls.Image)sender).Source;
+
+            System.Windows.Controls.Image temp = (System.Windows.Controls.Image)sender;
+
+            UInt32 offset = UInt32.Parse(temp.Name.Substring(6));
+            UInt32 ID = 0;
+
+            for (UInt32 i = 0; i < header.record_count; ++i)
+            {
+                if (body.records[i].name == offset)
+                {
+                    ID = body.records[i].ID;
+                    break;
+                }
+            }
+
+            main.NewIconID = ID;
         }
 
         public struct IconDBC_Map
@@ -188,20 +210,5 @@ namespace SpellGUIV2
             public UInt32 ID;
             public UInt32 name;
         }
-
-        
-        /*
-            SereniaBLPLib.BlpFile exampleBLP;
-
-            FileStream file = new FileStream("C:\\Users\\Harry_\\Desktop\\Interface\\Icons\\Ability_Ambush.blp", FileMode.Open);
-            exampleBLP = new SereniaBLPLib.BlpFile(file);
-
-            Bitmap bit = exampleBLP.getBitmap(0);
-            TestImage.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-               bit.GetHbitmap(),
-               IntPtr.Zero,
-               System.Windows.Int32Rect.Empty,
-               BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-         */
     }
 }
