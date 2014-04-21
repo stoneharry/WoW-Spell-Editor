@@ -33,7 +33,10 @@ namespace SpellGUIV2
             return (new TaskFactory()).StartNew(() =>
             {
                 if (!File.Exists("SpellIcon.dbc"))
-                    throw new Exception("SpellIcon.dbc was not found!");
+                {
+                    main.ERROR_STR = "SpellIcon.dbc was not found!";
+                    return;
+                }   
 
                 FileStream fs = new FileStream("SpellIcon.dbc", FileMode.Open);
                 // Read header
@@ -87,11 +90,19 @@ namespace SpellGUIV2
                 icon += body.StringBlock[offset++];
             }
 
-            if (selectedRecord == UInt32.MaxValue)
-                throw new Exception("The icon for this spell does not exist in the SpellIcon.dbc");
+            try
+            {
+                if (selectedRecord == UInt32.MaxValue)
+                    throw new Exception("The icon for this spell does not exist in the SpellIcon.dbc");
 
-            if (!File.Exists(icon + ".blp"))
-                throw new Exception("File could not be found: " + "Icons\\" + icon + ".blp");
+                if (!File.Exists(icon + ".blp"))
+                    throw new Exception("File could not be found: " + "Icons\\" + icon + ".blp");
+            }
+            catch (Exception ex)
+            {
+                main.ERROR_STR = ex.Message;
+                return;
+            }
 
             FileStream file = new FileStream(icon + ".blp", FileMode.Open);
 

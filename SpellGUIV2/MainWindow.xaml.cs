@@ -34,6 +34,8 @@ namespace SpellGUIV2
         private bool Updating_Strings = false;
         public TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
+        public string ERROR_STR = "";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -115,22 +117,16 @@ namespace SpellGUIV2
 
         private async void prepareIconEditor()
         {
-            bool error = false;
-            string errorMsg = "";
-            try
+            loadedIconDBC = new SpellIconDBC(this, loadedDBC);
+            //var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
+            await loadedIconDBC.loadImages();
+            //await progress.CloseAsync();
+
+            if (ERROR_STR.Length != 0)
             {
-                loadedIconDBC = new SpellIconDBC(this, loadedDBC);
-                //var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
-                await loadedIconDBC.loadImages();
-                //await progress.CloseAsync();
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                ERROR_STR = "";
             }
-            catch (Exception ex)
-            {
-                error = true;
-                errorMsg = ex.Message;
-            }
-            if (error)
-                await this.ShowMessageAsync("ERROR", errorMsg);
         }
 
         private async void LoadNewDBCFile(object sender, RoutedEventArgs e)
