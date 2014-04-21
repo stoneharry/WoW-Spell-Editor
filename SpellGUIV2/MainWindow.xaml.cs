@@ -27,6 +27,7 @@ namespace SpellGUIV2
         public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
         private SpellDBC loadedDBC = null;
         private SpellIconDBC loadedIconDBC = null;
+        private SpellDispelType loadedDispelDBC = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -161,7 +162,7 @@ namespace SpellGUIV2
             }
         }
 
-        private void updateMainWindow()
+        private async void updateMainWindow()
         {
             Updating_Strings = true;
             int i;
@@ -192,6 +193,18 @@ namespace SpellGUIV2
             Updating_Strings = false;
 
             CategoryTxt.Text = loadedDBC.body.records[selectedID].record.Category.ToString();
+
+            if (loadedDispelDBC == null)
+            {
+                loadedDispelDBC = new SpellDispelType(this, loadedDBC);
+                if (ERROR_STR.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", ERROR_STR);
+                    ERROR_STR = "";
+                    return;
+                }           
+            }
+            loadedDispelDBC.UpdateDispelSelection();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -304,6 +317,11 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", errorMsg);
                 errorMsg = "";
             }
+        }
+
+        private void DispelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

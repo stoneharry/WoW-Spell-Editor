@@ -67,6 +67,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="SpellDBC.cs" />
+    <Compile Include="SpellDispelType.cs" />
     <Compile Include="SpellIconDBC.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
