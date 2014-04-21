@@ -28,6 +28,7 @@ namespace SpellGUIV2
         private SpellDBC loadedDBC = null;
         private SpellIconDBC loadedIconDBC = null;
         private SpellDispelType loadedDispelDBC = null;
+        private SpellMechanic loadedMechanic = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -202,9 +203,20 @@ namespace SpellGUIV2
                     await this.ShowMessageAsync("ERROR", ERROR_STR);
                     ERROR_STR = "";
                     return;
-                }           
+                }
             }
             loadedDispelDBC.UpdateDispelSelection();
+            if (loadedMechanic == null)
+            {
+                loadedMechanic = new SpellMechanic(this, loadedDBC);
+                if (ERROR_STR.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", ERROR_STR);
+                    ERROR_STR = "";
+                    return;
+                }
+            }
+            loadedMechanic.updateMechanicSelection();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -323,6 +335,21 @@ namespace SpellGUIV2
         {
             if (loadedDBC != null)
                 loadedDBC.body.records[selectedID].record.Dispel = loadedDispelDBC.IndexToIDMap[((ComboBox)sender).SelectedIndex];
+        }
+
+        private void MechanicType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (loadedDBC != null)
+            {
+                for (int i = 0; i < loadedMechanic.body.lookup.Count; ++i)
+                {
+                    if (loadedMechanic.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    {
+                        loadedDBC.body.records[selectedID].record.Mechanic = (UInt32)loadedMechanic.body.lookup[i].ID;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

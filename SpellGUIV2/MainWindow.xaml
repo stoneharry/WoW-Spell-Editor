@@ -156,6 +156,8 @@
                     <Button Content="Update" HorizontalAlignment="Left" Margin="73,41,0,0" VerticalAlignment="Top" Width="62" Click="Button_Click"/>
                     <Label Content="Dispel Type" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="DispelType" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="DispelType_SelectionChanged"/>
+                    <Label Content="Mechanic Type" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="MechanicType" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="MechanicType_SelectionChanged"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
