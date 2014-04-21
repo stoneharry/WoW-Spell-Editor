@@ -30,6 +30,7 @@ namespace SpellGUIV2
         private SpellDispelType loadedDispelDBC = null;
         private SpellMechanic loadedMechanic = null;
         private SpellCastTimes loadedCastTime = null;
+        private SpellDuration loadedDuration = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -229,6 +230,17 @@ namespace SpellGUIV2
                 }
             }
             loadedCastTime.updateCastTimeSelection();
+            if (loadedDuration == null)
+            {
+                loadedDuration = new SpellDuration(this, loadedDBC);
+                if (ERROR_STR.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", ERROR_STR);
+                    ERROR_STR = "";
+                    return;
+                }
+            }
+            loadedDuration.updateDurationIndexes();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -376,6 +388,21 @@ namespace SpellGUIV2
                         break;
                     }
                 }               
+            }
+        }
+
+        private void SpellDuration_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (loadedDBC != null)
+            {
+                for (int i = 0; i < loadedDuration.body.lookup.Count; ++i)
+                {
+                    if (loadedDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    {
+                        loadedDBC.body.records[selectedID].record.DurationIndex = (UInt32)loadedDuration.body.lookup[i].ID;
+                        break;
+                    }
+                }
             }
         }
     }

@@ -160,6 +160,8 @@
                     <ComboBox Name="MechanicType" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="MechanicType_SelectionChanged"/>
                     <Label Content="Cast Time (ms)" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="CastTime" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="CastTime_SelectionChanged"/>
+                    <Label Content="Spell Duration (ms)" HorizontalAlignment="Left" Margin="10,258,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="SpellDuration" HorizontalAlignment="Left" Margin="10,289,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellDuration_SelectionChanged"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">

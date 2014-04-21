@@ -69,6 +69,7 @@
     <Compile Include="SpellCastTimes.cs" />
     <Compile Include="SpellDBC.cs" />
     <Compile Include="SpellDispelType.cs" />
+    <Compile Include="SpellDuration.cs" />
     <Compile Include="SpellIconDBC.cs" />
     <Compile Include="SpellMechanic.cs" />
     <Page Include="MainWindow.xaml">
