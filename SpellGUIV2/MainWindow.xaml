@@ -147,6 +147,9 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                    <Label Content="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="CategoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58"/>
+                    <Button Content="Update" HorizontalAlignment="Left" Margin="73,41,0,0" VerticalAlignment="Top" Width="62" Click="Button_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">

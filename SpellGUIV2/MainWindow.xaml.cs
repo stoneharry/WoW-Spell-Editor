@@ -118,9 +118,8 @@ namespace SpellGUIV2
         private async void prepareIconEditor()
         {
             loadedIconDBC = new SpellIconDBC(this, loadedDBC);
-            //var progress = await this.ShowProgressAsync("LOADING", "Loading images, please wait...");
+
             await loadedIconDBC.loadImages();
-            //await progress.CloseAsync();
 
             if (ERROR_STR.Length != 0)
             {
@@ -191,6 +190,8 @@ namespace SpellGUIV2
                 box.Text = loadedDBC.body.records[selectedID].spellDesc[i];
             }
             Updating_Strings = false;
+
+            CategoryTxt.Text = loadedDBC.body.records[selectedID].record.Category.ToString();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -282,6 +283,27 @@ namespace SpellGUIV2
         {
             if (loadedDBC != null)
                 loadedDBC.body.records[selectedID].record.SpellIconID = NewIconID;
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (loadedDBC == null)
+                return;
+            string errorMsg = "";
+            try
+            {
+                UInt32 category = UInt32.Parse(CategoryTxt.Text);
+                loadedDBC.body.records[selectedID].record.Category = category;
+            }
+            catch (Exception ex)
+            {
+                errorMsg = ex.Message;
+            }
+            if (errorMsg.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", errorMsg);
+                errorMsg = "";
+            }
         }
     }
 }
