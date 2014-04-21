@@ -21,6 +21,8 @@ namespace SpellGUIV2
         private Dictionary<int, int> offsetHashMap = new Dictionary<int, int>();
         // string hash to index
         private Dictionary<int, int> stringHashMap = new Dictionary<int, int>();
+        // Index to ID
+        public Dictionary<int, UInt32> IndexToIDMap = new Dictionary<int, UInt32>();
 
         public SpellDispelType(MainWindow window, SpellDBC theSpellDBC)
         {
@@ -73,6 +75,8 @@ namespace SpellGUIV2
                 while (body.StringBlock[offset] != '\0')
                     toAdd += body.StringBlock[offset++];
 
+                // Index to ID
+                IndexToIDMap.Add(boxIndex, body.records[i].ID);
                 // Hash to index
                 stringHashMap.Add(toAdd.GetHashCode(), boxIndex++);
                 // Offset to hash

@@ -321,7 +321,8 @@ namespace SpellGUIV2
 
         private void DispelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (loadedDBC != null)
+                loadedDBC.body.records[selectedID].record.Dispel = loadedDispelDBC.IndexToIDMap[((ComboBox)sender).SelectedIndex];
         }
     }
 }
