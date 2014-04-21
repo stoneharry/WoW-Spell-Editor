@@ -72,6 +72,8 @@ namespace SpellGUIV2
 
         public async void updateMainWindowIcons()
         {
+            if (spell == null)
+                return;
             UInt32 iconInt = spell.body.records[main.selectedID].record.SpellIconID;
             UInt32 selectedRecord = UInt32.MaxValue;
             for (UInt32 i = 0; i < header.record_count; ++i)

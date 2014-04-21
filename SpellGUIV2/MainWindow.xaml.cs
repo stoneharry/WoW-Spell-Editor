@@ -280,7 +280,8 @@ namespace SpellGUIV2
 
         private void NewIconClick(object sender, RoutedEventArgs e)
         {
-            loadedDBC.body.records[selectedID].record.SpellIconID = NewIconID;
+            if (loadedDBC != null)
+                loadedDBC.body.records[selectedID].record.SpellIconID = NewIconID;
         }
     }
 }
