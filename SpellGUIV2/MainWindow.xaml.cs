@@ -29,6 +29,7 @@ namespace SpellGUIV2
         private SpellIconDBC loadedIconDBC = null;
         private SpellDispelType loadedDispelDBC = null;
         private SpellMechanic loadedMechanic = null;
+        private SpellCastTimes loadedCastTime = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -217,6 +218,17 @@ namespace SpellGUIV2
                 }
             }
             loadedMechanic.updateMechanicSelection();
+            if (loadedCastTime == null)
+            {
+                loadedCastTime = new SpellCastTimes(this, loadedDBC);
+                if (ERROR_STR.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", ERROR_STR);
+                    ERROR_STR = "";
+                    return;
+                }
+            }
+            loadedCastTime.updateCastTimeSelection();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -349,6 +361,21 @@ namespace SpellGUIV2
                         break;
                     }
                 }
+            }
+        }
+
+        private void CastTime_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (loadedDBC != null)
+            {
+                for (int i = 0; i < loadedCastTime.body.lookup.Count; ++i)
+                {
+                    if (loadedCastTime.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    {
+                        loadedDBC.body.records[selectedID].record.CastingTimeIndex = (UInt32)loadedCastTime.body.lookup[i].ID;
+                        break;
+                    }
+                }               
             }
         }
     }

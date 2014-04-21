@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SpellCastTimes.cs" />
     <Compile Include="SpellDBC.cs" />
     <Compile Include="SpellDispelType.cs" />
     <Compile Include="SpellIconDBC.cs" />

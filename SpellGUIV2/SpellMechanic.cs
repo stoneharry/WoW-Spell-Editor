@@ -89,7 +89,7 @@ namespace SpellGUIV2
                 body.lookup.Add(temp);
 
                 boxIndex++;
-            }         
+            }
         }
 
         public void updateMechanicSelection()

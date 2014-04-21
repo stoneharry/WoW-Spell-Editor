@@ -158,6 +158,8 @@
                     <ComboBox Name="DispelType" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="DispelType_SelectionChanged"/>
                     <Label Content="Mechanic Type" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="MechanicType" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="MechanicType_SelectionChanged"/>
+                    <Label Content="Cast Time (ms)" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="CastTime" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="CastTime_SelectionChanged"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
