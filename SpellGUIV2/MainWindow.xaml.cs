@@ -25,7 +25,6 @@ namespace SpellGUIV2
     public partial class MainWindow
     {
         public const string MAIN_WINDOW_TITLE = "Stoneharry's Spell Editor V2 - ";
-        public string LOADED_FILE_STR = "Loaded file: None.";
         private SpellDBC loadedDBC = null;
         private SpellIconDBC loadedIconDBC = null;
 
@@ -147,8 +146,6 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", "Failed to load file.");
                 return;
             }
-            // Update the file loaded
-            LOADED_FILE_STR = fileName;
             populateSelectSpell();
         }
         
@@ -275,7 +272,8 @@ namespace SpellGUIV2
             }
             catch (Exception ex)
             {
-                // Don't care to handle stupid input
+                // Not waiting async here, but ah well.
+                this.ShowMessageAsync("ERROR", ex.Message);
             }
         }
 
