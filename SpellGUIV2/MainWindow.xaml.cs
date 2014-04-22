@@ -81,6 +81,14 @@ namespace SpellGUIV2
             stringObjectMap.Add(33, SpellDescription6);
             stringObjectMap.Add(34, SpellDescription7);
             stringObjectMap.Add(35, SpellDescription8);
+
+            string[] school_strings = {"Mana", "Rage", "Focus", "Energy", "Happiness",
+                                          "Runes", "Runic Power", "Steam", "Pyrite",
+                                          "Heat", "Ooze", "Blood", "Wrath"};
+            for (int i = 0; i < school_strings.Length; ++i)
+            {
+                PowerType.Items.Add(school_strings[i]);
+            }
         }
 
         private async void SaveToNewDBC(object sender, RoutedEventArgs e)
@@ -204,6 +212,31 @@ namespace SpellGUIV2
             SpellVisual2.Text = loadedDBC.body.records[selectedID].record.SpellVisual2.ToString();
             RecoveryTime.Text = loadedDBC.body.records[selectedID].record.RecoveryTime.ToString();
             CategoryRecoveryTime.Text = loadedDBC.body.records[selectedID].record.CategoryRecoveryTime.ToString();
+            PowerType.SelectedIndex = (int)loadedDBC.body.records[selectedID].record.powerType;
+            ManaCost.Text = loadedDBC.body.records[selectedID].record.manaCost.ToString();
+            ManaCostPerLevel.Text = loadedDBC.body.records[selectedID].record.manaCostPerlevel.ToString();
+            ManaCostPerSecond.Text = loadedDBC.body.records[selectedID].record.manaPerSecond.ToString();
+            PerSecondPerLevel.Text = loadedDBC.body.records[selectedID].record.manaPerSecondPerLevel.ToString();
+            ManaCostPercent.Text = loadedDBC.body.records[selectedID].record.ManaCostPercentage.ToString();
+            SpellFamilyName.Text = loadedDBC.body.records[selectedID].record.SpellFamilyName.ToString();
+            MaxTargets.Text = loadedDBC.body.records[selectedID].record.MaxAffectedTargets.ToString();
+
+            UInt32 mask = loadedDBC.body.records[selectedID].record.SchoolMask;
+            /*SCHOOL_MASK_NONE = 0x00;
+            SCHOOL_MASK_PHYSICAL = 0x01;
+            SCHOOL_MASK_HOLY = 0x02;
+            SCHOOL_MASK_FIRE = 0x04;
+            SCHOOL_MASK_NATURE = 0x08;
+            SCHOOL_MASK_FROST = 0x10;
+            SCHOOL_MASK_SHADOW = 0x20;
+            SCHOOL_MASK_ARCANE = 0x40;*/
+            S1.IsChecked = ((mask & 0x01) != 0) ? true : false;
+            S2.IsChecked = ((mask & 0x02) != 0) ? true : false;
+            S3.IsChecked = ((mask & 0x04) != 0) ? true : false;
+            S4.IsChecked = ((mask & 0x08) != 0) ? true : false;
+            S5.IsChecked = ((mask & 0x10) != 0) ? true : false;
+            S6.IsChecked = ((mask & 0x20) != 0) ? true : false;
+            S7.IsChecked = ((mask & 0x40) != 0) ? true : false;
 
             if (loadedDispelDBC == null)
             {
@@ -368,6 +401,22 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.SpellVisual2 = UInt32.Parse(SpellVisual2.Text);
                 loadedDBC.body.records[selectedID].record.RecoveryTime = UInt32.Parse(RecoveryTime.Text);
                 loadedDBC.body.records[selectedID].record.CategoryRecoveryTime = UInt32.Parse(CategoryRecoveryTime.Text);
+                loadedDBC.body.records[selectedID].record.powerType = (UInt32)PowerType.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.manaCost = UInt32.Parse(ManaCost.Text);
+                loadedDBC.body.records[selectedID].record.manaCostPerlevel = UInt32.Parse(ManaCostPerLevel.Text);
+                loadedDBC.body.records[selectedID].record.manaPerSecond = UInt32.Parse(ManaCostPerSecond.Text);
+                loadedDBC.body.records[selectedID].record.manaPerSecondPerLevel = UInt32.Parse(PerSecondPerLevel.Text);
+                loadedDBC.body.records[selectedID].record.ManaCostPercentage = UInt32.Parse(ManaCostPercent.Text);
+                loadedDBC.body.records[selectedID].record.SpellFamilyName = UInt32.Parse(SpellFamilyName.Text);
+                loadedDBC.body.records[selectedID].record.MaxAffectedTargets = UInt32.Parse(MaxTargets.Text);
+                loadedDBC.body.records[selectedID].record.SchoolMask = 
+                    (S1.IsChecked.Value ? (UInt32)0x01 : (UInt32)0x00) +
+                    (S2.IsChecked.Value ? (UInt32)0x02 : (UInt32)0x00) +
+                    (S3.IsChecked.Value ? (UInt32)0x04 : (UInt32)0x00) +
+                    (S4.IsChecked.Value ? (UInt32)0x08 : (UInt32)0x00) +
+                    (S5.IsChecked.Value ? (UInt32)0x10 : (UInt32)0x00) +
+                    (S6.IsChecked.Value ? (UInt32)0x20 : (UInt32)0x00) +
+                    (S7.IsChecked.Value ? (UInt32)0x40 : (UInt32)0x00);
             }
             catch (Exception ex)
             {
@@ -380,6 +429,8 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", errorMsg);
                 errorMsg = "";
             }
+            else
+                await this.ShowMessageAsync("Success", "Record was saved successfully. Remember to save the DBC file once you are done otherwise your changes will be lost!");
         }
 
         private void DispelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
