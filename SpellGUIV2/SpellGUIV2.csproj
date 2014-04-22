@@ -72,6 +72,7 @@
     <Compile Include="SpellDuration.cs" />
     <Compile Include="SpellIconDBC.cs" />
     <Compile Include="SpellMechanic.cs" />
+    <Compile Include="SpellRange.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

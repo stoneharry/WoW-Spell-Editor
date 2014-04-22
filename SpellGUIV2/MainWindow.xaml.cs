@@ -31,6 +31,7 @@ namespace SpellGUIV2
         private SpellMechanic loadedMechanic = null;
         private SpellCastTimes loadedCastTime = null;
         private SpellDuration loadedDuration = null;
+        private SpellRange loadedRange = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -248,6 +249,17 @@ namespace SpellGUIV2
                 }
             }
             loadedDuration.updateDurationIndexes();
+            if (loadedRange == null)
+            {
+                loadedRange = new SpellRange(this, loadedDBC);
+                if (ERROR_STR.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", ERROR_STR);
+                    ERROR_STR = "";
+                    return;
+                }
+            }
+            loadedRange.updateSpellRangeSelection();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -423,7 +435,17 @@ namespace SpellGUIV2
 
         private void SpellRange_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (loadedDBC != null)
+            {
+                for (int i = 0; i < loadedRange.body.lookup.Count; ++i)
+                {
+                    if (loadedRange.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    {
+                        loadedDBC.body.records[selectedID].record.rangeIndex = (UInt32)loadedRange.body.lookup[i].ID;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
