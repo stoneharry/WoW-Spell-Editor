@@ -196,6 +196,13 @@ namespace SpellGUIV2
             Updating_Strings = false;
 
             CategoryTxt.Text = loadedDBC.body.records[selectedID].record.Category.ToString();
+            SpellLevel.Text = loadedDBC.body.records[selectedID].record.spellLevel.ToString();
+            BaseLevel.Text = loadedDBC.body.records[selectedID].record.baseLevel.ToString();
+            MaxLevel.Text = loadedDBC.body.records[selectedID].record.maxLevel.ToString();
+            SpellVisual1.Text = loadedDBC.body.records[selectedID].record.SpellVisual1.ToString();
+            SpellVisual2.Text = loadedDBC.body.records[selectedID].record.SpellVisual2.ToString();
+            RecoveryTime.Text = loadedDBC.body.records[selectedID].record.RecoveryTime.ToString();
+            CategoryRecoveryTime.Text = loadedDBC.body.records[selectedID].record.CategoryRecoveryTime.ToString();
 
             if (loadedDispelDBC == null)
             {
@@ -341,12 +348,20 @@ namespace SpellGUIV2
             string errorMsg = "";
             try
             {
-                UInt32 category = UInt32.Parse(CategoryTxt.Text);
-                loadedDBC.body.records[selectedID].record.Category = category;
+                loadedDBC.body.records[selectedID].record.Category = UInt32.Parse(CategoryTxt.Text);
+                loadedDBC.body.records[selectedID].record.spellLevel = UInt32.Parse(SpellLevel.Text);
+                loadedDBC.body.records[selectedID].record.baseLevel = UInt32.Parse(BaseLevel.Text);
+                loadedDBC.body.records[selectedID].record.maxLevel = UInt32.Parse(MaxLevel.Text);
+                loadedDBC.body.records[selectedID].record.SpellVisual1 = UInt32.Parse(SpellVisual1.Text);
+                loadedDBC.body.records[selectedID].record.SpellVisual2 = UInt32.Parse(SpellVisual2.Text);
+                loadedDBC.body.records[selectedID].record.RecoveryTime = UInt32.Parse(RecoveryTime.Text);
+                loadedDBC.body.records[selectedID].record.CategoryRecoveryTime = UInt32.Parse(CategoryRecoveryTime.Text);
             }
             catch (Exception ex)
             {
-                errorMsg = ex.Message;
+                errorMsg = "Could not save data. Probably one of the "
+                    + "inputs was in a bad format, like putting letters "
+                    + "where a number is expected. Error message: " + ex.Message;
             }
             if (errorMsg.Length != 0)
             {
@@ -404,6 +419,11 @@ namespace SpellGUIV2
                     }
                 }
             }
+        }
+
+        private void SpellRange_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

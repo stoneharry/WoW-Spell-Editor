@@ -152,8 +152,8 @@
                         </TabItem>
                     </TabControl>
                     <Label Content="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="CategoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58"/>
-                    <Button Content="Update" HorizontalAlignment="Left" Margin="73,41,0,0" VerticalAlignment="Top" Width="62" Click="Button_Click"/>
+                    <TextBox Name="CategoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="306,379,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
                     <Label Content="Dispel Type" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="DispelType" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="DispelType_SelectionChanged"/>
                     <Label Content="Mechanic Type" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
@@ -162,6 +162,22 @@
                     <ComboBox Name="CastTime" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="CastTime_SelectionChanged"/>
                     <Label Content="Duration (ms)" HorizontalAlignment="Left" Margin="10,258,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="SpellDuration" HorizontalAlignment="Left" Margin="10,289,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellDuration_SelectionChanged"/>
+                    <Label Content="Spell Level" HorizontalAlignment="Left" Margin="140,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellLevel" HorizontalAlignment="Left" Height="23" Margin="140,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Base Level" HorizontalAlignment="Left" Margin="140,70,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="BaseLevel" HorizontalAlignment="Left" Height="23" Margin="140,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Max Level" HorizontalAlignment="Left" Margin="140,134,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="MaxLevel" HorizontalAlignment="Left" Height="23" Margin="140,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Spell Visual 1" HorizontalAlignment="Left" Margin="140,196,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellVisual1" HorizontalAlignment="Left" Height="23" Margin="140,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Spell Visual 2" HorizontalAlignment="Left" Margin="225,9,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellVisual2" HorizontalAlignment="Left" Height="23" Margin="225,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Recovery Time" HorizontalAlignment="Left" Margin="225,70,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="RecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,101,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Category Recovery Time" HorizontalAlignment="Left" Margin="225,134,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="CategoryRecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Range" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.537,0.192"/>
+                    <ComboBox Name="SpellRange" HorizontalAlignment="Left" Margin="10,351,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellRange_SelectionChanged"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
