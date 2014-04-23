@@ -182,7 +182,7 @@
                     <Label Content="Category Recovery Time" HorizontalAlignment="Left" Margin="225,70,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="CategoryRecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
                     <Label Content="Range" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.537,0.192"/>
-                    <ComboBox Name="SpellRange" HorizontalAlignment="Left" Margin="10,351,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellRange_SelectionChanged"/>
+                    <ComboBox Name="SpellRange" HorizontalAlignment="Left" Margin="10,351,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="SpellRange_SelectionChanged"/>
                     <Label Content="Power Type" HorizontalAlignment="Left" Margin="368,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                     <ComboBox Name="PowerType" HorizontalAlignment="Left" Margin="368,41,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
                     <Label Content="Mana Cost" HorizontalAlignment="Left" Margin="368,70,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
@@ -207,6 +207,8 @@
                     <CheckBox Name="S5" Content="School Frost" HorizontalAlignment="Left" Margin="69,257,0,0" VerticalAlignment="Top" Grid.Column="1"/>
                     <CheckBox Name="S6" Content="School Shadow" HorizontalAlignment="Left" Margin="69,280,0,0" VerticalAlignment="Top" Grid.Column="1"/>
                     <CheckBox Name="S7" Content="School Arcane" HorizontalAlignment="Left" Margin="69,303,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <Label Content="Spell Missile ID" HorizontalAlignment="Left" Margin="225,134,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellMissileID" HorizontalAlignment="Left" Height="23" Margin="225,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Spell Overview 2">
@@ -230,11 +232,15 @@
                     <Label Content="Effect 2" HorizontalAlignment="Left" Margin="221,10,0,0" VerticalAlignment="Top"/>
                     <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top"/>
                     <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
-                    <ComboBox Name="SpellDamageType" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" Width="243"/>
-                    <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,169,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,231,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" Width="243"/>
-
+                    <ComboBox Name="SpellDamageType" HorizontalAlignment="Left" Margin="127,151,0,0" VerticalAlignment="Top" Width="243"/>
+                    <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="127,182,0,0" VerticalAlignment="Top" Width="243"/>
+                    <Label Content="Procs" HorizontalAlignment="Left" Margin="535,151,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Targets" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <ScrollViewer Margin="10,250,508,55">
+                        <Grid Name="TargetEditorGrid"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">

@@ -41,6 +41,8 @@ namespace SpellGUIV2
 
         public string ERROR_STR = "";
 
+        private List<CheckBox> targetBoxes = new List<CheckBox>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -173,6 +175,20 @@ namespace SpellGUIV2
                     SpellDamageType.Items.Add(damage_prevention_types[i]);
                 else
                     PreventionType.Items.Add(damage_prevention_types[i]);
+            }
+
+            string[] proc_strings = { "NONE            ", "UNUSED_1        ", "UNIT\t\tsomeone", "UNIT_RAID\tsomeone in raid", "UNIT_PARTY\tsomeone in party", "ITEM\t\titem enchantment",
+                                        "SOURCE_LOCATION point blank AoE", "DEST_LOCATION\ttarget AoE", "UNIT_ENEMY\ttarget dead players", "UNIT_ALLY\ttarget allies",
+                                        "CORPSE_ENEMY\ttarget dead enemies   ", "UNIT_DEAD\ttarget dead", "GAMEOBJECT\tspawn game object", "TRADE_ITEM      ", "STRING          ",
+                                        "GAMEOBJECT_ITEM ", "CORPSE_ALLY     ", "UNIT_MINIPET    ", "GLYPH_SLOT      ", "DEST_TARGET     ", "UNUSED20        ", "UNIT_PASSENGER" };
+
+            for (int i = 0; i < proc_strings.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = proc_strings[i];
+                box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
+                TargetEditorGrid.Children.Add(box);
+                targetBoxes.Add(box);
             }
 
             loadedDispelDBC = new SpellDispelType(this, loadedDBC);
@@ -374,6 +390,25 @@ namespace SpellGUIV2
 
             PreventionType.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.PreventionType;
             SpellDamageType.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.DmgClass;
+            SpellMissileID.Text = loadedDBC.body.records[selectedID].record.spellMissileID.ToString();
+
+            mask = loadedDBC.body.records[selectedID].record.Targets;
+            if (mask == 0)
+            {
+                targetBoxes[0].IsChecked = true;
+                for (int f = 1; f < targetBoxes.Count; ++f)
+                    targetBoxes[f].IsChecked = false;
+            }
+            else
+            {
+                targetBoxes[0].IsChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < targetBoxes.Count; ++f)
+                {
+                    targetBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
 
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
@@ -515,6 +550,22 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(EffectMod3.Text);
                 loadedDBC.body.records[selectedID].record.PreventionType = (UInt32)PreventionType.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.DmgClass = (UInt32)SpellDamageType.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.spellMissileID = UInt32.Parse(SpellMissileID.Text);
+
+                if (targetBoxes[0].IsChecked.Value)
+                    loadedDBC.body.records[selectedID].record.Targets = 0;
+                else
+                {
+                    UInt32 mask = 0;
+                    UInt32 flag = 1;
+                    for (int f = 1; f < targetBoxes.Count; ++f)
+                    {
+                        if (targetBoxes[f].IsChecked.Value)
+                            mask = mask + flag;
+                        flag = flag + flag;
+                    }
+                    loadedDBC.body.records[selectedID].record.Targets = mask;
+                }
             }
             catch (Exception ex)
             {
