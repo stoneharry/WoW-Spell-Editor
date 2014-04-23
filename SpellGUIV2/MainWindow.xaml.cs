@@ -42,6 +42,7 @@ namespace SpellGUIV2
         public string ERROR_STR = "";
 
         private List<CheckBox> targetBoxes = new List<CheckBox>();
+        private List<CheckBox> procBoxes = new List<CheckBox>();
 
         public MainWindow()
         {
@@ -177,18 +178,32 @@ namespace SpellGUIV2
                     PreventionType.Items.Add(damage_prevention_types[i]);
             }
 
-            string[] proc_strings = { "NONE            ", "UNUSED_1        ", "UNIT\t\tsomeone", "UNIT_RAID\tsomeone in raid", "UNIT_PARTY\tsomeone in party", "ITEM\t\titem enchantment",
+            string[] target_strings = { "NONE            ", "UNUSED_1        ", "UNIT\t\tsomeone", "UNIT_RAID\tsomeone in raid", "UNIT_PARTY\tsomeone in party", "ITEM\t\titem enchantment",
                                         "SOURCE_LOCATION point blank AoE", "DEST_LOCATION\ttarget AoE", "UNIT_ENEMY\ttarget dead players", "UNIT_ALLY\ttarget allies",
                                         "CORPSE_ENEMY\ttarget dead enemies   ", "UNIT_DEAD\ttarget dead", "GAMEOBJECT\tspawn game object", "TRADE_ITEM      ", "STRING          ",
                                         "GAMEOBJECT_ITEM ", "CORPSE_ALLY     ", "UNIT_MINIPET    ", "GLYPH_SLOT      ", "DEST_TARGET     ", "UNUSED20        ", "UNIT_PASSENGER" };
 
+            for (int i = 0; i < target_strings.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = target_strings[i];
+                box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
+                TargetEditorGrid.Children.Add(box);
+                targetBoxes.Add(box);
+            }
+
+            string[] proc_strings = { "NONE", "ON_ANY_HOSTILE_ACTION", "ON_GAIN_EXPIERIENCE", "ON_MELEE_ATTACK", "ON_CRIT_HIT_VICTIM", "ON_CAST_SPELL", "ON_PHYSICAL_ATTACK_VICTIM",
+                                        "ON_RANGED_ATTACK", "ON_RANGED_CRIT_ATTACK", "ON_PHYSICAL_ATTACK", "ON_MELEE_ATTACK_VICTIM", "ON_SPELL_HIT", "ON_RANGED_CRIT_ATTACK_VICTIM",
+                                        "ON_CRIT_ATTACK", "ON_RANGED_ATTACK_VICTIM", "ON_PRE_DISPELL_AURA_VICTIM", "ON_SPELL_LAND_VICTIM", "ON_CAST_SPECIFIC_SPELL", "ON_SPELL_HIT_VICTIM",
+                                        "ON_SPELL_CRIT_HIT_VICTIM", "ON_TARGET_DIE", "ON_ANY_DAMAGE_VICTIM", "ON_TRAP_TRIGGER", "ON_AUTO_SHOT_HIT", "ON_ABSORB", "ON_RESIST_VICTIM",
+                                        "ON_DODGE_VICTIM", "ON_DIE", "REMOVEONUSE", "MISC", "ON_BLOCK_VICTIM", "ON_SPELL_CRIT_HIT" };
             for (int i = 0; i < proc_strings.Length; ++i)
             {
                 CheckBox box = new CheckBox();
                 box.Content = proc_strings[i];
-                box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
-                TargetEditorGrid.Children.Add(box);
-                targetBoxes.Add(box);
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                ProcEditorGrid.Children.Add(box);
+                procBoxes.Add(box);
             }
 
             loadedDispelDBC = new SpellDispelType(this, loadedDBC);
@@ -409,6 +424,28 @@ namespace SpellGUIV2
                     flag = flag + flag;
                 }
             }
+            // I don't trust a UInt32 will be big enough 2^32 possible values and UInt32 only fits (2^32)-1 I believe?
+            // Still the Blizzard DBC stores it as a UInt32 so lets try this...
+            mask = loadedDBC.body.records[selectedID].record.procFlags;
+            if (mask == 0)
+            {
+                procBoxes[0].IsChecked = true;
+                for (int f = 1; f < procBoxes.Count; ++f)
+                    procBoxes[f].IsChecked = false;
+            }
+            else
+            {
+                procBoxes[0].IsChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < procBoxes.Count; ++f)
+                {
+                    procBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            ProcChance.Text = loadedDBC.body.records[selectedID].record.procChance.ToString();
+            ProcCharges.Text = loadedDBC.body.records[selectedID].record.procCharges.ToString();
 
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
@@ -551,7 +588,6 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.PreventionType = (UInt32)PreventionType.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.DmgClass = (UInt32)SpellDamageType.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.spellMissileID = UInt32.Parse(SpellMissileID.Text);
-
                 if (targetBoxes[0].IsChecked.Value)
                     loadedDBC.body.records[selectedID].record.Targets = 0;
                 else
@@ -566,6 +602,22 @@ namespace SpellGUIV2
                     }
                     loadedDBC.body.records[selectedID].record.Targets = mask;
                 }
+                if (procBoxes[0].IsChecked.Value)
+                    loadedDBC.body.records[selectedID].record.procFlags = 0;
+                else
+                {
+                    UInt32 mask = 0;
+                    UInt32 flag = 1;
+                    for (int f = 1; f < procBoxes.Count; ++f)
+                    {
+                        if (procBoxes[f].IsChecked.Value)
+                            mask = mask + flag;
+                        flag = flag + flag;
+                    }
+                    loadedDBC.body.records[selectedID].record.procFlags = mask;
+                }
+                loadedDBC.body.records[selectedID].record.procChance = UInt32.Parse(ProcChance.Text);
+                loadedDBC.body.records[selectedID].record.procCharges = UInt32.Parse(ProcCharges.Text);
             }
             catch (Exception ex)
             {
