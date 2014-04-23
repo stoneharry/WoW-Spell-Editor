@@ -165,6 +165,16 @@ namespace SpellGUIV2
                 Effect3.Items.Add(effect_strings[i]);
             }
 
+            string[] damage_prevention_types = { "0 - SPELL_DAMAGE_CLASS_NONE", "1 - SPELL_DAMAGE_CLASS_MAGIC", "2 - SPELL_DAMAGE_CLASS_MELEE", "3 - SPELL_DAMAGE_CLASS_RANGED",
+                                               "0 - SPELL_PREVENTION_TYPE_NONE", "1 - SPELL_PREVENTION_TYPE_SILENCE", "2 - SPELL_PREVENTION_TYPE_PACIFY"};
+            for (int i = 0; i < damage_prevention_types.Length; ++i)
+            {
+                if (i < 4)
+                    SpellDamageType.Items.Add(damage_prevention_types[i]);
+                else
+                    PreventionType.Items.Add(damage_prevention_types[i]);
+            }
+
             loadedDispelDBC = new SpellDispelType(this, loadedDBC);
             if (ERROR_STR.Length != 0)
             {
@@ -362,6 +372,9 @@ namespace SpellGUIV2
             EffectBase3.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
             EffectMod3.Text = loadedDBC.body.records[selectedID].record.EffectDieSides3.ToString();
 
+            PreventionType.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.PreventionType;
+            SpellDamageType.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.DmgClass;
+
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
             loadedCastTime.updateCastTimeSelection();
@@ -500,6 +513,8 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectDieSides2 = Int32.Parse(EffectMod2.Text);
                 loadedDBC.body.records[selectedID].record.EffectBasePoints3 = Int32.Parse(EffectBase3.Text);
                 loadedDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(EffectMod3.Text);
+                loadedDBC.body.records[selectedID].record.PreventionType = (UInt32)PreventionType.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.DmgClass = (UInt32)SpellDamageType.SelectedIndex;
             }
             catch (Exception ex)
             {

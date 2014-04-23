@@ -230,6 +230,10 @@
                     <Label Content="Effect 2" HorizontalAlignment="Left" Margin="221,10,0,0" VerticalAlignment="Top"/>
                     <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top"/>
                     <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <ComboBox Name="SpellDamageType" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" Width="243"/>
+                    <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,169,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,231,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" Width="243"/>
 
                 </Grid>
             </TabItem>
