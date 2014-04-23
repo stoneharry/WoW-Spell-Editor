@@ -44,6 +44,30 @@ namespace SpellGUIV2
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void loadAllDBCs()
+        {
+            string fileName = await this.ShowInputAsync("Load DBC File", "What is the name of your Spell DBC? It must be in the same directory as this program.");
+            if (fileName == null || fileName.Length < 1)
+            {
+                await this.ShowMessageAsync("ERROR", "File name is bad.");
+                Environment.Exit(1);
+                return;
+            }
+            if (!fileName.ToLower().EndsWith(".dbc"))
+            {
+                fileName += ".dbc";
+            }
+            loadedDBC = new SpellDBC();
+            if (!loadedDBC.loadDBCFile(fileName))
+            {
+                await this.ShowMessageAsync("ERROR", "Failed to load file.");
+                Environment.Exit(1);
+                return;
+            }
+
+            populateSelectSpell();
 
             stringObjectMap.Add(0, SpellName0);
             stringObjectMap.Add(1, SpellName1);
@@ -88,6 +112,96 @@ namespace SpellGUIV2
             for (int i = 0; i < school_strings.Length; ++i)
             {
                 PowerType.Items.Add(school_strings[i]);
+            }
+
+            string[] effect_strings = { "0 NONE", "1 INSTAKILL", "2 SCHOOL_DAMAGE", "3 DUMMY", "4 PORTAL_TELEPORT unused", "5 TELEPORT_UNITS", 
+                                        "6 APPLY_AURA", "7 ENVIRONMENTAL_DAMAGE", "8 POWER_DRAIN", "9 HEALTH_LEECH", "10 HEAL", "11 BIND",
+                                        "12 PORTAL", "13 RITUAL_BASE unused", "14 RITUAL_SPECIALIZE unused", "15 RITUAL_ACTIVATE_PORTAL unused",
+                                        "16 QUEST_COMPLETE", "17 WEAPON_DAMAGE_NOSCHOOL", "18 RESURRECT", "19 ADD_EXTRA_ATTACKS",
+                                        "20 DODGE one spell: Dodge", "21 EVADE one spell: Evade (DND)", "22 PARRY", "23 BLOCK one spell: Block",
+                                        "24 CREATE_ITEM", "25 WEAPON", "26 DEFENSE one spell: Defense", "27 PERSISTENT_AREA_AURA", "28 SUMMON",
+                                        "29 LEAP", "30 ENERGIZE", "31 WEAPON_PERCENT_DAMAGE", "32 TRIGGER_MISSILE", "33 OPEN_LOCK",
+                                        "34 SUMMON_CHANGE_ITEM", "35 APPLY_AREA_AURA_PARTY", "36 LEARN_SPELL", "37 SPELL_DEFENSE one spell: SPELLDEFENSE (DND)",
+                                        "38 DISPEL", "39 LANGUAGE", "40 DUAL_WIELD", "41 JUMP", "42 JUMP_DEST", "43 TELEPORT_UNITS_FACE_CASTER", "44 SKILL_STEP",
+                                        "45 ADD_HONOR honor/pvp related", "46 SPAWN clientside, unit appears as if it was just spawned", "47 TRADE_SKILL",
+                                        "48 STEALTH one spell: Base Stealth", "49 DETECT one spell: Detect", "50 TRANS_DOOR", "51 FORCE_CRITICAL_HIT unused",
+                                        "52 GUARANTEE_HIT one spell: zzOLDCritical Shot", "53 ENCHANT_ITEM", "54 ENCHANT_ITEM_TEMPORARY", "55 TAMECREATURE",
+                                        "56 SUMMON_PET", "57 LEARN_PET_SPELL", "58 WEAPON_DAMAGE", "59 CREATE_RANDOM_ITEM create item base at spell specific loot",
+                                        "60 PROFICIENCY", "61 SEND_EVENT", "62 POWER_BURN", "63 THREAT", "64 TRIGGER_SPELL", "65 APPLY_AREA_AURA_RAID",
+                                        "66 CREATE_MANA_GEM (possibly recharge it, misc - is item ID)", "67 HEAL_MAX_HEALTH", "68 INTERRUPT_CAST", "69 DISTRACT",
+                                        "70 PULL one spell: Distract Move", "71 PICKPOCKET", "72 ADD_FARSIGHT", "73 UNTRAIN_TALENTS", "74 APPLY_GLYPH",
+                                        "75 HEAL_MECHANICAL one spell: Mechanical Patch Kit", "76 SUMMON_OBJECT_WILD", "77 SCRIPT_EFFECT", "78 ATTACK",
+                                        "79 SANCTUARY", "80 ADD_COMBO_POINTS", "81 CREATE_HOUSE one spell: Create House (TEST)", "82 BIND_SIGHT", "83 DUEL",
+                                        "84 STUCK", "85 SUMMON_PLAYER", "86 ACTIVATE_OBJECT", "87 GAMEOBJECT_DAMAGE", "88 GAMEOBJECT_REPAIR",
+                                        "89 GAMEOBJECT_SET_DESTRUCTION_STATE", "90 KILL_CREDIT Kill credit but only for single person",
+                                        "91 THREAT_ALL one spell: zzOLDBrainwash", "92 ENCHANT_HELD_ITEM", "93 FORCE_DESELECT", "94 SELF_RESURRECT",
+                                        "95 SKINNING", "96 CHARGE", "97 CAST_BUTTON (totem bar since 3.2.2a)", "98 KNOCK_BACK", "99 DISENCHANT", "100 INEBRIATE",
+                                        "101 FEED_PET", "102 DISMISS_PET", "103 REPUTATION", "104 SUMMON_OBJECT_SLOT1", "105 SUMMON_OBJECT_SLOT2",
+                                        "106 SUMMON_OBJECT_SLOT3", "107 SUMMON_OBJECT_SLOT4", "108 DISPEL_MECHANIC", "109 SUMMON_DEAD_PET", "110 DESTROY_ALL_TOTEMS",
+                                        "111 DURABILITY_DAMAGE", "112 112", "113 RESURRECT_NEW", "114 ATTACK_ME", "115 DURABILITY_DAMAGE_PCT",
+                                        "116 SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags...",
+                                        "117 SPIRIT_HEAL one spell: Spirit Heal", "118 SKILL professions and more", "119 APPLY_AREA_AURA_PET",
+                                        "120 TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test", "121 NORMALIZED_WEAPON_DMG", "122 122 unused",
+                                        "123 SEND_TAXI taxi/flight related (misc value is taxi path id)", "124 PULL_TOWARDS", "125 MODIFY_THREAT_PERCENT",
+                                        "126 STEAL_BENEFICIAL_BUFF spell steal effect?", "127 PROSPECTING Prospecting spell", "128 APPLY_AREA_AURA_FRIEND",
+                                        "129 APPLY_AREA_AURA_ENEMY", "130 REDIRECT_THREAT", "131 PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc)",
+                                        "132 PLAY_MUSIC sound id in misc value (SoundEntries.dbc)", "133 UNLEARN_SPECIALIZATION unlearn profession specialization",
+                                        "134 KILL_CREDIT misc value is creature entry", "135 CALL_PET", "136 HEAL_PCT", "137 ENERGIZE_PCT", "138 LEAP_BACK Leap back",
+                                        "139 CLEAR_QUEST Reset quest status (miscValue - quest ID)", "140 FORCE_CAST", "141 FORCE_CAST_WITH_VALUE",
+                                        "142 TRIGGER_SPELL_WITH_VALUE", "143 APPLY_AREA_AURA_OWNER", "144 KNOCK_BACK_DEST", "145 PULL_TOWARDS_DEST Black Hole Effect",
+                                        "146 ACTIVATE_RUNE", "147 QUEST_FAIL quest fail", "148 TRIGGER_MISSILE_SPELL_WITH_VALUE", "149 CHARGE_DEST", "150 QUEST_START",
+                                        "151 TRIGGER_SPELL_2", "152 SUMMON_RAF_FRIEND summon Refer-a-Friend", "153 CREATE_TAMED_PET misc value is creature entry",
+                                        "154 DISCOVER_TAXI",
+                                        "155 TITAN_GRIP Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal.",
+                                        "156 ENCHANT_ITEM_PRISMATIC", "157 CREATE_ITEM_2 create item or create item template and replace by some randon spell loot item",
+                                        "158 MILLING milling", "159 ALLOW_RENAME_PET allow rename pet once again", "160 160 1 spell - 45534",
+                                        "161 TALENT_SPEC_COUNT second talent spec (learn/revert)", "162 TALENT_SPEC_SELECT activate primary/secondary spec",
+                                        "163 unused", "164 REMOVE_AURA" };
+
+            for (int i = 0; i < effect_strings.Length; ++i)
+            {
+                Effect1.Items.Add(effect_strings[i]);
+                Effect2.Items.Add(effect_strings[i]);
+                Effect3.Items.Add(effect_strings[i]);
+            }
+
+            loadedDispelDBC = new SpellDispelType(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                ERROR_STR = "";
+                Environment.Exit(1);
+            }
+            loadedMechanic = new SpellMechanic(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                ERROR_STR = "";
+                Environment.Exit(1);
+                return;
+            }
+            loadedCastTime = new SpellCastTimes(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                ERROR_STR = "";
+                Environment.Exit(1);
+                return;
+            }
+            loadedDuration = new SpellDuration(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                ERROR_STR = "";
+                Environment.Exit(1);
+                return;
+            }
+            loadedRange = new SpellRange(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                Environment.Exit(1);
+                return;
             }
         }
 
@@ -174,7 +288,7 @@ namespace SpellGUIV2
             }
         }
 
-        private async void updateMainWindow()
+        private void updateMainWindow()
         {
             Updating_Strings = true;
             int i;
@@ -238,60 +352,20 @@ namespace SpellGUIV2
             S6.IsChecked = ((mask & 0x20) != 0) ? true : false;
             S7.IsChecked = ((mask & 0x40) != 0) ? true : false;
 
-            if (loadedDispelDBC == null)
-            {
-                loadedDispelDBC = new SpellDispelType(this, loadedDBC);
-                if (ERROR_STR.Length != 0)
-                {
-                    await this.ShowMessageAsync("ERROR", ERROR_STR);
-                    ERROR_STR = "";
-                    return;
-                }
-            }
+            Effect1.SelectedIndex = (int)loadedDBC.body.records[selectedID].record.Effect1;
+            Effect2.SelectedIndex = (int)loadedDBC.body.records[selectedID].record.Effect2;
+            Effect3.SelectedIndex = (int)loadedDBC.body.records[selectedID].record.Effect3;
+            EffectBase1.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
+            EffectMod1.Text = loadedDBC.body.records[selectedID].record.EffectDieSides1.ToString();
+            EffectBase2.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
+            EffectMod2.Text = loadedDBC.body.records[selectedID].record.EffectDieSides2.ToString();
+            EffectBase3.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
+            EffectMod3.Text = loadedDBC.body.records[selectedID].record.EffectDieSides3.ToString();
+
             loadedDispelDBC.UpdateDispelSelection();
-            if (loadedMechanic == null)
-            {
-                loadedMechanic = new SpellMechanic(this, loadedDBC);
-                if (ERROR_STR.Length != 0)
-                {
-                    await this.ShowMessageAsync("ERROR", ERROR_STR);
-                    ERROR_STR = "";
-                    return;
-                }
-            }
             loadedMechanic.updateMechanicSelection();
-            if (loadedCastTime == null)
-            {
-                loadedCastTime = new SpellCastTimes(this, loadedDBC);
-                if (ERROR_STR.Length != 0)
-                {
-                    await this.ShowMessageAsync("ERROR", ERROR_STR);
-                    ERROR_STR = "";
-                    return;
-                }
-            }
             loadedCastTime.updateCastTimeSelection();
-            if (loadedDuration == null)
-            {
-                loadedDuration = new SpellDuration(this, loadedDBC);
-                if (ERROR_STR.Length != 0)
-                {
-                    await this.ShowMessageAsync("ERROR", ERROR_STR);
-                    ERROR_STR = "";
-                    return;
-                }
-            }
             loadedDuration.updateDurationIndexes();
-            if (loadedRange == null)
-            {
-                loadedRange = new SpellRange(this, loadedDBC);
-                if (ERROR_STR.Length != 0)
-                {
-                    await this.ShowMessageAsync("ERROR", ERROR_STR);
-                    ERROR_STR = "";
-                    return;
-                }
-            }
             loadedRange.updateSpellRangeSelection();
         }
 
@@ -313,7 +387,7 @@ namespace SpellGUIV2
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadDBC.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            loadAllDBCs();
         }
 
         // Required so that the same string is not inserted twice due to fast typing
@@ -417,6 +491,15 @@ namespace SpellGUIV2
                     (S5.IsChecked.Value ? (UInt32)0x10 : (UInt32)0x00) +
                     (S6.IsChecked.Value ? (UInt32)0x20 : (UInt32)0x00) +
                     (S7.IsChecked.Value ? (UInt32)0x40 : (UInt32)0x00);
+                loadedDBC.body.records[selectedID].record.Effect1 = (UInt32)Effect1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.Effect2 = (UInt32)Effect2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.Effect3 = (UInt32)Effect3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectBasePoints1 = Int32.Parse(EffectBase1.Text);
+                loadedDBC.body.records[selectedID].record.EffectDieSides1 = Int32.Parse(EffectMod1.Text);
+                loadedDBC.body.records[selectedID].record.EffectBasePoints2 = Int32.Parse(EffectBase2.Text);
+                loadedDBC.body.records[selectedID].record.EffectDieSides2 = Int32.Parse(EffectMod2.Text);
+                loadedDBC.body.records[selectedID].record.EffectBasePoints3 = Int32.Parse(EffectBase3.Text);
+                loadedDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(EffectMod3.Text);
             }
             catch (Exception ex)
             {

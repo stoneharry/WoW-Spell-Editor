@@ -13,12 +13,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="401*"/>
-            <ColumnDefinition Width="418*"/>
+            <ColumnDefinition Width="306*"/>
+            <ColumnDefinition Width="113*"/>
         </Grid.ColumnDefinitions>
         <TabControl HorizontalAlignment="Left"
 		    Margin="10,10,0,0"
 		    VerticalAlignment="Top"
-		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="2">
+		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="3">
             <TabItem Header="Select Spell">
                 <Grid Margin="0,0,0,-198">
                     <Grid.ColumnDefinitions>
@@ -31,9 +32,13 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Spell Overview">
+            <TabItem Header="Spell Overview 1">
                 <Grid Margin="0,0,0,-197">
-                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,404,0,0" VerticalAlignment="Top" Width="795">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="143*"/>
+                        <ColumnDefinition Width="122*"/>
+                    </Grid.ColumnDefinitions>
+                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,404,0,0" VerticalAlignment="Top" Width="795" Grid.ColumnSpan="2">
                         <TabItem Header="enUS/enGB">
                             <Grid Margin="0,0,0,-54">
                                 <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
@@ -153,7 +158,7 @@
                     </TabControl>
                     <Label Content="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="CategoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125"/>
-                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,374,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="186,374,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click" Grid.Column="1"/>
                     <Label Content="Dispel Type" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="DispelType" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="DispelType_SelectionChanged"/>
                     <Label Content="Mechanic Type" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
@@ -178,30 +183,54 @@
                     <TextBox Name="CategoryRecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
                     <Label Content="Range" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.537,0.192"/>
                     <ComboBox Name="SpellRange" HorizontalAlignment="Left" Margin="10,351,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellRange_SelectionChanged"/>
-                    <Label Content="Power Type" HorizontalAlignment="Left" Margin="368,10,0,0" VerticalAlignment="Top"/>
-                    <ComboBox Name="PowerType" HorizontalAlignment="Left" Margin="368,41,0,0" VerticalAlignment="Top" Width="125"/>
-                    <Label Content="Mana Cost" HorizontalAlignment="Left" Margin="368,70,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="ManaCost" HorizontalAlignment="Left" Height="23" Margin="368,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="Mana Cost Per Level" HorizontalAlignment="Left" Margin="368,134,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="ManaCostPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="Mana Cost Per Second" HorizontalAlignment="Left" Margin="368,196,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="ManaCostPerSecond" HorizontalAlignment="Left" Height="23" Margin="368,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="Per Second Per Level" HorizontalAlignment="Left" Margin="368,258,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="PerSecondPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="Mana Cost %" HorizontalAlignment="Left" Margin="368,320,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="ManaCostPercent" HorizontalAlignment="Left" Height="23" Margin="368,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="MaxTargets" HorizontalAlignment="Left" Margin="498,72,0,0" VerticalAlignment="Top"/>
-                    <Label Content="SpellFamilyName" HorizontalAlignment="Left" Margin="498,10,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="SpellFamilyName" HorizontalAlignment="Left" Height="23" Margin="498,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <TextBox Name="MaxTargets" HorizontalAlignment="Left" Height="23" Margin="498,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
-                    <Label Content="School" HorizontalAlignment="Left" Margin="498,134,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S1" Content="School Physical" HorizontalAlignment="Left" Margin="498,165,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S2" Content="School Holy" HorizontalAlignment="Left" Margin="498,188,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S3" Content="School Fire" HorizontalAlignment="Left" Margin="498,211,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S4" Content="School Nature" HorizontalAlignment="Left" Margin="498,234,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S5" Content="School Frost" HorizontalAlignment="Left" Margin="498,257,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S6" Content="School Shadow" HorizontalAlignment="Left" Margin="498,280,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Name="S7" Content="School Arcane" HorizontalAlignment="Left" Margin="498,303,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Power Type" HorizontalAlignment="Left" Margin="368,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <ComboBox Name="PowerType" HorizontalAlignment="Left" Margin="368,41,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost" HorizontalAlignment="Left" Margin="368,70,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCost" HorizontalAlignment="Left" Height="23" Margin="368,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost Per Level" HorizontalAlignment="Left" Margin="368,134,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost Per Second" HorizontalAlignment="Left" Margin="368,196,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPerSecond" HorizontalAlignment="Left" Height="23" Margin="368,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Per Second Per Level" HorizontalAlignment="Left" Margin="368,258,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="PerSecondPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost %" HorizontalAlignment="Left" Margin="368,320,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPercent" HorizontalAlignment="Left" Height="23" Margin="368,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="MaxTargets" HorizontalAlignment="Left" Margin="69,72,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <Label Content="SpellFamilyName" HorizontalAlignment="Left" Margin="69,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <TextBox Name="SpellFamilyName" HorizontalAlignment="Left" Height="23" Margin="69,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <TextBox Name="MaxTargets" HorizontalAlignment="Left" Height="23" Margin="69,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <Label Content="School" HorizontalAlignment="Left" Margin="69,134,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S1" Content="School Physical" HorizontalAlignment="Left" Margin="69,165,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S2" Content="School Holy" HorizontalAlignment="Left" Margin="69,188,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S3" Content="School Fire" HorizontalAlignment="Left" Margin="69,211,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S4" Content="School Nature" HorizontalAlignment="Left" Margin="69,234,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S5" Content="School Frost" HorizontalAlignment="Left" Margin="69,257,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S6" Content="School Shadow" HorizontalAlignment="Left" Margin="69,280,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S7" Content="School Arcane" HorizontalAlignment="Left" Margin="69,303,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Spell Overview 2">
+                <Grid Margin="0,0,0,-194">
+                    <ComboBox Name="Effect1" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect 1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase1" HorizontalAlignment="Left" Height="23" Margin="115,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod1" HorizontalAlignment="Left" Height="23" Margin="115,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <ComboBox Name="Effect3" HorizontalAlignment="Left" Margin="430,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="430,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase3" HorizontalAlignment="Left" Height="23" Margin="535,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="430,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod3" HorizontalAlignment="Left" Height="23" Margin="535,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <ComboBox Name="Effect2" HorizontalAlignment="Left" Margin="221,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="221,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase2" HorizontalAlignment="Left" Height="23" Margin="326,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="221,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod2" HorizontalAlignment="Left" Height="23" Margin="326,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect 2" HorizontalAlignment="Left" Margin="221,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">
