@@ -212,7 +212,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Spell Overview 2">
-                <Grid Margin="0,0,0,-194">
+                <Grid Margin="-4,0,4,-194">
                     <ComboBox Name="Effect1" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="193"/>
                     <Label Content="Effect 1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
@@ -236,7 +236,7 @@
                     <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top"/>
                     <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="127,182,0,0" VerticalAlignment="Top" Width="243"/>
-                    <Label Content="Procs" HorizontalAlignment="Left" Margin="535,151,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Procs" HorizontalAlignment="Left" Margin="331,224,0,0" VerticalAlignment="Top"/>
                     <Label Content="Targets" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
                     <ScrollViewer Margin="10,250,508,55">
                         <Grid Name="TargetEditorGrid"/>
@@ -245,8 +245,8 @@
                     <ScrollViewer Margin="331,250,187,55">
                         <Grid Name="ProcEditorGrid"/>
                     </ScrollViewer>
-                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="105,219,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
-                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="426,219,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="105,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="426,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
                     <TextBox Name="ProcChance" HorizontalAlignment="Left" Height="23" Margin="697,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
                     <TextBox Name="ProcCharges" HorizontalAlignment="Left" Height="23" Margin="697,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
                     <Label Content="Proc Charges" HorizontalAlignment="Left" Margin="612,281,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
