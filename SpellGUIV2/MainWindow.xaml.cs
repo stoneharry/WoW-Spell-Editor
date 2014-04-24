@@ -32,6 +32,7 @@ namespace SpellGUIV2
         private SpellCastTimes loadedCastTime = null;
         private SpellDuration loadedDuration = null;
         private SpellRange loadedRange = null;
+        private SpellRadius loadedRadius = null;
 
         private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
         public UInt32 selectedID = 1;
@@ -404,6 +405,13 @@ namespace SpellGUIV2
                 Environment.Exit(1);
                 return;
             }
+            loadedRadius = new SpellRadius(this, loadedDBC);
+            if (ERROR_STR.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", ERROR_STR);
+                Environment.Exit(1);
+                return;
+            }
         }
 
         private async void SaveToNewDBC(object sender, RoutedEventArgs e)
@@ -671,6 +679,7 @@ namespace SpellGUIV2
             loadedCastTime.updateCastTimeSelection();
             loadedDuration.updateDurationIndexes();
             loadedRange.updateSpellRangeSelection();
+            loadedRadius.updateRadiusIndexes();
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -897,6 +906,9 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectChainTarget1 = (UInt32)ChainTarget1.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectChainTarget2 = (UInt32)ChainTarget2.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectChainTarget3 = (UInt32)ChainTarget3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex1 = (UInt32)RadiusIndex1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex2 = (UInt32)RadiusIndex2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex3 = (UInt32)RadiusIndex3.SelectedIndex;
             }
             catch (Exception ex)
             {
