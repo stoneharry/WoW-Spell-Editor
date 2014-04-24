@@ -16,7 +16,7 @@
             <ColumnDefinition Width="306*"/>
             <ColumnDefinition Width="113*"/>
         </Grid.ColumnDefinitions>
-        <TabControl HorizontalAlignment="Left"
+        <TabControl Name="MainTabControl" HorizontalAlignment="Left"
 		    Margin="10,10,0,0"
 		    VerticalAlignment="Top"
 		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="3">
