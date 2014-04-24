@@ -471,6 +471,21 @@ namespace SpellGUIV2
             PointsPerComboPoint1.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint1.ToString();
             PointsPerComboPoint2.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint2.ToString();
             PointsPerComboPoint3.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint3.ToString();
+            SpellMask11.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA1.ToString();
+            SpellMask21.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA2.ToString();
+            SpellMask31.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA3.ToString();
+            SpellMask12.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB1.ToString();
+            SpellMask22.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB2.ToString();
+            SpellMask32.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB3.ToString();
+            SpellMask13.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC1.ToString();
+            SpellMask23.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC2.ToString();
+            SpellMask33.Text = loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC3.ToString();
+            MiscValueA1.Text = loadedDBC.body.records[selectedID].record.EffectMiscValue1.ToString();
+            MiscValueA2.Text = loadedDBC.body.records[selectedID].record.EffectMiscValue2.ToString();
+            MiscValueA3.Text = loadedDBC.body.records[selectedID].record.EffectMiscValue3.ToString();
+            MiscValueB1.Text = loadedDBC.body.records[selectedID].record.EffectMiscValueB1.ToString();
+            MiscValueB2.Text = loadedDBC.body.records[selectedID].record.EffectMiscValueB2.ToString();
+            MiscValueB3.Text = loadedDBC.body.records[selectedID].record.EffectMiscValueB3.ToString();
 
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
@@ -668,6 +683,21 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint1 = float.Parse(PointsPerComboPoint1.Text);
                 loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint2 = float.Parse(PointsPerComboPoint2.Text);
                 loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint3 = float.Parse(PointsPerComboPoint3.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA1 = UInt32.Parse(SpellMask11.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA2 = UInt32.Parse(SpellMask12.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskA3 = UInt32.Parse(SpellMask13.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB1 = UInt32.Parse(SpellMask21.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB2 = UInt32.Parse(SpellMask22.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskB3 = UInt32.Parse(SpellMask23.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC1 = UInt32.Parse(SpellMask31.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC2 = UInt32.Parse(SpellMask32.Text);
+                loadedDBC.body.records[selectedID].record.EffectSpellClassMaskC3 = UInt32.Parse(SpellMask33.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValue1 = Int32.Parse(MiscValueA1.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValue2 = Int32.Parse(MiscValueA2.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValue3 = Int32.Parse(MiscValueA3.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValueB1 = Int32.Parse(MiscValueB1.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValueB2 = Int32.Parse(MiscValueB2.Text);
+                loadedDBC.body.records[selectedID].record.EffectMiscValueB3 = Int32.Parse(MiscValueB3.Text);
             }
             catch (Exception ex)
             {

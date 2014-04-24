@@ -271,14 +271,13 @@
                                 <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,228,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,259,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Spell Class Mask 4" HorizontalAlignment="Left" Margin="336,196,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="BasePointsPerLevel1" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="DieSides1" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="BasePoints1" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
@@ -291,14 +290,13 @@
                                 <TextBox Name="MultipleValue1" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <ComboBox Name="ChainTarget1" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="ItemType1" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueA1" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueB1" HorizontalAlignment="Left" Height="23" Margin="477,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA1" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB1" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="PointsPerComboPoint1" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="TriggerSpell1" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask11" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask21" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask31" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="SpellMask41" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Spell Effect 2">
@@ -317,14 +315,13 @@
                                 <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,228,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,259,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Spell Class Mask 4" HorizontalAlignment="Left" Margin="336,196,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="BasePointsPerLevel2" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="DieSides2" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="BasePoints2" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
@@ -337,14 +334,13 @@
                                 <TextBox Name="MultipleValue2" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <ComboBox Name="ChainTarget2" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="ItemType2" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueA2" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueB2" HorizontalAlignment="Left" Height="23" Margin="477,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA2" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB2" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="PointsPerComboPoint2" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="TriggerSpell2" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask12" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask22" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask32" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="SpellMask42" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Spell Effect 3">
@@ -363,14 +359,13 @@
                                 <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,228,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,259,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
                                 <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
-                                <Label Content="Spell Class Mask 4" HorizontalAlignment="Left" Margin="336,196,0,0" VerticalAlignment="Top"/>
                                 <TextBox Name="BasePointsPerLevel3" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="DieSides3" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="BasePoints3" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
@@ -383,14 +378,13 @@
                                 <TextBox Name="MultipleValue3" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <ComboBox Name="ChainTarget3" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="ItemType3" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueA3" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="MiscValueB3" HorizontalAlignment="Left" Height="23" Margin="477,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA3" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB3" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="PointsPerComboPoint3" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="TriggerSpell3" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask13" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask23" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask33" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
-                                <TextBox Name="SpellMask43" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                             </Grid>
                         </TabItem>
                     </TabControl>
