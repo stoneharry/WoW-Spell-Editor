@@ -447,6 +447,31 @@ namespace SpellGUIV2
             ProcChance.Text = loadedDBC.body.records[selectedID].record.procChance.ToString();
             ProcCharges.Text = loadedDBC.body.records[selectedID].record.procCharges.ToString();
 
+            DieSides1.Text = loadedDBC.body.records[selectedID].record.EffectDieSides1.ToString();
+            DieSides2.Text = loadedDBC.body.records[selectedID].record.EffectDieSides2.ToString();
+            DieSides3.Text = loadedDBC.body.records[selectedID].record.EffectDieSides3.ToString();
+            BasePointsPerLevel1.Text = loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
+            BasePointsPerLevel2.Text = loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel2.ToString();
+            BasePointsPerLevel3.Text = loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel3.ToString();
+            BasePoints1.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
+            BasePoints2.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
+            BasePoints3.Text = loadedDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
+            Amplitude1.Text = loadedDBC.body.records[selectedID].record.EffectAmplitude1.ToString();
+            Amplitude2.Text = loadedDBC.body.records[selectedID].record.EffectAmplitude2.ToString();
+            Amplitude3.Text = loadedDBC.body.records[selectedID].record.EffectAmplitude3.ToString();
+            MultipleValue1.Text = loadedDBC.body.records[selectedID].record.EffectMultipleValue1.ToString();
+            MultipleValue2.Text = loadedDBC.body.records[selectedID].record.EffectMultipleValue2.ToString();
+            MultipleValue3.Text = loadedDBC.body.records[selectedID].record.EffectMultipleValue3.ToString();
+            ItemType1.Text = loadedDBC.body.records[selectedID].record.EffectItemType1.ToString();
+            ItemType2.Text = loadedDBC.body.records[selectedID].record.EffectItemType2.ToString();
+            ItemType3.Text = loadedDBC.body.records[selectedID].record.EffectItemType3.ToString();
+            TriggerSpell1.Text = loadedDBC.body.records[selectedID].record.EffectTriggerSpell1.ToString();
+            TriggerSpell2.Text = loadedDBC.body.records[selectedID].record.EffectTriggerSpell2.ToString();
+            TriggerSpell3.Text = loadedDBC.body.records[selectedID].record.EffectTriggerSpell3.ToString();
+            PointsPerComboPoint1.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint1.ToString();
+            PointsPerComboPoint2.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint2.ToString();
+            PointsPerComboPoint3.Text = loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint3.ToString();
+
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
             loadedCastTime.updateCastTimeSelection();
@@ -618,6 +643,31 @@ namespace SpellGUIV2
                 }
                 loadedDBC.body.records[selectedID].record.procChance = UInt32.Parse(ProcChance.Text);
                 loadedDBC.body.records[selectedID].record.procCharges = UInt32.Parse(ProcCharges.Text);
+
+                loadedDBC.body.records[selectedID].record.EffectDieSides1 = Int32.Parse(DieSides1.Text);
+                loadedDBC.body.records[selectedID].record.EffectDieSides2 = Int32.Parse(DieSides2.Text);
+                loadedDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(DieSides3.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel1 = Int32.Parse(BasePointsPerLevel1.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel2 = Int32.Parse(BasePointsPerLevel2.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel3 = Int32.Parse(BasePointsPerLevel3.Text);
+                loadedDBC.body.records[selectedID].record.EffectBasePoints1 = Int32.Parse(BasePoints1.Text);
+                loadedDBC.body.records[selectedID].record.EffectBasePoints2 = Int32.Parse(BasePoints2.Text);
+                loadedDBC.body.records[selectedID].record.EffectBasePoints3 = Int32.Parse(BasePoints3.Text);
+                loadedDBC.body.records[selectedID].record.EffectAmplitude1 = UInt32.Parse(Amplitude1.Text);
+                loadedDBC.body.records[selectedID].record.EffectAmplitude2 = UInt32.Parse(Amplitude2.Text);
+                loadedDBC.body.records[selectedID].record.EffectAmplitude3 = UInt32.Parse(Amplitude3.Text);
+                loadedDBC.body.records[selectedID].record.EffectMultipleValue1 = float.Parse(MultipleValue1.Text);
+                loadedDBC.body.records[selectedID].record.EffectMultipleValue2 = float.Parse(MultipleValue2.Text);
+                loadedDBC.body.records[selectedID].record.EffectMultipleValue3 = float.Parse(MultipleValue3.Text);
+                loadedDBC.body.records[selectedID].record.EffectItemType1 = UInt32.Parse(ItemType1.Text);
+                loadedDBC.body.records[selectedID].record.EffectItemType2 = UInt32.Parse(ItemType2.Text);
+                loadedDBC.body.records[selectedID].record.EffectItemType3 = UInt32.Parse(ItemType3.Text);
+                loadedDBC.body.records[selectedID].record.EffectTriggerSpell1 = UInt32.Parse(TriggerSpell1.Text);
+                loadedDBC.body.records[selectedID].record.EffectTriggerSpell2 = UInt32.Parse(TriggerSpell2.Text);
+                loadedDBC.body.records[selectedID].record.EffectTriggerSpell3 = UInt32.Parse(TriggerSpell3.Text);
+                loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint1 = float.Parse(PointsPerComboPoint1.Text);
+                loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint2 = float.Parse(PointsPerComboPoint2.Text);
+                loadedDBC.body.records[selectedID].record.EffectPointsPerComboPoint3 = float.Parse(PointsPerComboPoint3.Text);
             }
             catch (Exception ex)
             {
