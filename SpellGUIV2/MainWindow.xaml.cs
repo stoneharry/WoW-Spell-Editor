@@ -168,7 +168,6 @@ namespace SpellGUIV2
                                         "158 MILLING milling", "159 ALLOW_RENAME_PET allow rename pet once again", "160 160 1 spell - 45534",
                                         "161 TALENT_SPEC_COUNT second talent spec (learn/revert)", "162 TALENT_SPEC_SELECT activate primary/secondary spec",
                                         "163 unused", "164 REMOVE_AURA" };
-
             for (int i = 0; i < effect_strings.Length; ++i)
             {
                 Effect1.Items.Add(effect_strings[i]);
@@ -298,7 +297,6 @@ namespace SpellGUIV2
                                                    "SPELL_AURA_MOD_FAKE_INEBRIATE", "SPELL_AURA_MOD_MINIMUM_SPEED", "SPELL_AURA_306", "SPELL_AURA_HEAL_ABSORB_TEST",
                                                    "SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER", "SPELL_AURA_309", "SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE", "SPELL_AURA_311", "SPELL_AURA_312",
                                                    "SPELL_AURA_313", "SPELL_AURA_PREVENT_RESURRECTION", "SPELL_AURA_UNDERWATER_WALKING", "SPELL_AURA_PERIODIC_HASTE" };
-
             for (int i = 0; i < spell_aura_effect_names.Length; ++i)
             {
                 ApplyAuraName1.Items.Add(spell_aura_effect_names[i]);
@@ -306,7 +304,65 @@ namespace SpellGUIV2
                 ApplyAuraName3.Items.Add(spell_aura_effect_names[i]);
             }
 
+            string[] spell_effect_names = { "NULL", "INSTANT_KILL", "SCHOOL_DAMAGE", "DUMMY", "PORTAL_TELEPORT", "TELEPORT_UNITS", "APPLY_AURA", "ENVIRONMENTAL_DAMAGE", "POWER_DRAIN", "HEALTH_LEECH",
+                                              "HEAL", "BIND", "PORTAL", "RITUAL_BASE", "RITUAL_SPECIALIZE", "RITUAL_ACTIVATE_PORTAL", "QUEST_COMPLETE", "WEAPON_DAMAGE_NOSCHOOL", "RESURRECT",
+                                              "ADD_EXTRA_ATTACKS", "DODGE", "EVADE", "PARRY", "BLOCK", "CREATE_ITEM", "WEAPON", "DEFENSE", "PERSISTENT_AREA_AURA", "SUMMON", "LEAP", "ENERGIZE",
+                                              "WEAPON_PERCENT_DAMAGE", "TRIGGER_MISSILE", "OPEN_LOCK", "TRANSFORM_ITEM", "APPLY_GROUP_AREA_AURA", "LEARN_SPELL", "SPELL_DEFENSE", "DISPEL", "LANGUAGE",
+                                              "DUAL_WIELD", "LEAP_41", "SUMMON_GUARDIAN", "TELEPORT_UNITS_FACE_CASTER", "SKILL_STEP", "UNDEFINED_45", "SPAWN", "TRADE_SKILL", "STEALTH", "DETECT",
+                                              "SUMMON_OBJECT", "FORCE_CRITICAL_HIT", "GUARANTEE_HIT", "ENCHANT_ITEM", "ENCHANT_ITEM_TEMPORARY", "TAMECREATURE", "SUMMON_PET", "LEARN_PET_SPELL",
+                                              "WEAPON_DAMAGE", "OPEN_LOCK_ITEM", "PROFICIENCY", "SEND_EVENT", "POWER_BURN", "THREAT", "TRIGGER_SPELL", "APPLY_RAID_AREA_AURA", "POWER_FUNNEL",
+                                              "HEAL_MAX_HEALTH", "INTERRUPT_CAST", "DISTRACT", "PULL", "PICKPOCKET", "ADD_FARSIGHT", "UNTRAIN_TALENTS", "USE_GLYPH", "HEAL_MECHANICAL",
+                                              "SUMMON_OBJECT_WILD", "SCRIPT_EFFECT", "ATTACK", "SANCTUARY", "ADD_COMBO_POINTS", "CREATE_HOUSE", "BIND_SIGHT", "DUEL", "STUCK", "SUMMON_PLAYER", 
+                                              "ACTIVATE_OBJECT", "BUILDING_DAMAGE", "BUILDING_REPAIR", "BUILDING_SWITCH_STATE", "KILL_CREDIT_90", "THREAT_ALL", "ENCHANT_HELD_ITEM", "SUMMON_PHANTASM",
+                                              "SELF_RESURRECT", "SKINNING", "CHARGE", "SUMMON_MULTIPLE_TOTEMS", "KNOCK_BACK", "DISENCHANT", "INEBRIATE", "FEED_PET", "DISMISS_PET", "REPUTATION",
+                                              "SUMMON_OBJECT_SLOT1", "SUMMON_OBJECT_SLOT2", "SUMMON_OBJECT_SLOT3", "SUMMON_OBJECT_SLOT4", "DISPEL_MECHANIC", "SUMMON_DEAD_PET", "DESTROY_ALL_TOTEMS", 
+                                              "DURABILITY_DAMAGE", "NONE_112", "RESURRECT_FLAT", "ATTACK_ME", "DURABILITY_DAMAGE_PCT", "SKIN_PLAYER_CORPSE", "SPIRIT_HEAL", "SKILL", "APPLY_PET_AREA_AURA",
+                                              "TELEPORT_GRAVEYARD", "DUMMYMELEE", "UNKNOWN1", "START_TAXI", "PLAYER_PULL", "UNKNOWN4", "UNKNOWN5", "PROSPECTING", "APPLY_FRIEND_AREA_AURA", 
+                                              "APPLY_ENEMY_AREA_AURA", "UNKNOWN10", "UNKNOWN11", "PLAY_MUSIC", "FORGET_SPECIALIZATION", "KILL_CREDIT", "UNKNOWN15", "UNKNOWN16", "UNKNOWN17",
+                                              "UNKNOWN18", "CLEAR_QUEST", "UNKNOWN20", "UNKNOWN21", "TRIGGER_SPELL_WITH_VALUE", "APPLY_OWNER_AREA_AURA", "UNKNOWN23", "UNKNOWN24", "ACTIVATE_RUNES", 
+                                              "UNKNOWN26", "UNKNOWN27", "QUEST_FAIL", "UNKNOWN28", "UNKNOWN29", "UNKNOWN30", "SUMMON_TARGET", "SUMMON_REFER_A_FRIEND", "TAME_CREATURE", "ADD_SOCKET", 
+                                              "CREATE_ITEM2", "MILLING", "UNKNOWN37", "UNKNOWN38", "LEARN_SPEC", "ACTIVATE_SPEC", "UNKNOWN" };
+            for (int i = 0; i < spell_effect_names.Length; ++i)
+            {
+                SpellEffect1.Items.Add(spell_effect_names[i]);
+                SpellEffect2.Items.Add(spell_effect_names[i]);
+                SpellEffect3.Items.Add(spell_effect_names[i]);
+            }
 
+            string[] mechanic_names = { "MECHANIC_NONE", "MECHANIC_CHARMED", "MECHANIC_DISORIENTED", "MECHANIC_DISARMED", "MECHANIC_DISTRACED", "MECHANIC_FLEEING", "MECHANIC_CLUMSY", "MECHANIC_ROOTED", 
+                                          "MECHANIC_PACIFIED", "MECHANIC_SILENCED", "MECHANIC_ASLEEP", "MECHANIC_ENSNARED", "MECHANIC_STUNNED", "MECHANIC_FROZEN", "MECHANIC_INCAPACIPATED", 
+                                          "MECHANIC_BLEEDING", "MECHANIC_HEALING", "MECHANIC_POLYMORPHED", "MECHANIC_BANISHED", "MECHANIC_SHIELDED", "MECHANIC_SHACKLED", "MECHANIC_MOUNTED",
+                                          "MECHANIC_SEDUCED", "MECHANIC_TURNED", "MECHANIC_HORRIFIED", "MECHANIC_INVULNARABLE", "MECHANIC_INTERRUPTED", "MECHANIC_DAZED", "MECHANIC_DISCOVERY",
+                                          "MECHANIC_INVULNERABLE", "MECHANIC_SAPPED", "MECHANIC_ENRAGED" };
+            for (int i = 0; i < mechanic_names.Length; ++i)
+            {
+                Mechanic1.Items.Add(mechanic_names[i]);
+                Mechanic2.Items.Add(mechanic_names[i]);
+                Mechanic3.Items.Add(mechanic_names[i]);
+            }
+
+            string[] implicit_target_names = { "NONE", "SELF", "INVISIBLE_OR_HIDDEN_ENEMIES_AT_LOCATION_RADIUS", "PET", "SINGLE_ENEMY", "SCRIPTED_TARGET", "ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS",
+                                                 "HEARTSTONE_LOCATION", "ALL_ENEMY_IN_AREA", "ALL_ENEMY_IN_AREA_INSTANT", "TELEPORT_LOCATION", "LOCATION_TO_SUMMON", "ALL_PARTY_AROUND_CASTER",
+                                                 "SINGLE_FRIEND", "ALL_ENEMIES_AROUND_CASTER", "GAMEOBJECT", "IN_FRONT_OF_CASTER", "DUEL", "GAMEOBJECT_ITEM", "PET_MASTER", "ALL_ENEMY_IN_AREA_CHANNELED",
+                                                 "ALL_PARTY_IN_AREA_CHANNELED", "ALL_FRIENDLY_IN_AREA", "ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS_OVER_TIME", "MINION", "ALL_PARTY_IN_AREA", "SINGLE_PARTY",
+                                                 "PET_SUMMON_LOCATION", "ALL_PARTY", "SCRIPTED_OR_SINGLE_TARGET", "SELF_FISHING", "SCRIPTED_GAMEOBJECT", "TOTEM_EARTH", "TOTEM_WATER", "TOTEM_AIR",
+                                                 "TOTEM_FIRE", "CHAIN", "SCIPTED_OBJECT_LOCATION", "DYNAMIC_OBJECT", "MULTIPLE_SUMMON_LOCATION", "MULTIPLE_SUMMON_PET_LOCATION", "SUMMON_LOCATION", 
+                                                 "CALIRI_EGS", "LOCATION_NEAR_CASTER", "CURRENT_SELECTION", "TARGET_AT_ORIENTATION_TO_CASTER", "LOCATION_INFRONT_CASTER", "ALL_RAID", "PARTY_MEMBER",
+                                                 "TARGET_FOR_VISUAL_EFFECT", "SCRIPTED_TARGET2", "AREAEFFECT_PARTY_AND_CLASS", "PRIEST_CHAMPION", "NATURE_SUMMON_LOCATION", "BEHIND_TARGET_LOCATION", 
+                                                 "MULTIPLE_GUARDIAN_SUMMON_LOCATION", "NETHETDRAKE_SUMMON_LOCATION", "SCRIPTED_LOCATION", "LOCATION_INFRONT_CASTER_AT_RANGE",
+                                                 "ENEMIES_IN_AREA_CHANNELED_WITH_EXCEPTIONS", "SELECTED_ENEMY_CHANNELED", "SELECTED_ENEMY_DEADLY_POISON", "NON_COMBAT_PET" };
+            for (int i = 0; i < implicit_target_names.Length; ++i)
+            {
+                TargetA1.Items.Add(implicit_target_names[i]);
+                TargetB1.Items.Add(implicit_target_names[i]);
+                TargetA2.Items.Add(implicit_target_names[i]);
+                TargetB2.Items.Add(implicit_target_names[i]);
+                TargetA3.Items.Add(implicit_target_names[i]);
+                TargetB3.Items.Add(implicit_target_names[i]);
+                ChainTarget1.Items.Add(implicit_target_names[i]);
+                ChainTarget2.Items.Add(implicit_target_names[i]);
+                ChainTarget3.Items.Add(implicit_target_names[i]);
+            }
 
             //// Load DBC's
 
@@ -594,6 +650,21 @@ namespace SpellGUIV2
             ApplyAuraName1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectApplyAuraName1;
             ApplyAuraName2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectApplyAuraName2;
             ApplyAuraName3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectApplyAuraName3;
+            SpellEffect1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.Effect1;
+            SpellEffect2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.Effect2;
+            SpellEffect3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.Effect3;
+            Mechanic1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectMechanic1;
+            Mechanic2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectMechanic2;
+            Mechanic3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectMechanic3;
+            TargetA1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetA1;
+            TargetB1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetB1;
+            TargetA2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetA2;
+            TargetB2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetB2;
+            TargetA3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetA3;
+            TargetB3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectImplicitTargetB3;
+            ChainTarget1.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectChainTarget1;
+            ChainTarget2.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectChainTarget2;
+            ChainTarget3.SelectedIndex = (Int32)loadedDBC.body.records[selectedID].record.EffectChainTarget3;
 
             loadedDispelDBC.UpdateDispelSelection();
             loadedMechanic.updateMechanicSelection();
@@ -811,6 +882,21 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectApplyAuraName1 = (UInt32)ApplyAuraName1.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectApplyAuraName2 = (UInt32)ApplyAuraName2.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectApplyAuraName3 = (UInt32)ApplyAuraName3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.Effect1 = (UInt32)SpellEffect1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.Effect2 = (UInt32)SpellEffect2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.Effect3 = (UInt32)SpellEffect3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectMechanic1 = (UInt32)Mechanic1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectMechanic2 = (UInt32)Mechanic2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectMechanic3 = (UInt32)Mechanic3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)TargetA1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)TargetB1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)TargetA2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)TargetB2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)TargetA3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)TargetB3.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectChainTarget1 = (UInt32)ChainTarget1.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectChainTarget2 = (UInt32)ChainTarget2.SelectedIndex;
+                loadedDBC.body.records[selectedID].record.EffectChainTarget3 = (UInt32)ChainTarget3.SelectedIndex;
             }
             catch (Exception ex)
             {

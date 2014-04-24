@@ -297,6 +297,7 @@
                                 <TextBox Name="SpellMask11" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask21" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask31" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Spell Effect 2">
@@ -341,6 +342,7 @@
                                 <TextBox Name="SpellMask12" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask22" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask32" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Spell Effect 3">
@@ -385,6 +387,7 @@
                                 <TextBox Name="SpellMask13" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask23" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
                                 <TextBox Name="SpellMask33" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
                             </Grid>
                         </TabItem>
                     </TabControl>
