@@ -119,7 +119,7 @@
                                 <TextBox Name="SpellDescription5" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged" Grid.ColumnSpan="2"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="esES / esMX">
+                        <TabItem Header="esES/esMX">
                             <Grid Margin="0,0,0,-54">
                                 <TextBox Name="SpellName6" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
