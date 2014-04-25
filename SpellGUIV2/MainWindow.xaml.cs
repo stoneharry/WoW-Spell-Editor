@@ -414,6 +414,132 @@ namespace SpellGUIV2
             }
         }
 
+        private async void InsertNewRecord(object sender, RoutedEventArgs e)
+        {
+            if (loadedDBC == null)
+                return;
+            string input = await this.ShowInputAsync("New Record", "Input the new spell ID.");
+            if (input == null)
+                return;
+            string errorMsg = "";
+            UInt32 newID = 0;
+            try
+            {
+                newID = UInt32.Parse(input);
+                for (int i = 0; i < loadedDBC.body.records.Length; ++i)
+                {
+                    if (loadedDBC.body.records[i].record.Id == newID)
+                        throw new Exception("The spell ID is already taken!");
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMsg = ex.Message;
+            }
+            if (errorMsg.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", errorMsg);
+                return;
+            }
+
+            Int32 newRecord = (Int32)loadedDBC.header.record_count++;
+            Array.Resize(ref loadedDBC.body.records, (Int32)loadedDBC.header.record_count);
+
+            loadedDBC.body.records[newRecord].record.SpellName = new UInt32[9];
+            loadedDBC.body.records[newRecord].record.Description = new UInt32[9];
+            loadedDBC.body.records[newRecord].record.ToolTip = new UInt32[9];
+            loadedDBC.body.records[newRecord].record.Rank = new UInt32[9];
+            loadedDBC.body.records[newRecord].spellDesc = new String[9];
+            loadedDBC.body.records[newRecord].spellName = new String[9];
+            loadedDBC.body.records[newRecord].spellRank = new String[9];
+            loadedDBC.body.records[newRecord].spellTool = new String[9];
+            loadedDBC.body.records[newRecord].record.SpellNameFlag = new UInt32[8];
+            loadedDBC.body.records[newRecord].record.DescriptionFlags = new UInt32[8];
+            loadedDBC.body.records[newRecord].record.ToolTipFlags = new UInt32[8];
+            loadedDBC.body.records[newRecord].record.RankFlags = new UInt32[8];
+            for (int i = 0; i < 9; ++i)
+            {
+                loadedDBC.body.records[newRecord].record.SpellName[i] = 0;
+                loadedDBC.body.records[newRecord].record.Description[i] = 0;
+                loadedDBC.body.records[newRecord].record.ToolTip[i] = 0;
+                loadedDBC.body.records[newRecord].record.Rank[i] = 0;
+                loadedDBC.body.records[newRecord].spellDesc[i] = "";
+                loadedDBC.body.records[newRecord].spellName[i] = "";
+                loadedDBC.body.records[newRecord].spellRank[i] = "";
+                loadedDBC.body.records[newRecord].spellTool[i] = "";
+                if (i < 8)
+                {
+                    loadedDBC.body.records[newRecord].record.SpellNameFlag[i] = 0;
+                    loadedDBC.body.records[newRecord].record.DescriptionFlags[i] = 0;
+                    loadedDBC.body.records[newRecord].record.ToolTipFlags[i] = 0;
+                    loadedDBC.body.records[newRecord].record.RankFlags[i] = 0;
+                }
+            }
+            loadedDBC.body.records[newRecord].record.rangeIndex = 1;
+            loadedDBC.body.records[newRecord].record.SpellIconID = 1;
+            loadedDBC.body.records[newRecord].spellName[0] = "New Spell";
+            loadedDBC.body.records[newRecord].record.Id = newID;
+
+            // Sort by ID
+            loadedDBC.body.records = loadedDBC.body.records.OrderBy(SpellDBC_RecordMap => SpellDBC_RecordMap.record.Id).ToArray<SpellDBC_RecordMap>();
+
+            if (MainTabControl.SelectedIndex != 0)
+                MainTabControl.SelectedIndex = 0;
+            else
+                populateSelectSpell();
+
+            await this.ShowMessageAsync("Success", "Created new record with ID " + input + " sucessfully.");
+        }
+
+        private async void DeleteRecord(object sender, RoutedEventArgs e)
+        {
+            if (loadedDBC == null)
+                return;
+            string input = await this.ShowInputAsync("Delete Record", "Input the spell ID to delete.");
+            if (input == null)
+                return;
+            string errorMsg = "";
+            Int32 newID = 0;
+            try
+            {
+                // Make sure the record ID is a UInt, but parse to a Int afterwards for later functions
+                newID = (Int32)UInt32.Parse(input);
+                bool found = false;
+                for (Int32 i = 0; i < loadedDBC.body.records.Length; ++i)
+                {
+                    if (loadedDBC.body.records[i].record.Id == newID)
+                    {
+                        newID = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    throw new Exception("The spell ID was not found!");
+            }
+            catch (Exception ex)
+            {
+                errorMsg = ex.Message;
+            }
+            if (errorMsg.Length != 0)
+            {
+                await this.ShowMessageAsync("ERROR", errorMsg);
+                return;
+            }
+
+            List<SpellDBC_RecordMap> records = loadedDBC.body.records.ToList<SpellDBC_RecordMap>();
+            records.RemoveAt(newID);
+            loadedDBC.body.records = records.ToArray<SpellDBC_RecordMap>();
+            --loadedDBC.header.record_count;
+
+            if (MainTabControl.SelectedIndex != 0)
+                MainTabControl.SelectedIndex = 0;
+            else
+                populateSelectSpell();
+
+            await this.ShowMessageAsync("Success", "Deleted record successfully.");
+        }
+
         private async void SaveToNewDBC(object sender, RoutedEventArgs e)
         {
             if (loadedDBC == null)
@@ -482,6 +608,7 @@ namespace SpellGUIV2
                 await this.ShowMessageAsync("ERROR", "Failed to load file.");
                 return;
             }
+
             populateSelectSpell();
         }
         

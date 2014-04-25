@@ -411,6 +411,16 @@
 
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
+            <Button Name="InsertANewRecord" Click="InsertNewRecord">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="New Spell" />
+                </StackPanel>
+            </Button>
+            <Button Name="DeleteARecord" Click="DeleteRecord">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Delete Spell" />
+                </StackPanel>
+            </Button>
             <Button x:Name="LoadDBC" Click="LoadNewDBCFile">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Load DBC File" />
