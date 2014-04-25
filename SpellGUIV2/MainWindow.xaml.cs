@@ -978,9 +978,9 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectDieSides1 = Int32.Parse(DieSides1.Text);
                 loadedDBC.body.records[selectedID].record.EffectDieSides2 = Int32.Parse(DieSides2.Text);
                 loadedDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(DieSides3.Text);
-                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel1 = Int32.Parse(BasePointsPerLevel1.Text);
-                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel2 = Int32.Parse(BasePointsPerLevel2.Text);
-                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel3 = Int32.Parse(BasePointsPerLevel3.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel1 = float.Parse(BasePointsPerLevel1.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel2 = float.Parse(BasePointsPerLevel2.Text);
+                loadedDBC.body.records[selectedID].record.EffectRealPointsPerLevel3 = float.Parse(BasePointsPerLevel3.Text);
                 loadedDBC.body.records[selectedID].record.EffectBasePoints1 = Int32.Parse(BasePoints1.Text);
                 loadedDBC.body.records[selectedID].record.EffectBasePoints2 = Int32.Parse(BasePoints2.Text);
                 loadedDBC.body.records[selectedID].record.EffectBasePoints3 = Int32.Parse(BasePoints3.Text);
