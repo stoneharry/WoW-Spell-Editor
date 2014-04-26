@@ -479,6 +479,7 @@ namespace SpellGUIV2
             loadedDBC.body.records[newRecord].record.SpellIconID = 1;
             loadedDBC.body.records[newRecord].spellName[0] = "New Spell";
             loadedDBC.body.records[newRecord].record.Id = newID;
+            loadedDBC.body.records[newRecord].record.EquippedItemClass = -1;
 
             // Sort by ID
             loadedDBC.body.records = loadedDBC.body.records.OrderBy(SpellDBC_RecordMap => SpellDBC_RecordMap.record.Id).ToArray<SpellDBC_RecordMap>();
