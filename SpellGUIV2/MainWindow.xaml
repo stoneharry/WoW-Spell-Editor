@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="Stoneharry's Spell Editor V2"
-        Height="450"
-        Width="825"
+        Height="642"
+        Width="826"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
         ShowTitleBar="True"
@@ -13,23 +13,32 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="401*"/>
-            <ColumnDefinition Width="418*"/>
+            <ColumnDefinition Width="306*"/>
+            <ColumnDefinition Width="113*"/>
         </Grid.ColumnDefinitions>
-        <TabControl HorizontalAlignment="Left"
+        <TabControl Name="MainTabControl" HorizontalAlignment="Left"
 		    Margin="10,10,0,0"
 		    VerticalAlignment="Top"
-		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="2">
+		    SelectionChanged="TabControl_SelectionChanged" Height="401" Width="799" Grid.ColumnSpan="3">
             <TabItem Header="Select Spell">
-                <Grid>
-                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="311" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged"/>
-                    <Label Content="Go to spell ID:" HorizontalAlignment="Left" Margin="10,326,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="100,326,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBox_TextChanged"/>
+                <Grid Margin="0,0,0,-198">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="256*"/>
+                        <ColumnDefinition Width="539*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox Name="SelectSpell" HorizontalAlignment="Left" Height="499" Margin="10,10,0,0" VerticalAlignment="Top" Width="775" SelectionChanged="SelectSpell_SelectionChanged" Grid.ColumnSpan="2"/>
+                    <Label Content="Go to spell ID:" HorizontalAlignment="Left" Margin="10,514,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="100,514,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBox_TextChanged"/>
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Spell Overview">
-                <Grid>
-                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,200,0,0" VerticalAlignment="Top" Width="795">
+            <TabItem Header="Tab 1">
+                <Grid Margin="0,0,0,-197">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="143*"/>
+                        <ColumnDefinition Width="122*"/>
+                    </Grid.ColumnDefinitions>
+                    <TabControl HorizontalAlignment="Left" Height="100" Margin="0,404,0,0" VerticalAlignment="Top" Width="795" Grid.ColumnSpan="2">
                         <TabItem Header="enUS/enGB">
                             <Grid Margin="0,0,0,-54">
                                 <TextBox Name="SpellName0" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
@@ -110,7 +119,7 @@
                                 <TextBox Name="SpellDescription5" HorizontalAlignment="Left" Height="59" Margin="540,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" TextChanged="String_TextChanged" Grid.ColumnSpan="2"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="esES / esMX">
+                        <TabItem Header="esES/esMX">
                             <Grid Margin="0,0,0,-54">
                                 <TextBox Name="SpellName6" HorizontalAlignment="Left" Height="59" Margin="10,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172" TextChanged="String_TextChanged"/>
                                 <Label Content="Spell Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
@@ -147,6 +156,254 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                    <Label Content="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="CategoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="125"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="186,374,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click" Grid.Column="1"/>
+                    <Label Content="Dispel Type" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="DispelType" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="DispelType_SelectionChanged"/>
+                    <Label Content="Mechanic Type" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="MechanicType" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="MechanicType_SelectionChanged"/>
+                    <Label Content="Cast Time (ms)" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="CastTime" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="CastTime_SelectionChanged"/>
+                    <Label Content="Duration (ms)" HorizontalAlignment="Left" Margin="10,258,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="SpellDuration" HorizontalAlignment="Left" Margin="10,289,0,0" VerticalAlignment="Top" Width="125" SelectionChanged="SpellDuration_SelectionChanged"/>
+                    <Label Content="Spell Level" HorizontalAlignment="Left" Margin="140,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellLevel" HorizontalAlignment="Left" Height="23" Margin="140,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Base Level" HorizontalAlignment="Left" Margin="140,70,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="BaseLevel" HorizontalAlignment="Left" Height="23" Margin="140,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Max Level" HorizontalAlignment="Left" Margin="140,134,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="MaxLevel" HorizontalAlignment="Left" Height="23" Margin="140,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Spell Visual 1" HorizontalAlignment="Left" Margin="140,196,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellVisual1" HorizontalAlignment="Left" Height="23" Margin="140,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Spell Visual 2" HorizontalAlignment="Left" Margin="140,258,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellVisual2" HorizontalAlignment="Left" Height="23" Margin="140,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Recovery Time" HorizontalAlignment="Left" Margin="225,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="RecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Category Recovery Time" HorizontalAlignment="Left" Margin="225,70,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="CategoryRecoveryTime" HorizontalAlignment="Left" Height="23" Margin="225,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Range" HorizontalAlignment="Left" Margin="10,320,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.537,0.192"/>
+                    <ComboBox Name="SpellRange" HorizontalAlignment="Left" Margin="10,351,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="SpellRange_SelectionChanged"/>
+                    <Label Content="Power Type" HorizontalAlignment="Left" Margin="368,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <ComboBox Name="PowerType" HorizontalAlignment="Left" Margin="368,41,0,0" VerticalAlignment="Top" Width="125" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost" HorizontalAlignment="Left" Margin="368,70,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCost" HorizontalAlignment="Left" Height="23" Margin="368,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost Per Level" HorizontalAlignment="Left" Margin="368,134,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost Per Second" HorizontalAlignment="Left" Margin="368,196,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPerSecond" HorizontalAlignment="Left" Height="23" Margin="368,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Per Second Per Level" HorizontalAlignment="Left" Margin="368,258,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="PerSecondPerLevel" HorizontalAlignment="Left" Height="23" Margin="368,289,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="Mana Cost %" HorizontalAlignment="Left" Margin="368,320,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ManaCostPercent" HorizontalAlignment="Left" Height="23" Margin="368,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.ColumnSpan="2"/>
+                    <Label Content="MaxTargets" HorizontalAlignment="Left" Margin="69,72,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <Label Content="SpellFamilyName" HorizontalAlignment="Left" Margin="69,10,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <TextBox Name="SpellFamilyName" HorizontalAlignment="Left" Height="23" Margin="69,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <TextBox Name="MaxTargets" HorizontalAlignment="Left" Height="23" Margin="69,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" Grid.Column="1"/>
+                    <Label Content="School" HorizontalAlignment="Left" Margin="69,134,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S1" Content="School Physical" HorizontalAlignment="Left" Margin="69,165,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S2" Content="School Holy" HorizontalAlignment="Left" Margin="69,188,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S3" Content="School Fire" HorizontalAlignment="Left" Margin="69,211,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S4" Content="School Nature" HorizontalAlignment="Left" Margin="69,234,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S5" Content="School Frost" HorizontalAlignment="Left" Margin="69,257,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S6" Content="School Shadow" HorizontalAlignment="Left" Margin="69,280,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <CheckBox Name="S7" Content="School Arcane" HorizontalAlignment="Left" Margin="69,303,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <Label Content="Spell Missile ID" HorizontalAlignment="Left" Margin="225,134,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="SpellMissileID" HorizontalAlignment="Left" Height="23" Margin="225,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 2">
+                <Grid Margin="-4,0,4,-194">
+                    <ComboBox Name="Effect1" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect 1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase1" HorizontalAlignment="Left" Height="23" Margin="115,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod1" HorizontalAlignment="Left" Height="23" Margin="115,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <ComboBox Name="Effect3" HorizontalAlignment="Left" Margin="430,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="430,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase3" HorizontalAlignment="Left" Height="23" Margin="535,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="430,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod3" HorizontalAlignment="Left" Height="23" Margin="535,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <ComboBox Name="Effect2" HorizontalAlignment="Left" Margin="221,41,0,0" VerticalAlignment="Top" Width="193"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="221,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectBase2" HorizontalAlignment="Left" Height="23" Margin="326,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="221,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox Name="EffectMod2" HorizontalAlignment="Left" Height="23" Margin="326,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Effect 2" HorizontalAlignment="Left" Margin="221,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <ComboBox Name="SpellDamageType" HorizontalAlignment="Left" Margin="127,151,0,0" VerticalAlignment="Top" Width="243"/>
+                    <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top"/>
+                    <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="127,182,0,0" VerticalAlignment="Top" Width="243"/>
+                    <Label Content="Procs" HorizontalAlignment="Left" Margin="331,224,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Targets" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <ScrollViewer Margin="10,250,508,55">
+                        <Grid Name="TargetEditorGrid"/>
+                    </ScrollViewer>
+                    <Label Content="Proc Chance" HorizontalAlignment="Left" Margin="616,250,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <ScrollViewer Margin="331,250,187,55">
+                        <Grid Name="ProcEditorGrid"/>
+                    </ScrollViewer>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="105,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="426,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <TextBox Name="ProcChance" HorizontalAlignment="Left" Height="23" Margin="697,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <TextBox Name="ProcCharges" HorizontalAlignment="Left" Height="23" Margin="697,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <Label Content="Proc Charges" HorizontalAlignment="Left" Margin="612,281,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 3">
+                <Grid Margin="0,0,0,-195">
+                    <TabControl HorizontalAlignment="Left" Height="527" Margin="10,10,0,0" VerticalAlignment="Top" Width="775">
+                        <TabItem Header="Spell Effect 1">
+                            <Grid>
+                                <Label Content="Spell Effect" HorizontalAlignment="Left" Margin="11,41,0,0" VerticalAlignment="Top"/>
+                                <ComboBox Name="SpellEffect1" HorizontalAlignment="Left" Margin="142,41,0,0" VerticalAlignment="Top" Width="189"/>
+                                <Label Content="Die Sides" HorizontalAlignment="Left" Margin="11,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Real Points Per Level" HorizontalAlignment="Left" Margin="11,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Base Points" HorizontalAlignment="Left" Margin="11,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Mechanic" HorizontalAlignment="Left" Margin="11,165,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target A" HorizontalAlignment="Left" Margin="11,196,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target B" HorizontalAlignment="Left" Margin="11,227,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Radius Index" HorizontalAlignment="Left" Margin="11,258,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Apply Aura Name" HorizontalAlignment="Left" Margin="11,289,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Multiple Value" HorizontalAlignment="Left" Margin="11,351,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="BasePointsPerLevel1" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="DieSides1" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="BasePoints1" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="Mechanic1" HorizontalAlignment="Left" Margin="142,166,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetA1" HorizontalAlignment="Left" Margin="142,197,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetB1" HorizontalAlignment="Left" Margin="143,228,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="RadiusIndex1" HorizontalAlignment="Left" Margin="143,259,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ApplyAuraName1" HorizontalAlignment="Left" Margin="143,290,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="Amplitude1" HorizontalAlignment="Left" Height="23" Margin="143,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MultipleValue1" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ChainTarget1" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="ItemType1" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA1" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB1" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="PointsPerComboPoint1" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="TriggerSpell1" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask11" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask21" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask31" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Spell Effect 2">
+                            <Grid>
+                                <Label Content="Spell Effect" HorizontalAlignment="Left" Margin="11,41,0,0" VerticalAlignment="Top"/>
+                                <ComboBox Name="SpellEffect2" HorizontalAlignment="Left" Margin="142,41,0,0" VerticalAlignment="Top" Width="189"/>
+                                <Label Content="Die Sides" HorizontalAlignment="Left" Margin="11,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Real Points Per Level" HorizontalAlignment="Left" Margin="11,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Base Points" HorizontalAlignment="Left" Margin="11,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Mechanic" HorizontalAlignment="Left" Margin="11,165,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target A" HorizontalAlignment="Left" Margin="11,196,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target B" HorizontalAlignment="Left" Margin="11,227,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Radius Index" HorizontalAlignment="Left" Margin="11,258,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Apply Aura Name" HorizontalAlignment="Left" Margin="11,289,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Multiple Value" HorizontalAlignment="Left" Margin="11,351,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="BasePointsPerLevel2" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="DieSides2" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="BasePoints2" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="Mechanic2" HorizontalAlignment="Left" Margin="142,166,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetA2" HorizontalAlignment="Left" Margin="142,197,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetB2" HorizontalAlignment="Left" Margin="143,228,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="RadiusIndex2" HorizontalAlignment="Left" Margin="143,259,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ApplyAuraName2" HorizontalAlignment="Left" Margin="143,290,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="Amplitude2" HorizontalAlignment="Left" Height="23" Margin="143,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MultipleValue2" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ChainTarget2" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="ItemType2" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA2" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB2" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="PointsPerComboPoint2" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="TriggerSpell2" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask12" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask22" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask32" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Spell Effect 3">
+                            <Grid>
+                                <Label Content="Spell Effect" HorizontalAlignment="Left" Margin="11,41,0,0" VerticalAlignment="Top"/>
+                                <ComboBox Name="SpellEffect3" HorizontalAlignment="Left" Margin="142,41,0,0" VerticalAlignment="Top" Width="189"/>
+                                <Label Content="Die Sides" HorizontalAlignment="Left" Margin="11,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Real Points Per Level" HorizontalAlignment="Left" Margin="11,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Base Points" HorizontalAlignment="Left" Margin="11,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Mechanic" HorizontalAlignment="Left" Margin="11,165,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target A" HorizontalAlignment="Left" Margin="11,196,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Implicit Target B" HorizontalAlignment="Left" Margin="11,227,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Radius Index" HorizontalAlignment="Left" Margin="11,258,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Apply Aura Name" HorizontalAlignment="Left" Margin="11,289,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Multiple Value" HorizontalAlignment="Left" Margin="11,351,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Amplitude" HorizontalAlignment="Left" Margin="11,320,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Chain Target" HorizontalAlignment="Left" Margin="11,382,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Item Type" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value A" HorizontalAlignment="Left" Margin="336,197,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Misc Value B" HorizontalAlignment="Left" Margin="337,228,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Trigger Spell" HorizontalAlignment="Left" Margin="336,41,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Points Per Combo Point" HorizontalAlignment="Left" Margin="336,72,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 1" HorizontalAlignment="Left" Margin="336,103,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 2" HorizontalAlignment="Left" Margin="336,134,0,0" VerticalAlignment="Top"/>
+                                <Label Content="Spell Class Mask 3" HorizontalAlignment="Left" Margin="336,165,0,0" VerticalAlignment="Top"/>
+                                <TextBox Name="BasePointsPerLevel3" HorizontalAlignment="Left" Height="23" Margin="143,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="DieSides3" HorizontalAlignment="Left" Height="23" Margin="142,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="BasePoints3" HorizontalAlignment="Left" Height="23" Margin="143,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="Mechanic3" HorizontalAlignment="Left" Margin="142,166,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetA3" HorizontalAlignment="Left" Margin="142,197,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="TargetB3" HorizontalAlignment="Left" Margin="143,228,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="RadiusIndex3" HorizontalAlignment="Left" Margin="143,259,0,0" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ApplyAuraName3" HorizontalAlignment="Left" Margin="143,290,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="Amplitude3" HorizontalAlignment="Left" Height="23" Margin="143,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MultipleValue3" HorizontalAlignment="Left" Height="23" Margin="143,351,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <ComboBox Name="ChainTarget3" HorizontalAlignment="Left" Margin="143,382,0,0" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="ItemType3" HorizontalAlignment="Left" Height="23" Margin="143,413,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueA3" HorizontalAlignment="Left" Height="23" Margin="477,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="MiscValueB3" HorizontalAlignment="Left" Height="23" Margin="477,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="PointsPerComboPoint3" HorizontalAlignment="Left" Height="23" Margin="477,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="TriggerSpell3" HorizontalAlignment="Left" Height="23" Margin="477,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask13" HorizontalAlignment="Left" Height="23" Margin="477,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask23" HorizontalAlignment="Left" Height="23" Margin="477,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <TextBox Name="SpellMask33" HorizontalAlignment="Left" Height="23" Margin="477,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                                <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="591,443,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Icon Editor">
+                <Grid Margin="0,0,0,-193">
+                    <Image Name="CurrentIcon" Height="64" Width="64" Margin="91,0,640,481"/>
+                    <Label Content="Current Icon" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <ScrollViewer Margin="0,69,0,0">
+                        <Grid Name="IconGrid"/>
+                    </ScrollViewer>
+                    <Label Content="New Icon" HorizontalAlignment="Left" Margin="235,10,0,0" VerticalAlignment="Top"/>
+                    <Image Name="NewIcon" Height="64" Width="64" Margin="300,0,431,481"/>
+                    <Button Content="Confirm" HorizontalAlignment="Left" Margin="369,19,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.267,0.44" Click="NewIconClick"/>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -154,6 +411,16 @@
 
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
+            <Button Name="InsertANewRecord" Click="InsertNewRecord">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="New Spell" />
+                </StackPanel>
+            </Button>
+            <Button Name="DeleteARecord" Click="DeleteRecord">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Delete Spell" />
+                </StackPanel>
+            </Button>
             <Button x:Name="LoadDBC" Click="LoadNewDBCFile">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Load DBC File" />
