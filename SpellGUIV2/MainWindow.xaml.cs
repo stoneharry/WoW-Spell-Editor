@@ -59,7 +59,7 @@ namespace SpellGUIV2
             Console.WriteLine("ERROR: " + e.Message);
             Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
 
-            string[] errorMsg = { "[" + DateTime.Now.ToShortTimeString().ToString() + "] ERROR: ", e.Message + "\n" };
+            string[] errorMsg = { "[" + DateTime.Now.ToShortTimeString().ToString() + "] ERROR: ", e.ToString() + "\n" };
 
             System.IO.File.WriteAllLines(@"ERRORS.txt", errorMsg);
         }
