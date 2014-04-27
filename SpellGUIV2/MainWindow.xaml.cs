@@ -836,8 +836,17 @@ namespace SpellGUIV2
             if (addedItems.Count == 1)
             {
                 selectedID = (UInt32)(((ListBox)sender).SelectedIndex);
-                updateMainWindow();
-                MainTabControl.SelectedIndex = 1;
+                if (selectedID < loadedDBC.body.records.Length || loadedDBC.body.records[selectedID].spellName == null
+                    || loadedDBC.body.records[selectedID].spellName.Length == 0 || loadedDBC.body.records[selectedID].spellName[0] == null)
+                {
+                    await this.ShowMessageAsync("ERROR", "Something went wrong trying to select this spell.");
+                    populateSelectSpell();
+                }
+                else
+                {
+                    updateMainWindow();
+                    MainTabControl.SelectedIndex = 1;
+                }
             }
         }
 
