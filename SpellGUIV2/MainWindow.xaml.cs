@@ -47,7 +47,21 @@ namespace SpellGUIV2
 
         public MainWindow()
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
+
             InitializeComponent();
+        }
+
+        static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            Console.WriteLine("ERROR: " + e.Message);
+            Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
+
+            string[] errorMsg = { "[" + DateTime.Now.ToShortTimeString().ToString() + "] ERROR: ", e.Message + "\n" };
+
+            System.IO.File.WriteAllLines(@"ERRORS.txt", errorMsg);
         }
 
         private async void loadAllDBCs()
