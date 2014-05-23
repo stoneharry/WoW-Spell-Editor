@@ -55,22 +55,26 @@ namespace SpellGUIV2
                 // Turn the string block into something readable
                 string temp = "";
                 UInt32 lastString = 0;
-                for (UInt32 i = 0; i < header.string_block_size; ++i)
+                //for (UInt32 i = 0; i < header.string_block_size; ++i)
+                UInt32 counter = 0;
+                Int32 length = new System.Globalization.StringInfo(string_block).LengthInTextElements;
+                while (counter < length)
                 {
-                    char t = string_block[(int) i];
+                    var t = string_block[(int)counter];
                     if (t == '\0')
                     {
                         VirtualStrTableEntry n = new VirtualStrTableEntry();
                         n.value = temp;
                         n.newValue = 0;
                         strings.Add(lastString, n);
-                        lastString += (uint) temp.Length + 1;
+                        lastString += (UInt32) Encoding.UTF8.GetByteCount(temp) + 1;
                         temp = "";
                     }
                     else
                     {
                         temp += t;
                     }
+                    ++counter;
                 }
 
                 // Clean up for bad computers GC
@@ -128,7 +132,7 @@ namespace SpellGUIV2
                             else
                             {
                                 body.records[i].record.SpellName[j] = stringBlockOffset;
-                                stringBlockOffset += (UInt32)body.records[i].spellName[j].Length + 1;
+                                stringBlockOffset += (UInt32)Encoding.UTF8.GetByteCount(body.records[i].spellName[j]) + 1;
                                 offsetStorage.Add(key, body.records[i].record.SpellName[j]);
                                 reverseStorage.Add(body.records[i].record.SpellName[j], body.records[i].spellName[j]);
                             }
@@ -144,7 +148,7 @@ namespace SpellGUIV2
                             else
                             {
                                 body.records[i].record.Rank[j] = stringBlockOffset;
-                                stringBlockOffset += (UInt32)body.records[i].spellRank[j].Length + 1;
+                                stringBlockOffset += (UInt32)Encoding.UTF8.GetByteCount(body.records[i].spellRank[j]) + 1;
                                 offsetStorage.Add(key, body.records[i].record.Rank[j]);
                                 reverseStorage.Add(body.records[i].record.Rank[j], body.records[i].spellRank[j]);
                             }
@@ -160,7 +164,7 @@ namespace SpellGUIV2
                             else
                             {
                                 body.records[i].record.ToolTip[j] = stringBlockOffset;
-                                stringBlockOffset += (UInt32)body.records[i].spellTool[j].Length + 1;
+                                stringBlockOffset += (UInt32)Encoding.UTF8.GetByteCount(body.records[i].spellTool[j]) + 1;
                                 offsetStorage.Add(key, body.records[i].record.ToolTip[j]);
                                 reverseStorage.Add(body.records[i].record.ToolTip[j], body.records[i].spellTool[j]);
                             }
@@ -176,7 +180,7 @@ namespace SpellGUIV2
                             else
                             {
                                 body.records[i].record.Description[j] = stringBlockOffset;
-                                stringBlockOffset += (UInt32)body.records[i].spellDesc[j].Length + 1;
+                                stringBlockOffset += (UInt32)Encoding.UTF8.GetByteCount(body.records[i].spellDesc[j]) + 1;
                                 offsetStorage.Add(key, body.records[i].record.Description[j]);
                                 reverseStorage.Add(body.records[i].record.Description[j], body.records[i].spellDesc[j]);
                             }
