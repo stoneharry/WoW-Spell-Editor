@@ -632,10 +632,23 @@ namespace SpellGUIV2
             if (loadedDBC == null)
                 return;
             SelectSpell.Items.Clear();
+            int locale = 0;
+            // Attempt to get the nearest locality
+            for (int i = 0; i < 9; ++i)
+            {
+                if (loadedDBC.body.records.Length < 3) // unlikely
+                    break;
+                if (loadedDBC.body.records[2].spellName[i].Length > 0) // 2 = death touch normally
+                {
+                    locale = i;
+                    break;
+                }
+            }
+            // Render spell ID's and name
             for (UInt32 i = 0; i < loadedDBC.body.records.Length; ++i)
             {
                 SelectSpell.Items.Add(loadedDBC.body.records[i].record.Id.ToString() + " - " +
-                    loadedDBC.body.records[i].spellName[0]);
+                    loadedDBC.body.records[i].spellName[locale]);
             }
         }
 
