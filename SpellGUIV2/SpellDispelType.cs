@@ -17,6 +17,8 @@ namespace SpellGUIV2
         private MainWindow main;
         private SpellDBC spell;
 
+        private int locale = 0;
+
         // Offset to string hash
         private Dictionary<int, int> offsetHashMap = new Dictionary<int, int>();
         // string hash to index
@@ -58,22 +60,36 @@ namespace SpellGUIV2
                 handle.Free();
             }
 
-            body.StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
+            body.StringBlock = reader.ReadBytes(header.string_block_size);
 
             reader.Close();
             fs.Close();
 
             int boxIndex = 0;
 
+            // Attempt to get the nearest locality
+            for (int i = 0; i < 9; ++i)
+            {
+                if (body.records[0].Name[i] > 0)
+                {
+                    locale = i;
+                    break;
+                }
+            }
+            List<byte> bytes = new List<byte>();
             for (UInt32 i = 0; i < header.record_count; ++i)
             {
-                int offset = (int)body.records[i].Name[0];
+                int offset = (int)body.records[i].Name[locale];
                 if (offset == 0)
                     continue;
                 int returnValue = offset;
-                string toAdd = "";
-                while (body.StringBlock[offset] != '\0')
-                    toAdd += body.StringBlock[offset++];
+
+                while (body.StringBlock[offset] != 0)
+                    bytes.Add(body.StringBlock[offset++]);
+
+                string toAdd = Encoding.UTF8.GetString(bytes.ToArray<byte>());
+
+                bytes.Clear();
 
                 // Index to ID
                 IndexToIDMap.Add(boxIndex, body.records[i].ID);
@@ -100,7 +116,7 @@ namespace SpellGUIV2
             {
                 if (ID == body.records[i].ID)
                 {
-                    main.DispelType.SelectedIndex = stringHashMap[offsetHashMap[(int)body.records[i].Name[0]]];
+                    main.DispelType.SelectedIndex = stringHashMap[offsetHashMap[(int)body.records[i].Name[locale]]];
                     return;
                 }
             }
@@ -109,7 +125,7 @@ namespace SpellGUIV2
         public struct DispelDBC_Map
         {
             public DispelDBC_Record[] records;
-            public string StringBlock;
+            public Byte[] StringBlock;
         }
 
         public struct DispelDBC_Record

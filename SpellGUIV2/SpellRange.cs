@@ -51,7 +51,7 @@ namespace SpellGUIV2
                 handle.Free();
             }
 
-            body.StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.string_block_size));
+            body.StringBlock = reader.ReadBytes(header.string_block_size);
 
             reader.Close();
             fs.Close();
@@ -59,15 +59,32 @@ namespace SpellGUIV2
             body.lookup = new List<SpellRange_Lookup>();
             int boxIndex = 0;
 
+            int locale = 0;
+            // Attempt to get the nearest locality
+            for (int i = 0; i < 9; ++i)
+            {
+                if (body.records[0].Name[i] > 0)
+                {
+                    locale = i;
+                    break;
+                }
+            }
+
+            List<byte> bytes = new List<byte>();
             for (UInt32 i = 0; i < header.record_count; ++i)
             {
-                int offset = (int)body.records[i].Name[0];
+                int offset = (int)body.records[i].Name[locale];
                 if (offset == 0)
                     continue;
                 int returnValue = offset;
+
+                while (body.StringBlock[offset] != 0)
+                    bytes.Add(body.StringBlock[offset++]);
+
                 string toAdd = body.records[i].ID + " - ";
-                while (body.StringBlock[offset] != '\0')
-                    toAdd += body.StringBlock[offset++];
+                toAdd += Encoding.UTF8.GetString(bytes.ToArray<byte>());
+
+                bytes.Clear();
 
                 SpellRange_Lookup temp;
                 temp.ID = (int)body.records[i].ID;
@@ -98,7 +115,7 @@ namespace SpellGUIV2
         {
             public SpellRangeDBC_Record[] records;
             public List<SpellRange_Lookup> lookup;
-            public string StringBlock;
+            public byte[] StringBlock;
         }
 
         public struct SpellRange_Lookup
