@@ -213,43 +213,47 @@
             </TabItem>
             <TabItem Header="Tab 2">
                 <Grid Margin="-4,0,4,-194">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="95*"/>
+                        <ColumnDefinition Width="64*"/>
+                    </Grid.ColumnDefinitions>
                     <ComboBox Name="Effect1" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="193"/>
                     <Label Content="Effect 1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="EffectBase1" HorizontalAlignment="Left" Height="23" Margin="115,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
                     <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="EffectMod1" HorizontalAlignment="Left" Height="23" Margin="115,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
-                    <ComboBox Name="Effect3" HorizontalAlignment="Left" Margin="430,41,0,0" VerticalAlignment="Top" Width="193"/>
-                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="430,72,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="EffectBase3" HorizontalAlignment="Left" Height="23" Margin="535,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
-                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="430,103,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="EffectMod3" HorizontalAlignment="Left" Height="23" Margin="535,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
+                    <ComboBox Name="Effect3" HorizontalAlignment="Left" Margin="430,41,0,0" VerticalAlignment="Top" Width="193" Grid.ColumnSpan="2"/>
+                    <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="430,72,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="EffectBase3" HorizontalAlignment="Left" Height="23" Margin="60,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Column="1"/>
+                    <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="430,103,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <TextBox Name="EffectMod3" HorizontalAlignment="Left" Height="23" Margin="60,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Column="1"/>
                     <ComboBox Name="Effect2" HorizontalAlignment="Left" Margin="221,41,0,0" VerticalAlignment="Top" Width="193"/>
                     <Label Content="Effect Base Value" HorizontalAlignment="Left" Margin="221,72,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="EffectBase2" HorizontalAlignment="Left" Height="23" Margin="326,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
                     <Label Content="Effect Die Sides" HorizontalAlignment="Left" Margin="221,103,0,0" VerticalAlignment="Top"/>
                     <TextBox Name="EffectMod2" HorizontalAlignment="Left" Height="23" Margin="326,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
                     <Label Content="Effect 2" HorizontalAlignment="Left" Margin="221,10,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top"/>
-                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <Label Content="Effect 3" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="140,511,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click" Grid.Column="1"/>
                     <ComboBox Name="SpellDamageType" HorizontalAlignment="Left" Margin="127,151,0,0" VerticalAlignment="Top" Width="243"/>
                     <Label Content="Spell Damage Type" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top"/>
                     <Label Content="Prevention Type" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top"/>
                     <ComboBox Name="PreventionType" HorizontalAlignment="Left" Margin="127,182,0,0" VerticalAlignment="Top" Width="243"/>
                     <Label Content="Procs" HorizontalAlignment="Left" Margin="331,224,0,0" VerticalAlignment="Top"/>
                     <Label Content="Targets" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
-                    <ScrollViewer Margin="10,250,508,55">
+                    <ScrollViewer Margin="10,250,188,55">
                         <Grid Name="TargetEditorGrid"/>
                     </ScrollViewer>
-                    <Label Content="Proc Chance" HorizontalAlignment="Left" Margin="616,250,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
-                    <ScrollViewer Margin="331,250,187,55">
+                    <Label Content="Proc Chance" HorizontalAlignment="Left" Margin="141,250,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308" Grid.Column="1"/>
+                    <ScrollViewer Margin="331,250,187,55" Grid.ColumnSpan="2">
                         <Grid Name="ProcEditorGrid"/>
                     </ScrollViewer>
                     <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="105,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
-                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="426,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
-                    <TextBox Name="ProcChance" HorizontalAlignment="Left" Height="23" Margin="697,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
-                    <TextBox Name="ProcCharges" HorizontalAlignment="Left" Height="23" Margin="697,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88"/>
-                    <Label Content="Proc Charges" HorizontalAlignment="Left" Margin="612,281,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="426,224,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308" Grid.ColumnSpan="2"/>
+                    <TextBox Name="ProcChance" HorizontalAlignment="Left" Height="23" Margin="222,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Column="1"/>
+                    <TextBox Name="ProcCharges" HorizontalAlignment="Left" Height="23" Margin="222,281,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Column="1"/>
+                    <Label Content="Proc Charges" HorizontalAlignment="Left" Margin="137,281,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Tab 3">
@@ -392,6 +396,23 @@
                         </TabItem>
                     </TabControl>
 
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 4">
+                <Grid Margin="0,0,0,-188">
+                    <Label Content="Interrupt Flags" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Aura Interrupt Flags" HorizontalAlignment="Left" Margin="230,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Channel Interrupt Flags" HorizontalAlignment="Left" Margin="450,10,0,0" VerticalAlignment="Top"/>
+                    <ScrollViewer Margin="10,36,570,74">
+                        <Grid Name="IntGrid"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="230,36,350,74">
+                        <Grid Name="AuraIntGrid"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="450,36,130,74">
+                        <Grid Name="ChannelIntGrid"/>
+                    </ScrollViewer>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,505,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">

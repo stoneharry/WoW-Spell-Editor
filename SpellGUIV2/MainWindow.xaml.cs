@@ -44,6 +44,9 @@ namespace SpellGUIV2
 
         private List<CheckBox> targetBoxes = new List<CheckBox>();
         private List<CheckBox> procBoxes = new List<CheckBox>();
+        private List<CheckBox> interrupt1 = new List<CheckBox>();
+        private List<CheckBox> interrupt2 = new List<CheckBox>();
+        private List<CheckBox> interrupt3 = new List<CheckBox>();
 
         public MainWindow()
         {
@@ -67,7 +70,6 @@ namespace SpellGUIV2
         private async void loadAllDBCs()
         {
             //// Load DBC's
-
             string fileName = await this.ShowInputAsync("Load DBC File", "What is the name of your Spell DBC? It must be in the same directory as this program.");
             if (fileName == null || fileName.Length < 1)
             {
@@ -90,9 +92,7 @@ namespace SpellGUIV2
             //// Update spell list
             populateSelectSpell();
 
-
             ///// Update map
-
             stringObjectMap.Add(0, SpellName0);
             stringObjectMap.Add(1, SpellName1);
             stringObjectMap.Add(2, SpellName2);
@@ -131,7 +131,6 @@ namespace SpellGUIV2
             stringObjectMap.Add(35, SpellDescription8);
 
             //// Set up form
-
             string[] school_strings = {"Mana", "Rage", "Focus", "Energy", "Happiness",
                                           "Runes", "Runic Power", "Steam", "Pyrite",
                                           "Heat", "Ooze", "Blood", "Wrath"};
@@ -379,8 +378,35 @@ namespace SpellGUIV2
                 ChainTarget3.Items.Add(implicit_target_names[i]);
             }
 
-            //// Load DBC's
+            string[] interrupt_strings = { "NULL", "ON_MOVEMENT", "PUSHBACK", "ON_INTERRUPT_CAS", "ON_INTERRUPT_SCHOOL", "ON_DAMAGE_TAKEN", "ON_INTERRUPT_ALL" };
+            for (int i = 0; i < interrupt_strings.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = interrupt_strings[i];
+                box.Margin = new Thickness(5, (-9 + i) * 45, 0, 0);
+                IntGrid.Children.Add(box);
+                interrupt1.Add(box);
+            }
+            string[] aura_interrupt_strings = { "NULL", "HITBYSPELL", "TAKE_DAMAGE", "CAST", "MOVE", "TURNING", "JUMP", "NOT_MOUNTED", "NOT_ABOVEWATER", "NOT_UNDERWATER", "NOT_SHEATHED", "TALK", "USE", "MELEE_ATTACK", "SPELL_ATTACK", "UNK14", "TRANSFORM", "UNK16", "MOUNT", "NOT_SEATED", "CHANGE_MAP", "IMMUNE_OR_LOST_SELECTION", "UNK21", "TELEPORTED", "ENTER_PVP_COMBAT", "DIRECT_DAMAGE", "LANDING" };
+            for (int i = 0; i < aura_interrupt_strings.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = aura_interrupt_strings[i];
+                box.Margin = new Thickness(5, (-13 + i) * 45, 0, 0);
+                AuraIntGrid.Children.Add(box);
+                interrupt3.Add(box);
+            }
+            string[] channel_interrupt_strings = { "NULL", "ON_1", "ON_2", "ON_3", "ON_4", "ON_5", "ON_6", "ON_7", "ON_8", "ON_9", "ON_10", "ON_11", "ON_12", "ON_13", "ON_14", "ON_15", "ON_16", "ON_17", "ON_18" };
+            for (int i = 0; i < channel_interrupt_strings.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = channel_interrupt_strings[i];
+                box.Margin = new Thickness(5, (-9 + i) * 45, 0, 0);
+                ChannelIntGrid.Children.Add(box);
+                interrupt2.Add(box);
+            }
 
+            //// Load DBC's
             loadedDispelDBC = new SpellDispelType(this, loadedDBC);
             if (ERROR_STR.Length != 0)
             {
@@ -766,6 +792,57 @@ namespace SpellGUIV2
                     flag = flag + flag;
                 }
             }
+            mask = loadedDBC.body.records[selectedID].record.InterruptFlags;
+            if (mask == 0)
+            {
+                interrupt1[0].IsChecked = true;
+                for (int f = 1; f < interrupt1.Count; ++f)
+                    interrupt1[f].IsChecked = false;
+            }
+            else
+            {
+                interrupt1[0].IsChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupt1.Count; ++f)
+                {
+                    interrupt1[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+            mask = loadedDBC.body.records[selectedID].record.AuraInterruptFlags;
+            if (mask == 0)
+            {
+                interrupt2[0].IsChecked = true;
+                for (int f = 1; f < interrupt2.Count; ++f)
+                    interrupt2[f].IsChecked = false;
+            }
+            else
+            {
+                interrupt2[0].IsChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupt2.Count; ++f)
+                {
+                    interrupt2[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+            mask = loadedDBC.body.records[selectedID].record.ChannelInterruptFlags;
+            if (mask == 0)
+            {
+                interrupt3[0].IsChecked = true;
+                for (int f = 1; f < interrupt3.Count; ++f)
+                    interrupt3[f].IsChecked = false;
+            }
+            else
+            {
+                interrupt3[0].IsChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupt3.Count; ++f)
+                {
+                    interrupt3[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
 
             ProcChance.Text = loadedDBC.body.records[selectedID].record.procChance.ToString();
             ProcCharges.Text = loadedDBC.body.records[selectedID].record.procCharges.ToString();
@@ -1009,6 +1086,49 @@ namespace SpellGUIV2
                     }
                     loadedDBC.body.records[selectedID].record.procFlags = mask;
                 }
+                if (interrupt1[0].IsChecked.Value)
+                    loadedDBC.body.records[selectedID].record.InterruptFlags = 0;
+                else
+                {
+                    UInt32 mask = 0;
+                    UInt32 flag = 1;
+                    for (int f = 1; f < interrupt1.Count; ++f)
+                    {
+                        if (interrupt1[f].IsChecked.Value)
+                            mask = mask + flag;
+                        flag = flag + flag;
+                    }
+                    loadedDBC.body.records[selectedID].record.InterruptFlags = mask;
+                }
+                if (interrupt2[0].IsChecked.Value)
+                    loadedDBC.body.records[selectedID].record.AuraInterruptFlags = 0;
+                else
+                {
+                    UInt32 mask = 0;
+                    UInt32 flag = 1;
+                    for (int f = 1; f < interrupt2.Count; ++f)
+                    {
+                        if (interrupt2[f].IsChecked.Value)
+                            mask = mask + flag;
+                        flag = flag + flag;
+                    }
+                    loadedDBC.body.records[selectedID].record.AuraInterruptFlags = mask;
+                }
+                if (interrupt3[0].IsChecked.Value)
+                    loadedDBC.body.records[selectedID].record.ChannelInterruptFlags = 0;
+                else
+                {
+                    UInt32 mask = 0;
+                    UInt32 flag = 1;
+                    for (int f = 1; f < interrupt3.Count; ++f)
+                    {
+                        if (interrupt3[f].IsChecked.Value)
+                            mask = mask + flag;
+                        flag = flag + flag;
+                    }
+                    loadedDBC.body.records[selectedID].record.ChannelInterruptFlags = mask;
+                }
+
                 loadedDBC.body.records[selectedID].record.procChance = UInt32.Parse(ProcChance.Text);
                 loadedDBC.body.records[selectedID].record.procCharges = UInt32.Parse(ProcCharges.Text);
 
