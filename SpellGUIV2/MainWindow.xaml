@@ -413,6 +413,45 @@
                         <Grid Name="ChannelIntGrid"/>
                     </ScrollViewer>
                     <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,505,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="10,504,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Tab 5">
+                <Grid Margin="0,0,0,-188">
+                    <ScrollViewer Margin="10,37,528,366">
+                        <Grid Name="Attributes1"/>
+                    </ScrollViewer>
+                    <Button Content="Save Spell Changes" HorizontalAlignment="Left" Margin="615,505,0,0" VerticalAlignment="Top" Width="170" Click="Button_Click"/>
+                    <ScrollViewer Margin="272,37,266,366">
+                        <Grid Name="Attributes2"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="534,37,4,366">
+                        <Grid Name="Attributes3"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="10,210,528,188">
+                        <Grid Name="Attributes4"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="10,388,528,15">
+                        <Grid Name="Attributes7"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="272,210,266,188">
+                        <Grid Name="Attributes5"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="534,210,4,188">
+                        <Grid x:Name="Attributes6"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="272,388,266,15">
+                        <Grid x:Name="Attributes8"/>
+                    </ScrollViewer>
+                    <Label Content="Attributes" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex" HorizontalAlignment="Left" Margin="272,6,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex2" HorizontalAlignment="Left" Margin="534,11,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex3" HorizontalAlignment="Left" Margin="10,179,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex4" HorizontalAlignment="Left" Margin="272,179,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex5" HorizontalAlignment="Left" Margin="534,179,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex6" HorizontalAlignment="Left" Margin="10,357,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Attributes Ex7" HorizontalAlignment="Left" Margin="272,357,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Click The Names NOT The Boxes" HorizontalAlignment="Left" Margin="603,451,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.551,1.308"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Icon Editor">

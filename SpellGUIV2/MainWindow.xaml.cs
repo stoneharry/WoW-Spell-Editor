@@ -47,6 +47,14 @@ namespace SpellGUIV2
         private List<CheckBox> interrupt1 = new List<CheckBox>();
         private List<CheckBox> interrupt2 = new List<CheckBox>();
         private List<CheckBox> interrupt3 = new List<CheckBox>();
+        private List<CheckBox> att0 = new List<CheckBox>();
+        private List<CheckBox> att1 = new List<CheckBox>();
+        private List<CheckBox> att2 = new List<CheckBox>();
+        private List<CheckBox> att3 = new List<CheckBox>();
+        private List<CheckBox> att4 = new List<CheckBox>();
+        private List<CheckBox> att5 = new List<CheckBox>();
+        private List<CheckBox> att6 = new List<CheckBox>();
+        private List<CheckBox> att7 = new List<CheckBox>();
 
         public MainWindow()
         {
@@ -404,6 +412,79 @@ namespace SpellGUIV2
                 box.Margin = new Thickness(5, (-9 + i) * 45, 0, 0);
                 ChannelIntGrid.Children.Add(box);
                 interrupt2.Add(box);
+            }
+            // attributes
+            string[] att_flags = { "UNK0", "REQ_AMMO", "ON_NEXT_SWING", "IS_REPLENISHMENT", "ABILITY", "TRADESPELL", "PASSIVE", "HIDDEN_CLIENTSIDE", "HIDE_IN_COMBAT_LOG", "TARGET_MAINHAND_ITEM", "ON_NEXT_SWING_2", "UNK11", "DAYTIME_ONLY", "NIGHT_ONLY", "INDOORS_ONLY", "OUTDOORS_ONLY", "NOT_SHAPESHIFT", "ONLY_STEALTHED", "DONT_AFFECT_SHEATH_STATE", "LEVEL_DAMAGE_CALCULATION", "STOP_ATTACK_TARGET", "IMPOSSIBLE_DODGE_PARRY_BLOCK", "CAST_TRACK_TARGET", "CASTABLE_WHILE_DEAD", "CASTABLE_WHILE_MOUNTED", "DISABLED_WHILE_ACTIVE", "NEGATIVE_1", "CASTABLE_WHILE_SITTING", "CANT_USED_IN_COMBAT", "UNAFFECTED_BY_INVULNERABILITY", "BREAKABLE_BY_DAMAGE", "CANT_CANCEL" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes1.Children.Add(box);
+                att0.Add(box);
+            }
+            att_flags = new string[] { "DISMISS_PET", "DRAIN_ALL_POWER", "CHANNELED_1", "CANT_BE_REDIRECTED", "UNK4", "NOT_BREAK_STEALTH", "CHANNELED_2", "CANT_BE_REFLECTED", "CANT_TARGET_IN_COMBAT", "MELEE_COMBAT_START", "NO_THREAT", "UNK11", "IS_PICKPOCKET", "FARSIGHT", "CHANNEL_TRACK_TARGET", "DISPEL_AURAS_ON_IMMUNITY", "UNAFFECTED_BY_SCHOOL_IMMUNE", "UNAUTOCASTABLE_BY_PET", "UNK18", "CANT_TARGET_SELF", "REQ_COMBO_POINTS1", "UNK21", "REQ_COMBO_POINTS2", "UNK23", "IS_FISHING", "UNK25", "UNK26", "UNK27", "DONT_DISPLAY_IN_AURA_BAR", "CHANNEL_DISPLAY_SPELL_NAME", "ENABLE_AT_DODGE", "UNK31" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes2.Children.Add(box);
+                att1.Add(box);
+            }
+            att_flags = new string[] { "CAN_TARGET_DEAD", "UNK1", "CAN_TARGET_NOT_IN_LOS", "UNK3", "DISPLAY_IN_STANCE_BAR", "AUTOREPEAT_FLAG", "CANT_TARGET_TAPPED", "UNK7", "UNK8", "UNK9", "UNK10", "HEALTH_FUNNEL", "UNK12", "PRESERVE_ENCHANT_IN_ARENA", "UNK14", "UNK15", "TAME_BEAST", "NOT_RESET_AUTO_ACTIONS", "REQ_DEAD_PET", "NOT_NEED_SHAPESHIFT", "UNK20", "DAMAGE_REDUCED_SHIELD", "UNK22", "IS_ARCANE_CONCENTRATION", "UNK24", "UNK25", "UNK26", "UNK27", "UNK28", "CANT_CRIT", "TRIGGERED_CAN_TRIGGER_PROC", "FOOD_BUFF" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes3.Children.Add(box);
+                att2.Add(box);
+            }
+            att_flags = new string[] { "UNK0", "UNK1", "UNK2", "BLOCKABLE_SPELL", "IGNORE_RESURRECTION_TIMER", "UNK5", "UNK6", "STACK_FOR_DIFF_CASTERS", "ONLY_TARGET_PLAYERS", "TRIGGERED_CAN_TRIGGER_PROC_2", "MAIN_HAND", "BATTLEGROUND", "ONLY_TARGET_GHOSTS", "UNK13", "IS_HONORLESS_TARGET", "UNK15", "CANT_TRIGGER_PROC", "NO_INITIAL_AGGRO", "IGNORE_HIT_RESULT", "DISABLE_PROC", "DEATH_PERSISTENT", "UNK21", "REQ_WAND", "UNK23", "REQ_OFFHAND", "UNK25", "CAN_PROC_WITH_TRIGGERED", "DRAIN_SOUL", "UNK28", "NO_DONE_BONUS", "DONT_DISPLAY_RANGE", "UNK31" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes4.Children.Add(box);
+                att3.Add(box);
+            }
+            att_flags = new string[] { "IGNORE_RESISTANCES", "PROC_ONLY_ON_CASTER", "UNK2", "UNK3", "UNK4", "UNK5", "NOT_STEALABLE", "TRIGGERED", "UNK8", "TRIGGER_ACTIVATE", "SPELL_VS_EXTEND_COST", "UNK11", "UNK12", "UNK13", "DAMAGE_DOESNT_BREAK_AURAS", "UNK15", "NOT_USABLE_IN_ARENA", "USABLE_IN_ARENA", "AREA_TARGET_CHAIN", "UNK19", "NOT_CHECK_SELFCAST_POWER", "UNK21", "UNK22", "UNK23", "UNK24", "IS_PET_SCALING", "CAST_ONLY_IN_OUTLAND", "UNK27", "UNK28", "UNK29", "UNK30", "UNK31" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes5.Children.Add(box);
+                att4.Add(box);
+            }
+            att_flags = new string[] { "UNK0", "NO_REAGENT_WHILE_PREP", "UNK2", "USABLE_WHILE_STUNNED", "UNK4", "SINGLE_TARGET_SPELL", "UNK6", "UNK7", "UNK8", "START_PERIODIC_AT_APPLY", "HIDE_DURATION", "ALLOW_TARGET_OF_TARGET_AS_TARGET", "UNK12", "HASTE_AFFECT_DURATION", "UNK14", "UNK15", "SPECIAL_ITEM_CLASS_CHECK", "USABLE_WHILE_FEARED", "USABLE_WHILE_CONFUSED", "UNK19", "UNK20", "UNK21", "UNK22", "UNK23", "UNK24", "UNK25", "UNK26", "UNK27", "UNK28", "UNK29", "UNK30", "UNK31" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes6.Children.Add(box);
+                att5.Add(box);
+            }
+            att_flags = new string[] { "DONT_DISPLAY_COOLDOWN", "ONLY_IN_ARENA", "IGNORE_CASTER_AURAS", "UNK3", "UNK4", "UNK5", "UNK6", "UNK7", "CANT_TARGET_CROWD_CONTROLLED", "UNK9", "CAN_TARGET_POSSESSED_FRIENDS", "NOT_IN_RAID_INSTANCE", "CASTABLE_WHILE_ON_VEHICLE", "CAN_TARGET_INVISIBLE", "UNK14", "UNK15", "UNK16", "UNK17", "CAST_BY_CHARMER", "UNK19", "UNK20", "CLIENT_UI_TARGET_EFFECTS", "UNK22", "UNK23", "CAN_TARGET_UNTARGETABLE", "UNK25", "UNK26", "UNK27", "UNK28", "NO_DONE_PCT_DAMAGE_MODS", "UNK30", "UNK31" };
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes7.Children.Add(box);
+                att6.Add(box);
+            }
+            att_flags = new string[] { "UNK0", "UNK1", "REACTIVATE_AT_RESURRECT", "IS_CHEAT_SPELL", "UNK4", "SUMMON_PLAYER_TOTEM", "UNK6", "UNK7", "HORDE_ONLY", "ALLIANCE_ONLY", "DISPEL_CHARGES", "INTERRUPT_ONLY_NONPLAYER", "UNK12", "UNK13", "UNK14", "UNK15", "UNK16", "UNK17", "HAS_CHARGE_EFFECT", "ZONE_TELEPORT", "UNK20", "UNK21", "UNK22", "UNK23", "UNK24", "UNK25", "UNK26", "UNK27", "UNK28", "UNK29", "UNK30", "UNK31"};
+            for (int i = 0; i < att_flags.Length; ++i)
+            {
+                CheckBox box = new CheckBox();
+                box.Content = att_flags[i];
+                box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                Attributes8.Children.Add(box);
+                att7.Add(box);
             }
 
             //// Load DBC's
@@ -888,6 +969,63 @@ namespace SpellGUIV2
                     flag = flag + flag;
                 }
             }
+            // attributes
+            mask = loadedDBC.body.records[selectedID].record.Attributes;
+            UInt32 flagg = 1;
+            for (int f = 0; f < att0.Count; ++f)
+            {
+                att0[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx;
+            flagg = 1;
+            for (int f = 0; f < att1.Count; ++f)
+            {
+                att1[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx2;
+            flagg = 1;
+            for (int f = 0; f < att2.Count; ++f)
+            {
+                att2[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx3;
+            flagg = 1;
+            for (int f = 0; f < att3.Count; ++f)
+            {
+                att3[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx4;
+            flagg = 1;
+            for (int f = 0; f < att4.Count; ++f)
+            {
+                att4[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx5;
+            flagg = 1;
+            for (int f = 0; f < att5.Count; ++f)
+            {
+                att5[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx6;
+            flagg = 1;
+            for (int f = 0; f < att6.Count; ++f)
+            {
+                att6[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+            mask = loadedDBC.body.records[selectedID].record.AttributesEx7;
+            flagg = 1;
+            for (int f = 0; f < att7.Count; ++f)
+            {
+                att7[f].IsChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
 
             ProcChance.Text = loadedDBC.body.records[selectedID].record.procChance.ToString();
             ProcCharges.Text = loadedDBC.body.records[selectedID].record.procCharges.ToString();
@@ -1173,6 +1311,79 @@ namespace SpellGUIV2
                     }
                     loadedDBC.body.records[selectedID].record.ChannelInterruptFlags = mask;
                 }
+                // Attributes
+                UInt32 maskk = 0;
+                UInt32 flagg = 1;
+                for (int f = 0; f < att0.Count; ++f)
+                {
+                    if (att0[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.Attributes = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att1.Count; ++f)
+                {
+                    if (att1[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att2.Count; ++f)
+                {
+                    if (att2[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx2 = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att3.Count; ++f)
+                {
+                    if (att3[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx3 = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att4.Count; ++f)
+                {
+                    if (att4[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx4 = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att5.Count; ++f)
+                {
+                    if (att5[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx5 = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att6.Count; ++f)
+                {
+                    if (att6[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx6 = maskk;
+                maskk = 0;
+                flagg = 1;
+                for (int f = 0; f < att7.Count; ++f)
+                {
+                    if (att7[f].IsChecked.Value)
+                        maskk = maskk + flagg;
+                    flagg = flagg + flagg;
+                }
+                loadedDBC.body.records[selectedID].record.AttributesEx7 = maskk;
 
                 loadedDBC.body.records[selectedID].record.procChance = UInt32.Parse(ProcChance.Text);
                 loadedDBC.body.records[selectedID].record.procCharges = UInt32.Parse(ProcCharges.Text);
