@@ -458,10 +458,47 @@ namespace SpellGUIV2
         {
             if (loadedDBC == null)
                 return;
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "YES";
+            settings.NegativeButtonText = "NO";
+            MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+            MessageDialogResult copySpell = await this.ShowMessageAsync("New Record", "Copy an existing record?", style, settings);
+            string errorMsg = "";
+            UInt32 oldIDIndex = UInt32.MaxValue;
+            if (copySpell == MessageDialogResult.Affirmative)
+            {
+                UInt32 oldID = 0;
+                string inp = await this.ShowInputAsync("New Record", "Input the spell ID to copy from.");
+                if (inp == null)
+                    return;
+                try
+                {
+                    oldID = UInt32.Parse(inp);
+                    for (UInt32 i = 0; i < loadedDBC.body.records.Length; ++i)
+                    {
+                        if (loadedDBC.body.records[i].record.Id == oldID)
+                        {
+                            oldIDIndex = i;
+                            break;
+                        }
+                    }
+                    if (oldIDIndex == UInt32.MaxValue)
+                        throw new Exception("Input spell ID does not exist!");
+                }
+                catch (Exception ex)
+                {
+                    errorMsg = ex.Message;
+                }
+                if (errorMsg.Length != 0)
+                {
+                    await this.ShowMessageAsync("ERROR", errorMsg);
+                    return;
+                }
+            }
+
             string input = await this.ShowInputAsync("New Record", "Input the new spell ID.");
             if (input == null)
                 return;
-            string errorMsg = "";
             UInt32 newID = 0;
             try
             {
@@ -485,41 +522,49 @@ namespace SpellGUIV2
             Int32 newRecord = (Int32)loadedDBC.header.record_count++;
             Array.Resize(ref loadedDBC.body.records, (Int32)loadedDBC.header.record_count);
 
-            loadedDBC.body.records[newRecord].record.SpellName = new UInt32[9];
-            loadedDBC.body.records[newRecord].record.Description = new UInt32[9];
-            loadedDBC.body.records[newRecord].record.ToolTip = new UInt32[9];
-            loadedDBC.body.records[newRecord].record.Rank = new UInt32[9];
-            loadedDBC.body.records[newRecord].spellDesc = new String[9];
-            loadedDBC.body.records[newRecord].spellName = new String[9];
-            loadedDBC.body.records[newRecord].spellRank = new String[9];
-            loadedDBC.body.records[newRecord].spellTool = new String[9];
-            loadedDBC.body.records[newRecord].record.SpellNameFlag = new UInt32[8];
-            loadedDBC.body.records[newRecord].record.DescriptionFlags = new UInt32[8];
-            loadedDBC.body.records[newRecord].record.ToolTipFlags = new UInt32[8];
-            loadedDBC.body.records[newRecord].record.RankFlags = new UInt32[8];
-            for (int i = 0; i < 9; ++i)
+            if (oldIDIndex != UInt32.MaxValue)
             {
-                loadedDBC.body.records[newRecord].record.SpellName[i] = 0;
-                loadedDBC.body.records[newRecord].record.Description[i] = 0;
-                loadedDBC.body.records[newRecord].record.ToolTip[i] = 0;
-                loadedDBC.body.records[newRecord].record.Rank[i] = 0;
-                loadedDBC.body.records[newRecord].spellDesc[i] = "";
-                loadedDBC.body.records[newRecord].spellName[i] = "";
-                loadedDBC.body.records[newRecord].spellRank[i] = "";
-                loadedDBC.body.records[newRecord].spellTool[i] = "";
-                if (i < 8)
-                {
-                    loadedDBC.body.records[newRecord].record.SpellNameFlag[i] = 0;
-                    loadedDBC.body.records[newRecord].record.DescriptionFlags[i] = 0;
-                    loadedDBC.body.records[newRecord].record.ToolTipFlags[i] = 0;
-                    loadedDBC.body.records[newRecord].record.RankFlags[i] = 0;
-                }
+                loadedDBC.body.records[newRecord] = loadedDBC.body.records[oldIDIndex];
+                loadedDBC.body.records[newRecord].record.Id = newID;
             }
-            loadedDBC.body.records[newRecord].record.rangeIndex = 1;
-            loadedDBC.body.records[newRecord].record.SpellIconID = 1;
-            loadedDBC.body.records[newRecord].spellName[0] = "New Spell";
-            loadedDBC.body.records[newRecord].record.Id = newID;
-            loadedDBC.body.records[newRecord].record.EquippedItemClass = -1;
+            else
+            {
+                loadedDBC.body.records[newRecord].record.SpellName = new UInt32[9];
+                loadedDBC.body.records[newRecord].record.Description = new UInt32[9];
+                loadedDBC.body.records[newRecord].record.ToolTip = new UInt32[9];
+                loadedDBC.body.records[newRecord].record.Rank = new UInt32[9];
+                loadedDBC.body.records[newRecord].spellDesc = new String[9];
+                loadedDBC.body.records[newRecord].spellName = new String[9];
+                loadedDBC.body.records[newRecord].spellRank = new String[9];
+                loadedDBC.body.records[newRecord].spellTool = new String[9];
+                loadedDBC.body.records[newRecord].record.SpellNameFlag = new UInt32[8];
+                loadedDBC.body.records[newRecord].record.DescriptionFlags = new UInt32[8];
+                loadedDBC.body.records[newRecord].record.ToolTipFlags = new UInt32[8];
+                loadedDBC.body.records[newRecord].record.RankFlags = new UInt32[8];
+                for (int i = 0; i < 9; ++i)
+                {
+                    loadedDBC.body.records[newRecord].record.SpellName[i] = 0;
+                    loadedDBC.body.records[newRecord].record.Description[i] = 0;
+                    loadedDBC.body.records[newRecord].record.ToolTip[i] = 0;
+                    loadedDBC.body.records[newRecord].record.Rank[i] = 0;
+                    loadedDBC.body.records[newRecord].spellDesc[i] = "";
+                    loadedDBC.body.records[newRecord].spellName[i] = "";
+                    loadedDBC.body.records[newRecord].spellRank[i] = "";
+                    loadedDBC.body.records[newRecord].spellTool[i] = "";
+                    if (i < 8)
+                    {
+                        loadedDBC.body.records[newRecord].record.SpellNameFlag[i] = 0;
+                        loadedDBC.body.records[newRecord].record.DescriptionFlags[i] = 0;
+                        loadedDBC.body.records[newRecord].record.ToolTipFlags[i] = 0;
+                        loadedDBC.body.records[newRecord].record.RankFlags[i] = 0;
+                    }
+                }
+                loadedDBC.body.records[newRecord].record.rangeIndex = 1;
+                loadedDBC.body.records[newRecord].record.SpellIconID = 1;
+                loadedDBC.body.records[newRecord].spellName[0] = "New Spell";
+                loadedDBC.body.records[newRecord].record.Id = newID;
+                loadedDBC.body.records[newRecord].record.EquippedItemClass = -1;
+            }
 
             // Sort by ID
             loadedDBC.body.records = loadedDBC.body.records.OrderBy(SpellDBC_RecordMap => SpellDBC_RecordMap.record.Id).ToArray<SpellDBC_RecordMap>();
