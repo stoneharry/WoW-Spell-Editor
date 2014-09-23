@@ -607,6 +607,18 @@ namespace SpellGUIV2
             {
                 loadedDBC.body.records[newRecord] = loadedDBC.body.records[oldIDIndex];
                 loadedDBC.body.records[newRecord].record.Id = newID;
+                // Arrays will be passed by ref so copy the value accross instead
+                loadedDBC.body.records[newRecord].spellName = new String[10];
+                loadedDBC.body.records[newRecord].spellDesc = new String[10];
+                loadedDBC.body.records[newRecord].spellRank = new String[10];
+                loadedDBC.body.records[newRecord].spellTool = new String[10];
+                for (int i = 0; i < 9; ++i)
+                {
+                    loadedDBC.body.records[newRecord].spellName[i] = loadedDBC.body.records[oldIDIndex].spellName[i];
+                    loadedDBC.body.records[newRecord].spellDesc[i] = loadedDBC.body.records[oldIDIndex].spellDesc[i];
+                    loadedDBC.body.records[newRecord].spellRank[i] = loadedDBC.body.records[oldIDIndex].spellRank[i];
+                    loadedDBC.body.records[newRecord].spellTool[i] = loadedDBC.body.records[oldIDIndex].spellTool[i];
+                }
             }
             else
             {
