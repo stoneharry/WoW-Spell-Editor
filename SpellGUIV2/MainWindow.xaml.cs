@@ -39,6 +39,7 @@ namespace SpellGUIV2
         private bool Updating_Strings = false;
         public TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         public UInt32 NewIconID = 1;
+        public UInt32[] newRadiusIndex = new UInt32[3] { 0, 0, 0 };
 
         public string ERROR_STR = "";
 
@@ -1458,9 +1459,10 @@ namespace SpellGUIV2
                 loadedDBC.body.records[selectedID].record.EffectChainTarget1 = (UInt32)ChainTarget1.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectChainTarget2 = (UInt32)ChainTarget2.SelectedIndex;
                 loadedDBC.body.records[selectedID].record.EffectChainTarget3 = (UInt32)ChainTarget3.SelectedIndex;
-                loadedDBC.body.records[selectedID].record.EffectRadiusIndex1 = (UInt32)RadiusIndex1.SelectedIndex;
-                loadedDBC.body.records[selectedID].record.EffectRadiusIndex2 = (UInt32)RadiusIndex2.SelectedIndex;
-                loadedDBC.body.records[selectedID].record.EffectRadiusIndex3 = (UInt32)RadiusIndex3.SelectedIndex;
+                loadedRadius.updateIndexesSave();
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex1 = newRadiusIndex[0];
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex2 = newRadiusIndex[1];
+                loadedDBC.body.records[selectedID].record.EffectRadiusIndex3 = newRadiusIndex[2];
             }
             catch (Exception ex)
             {

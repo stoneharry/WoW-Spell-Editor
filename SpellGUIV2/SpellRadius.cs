@@ -56,9 +56,9 @@ namespace SpellGUIV2
 
             body.lookup = new List<RadiusLookup>();
 
-            main.RadiusIndex1.Items.Add("0 - 0");
-            main.RadiusIndex2.Items.Add("0 - 0");
-            main.RadiusIndex3.Items.Add("0 - 0");
+            main.RadiusIndex1.Items.Add("0");
+            main.RadiusIndex2.Items.Add("0");
+            main.RadiusIndex3.Items.Add("0");
 
             int boxIndex = 1;
             for (UInt32 i = 0; i < header.record_count; ++i)
@@ -68,9 +68,9 @@ namespace SpellGUIV2
                 temp.ID = (int)body.records[i].ID;
                 temp.comboBoxIndex = boxIndex;
 
-                main.RadiusIndex1.Items.Add(body.records[i].radius + " - " + body.records[i].maxRadius);
-                main.RadiusIndex2.Items.Add(body.records[i].radius + " - " + body.records[i].maxRadius);
-                main.RadiusIndex3.Items.Add(body.records[i].radius + " - " + body.records[i].maxRadius);
+                main.RadiusIndex1.Items.Add(body.records[i].radius);
+                main.RadiusIndex2.Items.Add(body.records[i].radius);
+                main.RadiusIndex3.Items.Add(body.records[i].radius);
 
                 body.lookup.Add(temp);
 
@@ -83,6 +83,9 @@ namespace SpellGUIV2
             int[] IDs = {(int)spell.body.records[main.selectedID].record.EffectRadiusIndex1,
                             (int)spell.body.records[main.selectedID].record.EffectRadiusIndex2,
                             (int)spell.body.records[main.selectedID].record.EffectRadiusIndex3};
+            main.newRadiusIndex[0] = spell.body.records[main.selectedID].record.EffectRadiusIndex1;
+            main.newRadiusIndex[1] = spell.body.records[main.selectedID].record.EffectRadiusIndex2;
+            main.newRadiusIndex[2] = spell.body.records[main.selectedID].record.EffectRadiusIndex3;
             for (int j = 0; j < IDs.Length; ++j)
             {
                 int ID = IDs[j];
@@ -100,6 +103,27 @@ namespace SpellGUIV2
                         if (j == 0) main.RadiusIndex1.SelectedIndex = body.lookup[i].comboBoxIndex;
                         else if (j == 1) main.RadiusIndex2.SelectedIndex = body.lookup[i].comboBoxIndex;
                         else if (j == 2) main.RadiusIndex3.SelectedIndex = body.lookup[i].comboBoxIndex;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        public void updateIndexesSave()
+        {
+            int[] IDs = { main.RadiusIndex1.SelectedIndex, main.RadiusIndex2.SelectedIndex, main.RadiusIndex3.SelectedIndex };
+            for (int j = 0; j < 3; ++j)
+            {
+                if (IDs[j] == 0)
+                {
+                    main.newRadiusIndex[j] = 0;
+                    continue;
+                }
+                for (int i = 0; i < body.lookup.Count; ++i)
+                {
+                    if (IDs[j] == body.lookup[i].comboBoxIndex)
+                    {
+                        main.newRadiusIndex[j] = (UInt32)body.lookup[i].ID;
                         continue;
                     }
                 }
