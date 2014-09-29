@@ -1,28 +1,4 @@
-<<<<<<< HEAD
-﻿using System;
-=======
-﻿/*
- * Copyright (c) <2011> <by Xalcon @ mmowned.com-Forum>
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 using System;
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,10 +7,6 @@ using System.Drawing;
 
 namespace SereniaBLPLib
 {
-<<<<<<< HEAD
-=======
-    // Some Helper Struct to store Color-Data
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
     public struct ARGBColor8
     {
         public byte red;
@@ -73,7 +45,6 @@ namespace SereniaBLPLib
             this.blue = b;
             this.alpha = a;
         }
-<<<<<<< HEAD
         public static void convertToBGRA(ref byte[] pixel)
         {
             byte tmp = 0;
@@ -83,22 +54,6 @@ namespace SereniaBLPLib
                 tmp = pixel[i];
                 pixel[i] = pixel[i + 2];
                 pixel[i + 2] = tmp;
-=======
-
-        /// <summary>
-        /// Converts the given Pixel-Array into the BGRA-Format
-        /// This will also work vice versa
-        /// </summary>
-        /// <param name="pixel"></param>
-        public static void convertToBGRA(ref byte[] pixel)
-        {
-            byte tmp = 0;
-            for (int i = 0; i < pixel.Length; i += 4)
-            {
-                tmp = pixel[i]; // store red
-                pixel[i] = pixel[i + 2]; // Write blue into red
-                pixel[i + 2] = tmp; // write stored red into blue
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
             }
         }
     }
@@ -106,38 +61,6 @@ namespace SereniaBLPLib
     public class BlpFile : IDisposable
     {
         #region Private Fields
-<<<<<<< HEAD
-        uint type;
-        byte encoding;
-        byte alphaDepth;
-        byte alphaEncoding;
-        byte hasMipmaps;
-        int width;
-        int height;
-        uint[] mipmapOffsets = new uint[16];
-        uint[] mippmapSize = new uint[16];
-        ARGBColor8[] paletteBGRA = new ARGBColor8[256];
-
-        Stream str;
-        #endregion
-
-        #region Private Methods
-        private byte[] getPictureUncompressedByteArray(int MipmapLevel)
-        {
-            if (MipmapLevel >= this.MipMapCount)
-            {
-                MipmapLevel = this.MipMapCount - 1;
-            }
-
-            if (MipmapLevel < 0)
-            {
-                MipmapLevel = 0;
-            }
-
-            byte[] pic = new byte[((this.width * this.height) * 4) / (int)(Math.Pow(2, MipmapLevel))];
-            byte[] indices = this.getPictureData(MipmapLevel);
-
-=======
         uint type; // compression: 0 = JPEG Compression, 1 = Uncompressed or DirectX Compression
         byte encoding; // 1 = Uncompressed, 2 = DirectX Compressed
         byte alphaDepth; // 0 = no alpha, 1 = 1 Bit, 4 = Bit (only DXT3), 8 = 8 Bit Alpha
@@ -165,7 +88,6 @@ namespace SereniaBLPLib
             if (MipmapLevel < 0) MipmapLevel = 0;
             byte[] pic = new byte[((this.width * this.height) * 4) / (int)(Math.Pow(2, MipmapLevel))];
             byte[] indices = this.getPictureData(MipmapLevel);
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
             for (int i = 0; i < indices.Length; i++)
             {
                 pic[i * 4] = this.paletteBGRA[indices[i]].red;
@@ -173,12 +95,6 @@ namespace SereniaBLPLib
                 pic[i * 4 + 2] = this.paletteBGRA[indices[i]].blue;
                 pic[i * 4 + 3] = (this.alphaDepth > 0) ? this.paletteBGRA[indices[i]].alpha : (byte)255;
             }
-<<<<<<< HEAD
-
-            return pic;
-        }
-
-=======
             return pic;
         }
 
@@ -187,33 +103,10 @@ namespace SereniaBLPLib
         /// </summary>
         /// <param name="MipmapLevel"></param>
         /// <returns></returns>
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
         private byte[] getPictureData(int MipmapLevel)
         {
             if (this.str != null)
             {
-<<<<<<< HEAD
-                byte[] data;
-
-                if (MipmapLevel >= this.MipMapCount)
-                {
-                    MipmapLevel = this.MipMapCount - 1;
-                }
-
-                if (MipmapLevel < 0)
-                {
-                    MipmapLevel = 0;
-                }
-
-                data = new byte[this.mippmapSize[MipmapLevel]];
-
-                this.str.Position = (int)this.mipmapOffsets[MipmapLevel];
-                this.str.Read(data, 0, data.Length);
-
-                return data;
-            }
-
-=======
                 byte[] data;
                 if (MipmapLevel >= this.MipMapCount) MipmapLevel = this.MipMapCount - 1;
                 if (MipmapLevel < 0) MipmapLevel = 0;
@@ -223,34 +116,20 @@ namespace SereniaBLPLib
                 this.str.Read(data, 0, data.Length);
                 return data;
             }
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
             return null;
         }
         #endregion
 
         #region Public Properties
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Returns the amount of Mipmaps in this BLP-File
         /// </summary>
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
         public int MipMapCount
         {
             get
             {
-<<<<<<< HEAD
-                int i = 0;
-
-                while (this.mipmapOffsets[i] != 0)
-                {
-                    i++;
-                }
-
-=======
                 int i = 0;
                 while (this.mipmapOffsets[i] != 0) i++;
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
                 return i;
             }
         }
@@ -260,26 +139,6 @@ namespace SereniaBLPLib
         public BlpFile(Stream _str)
         {
             this.str = _str;
-<<<<<<< HEAD
-
-            byte[] buffer = new byte[4];
-            this.str.Read(buffer, 0, 4);
-
-            if ((new ASCIIEncoding()).GetString(buffer) != "BLP2")
-            {
-                throw new Exception("Invalid BLP Format");
-            }
-
-            str.Read(buffer, 0, 4);
-
-            this.type = BitConverter.ToUInt32(buffer, 0);
-
-            if (this.type != 1)
-            {
-                throw new Exception("Invalid BLP-Type! Should be 1 but " + this.type + " was found");
-            }
-
-=======
             byte[] buffer = new byte[4];
             // Well, have to fix this... looks weird o.O
             this.str.Read(buffer, 0, 4);
@@ -295,45 +154,12 @@ namespace SereniaBLPLib
                 throw new Exception("Invalid BLP-Type! Should be 1 but " + this.type + " was found");
 
             // Reading encoding, alphaBitDepth, alphaEncoding and hasMipmaps
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
             this.str.Read(buffer, 0, 4);
             this.encoding = buffer[0];
             this.alphaDepth = buffer[1];
             this.alphaEncoding = buffer[2];
             this.hasMipmaps = buffer[3];
 
-<<<<<<< HEAD
-            str.Read(buffer, 0, 4);
-
-            this.width = BitConverter.ToInt32(buffer, 0);
-
-            str.Read(buffer, 0, 4);
-
-            this.height = BitConverter.ToInt32(buffer, 0);
-
-            for (int i = 0; i < 16; i++)
-            {
-                _str.Read(buffer, 0, 4);
-
-                this.mipmapOffsets[i] = BitConverter.ToUInt32(buffer, 0);
-            }
-
-            for (int i = 0; i < 16; i++)
-            {
-                str.Read(buffer, 0, 4);
-
-                this.mippmapSize[i] = BitConverter.ToUInt32(buffer, 0);
-            }
-
-            if (this.encoding == 1)
-            {
-                for (int i = 0; i < 256; i++)
-                {
-                    byte[] color = new byte[4];
-
-                    str.Read(color, 0, 4);
-
-=======
             // Reading width
             str.Read(buffer, 0, 4);
             this.width = BitConverter.ToInt32(buffer, 0);
@@ -364,7 +190,6 @@ namespace SereniaBLPLib
                 {
                     byte[] color = new byte[4];
                     str.Read(color, 0, 4);
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
                     this.paletteBGRA[i].blue = color[0];
                     this.paletteBGRA[i].green = color[1];
                     this.paletteBGRA[i].red = color[2];
@@ -373,29 +198,17 @@ namespace SereniaBLPLib
             }
         }
 
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Returns the uncompressed image as a bytarray in the 32pppRGBA-Format
         /// </summary>
         /// <param name="MipmapLevel">The desired Mipmap-Level. If the given level is invalid, the smallest available level is choosen</param>
         /// <returns></returns>
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
         public byte[] getImageBytes(int MipmapLevel)
         {
             byte[] pic;
 
             if (this.encoding == 2)
             {
-<<<<<<< HEAD
-                int flag = (this.alphaDepth > 1) ? ((this.alphaEncoding == 7) ? (int)DXTDecompression.DXTFlags.DXT5 : (int)DXTDecompression.DXTFlags.DXT3) : (int)DXTDecompression.DXTFlags.DXT1;
-
-                DXTDecompression.decompressImage(out pic, (this.width / (int)(Math.Pow(2, MipmapLevel))), (this.height / (int)(Math.Pow(2, MipmapLevel))), this.getPictureData(MipmapLevel), flag);
-            }
-
-            else
-            {
-=======
                 // Determine the correct DXT-Format
                 int flag = (this.alphaDepth > 1) ? ((this.alphaEncoding == 7) ? (int)DXTDecompression.DXTFlags.DXT5 : (int)DXTDecompression.DXTFlags.DXT3) : (int)DXTDecompression.DXTFlags.DXT1;
                 // Decompress the picture
@@ -404,34 +217,12 @@ namespace SereniaBLPLib
             else
             {
                 // Using the palette to determine the color
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
                 pic = this.getPictureUncompressedByteArray(MipmapLevel);
             }
 
             return pic;
         }
 
-<<<<<<< HEAD
-        public Bitmap getBitmap(int MipmapLevel)
-        {
-            int x = (this.width / (int)(Math.Pow(2, MipmapLevel))), y = (this.height / (int)(Math.Pow(2, MipmapLevel)));
-
-            Bitmap bmp = new Bitmap(x, y);
-
-            byte[] pic = getImageBytes(MipmapLevel);
-
-            System.Drawing.Imaging.BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, x, y), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            ARGBColor8.convertToBGRA(ref pic);
-
-            System.Runtime.InteropServices.Marshal.Copy(pic, 0, bmpdata.Scan0, pic.Length);
-
-            bmp.UnlockBits(bmpdata);
-
-            return bmp;
-        }
-
-=======
         /// <summary>
         /// Converts the BLP to a System.Drawing.Bitmap
         /// </summary>
@@ -474,18 +265,14 @@ namespace SereniaBLPLib
         /// <summary>
         /// Runs close()
         /// </summary>
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
         public void Dispose()
         {
             this.close();
         }
 
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Closes the Memorystream
         /// </summary>
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
         public void close()
         {
             if (this.str != null)
@@ -495,10 +282,5 @@ namespace SereniaBLPLib
             }
         }
         #endregion
-<<<<<<< HEAD
-    };
-};
-=======
     }
 }
->>>>>>> eaaffc5dda6f2e25a5c5384e6e0e8fbabf4c1c21
