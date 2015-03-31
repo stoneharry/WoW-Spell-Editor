@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using SpellEditor.Sources.Constants;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -395,20 +396,18 @@ namespace SpellEditor
                     Mechanic3.Items.Add(mechanic_names[i]);
                 }
 
-                string[] implicit_target_names = { "NONE", "SELF", "INVISIBLE_OR_HIDDEN_ENEMIES_AT_LOCATION_RADIUS", "PET", "SINGLE_ENEMY", "SCRIPTED_TARGET", "ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS", "HEARTSTONE_LOCATION", "ALL_ENEMY_IN_AREA", "ALL_ENEMY_IN_AREA_INSTANT", "TELEPORT_LOCATION", "LOCATION_TO_SUMMON", "ALL_PARTY_AROUND_CASTER", "SINGLE_FRIEND", "ALL_ENEMIES_AROUND_CASTER", "GAMEOBJECT", "IN_FRONT_OF_CASTER", "DUEL", "GAMEOBJECT_ITEM", "PET_MASTER", "ALL_ENEMY_IN_AREA_CHANNELED", "ALL_PARTY_IN_AREA_CHANNELED", "ALL_FRIENDLY_IN_AREA", "ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS_OVER_TIME", "MINION", "ALL_PARTY_IN_AREA", "SINGLE_PARTY", "PET_SUMMON_LOCATION", "ALL_PARTY", "SCRIPTED_OR_SINGLE_TARGET", "SELF_FISHING", "SCRIPTED_GAMEOBJECT", "TOTEM_EARTH", "TOTEM_WATER", "TOTEM_AIR", "TOTEM_FIRE", "CHAIN", "SCIPTED_OBJECT_LOCATION", "DYNAMIC_OBJECT", "MULTIPLE_SUMMON_LOCATION", "MULTIPLE_SUMMON_PET_LOCATION", "SUMMON_LOCATION", "CALIRI_EGS", "LOCATION_NEAR_CASTER", "CURRENT_SELECTION", "TARGET_AT_ORIENTATION_TO_CASTER", "LOCATION_INFRONT_CASTER", "ALL_RAID", "PARTY_MEMBER", "TARGET_FOR_VISUAL_EFFECT", "SCRIPTED_TARGET2", "AREAEFFECT_PARTY_AND_CLASS", "PRIEST_CHAMPION", "NATURE_SUMMON_LOCATION", "BEHIND_TARGET_LOCATION", "MULTIPLE_GUARDIAN_SUMMON_LOCATION", "NETHETDRAKE_SUMMON_LOCATION", "SCRIPTED_LOCATION", "LOCATION_INFRONT_CASTER_AT_RANGE", "ENEMIES_IN_AREA_CHANNELED_WITH_EXCEPTIONS", "SELECTED_ENEMY_CHANNELED", "SELECTED_ENEMY_DEADLY_POISON", "NON_COMBAT_PET" };
-
-                for (int i = 0; i < implicit_target_names.Length; ++i)
+                foreach (Targets t in Enum.GetValues(typeof(Targets)))
                 {
-                    TargetA1.Items.Add(implicit_target_names[i]);
-                    TargetB1.Items.Add(implicit_target_names[i]);
-                    TargetA2.Items.Add(implicit_target_names[i]);
-                    TargetB2.Items.Add(implicit_target_names[i]);
-                    TargetA3.Items.Add(implicit_target_names[i]);
-                    TargetB3.Items.Add(implicit_target_names[i]);
+                    TargetA1.Items.Add(t);
+                    TargetB1.Items.Add(t);
+                    TargetA2.Items.Add(t);
+                    TargetB2.Items.Add(t);
+                    TargetA3.Items.Add(t);
+                    TargetB3.Items.Add(t);
 
-                    ChainTarget1.Items.Add(implicit_target_names[i]);
-                    ChainTarget2.Items.Add(implicit_target_names[i]);
-                    ChainTarget3.Items.Add(implicit_target_names[i]);
+                    ChainTarget1.Items.Add(t);
+                    ChainTarget2.Items.Add(t);
+                    ChainTarget3.Items.Add(t);
                 }
 
                 string[] interrupt_strings = { "None", "On Movement", "On Knockback", "On Interrupt Casting", "On Interrupt School", "On Damage Taken", "On Interrupt All" };
@@ -590,10 +589,10 @@ namespace SpellEditor
                 {
                     loadDBC.body.records[newRecord] = loadDBC.body.records[oldIDIndex];
                     loadDBC.body.records[newRecord].record.ID = newID;
-                    loadDBC.body.records[newRecord].spellName = new String[10];
-                    loadDBC.body.records[newRecord].spellDesc = new String[10];
-                    loadDBC.body.records[newRecord].spellRank = new String[10];
-                    loadDBC.body.records[newRecord].spellTool = new String[10];
+                    //loadDBC.body.records[newRecord].spellName = new String[10];
+                    //loadDBC.body.records[newRecord].spellDesc = new String[10];
+                    //loadDBC.body.records[newRecord].spellRank = new String[10];
+                    //loadDBC.body.records[newRecord].spellTool = new String[10];
                 }
 
                 else
@@ -1110,12 +1109,12 @@ namespace SpellEditor
                     loadDBC.body.records[selectedID].record.EffectMechanic1 = (UInt32)Mechanic1.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectMechanic2 = (UInt32)Mechanic2.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectMechanic3 = (UInt32)Mechanic3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)TargetA1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)TargetA2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)TargetA3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)TargetB1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)TargetB2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)TargetB3.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)(Targets)TargetA1.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)(Targets)TargetA2.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)(Targets)TargetA3.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)(Targets)TargetB1.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)(Targets)TargetB2.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)(Targets)TargetB3.SelectedItem;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName1 = (UInt32)ApplyAuraName1.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName2 = (UInt32)ApplyAuraName2.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName3 = (UInt32)ApplyAuraName3.SelectedIndex;
@@ -1170,6 +1169,19 @@ namespace SpellEditor
                     loadDBC.body.records[selectedID].record.EffectBonusMultiplier1 = float.Parse(EffectBonusMultiplier1.Text);
                     loadDBC.body.records[selectedID].record.EffectBonusMultiplier2 = float.Parse(EffectBonusMultiplier2.Text);
                     loadDBC.body.records[selectedID].record.EffectBonusMultiplier3 = float.Parse(EffectBonusMultiplier3.Text);
+
+                    loadDBC.body.records[selectedID].spellName[0] = SpellName0.Text;
+                    loadDBC.body.records[selectedID].spellRank[0] = SpellRank0.Text;
+                    loadDBC.body.records[selectedID].spellTool[0] = SpellTooltip0.Text;
+                    loadDBC.body.records[selectedID].spellDesc[0] = SpellDescription0.Text;
+
+                    // TODO - this should be implemented somewhere -- if non empty strings to set appropriate flag, probably important client-wise!
+                    //loadDBC.body.records[selectedID].record.SpellNameFlag[0] = (uint)(SpellName0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
+                    //loadDBC.body.records[selectedID].record.SpellRankFlags[0] = (uint)(SpellRank0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
+                    //loadDBC.body.records[selectedID].record.SpellToolTipFlags[0] = (uint)(SpellTooltip0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
+                    //loadDBC.body.records[selectedID].record.SpellDescriptionFlags[0] = (uint)(SpellDescription0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
+                    
+                    loadDBC.SaveDBCFile();
                 }
 
                 catch (Exception ex)
@@ -1783,12 +1795,12 @@ namespace SpellEditor
                 Mechanic1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic1;
                 Mechanic2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic2;
                 Mechanic3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic3;
-                TargetA1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetA1;
-                TargetA2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetA2;
-                TargetA3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetA3;
-                TargetB1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetB1;
-                TargetB2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetB2;
-                TargetB3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectImplicitTargetB3;
+                TargetA1.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA1;
+                TargetA2.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA2;
+                TargetA3.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA3;
+                TargetB1.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB1;
+                TargetB2.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB2;
+                TargetB3.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB3;
 
                 loadRadiuses.UpdateRadiusIndexes();
 
@@ -2373,7 +2385,7 @@ namespace SpellEditor
 
                 for (UInt32 i = 0; i < header.RecordCount; ++i)
                 {
-                    count = Marshal.SizeOf(typeof(DBC_Header));
+                    count = Marshal.SizeOf(typeof(Spell_DBC_Record));
                     buffer = new byte[count];
                     handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                     Marshal.StructureToPtr(body.records[i].record, handle.AddrOfPinnedObject(), true);
