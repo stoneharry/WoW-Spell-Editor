@@ -89,6 +89,22 @@
     </ApplicationDefinition>
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />
+    <Compile Include="Sources\DBC\AreaGroup.cs" />
+    <Compile Include="Sources\DBC\ItemClass.cs" />
+    <Compile Include="Sources\DBC\SpellCastTimes.cs" />
+    <Compile Include="Sources\DBC\SpellCategory.cs" />
+    <Compile Include="Sources\DBC\SpellDBC.cs" />
+    <Compile Include="Sources\DBC\SpellDescriptionVariables.cs" />
+    <Compile Include="Sources\DBC\SpellDifficulty.cs" />
+    <Compile Include="Sources\DBC\SpellDispelType.cs" />
+    <Compile Include="Sources\DBC\SpellDuration.cs" />
+    <Compile Include="Sources\DBC\SpellFocusObject.cs" />
+    <Compile Include="Sources\DBC\SpellIconDBC.cs" />
+    <Compile Include="Sources\DBC\SpellMechanic.cs" />
+    <Compile Include="Sources\DBC\SpellRadius.cs" />
+    <Compile Include="Sources\DBC\SpellRange.cs" />
+    <Compile Include="Sources\DBC\SpellRuneCost.cs" />
+    <Compile Include="Sources\DBC\TotemCategory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
