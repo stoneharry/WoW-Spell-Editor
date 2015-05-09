@@ -103,7 +103,6 @@ namespace SpellEditor
                 if (!File.Exists("DBC/Spell.dbc"))
                 {
                     HandleErrorMessage("Failed to load Spell.dbc!");
-
                     return;
                 }
 
@@ -112,9 +111,6 @@ namespace SpellEditor
                 if (!loadDBC.LoadDBCFile(this))
                 {
                     HandleErrorMessage("Failed to load Spell.dbc!");
-
-                    Environment.Exit(0x1);
-
                     return;
                 }
 
@@ -165,7 +161,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes1.Children.Add(box);
                     attributes0.Add(box);
@@ -179,7 +174,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes2.Children.Add(box);
                     attributes1.Add(box);
@@ -193,7 +187,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes3.Children.Add(box);
                     attributes2.Add(box);
@@ -207,7 +200,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes4.Children.Add(box);
                     attributes3.Add(box);
@@ -221,7 +213,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes5.Children.Add(box);
                     attributes4.Add(box);
@@ -235,7 +226,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes6.Children.Add(box);
                     attributes5.Add(box);
@@ -249,7 +239,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes7.Children.Add(box);
                     attributes6.Add(box);
@@ -263,7 +252,6 @@ namespace SpellEditor
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     Attributes8.Children.Add(box);
                     attributes7.Add(box);
@@ -277,7 +265,6 @@ namespace SpellEditor
 
                     box.Content = stances_strings[i];
                     box.Margin = new Thickness(5, (-15 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     StancesGrid.Children.Add(box);
                     stancesBoxes.Add(box);
@@ -291,7 +278,6 @@ namespace SpellEditor
 
                     box.Content = creature_type_strings[i];
                     box.Margin = new Thickness(5, (-6.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     TargetCreatureType.Children.Add(box);
                     targetCreatureTypeBoxes.Add(box);
@@ -313,7 +299,6 @@ namespace SpellEditor
 
                     box.Content = equipped_item_inventory_type_mask_strings[i];
                     box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     EquippedItemInventoryTypeGrid.Children.Add(box);
                     equippedItemInventoryTypeMaskBoxes.Add(box);
@@ -348,7 +333,6 @@ namespace SpellEditor
 
                     box.Content = target_strings[i];
                     box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
 
                     TargetEditorGrid.Children.Add(box);
                     targetBoxes.Add(box);
@@ -362,7 +346,7 @@ namespace SpellEditor
 
                     box.Content = proc_strings[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
+
 
                     ProcEditorGrid.Children.Add(box);
                     procBoxes.Add(box);
@@ -417,7 +401,7 @@ namespace SpellEditor
 
                     box.Content = interrupt_strings[i];
                     box.Margin = new Thickness(5, (-2.2 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
+
 
                     InterruptFlagsGrid.Children.Add(box);
                     interrupts1.Add(box);
@@ -431,7 +415,7 @@ namespace SpellEditor
 
                     box.Content = aura_interrupt_strings[i];
                     box.Margin = new Thickness(5, (-13 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
+
 
                     AuraInterruptFlagsGrid.Children.Add(box);
                     interrupts3.Add(box);
@@ -445,7 +429,7 @@ namespace SpellEditor
 
                     box.Content = channel_interrupt_strings[i];
                     box.Margin = new Thickness(5, (-9.7 + i) * 45, 0, 0);
-                    box.Foreground = new SolidColorBrush(Colors.Red);
+
 
                     ChannelInterruptFlagsGrid.Children.Add(box);
                     interrupts2.Add(box);
