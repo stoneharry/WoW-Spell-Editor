@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -113,7 +114,7 @@ namespace SpellEditor.Sources.DBC
 
             if (ID == -1)
             {
-                main.EquippedItemClass.SelectedIndex = 0;
+                main.EquippedItemClass.threadSafeIndex = 0;
 
                 return;
             }
@@ -121,7 +122,7 @@ namespace SpellEditor.Sources.DBC
             if (ID == 4) { main.EquippedItemInventoryTypeGrid.IsEnabled = true; }
             else
             {
-                foreach (CheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.IsChecked = false; }
+                foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }
 
                 main.EquippedItemInventoryTypeGrid.IsEnabled = false;
             }
@@ -130,7 +131,7 @@ namespace SpellEditor.Sources.DBC
             {
                 if (ID == body.lookup[i].ID)
                 {
-                    main.EquippedItemClass.SelectedIndex = body.lookup[i].comboBoxIndex;
+                    main.EquippedItemClass.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                     break;
                 }

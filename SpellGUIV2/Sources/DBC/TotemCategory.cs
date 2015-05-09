@@ -122,14 +122,14 @@ namespace SpellEditor.Sources.DBC
                     {
                         case 0:
                             {
-                                main.TotemCategory1.SelectedIndex = 0;
+                                main.TotemCategory1.threadSafeIndex = 0;
 
                                 break;
                             }
 
                         case 1:
                             {
-                                main.TotemCategory2.SelectedIndex = 0;
+                                main.TotemCategory2.threadSafeIndex = 0;
 
                                 break;
                             }
@@ -148,14 +148,14 @@ namespace SpellEditor.Sources.DBC
                         {
                             case 0:
                                 {
-                                    main.TotemCategory1.SelectedIndex = body.lookup[i].comboBoxIndex;
+                                    main.TotemCategory1.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                                     break;
                                 }
 
                             case 1:
                                 {
-                                    main.TotemCategory2.SelectedIndex = body.lookup[i].comboBoxIndex;
+                                    main.TotemCategory2.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                                     break;
                                 }

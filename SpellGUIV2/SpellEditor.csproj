@@ -89,6 +89,9 @@
     </ApplicationDefinition>
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />
+    <Compile Include="Sources\Controls\ThreadSafeCheckBox.cs" />
+    <Compile Include="Sources\Controls\ThreadSafeComboBox.cs" />
+    <Compile Include="Sources\Controls\ThreadSafeTextBox.cs" />
     <Compile Include="Sources\DBC\AreaGroup.cs" />
     <Compile Include="Sources\DBC\ItemClass.cs" />
     <Compile Include="Sources\DBC\SpellCastTimes.cs" />

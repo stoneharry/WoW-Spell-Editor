@@ -114,21 +114,21 @@ namespace SpellEditor.Sources.DBC
                     {
                         case 0:
                             {
-                                main.RadiusIndex1.SelectedIndex = 0;
+                                main.RadiusIndex1.threadSafeIndex = 0;
 
                                 break;
                             }
 
                         case 1:
                             {
-                                main.RadiusIndex2.SelectedIndex = 0;
+                                main.RadiusIndex2.threadSafeIndex = 0;
 
                                 break;
                             }
 
                         case 2:
                             {
-                                main.RadiusIndex3.SelectedIndex = 0;
+                                main.RadiusIndex3.threadSafeIndex = 0;
 
                                 break;
                             }
@@ -147,21 +147,21 @@ namespace SpellEditor.Sources.DBC
                         {
                             case 0:
                                 {
-                                    main.RadiusIndex1.SelectedIndex = body.lookup[i].comboBoxIndex;
+                                    main.RadiusIndex1.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                                     break;
                                 }
 
                             case 1:
                                 {
-                                    main.RadiusIndex2.SelectedIndex = body.lookup[i].comboBoxIndex;
+                                    main.RadiusIndex2.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                                     break;
                                 }
 
                             case 2:
                                 {
-                                    main.RadiusIndex3.SelectedIndex = body.lookup[i].comboBoxIndex;
+                                    main.RadiusIndex3.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                                     break;
                                 }

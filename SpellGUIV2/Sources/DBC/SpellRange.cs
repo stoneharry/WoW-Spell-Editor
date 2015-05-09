@@ -114,7 +114,7 @@ namespace SpellEditor.Sources.DBC
             {
                 if (ID == body.lookup[i].ID)
                 {
-                    main.Range.SelectedIndex = body.lookup[i].comboBoxIndex;
+                    main.Range.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                     break;
                 }

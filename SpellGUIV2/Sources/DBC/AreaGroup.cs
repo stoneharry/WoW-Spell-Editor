@@ -100,7 +100,7 @@ namespace SpellEditor.Sources.DBC
 
             if (ID == 0)
             {
-                main.AreaGroup.SelectedIndex = 0;
+                main.AreaGroup.threadSafeIndex = 0;
 
                 return;
             }
@@ -109,7 +109,7 @@ namespace SpellEditor.Sources.DBC
             {
                 if (ID == body.lookup[i].ID)
                 {
-                    main.AreaGroup.SelectedIndex = body.lookup[i].comboBoxIndex;
+                    main.AreaGroup.threadSafeIndex = body.lookup[i].comboBoxIndex;
 
                     break;
                 }

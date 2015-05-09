@@ -20,6 +20,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Controls;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -66,23 +67,23 @@ namespace SpellEditor
         // End Arrays
 
         // Begin Boxes
-        private Dictionary<int, TextBox> stringObjectMap = new Dictionary<int, TextBox>();
-        private List<CheckBox> attributes0 = new List<CheckBox>();
-        private List<CheckBox> attributes1 = new List<CheckBox>();
-        private List<CheckBox> attributes2 = new List<CheckBox>();
-        private List<CheckBox> attributes3 = new List<CheckBox>();
-        private List<CheckBox> attributes4 = new List<CheckBox>();
-        private List<CheckBox> attributes5 = new List<CheckBox>();
-        private List<CheckBox> attributes6 = new List<CheckBox>();
-        private List<CheckBox> attributes7 = new List<CheckBox>();
-        private List<CheckBox> stancesBoxes = new List<CheckBox>();
-        private List<CheckBox> targetCreatureTypeBoxes = new List<CheckBox>();
-        private List<CheckBox> targetBoxes = new List<CheckBox>();
-        private List<CheckBox> procBoxes = new List<CheckBox>();
-        private List<CheckBox> interrupts1 = new List<CheckBox>();
-        private List<CheckBox> interrupts2 = new List<CheckBox>();
-        private List<CheckBox> interrupts3 = new List<CheckBox>();
-        public List<CheckBox> equippedItemInventoryTypeMaskBoxes = new List<CheckBox>();
+        private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
+        private List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes1 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes2 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes3 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes4 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes5 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes6 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> attributes7 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> stancesBoxes = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> targetCreatureTypeBoxes = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> targetBoxes = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> procBoxes = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> interrupts1 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> interrupts2 = new List<ThreadSafeCheckBox>();
+        private List<ThreadSafeCheckBox> interrupts3 = new List<ThreadSafeCheckBox>();
+        public List<ThreadSafeCheckBox> equippedItemInventoryTypeMaskBoxes = new List<ThreadSafeCheckBox>();
         // End Boxes
 
         // Begin Other
@@ -157,7 +158,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -170,7 +171,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -183,7 +184,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -196,7 +197,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -209,7 +210,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -222,7 +223,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -235,7 +236,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -248,7 +249,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -261,7 +262,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < stances_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = stances_strings[i];
                     box.Margin = new Thickness(5, (-15 + i) * 45, 0, 0);
@@ -274,7 +275,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < creature_type_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = creature_type_strings[i];
                     box.Margin = new Thickness(5, (-6.5 + i) * 45, 0, 0);
@@ -295,7 +296,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = equipped_item_inventory_type_mask_strings[i];
                     box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
@@ -329,7 +330,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < target_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = target_strings[i];
                     box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
@@ -342,7 +343,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < proc_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = proc_strings[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
@@ -397,7 +398,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < interrupt_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = interrupt_strings[i];
                     box.Margin = new Thickness(5, (-2.2 + i) * 45, 0, 0);
@@ -411,7 +412,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < aura_interrupt_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = aura_interrupt_strings[i];
                     box.Margin = new Thickness(5, (-13 + i) * 45, 0, 0);
@@ -425,7 +426,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < channel_interrupt_strings.Length; ++i)
                 {
-                    CheckBox box = new CheckBox();
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = channel_interrupt_strings[i];
                     box.Margin = new Thickness(5, (-9.7 + i) * 45, 0, 0);
@@ -1264,593 +1265,596 @@ namespace SpellEditor
             try
             {
                 updating = true;
-                int i;
-
-                for (i = 0; i < 9; ++i)
+                Task.Factory.StartNew(() =>
                 {
-                    TextBox box;
-                    stringObjectMap.TryGetValue(i, out box);
-                    box.Text = loadDBC.body.records[selectedID].spellName[i];
-                }
-                for (i = 0; i < 9; ++i)
-                {
-                    TextBox box;
-                    stringObjectMap.TryGetValue(i + 9, out box);
-                    box.Text = loadDBC.body.records[selectedID].spellRank[i];
-                }
+                    int i;
 
-                for (i = 0; i < 9; ++i)
-                {
-                    TextBox box;
-                    stringObjectMap.TryGetValue(i + 18, out box);
-                    box.Text = loadDBC.body.records[selectedID].spellTool[i];
-                }
-
-                for (i = 0; i < 9; ++i)
-                {
-                    TextBox box;
-                    stringObjectMap.TryGetValue(i + 27, out box);
-                    box.Text = loadDBC.body.records[selectedID].spellDesc[i];
-                }
-
-                loadCategories.UpdateCategorySelection();
-                loadDispels.UpdateDispelSelection();
-                loadMechanics.UpdateMechanicSelection();
-
-                UInt32 mask = loadDBC.body.records[selectedID].record.Attributes;
-                UInt32 flagg = 1;
-
-                for (int f = 0; f < attributes0.Count; ++f)
-                {
-                    attributes0[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx;
-                flagg = 1;
-
-                for (int f = 0; f < attributes1.Count; ++f)
-                {
-                    attributes1[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx2;
-                flagg = 1;
-
-                for (int f = 0; f < attributes2.Count; ++f)
-                {
-                    attributes2[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx3;
-                flagg = 1;
-
-                for (int f = 0; f < attributes3.Count; ++f)
-                {
-                    attributes3[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx4;
-                flagg = 1;
-
-                for (int f = 0; f < attributes4.Count; ++f)
-                {
-                    attributes4[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx5;
-                flagg = 1;
-
-                for (int f = 0; f < attributes5.Count; ++f)
-                {
-                    attributes5[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx6;
-                flagg = 1;
-
-                for (int f = 0; f < attributes6.Count; ++f)
-                {
-                    attributes6[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.AttributesEx7;
-                flagg = 1;
-
-                for (int f = 0; f < attributes7.Count; ++f)
-                {
-                    attributes7[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-                    flagg = flagg + flagg;
-                }
-
-                mask = loadDBC.body.records[selectedID].record.Stances;
-
-                if (mask == 0)
-                {
-                    stancesBoxes[0].IsChecked = true;
-                    for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    stancesBoxes[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < stancesBoxes.Count; ++f)
+                    for (i = 0; i < 9; ++i)
                     {
-                        stancesBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-                        flag = flag + flag;
+                        ThreadSafeTextBox box;
+                        stringObjectMap.TryGetValue(i, out box);
+                        box.threadSafeText = loadDBC.body.records[selectedID].spellName[i];
                     }
-                }
-
-                mask = loadDBC.body.records[selectedID].record.Targets;
-
-                if (mask == 0)
-                {
-                    targetBoxes[0].IsChecked = true;
-                    for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    targetBoxes[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < targetBoxes.Count; ++f)
+                    for (i = 0; i < 9; ++i)
                     {
-                        targetBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-                        flag = flag + flag;
-                    }
-                }
-
-                mask = loadDBC.body.records[selectedID].record.TargetCreatureType;
-
-                if (mask == 0)
-                {
-                    targetCreatureTypeBoxes[0].IsChecked = true;
-                    for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    targetCreatureTypeBoxes[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
-                    {
-                        targetCreatureTypeBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-                        flag = flag + flag;
-                    }
-                }
-
-                loadFocusObjects.UpdateSpellFocusObjectSelection();
-
-                mask = loadDBC.body.records[selectedID].record.FacingCasterFlags;
-
-                FacingFrontFlag.IsChecked = ((mask & 0x1) != 0) ? true : false;
-
-                switch (loadDBC.body.records[selectedID].record.CasterAuraState)
-                {
-                    case 0: // None
-                    {
-                        CasterAuraState.SelectedIndex = 0;
-                        break;
+                        ThreadSafeTextBox box;
+                        stringObjectMap.TryGetValue(i + 9, out box);
+                        box.threadSafeText = loadDBC.body.records[selectedID].spellRank[i];
                     }
 
-                    case 1: // Defense
+                    for (i = 0; i < 9; ++i)
                     {
-                        CasterAuraState.SelectedIndex = 1;
-
-                        break;
+                        ThreadSafeTextBox box;
+                        stringObjectMap.TryGetValue(i + 18, out box);
+                        box.threadSafeText = loadDBC.body.records[selectedID].spellTool[i];
                     }
 
-                    case 2: // Healthless 20%
+                    for (i = 0; i < 9; ++i)
                     {
-                        CasterAuraState.SelectedIndex = 2;
-
-                        break;
+                        ThreadSafeTextBox box;
+                        stringObjectMap.TryGetValue(i + 27, out box);
+                        box.threadSafeText = loadDBC.body.records[selectedID].spellDesc[i];
                     }
 
-                    case 3: // Berserking
-                    {
-                        CasterAuraState.SelectedIndex = 3;
+                    loadCategories.UpdateCategorySelection();
+                    loadDispels.UpdateDispelSelection();
+                    loadMechanics.UpdateMechanicSelection();
 
-                        break;
+                    UInt32 mask = loadDBC.body.records[selectedID].record.Attributes;
+                    UInt32 flagg = 1;
+
+                    for (int f = 0; f < attributes0.Count; ++f)
+                    {
+                        attributes0[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 5: // Judgement
-                    {
-                        CasterAuraState.SelectedIndex = 4;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes1.Count; ++f)
+                    {
+                        attributes1[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 7: // Hunter Parry
-                    {
-                        CasterAuraState.SelectedIndex = 5;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx2;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes2.Count; ++f)
+                    {
+                        attributes2[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 10: // Victory Rush
-                    {
-                        CasterAuraState.SelectedIndex = 6;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx3;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes3.Count; ++f)
+                    {
+                        attributes3[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 11: // Unknown 1
-                    {
-                        CasterAuraState.SelectedIndex = 7;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx4;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes4.Count; ++f)
+                    {
+                        attributes4[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 13: // Healthless 35%
-                    {
-                        CasterAuraState.SelectedIndex = 8;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx5;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes5.Count; ++f)
+                    {
+                        attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 17: // Enrage
-                    {
-                        CasterAuraState.SelectedIndex = 9;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx6;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes6.Count; ++f)
+                    {
+                        attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 22: // Unknown 2
-                    {
-                        CasterAuraState.SelectedIndex = 10;
+                    mask = loadDBC.body.records[selectedID].record.AttributesEx7;
+                    flagg = 1;
 
-                        break;
+                    for (int f = 0; f < attributes7.Count; ++f)
+                    {
+                        attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        flagg = flagg + flagg;
                     }
 
-                    case 23: // Health Above 75%
-                    {
-                        CasterAuraState.SelectedIndex = 11;
+                    mask = loadDBC.body.records[selectedID].record.Stances;
 
-                        break;
+                    if (mask == 0)
+                    {
+                        stancesBoxes[0].threadSafeChecked = true;
+                        for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
                     }
 
-                    default: { break; }
-                }
-
-                switch (loadDBC.body.records[selectedID].record.TargetAuraState)
-                {
-                    case 0: // None
+                    else
                     {
-                        TargetAuraState.SelectedIndex = 0;
+                        stancesBoxes[0].threadSafeChecked = false;
 
-                        break;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < stancesBoxes.Count; ++f)
+                        {
+                            stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                            flag = flag + flag;
+                        }
                     }
 
-                    case 2: // Healthless 20%
-                    {
-                        TargetAuraState.SelectedIndex = 1;
+                    mask = loadDBC.body.records[selectedID].record.Targets;
 
-                        break;
+                    if (mask == 0)
+                    {
+                        targetBoxes[0].threadSafeChecked = true;
+                        for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].threadSafeChecked = false; }
                     }
 
-                    case 3: // Berserking
+                    else
                     {
-                        TargetAuraState.SelectedIndex = 2;
+                        targetBoxes[0].threadSafeChecked = false;
 
-                        break;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < targetBoxes.Count; ++f)
+                        {
+                            targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                            flag = flag + flag;
+                        }
                     }
 
-                    case 13: // Healthless 35%
-                    {
-                        TargetAuraState.SelectedIndex = 3;
+                    mask = loadDBC.body.records[selectedID].record.TargetCreatureType;
 
-                        break;
+                    if (mask == 0)
+                    {
+                        targetCreatureTypeBoxes[0].threadSafeChecked = true;
+                        for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].threadSafeChecked = false; }
                     }
 
-                    case 14: // Conflagrate
+                    else
                     {
-                        TargetAuraState.SelectedIndex = 4;
+                        targetCreatureTypeBoxes[0].threadSafeChecked = false;
 
-                        break;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
+                        {
+                            targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                            flag = flag + flag;
+                        }
                     }
 
-                    case 15: // Swiftmend
-                    {
-                        TargetAuraState.SelectedIndex = 5;
+                    loadFocusObjects.UpdateSpellFocusObjectSelection();
 
-                        break;
+                    mask = loadDBC.body.records[selectedID].record.FacingCasterFlags;
+
+                    FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
+
+                    switch (loadDBC.body.records[selectedID].record.CasterAuraState)
+                    {
+                        case 0: // None
+                            {
+                                CasterAuraState.threadSafeIndex = 0;
+                                break;
+                            }
+
+                        case 1: // Defense
+                            {
+                                CasterAuraState.threadSafeIndex = 1;
+
+                                break;
+                            }
+
+                        case 2: // Healthless 20%
+                            {
+                                CasterAuraState.threadSafeIndex = 2;
+
+                                break;
+                            }
+
+                        case 3: // Berserking
+                            {
+                                CasterAuraState.threadSafeIndex = 3;
+
+                                break;
+                            }
+
+                        case 5: // Judgement
+                            {
+                                CasterAuraState.threadSafeIndex = 4;
+
+                                break;
+                            }
+
+                        case 7: // Hunter Parry
+                            {
+                                CasterAuraState.threadSafeIndex = 5;
+
+                                break;
+                            }
+
+                        case 10: // Victory Rush
+                            {
+                                CasterAuraState.threadSafeIndex = 6;
+
+                                break;
+                            }
+
+                        case 11: // Unknown 1
+                            {
+                                CasterAuraState.threadSafeIndex = 7;
+
+                                break;
+                            }
+
+                        case 13: // Healthless 35%
+                            {
+                                CasterAuraState.threadSafeIndex = 8;
+
+                                break;
+                            }
+
+                        case 17: // Enrage
+                            {
+                                CasterAuraState.threadSafeIndex = 9;
+
+                                break;
+                            }
+
+                        case 22: // Unknown 2
+                            {
+                                CasterAuraState.threadSafeIndex = 10;
+
+                                break;
+                            }
+
+                        case 23: // Health Above 75%
+                            {
+                                CasterAuraState.threadSafeIndex = 11;
+
+                                break;
+                            }
+
+                        default: { break; }
                     }
 
-                    case 16: // Deadly Poison
+                    switch (loadDBC.body.records[selectedID].record.TargetAuraState)
                     {
-                        TargetAuraState.SelectedIndex = 6;
+                        case 0: // None
+                            {
+                                TargetAuraState.threadSafeIndex = 0;
 
-                        break;
+                                break;
+                            }
+
+                        case 2: // Healthless 20%
+                            {
+                                TargetAuraState.threadSafeIndex = 1;
+
+                                break;
+                            }
+
+                        case 3: // Berserking
+                            {
+                                TargetAuraState.threadSafeIndex = 2;
+
+                                break;
+                            }
+
+                        case 13: // Healthless 35%
+                            {
+                                TargetAuraState.threadSafeIndex = 3;
+
+                                break;
+                            }
+
+                        case 14: // Conflagrate
+                            {
+                                TargetAuraState.threadSafeIndex = 4;
+
+                                break;
+                            }
+
+                        case 15: // Swiftmend
+                            {
+                                TargetAuraState.threadSafeIndex = 5;
+
+                                break;
+                            }
+
+                        case 16: // Deadly Poison
+                            {
+                                TargetAuraState.threadSafeIndex = 6;
+
+                                break;
+                            }
+
+                        case 18: // Bleeding
+                            {
+                                TargetAuraState.threadSafeIndex = 17;
+
+                                break;
+                            }
+
+                        default: { break; }
                     }
 
-                    case 18: // Bleeding
-                    {
-                        TargetAuraState.SelectedIndex = 17;
+                    loadCastTimes.UpdateCastTimeSelection();
 
-                        break;
+                    RecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.RecoveryTime.ToString();
+                    CategoryRecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.CategoryRecoveryTime.ToString();
+
+                    mask = loadDBC.body.records[selectedID].record.InterruptFlags;
+
+                    if (mask == 0)
+                    {
+                        interrupts1[0].threadSafeChecked = true;
+
+                        for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
                     }
 
-                    default: { break; }
-                }
-
-                loadCastTimes.UpdateCastTimeSelection();
-
-                RecoveryTime.Text = loadDBC.body.records[selectedID].record.RecoveryTime.ToString();
-                CategoryRecoveryTime.Text = loadDBC.body.records[selectedID].record.CategoryRecoveryTime.ToString();
-
-                mask = loadDBC.body.records[selectedID].record.InterruptFlags;
-
-                if (mask == 0)
-                {
-                    interrupts1[0].IsChecked = true;
-
-                    for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    interrupts1[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < interrupts1.Count; ++f)
+                    else
                     {
-                        interrupts1[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts1[0].threadSafeChecked = false;
 
-                        flag = flag + flag;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < interrupts1.Count; ++f)
+                        {
+                            interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+
+                            flag = flag + flag;
+                        }
                     }
-                }
 
-                mask = loadDBC.body.records[selectedID].record.AuraInterruptFlags;
+                    mask = loadDBC.body.records[selectedID].record.AuraInterruptFlags;
 
-                if (mask == 0)
-                {
-                    interrupts2[0].IsChecked = true;
-
-                    for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    interrupts2[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < interrupts2.Count; ++f)
+                    if (mask == 0)
                     {
-                        interrupts2[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts2[0].threadSafeChecked = true;
 
-                        flag = flag + flag;
+                        for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].threadSafeChecked = false; }
                     }
-                }
 
-                mask = loadDBC.body.records[selectedID].record.ChannelInterruptFlags;
-
-                if (mask == 0)
-                {
-                    interrupts3[0].IsChecked = true;
-
-                    for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    interrupts3[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < interrupts3.Count; ++f)
+                    else
                     {
-                        interrupts3[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts2[0].threadSafeChecked = false;
 
-                        flag = flag + flag;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < interrupts2.Count; ++f)
+                        {
+                            interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+
+                            flag = flag + flag;
+                        }
                     }
-                }
 
-                mask = loadDBC.body.records[selectedID].record.ProcFlags;
+                    mask = loadDBC.body.records[selectedID].record.ChannelInterruptFlags;
 
-                if (mask == 0)
-                {
-                    procBoxes[0].IsChecked = true;
-
-                    for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    procBoxes[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 1; f < procBoxes.Count; ++f)
+                    if (mask == 0)
                     {
-                        procBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts3[0].threadSafeChecked = true;
 
-                        flag = flag + flag;
+                        for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].threadSafeChecked = false; }
                     }
-                }
 
-                ProcChance.Text = loadDBC.body.records[selectedID].record.ProcChance.ToString();
-                ProcCharges.Text = loadDBC.body.records[selectedID].record.ProcCharges.ToString();
-                MaximumLevel.Text = loadDBC.body.records[selectedID].record.MaximumLevel.ToString();
-                BaseLevel.Text = loadDBC.body.records[selectedID].record.BaseLevel.ToString();
-                SpellLevel.Text = loadDBC.body.records[selectedID].record.SpellLevel.ToString();
-
-                loadDurations.UpdateDurationIndexes();
-
-                PowerType.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.PowerType;
-                PowerCost.Text = loadDBC.body.records[selectedID].record.ManaCost.ToString();
-                ManaCostPerLevel.Text = loadDBC.body.records[selectedID].record.ManaCostPerLevel.ToString();
-                ManaCostPerSecond.Text = loadDBC.body.records[selectedID].record.ManaPerSecond.ToString();
-                PerSecondPerLevel.Text = loadDBC.body.records[selectedID].record.ManaPerSecondPerLevel.ToString();
-
-                loadRanges.UpdateSpellRangeSelection();
-
-                Speed.Text = loadDBC.body.records[selectedID].record.Speed.ToString();
-                Stacks.Text = loadDBC.body.records[selectedID].record.StackAmount.ToString();
-                Totem1.Text = loadDBC.body.records[selectedID].record.Totem1.ToString();
-                Totem2.Text = loadDBC.body.records[selectedID].record.Totem2.ToString();
-                Reagent1.Text = loadDBC.body.records[selectedID].record.Reagent1.ToString();
-                Reagent2.Text = loadDBC.body.records[selectedID].record.Reagent2.ToString();
-                Reagent3.Text = loadDBC.body.records[selectedID].record.Reagent3.ToString();
-                Reagent4.Text = loadDBC.body.records[selectedID].record.Reagent4.ToString();
-                Reagent5.Text = loadDBC.body.records[selectedID].record.Reagent5.ToString();
-                Reagent6.Text = loadDBC.body.records[selectedID].record.Reagent6.ToString();
-                Reagent7.Text = loadDBC.body.records[selectedID].record.Reagent7.ToString();
-                Reagent8.Text = loadDBC.body.records[selectedID].record.Reagent8.ToString();
-                ReagentCount1.Text = loadDBC.body.records[selectedID].record.ReagentCount1.ToString();
-                ReagentCount2.Text = loadDBC.body.records[selectedID].record.ReagentCount2.ToString();
-                ReagentCount3.Text = loadDBC.body.records[selectedID].record.ReagentCount3.ToString();
-                ReagentCount4.Text = loadDBC.body.records[selectedID].record.ReagentCount4.ToString();
-                ReagentCount5.Text = loadDBC.body.records[selectedID].record.ReagentCount5.ToString();
-                ReagentCount6.Text = loadDBC.body.records[selectedID].record.ReagentCount6.ToString();
-                ReagentCount7.Text = loadDBC.body.records[selectedID].record.ReagentCount7.ToString();
-                ReagentCount8.Text = loadDBC.body.records[selectedID].record.ReagentCount8.ToString();
-
-                loadItemClasses.UpdateItemClassSelection();
-
-                mask = (UInt32)loadDBC.body.records[selectedID].record.EquippedItemInventoryTypeMask;
-
-                if (mask == 0)
-                {
-                    equippedItemInventoryTypeMaskBoxes[0].IsChecked = true;
-
-                    for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].IsChecked = false; }
-                }
-
-                else
-                {
-                    equippedItemInventoryTypeMaskBoxes[0].IsChecked = false;
-
-                    UInt32 flag = 1;
-
-                    for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
+                    else
                     {
-                        equippedItemInventoryTypeMaskBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts3[0].threadSafeChecked = false;
 
-                        flag = flag + flag;
+                        UInt32 flag = 1;
+
+                        for (int f = 1; f < interrupts3.Count; ++f)
+                        {
+                            interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+
+                            flag = flag + flag;
+                        }
                     }
-                }
 
-                Effect1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
-                Effect2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
-                Effect3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
-                SpellEffect1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
-                SpellEffect2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
-                SpellEffect3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
-                EffectDieSides1.Text = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
-                EffectDieSides2.Text = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
-                EffectDieSides3.Text = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
-                DieSides1.Text = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
-                DieSides2.Text = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
-                DieSides3.Text = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
-                BasePointsPerLevel1.Text = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                BasePointsPerLevel2.Text = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                BasePointsPerLevel3.Text = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                EffectBaseValue1.Text = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
-                EffectBaseValue2.Text = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
-                EffectBaseValue3.Text = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
-                BasePoints1.Text = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
-                BasePoints2.Text = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
-                BasePoints3.Text = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
-                Mechanic1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic1;
-                Mechanic2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic2;
-                Mechanic3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic3;
-                TargetA1.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA1;
-                TargetA2.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA2;
-                TargetA3.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA3;
-                TargetB1.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB1;
-                TargetB2.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB2;
-                TargetB3.SelectedItem = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB3;
+                    mask = loadDBC.body.records[selectedID].record.ProcFlags;
 
-                loadRadiuses.UpdateRadiusIndexes();
+                    if (mask == 0)
+                    {
+                        procBoxes[0].threadSafeChecked = true;
 
-                ApplyAuraName1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName1;
-                ApplyAuraName2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName2;
-                ApplyAuraName3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName3;
-                Amplitude1.Text = loadDBC.body.records[selectedID].record.EffectAmplitude1.ToString();
-                Amplitude2.Text = loadDBC.body.records[selectedID].record.EffectAmplitude2.ToString();
-                Amplitude3.Text = loadDBC.body.records[selectedID].record.EffectAmplitude3.ToString();
-                MultipleValue1.Text = loadDBC.body.records[selectedID].record.EffectMultipleValue1.ToString();
-                MultipleValue2.Text = loadDBC.body.records[selectedID].record.EffectMultipleValue2.ToString();
-                MultipleValue3.Text = loadDBC.body.records[selectedID].record.EffectMultipleValue3.ToString();
-                ChainTarget1.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget1;
-                ChainTarget2.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget2;
-                ChainTarget3.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget3;
-                ItemType1.Text = loadDBC.body.records[selectedID].record.EffectItemType1.ToString();
-                ItemType2.Text = loadDBC.body.records[selectedID].record.EffectItemType2.ToString();
-                ItemType3.Text = loadDBC.body.records[selectedID].record.EffectItemType3.ToString();
-                MiscValueA1.Text = loadDBC.body.records[selectedID].record.EffectMiscValue1.ToString();
-                MiscValueA2.Text = loadDBC.body.records[selectedID].record.EffectMiscValue2.ToString();
-                MiscValueA3.Text = loadDBC.body.records[selectedID].record.EffectMiscValue3.ToString();
-                MiscValueB1.Text = loadDBC.body.records[selectedID].record.EffectMiscValueB1.ToString();
-                MiscValueB2.Text = loadDBC.body.records[selectedID].record.EffectMiscValueB2.ToString();
-                MiscValueB3.Text = loadDBC.body.records[selectedID].record.EffectMiscValueB3.ToString();
-                TriggerSpell1.Text = loadDBC.body.records[selectedID].record.EffectTriggerSpell1.ToString();
-                TriggerSpell2.Text = loadDBC.body.records[selectedID].record.EffectTriggerSpell2.ToString();
-                TriggerSpell3.Text = loadDBC.body.records[selectedID].record.EffectTriggerSpell3.ToString();
-                PointsPerComboPoint1.Text = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint1.ToString();
-                PointsPerComboPoint2.Text = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint2.ToString();
-                PointsPerComboPoint3.Text = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint3.ToString();
-                SpellMask11.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA1.ToString();
-                SpellMask21.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA2.ToString();
-                SpellMask31.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA3.ToString();
-                SpellMask12.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB1.ToString();
-                SpellMask22.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB2.ToString();
-                SpellMask32.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB3.ToString();
-                SpellMask13.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC1.ToString();
-                SpellMask23.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC2.ToString();
-                SpellMask33.Text = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC3.ToString();
-                SpellVisual1.Text = loadDBC.body.records[selectedID].record.SpellVisual1.ToString();
-                SpellVisual2.Text = loadDBC.body.records[selectedID].record.SpellVisual2.ToString();
-                ManaCostPercent.Text = loadDBC.body.records[selectedID].record.ManaCostPercentage.ToString();
-                StartRecoveryCategory.Text = loadDBC.body.records[selectedID].record.StartRecoveryCategory.ToString();
-                StartRecoveryTime.Text = loadDBC.body.records[selectedID].record.StartRecoveryTime.ToString();
-                MaxTargetsLevel.Text = loadDBC.body.records[selectedID].record.MaximumTargetLevel.ToString();
-                SpellFamilyName.Text = loadDBC.body.records[selectedID].record.SpellFamilyName.ToString();
-                MaxTargets.Text = loadDBC.body.records[selectedID].record.MaximumAffectedTargets.ToString();
-                SpellDamageType.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.DamageClass;
-                PreventionType.SelectedIndex = (Int32)loadDBC.body.records[selectedID].record.PreventionType;
-                EffectDamageMultiplier1.Text = loadDBC.body.records[selectedID].record.EffectDamageMultiplier1.ToString();
-                EffectDamageMultiplier2.Text = loadDBC.body.records[selectedID].record.EffectDamageMultiplier2.ToString();
-                EffectDamageMultiplier3.Text = loadDBC.body.records[selectedID].record.EffectDamageMultiplier3.ToString();
+                        for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].threadSafeChecked = false; }
+                    }
 
-                loadTotemCategories.UpdateTotemCategoriesSelection();
-                loadAreaGroups.UpdateAreaGroupSelection();
+                    else
+                    {
+                        procBoxes[0].threadSafeChecked = false;
 
-                mask = loadDBC.body.records[selectedID].record.SchoolMask;
+                        UInt32 flag = 1;
 
-                S1.IsChecked = ((mask & 0x01) != 0) ? true : false;
-                S2.IsChecked = ((mask & 0x02) != 0) ? true : false;
-                S3.IsChecked = ((mask & 0x04) != 0) ? true : false;
-                S4.IsChecked = ((mask & 0x08) != 0) ? true : false;
-                S5.IsChecked = ((mask & 0x10) != 0) ? true : false;
-                S6.IsChecked = ((mask & 0x20) != 0) ? true : false;
-                S7.IsChecked = ((mask & 0x40) != 0) ? true : false;
+                        for (int f = 1; f < procBoxes.Count; ++f)
+                        {
+                            procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
 
-                loadRuneCosts.UpdateSpellRuneCostSelection();
+                            flag = flag + flag;
+                        }
+                    }
 
-                SpellMissileID.Text = loadDBC.body.records[selectedID].record.SpellMissileID.ToString();
-                EffectBonusMultiplier1.Text = loadDBC.body.records[selectedID].record.EffectBonusMultiplier1.ToString();
-                EffectBonusMultiplier2.Text = loadDBC.body.records[selectedID].record.EffectBonusMultiplier2.ToString();
-                EffectBonusMultiplier3.Text = loadDBC.body.records[selectedID].record.EffectBonusMultiplier3.ToString();
+                    ProcChance.threadSafeText = loadDBC.body.records[selectedID].record.ProcChance.ToString();
+                    ProcCharges.threadSafeText = loadDBC.body.records[selectedID].record.ProcCharges.ToString();
+                    MaximumLevel.threadSafeText = loadDBC.body.records[selectedID].record.MaximumLevel.ToString();
+                    BaseLevel.threadSafeText = loadDBC.body.records[selectedID].record.BaseLevel.ToString();
+                    SpellLevel.threadSafeText = loadDBC.body.records[selectedID].record.SpellLevel.ToString();
 
-                loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
-                loadDifficulties.UpdateDifficultySelection();
+                    loadDurations.UpdateDurationIndexes();
+
+                    PowerType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.PowerType;
+                    PowerCost.threadSafeText = loadDBC.body.records[selectedID].record.ManaCost.ToString();
+                    ManaCostPerLevel.threadSafeText = loadDBC.body.records[selectedID].record.ManaCostPerLevel.ToString();
+                    ManaCostPerSecond.threadSafeText = loadDBC.body.records[selectedID].record.ManaPerSecond.ToString();
+                    PerSecondPerLevel.threadSafeText = loadDBC.body.records[selectedID].record.ManaPerSecondPerLevel.ToString();
+
+                    loadRanges.UpdateSpellRangeSelection();
+
+                    Speed.threadSafeText = loadDBC.body.records[selectedID].record.Speed.ToString();
+                    Stacks.threadSafeText = loadDBC.body.records[selectedID].record.StackAmount.ToString();
+                    Totem1.threadSafeText = loadDBC.body.records[selectedID].record.Totem1.ToString();
+                    Totem2.threadSafeText = loadDBC.body.records[selectedID].record.Totem2.ToString();
+                    Reagent1.threadSafeText = loadDBC.body.records[selectedID].record.Reagent1.ToString();
+                    Reagent2.threadSafeText = loadDBC.body.records[selectedID].record.Reagent2.ToString();
+                    Reagent3.threadSafeText = loadDBC.body.records[selectedID].record.Reagent3.ToString();
+                    Reagent4.threadSafeText = loadDBC.body.records[selectedID].record.Reagent4.ToString();
+                    Reagent5.threadSafeText = loadDBC.body.records[selectedID].record.Reagent5.ToString();
+                    Reagent6.threadSafeText = loadDBC.body.records[selectedID].record.Reagent6.ToString();
+                    Reagent7.threadSafeText = loadDBC.body.records[selectedID].record.Reagent7.ToString();
+                    Reagent8.threadSafeText = loadDBC.body.records[selectedID].record.Reagent8.ToString();
+                    ReagentCount1.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount1.ToString();
+                    ReagentCount2.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount2.ToString();
+                    ReagentCount3.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount3.ToString();
+                    ReagentCount4.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount4.ToString();
+                    ReagentCount5.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount5.ToString();
+                    ReagentCount6.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount6.ToString();
+                    ReagentCount7.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount7.ToString();
+                    ReagentCount8.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount8.ToString();
+
+                    loadItemClasses.UpdateItemClassSelection();
+
+                    mask = (UInt32)loadDBC.body.records[selectedID].record.EquippedItemInventoryTypeMask;
+
+                    if (mask == 0)
+                    {
+                        equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = true;
+
+                        for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = false; }
+                    }
+
+                    else
+                    {
+                        equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
+
+                        UInt32 flag = 1;
+
+                        for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
+                        {
+                            equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+
+                            flag = flag + flag;
+                        }
+                    }
+
+                    Effect1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
+                    Effect2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
+                    Effect3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
+                    SpellEffect1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
+                    SpellEffect2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
+                    SpellEffect3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
+                    EffectDieSides1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
+                    EffectDieSides2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
+                    EffectDieSides3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
+                    DieSides1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
+                    DieSides2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
+                    DieSides3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
+                    BasePointsPerLevel1.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
+                    BasePointsPerLevel2.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
+                    BasePointsPerLevel3.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
+                    EffectBaseValue1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
+                    EffectBaseValue2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
+                    EffectBaseValue3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
+                    BasePoints1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
+                    BasePoints2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
+                    BasePoints3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
+                    Mechanic1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic1;
+                    Mechanic2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic2;
+                    Mechanic3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic3;
+                    TargetA1.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA1;
+                    TargetA2.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA2;
+                    TargetA3.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA3;
+                    TargetB1.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB1;
+                    TargetB2.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB2;
+                    TargetB3.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB3;
+
+                    loadRadiuses.UpdateRadiusIndexes();
+
+                    ApplyAuraName1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName1;
+                    ApplyAuraName2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName2;
+                    ApplyAuraName3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName3;
+                    Amplitude1.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude1.ToString();
+                    Amplitude2.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude2.ToString();
+                    Amplitude3.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude3.ToString();
+                    MultipleValue1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue1.ToString();
+                    MultipleValue2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue2.ToString();
+                    MultipleValue3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue3.ToString();
+                    ChainTarget1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget1;
+                    ChainTarget2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget2;
+                    ChainTarget3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget3;
+                    ItemType1.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType1.ToString();
+                    ItemType2.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType2.ToString();
+                    ItemType3.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType3.ToString();
+                    MiscValueA1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue1.ToString();
+                    MiscValueA2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue2.ToString();
+                    MiscValueA3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue3.ToString();
+                    MiscValueB1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB1.ToString();
+                    MiscValueB2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB2.ToString();
+                    MiscValueB3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB3.ToString();
+                    TriggerSpell1.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell1.ToString();
+                    TriggerSpell2.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell2.ToString();
+                    TriggerSpell3.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell3.ToString();
+                    PointsPerComboPoint1.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint1.ToString();
+                    PointsPerComboPoint2.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint2.ToString();
+                    PointsPerComboPoint3.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint3.ToString();
+                    SpellMask11.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA1.ToString();
+                    SpellMask21.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA2.ToString();
+                    SpellMask31.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA3.ToString();
+                    SpellMask12.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB1.ToString();
+                    SpellMask22.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB2.ToString();
+                    SpellMask32.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB3.ToString();
+                    SpellMask13.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC1.ToString();
+                    SpellMask23.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC2.ToString();
+                    SpellMask33.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC3.ToString();
+                    SpellVisual1.threadSafeText = loadDBC.body.records[selectedID].record.SpellVisual1.ToString();
+                    SpellVisual2.threadSafeText = loadDBC.body.records[selectedID].record.SpellVisual2.ToString();
+                    ManaCostPercent.threadSafeText = loadDBC.body.records[selectedID].record.ManaCostPercentage.ToString();
+                    StartRecoveryCategory.threadSafeText = loadDBC.body.records[selectedID].record.StartRecoveryCategory.ToString();
+                    StartRecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.StartRecoveryTime.ToString();
+                    MaxTargetsLevel.threadSafeText = loadDBC.body.records[selectedID].record.MaximumTargetLevel.ToString();
+                    SpellFamilyName.threadSafeText = loadDBC.body.records[selectedID].record.SpellFamilyName.ToString();
+                    MaxTargets.threadSafeText = loadDBC.body.records[selectedID].record.MaximumAffectedTargets.ToString();
+                    SpellDamageType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.DamageClass;
+                    PreventionType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.PreventionType;
+                    EffectDamageMultiplier1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier1.ToString();
+                    EffectDamageMultiplier2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier2.ToString();
+                    EffectDamageMultiplier3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier3.ToString();
+
+                    loadTotemCategories.UpdateTotemCategoriesSelection();
+                    loadAreaGroups.UpdateAreaGroupSelection();
+
+                    mask = loadDBC.body.records[selectedID].record.SchoolMask;
+
+                    S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
+                    S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
+                    S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
+                    S4.threadSafeChecked = ((mask & 0x08) != 0) ? true : false;
+                    S5.threadSafeChecked = ((mask & 0x10) != 0) ? true : false;
+                    S6.threadSafeChecked = ((mask & 0x20) != 0) ? true : false;
+                    S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
+
+                    loadRuneCosts.UpdateSpellRuneCostSelection();
+
+                    SpellMissileID.threadSafeText = loadDBC.body.records[selectedID].record.SpellMissileID.ToString();
+                    EffectBonusMultiplier1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier1.ToString();
+                    EffectBonusMultiplier2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier2.ToString();
+                    EffectBonusMultiplier3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier3.ToString();
+
+                    loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
+                    loadDifficulties.UpdateDifficultySelection();
+                });
 
                 updating = false;
             }
@@ -2086,7 +2090,7 @@ namespace SpellEditor
 
                     else
                     {
-                        foreach (CheckBox box in equippedItemInventoryTypeMaskBoxes) { box.IsChecked = false; }
+                        foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes) { box.IsChecked = false; }
 
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
                     }
