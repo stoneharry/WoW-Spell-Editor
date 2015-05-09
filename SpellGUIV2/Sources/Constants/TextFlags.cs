@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Constants
 {
-    enum TextFlags
+    enum TextFlags : uint
     {
         EMPTY       = 0xFF01FC,
-        NOT_EMPTY   = 0xFF01FE,
+        NOT_EMPTY   = 0xFF01FE
     }
 }

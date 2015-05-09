@@ -1153,16 +1153,33 @@ namespace SpellEditor
                     loadDBC.body.records[selectedID].record.EffectBonusMultiplier2 = float.Parse(EffectBonusMultiplier2.Text);
                     loadDBC.body.records[selectedID].record.EffectBonusMultiplier3 = float.Parse(EffectBonusMultiplier3.Text);
 
-                    loadDBC.body.records[selectedID].spellName[0] = SpellName0.Text;
-                    loadDBC.body.records[selectedID].spellRank[0] = SpellRank0.Text;
-                    loadDBC.body.records[selectedID].spellTool[0] = SpellTooltip0.Text;
-                    loadDBC.body.records[selectedID].spellDesc[0] = SpellDescription0.Text;
-
-                    // TODO - this should be implemented somewhere -- if non empty strings to set appropriate flag, probably important client-wise!
-                    //loadDBC.body.records[selectedID].record.SpellNameFlag[0] = (uint)(SpellName0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
-                    //loadDBC.body.records[selectedID].record.SpellRankFlags[0] = (uint)(SpellRank0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
-                    //loadDBC.body.records[selectedID].record.SpellToolTipFlags[0] = (uint)(SpellTooltip0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
-                    //loadDBC.body.records[selectedID].record.SpellDescriptionFlags[0] = (uint)(SpellDescription0.Text.Length > 0 ? TextFlags.NOT_EMPTY : TextFlags.EMPTY);
+                    TextBox[] boxes = stringObjectMap.Values.ToArray();
+                    for (int i = 0; i < 9; ++i)
+                    {
+                        String text = boxes[i].Text;
+                        loadDBC.body.records[selectedID].spellName[i] = text;
+                    }
+                    for (int i = 0; i < 9; ++i)
+                    {
+                        String text = boxes[i + 9].Text;
+                        loadDBC.body.records[selectedID].spellRank[i] = text;
+                    }
+                    for (int i = 0; i < 9; ++i)
+                    {
+                        String text = boxes[i + 18].Text;
+                        loadDBC.body.records[selectedID].spellTool[i] = text;
+                    }
+                    for (int i = 0; i < 9; ++i)
+                    {
+                        String text = boxes[i + 27].Text;
+                        loadDBC.body.records[selectedID].spellDesc[i] = text;
+                    }
+                    // This seems to mimic Blizzlike values correctly, though I don't understand it at all
+                    // Discussed on modcraft IRC - these fields are not even read by the client potentially
+                    loadDBC.body.records[selectedID].record.SpellNameFlag[7] = (uint)(TextFlags.NOT_EMPTY);
+                    loadDBC.body.records[selectedID].record.SpellRankFlags[7] = (uint)(TextFlags.NOT_EMPTY);
+                    loadDBC.body.records[selectedID].record.SpellToolTipFlags[7] = (uint)(TextFlags.NOT_EMPTY);
+                    loadDBC.body.records[selectedID].record.SpellDescriptionFlags[7] = (uint)(TextFlags.NOT_EMPTY);
                     
                     loadDBC.SaveDBCFile();
                 }
@@ -1247,42 +1264,32 @@ namespace SpellEditor
             try
             {
                 updating = true;
-
                 int i;
 
                 for (i = 0; i < 9; ++i)
                 {
                     TextBox box;
-
                     stringObjectMap.TryGetValue(i, out box);
-
                     box.Text = loadDBC.body.records[selectedID].spellName[i];
                 }
-
                 for (i = 0; i < 9; ++i)
                 {
                     TextBox box;
-
                     stringObjectMap.TryGetValue(i + 9, out box);
-
                     box.Text = loadDBC.body.records[selectedID].spellRank[i];
                 }
 
                 for (i = 0; i < 9; ++i)
                 {
                     TextBox box;
-
                     stringObjectMap.TryGetValue(i + 18, out box);
-
                     box.Text = loadDBC.body.records[selectedID].spellTool[i];
                 }
 
                 for (i = 0; i < 9; ++i)
                 {
                     TextBox box;
-
                     stringObjectMap.TryGetValue(i + 27, out box);
-
                     box.Text = loadDBC.body.records[selectedID].spellDesc[i];
                 }
 
@@ -1296,7 +1303,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes0.Count; ++f)
                 {
                     attributes0[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1306,7 +1312,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes1.Count; ++f)
                 {
                     attributes1[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1316,7 +1321,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes2.Count; ++f)
                 {
                     attributes2[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1326,7 +1330,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes3.Count; ++f)
                 {
                     attributes3[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1336,7 +1339,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes4.Count; ++f)
                 {
                     attributes4[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1346,7 +1348,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes5.Count; ++f)
                 {
                     attributes5[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1356,7 +1357,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes6.Count; ++f)
                 {
                     attributes6[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1366,7 +1366,6 @@ namespace SpellEditor
                 for (int f = 0; f < attributes7.Count; ++f)
                 {
                     attributes7[f].IsChecked = ((mask & flagg) != 0) ? true : false;
-
                     flagg = flagg + flagg;
                 }
 
@@ -1375,7 +1374,6 @@ namespace SpellEditor
                 if (mask == 0)
                 {
                     stancesBoxes[0].IsChecked = true;
-
                     for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].IsChecked = false; }
                 }
 
@@ -1388,7 +1386,6 @@ namespace SpellEditor
                     for (int f = 1; f < stancesBoxes.Count; ++f)
                     {
                         stancesBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-
                         flag = flag + flag;
                     }
                 }
@@ -1398,7 +1395,6 @@ namespace SpellEditor
                 if (mask == 0)
                 {
                     targetBoxes[0].IsChecked = true;
-
                     for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].IsChecked = false; }
                 }
 
@@ -1411,7 +1407,6 @@ namespace SpellEditor
                     for (int f = 1; f < targetBoxes.Count; ++f)
                     {
                         targetBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-
                         flag = flag + flag;
                     }
                 }
@@ -1421,7 +1416,6 @@ namespace SpellEditor
                 if (mask == 0)
                 {
                     targetCreatureTypeBoxes[0].IsChecked = true;
-
                     for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].IsChecked = false; }
                 }
 
@@ -1434,7 +1428,6 @@ namespace SpellEditor
                     for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                     {
                         targetCreatureTypeBoxes[f].IsChecked = ((mask & flag) != 0) ? true : false;
-
                         flag = flag + flag;
                     }
                 }
@@ -1450,7 +1443,6 @@ namespace SpellEditor
                     case 0: // None
                     {
                         CasterAuraState.SelectedIndex = 0;
-
                         break;
                     }
 
