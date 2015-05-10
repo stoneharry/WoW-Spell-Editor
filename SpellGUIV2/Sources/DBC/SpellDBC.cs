@@ -40,9 +40,12 @@ namespace SpellEditor.Sources.DBC
                 handle.Free();
                 body.records = new Spell_DBC_RecordMap[header.RecordCount];
 
+                count = Marshal.SizeOf(typeof(Spell_DBC_Record));
+                if (header.RecordSize != count)
+                    throw new Exception("This Spell DBC version is not supported! It is not 3.3.5a.");
+
                 for (UInt32 i = 0; i < header.RecordCount; ++i)
                 {
-                    count = Marshal.SizeOf(typeof(Spell_DBC_Record));
                     readBuffer = new byte[count];
                     readBuffer = reader.ReadBytes(count);
                     handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
