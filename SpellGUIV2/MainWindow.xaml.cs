@@ -21,6 +21,7 @@ using MahApps.Metro.Controls.Dialogs;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Controls;
+using System.Runtime.Serialization.Formatters.Binary;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -560,25 +561,22 @@ namespace SpellEditor
 
                     for (int i = 0; i < loadDBC.body.records.Length; ++i)
                     {
-                        if (loadDBC.body.records[i].record.ID == newID) { throw new Exception("The spell ID is already taken!"); }
+                        if (loadDBC.body.records[i].record.ID == newID)
+                            throw new Exception("The spell ID is already taken!");
                     }
                 }
-
-                catch (Exception ex) { HandleErrorMessage(ex.Message); }
+                catch (Exception ex) {
+                    HandleErrorMessage(ex.Message);
+                }
 
                 Int32 newRecord = (Int32)loadDBC.header.RecordCount++;
                 Array.Resize(ref loadDBC.body.records, (Int32)loadDBC.header.RecordCount);
 
                 if (oldIDIndex != UInt32.MaxValue)
                 {
-                    loadDBC.body.records[newRecord] = loadDBC.body.records[oldIDIndex];
+                    loadDBC.body.records[newRecord] = DeepCopy(loadDBC.body.records[oldIDIndex]);
                     loadDBC.body.records[newRecord].record.ID = newID;
-                    //loadDBC.body.records[newRecord].spellName = new String[10];
-                    //loadDBC.body.records[newRecord].spellDesc = new String[10];
-                    //loadDBC.body.records[newRecord].spellRank = new String[10];
-                    //loadDBC.body.records[newRecord].spellTool = new String[10];
                 }
-
                 else
                 {
                     loadDBC.body.records[newRecord].record.SpellName = new UInt32[9];
@@ -621,8 +619,10 @@ namespace SpellEditor
 
                 loadDBC.body.records = loadDBC.body.records.OrderBy(Spell_DBC_RecordMap => Spell_DBC_RecordMap.record.ID).ToArray<Spell_DBC_RecordMap>();
 
-                if (MainTabControl.SelectedIndex != 0) { MainTabControl.SelectedIndex = 0; }
-                else { PopulateSelectSpell(); }
+                if (MainTabControl.SelectedIndex != 0)
+                    MainTabControl.SelectedIndex = 0;
+                else
+                    PopulateSelectSpell();
 
                 await this.ShowMessageAsync("Spell Editor", "Created new record with ID " + inputNewRecord + " sucessfully.");
             }
@@ -1209,6 +1209,19 @@ namespace SpellEditor
 
             if (sender == ResetSpellIconID) { loadDBC.body.records[selectedID].record.SpellIconID = 1; }
             if (sender == ResetActiveIconID) { loadDBC.body.records[selectedID].record.ActiveIconID = 0; }
+        }
+
+        static public T DeepCopy<T>(T obj)
+        {
+            BinaryFormatter s = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                s.Serialize(ms, obj);
+                ms.Position = 0;
+                T t = (T)s.Deserialize(ms);
+
+                return t;
+            }
         }
 
         private async void PrepareIconEditor()

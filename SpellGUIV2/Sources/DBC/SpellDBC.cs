@@ -244,6 +244,7 @@ namespace SpellEditor.Sources.DBC
         public Spell_DBC_RecordMap[] records;
     };
 
+    [Serializable()]
     public struct Spell_DBC_RecordMap
     {
         public Spell_DBC_Record record;
@@ -253,6 +254,7 @@ namespace SpellEditor.Sources.DBC
         public string[] spellTool;
     };
 
+    [Serializable()]
     public struct Spell_DBC_Record
     {
         public UInt32 ID;
