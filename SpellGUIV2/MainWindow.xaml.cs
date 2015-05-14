@@ -306,7 +306,7 @@ namespace SpellEditor
                     equippedItemInventoryTypeMaskBoxes.Add(box);
                 }
 
-                string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath", "Unknown" };
+                string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath", "Health" };
 
                 for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
 
