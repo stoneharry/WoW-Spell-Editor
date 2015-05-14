@@ -306,7 +306,7 @@ namespace SpellEditor
                     equippedItemInventoryTypeMaskBoxes.Add(box);
                 }
 
-                string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath" };
+                string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath", "Unknown" };
 
                 for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
 
@@ -1036,7 +1036,7 @@ namespace SpellEditor
                     loadDBC.body.records[selectedID].record.MaximumLevel = UInt32.Parse(MaximumLevel.Text);
                     loadDBC.body.records[selectedID].record.BaseLevel = UInt32.Parse(BaseLevel.Text);
                     loadDBC.body.records[selectedID].record.SpellLevel = UInt32.Parse(SpellLevel.Text);
-                    loadDBC.body.records[selectedID].record.PowerType = (UInt32)PowerType.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.PowerType = PowerType.SelectedIndex == 13 ? 4294967294 : (UInt32)PowerType.SelectedIndex;
                     loadDBC.body.records[selectedID].record.ManaCost = UInt32.Parse(PowerCost.Text);
                     loadDBC.body.records[selectedID].record.ManaCostPerLevel = UInt32.Parse(ManaCostPerLevel.Text);
                     loadDBC.body.records[selectedID].record.ManaPerSecond = UInt32.Parse(ManaCostPerSecond.Text);
@@ -1708,7 +1708,11 @@ namespace SpellEditor
 
                     loadDurations.UpdateDurationIndexes();
 
-                    PowerType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.PowerType;
+                    Int32 powerType = (Int32)loadDBC.body.records[selectedID].record.PowerType;
+                    // Dirty hack fix
+                    if (powerType < 0)
+                        powerType = 13;
+                    PowerType.threadSafeIndex = powerType;
                     PowerCost.threadSafeText = loadDBC.body.records[selectedID].record.ManaCost.ToString();
                     ManaCostPerLevel.threadSafeText = loadDBC.body.records[selectedID].record.ManaCostPerLevel.ToString();
                     ManaCostPerSecond.threadSafeText = loadDBC.body.records[selectedID].record.ManaPerSecond.ToString();
