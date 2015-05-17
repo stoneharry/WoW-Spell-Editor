@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -124,7 +125,7 @@ namespace SpellEditor.Sources.DBC
             {
                 foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }
 
-                main.EquippedItemInventoryTypeGrid.IsEnabled = false;
+                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
             }
 
             for (int i = 0; i < body.lookup.Count; ++i)
