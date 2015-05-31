@@ -29,9 +29,9 @@
                         <TabItem Header="English">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -41,9 +41,9 @@
                         <TabItem Header="Korean">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -53,9 +53,9 @@
                         <TabItem Header="French">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -65,9 +65,9 @@
                         <TabItem Header="Deutsch">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -77,9 +77,9 @@
                         <TabItem Header="Chinese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -89,9 +89,9 @@
                         <TabItem Header="Taiwanese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -101,9 +101,9 @@
                         <TabItem Header="Mexican">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -113,9 +113,9 @@
                         <TabItem Header="Portuguese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>
@@ -125,9 +125,9 @@
                         <TabItem Header="Russian">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="692,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="613,28,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="979,4,0,0"/>

@@ -88,7 +88,7 @@ namespace SpellEditor
         // End Boxes
 
         // Begin Other
-        public UInt32 selectedID = 1;
+        public UInt32 selectedID = 0;
         public UInt32 newIconID = 1;
         private Boolean updating;
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -358,18 +358,18 @@ namespace SpellEditor
 
                 for (int i = 0; i < spell_aura_effect_names.Length; ++i)
                 {
-                    ApplyAuraName1.Items.Add(spell_aura_effect_names[i]);
-                    ApplyAuraName2.Items.Add(spell_aura_effect_names[i]);
-                    ApplyAuraName3.Items.Add(spell_aura_effect_names[i]);
+                    ApplyAuraName1.Items.Add(i + "- " + spell_aura_effect_names[i]);
+                    ApplyAuraName2.Items.Add(i + "- " + spell_aura_effect_names[i]);
+                    ApplyAuraName3.Items.Add(i + "- " + spell_aura_effect_names[i]);
                 }
 
                 string[] spell_effect_names = { "NULL", "INSTANT_KILL", "SCHOOL_DAMAGE", "DUMMY", "PORTAL_TELEPORT", "TELEPORT_UNITS", "APPLY_AURA", "ENVIRONMENTAL_DAMAGE", "POWER_DRAIN", "HEALTH_LEECH", "HEAL", "BIND", "PORTAL", "RITUAL_BASE", "RITUAL_SPECIALIZE", "RITUAL_ACTIVATE_PORTAL", "QUEST_COMPLETE", "WEAPON_DAMAGE_NOSCHOOL", "RESURRECT", "ADD_EXTRA_ATTACKS", "DODGE", "EVADE", "PARRY", "BLOCK", "CREATE_ITEM", "WEAPON", "DEFENSE", "PERSISTENT_AREA_AURA", "SUMMON", "LEAP", "ENERGIZE", "WEAPON_PERCENT_DAMAGE", "TRIGGER_MISSILE", "OPEN_LOCK", "TRANSFORM_ITEM", "APPLY_GROUP_AREA_AURA", "LEARN_SPELL", "SPELL_DEFENSE", "DISPEL", "LANGUAGE", "DUAL_WIELD", "LEAP_41", "SUMMON_GUARDIAN", "TELEPORT_UNITS_FACE_CASTER", "SKILL_STEP", "UNDEFINED_45", "SPAWN", "TRADE_SKILL", "STEALTH", "DETECT", "SUMMON_OBJECT", "FORCE_CRITICAL_HIT", "GUARANTEE_HIT", "ENCHANT_ITEM", "ENCHANT_ITEM_TEMPORARY", "TAMECREATURE", "SUMMON_PET", "LEARN_PET_SPELL", "WEAPON_DAMAGE", "OPEN_LOCK_ITEM", "PROFICIENCY", "SEND_EVENT", "POWER_BURN", "THREAT", "TRIGGER_SPELL", "APPLY_RAID_AREA_AURA", "POWER_FUNNEL", "HEAL_MAX_HEALTH", "INTERRUPT_CAST", "DISTRACT", "PULL", "PICKPOCKET", "ADD_FARSIGHT", "UNTRAIN_TALENTS", "USE_GLYPH", "HEAL_MECHANICAL", "SUMMON_OBJECT_WILD", "SCRIPT_EFFECT", "ATTACK", "SANCTUARY", "ADD_COMBO_POINTS", "CREATE_HOUSE", "BIND_SIGHT", "DUEL", "STUCK", "SUMMON_PLAYER", "ACTIVATE_OBJECT", "BUILDING_DAMAGE", "BUILDING_REPAIR", "BUILDING_SWITCH_STATE", "KILL_CREDIT_90", "THREAT_ALL", "ENCHANT_HELD_ITEM", "SUMMON_PHANTASM", "SELF_RESURRECT", "SKINNING", "CHARGE", "SUMMON_MULTIPLE_TOTEMS", "KNOCK_BACK", "DISENCHANT", "INEBRIATE", "FEED_PET", "DISMISS_PET", "REPUTATION", "SUMMON_OBJECT_SLOT1", "SUMMON_OBJECT_SLOT2", "SUMMON_OBJECT_SLOT3", "SUMMON_OBJECT_SLOT4", "DISPEL_MECHANIC", "SUMMON_DEAD_PET", "DESTROY_ALL_TOTEMS", "DURABILITY_DAMAGE", "NONE_112", "RESURRECT_FLAT", "ATTACK_ME", "DURABILITY_DAMAGE_PCT", "SKIN_PLAYER_CORPSE", "SPIRIT_HEAL", "SKILL", "APPLY_PET_AREA_AURA", "TELEPORT_GRAVEYARD", "DUMMYMELEE", "UNKNOWN1", "START_TAXI", "PLAYER_PULL", "UNKNOWN4", "UNKNOWN5", "PROSPECTING", "APPLY_FRIEND_AREA_AURA", "APPLY_ENEMY_AREA_AURA", "UNKNOWN10", "UNKNOWN11", "PLAY_MUSIC", "FORGET_SPECIALIZATION", "KILL_CREDIT", "UNKNOWN15", "UNKNOWN16", "UNKNOWN17", "UNKNOWN18", "CLEAR_QUEST", "UNKNOWN20", "UNKNOWN21", "TRIGGER_SPELL_WITH_VALUE", "APPLY_OWNER_AREA_AURA", "UNKNOWN23", "UNKNOWN24", "ACTIVATE_RUNES", "UNKNOWN26", "UNKNOWN27", "QUEST_FAIL", "UNKNOWN28", "UNKNOWN29", "UNKNOWN30", "SUMMON_TARGET", "SUMMON_REFER_A_FRIEND", "TAME_CREATURE", "ADD_SOCKET", "CREATE_ITEM2", "MILLING", "UNKNOWN37", "UNKNOWN38", "LEARN_SPEC", "ACTIVATE_SPEC", "UNKNOWN" };
 
                 for (int i = 0; i < spell_effect_names.Length; ++i)
                 {
-                    SpellEffect1.Items.Add(spell_effect_names[i]);
-                    SpellEffect2.Items.Add(spell_effect_names[i]);
-                    SpellEffect3.Items.Add(spell_effect_names[i]);
+                    SpellEffect1.Items.Add(i + "- " + spell_effect_names[i]);
+                    SpellEffect2.Items.Add(i + "- " + spell_effect_names[i]);
+                    SpellEffect3.Items.Add(i + "- " + spell_effect_names[i]);
                 }
 
                 string[] mechanic_names = { "None", "Charmed", "Disoriented", "Disarmed", "Distracted", "Fleeing", "Clumsy", "Rooted", "Pacified", "Silenced", "Asleep", "Ensnared", "Stunned", "Frozen", "Incapacipated", "Bleeding", "Healing", "Polymorphed", "Banished", "Shielded", "Shackled", "Mounted", "Seduced", "Turned", "Horrified", "Invulnarable", "Interrupted", "Dazed", "Discovery", "Invulnerable", "Sapped", "Enraged" };
@@ -381,18 +381,21 @@ namespace SpellEditor
                     Mechanic3.Items.Add(mechanic_names[i]);
                 }
 
+                int number = 0;
                 foreach (Targets t in Enum.GetValues(typeof(Targets)))
                 {
-                    TargetA1.Items.Add(t);
-                    TargetB1.Items.Add(t);
-                    TargetA2.Items.Add(t);
-                    TargetB2.Items.Add(t);
-                    TargetA3.Items.Add(t);
-                    TargetB3.Items.Add(t);
+                    String toDisplay = number + " - " + t;
+                    TargetA1.Items.Add(toDisplay);
+                    TargetB1.Items.Add(toDisplay);
+                    TargetA2.Items.Add(toDisplay);
+                    TargetB2.Items.Add(toDisplay);
+                    TargetA3.Items.Add(toDisplay);
+                    TargetB3.Items.Add(toDisplay);
 
-                    ChainTarget1.Items.Add(t);
-                    ChainTarget2.Items.Add(t);
-                    ChainTarget3.Items.Add(t);
+                    ChainTarget1.Items.Add(toDisplay);
+                    ChainTarget2.Items.Add(toDisplay);
+                    ChainTarget3.Items.Add(toDisplay);
+                    ++number;
                 }
 
                 string[] interrupt_strings = { "None", "On Movement", "On Knockback", "On Interrupt Casting", "On Interrupt School", "On Damage Taken", "On Interrupt All" };
@@ -665,6 +668,8 @@ namespace SpellEditor
                 loadDBC.body.records = records.ToArray<Spell_DBC_RecordMap>();
 
                 --loadDBC.header.RecordCount;
+
+                selectedID = 0;
 
                 if (MainTabControl.SelectedIndex != 0) { MainTabControl.SelectedIndex = 0; }
                 else { PopulateSelectSpell(); }
@@ -1093,12 +1098,12 @@ namespace SpellEditor
                     loadDBC.body.records[selectedID].record.EffectMechanic1 = (UInt32)Mechanic1.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectMechanic2 = (UInt32)Mechanic2.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectMechanic3 = (UInt32)Mechanic3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)(Targets)TargetA1.SelectedItem;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)(Targets)TargetA2.SelectedItem;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)(Targets)TargetA3.SelectedItem;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)(Targets)TargetB1.SelectedItem;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)(Targets)TargetB2.SelectedItem;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)(Targets)TargetB3.SelectedItem;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)TargetA1.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)TargetA2.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)TargetA3.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)TargetB1.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)TargetB2.SelectedIndex;
+                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)TargetB3.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName1 = (UInt32)ApplyAuraName1.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName2 = (UInt32)ApplyAuraName2.SelectedIndex;
                     loadDBC.body.records[selectedID].record.EffectApplyAuraName3 = (UInt32)ApplyAuraName3.SelectedIndex;
