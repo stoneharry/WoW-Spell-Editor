@@ -22,6 +22,7 @@ using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Controls;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Threading;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -802,14 +803,20 @@ namespace SpellEditor
                         loadDBC.body.records[selectedID].record.Targets = mask;
                     }
 
-                    UInt32 creature_type_mask = 0;
-
-                    for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
+                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.TargetCreatureType = 0; }
+                    else
                     {
-                        if (targetCreatureTypeBoxes[f].IsChecked.Value == true) { creature_type_mask = creature_type_mask + creature_type_values[f]; }
-                    }
+                        UInt32 mask = 0;
+                        UInt32 flag = 1;
 
-                    loadDBC.body.records[selectedID].record.TargetCreatureType = creature_type_mask;
+                        for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
+                        {
+                            if (targetCreatureTypeBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            flag = flag + flag;
+                        }
+
+                        loadDBC.body.records[selectedID].record.TargetCreatureType = mask;
+                    }
 
                     loadDBC.body.records[selectedID].record.FacingCasterFlags = FacingFrontFlag.IsChecked.Value ? (UInt32)0x1 : (UInt32)0x0;
                     
@@ -1276,6 +1283,8 @@ namespace SpellEditor
             else if (spellOrActive == MessageDialogResult.Negative) { loadDBC.body.records[selectedID].record.ActiveIconID = newIconID; }
         }
 
+
+
         private void UpdateMainWindow()
         {
             if (loadDBC == null) { return; }
@@ -1283,7 +1292,8 @@ namespace SpellEditor
             try
             {
                 updating = true;
-                Task.Factory.StartNew(() =>
+
+                var task = Task.Factory.StartNew(() =>
                 {
                     int i;
 
@@ -1418,7 +1428,6 @@ namespace SpellEditor
                         targetBoxes[0].threadSafeChecked = true;
                         for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         targetBoxes[0].threadSafeChecked = false;
@@ -1439,7 +1448,6 @@ namespace SpellEditor
                         targetCreatureTypeBoxes[0].threadSafeChecked = true;
                         for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         targetCreatureTypeBoxes[0].threadSafeChecked = false;
