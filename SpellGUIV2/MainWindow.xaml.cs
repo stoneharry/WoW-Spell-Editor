@@ -431,6 +431,8 @@ namespace SpellEditor
             catch (Exception ex) { HandleErrorMessage(ex.Message); }
         }
 
+        public delegate void UpdateProgressFunc(double value);
+
         private async void loadAllData()
         {
             config = await getConfig();
@@ -463,9 +465,17 @@ namespace SpellEditor
                         "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
                     if (res == MessageDialogResult.Affirmative)
                     {
+                        var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
+                        await Task.Delay(1000);
+                        controller.SetCancelable(false);
+                       // controller.SetProgress(0);
+
                         SpellDBC dbc = new SpellDBC();
                         dbc.LoadDBCFile(this);
-                        dbc.import(mySQL);
+                        Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                        t.Start();
+                        await t;
+                        await controller.CloseAsync();
                         PopulateSelectSpell();
                     }
                 }

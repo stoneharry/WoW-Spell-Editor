@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using MySql.Data.MySqlClient;
+using System.Windows.Threading;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -240,109 +241,118 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        public void import(MySQL.MySQL mySQL)
+        public Task import(MySQL.MySQL mySQL, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
         {
-            StringBuilder q = new StringBuilder();
-            q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
-            foreach (Spell_DBC_RecordMap r in body.records)
+            return Task.Run(() => 
             {
-                q.Append("(");
-                var fields = r.record.GetType().GetFields();
-                foreach (var f in fields)
+                StringBuilder q = new StringBuilder();
+                q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
+                UInt32 count = header.RecordCount;
+                UInt32 index = 0;
+                foreach (Spell_DBC_RecordMap r in body.records)
                 {
-                    switch (Type.GetTypeCode(f.FieldType))
+                    if (++index % 1000 == 0)
                     {
-                        case TypeCode.UInt32:
-                        case TypeCode.Int32:
-                        case TypeCode.Single:
-                            {
-                                q.Append(String.Format("'{0}', ", f.GetValue(r.record)));
-                                break;
-                            }
-                        case TypeCode.Object:
-                            {
-                                var attr = f.GetCustomAttribute<HandleField>();
-                                if (attr != null)
-                                {
-                                    if (attr.Method == 1)
-                                    {
-                                        switch (attr.Type)
-                                        {
-                                            case 1:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
-                                                    break;
-                                                }
-                                            case 2:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
-                                                    break;
-                                                }
-                                            case 3:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
-                                                    break;
-                                                }
-                                            case 4:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
-                                                    break;
-                                                }
-                                            default:
-                                                throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
-                                        }
-                                        break;
-                                    }
-                                    else if (attr.Method == 2)
-                                    {
-                                        switch (attr.Type)
-                                        {
-                                            case 1:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
-                                                    break;
-                                                }
-                                            case 2:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
-                                                    break;
-                                                }
-                                            case 3:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
-                                                    break;
-                                                }
-                                            case 4:
-                                                {
-                                                    for (int i = 0; i < attr.Count; ++i)
-                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
-                                                    break;
-                                                }
-                                            default:
-                                                throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
-                                        }
-                                        break;
-                                    }
-                                }
-                                goto default;
-                            }
-                        default:
-                            throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
+                        double percent = (double)index / (double)count;
+                        UpdateProgress(percent);
                     }
+                    q.Append("(");
+                    foreach (var f in r.record.GetType().GetFields())
+                    {
+                        switch (Type.GetTypeCode(f.FieldType))
+                        {
+                            case TypeCode.UInt32:
+                            case TypeCode.Int32:
+                            case TypeCode.Single:
+                                {
+                                    q.Append(String.Format("'{0}', ", f.GetValue(r.record)));
+                                    break;
+                                }
+                            case TypeCode.Object:
+                                {
+                                    var attr = f.GetCustomAttribute<HandleField>();
+                                    if (attr != null)
+                                    {
+                                        if (attr.Method == 1)
+                                        {
+                                            switch (attr.Type)
+                                            {
+                                                case 1:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
+                                                        break;
+                                                    }
+                                                case 2:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
+                                                        break;
+                                                    }
+                                                case 3:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
+                                                        break;
+                                                    }
+                                                case 4:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
+                                                        break;
+                                                    }
+                                                default:
+                                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
+                                            }
+                                            break;
+                                        }
+                                        else if (attr.Method == 2)
+                                        {
+                                            switch (attr.Type)
+                                            {
+                                                case 1:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
+                                                        break;
+                                                    }
+                                                case 2:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
+                                                        break;
+                                                    }
+                                                case 3:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
+                                                        break;
+                                                    }
+                                                case 4:
+                                                    {
+                                                        for (int i = 0; i < attr.Count; ++i)
+                                                            q.Append(String.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
+                                                        break;
+                                                    }
+                                                default:
+                                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    goto default;
+                                }
+                            default:
+                                throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
+                        }
+                    }
+                    q.Remove(q.Length - 2, 2);
+                    q.Append("), ");
                 }
                 q.Remove(q.Length - 2, 2);
-                q.Append("), ");
-            }
-            q.Remove(q.Length - 2, 2);
 
-            mySQL.execute(q.ToString());
+                mySQL.execute(q.ToString());
+            });
         }
     }
 
