@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using MySql.Data.MySqlClient;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -237,6 +239,111 @@ namespace SpellEditor.Sources.DBC
 
             return true;
         }
+
+        public void import(MySQL.MySQL mySQL)
+        {
+            StringBuilder q = new StringBuilder();
+            q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
+            foreach (Spell_DBC_RecordMap r in body.records)
+            {
+                q.Append("(");
+                var fields = r.record.GetType().GetFields();
+                foreach (var f in fields)
+                {
+                    switch (Type.GetTypeCode(f.FieldType))
+                    {
+                        case TypeCode.UInt32:
+                        case TypeCode.Int32:
+                        case TypeCode.Single:
+                            {
+                                q.Append(String.Format("'{0}', ", f.GetValue(r.record)));
+                                break;
+                            }
+                        case TypeCode.Object:
+                            {
+                                var attr = f.GetCustomAttribute<HandleField>();
+                                if (attr != null)
+                                {
+                                    if (attr.Method == 1)
+                                    {
+                                        switch (attr.Type)
+                                        {
+                                            case 1:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
+                                                    break;
+                                                }
+                                            case 2:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
+                                                    break;
+                                                }
+                                            case 3:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
+                                                    break;
+                                                }
+                                            case 4:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
+                                                    break;
+                                                }
+                                            default:
+                                                throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
+                                        }
+                                        break;
+                                    }
+                                    else if (attr.Method == 2)
+                                    {
+                                        switch (attr.Type)
+                                        {
+                                            case 1:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
+                                                    break;
+                                                }
+                                            case 2:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
+                                                    break;
+                                                }
+                                            case 3:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
+                                                    break;
+                                                }
+                                            case 4:
+                                                {
+                                                    for (int i = 0; i < attr.Count; ++i)
+                                                        q.Append(String.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
+                                                    break;
+                                                }
+                                            default:
+                                                throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
+                                        }
+                                        break;
+                                    }
+                                }
+                                goto default;
+                            }
+                        default:
+                            throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
+                    }
+                }
+                q.Remove(q.Length - 2, 2);
+                q.Append("), ");
+            }
+            q.Remove(q.Length - 2, 2);
+
+            mySQL.execute(q.ToString());
+        }
     }
 
     public struct Spell_DBC_Body
@@ -259,9 +366,11 @@ namespace SpellEditor.Sources.DBC
     {
         public int Method { get; private set; }
         public int Count { get; private set; }
+        public int Type { get; private set; }
 
-        public HandleField(int method, int count)
+        public HandleField(int type, int method, int count)
         {
+            this.Type = type;
             this.Method = method;
             this.Count = count;
         }
@@ -407,28 +516,28 @@ namespace SpellEditor.Sources.DBC
         public UInt32 ActiveIconID;
         public UInt32 SpellPriority;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        [HandleField(1, 9)]
+        [HandleField(1, 1, 9)]
         public UInt32[] SpellName;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        [HandleField(2, 8)]
+        [HandleField(1, 2, 8)]
         public UInt32[] SpellNameFlag;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        [HandleField(1, 9)]
+        [HandleField(2, 1, 9)]
         public UInt32[] SpellRank;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        [HandleField(2, 8)]
+        [HandleField(2, 2, 8)]
         public UInt32[] SpellRankFlags;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        [HandleField(1, 9)]
+        [HandleField(3, 1, 9)]
         public UInt32[] SpellDescription;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        [HandleField(2, 8)]
+        [HandleField(3, 2, 8)]
         public UInt32[] SpellDescriptionFlags;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        [HandleField(1, 9)]
+        [HandleField(4, 1, 9)]
         public UInt32[] SpellToolTip;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        [HandleField(2, 8)]
+        [HandleField(4, 2, 8)]
         public UInt32[] SpellToolTipFlags;
         public UInt32 ManaCostPercentage;
         public UInt32 StartRecoveryCategory;

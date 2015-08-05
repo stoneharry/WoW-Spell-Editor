@@ -25,6 +25,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Threading;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.MySQL;
+using System.Data;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -86,6 +87,8 @@ namespace SpellEditor
         // End Boxes
 
         // Begin Other
+        private MySQL mySQL;
+        private Config config;
         public UInt32 selectedID = 0;
         public UInt32 newIconID = 1;
         private Boolean updating;
@@ -430,20 +433,52 @@ namespace SpellEditor
 
         private async void loadAllData()
         {
-            Config config = await getConfig();
+            config = await getConfig();
             if (config == null)
                 return;
             String errorMsg = "";
             try
             {
-                MySQL mySQL = new MySQL(config);
+                mySQL = new MySQL(config);
             }
             catch (Exception e)
             {
                 errorMsg = e.Message;
             }
             if (errorMsg.Length > 0)
+            {
                 await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
+                return;
+            }
+            if (!PopulateSelectSpell())
+            {
+                errorMsg = "";
+                try
+                {
+                    MetroDialogSettings settings = new MetroDialogSettings();
+                    settings.AffirmativeButtonText = "YES";
+                    settings.NegativeButtonText = "NO";
+                    MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+                    var res = await this.ShowMessageAsync("Import Spell.dbc?",
+                        "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+                    if (res == MessageDialogResult.Affirmative)
+                    {
+                        SpellDBC dbc = new SpellDBC();
+                        dbc.LoadDBCFile(this);
+                        dbc.import(mySQL);
+                        PopulateSelectSpell();
+                    }
+                }
+                catch (Exception e)
+                {
+                    errorMsg = e.Message;
+                }
+                if (errorMsg.Length > 0)
+                {
+                    await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
+                    return;
+                }
+            }
         }
 
         private async Task<Config> getConfig()
@@ -1274,26 +1309,17 @@ namespace SpellEditor
             await loadIcons.LoadImages();
         }
 
-        private void PopulateSelectSpell()
+        private bool PopulateSelectSpell()
         {
-            if (loadDBC == null) { return; }
-
             SelectSpell.Items.Clear();
+            if (config == null || mySQL == null)
+                return false;
+            // TODO: Localisation here
+            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, "0")).Rows;
+            foreach (DataRow row in results)
+                SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
 
-            int locales = 0;
-
-            for (int i = 0; i < 9; ++i)
-            {
-                if (loadDBC.body.records.Length < 3) { break; }
-                if (loadDBC.body.records[2].spellName[i].Length > 0)
-                {
-                    locales = i;
-
-                    break;
-                }
-            }
-
-            for (UInt32 i = 0; i < loadDBC.body.records.Length; ++i) { SelectSpell.Items.Add(loadDBC.body.records[i].record.ID.ToString() + " - " + loadDBC.body.records[i].spellName[locales]); }
+            return SelectSpell.Items.Count != 0;
         }
 
         private async void NewIconClick(object sender, RoutedEventArgs e)

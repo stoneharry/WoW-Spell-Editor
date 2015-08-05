@@ -16,10 +16,12 @@ namespace SpellEditor.Sources.MySQL
     {
         private Config.Config config;
         private MySqlConnection conn;
+        public String Table;
 
         public MySQL(Config.Config config)
         {
             this.config = config;
+            this.Table = config.Table;
 
             String connectionString = "server={0};port={1};uid={2};pwd={3};";
             connectionString = String.Format(connectionString,
@@ -28,7 +30,7 @@ namespace SpellEditor.Sources.MySQL
             conn = new MySqlConnection();
             conn.ConnectionString = connectionString;
             conn.Open();
-
+            // Create DB
             var cmd = conn.CreateCommand();
             cmd.CommandText = String.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", config.Database);
             cmd.ExecuteNonQuery();
@@ -37,27 +39,34 @@ namespace SpellEditor.Sources.MySQL
             cmd.CommandText = String.Format("USE `{0}`;", config.Database);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
-
+            // Create Table
             cmd = conn.CreateCommand();
             cmd.CommandText = String.Format(getTableCreateString(), config.Table);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
 
-        public DataTable query(String query)
-        {
-            var adapter = new MySqlDataAdapter(query, conn);
-            DataSet DS = new DataSet();
-
-            adapter.Fill(DS);
-
-            return DS.Tables[0];
-        }
-
         ~MySQL()
         {
             if (conn != null)
                 conn.Close();
+        }
+
+        public DataTable query(String query)
+        {
+            var adapter = new MySqlDataAdapter(query, conn);
+            DataSet DS = new DataSet();
+            adapter.Fill(DS);
+            return DS.Tables[0];
+        }
+
+
+        public void execute(string p)
+        {
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = p;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
         }
 
         private String getTableCreateString()
