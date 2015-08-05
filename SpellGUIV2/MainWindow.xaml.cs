@@ -431,33 +431,55 @@ namespace SpellEditor
         private async void loadAllData()
         {
             Config config = await getConfig();
-            MySQL mySQL = new MySQL(config);
+            if (config == null)
+                return;
+            String errorMsg = "";
+            try
+            {
+                MySQL mySQL = new MySQL(config);
+            }
+            catch (Exception e)
+            {
+                errorMsg = e.Message;
+            }
+            if (errorMsg.Length > 0)
+                await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
         }
 
         private async Task<Config> getConfig()
         {
-            Config config = new Config();
-            if (!File.Exists("config.xml"))
+            String errorMsg = "";
+            try
             {
+                Config config = new Config();
+                if (!File.Exists("config.xml"))
+                {
 
-                String host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
-                String user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
-                String pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
-                String port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
-                String db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
-                String tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
+                    String host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
+                    String user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
+                    String pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
+                    String port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
+                    String db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
+                    String tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
 
-                UInt32 result = 0;
-                if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
-                    host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 || tb.Length == 0 ||
-                        !UInt32.TryParse(port, out result))
-                    throw new Exception("The MySQL details input are not valid.");
+                    UInt32 result = 0;
+                    if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
+                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 || tb.Length == 0 ||
+                            !UInt32.TryParse(port, out result))
+                        throw new Exception("The MySQL details input are not valid.");
 
-                config.createFile(host, user, pass, port, db, tb);
+                    config.createFile(host, user, pass, port, db, tb);
+                }
+                else
+                    config.loadFile();
+                return config;
             }
-            else
-                config.loadFile();
-            return config;
+            catch (Exception e)
+            {
+                errorMsg = e.Message;
+            }
+            await this.ShowMessageAsync("ERROR", "An exception was thrown creating the config file.\n" + errorMsg);
+            return null;
         }
 
         private async void _KeyDown(object sender, KeyEventArgs e)

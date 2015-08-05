@@ -7,6 +7,8 @@ using SpellEditor.Sources.Config;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Reflection;
+using System.Collections;
 
 namespace SpellEditor.Sources.MySQL
 {
@@ -61,7 +63,7 @@ namespace SpellEditor.Sources.MySQL
         private String getTableCreateString()
         {
             StringBuilder str = new StringBuilder();
-            str.Append(@"CREATE TABLE `{0}` (");
+            str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
 
             var structure = new SpellEditor.Sources.DBC.Spell_DBC_Record();
             var fields = structure.GetType().GetFields();
@@ -70,19 +72,43 @@ namespace SpellEditor.Sources.MySQL
                 switch (Type.GetTypeCode(f.FieldType))
                 {
                     case TypeCode.UInt32:
-                        str.Append(String.Format(@"`{0}` int(10) unsigned NOT NULL, ", f.Name));
-                        break;
+                        {
+                            str.Append(String.Format(@"`{0}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name));
+                            break;
+                        }
                     case TypeCode.Int32:
-                        str.Append(String.Format(@"`{0}` int(11) NOT NULL, ", f.Name));
+                        str.Append(String.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
                         break;
+                    case TypeCode.Single:
+                        str.Append(String.Format(@"`{0}` float NOT NULL DEFAULT '0', ", f.Name));
+                        break;
+                    case TypeCode.Object:
+                        {
+                            var attr = f.GetCustomAttribute<SpellEditor.Sources.DBC.HandleField>();
+                            if (attr != null)
+                            {
+                                if (attr.Method == 1)
+                                {
+                                    for (int i = 0; i < attr.Count; ++i)
+                                        str.Append(String.Format(@"`{0}{1}` TEXT NOT NULL DEFAULT '', ", f.Name, i));
+                                    break;
+                                }
+                                else if (attr.Method == 2)
+                                {
+                                    for (int i = 0; i < attr.Count; ++i)
+                                        str.Append(String.Format(@"`{0}{1}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name, i));
+                                    break;
+                                }
+                            }
+                            goto default;
+                        }
                     default:
                         throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
 
                 }
-                Console.WriteLine(f.FieldType + " | " + f.Name);
             }
 
-            str.Append(@"PRIMARY KEY (`entry`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;");
+            str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;");
             
             return str.ToString();
         }

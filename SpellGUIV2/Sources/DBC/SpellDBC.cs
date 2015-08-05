@@ -254,6 +254,19 @@ namespace SpellEditor.Sources.DBC
         public string[] spellTool;
     };
 
+    [AttributeUsage(AttributeTargets.Field)]
+    class HandleField : System.Attribute
+    {
+        public int Method { get; private set; }
+        public int Count { get; private set; }
+
+        public HandleField(int method, int count)
+        {
+            this.Method = method;
+            this.Count = count;
+        }
+    }
+
     [Serializable()]
     public struct Spell_DBC_Record
     {
@@ -394,20 +407,28 @@ namespace SpellEditor.Sources.DBC
         public UInt32 ActiveIconID;
         public UInt32 SpellPriority;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        [HandleField(1, 9)]
         public UInt32[] SpellName;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [HandleField(2, 8)]
         public UInt32[] SpellNameFlag;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        [HandleField(1, 9)]
         public UInt32[] SpellRank;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [HandleField(2, 8)]
         public UInt32[] SpellRankFlags;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        [HandleField(1, 9)]
         public UInt32[] SpellDescription;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [HandleField(2, 8)]
         public UInt32[] SpellDescriptionFlags;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        [HandleField(1, 9)]
         public UInt32[] SpellToolTip;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [HandleField(2, 8)]
         public UInt32[] SpellToolTipFlags;
         public UInt32 ManaCostPercentage;
         public UInt32 StartRecoveryCategory;
