@@ -55,7 +55,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     fileStream = new FileStream("DBC/SpellIcon.dbc", FileMode.Open);
                 }
-                catch (IOException e)
+                catch (IOException)
                 {
                     return;
                 }

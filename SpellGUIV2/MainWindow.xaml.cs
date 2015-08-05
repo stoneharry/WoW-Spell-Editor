@@ -23,6 +23,8 @@ using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Controls;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Threading;
+using SpellEditor.Sources.Config;
+using SpellEditor.Sources.MySQL;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -98,22 +100,6 @@ namespace SpellEditor
         {
             try
             {
-                if (!File.Exists("DBC/Spell.dbc"))
-                {
-                    HandleErrorMessage("Failed to load Spell.dbc!");
-                    return;
-                }
-
-                loadDBC = new SpellDBC();
-
-                if (!loadDBC.LoadDBCFile(this))
-                {
-                    HandleErrorMessage("Failed to load Spell.dbc!");
-                    return;
-                }
-
-                PopulateSelectSpell();
-
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
                 stringObjectMap.Add(2, SpellName2);
@@ -436,23 +422,42 @@ namespace SpellEditor
                     interrupts2.Add(box);
                 }
 
-                loadCategories = new SpellCategory(this, loadDBC);
-                loadDispels = new SpellDispelType(this, loadDBC);
-                loadMechanics = new SpellMechanic(this, loadDBC);
-                loadFocusObjects = new SpellFocusObject(this, loadDBC);
-                loadAreaGroups = new AreaGroup(this, loadDBC);
-                loadDifficulties = new SpellDifficulty(this, loadDBC);
-                loadCastTimes = new SpellCastTimes(this, loadDBC);
-                loadDurations = new SpellDuration(this, loadDBC);
-                loadRanges = new SpellRange(this, loadDBC);
-                loadRadiuses = new SpellRadius(this, loadDBC);
-                loadItemClasses = new ItemClass(this, loadDBC);
-                loadTotemCategories = new TotemCategory(this, loadDBC);
-                loadRuneCosts = new SpellRuneCost(this, loadDBC);
-                loadDescriptionVariables = new SpellDescriptionVariables(this, loadDBC);
+                loadAllData();
             }
 
             catch (Exception ex) { HandleErrorMessage(ex.Message); }
+        }
+
+        private async void loadAllData()
+        {
+            Config config = await getConfig();
+            MySQL mySQL = new MySQL(config);
+        }
+
+        private async Task<Config> getConfig()
+        {
+            Config config = new Config();
+            if (!File.Exists("config.xml"))
+            {
+
+                String host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
+                String user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
+                String pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
+                String port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
+                String db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
+                String tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
+
+                UInt32 result = 0;
+                if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
+                    host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 || tb.Length == 0 ||
+                        !UInt32.TryParse(port, out result))
+                    throw new Exception("The MySQL details input are not valid.");
+
+                config.createFile(host, user, pass, port, db, tb);
+            }
+            else
+                config.loadFile();
+            return config;
         }
 
         private async void _KeyDown(object sender, KeyEventArgs e)
