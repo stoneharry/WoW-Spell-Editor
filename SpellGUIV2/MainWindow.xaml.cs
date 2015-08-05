@@ -452,6 +452,8 @@ namespace SpellEditor
                 await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
                 return;
             }
+            // DEBUG ////
+            //mySQL.execute("TRUNCATE TABLE " + config.Table);
             if (!PopulateSelectSpell())
             {
                 errorMsg = "";
@@ -468,13 +470,10 @@ namespace SpellEditor
                         var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
                         await Task.Delay(1000);
                         controller.SetCancelable(false);
-                       // controller.SetProgress(0);
 
                         SpellDBC dbc = new SpellDBC();
                         dbc.LoadDBCFile(this);
-                        Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
-                        t.Start();
-                        await t;
+                        await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
                         await controller.CloseAsync();
                         PopulateSelectSpell();
                     }

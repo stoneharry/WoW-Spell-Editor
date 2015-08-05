@@ -245,12 +245,21 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() => 
             {
-                StringBuilder q = new StringBuilder();
-                q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
                 UInt32 count = header.RecordCount;
                 UInt32 index = 0;
+                StringBuilder q = null;
                 foreach (Spell_DBC_RecordMap r in body.records)
                 {
+                    if (index == 0 || index % 250 == 0)
+                    {
+                        if (q != null)
+                        {
+                            q.Remove(q.Length - 2, 2);
+                            mySQL.execute(q.ToString());
+                        }
+                        q = new StringBuilder();
+                        q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
+                    }
                     if (++index % 1000 == 0)
                     {
                         double percent = (double)index / (double)count;
@@ -349,9 +358,11 @@ namespace SpellEditor.Sources.DBC
                     q.Remove(q.Length - 2, 2);
                     q.Append("), ");
                 }
-                q.Remove(q.Length - 2, 2);
-
-                mySQL.execute(q.ToString());
+                if (q.Length > 0)
+                {
+                    q.Remove(q.Length - 2, 2);
+                    mySQL.execute(q.ToString());
+                }
             });
         }
     }
