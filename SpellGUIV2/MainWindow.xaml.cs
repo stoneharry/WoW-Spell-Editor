@@ -62,11 +62,6 @@ namespace SpellEditor
         private SpellRuneCost loadRuneCosts = null;
         private SpellDescriptionVariables loadDescriptionVariables = null;
         // End DBCs
-        
-        // Begin Arrays
-        private byte[] stances_values = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20 };
-        private byte[] creature_type_values = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x0A, 0x0B, 0x0C, 0x0D };
-        // End Arrays
 
         // Begin Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
@@ -778,14 +773,21 @@ namespace SpellEditor
 
                     loadDBC.body.records[selectedID].record.AttributesEx7 = maskk;
 
-                    UInt32 stances_mask = 0;
-
-                    for (int f = 0; f < stancesBoxes.Count; ++f)
+                    if (stancesBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.Stances = 0; }
+                    else
                     {
-                        if (stancesBoxes[f].IsChecked.Value == true) { stances_mask = stances_mask + stances_values[f]; }
-                    }
+                        UInt32 mask = 0;
+                        UInt32 flag = 1;
 
-                    loadDBC.body.records[selectedID].record.Stances = stances_mask;
+                        for (int f = 1; f < stancesBoxes.Count; ++f)
+                        {
+                            if (stancesBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+
+                            flag = flag + flag;
+                        }
+
+                        loadDBC.body.records[selectedID].record.Stances = mask;
+                    }
 
                     if (targetBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.Targets = 0; }
                     else

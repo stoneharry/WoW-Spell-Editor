@@ -50,7 +50,15 @@ namespace SpellEditor.Sources.DBC
                     return;
                 }
 
-                FileStream fileStream = new FileStream("DBC/SpellIcon.dbc", FileMode.Open);
+                FileStream fileStream;
+                try
+                {
+                    fileStream = new FileStream("DBC/SpellIcon.dbc", FileMode.Open);
+                }
+                catch (IOException e)
+                {
+                    return;
+                }
                 int count = Marshal.SizeOf(typeof(DBC_Header));
                 byte[] readBuffer = new byte[count];
                 BinaryReader reader = new BinaryReader(fileStream);
