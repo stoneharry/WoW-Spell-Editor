@@ -26,6 +26,7 @@ using System.Windows.Threading;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.MySQL;
 using System.Data;
+using MySql.Data.MySqlClient;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -592,7 +593,7 @@ namespace SpellEditor
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (loadDBC == null) { return; }
+            if (mySQL == null) { return; }
 
             if (sender == InsertANewRecord)
             {
@@ -611,103 +612,51 @@ namespace SpellEditor
                     UInt32 oldID = 0;
 
                     string inputCopySpell = await this.ShowInputAsync("Spell Editor", "Input the spell ID to copy from.");
-
                     if (inputCopySpell == null) { return; }
 
-                    try
+                    if (!UInt32.TryParse(inputCopySpell, out oldID))
                     {
-                        oldID = UInt32.Parse(inputCopySpell);
-
-                        for (UInt32 i = 0; i < loadDBC.body.records.Length; ++i)
-                        {
-                            if (loadDBC.body.records[i].record.ID == oldID)
-                            {
-                                oldIDIndex = i;
-
-                                break;
-                            }
-                        }
-
-                        if (oldIDIndex == UInt32.MaxValue) { throw new Exception("Input spell ID does not exist!"); }
+                        HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                        return;
                     }
-
-                    catch (Exception ex) { HandleErrorMessage(ex.Message); }
+                    oldIDIndex = oldID;
                 }
 
                 string inputNewRecord = await this.ShowInputAsync("Spell Editor", "Input the new spell ID.");
-
                 if (inputNewRecord == null) { return; }
 
                 UInt32 newID = 0;
-
-                try
+                if (!UInt32.TryParse(inputNewRecord, out newID))
                 {
-                    newID = UInt32.Parse(inputNewRecord);
-
-                    for (int i = 0; i < loadDBC.body.records.Length; ++i)
-                    {
-                        if (loadDBC.body.records[i].record.ID == newID)
-                            throw new Exception("The spell ID is already taken!");
-                    }
-                }
-                catch (Exception ex) {
-                    HandleErrorMessage(ex.Message);
+                    HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                    return;
                 }
 
-                Int32 newRecord = (Int32)loadDBC.header.RecordCount++;
-                Array.Resize(ref loadDBC.body.records, (Int32)loadDBC.header.RecordCount);
+                if (UInt32.Parse(mySQL.query(String.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, newID)).Rows[0][0].ToString()) > 0)
+                {
+                    HandleErrorMessage("ERROR: That spell ID is already taken.");
+                    return;
+                }
 
                 if (oldIDIndex != UInt32.MaxValue)
                 {
-                    loadDBC.body.records[newRecord] = DeepCopy(loadDBC.body.records[oldIDIndex]);
-                    loadDBC.body.records[newRecord].record.ID = newID;
+                    // Copy old spell to new spell
+                    var row = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, oldIDIndex)).Rows[0];
+                    StringBuilder str = new StringBuilder();
+                    str.Append(String.Format("INSERT INTO `{0}` VALUES ('{1}'", mySQL.Table, newID));
+                    for (int i = 1; i < row.Table.Columns.Count; ++i)
+                        str.Append(String.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
+                    str.Append(")");
+                    mySQL.execute(str.ToString());
                 }
                 else
                 {
-                    loadDBC.body.records[newRecord].record.SpellName = new UInt32[9];
-                    loadDBC.body.records[newRecord].record.SpellDescription = new UInt32[9];
-                    loadDBC.body.records[newRecord].record.SpellToolTip = new UInt32[9];
-                    loadDBC.body.records[newRecord].record.SpellRank = new UInt32[9];
-                    loadDBC.body.records[newRecord].spellDesc = new String[9];
-                    loadDBC.body.records[newRecord].spellName = new String[9];
-                    loadDBC.body.records[newRecord].spellRank = new String[9];
-                    loadDBC.body.records[newRecord].spellTool = new String[9];
-                    loadDBC.body.records[newRecord].record.SpellNameFlag = new UInt32[8];
-                    loadDBC.body.records[newRecord].record.SpellDescriptionFlags = new UInt32[8];
-                    loadDBC.body.records[newRecord].record.SpellToolTipFlags = new UInt32[8];
-                    loadDBC.body.records[newRecord].record.SpellRankFlags = new UInt32[8];
-
-                    for (int i = 0; i < 9; ++i)
-                    {
-                        loadDBC.body.records[newRecord].record.SpellName[i] = 0;
-                        loadDBC.body.records[newRecord].record.SpellDescription[i] = 0;
-                        loadDBC.body.records[newRecord].record.SpellToolTip[i] = 0;
-                        loadDBC.body.records[newRecord].record.SpellRank[i] = 0;
-                        loadDBC.body.records[newRecord].spellDesc[i] = "";
-                        loadDBC.body.records[newRecord].spellName[i] = "";
-                        loadDBC.body.records[newRecord].spellRank[i] = "";
-                        loadDBC.body.records[newRecord].spellTool[i] = "";
-
-                        if (i < 8)
-                        {
-                            loadDBC.body.records[newRecord].record.SpellNameFlag[i] = 0;
-                            loadDBC.body.records[newRecord].record.SpellDescriptionFlags[i] = 0;
-                            loadDBC.body.records[newRecord].record.SpellToolTipFlags[i] = 0;
-                            loadDBC.body.records[newRecord].record.SpellRankFlags[i] = 0;
-                        }
-                    }
-
-                    loadDBC.body.records[newRecord].record.ID = newID;
-                    loadDBC.body.records[newRecord].record.SpellIconID = 1;
-                    loadDBC.body.records[newRecord].record.ActiveIconID = 0;
+                    // Create new spell
+                    HandleErrorMessage("Creating a new spell from scratch is currently not implemented. Please copy an existing spell.");
+                    return;
                 }
 
-                loadDBC.body.records = loadDBC.body.records.OrderBy(Spell_DBC_RecordMap => Spell_DBC_RecordMap.record.ID).ToArray<Spell_DBC_RecordMap>();
-
-                if (MainTabControl.SelectedIndex != 0)
-                    MainTabControl.SelectedIndex = 0;
-                else
-                    PopulateSelectSpell();
+                PopulateSelectSpell();
 
                 await this.ShowMessageAsync("Spell Editor", "Created new record with ID " + inputNewRecord + " sucessfully.");
             }
@@ -718,43 +667,18 @@ namespace SpellEditor
 
                 if (input == null) { return; }
 
-                Int32 newID = 0;
-
-                try
+                UInt32 spellID = 0;
+                if (!UInt32.TryParse(input, out spellID))
                 {
-                    newID = (Int32)UInt32.Parse(input);
-
-                    bool found = false;
-
-                    for (Int32 i = 0; i < loadDBC.body.records.Length; ++i)
-                    {
-                        if (loadDBC.body.records[i].record.ID == newID)
-                        {
-                            newID = i;
-
-                            found = true;
-
-                            break;
-                        }
-                    }
-
-                    if (!found) { throw new Exception("The spell ID was not found!"); }
+                    HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                    return;
                 }
-
-                catch (Exception ex) { HandleErrorMessage(ex.Message); }
-
-                List<Spell_DBC_RecordMap> records = loadDBC.body.records.ToList<Spell_DBC_RecordMap>();
-
-                records.RemoveAt(newID);
-
-                loadDBC.body.records = records.ToArray<Spell_DBC_RecordMap>();
-
-                --loadDBC.header.RecordCount;
-
+                
+                mySQL.execute(String.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, spellID));
+                
                 selectedID = 0;
 
-                if (MainTabControl.SelectedIndex != 0) { MainTabControl.SelectedIndex = 0; }
-                else { PopulateSelectSpell(); }
+                PopulateSelectSpell();
 
                 await this.ShowMessageAsync("Spell Editor", "Deleted record successfully.");
             }
