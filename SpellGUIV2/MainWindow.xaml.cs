@@ -1323,8 +1323,23 @@ namespace SpellEditor
             SelectSpell.Items.Clear();
             if (config == null || mySQL == null)
                 return false;
-            // TODO: Localisation here
-            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, "0")).Rows;
+            // Attempt localisation on Death Touch
+            DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," + 
+                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+            int locale = 0;
+            if (res[0] != null)
+            {
+                for (int i = 0; i < 9; ++i)
+                {
+                    if (res[0][i + 1].ToString().Length > 3)
+                    {
+                        locale = i;
+                        break;
+                    }
+                }
+            }
+            // Retrieve rows
+            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, locale.ToString())).Rows;
             foreach (DataRow row in results)
                 SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
 
