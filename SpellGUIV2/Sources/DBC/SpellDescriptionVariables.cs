@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SpellDBC spell;
+        private MySQL.MySQL mySQL;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public SpellDescriptionVariables_DBC_Map body;
         // End DBCs
 
-        public SpellDescriptionVariables(MainWindow window, SpellDBC spellDBC)
+        public SpellDescriptionVariables(MainWindow window, MySQL.MySQL mySQLConn)
         {
             main = window;
-            spell = spellDBC;
+            mySQL = mySQLConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -95,7 +95,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellDescriptionVariablesSelection()
         {
-            int ID = (int)spell.body.records[main.selectedID].record.SpellDescriptionVariableID;
+            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

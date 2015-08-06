@@ -9,6 +9,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Reflection;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace SpellEditor.Sources.MySQL
 {
@@ -52,21 +53,29 @@ namespace SpellEditor.Sources.MySQL
                 conn.Close();
         }
 
+        private readonly object syncLock = new object();
+
         public DataTable query(String query)
         {
-            var adapter = new MySqlDataAdapter(query, conn);
-            DataSet DS = new DataSet();
-            adapter.Fill(DS);
-            return DS.Tables[0];
+            lock (syncLock)
+            {
+                var adapter = new MySqlDataAdapter(query, conn);
+                DataSet DS = new DataSet();
+                adapter.Fill(DS);
+                return DS.Tables[0];
+            }
         }
 
 
         public void execute(string p)
         {
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = p;
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
+            //lock (syncLock)
+            //{
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = p;
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            //}
         }
 
         private String getTableCreateString()

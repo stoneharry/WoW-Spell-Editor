@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SpellDBC spell;
+        private MySQL.MySQL mySQL;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public SpellDispel_DBC_Map body;
         // End DBCs
 
-        public SpellDispelType(MainWindow window, SpellDBC spellDBC)
+        public SpellDispelType(MainWindow window, MySQL.MySQL mySQLConn)
         {
             main = window;
-            spell = spellDBC;
+            mySQL = mySQLConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -102,7 +102,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDispelSelection()
         {
-            int ID = (int)spell.body.records[main.selectedID].record.Dispel;
+            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             for (int i = 0; i < header.RecordCount; ++i)
             {

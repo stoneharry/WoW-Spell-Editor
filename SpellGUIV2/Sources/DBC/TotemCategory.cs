@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SpellDBC spell;
+        private MySQL.MySQL mySQL;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public TotemCategory_DBC_Map body;
         // End DBCs
 
-        public TotemCategory(MainWindow window, SpellDBC spellDBC)
+        public TotemCategory(MainWindow window, MySQL.MySQL mySQLConn)
         {
             main = window;
-            spell = spellDBC;
+            mySQL = mySQLConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -110,7 +110,8 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-            int[] IDs = { (int)spell.body.records[main.selectedID].record.TotemCategory1, (int)spell.body.records[main.selectedID].record.TotemCategory2 };
+            var result = mySQL.query(String.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            int[] IDs = { Int32.Parse(result[0].ToString()), Int32.Parse(result[1].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)
             {

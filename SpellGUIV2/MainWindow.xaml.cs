@@ -488,6 +488,21 @@ namespace SpellEditor
                     return;
                 }
             }
+            // Load other DBC's
+            loadCategories = new SpellCategory(this, mySQL);
+            loadDispels = new SpellDispelType(this, mySQL);
+            loadMechanics = new SpellMechanic(this, mySQL);
+            loadFocusObjects = new SpellFocusObject(this, mySQL);
+            loadAreaGroups = new AreaGroup(this, mySQL);
+            loadDifficulties = new SpellDifficulty(this, mySQL);
+            loadCastTimes = new SpellCastTimes(this, mySQL);
+            loadDurations = new SpellDuration(this, mySQL);
+            loadRanges = new SpellRange(this, mySQL);
+            loadRadiuses = new SpellRadius(this, mySQL);
+            loadItemClasses = new ItemClass(this, mySQL);
+            loadTotemCategories = new TotemCategory(this, mySQL);
+            loadRuneCosts = new SpellRuneCost(this, mySQL);
+            loadDescriptionVariables = new SpellDescriptionVariables(this, mySQL);
         }
 
         private async Task<Config> getConfig()
@@ -1366,41 +1381,42 @@ namespace SpellEditor
 
         private void UpdateMainWindow()
         {
-            if (loadDBC == null) { return; }
-
             try
             {
                 updating = true;
 
                 var task = Task.Factory.StartNew(() =>
                 {
+                    DataRowCollection rowResult = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+                    if (rowResult == null || rowResult.Count != 1)
+                        throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
+                    var row = rowResult[0];
                     int i;
-
                     for (i = 0; i < 9; ++i)
                     {
                         ThreadSafeTextBox box;
                         stringObjectMap.TryGetValue(i, out box);
-                        box.threadSafeText = loadDBC.body.records[selectedID].spellName[i];
+                        box.threadSafeText = row[String.Format("SpellName{0}", i)];
                     }
                     for (i = 0; i < 9; ++i)
                     {
                         ThreadSafeTextBox box;
                         stringObjectMap.TryGetValue(i + 9, out box);
-                        box.threadSafeText = loadDBC.body.records[selectedID].spellRank[i];
+                        box.threadSafeText = row[String.Format("SpellRank{0}", i)];
                     }
 
                     for (i = 0; i < 9; ++i)
                     {
                         ThreadSafeTextBox box;
                         stringObjectMap.TryGetValue(i + 18, out box);
-                        box.threadSafeText = loadDBC.body.records[selectedID].spellTool[i];
+                        box.threadSafeText = row[String.Format("SpellTooltip{0}", i)];
                     }
 
                     for (i = 0; i < 9; ++i)
                     {
                         ThreadSafeTextBox box;
                         stringObjectMap.TryGetValue(i + 27, out box);
-                        box.threadSafeText = loadDBC.body.records[selectedID].spellDesc[i];
+                        box.threadSafeText = row[String.Format("SpellDescription{0}", i)];
                     }
 
                     loadCategories.UpdateCategorySelection();
@@ -1987,28 +2003,18 @@ namespace SpellEditor
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var added_items = e.AddedItems;
-
             if (added_items.Count > 1)
             {
                 await this.ShowMessageAsync("Spell Editor", "Only one spell can be selected at a time.");
-
                 ((ListBox)sender).UnselectAll();
-
                 return;
             }
-
             if (added_items.Count == 1)
             {
-                selectedID = (UInt32)(((ListBox)sender).SelectedIndex);
-
-                if (selectedID >= loadDBC.body.records.Length || loadDBC.body.records[selectedID].spellName == null || loadDBC.body.records[selectedID].spellName.Length == 0 || loadDBC.body.records[selectedID].spellName[0] == null)
-                {
-                    await this.ShowMessageAsync("Spell Editor", "Something went wrong trying to select this spell.");
-
-                    PopulateSelectSpell();
-                }
-
-                else { UpdateMainWindow(); }
+                ListBox box = (ListBox)sender;
+                String name = box.SelectedItem.ToString();
+                selectedID = UInt32.Parse(name.Substring(0, name.IndexOf(' ', 0)));
+                UpdateMainWindow();
             }
         }
 
