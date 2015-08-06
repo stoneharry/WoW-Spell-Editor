@@ -1326,9 +1326,7 @@ namespace SpellEditor
 
         private async void PrepareIconEditor()
         {
-            if (loadDBC == null) { return; }
-
-            loadIcons = new SpellIconDBC(this, loadDBC);
+            loadIcons = new SpellIconDBC(this, mySQL);
 
             await loadIcons.LoadImages();
         }
