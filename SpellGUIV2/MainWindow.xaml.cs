@@ -1794,8 +1794,8 @@ namespace SpellEditor
                     DieSides2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
                     DieSides3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
                     BasePointsPerLevel1.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                    BasePointsPerLevel2.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                    BasePointsPerLevel3.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
+                    BasePointsPerLevel2.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel2.ToString();
+                    BasePointsPerLevel3.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel3.ToString();
                     EffectBaseValue1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
                     EffectBaseValue2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
                     EffectBaseValue3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
