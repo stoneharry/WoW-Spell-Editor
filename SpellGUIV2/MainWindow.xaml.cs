@@ -685,10 +685,12 @@ namespace SpellEditor
 
             if (sender == SaveSpellChanges)
             {
+                String query = String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID);
+                var q = mySQL.query(query);
+                var row = q.Rows[0];
+                row.BeginEdit();
                 try
                 {
-                    var row = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID)).Rows[0];
-                    row.BeginEdit();
 
                     UInt32 maskk = 0;
                     UInt32 flagg = 1;
@@ -1195,14 +1197,15 @@ namespace SpellEditor
                     row["SpellRankFlags7"] = (uint)(TextFlags.NOT_EMPTY);
                     row["SpellToolTipFlags7"] = (uint)(TextFlags.NOT_EMPTY);
                     row["SpellDescriptionFlags7"] = (uint)(TextFlags.NOT_EMPTY);
-                    
+
                     row.EndEdit();
+                    mySQL.commitChanges(query, q.GetChanges());
                 }
 
                 catch (Exception ex)
                 {
+                    row.CancelEdit();
                     HandleErrorMessage(ex.Message);
-
                     return;
                 }
             }

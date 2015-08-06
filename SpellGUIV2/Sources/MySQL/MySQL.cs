@@ -67,6 +67,18 @@ namespace SpellEditor.Sources.MySQL
         }
 
 
+        public void commitChanges(String query, DataTable dataTable)
+        {
+            lock (syncLock)
+            {
+                var adapter = new MySqlDataAdapter();
+                var mcb = new MySqlCommandBuilder(adapter);
+                adapter.SelectCommand = new MySqlCommand(query, conn);
+                adapter.Update(dataTable);
+                dataTable.AcceptChanges();
+            }
+        }
+
         public void execute(string p)
         {
             //lock (syncLock)
