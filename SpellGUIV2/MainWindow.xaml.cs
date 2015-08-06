@@ -49,7 +49,7 @@ namespace SpellEditor
     partial class MainWindow
     {
         // Begin DBCs
-        private SpellDBC loadDBC = null;
+        //private SpellDBC loadDBC = null;
         private SpellCategory loadCategories = null;
         private SpellDispelType loadDispels = null;
         private SpellMechanic loadMechanics = null;
@@ -687,17 +687,19 @@ namespace SpellEditor
             {
                 try
                 {
+                    var row = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID)).Rows[0];
+                    row.BeginEdit();
+
                     UInt32 maskk = 0;
                     UInt32 flagg = 1;
 
                     for (int f = 0; f < attributes0.Count; ++f)
                     {
                         if (attributes0[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.Attributes = maskk;
+                    row["Attributes"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
@@ -705,11 +707,10 @@ namespace SpellEditor
                     for (int f = 0; f < attributes1.Count; ++f)
                     {
                         if (attributes1[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx = maskk;
+                   row["AttributesEx"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
@@ -717,26 +718,27 @@ namespace SpellEditor
                     for (int f = 0; f < attributes2.Count; ++f)
                     {
                         if (attributes2[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx2 = maskk;
+                    row["AttributesEx2"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
 
                     for (int f = 0; f < attributes3.Count; ++f)
                     {
-                        if (attributes3[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attributes3[f].IsChecked.Value == true)
+                        {
+                            maskk = maskk + flagg;
+                            flagg = flagg + flagg;
+                        }
 
-                        flagg = flagg + flagg;
+                        row["AttributesEx3"] = maskk;
+
+                        maskk = 0;
+                        flagg = 1;
                     }
-
-                    loadDBC.body.records[selectedID].record.AttributesEx3 = maskk;
-
-                    maskk = 0;
-                    flagg = 1;
 
                     for (int f = 0; f < attributes4.Count; ++f)
                     {
@@ -745,7 +747,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx4 = maskk;
+                    row["AttributesEx4"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
@@ -757,7 +759,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx5 = maskk;
+                    row["AttributesEx5"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
@@ -769,7 +771,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx6 = maskk;
+                    row["AttributesEx6"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
@@ -781,9 +783,9 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    loadDBC.body.records[selectedID].record.AttributesEx7 = maskk;
+                    row["AttributesEx7"] = maskk;
 
-                    if (stancesBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.Stances = 0; }
+                    if (stancesBoxes[0].IsChecked.Value == true) { row["Stances"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -796,10 +798,10 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.Stances = mask;
+                        row["Stances"] = mask;
                     }
 
-                    if (targetBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.Targets = 0; }
+                    if (targetBoxes[0].IsChecked.Value == true) { row["Targets"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -812,10 +814,10 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.Targets = mask;
+                        row["Targets"] = mask;
                     }
 
-                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.TargetCreatureType = 0; }
+                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true) { row["TargetCreatureType"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -827,93 +829,93 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.TargetCreatureType = mask;
+                        row["TargetCreatureType"] = mask;
                     }
 
-                    loadDBC.body.records[selectedID].record.FacingCasterFlags = FacingFrontFlag.IsChecked.Value ? (UInt32)0x1 : (UInt32)0x0;
+                    row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (UInt32)0x1 : (UInt32)0x0;
                     
                     switch (CasterAuraState.SelectedIndex)
                     {
                         case 0: // None
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 0;
+                            row["CasterAuraState"] = 0;
 
                             break;
                         }
 
                         case 1: // Defense
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 1;
+                            row["CasterAuraState"] = 1;
 
                             break;
                         }
 
                         case 2: // Healthless 20%
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 2;
+                            row["CasterAuraState"] = 2;
 
                             break;
                         }
 
                         case 3: // Berserking
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 3;
+                            row["CasterAuraState"] = 3;
 
                             break;
                         }
 
                         case 4: // Judgement
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 5;
+                            row["CasterAuraState"] = 5;
 
                             break;
                         }
 
                         case 5: // Hunter Parry
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 7;
+                            row["CasterAuraState"] = 7;
 
                             break;
                         }
 
                         case 6: // Victory Rush
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 10;
+                            row["CasterAuraState"] = 10;
 
                             break;
                         }
 
                         case 7: // Unknown 1
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 11;
+                            row["CasterAuraState"] = 11;
 
                             break;
                         }
 
                         case 8: // Healthless 35%
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 13;
+                            row["CasterAuraState"] = 13;
 
                             break;
                         }
 
                         case 9: // Enrage
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 17;
+                            row["CasterAuraState"] = 17;
 
                             break;
                         }
 
                         case 10: // Unknown 2
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 22;
+                            row["CasterAuraState"] = 22;
 
                             break;
                         }
 
                         case 11: // Health Above 75%
                         {
-                            loadDBC.body.records[selectedID].record.CasterAuraState = 23;
+                            row["CasterAuraState"] = 23;
 
                             break;
                         }
@@ -928,56 +930,56 @@ namespace SpellEditor
                     {
                         case 0: // None
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 0;
+                            row["TargetAuraState"] = 0;
 
                             break;
                         }
 
                         case 1: // Healthless 20%
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 2;
+                            row["TargetAuraState"] = 2;
 
                             break;
                         }
 
                         case 2: // Berserking
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 3;
+                            row["TargetAuraState"] = 3;
 
                             break;
                         }
 
                         case 3: // Healthless 35%
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 13;
+                            row["TargetAuraState"] = 13;
 
                             break;
                         }
 
                         case 4: // Conflagrate
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 14;
+                            row["TargetAuraState"] = 14;
 
                             break;
                         }
 
                         case 5: // Swiftmend
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 15;
+                            row["TargetAuraState"] = 15;
 
                             break;
                         }
 
                         case 6: // Deadly Poison
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 16;
+                            row["TargetAuraState"] = 16;
 
                             break;
                         }
 
                         case 7: // Bleeding
                         {
-                            loadDBC.body.records[selectedID].record.TargetAuraState = 18;
+                            row["TargetAuraState"] = 18;
 
                             break;
                         }
@@ -988,10 +990,10 @@ namespace SpellEditor
                         }
                     }
 
-                    loadDBC.body.records[selectedID].record.RecoveryTime = UInt32.Parse(RecoveryTime.Text);
-                    loadDBC.body.records[selectedID].record.CategoryRecoveryTime = UInt32.Parse(CategoryRecoveryTime.Text);
+                    row["RecoveryTime"] = UInt32.Parse(RecoveryTime.Text);
+                    row["CategoryRecoveryTime"] = UInt32.Parse(CategoryRecoveryTime.Text);
 
-                    if (interrupts1[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.InterruptFlags = 0; }
+                    if (interrupts1[0].IsChecked.Value == true) { row["InterruptFlags"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -1004,10 +1006,10 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.InterruptFlags = mask;
+                        row["InterruptFlags"] = mask;
                     }
 
-                    if (interrupts2[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.AuraInterruptFlags = 0; }
+                    if (interrupts2[0].IsChecked.Value == true) { row["AuraInterruptFlags"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -1020,10 +1022,10 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.AuraInterruptFlags = mask;
+                        row["AuraInterruptFlags"] = mask;
                     }
 
-                    if (interrupts3[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.ChannelInterruptFlags = 0; }
+                    if (interrupts3[0].IsChecked.Value == true) { row["ChannelInterruptFlags"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -1036,10 +1038,10 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.ChannelInterruptFlags = mask;
+                        row["ChannelInterruptFlags"] = mask;
                     }
 
-                    if (procBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.ProcFlags = 0; }
+                    if (procBoxes[0].IsChecked.Value == true) { row["ProcFlags"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -1052,41 +1054,41 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.ProcFlags = mask;
+                        row["ProcFlags"] = mask;
                     }
 
-                    loadDBC.body.records[selectedID].record.ProcChance = UInt32.Parse(ProcChance.Text);
-                    loadDBC.body.records[selectedID].record.ProcCharges = UInt32.Parse(ProcCharges.Text);
-                    loadDBC.body.records[selectedID].record.MaximumLevel = UInt32.Parse(MaximumLevel.Text);
-                    loadDBC.body.records[selectedID].record.BaseLevel = UInt32.Parse(BaseLevel.Text);
-                    loadDBC.body.records[selectedID].record.SpellLevel = UInt32.Parse(SpellLevel.Text);
-                    loadDBC.body.records[selectedID].record.PowerType = PowerType.SelectedIndex == 13 ? 4294967294 : (UInt32)PowerType.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.ManaCost = UInt32.Parse(PowerCost.Text);
-                    loadDBC.body.records[selectedID].record.ManaCostPerLevel = UInt32.Parse(ManaCostPerLevel.Text);
-                    loadDBC.body.records[selectedID].record.ManaPerSecond = UInt32.Parse(ManaCostPerSecond.Text);
-                    loadDBC.body.records[selectedID].record.ManaPerSecondPerLevel = UInt32.Parse(PerSecondPerLevel.Text);
-                    loadDBC.body.records[selectedID].record.Speed = float.Parse(Speed.Text);
-                    loadDBC.body.records[selectedID].record.StackAmount = UInt32.Parse(Stacks.Text);
-                    loadDBC.body.records[selectedID].record.Totem1 = UInt32.Parse(Totem1.Text);
-                    loadDBC.body.records[selectedID].record.Totem2 = UInt32.Parse(Totem2.Text);
-                    loadDBC.body.records[selectedID].record.Reagent1 = Int32.Parse(Reagent1.Text);
-                    loadDBC.body.records[selectedID].record.Reagent2 = Int32.Parse(Reagent2.Text);
-                    loadDBC.body.records[selectedID].record.Reagent3 = Int32.Parse(Reagent3.Text);
-                    loadDBC.body.records[selectedID].record.Reagent4 = Int32.Parse(Reagent4.Text);
-                    loadDBC.body.records[selectedID].record.Reagent5 = Int32.Parse(Reagent5.Text);
-                    loadDBC.body.records[selectedID].record.Reagent6 = Int32.Parse(Reagent6.Text);
-                    loadDBC.body.records[selectedID].record.Reagent7 = Int32.Parse(Reagent7.Text);
-                    loadDBC.body.records[selectedID].record.Reagent8 = Int32.Parse(Reagent8.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount1 = UInt32.Parse(ReagentCount1.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount2 = UInt32.Parse(ReagentCount2.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount3 = UInt32.Parse(ReagentCount3.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount4 = UInt32.Parse(ReagentCount4.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount5 = UInt32.Parse(ReagentCount5.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount6 = UInt32.Parse(ReagentCount6.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount7 = UInt32.Parse(ReagentCount7.Text);
-                    loadDBC.body.records[selectedID].record.ReagentCount8 = UInt32.Parse(ReagentCount8.Text);
+                    row["ProcChance"] = UInt32.Parse(ProcChance.Text);
+                    row["ProcCharges"] = UInt32.Parse(ProcCharges.Text);
+                    row["MaximumLevel"] = UInt32.Parse(MaximumLevel.Text);
+                    row["BaseLevel"] = UInt32.Parse(BaseLevel.Text);
+                    row["SpellLevel"] = UInt32.Parse(SpellLevel.Text);
+                    row["PowerType"] = PowerType.SelectedIndex == 13 ? 4294967294 : (UInt32)PowerType.SelectedIndex;
+                    row["ManaCost"] = UInt32.Parse(PowerCost.Text);
+                    row["ManaCostPerLevel"] = UInt32.Parse(ManaCostPerLevel.Text);
+                    row["ManaPerSecond"] = UInt32.Parse(ManaCostPerSecond.Text);
+                    row["ManaPerSecondPerLevel"] = UInt32.Parse(PerSecondPerLevel.Text);
+                    row["Speed"] = float.Parse(Speed.Text);
+                    row["StackAmount"] = UInt32.Parse(Stacks.Text);
+                    row["Totem1"] = UInt32.Parse(Totem1.Text);
+                    row["Totem2"] = UInt32.Parse(Totem2.Text);
+                    row["Reagent1"] = Int32.Parse(Reagent1.Text);
+                    row["Reagent2"] = Int32.Parse(Reagent2.Text);
+                    row["Reagent3"] = Int32.Parse(Reagent3.Text);
+                    row["Reagent4"] = Int32.Parse(Reagent4.Text);
+                    row["Reagent5"] = Int32.Parse(Reagent5.Text);
+                    row["Reagent6"] = Int32.Parse(Reagent6.Text);
+                    row["Reagent7"] = Int32.Parse(Reagent7.Text);
+                    row["Reagent8"] = Int32.Parse(Reagent8.Text);
+                    row["ReagentCount1"] = UInt32.Parse(ReagentCount1.Text);
+                    row["ReagentCount2"] = UInt32.Parse(ReagentCount2.Text);
+                    row["ReagentCount3"] = UInt32.Parse(ReagentCount3.Text);
+                    row["ReagentCount4"] = UInt32.Parse(ReagentCount4.Text);
+                    row["ReagentCount5"] = UInt32.Parse(ReagentCount5.Text);
+                    row["ReagentCount6"] = UInt32.Parse(ReagentCount6.Text);
+                    row["ReagentCount7"] = UInt32.Parse(ReagentCount7.Text);
+                    row["ReagentCount8"] = UInt32.Parse(ReagentCount8.Text);
 
-                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true) { loadDBC.body.records[selectedID].record.EquippedItemInventoryTypeMask = 0; }
+                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemInventoryTypeMask"] = 0; }
                     else
                     {
                         UInt32 mask = 0;
@@ -1099,114 +1101,102 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        loadDBC.body.records[selectedID].record.EquippedItemInventoryTypeMask = (Int32)mask;
+                        row["EquippedItemInventoryTypeMask"] = (Int32)mask;
                     }
 
-                    loadDBC.body.records[selectedID].record.Effect1 = (UInt32)SpellEffect1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.Effect2 = (UInt32)SpellEffect2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.Effect3 = (UInt32)SpellEffect3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectDieSides1 = Int32.Parse(DieSides1.Text);
-                    loadDBC.body.records[selectedID].record.EffectDieSides2 = Int32.Parse(DieSides2.Text);
-                    loadDBC.body.records[selectedID].record.EffectDieSides3 = Int32.Parse(DieSides3.Text);
-                    loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1 = float.Parse(BasePointsPerLevel1.Text);
-                    loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel2 = float.Parse(BasePointsPerLevel2.Text);
-                    loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel3 = float.Parse(BasePointsPerLevel3.Text);
-                    loadDBC.body.records[selectedID].record.EffectBasePoints1 = Int32.Parse(BasePoints1.Text);
-                    loadDBC.body.records[selectedID].record.EffectBasePoints2 = Int32.Parse(BasePoints2.Text);
-                    loadDBC.body.records[selectedID].record.EffectBasePoints3 = Int32.Parse(BasePoints3.Text);
-                    loadDBC.body.records[selectedID].record.EffectMechanic1 = (UInt32)Mechanic1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectMechanic2 = (UInt32)Mechanic2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectMechanic3 = (UInt32)Mechanic3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA1 = (UInt32)TargetA1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA2 = (UInt32)TargetA2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetA3 = (UInt32)TargetA3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB1 = (UInt32)TargetB1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB2 = (UInt32)TargetB2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectImplicitTargetB3 = (UInt32)TargetB3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectApplyAuraName1 = (UInt32)ApplyAuraName1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectApplyAuraName2 = (UInt32)ApplyAuraName2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectApplyAuraName3 = (UInt32)ApplyAuraName3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectAmplitude1 = UInt32.Parse(Amplitude1.Text);
-                    loadDBC.body.records[selectedID].record.EffectAmplitude2 = UInt32.Parse(Amplitude2.Text);
-                    loadDBC.body.records[selectedID].record.EffectAmplitude3 = UInt32.Parse(Amplitude3.Text);
-                    loadDBC.body.records[selectedID].record.EffectMultipleValue1 = float.Parse(MultipleValue1.Text);
-                    loadDBC.body.records[selectedID].record.EffectMultipleValue2 = float.Parse(MultipleValue1.Text);
-                    loadDBC.body.records[selectedID].record.EffectMultipleValue3 = float.Parse(MultipleValue1.Text);
-                    loadDBC.body.records[selectedID].record.EffectChainTarget1 = (UInt32)ChainTarget1.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectChainTarget2 = (UInt32)ChainTarget2.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectChainTarget3 = (UInt32)ChainTarget3.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectItemType1 = UInt32.Parse(ItemType1.Text);
-                    loadDBC.body.records[selectedID].record.EffectItemType2 = UInt32.Parse(ItemType2.Text);
-                    loadDBC.body.records[selectedID].record.EffectItemType3 = UInt32.Parse(ItemType3.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValue1 = Int32.Parse(MiscValueA1.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValue2 = Int32.Parse(MiscValueA2.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValue3 = Int32.Parse(MiscValueA3.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValueB1 = Int32.Parse(MiscValueB1.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValueB2 = Int32.Parse(MiscValueB2.Text);
-                    loadDBC.body.records[selectedID].record.EffectMiscValueB3 = Int32.Parse(MiscValueB3.Text);
-                    loadDBC.body.records[selectedID].record.EffectTriggerSpell1 = UInt32.Parse(TriggerSpell1.Text);
-                    loadDBC.body.records[selectedID].record.EffectTriggerSpell2 = UInt32.Parse(TriggerSpell2.Text);
-                    loadDBC.body.records[selectedID].record.EffectTriggerSpell3 = UInt32.Parse(TriggerSpell3.Text);
-                    loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint1 = float.Parse(PointsPerComboPoint1.Text);
-                    loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint2 = float.Parse(PointsPerComboPoint2.Text);
-                    loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint3 = float.Parse(PointsPerComboPoint3.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskA1 = UInt32.Parse(SpellMask11.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskA2 = UInt32.Parse(SpellMask21.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskA3 = UInt32.Parse(SpellMask31.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskB1 = UInt32.Parse(SpellMask12.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskB2 = UInt32.Parse(SpellMask22.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskB3 = UInt32.Parse(SpellMask32.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskC1 = UInt32.Parse(SpellMask13.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskC2 = UInt32.Parse(SpellMask23.Text);
-                    loadDBC.body.records[selectedID].record.EffectSpellClassMaskC3 = UInt32.Parse(SpellMask33.Text);
-                    loadDBC.body.records[selectedID].record.SpellVisual1 = UInt32.Parse(SpellVisual1.Text);
-                    loadDBC.body.records[selectedID].record.SpellVisual2 = UInt32.Parse(SpellVisual2.Text);
-                    loadDBC.body.records[selectedID].record.ManaCostPercentage = UInt32.Parse(ManaCostPercent.Text);
-                    loadDBC.body.records[selectedID].record.StartRecoveryCategory = UInt32.Parse(StartRecoveryCategory.Text);
-                    loadDBC.body.records[selectedID].record.StartRecoveryTime = UInt32.Parse(StartRecoveryTime.Text);
-                    loadDBC.body.records[selectedID].record.MaximumTargetLevel = UInt32.Parse(MaxTargetsLevel.Text);
-                    loadDBC.body.records[selectedID].record.SpellFamilyName = UInt32.Parse(SpellFamilyName.Text);
-                    loadDBC.body.records[selectedID].record.MaximumAffectedTargets = UInt32.Parse(MaxTargets.Text);
-                    loadDBC.body.records[selectedID].record.DamageClass = (UInt32)SpellDamageType.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.PreventionType = (UInt32)PreventionType.SelectedIndex;
-                    loadDBC.body.records[selectedID].record.EffectDamageMultiplier1 = float.Parse(EffectDamageMultiplier1.Text);
-                    loadDBC.body.records[selectedID].record.EffectDamageMultiplier2 = float.Parse(EffectDamageMultiplier2.Text);
-                    loadDBC.body.records[selectedID].record.EffectDamageMultiplier3 = float.Parse(EffectDamageMultiplier3.Text);
-                    loadDBC.body.records[selectedID].record.SchoolMask = (S1.IsChecked.Value ? (UInt32)0x01 : (UInt32)0x00) + (S2.IsChecked.Value ? (UInt32)0x02 : (UInt32)0x00) + (S3.IsChecked.Value ? (UInt32)0x04 : (UInt32)0x00) + (S4.IsChecked.Value ? (UInt32)0x08 : (UInt32)0x00) + (S5.IsChecked.Value ? (UInt32)0x10 : (UInt32)0x00) + (S6.IsChecked.Value ? (UInt32)0x20 : (UInt32)0x00) + (S7.IsChecked.Value ? (UInt32)0x40 : (UInt32)0x00);
-                    loadDBC.body.records[selectedID].record.SpellMissileID = UInt32.Parse(SpellMissileID.Text);
-                    loadDBC.body.records[selectedID].record.EffectBonusMultiplier1 = float.Parse(EffectBonusMultiplier1.Text);
-                    loadDBC.body.records[selectedID].record.EffectBonusMultiplier2 = float.Parse(EffectBonusMultiplier2.Text);
-                    loadDBC.body.records[selectedID].record.EffectBonusMultiplier3 = float.Parse(EffectBonusMultiplier3.Text);
+                    row["Effect1"] = (UInt32)SpellEffect1.SelectedIndex;
+                    row["Effect2"] = (UInt32)SpellEffect2.SelectedIndex;
+                    row["Effect3"] = (UInt32)SpellEffect3.SelectedIndex;
+                    row["EffectDieSides1"] = Int32.Parse(DieSides1.Text);
+                    row["EffectDieSides2"] = Int32.Parse(DieSides2.Text);
+                    row["EffectDieSides3"] = Int32.Parse(DieSides3.Text);
+                    row["EffectRealPointsPerLevel1"] = float.Parse(BasePointsPerLevel1.Text);
+                    row["EffectRealPointsPerLevel2"] = float.Parse(BasePointsPerLevel2.Text);
+                    row["EffectRealPointsPerLevel3"] = float.Parse(BasePointsPerLevel3.Text);
+                    row["EffectBasePoints1"] = Int32.Parse(BasePoints1.Text);
+                    row["EffectBasePoints2"] = Int32.Parse(BasePoints2.Text);
+                    row["EffectBasePoints3"] = Int32.Parse(BasePoints3.Text);
+                    row["EffectMechanic1"] = (UInt32)Mechanic1.SelectedIndex;
+                    row["EffectMechanic2"] = (UInt32)Mechanic2.SelectedIndex;
+                    row["EffectMechanic3"] = (UInt32)Mechanic3.SelectedIndex;
+                    row["EffectImplicitTargetA1"] = (UInt32)TargetA1.SelectedIndex;
+                    row["EffectImplicitTargetA2"] = (UInt32)TargetA2.SelectedIndex;
+                    row["EffectImplicitTargetA3"] = (UInt32)TargetA3.SelectedIndex;
+                    row["EffectImplicitTargetB1"] = (UInt32)TargetB1.SelectedIndex;
+                    row["EffectImplicitTargetB2"] = (UInt32)TargetB2.SelectedIndex;
+                    row["EffectImplicitTargetB3"] = (UInt32)TargetB3.SelectedIndex;
+                    row["EffectApplyAuraName1"] = (UInt32)ApplyAuraName1.SelectedIndex;
+                    row["EffectApplyAuraName2"] = (UInt32)ApplyAuraName2.SelectedIndex;
+                    row["EffectApplyAuraName3"] = (UInt32)ApplyAuraName3.SelectedIndex;
+                    row["EffectAmplitude1"] = UInt32.Parse(Amplitude1.Text);
+                    row["EffectAmplitude2"] = UInt32.Parse(Amplitude2.Text);
+                    row["EffectAmplitude3"] = UInt32.Parse(Amplitude3.Text);
+                    row["EffectMultipleValue1"] = float.Parse(MultipleValue1.Text);
+                    row["EffectMultipleValue2"] = float.Parse(MultipleValue1.Text);
+                    row["EffectMultipleValue3"] = float.Parse(MultipleValue1.Text);
+                    row["EffectChainTarget1"] = (UInt32)ChainTarget1.SelectedIndex;
+                    row["EffectChainTarget2"] = (UInt32)ChainTarget2.SelectedIndex;
+                    row["EffectChainTarget3"] = (UInt32)ChainTarget3.SelectedIndex;
+                    row["EffectItemType1"] = UInt32.Parse(ItemType1.Text);
+                    row["EffectItemType2"] = UInt32.Parse(ItemType2.Text);
+                    row["EffectItemType3"] = UInt32.Parse(ItemType3.Text);
+                    row["EffectMiscValue1"] = Int32.Parse(MiscValueA1.Text);
+                    row["EffectMiscValue2"] = Int32.Parse(MiscValueA2.Text);
+                    row["EffectMiscValue3"] = Int32.Parse(MiscValueA3.Text);
+                    row["EffectMiscValueB1"] = Int32.Parse(MiscValueB1.Text);
+                    row["EffectMiscValueB2"] = Int32.Parse(MiscValueB2.Text);
+                    row["EffectMiscValueB3"] = Int32.Parse(MiscValueB3.Text);
+                    row["EffectTriggerSpell1"] = UInt32.Parse(TriggerSpell1.Text);
+                    row["EffectTriggerSpell2"] = UInt32.Parse(TriggerSpell2.Text);
+                    row["EffectTriggerSpell3"] = UInt32.Parse(TriggerSpell3.Text);
+                    row["EffectPointsPerComboPoint1"] = float.Parse(PointsPerComboPoint1.Text);
+                    row["EffectPointsPerComboPoint2"] = float.Parse(PointsPerComboPoint2.Text);
+                    row["EffectPointsPerComboPoint3"] = float.Parse(PointsPerComboPoint3.Text);
+                    row["EffectSpellClassMaskA1"] = UInt32.Parse(SpellMask11.Text);
+                    row["EffectSpellClassMaskA2"] = UInt32.Parse(SpellMask21.Text);
+                    row["EffectSpellClassMaskA3"] = UInt32.Parse(SpellMask31.Text);
+                    row["EffectSpellClassMaskB1"] = UInt32.Parse(SpellMask12.Text);
+                    row["EffectSpellClassMaskB2"] = UInt32.Parse(SpellMask22.Text);
+                    row["EffectSpellClassMaskB3"] = UInt32.Parse(SpellMask32.Text);
+                    row["EffectSpellClassMaskC1"] = UInt32.Parse(SpellMask13.Text);
+                    row["EffectSpellClassMaskC2"] = UInt32.Parse(SpellMask23.Text);
+                    row["EffectSpellClassMaskC3"] = UInt32.Parse(SpellMask33.Text);
+                    row["SpellVisual1"] = UInt32.Parse(SpellVisual1.Text);
+                    row["SpellVisual2"] = UInt32.Parse(SpellVisual2.Text);
+                    row["ManaCostPercentage"] = UInt32.Parse(ManaCostPercent.Text);
+                    row["StartRecoveryCategory"] = UInt32.Parse(StartRecoveryCategory.Text);
+                    row["StartRecoveryTime"] = UInt32.Parse(StartRecoveryTime.Text);
+                    row["MaximumTargetLevel"] = UInt32.Parse(MaxTargetsLevel.Text);
+                    row["SpellFamilyName"] = UInt32.Parse(SpellFamilyName.Text);
+                    row["MaximumAffectedTargets"] = UInt32.Parse(MaxTargets.Text);
+                    row["DamageClass"] = (UInt32)SpellDamageType.SelectedIndex;
+                    row["PreventionType"] = (UInt32)PreventionType.SelectedIndex;
+                    row["EffectDamageMultiplier1"] = float.Parse(EffectDamageMultiplier1.Text);
+                    row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
+                    row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
+                    row["SchoolMask"] = (S1.IsChecked.Value ? (UInt32)0x01 : (UInt32)0x00) + (S2.IsChecked.Value ? (UInt32)0x02 : (UInt32)0x00) + (S3.IsChecked.Value ? (UInt32)0x04 : (UInt32)0x00) + (S4.IsChecked.Value ? (UInt32)0x08 : (UInt32)0x00) + (S5.IsChecked.Value ? (UInt32)0x10 : (UInt32)0x00) + (S6.IsChecked.Value ? (UInt32)0x20 : (UInt32)0x00) + (S7.IsChecked.Value ? (UInt32)0x40 : (UInt32)0x00);
+                    row["SpellMissileID"] = UInt32.Parse(SpellMissileID.Text);
+                    row["EffectBonusMultiplier1"] = float.Parse(EffectBonusMultiplier1.Text);
+                    row["EffectBonusMultiplier2"] = float.Parse(EffectBonusMultiplier2.Text);
+                    row["EffectBonusMultiplier3"] = float.Parse(EffectBonusMultiplier3.Text);
 
                     TextBox[] boxes = stringObjectMap.Values.ToArray();
                     for (int i = 0; i < 9; ++i)
-                    {
-                        String text = boxes[i].Text;
-                        loadDBC.body.records[selectedID].spellName[i] = text;
-                    }
+                        row["SpellName" + i] = boxes[i].Text;
                     for (int i = 0; i < 9; ++i)
-                    {
-                        String text = boxes[i + 9].Text;
-                        loadDBC.body.records[selectedID].spellRank[i] = text;
-                    }
+                        row["SpellRank" + i] = boxes[i + 9].Text;
                     for (int i = 0; i < 9; ++i)
-                    {
-                        String text = boxes[i + 18].Text;
-                        loadDBC.body.records[selectedID].spellTool[i] = text;
-                    }
+                        row["SpellTooltip" + i] = boxes[i + 18].Text;
                     for (int i = 0; i < 9; ++i)
-                    {
-                        String text = boxes[i + 27].Text;
-                        loadDBC.body.records[selectedID].spellDesc[i] = text;
-                    }
+                        row["SpellDescription" + i] = boxes[i + 27].Text;
                     // This seems to mimic Blizzlike values correctly, though I don't understand it at all
                     // Discussed on modcraft IRC - these fields are not even read by the client potentially
-                    loadDBC.body.records[selectedID].record.SpellNameFlag[7] = (uint)(TextFlags.NOT_EMPTY);
-                    loadDBC.body.records[selectedID].record.SpellRankFlags[7] = (uint)(TextFlags.NOT_EMPTY);
-                    loadDBC.body.records[selectedID].record.SpellToolTipFlags[7] = (uint)(TextFlags.NOT_EMPTY);
-                    loadDBC.body.records[selectedID].record.SpellDescriptionFlags[7] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellNameFlag7"] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellRankFlags7"] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellToolTipFlags7"] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellDescriptionFlags7"] = (uint)(TextFlags.NOT_EMPTY);
                     
-                    loadDBC.SaveDBCFile();
+                    row.EndEdit();
                 }
 
                 catch (Exception ex)
@@ -1227,12 +1217,13 @@ namespace SpellEditor
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
 
-                if (spellOrActive == MessageDialogResult.Affirmative) { loadDBC.body.records[selectedID].record.SpellIconID = newIconID; }
-                else if (spellOrActive == MessageDialogResult.Negative) { loadDBC.body.records[selectedID].record.ActiveIconID = newIconID; }
+                // TODO
+                //if (spellOrActive == MessageDialogResult.Affirmative) { row["SpellIconID = newIconID; }
+                //else if (spellOrActive == MessageDialogResult.Negative) { row["ActiveIconID = newIconID; }
             }
 
-            if (sender == ResetSpellIconID) { loadDBC.body.records[selectedID].record.SpellIconID = 1; }
-            if (sender == ResetActiveIconID) { loadDBC.body.records[selectedID].record.ActiveIconID = 0; }
+            //if (sender == ResetSpellIconID) { row["SpellIconID = 1; }
+            //if (sender == ResetActiveIconID) { row["ActiveIconID = 0; }
         }
 
         static public T DeepCopy<T>(T obj)
@@ -1285,7 +1276,7 @@ namespace SpellEditor
 
         private async void NewIconClick(object sender, RoutedEventArgs e)
         {
-            if (loadDBC == null) { return; }
+            if (mySQL == null) { return; }
 
             MetroDialogSettings settings = new MetroDialogSettings();
 
@@ -1295,8 +1286,9 @@ namespace SpellEditor
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
 
-            if (spellOrActive == MessageDialogResult.Affirmative) { loadDBC.body.records[selectedID].record.SpellIconID = newIconID; }
-            else if (spellOrActive == MessageDialogResult.Negative) { loadDBC.body.records[selectedID].record.ActiveIconID = newIconID; }
+            // Todo
+            //if (spellOrActive == MessageDialogResult.Affirmative) { row["SpellIconID = newIconID; }
+            //else if (spellOrActive == MessageDialogResult.Negative) { row["ActiveIconID = newIconID; }
         }
 
 
@@ -1906,7 +1898,7 @@ namespace SpellEditor
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (loadDBC == null || updating) { return; }
+            if (mySQL == null || updating) { return; }
             if (sender == EffectBaseValue1) { BasePoints1.Text = EffectBaseValue1.Text; }
             if (sender == EffectBaseValue2) { BasePoints2.Text = EffectBaseValue2.Text; }
             if (sender == EffectBaseValue3) { BasePoints3.Text = EffectBaseValue3.Text; }
@@ -1923,15 +1915,17 @@ namespace SpellEditor
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (loadDBC == null || updating) { return; }
-
+            if (mySQL == null || updating) { return; }
+            return;
+            // Todo
+            /*
             if (sender == RequiresSpellFocus)
             {
                 for (int i = 0; i < loadFocusObjects.body.lookup.Count; ++i)
                 {
                     if (loadFocusObjects.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.RequiresSpellFocus = (UInt32)loadFocusObjects.body.lookup[i].ID;
+                        row["RequiresSpellFocus = (UInt32)loadFocusObjects.body.lookup[i].ID;
 
                         break;
                     }
@@ -1944,7 +1938,7 @@ namespace SpellEditor
                 {
                     if (loadAreaGroups.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.AreaGroupID = (UInt32)loadAreaGroups.body.lookup[i].ID;
+                        row["AreaGroupID = (UInt32)loadAreaGroups.body.lookup[i].ID;
 
                         break;
                     }
@@ -1957,7 +1951,7 @@ namespace SpellEditor
                 {
                     if (loadCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.Category = (UInt32)loadCategories.body.lookup[i].ID;
+                        row["Category = (UInt32)loadCategories.body.lookup[i].ID;
 
                         break;
                     }
@@ -1970,7 +1964,7 @@ namespace SpellEditor
                 {
                     if (loadDispels.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.Dispel = (UInt32)loadDispels.body.lookup[i].ID;
+                        row["Dispel = (UInt32)loadDispels.body.lookup[i].ID;
 
                         break;
                     }
@@ -1983,7 +1977,7 @@ namespace SpellEditor
                 {
                     if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.Mechanic = (UInt32)loadMechanics.body.lookup[i].ID;
+                        row["Mechanic = (UInt32)loadMechanics.body.lookup[i].ID;
 
                         break;
                     }
@@ -1996,7 +1990,7 @@ namespace SpellEditor
                 {
                     if (loadCastTimes.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.CastingTimeIndex = (UInt32)loadCastTimes.body.lookup[i].ID;
+                        row["CastingTimeIndex = (UInt32)loadCastTimes.body.lookup[i].ID;
 
                         break;
                     }
@@ -2009,7 +2003,7 @@ namespace SpellEditor
                 {
                     if (loadDurations.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.DurationIndex = (UInt32)loadDurations.body.lookup[i].ID;
+                        row["DurationIndex = (UInt32)loadDurations.body.lookup[i].ID;
 
                         break;
                     }
@@ -2022,7 +2016,7 @@ namespace SpellEditor
                 {
                     if (loadDifficulties.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.SpellDifficultyID = (UInt32)loadDifficulties.body.lookup[i].ID;
+                        row["SpellDifficultyID = (UInt32)loadDifficulties.body.lookup[i].ID;
 
                         break;
                     }
@@ -2035,7 +2029,7 @@ namespace SpellEditor
                 {
                     if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.RangeIndex = (UInt32)loadRanges.body.lookup[i].ID;
+                        row["RangeIndex = (UInt32)loadRanges.body.lookup[i].ID;
 
                         break;
                     }
@@ -2048,7 +2042,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.EffectRadiusIndex1 = (UInt32)loadRadiuses.body.lookup[i].ID;
+                        row["EffectRadiusIndex1 = (UInt32)loadRadiuses.body.lookup[i].ID;
 
                         break;
                     }
@@ -2061,7 +2055,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.EffectRadiusIndex2 = (UInt32)loadRadiuses.body.lookup[i].ID;
+                        row["EffectRadiusIndex2 = (UInt32)loadRadiuses.body.lookup[i].ID;
 
                         break;
                     }
@@ -2074,7 +2068,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.EffectRadiusIndex3 = (UInt32)loadRadiuses.body.lookup[i].ID;
+                        row["EffectRadiusIndex3 = (UInt32)loadRadiuses.body.lookup[i].ID;
 
                         break;
                     }
@@ -2096,7 +2090,7 @@ namespace SpellEditor
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.EquippedItemClass = (Int32)loadItemClasses.body.lookup[i].ID;
+                        row["EquippedItemClass = (Int32)loadItemClasses.body.lookup[i].ID;
 
                         break;
                     }
@@ -2109,7 +2103,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.TotemCategory1 = (UInt32)loadTotemCategories.body.lookup[i].ID;
+                        row["TotemCategory1 = (UInt32)loadTotemCategories.body.lookup[i].ID;
 
                         break;
                     }
@@ -2122,7 +2116,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.TotemCategory2 = (UInt32)loadTotemCategories.body.lookup[i].ID;
+                        row["TotemCategory2 = (UInt32)loadTotemCategories.body.lookup[i].ID;
 
                         break;
                     }
@@ -2135,7 +2129,7 @@ namespace SpellEditor
                 {
                     if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.RuneCostID = (UInt32)loadRuneCosts.body.lookup[i].ID;
+                        row["RuneCostID = (UInt32)loadRuneCosts.body.lookup[i].ID;
 
                         break;
                     }
@@ -2148,13 +2142,13 @@ namespace SpellEditor
                 {
                     if (loadDescriptionVariables.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        loadDBC.body.records[selectedID].record.SpellDescriptionVariableID = (UInt32)loadDescriptionVariables.body.lookup[i].ID;
+                        row["SpellDescriptionVariableID = (UInt32)loadDescriptionVariables.body.lookup[i].ID;
 
                         break;
                     }
                 }
             }
-
+            */
             if (sender == Effect1) { SpellEffect1.SelectedIndex = Effect1.SelectedIndex; }
             if (sender == Effect2) { SpellEffect2.SelectedIndex = Effect2.SelectedIndex; }
             if (sender == Effect3) { SpellEffect3.SelectedIndex = Effect3.SelectedIndex; }
