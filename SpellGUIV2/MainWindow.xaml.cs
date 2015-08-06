@@ -1421,7 +1421,7 @@ namespace SpellEditor
                     loadDispels.UpdateDispelSelection();
                     loadMechanics.UpdateMechanicSelection();
 
-                    UInt32 mask = loadDBC.body.records[selectedID].record.Attributes;
+                    UInt32 mask = UInt32.Parse(row["Attributes"].ToString());
                     UInt32 flagg = 1;
 
                     for (int f = 0; f < attributes0.Count; ++f)
@@ -1430,7 +1430,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx;
+                    mask = UInt32.Parse(row["AttributesEx"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes1.Count; ++f)
@@ -1439,7 +1439,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx2;
+                    mask = UInt32.Parse(row["AttributesEx2"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes2.Count; ++f)
@@ -1448,7 +1448,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx3;
+                    mask = UInt32.Parse(row["AttributesEx3"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes3.Count; ++f)
@@ -1457,7 +1457,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx4;
+                    mask = UInt32.Parse(row["AttributesEx4"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes4.Count; ++f)
@@ -1466,7 +1466,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx5;
+                    mask = UInt32.Parse(row["AttributesEx5"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes5.Count; ++f)
@@ -1475,7 +1475,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx6;
+                    mask = UInt32.Parse(row["AttributesEx6"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes6.Count; ++f)
@@ -1484,7 +1484,7 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AttributesEx7;
+                    mask = UInt32.Parse(row["AttributesEx7"].ToString());
                     flagg = 1;
 
                     for (int f = 0; f < attributes7.Count; ++f)
@@ -1493,20 +1493,16 @@ namespace SpellEditor
                         flagg = flagg + flagg;
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.Stances;
-
+                    mask = UInt32.Parse(row["Stances"].ToString());
                     if (mask == 0)
                     {
                         stancesBoxes[0].threadSafeChecked = true;
                         for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         stancesBoxes[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < stancesBoxes.Count; ++f)
                         {
                             stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -1514,8 +1510,7 @@ namespace SpellEditor
                         }
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.Targets;
-
+                    mask = UInt32.Parse(row["Targets"].ToString());
                     if (mask == 0)
                     {
                         targetBoxes[0].threadSafeChecked = true;
@@ -1524,9 +1519,7 @@ namespace SpellEditor
                     else
                     {
                         targetBoxes[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < targetBoxes.Count; ++f)
                         {
                             targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -1534,7 +1527,7 @@ namespace SpellEditor
                         }
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.TargetCreatureType;
+                    mask = UInt32.Parse(row["TargetCreatureType"].ToString());
 
                     if (mask == 0)
                     {
@@ -1544,9 +1537,7 @@ namespace SpellEditor
                     else
                     {
                         targetCreatureTypeBoxes[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                         {
                             targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -1556,11 +1547,11 @@ namespace SpellEditor
 
                     loadFocusObjects.UpdateSpellFocusObjectSelection();
 
-                    mask = loadDBC.body.records[selectedID].record.FacingCasterFlags;
+                    mask = UInt32.Parse(row["FacingCasterFlags"].ToString());
 
                     FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
 
-                    switch (loadDBC.body.records[selectedID].record.CasterAuraState)
+                    switch (UInt32.Parse(row["CasterAuraState"].ToString()))
                     {
                         case 0: // None
                             {
@@ -1648,7 +1639,7 @@ namespace SpellEditor
                         default: { break; }
                     }
 
-                    switch (loadDBC.body.records[selectedID].record.TargetAuraState)
+                    switch (UInt32.Parse(row["TargetAuraState"].ToString()))
                     {
                         case 0: // None
                             {
@@ -1711,24 +1702,19 @@ namespace SpellEditor
 
                     loadCastTimes.UpdateCastTimeSelection();
 
-                    RecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.RecoveryTime.ToString();
-                    CategoryRecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.CategoryRecoveryTime.ToString();
+                    RecoveryTime.threadSafeText = UInt32.Parse(row["RecoveryTime"].ToString());
+                    CategoryRecoveryTime.threadSafeText = UInt32.Parse(row["CategoryRecoveryTime"].ToString());
 
-                    mask = loadDBC.body.records[selectedID].record.InterruptFlags;
-
+                    mask = UInt32.Parse(row["InterruptFlags"].ToString());
                     if (mask == 0)
                     {
                         interrupts1[0].threadSafeChecked = true;
-
                         for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         interrupts1[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < interrupts1.Count; ++f)
                         {
                             interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -1737,229 +1723,205 @@ namespace SpellEditor
                         }
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.AuraInterruptFlags;
-
+                    mask = UInt32.Parse(row["AuraInterruptFlags"].ToString());
                     if (mask == 0)
                     {
                         interrupts2[0].threadSafeChecked = true;
-
                         for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         interrupts2[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < interrupts2.Count; ++f)
                         {
                             interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-
                             flag = flag + flag;
                         }
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.ChannelInterruptFlags;
-
+                    mask = UInt32.Parse(row["ChannelInterruptFlags"].ToString());
                     if (mask == 0)
                     {
                         interrupts3[0].threadSafeChecked = true;
-
                         for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         interrupts3[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < interrupts3.Count; ++f)
                         {
                             interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-
                             flag = flag + flag;
                         }
                     }
 
-                    mask = loadDBC.body.records[selectedID].record.ProcFlags;
-
+                    mask = UInt32.Parse(row["ProcFlags"].ToString());
                     if (mask == 0)
                     {
                         procBoxes[0].threadSafeChecked = true;
-
                         for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         procBoxes[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 1; f < procBoxes.Count; ++f)
                         {
                             procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-
                             flag = flag + flag;
                         }
                     }
 
-                    ProcChance.threadSafeText = loadDBC.body.records[selectedID].record.ProcChance.ToString();
-                    ProcCharges.threadSafeText = loadDBC.body.records[selectedID].record.ProcCharges.ToString();
-                    MaximumLevel.threadSafeText = loadDBC.body.records[selectedID].record.MaximumLevel.ToString();
-                    BaseLevel.threadSafeText = loadDBC.body.records[selectedID].record.BaseLevel.ToString();
-                    SpellLevel.threadSafeText = loadDBC.body.records[selectedID].record.SpellLevel.ToString();
+                    ProcChance.threadSafeText = UInt32.Parse(row["ProcChance"].ToString());
+                    ProcCharges.threadSafeText = UInt32.Parse(row["ProcCharges"].ToString());
+                    MaximumLevel.threadSafeText = UInt32.Parse(row["MaximumLevel"].ToString());
+                    BaseLevel.threadSafeText = UInt32.Parse(row["BaseLevel"].ToString());
+                    SpellLevel.threadSafeText = UInt32.Parse(row["SpellLevel"].ToString());
 
                     loadDurations.UpdateDurationIndexes();
 
-                    Int32 powerType = (Int32)loadDBC.body.records[selectedID].record.PowerType;
+                    Int32 powerType = Int32.Parse(row["PowerType"].ToString());
                     // Dirty hack fix
                     if (powerType < 0)
                         powerType = 13;
                     PowerType.threadSafeIndex = powerType;
-                    PowerCost.threadSafeText = loadDBC.body.records[selectedID].record.ManaCost.ToString();
-                    ManaCostPerLevel.threadSafeText = loadDBC.body.records[selectedID].record.ManaCostPerLevel.ToString();
-                    ManaCostPerSecond.threadSafeText = loadDBC.body.records[selectedID].record.ManaPerSecond.ToString();
-                    PerSecondPerLevel.threadSafeText = loadDBC.body.records[selectedID].record.ManaPerSecondPerLevel.ToString();
+                    PowerCost.threadSafeText = UInt32.Parse(row["ManaCost"].ToString());
+                    ManaCostPerLevel.threadSafeText = UInt32.Parse(row["ManaCostPerLevel"].ToString());
+                    ManaCostPerSecond.threadSafeText = UInt32.Parse(row["ManaPerSecond"].ToString());
+                    PerSecondPerLevel.threadSafeText = UInt32.Parse(row["ManaPerSecondPerLevel"].ToString());
 
                     loadRanges.UpdateSpellRangeSelection();
 
-                    Speed.threadSafeText = loadDBC.body.records[selectedID].record.Speed.ToString();
-                    Stacks.threadSafeText = loadDBC.body.records[selectedID].record.StackAmount.ToString();
-                    Totem1.threadSafeText = loadDBC.body.records[selectedID].record.Totem1.ToString();
-                    Totem2.threadSafeText = loadDBC.body.records[selectedID].record.Totem2.ToString();
-                    Reagent1.threadSafeText = loadDBC.body.records[selectedID].record.Reagent1.ToString();
-                    Reagent2.threadSafeText = loadDBC.body.records[selectedID].record.Reagent2.ToString();
-                    Reagent3.threadSafeText = loadDBC.body.records[selectedID].record.Reagent3.ToString();
-                    Reagent4.threadSafeText = loadDBC.body.records[selectedID].record.Reagent4.ToString();
-                    Reagent5.threadSafeText = loadDBC.body.records[selectedID].record.Reagent5.ToString();
-                    Reagent6.threadSafeText = loadDBC.body.records[selectedID].record.Reagent6.ToString();
-                    Reagent7.threadSafeText = loadDBC.body.records[selectedID].record.Reagent7.ToString();
-                    Reagent8.threadSafeText = loadDBC.body.records[selectedID].record.Reagent8.ToString();
-                    ReagentCount1.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount1.ToString();
-                    ReagentCount2.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount2.ToString();
-                    ReagentCount3.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount3.ToString();
-                    ReagentCount4.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount4.ToString();
-                    ReagentCount5.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount5.ToString();
-                    ReagentCount6.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount6.ToString();
-                    ReagentCount7.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount7.ToString();
-                    ReagentCount8.threadSafeText = loadDBC.body.records[selectedID].record.ReagentCount8.ToString();
+                    Speed.threadSafeText = row["Speed"].ToString();
+                    Stacks.threadSafeText = row["StackAmount"].ToString();
+                    Totem1.threadSafeText = row["Totem1"].ToString();
+                    Totem2.threadSafeText = row["Totem2"].ToString();
+                    Reagent1.threadSafeText = row["Reagent1"].ToString();
+                    Reagent2.threadSafeText = row["Reagent2"].ToString();
+                    Reagent3.threadSafeText = row["Reagent3"].ToString();
+                    Reagent4.threadSafeText = row["Reagent4"].ToString();
+                    Reagent5.threadSafeText = row["Reagent5"].ToString();
+                    Reagent6.threadSafeText = row["Reagent6"].ToString();
+                    Reagent7.threadSafeText = row["Reagent7"].ToString();
+                    Reagent8.threadSafeText = row["Reagent8"].ToString();
+                    ReagentCount1.threadSafeText = row["ReagentCount1"].ToString();
+                    ReagentCount2.threadSafeText = row["ReagentCount2"].ToString();
+                    ReagentCount3.threadSafeText = row["ReagentCount3"].ToString();
+                    ReagentCount4.threadSafeText = row["ReagentCount4"].ToString();
+                    ReagentCount5.threadSafeText = row["ReagentCount5"].ToString();
+                    ReagentCount6.threadSafeText = row["ReagentCount6"].ToString();
+                    ReagentCount7.threadSafeText = row["ReagentCount7"].ToString();
+                    ReagentCount8.threadSafeText = row["ReagentCount8"].ToString();
 
                     loadItemClasses.UpdateItemClassSelection();
 
-                    mask = (UInt32)loadDBC.body.records[selectedID].record.EquippedItemInventoryTypeMask;
-
+                    mask = UInt32.Parse(row["EquippedItemInventoryTypeMask"].ToString());
                     if (mask == 0)
                     {
                         equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = true;
-
                         for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = false; }
                     }
-
                     else
                     {
                         equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
-
                         UInt32 flag = 1;
-
                         for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
                         {
                             equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-
                             flag = flag + flag;
                         }
                     }
 
-                    Effect1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
-                    Effect2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
-                    Effect3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
-                    SpellEffect1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect1;
-                    SpellEffect2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect2;
-                    SpellEffect3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.Effect3;
-                    EffectDieSides1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
-                    EffectDieSides2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
-                    EffectDieSides3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
-                    DieSides1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides1.ToString();
-                    DieSides2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides2.ToString();
-                    DieSides3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDieSides3.ToString();
-                    BasePointsPerLevel1.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                    BasePointsPerLevel2.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                    BasePointsPerLevel3.threadSafeText = loadDBC.body.records[selectedID].record.EffectRealPointsPerLevel1.ToString();
-                    EffectBaseValue1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
-                    EffectBaseValue2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
-                    EffectBaseValue3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
-                    BasePoints1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints1.ToString();
-                    BasePoints2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints2.ToString();
-                    BasePoints3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBasePoints3.ToString();
-                    Mechanic1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic1;
-                    Mechanic2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic2;
-                    Mechanic3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectMechanic3;
-                    TargetA1.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA1;
-                    TargetA2.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA2;
-                    TargetA3.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetA3;
-                    TargetB1.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB1;
-                    TargetB2.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB2;
-                    TargetB3.threadSafeIndex = (Targets)loadDBC.body.records[selectedID].record.EffectImplicitTargetB3;
+                    // Some duplication of fields here
+                    Effect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
+                    Effect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
+                    Effect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
+                    SpellEffect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
+                    SpellEffect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
+                    SpellEffect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
+                    EffectDieSides1.threadSafeText = row["EffectDieSides1"].ToString();
+                    EffectDieSides2.threadSafeText = row["EffectDieSides2"].ToString();
+                    EffectDieSides3.threadSafeText = row["EffectDieSides3"].ToString();
+                    DieSides1.threadSafeText = row["EffectDieSides1"].ToString();
+                    DieSides2.threadSafeText = row["EffectDieSides2"].ToString();
+                    DieSides3.threadSafeText = row["EffectDieSides3"].ToString();
+                    BasePointsPerLevel1.threadSafeText = row["EffectRealPointsPerLevel1"].ToString();
+                    BasePointsPerLevel2.threadSafeText = row["EffectRealPointsPerLevel2"].ToString();
+                    BasePointsPerLevel3.threadSafeText = row["EffectRealPointsPerLevel3"].ToString();
+                    EffectBaseValue1.threadSafeText = row["EffectBasePoints1"].ToString();
+                    EffectBaseValue2.threadSafeText = row["EffectBasePoints2"].ToString();
+                    EffectBaseValue3.threadSafeText = row["EffectBasePoints3"].ToString();
+                    BasePoints1.threadSafeText = row["EffectBasePoints1"].ToString();
+                    BasePoints2.threadSafeText = row["EffectBasePoints2"].ToString();
+                    BasePoints3.threadSafeText = row["EffectBasePoints3"].ToString();
+                    Mechanic1.threadSafeIndex = Int32.Parse(row["EffectMechanic1"].ToString());
+                    Mechanic2.threadSafeIndex = Int32.Parse(row["EffectMechanic2"].ToString());
+                    Mechanic3.threadSafeIndex = Int32.Parse(row["EffectMechanic3"].ToString());
+                    TargetA1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA1"].ToString());
+                    TargetA2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA2"].ToString());
+                    TargetA3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA3"].ToString());
+                    TargetB1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB1"].ToString());
+                    TargetB2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB2"].ToString());
+                    TargetB3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB3"].ToString());
 
                     loadRadiuses.UpdateRadiusIndexes();
 
-                    ApplyAuraName1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName1;
-                    ApplyAuraName2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName2;
-                    ApplyAuraName3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectApplyAuraName3;
-                    Amplitude1.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude1.ToString();
-                    Amplitude2.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude2.ToString();
-                    Amplitude3.threadSafeText = loadDBC.body.records[selectedID].record.EffectAmplitude3.ToString();
-                    MultipleValue1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue1.ToString();
-                    MultipleValue2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue2.ToString();
-                    MultipleValue3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMultipleValue3.ToString();
-                    ChainTarget1.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget1;
-                    ChainTarget2.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget2;
-                    ChainTarget3.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.EffectChainTarget3;
-                    ItemType1.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType1.ToString();
-                    ItemType2.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType2.ToString();
-                    ItemType3.threadSafeText = loadDBC.body.records[selectedID].record.EffectItemType3.ToString();
-                    MiscValueA1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue1.ToString();
-                    MiscValueA2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue2.ToString();
-                    MiscValueA3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValue3.ToString();
-                    MiscValueB1.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB1.ToString();
-                    MiscValueB2.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB2.ToString();
-                    MiscValueB3.threadSafeText = loadDBC.body.records[selectedID].record.EffectMiscValueB3.ToString();
-                    TriggerSpell1.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell1.ToString();
-                    TriggerSpell2.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell2.ToString();
-                    TriggerSpell3.threadSafeText = loadDBC.body.records[selectedID].record.EffectTriggerSpell3.ToString();
-                    PointsPerComboPoint1.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint1.ToString();
-                    PointsPerComboPoint2.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint2.ToString();
-                    PointsPerComboPoint3.threadSafeText = loadDBC.body.records[selectedID].record.EffectPointsPerComboPoint3.ToString();
-                    SpellMask11.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA1.ToString();
-                    SpellMask21.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA2.ToString();
-                    SpellMask31.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskA3.ToString();
-                    SpellMask12.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB1.ToString();
-                    SpellMask22.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB2.ToString();
-                    SpellMask32.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskB3.ToString();
-                    SpellMask13.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC1.ToString();
-                    SpellMask23.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC2.ToString();
-                    SpellMask33.threadSafeText = loadDBC.body.records[selectedID].record.EffectSpellClassMaskC3.ToString();
-                    SpellVisual1.threadSafeText = loadDBC.body.records[selectedID].record.SpellVisual1.ToString();
-                    SpellVisual2.threadSafeText = loadDBC.body.records[selectedID].record.SpellVisual2.ToString();
-                    ManaCostPercent.threadSafeText = loadDBC.body.records[selectedID].record.ManaCostPercentage.ToString();
-                    StartRecoveryCategory.threadSafeText = loadDBC.body.records[selectedID].record.StartRecoveryCategory.ToString();
-                    StartRecoveryTime.threadSafeText = loadDBC.body.records[selectedID].record.StartRecoveryTime.ToString();
-                    MaxTargetsLevel.threadSafeText = loadDBC.body.records[selectedID].record.MaximumTargetLevel.ToString();
-                    SpellFamilyName.threadSafeText = loadDBC.body.records[selectedID].record.SpellFamilyName.ToString();
-                    MaxTargets.threadSafeText = loadDBC.body.records[selectedID].record.MaximumAffectedTargets.ToString();
-                    SpellDamageType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.DamageClass;
-                    PreventionType.threadSafeIndex = (Int32)loadDBC.body.records[selectedID].record.PreventionType;
-                    EffectDamageMultiplier1.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier1.ToString();
-                    EffectDamageMultiplier2.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier2.ToString();
-                    EffectDamageMultiplier3.threadSafeText = loadDBC.body.records[selectedID].record.EffectDamageMultiplier3.ToString();
+                    ApplyAuraName1.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName1"].ToString());
+                    ApplyAuraName2.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName2"].ToString());
+                    ApplyAuraName3.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName3"].ToString());
+                    Amplitude1.threadSafeText = row["EffectAmplitude1"].ToString();
+                    Amplitude2.threadSafeText = row["EffectAmplitude2"].ToString();
+                    Amplitude3.threadSafeText = row["EffectAmplitude3"].ToString();
+                    MultipleValue1.threadSafeText = row["EffectMultipleValue1"].ToString();
+                    MultipleValue2.threadSafeText = row["EffectMultipleValue2"].ToString();
+                    MultipleValue3.threadSafeText = row["EffectMultipleValue3"].ToString();
+                    ChainTarget1.threadSafeIndex = Int32.Parse(row["EffectChainTarget1"].ToString());
+                    ChainTarget2.threadSafeIndex = Int32.Parse(row["EffectChainTarget2"].ToString());
+                    ChainTarget3.threadSafeIndex = Int32.Parse(row["EffectChainTarget3"].ToString());
+                    ItemType1.threadSafeText = row["EffectItemType1"].ToString();
+                    ItemType2.threadSafeText = row["EffectItemType2"].ToString();
+                    ItemType3.threadSafeText = row["EffectItemType3"].ToString();
+                    MiscValueA1.threadSafeText = row["EffectMiscValue1"].ToString();
+                    MiscValueA2.threadSafeText = row["EffectMiscValue2"].ToString();
+                    MiscValueA3.threadSafeText = row["EffectMiscValue3"].ToString();
+                    MiscValueB1.threadSafeText = row["EffectMiscValueB1"].ToString();
+                    MiscValueB2.threadSafeText = row["EffectMiscValueB2"].ToString();
+                    MiscValueB3.threadSafeText = row["EffectMiscValueB3"].ToString();
+                    TriggerSpell1.threadSafeText = row["EffectTriggerSpell1"].ToString();
+                    TriggerSpell2.threadSafeText = row["EffectTriggerSpell2"].ToString();
+                    TriggerSpell3.threadSafeText = row["EffectTriggerSpell3"].ToString();
+                    PointsPerComboPoint1.threadSafeText = row["EffectPointsPerComboPoint1"].ToString();
+                    PointsPerComboPoint2.threadSafeText = row["EffectPointsPerComboPoint2"].ToString();
+                    PointsPerComboPoint3.threadSafeText = row["EffectPointsPerComboPoint3"].ToString();
+                    SpellMask11.threadSafeText = row["EffectSpellClassMaskA1"].ToString();
+                    SpellMask21.threadSafeText = row["EffectSpellClassMaskA2"].ToString();
+                    SpellMask31.threadSafeText = row["EffectSpellClassMaskA3"].ToString();
+                    SpellMask12.threadSafeText = row["EffectSpellClassMaskB1"].ToString();
+                    SpellMask22.threadSafeText = row["EffectSpellClassMaskB2"].ToString();
+                    SpellMask32.threadSafeText = row["EffectSpellClassMaskB3"].ToString();
+                    SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
+                    SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
+                    SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
+                    SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
+                    SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
+                    ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
+                    StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
+                    StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
+                    MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
+                    SpellFamilyName.threadSafeText = row["SpellFamilyName"].ToString();
+                    MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
+                    SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
+                    PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
+                    EffectDamageMultiplier1.threadSafeText = row["EffectDamageMultiplier1"].ToString();
+                    EffectDamageMultiplier2.threadSafeText = row["EffectDamageMultiplier2"].ToString();
+                    EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
 
                     loadTotemCategories.UpdateTotemCategoriesSelection();
                     loadAreaGroups.UpdateAreaGroupSelection();
 
-                    mask = loadDBC.body.records[selectedID].record.SchoolMask;
-
+                    mask = UInt32.Parse(row["SchoolMask"].ToString());
                     S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
                     S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
                     S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
@@ -1970,10 +1932,10 @@ namespace SpellEditor
 
                     loadRuneCosts.UpdateSpellRuneCostSelection();
 
-                    SpellMissileID.threadSafeText = loadDBC.body.records[selectedID].record.SpellMissileID.ToString();
-                    EffectBonusMultiplier1.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier1.ToString();
-                    EffectBonusMultiplier2.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier2.ToString();
-                    EffectBonusMultiplier3.threadSafeText = loadDBC.body.records[selectedID].record.EffectBonusMultiplier3.ToString();
+                    SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
+                    EffectBonusMultiplier1.threadSafeText = row["EffectBonusMultiplier1"].ToString();
+                    EffectBonusMultiplier2.threadSafeText = row["EffectBonusMultiplier2"].ToString();
+                    EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
 
                     loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
                     loadDifficulties.UpdateDifficultySelection();

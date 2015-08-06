@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
         // Begin DBCs
         public DBC_Header header;
-        public Spell_DBC_Body body;
+        public Spell_DBC_Body body; // TODO: Make this private
         // End DBCs
 
         // Begin Files
