@@ -492,6 +492,7 @@ namespace SpellEditor.Sources.DBC
     };
 
     [Serializable()]
+    [StructLayout(LayoutKind.Sequential)]
     public class Spell_DBC_RecordMap
     {
         public Spell_DBC_Record record;
@@ -517,6 +518,7 @@ namespace SpellEditor.Sources.DBC
     }
 
     [Serializable()]
+    [StructLayout(LayoutKind.Sequential)]
     public class Spell_DBC_Record
     {
         public UInt32 ID;
