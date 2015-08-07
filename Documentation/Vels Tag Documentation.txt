@@ -1,0 +1,138 @@
+MAIN THINGS
+Each spell can have up to 3 effects. Each linked tag can also have a number of the effect, like $TAG1 $TAG2 $TAG3
+
+for example our spell has a two damage types, the first deals a 
+
+(effect1)1-100 damage(Randomly)
+(effect2)50 damage. Additionally
+(effect3)decrease enemy speed by 30%
+
+Spell deals a $s1 damage, and $s2 damage. Additionally decrease target's speed by $s3%.
+ingame: spell deals a 1-100 damage, and 50 damage. Additionally decrease target's spee by 30%.
+
+if you use tag without the number - it calculate all the damage(1+2+3 if it possible) from the spell. Or something else(dependent of the tag)
+
+-------------------------------------------------------
+$N - current stacks of spell, for example in tooltip:
+          Your blazing shield now have $n charges
+-------------------------------------------------------
+$d - spell duration:
+          Your diseace will torment the victim within $d.
+-------------------------------------------------------
+$t - pereodic trigger, for example:
+          Your fire shield deals 100 damage every $t seconds.
+-----------------------------------------------------
+$o - summary damage dome from DOT\HOT
+          Your immolation made a $o damage during 10 seconds. 
+          (for example your spell made a 10 damage each 2 seconds, spelldur 10seconds = $o automatically calculate damage as 50, $o in this case = 50)
+-----------------------------------------------------
+$x - count of targets for this spell
+          your chain lightning hits $x targets
+-----------------------------------------------------
+$v - maximal allowed level of target 
+           "Target of the spell can only be a target not higher than level $v
+-----------------------------------------------------
+$z - destination of heartstone(your tavern name)
+-----------------------------------------------------
+$s - simple base point of spell(damage or healing, support scatter like in fireball damage 8-12 damage etc)
+           your fireball deals a $s fire damage.
+           $s - is minimal damage
+           $S - is MAXIMAL DAMAGE
+           like deals $s - $S damage. INGAME: deals 7 - 14 damage.
+-----------------------------------------------------
+$m - modified (can by talents or glyph, used only for player-based spells) point of spell
+            you can ressurect the target with the $m health and mana
+------------------------------------------------------
+$r - radius for direct spell
+           cast a fireball, works at a distance of $r yards.
+------------------------------------------------------
+$a - radius for AOE spell
+           your circle of fire deals a XXX damage of $a yards around you.
+------------------------------------------------------
+$b - additional multipler of the spell(HARD TO USE)
+           for example 66(main damage) + combo point * $b
+           (used only by rogues and druids in cat form)
+           deals a $(66*1+$b) damage for 1 combo, and $(66*2+$b) damage for 2 combo
+------------------------------------------------------
+$h - chance to proc (percentage only)
+           your mind blast can proc by $h% chance, when you use a this spell.
+------------------------------------------------------
+$g(Mr:Mrs) (specific gender description)
+           Usefull mostly for ruRU(and maybe other) locales with different class names by gender.
+           example: $g(Priest:Priestess) deals a 150% holy damage.
+           the same as quests like senjor\lady
+------------------------------------------------------
+$l - Specific locale description(mostly with the ruRU locale)
+          typocal form: $l:Кекс:Кекса:Кексов)(if try to translate it $l:One_Cake:two_Cakes:lot_cakes(higher than 2)
+          (nevermind, a feature of the Russian language)
+------------------------------------------------------
+$q - misc value
+          used in auras with base value + misc value(for example ressurection useas BV as restored hp, and miscA as restored mana.
+
+------------------------------------------------------
+$AP - Current attack power(not confirmed) uses only for formulas, involved in the formation of damage or healing.
+------------------------------------------------------
+$E - dependent(from damage) spell value. For example in death coil. It deals 244($s) damage, and leech $e health to the caster
+     or mana shield, when caster take a damage, they less $e of mana per 1 taken damage.
+------------------------------------------------------
+$u - max stack value
+------------------------------------------------------
+$i - max affected target of spells(for example mass fear)
+------------------------------------------------------
+$f - dummy(script) value (used in death strike of DK)
+------------------------------------------------------
+$LINK to spell param, set your spell entry from the different spell(if they triggered by current)
+for example main spell with entry 100(fireball) and deals a 7 damage , triggered spell with entry 666(burn) deals a 14 damage during the 5 seconds.
+EXAMPLE: Deals a $s1 damage, and additional $666o1 fire damage by $d.
+
+three parts
+1) $
+2) spell entry(usually different(triggered))
+3) linked param(see above)
+------------------------------------------------------
+${FORMULA} - in brackets you can combine different values to made a one.
+
+1. { } external brackets
+2. ( ) internal brackets - Within each of these brackets, a separate formula, like ${(formula1)*(formula2)} or more
+3. *$ multi-modifier, always in the end of formula(it calculates: *per level of caster, *base spell modifier. and other things from spell.dbc is not included into main formula)
+
+EXAMPLE: Ice nova uses ${$m1*$} - ${$M1*$} of frost damage at discription.
+original formula: 52-59+caster level*0.50(spell modifier)
+
+for example player level is 50.
+
+result: ice nova uses 52+50*0.50 = 51 minimal damage, 59 + 50*0.50=54.5 damage
+frost bols deals a 51 - 54 frost damage.
+**************************
+second example:
+Revenge(warrior tank spell): Deals from ${$m1+$AP*0.310} to ${$M1+$AP*0.310} weapon damage
+**************************
+third example:
+backstab(rogue spell): deals $m2% weapon damage, and additional  ${$m1*1.5} damage.
+
+effect1: weapon 60% of normalized weapon damage
+effect2: weapon 150% percent damage(include buff effects)
+effect3: add compo point +1
+
+we know that this spell deals a 60% of weapon damage +150%, this can be present as 1.5, we get ${$m1*1.5} (60%*150%). = 210% of weapon damage(approx)
+---------------------------------------------------------
+
+
+
+Unknown params of formulas:
+$MWS - some of meele spells
+$PL
+$FLOOR
+$COND
+$GT
+
+unused tags:
+$j
+$w
+
+
+
+
+
+
+

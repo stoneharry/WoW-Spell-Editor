@@ -15,7 +15,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SpellDBC spell;
+        private MySQL.MySQL mySQL;
         // End Window
 
         // Begin DBCs
@@ -27,10 +27,10 @@ namespace SpellEditor.Sources.DBC
         private static bool loadedAllIcons = false;
         // End Other
 
-        public SpellIconDBC(MainWindow window, SpellDBC spellDBC)
+        public SpellIconDBC(MainWindow window, MySQL.MySQL mySQLConn)
         {
             main = window;
-            spell = spellDBC;
+            mySQL = mySQLConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -55,7 +55,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     fileStream = new FileStream("DBC/SpellIcon.dbc", FileMode.Open);
                 }
-                catch (IOException e)
+                catch (IOException)
                 {
                     return;
                 }
@@ -91,10 +91,11 @@ namespace SpellEditor.Sources.DBC
 
         public async void UpdateMainWindowIcons()
         {
-            if (spell == null) { return; }
+            if (mySQL == null) { return; }
 
-            UInt32 iconInt = spell.body.records[main.selectedID].record.SpellIconID;
-            UInt32 iconActiveInt = spell.body.records[main.selectedID].record.ActiveIconID;
+            var res = mySQL.query(String.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            UInt32 iconInt = UInt32.Parse(res[0].ToString());
+            UInt32 iconActiveInt = UInt32.Parse(res[1].ToString());
             UInt32 selectedRecord = UInt32.MaxValue;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)

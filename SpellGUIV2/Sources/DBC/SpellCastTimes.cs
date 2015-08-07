@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SpellDBC spell;
+        private MySQL.MySQL mySQL;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public SpellCastTimes_DBC_Map body;
         // End DBCs
 
-        public SpellCastTimes(MainWindow window, SpellDBC spellDBC)
+        public SpellCastTimes(MainWindow window, MySQL.MySQL mySQLConn)
         {
             main = window;
-            spell = spellDBC;
+            mySQL = mySQLConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -97,7 +97,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateCastTimeSelection()
         {
-            int ID = (int)spell.body.records[main.selectedID].record.CastingTimeIndex;
+            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

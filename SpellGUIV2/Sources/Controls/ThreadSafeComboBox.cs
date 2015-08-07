@@ -21,10 +21,10 @@ namespace SpellEditor.Sources.Controls
             {
                 if (Dispatcher.CheckAccess())
                 {
-                    SelectedIndex = (int)value;
+                    SelectedIndex = Int32.Parse(value.ToString());
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SelectedIndex = (int)value));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SelectedIndex = Int32.Parse(value.ToString())));
             }
         }
     }

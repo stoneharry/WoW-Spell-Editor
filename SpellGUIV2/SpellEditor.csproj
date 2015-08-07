@@ -60,6 +60,9 @@
     <Reference Include="MahApps.Metro">
       <HintPath>Resources\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.9.7\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="SereniaBLPLib">
       <HintPath>Resources\SereniaBLPLib.dll</HintPath>
     </Reference>
@@ -87,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />
     <Compile Include="Sources\Controls\ThreadSafeCheckBox.cs" />
@@ -108,6 +112,7 @@
     <Compile Include="Sources\DBC\SpellRange.cs" />
     <Compile Include="Sources\DBC\SpellRuneCost.cs" />
     <Compile Include="Sources\DBC\TotemCategory.cs" />
+    <Compile Include="Sources\MySQL\MySQL.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -139,6 +144,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
