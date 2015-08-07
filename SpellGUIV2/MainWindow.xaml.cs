@@ -1191,8 +1191,12 @@ namespace SpellEditor
                         row["SpellTooltip" + i] = boxes[i + 18].Text;
                     for (int i = 0; i < 9; ++i)
                         row["SpellDescription" + i] = boxes[i + 27].Text;
-                    // This seems to mimic Blizzlike values correctly, though I don't understand it at all
-                    // Discussed on modcraft IRC - these fields are not even read by the client potentially
+                    // This seems to mimic Blizzlike values correctly, though I don't understand it at all.
+                    // Discussed on modcraft IRC - these fields are not even read by the client.
+                    // The structure used in this program is actually incorrect. All the string columns are
+                    //   for different locales apart from the last one which is the flag column. So there are
+                    //   not multiple flag columns, hence why we only write to the last one here. The current
+                    //   released clients only use 9 locales hence the confusion with the other columns.
                     row["SpellNameFlag7"] = (uint)(TextFlags.NOT_EMPTY);
                     row["SpellRankFlags7"] = (uint)(TextFlags.NOT_EMPTY);
                     row["SpellToolTipFlags7"] = (uint)(TextFlags.NOT_EMPTY);
@@ -1302,7 +1306,8 @@ namespace SpellEditor
             {
                 updating = true;
 
-                var controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID);
+                var controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID +
+                    ".\n\nThe first spell to be loaded will always take a while but afterwards it should be quite fast.");
                 controller.SetCancelable(false);
                 await Task.Delay(1000);
 
