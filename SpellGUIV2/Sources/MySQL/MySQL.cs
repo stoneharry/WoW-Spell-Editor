@@ -120,7 +120,7 @@ namespace SpellEditor.Sources.MySQL
                                 if (attr.Method == 1)
                                 {
                                     for (int i = 0; i < attr.Count; ++i)
-                                        str.Append(String.Format(@"`{0}{1}` TEXT NOT NULL DEFAULT '', ", f.Name, i));
+                                        str.Append(String.Format(@"`{0}{1}` TEXT NOT NULL, ", f.Name, i));
                                     break;
                                 }
                                 else if (attr.Method == 2)
