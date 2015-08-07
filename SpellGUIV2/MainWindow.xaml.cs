@@ -49,7 +49,6 @@ namespace SpellEditor
     partial class MainWindow
     {
         // Begin DBCs
-        //private SpellDBC loadDBC = null;
         private SpellCategory loadCategories = null;
         private SpellDispelType loadDispels = null;
         private SpellMechanic loadMechanics = null;
@@ -1952,18 +1951,16 @@ namespace SpellEditor
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (mySQL == null || updating) { return; }
-            return;
-            // Todo
-            /*
+            if (mySQL == null || updating)
+                return;
             if (sender == RequiresSpellFocus)
             {
                 for (int i = 0; i < loadFocusObjects.body.lookup.Count; ++i)
                 {
                     if (loadFocusObjects.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["RequiresSpellFocus = (UInt32)loadFocusObjects.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "RequiresSpellFocus", (UInt32)loadFocusObjects.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -1975,8 +1972,8 @@ namespace SpellEditor
                 {
                     if (loadAreaGroups.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["AreaGroupID = (UInt32)loadAreaGroups.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "AreaGroupID", (UInt32)loadAreaGroups.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -1988,8 +1985,8 @@ namespace SpellEditor
                 {
                     if (loadCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["Category = (UInt32)loadCategories.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "Category", (UInt32)loadCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2001,8 +1998,8 @@ namespace SpellEditor
                 {
                     if (loadDispels.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["Dispel = (UInt32)loadDispels.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "Dispel", (UInt32)loadDispels.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2014,8 +2011,8 @@ namespace SpellEditor
                 {
                     if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["Mechanic = (UInt32)loadMechanics.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "Mechanic", (UInt32)loadMechanics.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2027,8 +2024,8 @@ namespace SpellEditor
                 {
                     if (loadCastTimes.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["CastingTimeIndex = (UInt32)loadCastTimes.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "CastingTimeIndex", (UInt32)loadCastTimes.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2040,8 +2037,8 @@ namespace SpellEditor
                 {
                     if (loadDurations.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["DurationIndex = (UInt32)loadDurations.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "DurationIndex", (UInt32)loadDurations.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2053,8 +2050,8 @@ namespace SpellEditor
                 {
                     if (loadDifficulties.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["SpellDifficultyID = (UInt32)loadDifficulties.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "SpellDifficultyID", (UInt32)loadDifficulties.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2066,8 +2063,8 @@ namespace SpellEditor
                 {
                     if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["RangeIndex = (UInt32)loadRanges.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "RangeIndex", (UInt32)loadRanges.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2079,8 +2076,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["EffectRadiusIndex1 = (UInt32)loadRadiuses.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "EffectRadiusIndex1", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2092,8 +2089,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["EffectRadiusIndex2 = (UInt32)loadRadiuses.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "EffectRadiusIndex2", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2105,8 +2102,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["EffectRadiusIndex3 = (UInt32)loadRadiuses.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "EffectRadiusIndex3", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2116,19 +2113,19 @@ namespace SpellEditor
             {
                 for (int i = 0; i < loadItemClasses.body.lookup.Count; ++i)
                 {
-                    if (EquippedItemClass.SelectedIndex == 5) { EquippedItemInventoryTypeGrid.IsEnabled = true; }
-
+                    if (EquippedItemClass.SelectedIndex == 5)
+                        EquippedItemInventoryTypeGrid.IsEnabled = true;
                     else
                     {
-                        foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes) { box.IsChecked = false; }
-
+                        foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
+                            box.IsChecked = false;
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
                     }
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["EquippedItemClass = (Int32)loadItemClasses.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "EquippedItemClass", (UInt32)loadItemClasses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2140,8 +2137,8 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["TotemCategory1 = (UInt32)loadTotemCategories.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "TotemCategory1", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2153,8 +2150,8 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["TotemCategory2 = (UInt32)loadTotemCategories.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "TotemCategory2", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2166,8 +2163,8 @@ namespace SpellEditor
                 {
                     if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["RuneCostID = (UInt32)loadRuneCosts.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "RuneCostID", (UInt32)loadRuneCosts.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2179,13 +2176,12 @@ namespace SpellEditor
                 {
                     if (loadDescriptionVariables.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        row["SpellDescriptionVariableID = (UInt32)loadDescriptionVariables.body.lookup[i].ID;
-
+                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                            mySQL.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
             }
-            */
             if (sender == Effect1) { SpellEffect1.SelectedIndex = Effect1.SelectedIndex; }
             if (sender == Effect2) { SpellEffect2.SelectedIndex = Effect2.SelectedIndex; }
             if (sender == Effect3) { SpellEffect3.SelectedIndex = Effect3.SelectedIndex; }
