@@ -486,7 +486,7 @@ namespace SpellEditor.Sources.DBC
         }
     }
 
-    [CLSCompliant(true)]
+    //[CLSCompliant(true)]
     static class Hlp
     {
         public static void SetValueForValueType<T>(this FieldInfo field, ref T item, object value) where T : struct
