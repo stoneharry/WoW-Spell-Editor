@@ -1224,13 +1224,18 @@ namespace SpellEditor
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
 
-                // TODO
-                //if (spellOrActive == MessageDialogResult.Affirmative) { row["SpellIconID = newIconID; }
-                //else if (spellOrActive == MessageDialogResult.Negative) { row["ActiveIconID = newIconID; }
+                String column = null;
+                if (spellOrActive == MessageDialogResult.Affirmative)
+                    column = "SpellIconID";
+                else if (spellOrActive == MessageDialogResult.Negative)
+                    column = "ActiveIconID";
+                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
             }
 
-            //if (sender == ResetSpellIconID) { row["SpellIconID = 1; }
-            //if (sender == ResetActiveIconID) { row["ActiveIconID = 0; }
+            if (sender == ResetSpellIconID)
+                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "SpellIconID", 1, selectedID));
+            if (sender == ResetActiveIconID)
+                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "ActiveIconID", 0, selectedID)); 
         }
 
         static public T DeepCopy<T>(T obj)
@@ -1274,7 +1279,7 @@ namespace SpellEditor
                 }
             }
             // Retrieve rows
-            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, locale.ToString())).Rows;
+            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, locale)).Rows;
             foreach (DataRow row in results)
                 SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
 
@@ -1293,9 +1298,12 @@ namespace SpellEditor
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
 
-            // Todo
-            //if (spellOrActive == MessageDialogResult.Affirmative) { row["SpellIconID = newIconID; }
-            //else if (spellOrActive == MessageDialogResult.Negative) { row["ActiveIconID = newIconID; }
+            String column = null;
+            if (spellOrActive == MessageDialogResult.Affirmative)
+                column = "SpellIconID";
+            else if (spellOrActive == MessageDialogResult.Negative)
+                column = "ActiveIconID";
+            mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
         }
 
 
