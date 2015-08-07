@@ -548,6 +548,11 @@
     </Grid>
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
+            <Button Name="ExportDBC" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Export To Spell.dbc" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <Button Name="InsertANewRecord" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="New Spell" VerticalAlignment="Center"/>

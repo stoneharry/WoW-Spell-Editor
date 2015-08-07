@@ -594,6 +594,28 @@ namespace SpellEditor
         {
             if (mySQL == null) { return; }
 
+            if (sender == ExportDBC)
+            {
+                MetroDialogSettings settings = new MetroDialogSettings();
+                settings.AffirmativeButtonText = "YES";
+                settings.NegativeButtonText = "NO";
+                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+                var res = await this.ShowMessageAsync("Export Spell.dbc?",
+                    "Exporting to a new Spell.dbc can be very slow depending on your connection to the MySQL server."
+                    + " It will be exported to a 'Export' folder. Are you sure you wish to continue?", style, settings);
+                if (res == MessageDialogResult.Affirmative)
+                {
+                    var controller = await this.ShowProgressAsync("Please wait...", "Exporting to a new Spell.dbc.");
+                    //await Task.Delay(1000);
+                    controller.SetCancelable(false);
+
+                    SpellDBC dbc = new SpellDBC();
+                    await dbc.export(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                    await controller.CloseAsync();
+                }
+                return;
+            }
+
             if (sender == InsertANewRecord)
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
@@ -1290,12 +1312,11 @@ namespace SpellEditor
             if (mySQL == null) { return; }
 
             MetroDialogSettings settings = new MetroDialogSettings();
-
-            settings.AffirmativeButtonText = "YES";
-            settings.NegativeButtonText = "NO";
+            settings.AffirmativeButtonText = "Spell Icon ID";
+            settings.NegativeButtonText = "Active Icon ID";
 
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
+            MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Select whether to change the Spell Icon ID or the Active Icon ID.", style, settings);
 
             String column = null;
             if (spellOrActive == MessageDialogResult.Affirmative)
