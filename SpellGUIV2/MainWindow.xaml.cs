@@ -1296,569 +1296,25 @@ namespace SpellEditor
 
 
 
-        private void UpdateMainWindow()
+        private async void UpdateMainWindow()
         {
             try
             {
                 updating = true;
 
-                var task = Task.Factory.StartNew(() =>
-                {
-                    DataRowCollection rowResult = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
-                    if (rowResult == null || rowResult.Count != 1)
-                        throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
-                    var row = rowResult[0];
-                    int i;
-                    for (i = 0; i < 9; ++i)
-                    {
-                        ThreadSafeTextBox box;
-                        stringObjectMap.TryGetValue(i, out box);
-                        box.threadSafeText = row[String.Format("SpellName{0}", i)];
-                    }
-                    for (i = 0; i < 9; ++i)
-                    {
-                        ThreadSafeTextBox box;
-                        stringObjectMap.TryGetValue(i + 9, out box);
-                        box.threadSafeText = row[String.Format("SpellRank{0}", i)];
-                    }
-
-                    for (i = 0; i < 9; ++i)
-                    {
-                        ThreadSafeTextBox box;
-                        stringObjectMap.TryGetValue(i + 18, out box);
-                        box.threadSafeText = row[String.Format("SpellTooltip{0}", i)];
-                    }
-
-                    for (i = 0; i < 9; ++i)
-                    {
-                        ThreadSafeTextBox box;
-                        stringObjectMap.TryGetValue(i + 27, out box);
-                        box.threadSafeText = row[String.Format("SpellDescription{0}", i)];
-                    }
-
-                    loadCategories.UpdateCategorySelection();
-                    loadDispels.UpdateDispelSelection();
-                    loadMechanics.UpdateMechanicSelection();
-
-                    UInt32 mask = UInt32.Parse(row["Attributes"].ToString());
-                    UInt32 flagg = 1;
-
-                    for (int f = 0; f < attributes0.Count; ++f)
-                    {
-                        attributes0[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes1.Count; ++f)
-                    {
-                        attributes1[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx2"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes2.Count; ++f)
-                    {
-                        attributes2[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx3"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes3.Count; ++f)
-                    {
-                        attributes3[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx4"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes4.Count; ++f)
-                    {
-                        attributes4[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx5"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes5.Count; ++f)
-                    {
-                        attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx6"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes6.Count; ++f)
-                    {
-                        attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["AttributesEx7"].ToString());
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes7.Count; ++f)
-                    {
-                        attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                        flagg = flagg + flagg;
-                    }
-
-                    mask = UInt32.Parse(row["Stances"].ToString());
-                    if (mask == 0)
-                    {
-                        stancesBoxes[0].threadSafeChecked = true;
-                        for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        stancesBoxes[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < stancesBoxes.Count; ++f)
-                        {
-                            stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    mask = UInt32.Parse(row["Targets"].ToString());
-                    if (mask == 0)
-                    {
-                        targetBoxes[0].threadSafeChecked = true;
-                        for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        targetBoxes[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < targetBoxes.Count; ++f)
-                        {
-                            targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    mask = UInt32.Parse(row["TargetCreatureType"].ToString());
-
-                    if (mask == 0)
-                    {
-                        targetCreatureTypeBoxes[0].threadSafeChecked = true;
-                        for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        targetCreatureTypeBoxes[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
-                        {
-                            targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    loadFocusObjects.UpdateSpellFocusObjectSelection();
-
-                    mask = UInt32.Parse(row["FacingCasterFlags"].ToString());
-
-                    FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
-
-                    switch (UInt32.Parse(row["CasterAuraState"].ToString()))
-                    {
-                        case 0: // None
-                            {
-                                CasterAuraState.threadSafeIndex = 0;
-                                break;
-                            }
-
-                        case 1: // Defense
-                            {
-                                CasterAuraState.threadSafeIndex = 1;
-
-                                break;
-                            }
-
-                        case 2: // Healthless 20%
-                            {
-                                CasterAuraState.threadSafeIndex = 2;
-
-                                break;
-                            }
-
-                        case 3: // Berserking
-                            {
-                                CasterAuraState.threadSafeIndex = 3;
-
-                                break;
-                            }
-
-                        case 5: // Judgement
-                            {
-                                CasterAuraState.threadSafeIndex = 4;
-
-                                break;
-                            }
-
-                        case 7: // Hunter Parry
-                            {
-                                CasterAuraState.threadSafeIndex = 5;
-
-                                break;
-                            }
-
-                        case 10: // Victory Rush
-                            {
-                                CasterAuraState.threadSafeIndex = 6;
-
-                                break;
-                            }
-
-                        case 11: // Unknown 1
-                            {
-                                CasterAuraState.threadSafeIndex = 7;
-
-                                break;
-                            }
-
-                        case 13: // Healthless 35%
-                            {
-                                CasterAuraState.threadSafeIndex = 8;
-
-                                break;
-                            }
-
-                        case 17: // Enrage
-                            {
-                                CasterAuraState.threadSafeIndex = 9;
-
-                                break;
-                            }
-
-                        case 22: // Unknown 2
-                            {
-                                CasterAuraState.threadSafeIndex = 10;
-
-                                break;
-                            }
-
-                        case 23: // Health Above 75%
-                            {
-                                CasterAuraState.threadSafeIndex = 11;
-
-                                break;
-                            }
-
-                        default: { break; }
-                    }
-
-                    switch (UInt32.Parse(row["TargetAuraState"].ToString()))
-                    {
-                        case 0: // None
-                            {
-                                TargetAuraState.threadSafeIndex = 0;
-
-                                break;
-                            }
-
-                        case 2: // Healthless 20%
-                            {
-                                TargetAuraState.threadSafeIndex = 1;
-
-                                break;
-                            }
-
-                        case 3: // Berserking
-                            {
-                                TargetAuraState.threadSafeIndex = 2;
-
-                                break;
-                            }
-
-                        case 13: // Healthless 35%
-                            {
-                                TargetAuraState.threadSafeIndex = 3;
-
-                                break;
-                            }
-
-                        case 14: // Conflagrate
-                            {
-                                TargetAuraState.threadSafeIndex = 4;
-
-                                break;
-                            }
-
-                        case 15: // Swiftmend
-                            {
-                                TargetAuraState.threadSafeIndex = 5;
-
-                                break;
-                            }
-
-                        case 16: // Deadly Poison
-                            {
-                                TargetAuraState.threadSafeIndex = 6;
-
-                                break;
-                            }
-
-                        case 18: // Bleeding
-                            {
-                                TargetAuraState.threadSafeIndex = 17;
-
-                                break;
-                            }
-
-                        default: { break; }
-                    }
-
-                    loadCastTimes.UpdateCastTimeSelection();
-
-                    RecoveryTime.threadSafeText = UInt32.Parse(row["RecoveryTime"].ToString());
-                    CategoryRecoveryTime.threadSafeText = UInt32.Parse(row["CategoryRecoveryTime"].ToString());
-
-                    mask = UInt32.Parse(row["InterruptFlags"].ToString());
-                    if (mask == 0)
-                    {
-                        interrupts1[0].threadSafeChecked = true;
-                        for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        interrupts1[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < interrupts1.Count; ++f)
-                        {
-                            interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-
-                            flag = flag + flag;
-                        }
-                    }
-
-                    mask = UInt32.Parse(row["AuraInterruptFlags"].ToString());
-                    if (mask == 0)
-                    {
-                        interrupts2[0].threadSafeChecked = true;
-                        for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        interrupts2[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < interrupts2.Count; ++f)
-                        {
-                            interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    mask = UInt32.Parse(row["ChannelInterruptFlags"].ToString());
-                    if (mask == 0)
-                    {
-                        interrupts3[0].threadSafeChecked = true;
-                        for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        interrupts3[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < interrupts3.Count; ++f)
-                        {
-                            interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    mask = UInt32.Parse(row["ProcFlags"].ToString());
-                    if (mask == 0)
-                    {
-                        procBoxes[0].threadSafeChecked = true;
-                        for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        procBoxes[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 1; f < procBoxes.Count; ++f)
-                        {
-                            procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    ProcChance.threadSafeText = UInt32.Parse(row["ProcChance"].ToString());
-                    ProcCharges.threadSafeText = UInt32.Parse(row["ProcCharges"].ToString());
-                    MaximumLevel.threadSafeText = UInt32.Parse(row["MaximumLevel"].ToString());
-                    BaseLevel.threadSafeText = UInt32.Parse(row["BaseLevel"].ToString());
-                    SpellLevel.threadSafeText = UInt32.Parse(row["SpellLevel"].ToString());
-
-                    loadDurations.UpdateDurationIndexes();
-
-                    Int32 powerType = Int32.Parse(row["PowerType"].ToString());
-                    // Dirty hack fix
-                    if (powerType < 0)
-                        powerType = 13;
-                    PowerType.threadSafeIndex = powerType;
-                    PowerCost.threadSafeText = UInt32.Parse(row["ManaCost"].ToString());
-                    ManaCostPerLevel.threadSafeText = UInt32.Parse(row["ManaCostPerLevel"].ToString());
-                    ManaCostPerSecond.threadSafeText = UInt32.Parse(row["ManaPerSecond"].ToString());
-                    PerSecondPerLevel.threadSafeText = UInt32.Parse(row["ManaPerSecondPerLevel"].ToString());
-
-                    loadRanges.UpdateSpellRangeSelection();
-
-                    Speed.threadSafeText = row["Speed"].ToString();
-                    Stacks.threadSafeText = row["StackAmount"].ToString();
-                    Totem1.threadSafeText = row["Totem1"].ToString();
-                    Totem2.threadSafeText = row["Totem2"].ToString();
-                    Reagent1.threadSafeText = row["Reagent1"].ToString();
-                    Reagent2.threadSafeText = row["Reagent2"].ToString();
-                    Reagent3.threadSafeText = row["Reagent3"].ToString();
-                    Reagent4.threadSafeText = row["Reagent4"].ToString();
-                    Reagent5.threadSafeText = row["Reagent5"].ToString();
-                    Reagent6.threadSafeText = row["Reagent6"].ToString();
-                    Reagent7.threadSafeText = row["Reagent7"].ToString();
-                    Reagent8.threadSafeText = row["Reagent8"].ToString();
-                    ReagentCount1.threadSafeText = row["ReagentCount1"].ToString();
-                    ReagentCount2.threadSafeText = row["ReagentCount2"].ToString();
-                    ReagentCount3.threadSafeText = row["ReagentCount3"].ToString();
-                    ReagentCount4.threadSafeText = row["ReagentCount4"].ToString();
-                    ReagentCount5.threadSafeText = row["ReagentCount5"].ToString();
-                    ReagentCount6.threadSafeText = row["ReagentCount6"].ToString();
-                    ReagentCount7.threadSafeText = row["ReagentCount7"].ToString();
-                    ReagentCount8.threadSafeText = row["ReagentCount8"].ToString();
-
-                    loadItemClasses.UpdateItemClassSelection();
-
-                    mask = UInt32.Parse(row["EquippedItemInventoryTypeMask"].ToString());
-                    if (mask == 0)
-                    {
-                        equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = true;
-                        for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
-                        UInt32 flag = 1;
-                        for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
-                        {
-                            equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                            flag = flag + flag;
-                        }
-                    }
-
-                    // Some duplication of fields here
-                    Effect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
-                    Effect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
-                    Effect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
-                    SpellEffect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
-                    SpellEffect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
-                    SpellEffect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
-                    EffectDieSides1.threadSafeText = row["EffectDieSides1"].ToString();
-                    EffectDieSides2.threadSafeText = row["EffectDieSides2"].ToString();
-                    EffectDieSides3.threadSafeText = row["EffectDieSides3"].ToString();
-                    DieSides1.threadSafeText = row["EffectDieSides1"].ToString();
-                    DieSides2.threadSafeText = row["EffectDieSides2"].ToString();
-                    DieSides3.threadSafeText = row["EffectDieSides3"].ToString();
-                    BasePointsPerLevel1.threadSafeText = row["EffectRealPointsPerLevel1"].ToString();
-                    BasePointsPerLevel2.threadSafeText = row["EffectRealPointsPerLevel2"].ToString();
-                    BasePointsPerLevel3.threadSafeText = row["EffectRealPointsPerLevel3"].ToString();
-                    EffectBaseValue1.threadSafeText = row["EffectBasePoints1"].ToString();
-                    EffectBaseValue2.threadSafeText = row["EffectBasePoints2"].ToString();
-                    EffectBaseValue3.threadSafeText = row["EffectBasePoints3"].ToString();
-                    BasePoints1.threadSafeText = row["EffectBasePoints1"].ToString();
-                    BasePoints2.threadSafeText = row["EffectBasePoints2"].ToString();
-                    BasePoints3.threadSafeText = row["EffectBasePoints3"].ToString();
-                    Mechanic1.threadSafeIndex = Int32.Parse(row["EffectMechanic1"].ToString());
-                    Mechanic2.threadSafeIndex = Int32.Parse(row["EffectMechanic2"].ToString());
-                    Mechanic3.threadSafeIndex = Int32.Parse(row["EffectMechanic3"].ToString());
-                    TargetA1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA1"].ToString());
-                    TargetA2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA2"].ToString());
-                    TargetA3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA3"].ToString());
-                    TargetB1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB1"].ToString());
-                    TargetB2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB2"].ToString());
-                    TargetB3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB3"].ToString());
-
-                    loadRadiuses.UpdateRadiusIndexes();
-
-                    ApplyAuraName1.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName1"].ToString());
-                    ApplyAuraName2.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName2"].ToString());
-                    ApplyAuraName3.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName3"].ToString());
-                    Amplitude1.threadSafeText = row["EffectAmplitude1"].ToString();
-                    Amplitude2.threadSafeText = row["EffectAmplitude2"].ToString();
-                    Amplitude3.threadSafeText = row["EffectAmplitude3"].ToString();
-                    MultipleValue1.threadSafeText = row["EffectMultipleValue1"].ToString();
-                    MultipleValue2.threadSafeText = row["EffectMultipleValue2"].ToString();
-                    MultipleValue3.threadSafeText = row["EffectMultipleValue3"].ToString();
-                    ChainTarget1.threadSafeIndex = Int32.Parse(row["EffectChainTarget1"].ToString());
-                    ChainTarget2.threadSafeIndex = Int32.Parse(row["EffectChainTarget2"].ToString());
-                    ChainTarget3.threadSafeIndex = Int32.Parse(row["EffectChainTarget3"].ToString());
-                    ItemType1.threadSafeText = row["EffectItemType1"].ToString();
-                    ItemType2.threadSafeText = row["EffectItemType2"].ToString();
-                    ItemType3.threadSafeText = row["EffectItemType3"].ToString();
-                    MiscValueA1.threadSafeText = row["EffectMiscValue1"].ToString();
-                    MiscValueA2.threadSafeText = row["EffectMiscValue2"].ToString();
-                    MiscValueA3.threadSafeText = row["EffectMiscValue3"].ToString();
-                    MiscValueB1.threadSafeText = row["EffectMiscValueB1"].ToString();
-                    MiscValueB2.threadSafeText = row["EffectMiscValueB2"].ToString();
-                    MiscValueB3.threadSafeText = row["EffectMiscValueB3"].ToString();
-                    TriggerSpell1.threadSafeText = row["EffectTriggerSpell1"].ToString();
-                    TriggerSpell2.threadSafeText = row["EffectTriggerSpell2"].ToString();
-                    TriggerSpell3.threadSafeText = row["EffectTriggerSpell3"].ToString();
-                    PointsPerComboPoint1.threadSafeText = row["EffectPointsPerComboPoint1"].ToString();
-                    PointsPerComboPoint2.threadSafeText = row["EffectPointsPerComboPoint2"].ToString();
-                    PointsPerComboPoint3.threadSafeText = row["EffectPointsPerComboPoint3"].ToString();
-                    SpellMask11.threadSafeText = row["EffectSpellClassMaskA1"].ToString();
-                    SpellMask21.threadSafeText = row["EffectSpellClassMaskA2"].ToString();
-                    SpellMask31.threadSafeText = row["EffectSpellClassMaskA3"].ToString();
-                    SpellMask12.threadSafeText = row["EffectSpellClassMaskB1"].ToString();
-                    SpellMask22.threadSafeText = row["EffectSpellClassMaskB2"].ToString();
-                    SpellMask32.threadSafeText = row["EffectSpellClassMaskB3"].ToString();
-                    SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
-                    SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
-                    SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
-                    SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
-                    SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
-                    ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
-                    StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
-                    StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
-                    MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
-                    SpellFamilyName.threadSafeText = row["SpellFamilyName"].ToString();
-                    MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
-                    SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
-                    PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
-                    EffectDamageMultiplier1.threadSafeText = row["EffectDamageMultiplier1"].ToString();
-                    EffectDamageMultiplier2.threadSafeText = row["EffectDamageMultiplier2"].ToString();
-                    EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
-
-                    loadTotemCategories.UpdateTotemCategoriesSelection();
-                    loadAreaGroups.UpdateAreaGroupSelection();
-
-                    mask = UInt32.Parse(row["SchoolMask"].ToString());
-                    S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
-                    S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
-                    S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
-                    S4.threadSafeChecked = ((mask & 0x08) != 0) ? true : false;
-                    S5.threadSafeChecked = ((mask & 0x10) != 0) ? true : false;
-                    S6.threadSafeChecked = ((mask & 0x20) != 0) ? true : false;
-                    S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
-
-                    loadRuneCosts.UpdateSpellRuneCostSelection();
-
-                    SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
-                    EffectBonusMultiplier1.threadSafeText = row["EffectBonusMultiplier1"].ToString();
-                    EffectBonusMultiplier2.threadSafeText = row["EffectBonusMultiplier2"].ToString();
-                    EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
-
-                    loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
-                    loadDifficulties.UpdateDifficultySelection();
-                });
+                var controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID);
+                controller.SetCancelable(false);
+                await Task.Delay(1000);
+
+                SpellLoadComplete = false;
+
+                await Task.Factory.StartNew(() => loadSpell());
+                Dispatcher.CurrentDispatcher.Hooks.DispatcherInactive += new EventHandler(hooks_DispatcherInactive);
+
+                while (!SpellLoadComplete)
+                    await Task.Delay(1000);
+                
+                await controller.CloseAsync();
 
                 updating = false;
             }
@@ -1869,6 +1325,571 @@ namespace SpellEditor
 
                 updating = false;
             }
+        }
+
+        private bool SpellLoadComplete;
+
+        private void hooks_DispatcherInactive(object sender, EventArgs e)
+        {
+            SpellLoadComplete = true;
+        }
+
+        private void loadSpell()
+        {
+            DataRowCollection rowResult = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+            if (rowResult == null || rowResult.Count != 1)
+                throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
+            var row = rowResult[0];
+            int i;
+            for (i = 0; i < 9; ++i)
+            {
+                ThreadSafeTextBox box;
+                stringObjectMap.TryGetValue(i, out box);
+                box.threadSafeText = row[String.Format("SpellName{0}", i)];
+            }
+            for (i = 0; i < 9; ++i)
+            {
+                ThreadSafeTextBox box;
+                stringObjectMap.TryGetValue(i + 9, out box);
+                box.threadSafeText = row[String.Format("SpellRank{0}", i)];
+            }
+
+            for (i = 0; i < 9; ++i)
+            {
+                ThreadSafeTextBox box;
+                stringObjectMap.TryGetValue(i + 18, out box);
+                box.threadSafeText = row[String.Format("SpellTooltip{0}", i)];
+            }
+
+            for (i = 0; i < 9; ++i)
+            {
+                ThreadSafeTextBox box;
+                stringObjectMap.TryGetValue(i + 27, out box);
+                box.threadSafeText = row[String.Format("SpellDescription{0}", i)];
+            }
+
+            loadCategories.UpdateCategorySelection();
+            loadDispels.UpdateDispelSelection();
+            loadMechanics.UpdateMechanicSelection();
+
+            UInt32 mask = UInt32.Parse(row["Attributes"].ToString());
+            UInt32 flagg = 1;
+
+            for (int f = 0; f < attributes0.Count; ++f)
+            {
+                attributes0[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes1.Count; ++f)
+            {
+                attributes1[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx2"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes2.Count; ++f)
+            {
+                attributes2[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx3"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes3.Count; ++f)
+            {
+                attributes3[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx4"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes4.Count; ++f)
+            {
+                attributes4[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx5"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes5.Count; ++f)
+            {
+                attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx6"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes6.Count; ++f)
+            {
+                attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["AttributesEx7"].ToString());
+            flagg = 1;
+
+            for (int f = 0; f < attributes7.Count; ++f)
+            {
+                attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                flagg = flagg + flagg;
+            }
+
+            mask = UInt32.Parse(row["Stances"].ToString());
+            if (mask == 0)
+            {
+                stancesBoxes[0].threadSafeChecked = true;
+                for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                stancesBoxes[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < stancesBoxes.Count; ++f)
+                {
+                    stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            mask = UInt32.Parse(row["Targets"].ToString());
+            if (mask == 0)
+            {
+                targetBoxes[0].threadSafeChecked = true;
+                for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                targetBoxes[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < targetBoxes.Count; ++f)
+                {
+                    targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            mask = UInt32.Parse(row["TargetCreatureType"].ToString());
+
+            if (mask == 0)
+            {
+                targetCreatureTypeBoxes[0].threadSafeChecked = true;
+                for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                targetCreatureTypeBoxes[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
+                {
+                    targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            loadFocusObjects.UpdateSpellFocusObjectSelection();
+
+            mask = UInt32.Parse(row["FacingCasterFlags"].ToString());
+
+            FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
+
+            switch (UInt32.Parse(row["CasterAuraState"].ToString()))
+            {
+                case 0: // None
+                    {
+                        CasterAuraState.threadSafeIndex = 0;
+                        break;
+                    }
+
+                case 1: // Defense
+                    {
+                        CasterAuraState.threadSafeIndex = 1;
+
+                        break;
+                    }
+
+                case 2: // Healthless 20%
+                    {
+                        CasterAuraState.threadSafeIndex = 2;
+
+                        break;
+                    }
+
+                case 3: // Berserking
+                    {
+                        CasterAuraState.threadSafeIndex = 3;
+
+                        break;
+                    }
+
+                case 5: // Judgement
+                    {
+                        CasterAuraState.threadSafeIndex = 4;
+
+                        break;
+                    }
+
+                case 7: // Hunter Parry
+                    {
+                        CasterAuraState.threadSafeIndex = 5;
+
+                        break;
+                    }
+
+                case 10: // Victory Rush
+                    {
+                        CasterAuraState.threadSafeIndex = 6;
+
+                        break;
+                    }
+
+                case 11: // Unknown 1
+                    {
+                        CasterAuraState.threadSafeIndex = 7;
+
+                        break;
+                    }
+
+                case 13: // Healthless 35%
+                    {
+                        CasterAuraState.threadSafeIndex = 8;
+
+                        break;
+                    }
+
+                case 17: // Enrage
+                    {
+                        CasterAuraState.threadSafeIndex = 9;
+
+                        break;
+                    }
+
+                case 22: // Unknown 2
+                    {
+                        CasterAuraState.threadSafeIndex = 10;
+
+                        break;
+                    }
+
+                case 23: // Health Above 75%
+                    {
+                        CasterAuraState.threadSafeIndex = 11;
+
+                        break;
+                    }
+
+                default: { break; }
+            }
+
+            switch (UInt32.Parse(row["TargetAuraState"].ToString()))
+            {
+                case 0: // None
+                    {
+                        TargetAuraState.threadSafeIndex = 0;
+
+                        break;
+                    }
+
+                case 2: // Healthless 20%
+                    {
+                        TargetAuraState.threadSafeIndex = 1;
+
+                        break;
+                    }
+
+                case 3: // Berserking
+                    {
+                        TargetAuraState.threadSafeIndex = 2;
+
+                        break;
+                    }
+
+                case 13: // Healthless 35%
+                    {
+                        TargetAuraState.threadSafeIndex = 3;
+
+                        break;
+                    }
+
+                case 14: // Conflagrate
+                    {
+                        TargetAuraState.threadSafeIndex = 4;
+
+                        break;
+                    }
+
+                case 15: // Swiftmend
+                    {
+                        TargetAuraState.threadSafeIndex = 5;
+
+                        break;
+                    }
+
+                case 16: // Deadly Poison
+                    {
+                        TargetAuraState.threadSafeIndex = 6;
+
+                        break;
+                    }
+
+                case 18: // Bleeding
+                    {
+                        TargetAuraState.threadSafeIndex = 17;
+
+                        break;
+                    }
+
+                default: { break; }
+            }
+
+            loadCastTimes.UpdateCastTimeSelection();
+
+            RecoveryTime.threadSafeText = UInt32.Parse(row["RecoveryTime"].ToString());
+            CategoryRecoveryTime.threadSafeText = UInt32.Parse(row["CategoryRecoveryTime"].ToString());
+
+            mask = UInt32.Parse(row["InterruptFlags"].ToString());
+            if (mask == 0)
+            {
+                interrupts1[0].threadSafeChecked = true;
+                for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                interrupts1[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupts1.Count; ++f)
+                {
+                    interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+
+                    flag = flag + flag;
+                }
+            }
+
+            mask = UInt32.Parse(row["AuraInterruptFlags"].ToString());
+            if (mask == 0)
+            {
+                interrupts2[0].threadSafeChecked = true;
+                for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                interrupts2[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupts2.Count; ++f)
+                {
+                    interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            mask = UInt32.Parse(row["ChannelInterruptFlags"].ToString());
+            if (mask == 0)
+            {
+                interrupts3[0].threadSafeChecked = true;
+                for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                interrupts3[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < interrupts3.Count; ++f)
+                {
+                    interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            mask = UInt32.Parse(row["ProcFlags"].ToString());
+            if (mask == 0)
+            {
+                procBoxes[0].threadSafeChecked = true;
+                for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                procBoxes[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 1; f < procBoxes.Count; ++f)
+                {
+                    procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            ProcChance.threadSafeText = UInt32.Parse(row["ProcChance"].ToString());
+            ProcCharges.threadSafeText = UInt32.Parse(row["ProcCharges"].ToString());
+            MaximumLevel.threadSafeText = UInt32.Parse(row["MaximumLevel"].ToString());
+            BaseLevel.threadSafeText = UInt32.Parse(row["BaseLevel"].ToString());
+            SpellLevel.threadSafeText = UInt32.Parse(row["SpellLevel"].ToString());
+
+            loadDurations.UpdateDurationIndexes();
+
+            Int32 powerType = Int32.Parse(row["PowerType"].ToString());
+            // Dirty hack fix
+            if (powerType < 0)
+                powerType = 13;
+            PowerType.threadSafeIndex = powerType;
+            PowerCost.threadSafeText = UInt32.Parse(row["ManaCost"].ToString());
+            ManaCostPerLevel.threadSafeText = UInt32.Parse(row["ManaCostPerLevel"].ToString());
+            ManaCostPerSecond.threadSafeText = UInt32.Parse(row["ManaPerSecond"].ToString());
+            PerSecondPerLevel.threadSafeText = UInt32.Parse(row["ManaPerSecondPerLevel"].ToString());
+
+            loadRanges.UpdateSpellRangeSelection();
+
+            Speed.threadSafeText = row["Speed"].ToString();
+            Stacks.threadSafeText = row["StackAmount"].ToString();
+            Totem1.threadSafeText = row["Totem1"].ToString();
+            Totem2.threadSafeText = row["Totem2"].ToString();
+            Reagent1.threadSafeText = row["Reagent1"].ToString();
+            Reagent2.threadSafeText = row["Reagent2"].ToString();
+            Reagent3.threadSafeText = row["Reagent3"].ToString();
+            Reagent4.threadSafeText = row["Reagent4"].ToString();
+            Reagent5.threadSafeText = row["Reagent5"].ToString();
+            Reagent6.threadSafeText = row["Reagent6"].ToString();
+            Reagent7.threadSafeText = row["Reagent7"].ToString();
+            Reagent8.threadSafeText = row["Reagent8"].ToString();
+            ReagentCount1.threadSafeText = row["ReagentCount1"].ToString();
+            ReagentCount2.threadSafeText = row["ReagentCount2"].ToString();
+            ReagentCount3.threadSafeText = row["ReagentCount3"].ToString();
+            ReagentCount4.threadSafeText = row["ReagentCount4"].ToString();
+            ReagentCount5.threadSafeText = row["ReagentCount5"].ToString();
+            ReagentCount6.threadSafeText = row["ReagentCount6"].ToString();
+            ReagentCount7.threadSafeText = row["ReagentCount7"].ToString();
+            ReagentCount8.threadSafeText = row["ReagentCount8"].ToString();
+
+            loadItemClasses.UpdateItemClassSelection();
+
+            mask = UInt32.Parse(row["EquippedItemInventoryTypeMask"].ToString());
+            if (mask == 0)
+            {
+                equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = true;
+                for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
+                UInt32 flag = 1;
+                for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
+                {
+                    equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    flag = flag + flag;
+                }
+            }
+
+            // Some duplication of fields here
+            Effect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
+            Effect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
+            Effect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
+            SpellEffect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
+            SpellEffect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
+            SpellEffect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
+            EffectDieSides1.threadSafeText = row["EffectDieSides1"].ToString();
+            EffectDieSides2.threadSafeText = row["EffectDieSides2"].ToString();
+            EffectDieSides3.threadSafeText = row["EffectDieSides3"].ToString();
+            DieSides1.threadSafeText = row["EffectDieSides1"].ToString();
+            DieSides2.threadSafeText = row["EffectDieSides2"].ToString();
+            DieSides3.threadSafeText = row["EffectDieSides3"].ToString();
+            BasePointsPerLevel1.threadSafeText = row["EffectRealPointsPerLevel1"].ToString();
+            BasePointsPerLevel2.threadSafeText = row["EffectRealPointsPerLevel2"].ToString();
+            BasePointsPerLevel3.threadSafeText = row["EffectRealPointsPerLevel3"].ToString();
+            EffectBaseValue1.threadSafeText = row["EffectBasePoints1"].ToString();
+            EffectBaseValue2.threadSafeText = row["EffectBasePoints2"].ToString();
+            EffectBaseValue3.threadSafeText = row["EffectBasePoints3"].ToString();
+            BasePoints1.threadSafeText = row["EffectBasePoints1"].ToString();
+            BasePoints2.threadSafeText = row["EffectBasePoints2"].ToString();
+            BasePoints3.threadSafeText = row["EffectBasePoints3"].ToString();
+            Mechanic1.threadSafeIndex = Int32.Parse(row["EffectMechanic1"].ToString());
+            Mechanic2.threadSafeIndex = Int32.Parse(row["EffectMechanic2"].ToString());
+            Mechanic3.threadSafeIndex = Int32.Parse(row["EffectMechanic3"].ToString());
+            TargetA1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA1"].ToString());
+            TargetA2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA2"].ToString());
+            TargetA3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA3"].ToString());
+            TargetB1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB1"].ToString());
+            TargetB2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB2"].ToString());
+            TargetB3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB3"].ToString());
+
+            loadRadiuses.UpdateRadiusIndexes();
+
+            ApplyAuraName1.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName1"].ToString());
+            ApplyAuraName2.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName2"].ToString());
+            ApplyAuraName3.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName3"].ToString());
+            Amplitude1.threadSafeText = row["EffectAmplitude1"].ToString();
+            Amplitude2.threadSafeText = row["EffectAmplitude2"].ToString();
+            Amplitude3.threadSafeText = row["EffectAmplitude3"].ToString();
+            MultipleValue1.threadSafeText = row["EffectMultipleValue1"].ToString();
+            MultipleValue2.threadSafeText = row["EffectMultipleValue2"].ToString();
+            MultipleValue3.threadSafeText = row["EffectMultipleValue3"].ToString();
+            ChainTarget1.threadSafeIndex = Int32.Parse(row["EffectChainTarget1"].ToString());
+            ChainTarget2.threadSafeIndex = Int32.Parse(row["EffectChainTarget2"].ToString());
+            ChainTarget3.threadSafeIndex = Int32.Parse(row["EffectChainTarget3"].ToString());
+            ItemType1.threadSafeText = row["EffectItemType1"].ToString();
+            ItemType2.threadSafeText = row["EffectItemType2"].ToString();
+            ItemType3.threadSafeText = row["EffectItemType3"].ToString();
+            MiscValueA1.threadSafeText = row["EffectMiscValue1"].ToString();
+            MiscValueA2.threadSafeText = row["EffectMiscValue2"].ToString();
+            MiscValueA3.threadSafeText = row["EffectMiscValue3"].ToString();
+            MiscValueB1.threadSafeText = row["EffectMiscValueB1"].ToString();
+            MiscValueB2.threadSafeText = row["EffectMiscValueB2"].ToString();
+            MiscValueB3.threadSafeText = row["EffectMiscValueB3"].ToString();
+            TriggerSpell1.threadSafeText = row["EffectTriggerSpell1"].ToString();
+            TriggerSpell2.threadSafeText = row["EffectTriggerSpell2"].ToString();
+            TriggerSpell3.threadSafeText = row["EffectTriggerSpell3"].ToString();
+            PointsPerComboPoint1.threadSafeText = row["EffectPointsPerComboPoint1"].ToString();
+            PointsPerComboPoint2.threadSafeText = row["EffectPointsPerComboPoint2"].ToString();
+            PointsPerComboPoint3.threadSafeText = row["EffectPointsPerComboPoint3"].ToString();
+            SpellMask11.threadSafeText = row["EffectSpellClassMaskA1"].ToString();
+            SpellMask21.threadSafeText = row["EffectSpellClassMaskA2"].ToString();
+            SpellMask31.threadSafeText = row["EffectSpellClassMaskA3"].ToString();
+            SpellMask12.threadSafeText = row["EffectSpellClassMaskB1"].ToString();
+            SpellMask22.threadSafeText = row["EffectSpellClassMaskB2"].ToString();
+            SpellMask32.threadSafeText = row["EffectSpellClassMaskB3"].ToString();
+            SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
+            SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
+            SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
+            SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
+            SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
+            ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
+            StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
+            StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
+            MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
+            SpellFamilyName.threadSafeText = row["SpellFamilyName"].ToString();
+            MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
+            SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
+            PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
+            EffectDamageMultiplier1.threadSafeText = row["EffectDamageMultiplier1"].ToString();
+            EffectDamageMultiplier2.threadSafeText = row["EffectDamageMultiplier2"].ToString();
+            EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
+
+            loadTotemCategories.UpdateTotemCategoriesSelection();
+            loadAreaGroups.UpdateAreaGroupSelection();
+
+            mask = UInt32.Parse(row["SchoolMask"].ToString());
+            S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
+            S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
+            S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
+            S4.threadSafeChecked = ((mask & 0x08) != 0) ? true : false;
+            S5.threadSafeChecked = ((mask & 0x10) != 0) ? true : false;
+            S6.threadSafeChecked = ((mask & 0x20) != 0) ? true : false;
+            S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
+
+            loadRuneCosts.UpdateSpellRuneCostSelection();
+
+            SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
+            EffectBonusMultiplier1.threadSafeText = row["EffectBonusMultiplier1"].ToString();
+            EffectBonusMultiplier2.threadSafeText = row["EffectBonusMultiplier2"].ToString();
+            EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
+
+            loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
+            loadDifficulties.UpdateDifficultySelection();
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
