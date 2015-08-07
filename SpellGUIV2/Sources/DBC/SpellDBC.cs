@@ -399,7 +399,7 @@ namespace SpellEditor.Sources.DBC
                             case TypeCode.Int32:
                             case TypeCode.Single:
                                 {
-                                    f.SetValue(body.records[i].record, rows[i][f.Name]);
+                                    f.SetValueForValueType(ref body.records[i].record, rows[i][f.Name]);
                                     break;
                                 }
                             case TypeCode.Object:
@@ -486,14 +486,22 @@ namespace SpellEditor.Sources.DBC
         }
     }
 
+    [CLSCompliant(true)]
+    static class Hlp
+    {
+        public static void SetValueForValueType<T>(this FieldInfo field, ref T item, object value) where T : struct
+        {
+            field.SetValueDirect(__makeref(item), value);
+        }
+    }
+
     public struct Spell_DBC_Body
     {
         public Spell_DBC_RecordMap[] records;
     };
 
     [Serializable()]
-    [StructLayout(LayoutKind.Sequential)]
-    public class Spell_DBC_RecordMap
+    public struct Spell_DBC_RecordMap
     {
         public Spell_DBC_Record record;
         public string[] spellName;
@@ -518,8 +526,7 @@ namespace SpellEditor.Sources.DBC
     }
 
     [Serializable()]
-    [StructLayout(LayoutKind.Sequential)]
-    public class Spell_DBC_Record
+    public struct Spell_DBC_Record
     {
         public UInt32 ID;
         public UInt32 Category;

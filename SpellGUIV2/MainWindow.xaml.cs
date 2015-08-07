@@ -615,6 +615,50 @@ namespace SpellEditor
                 }
                 return;
             }
+            
+            if (sender == TruncateTable)
+            {
+                MetroDialogSettings settings = new MetroDialogSettings();
+                settings.AffirmativeButtonText = "YES";
+                settings.NegativeButtonText = "NO";
+                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the MySQL table.\n\n" +
+                    "This feature should only be used when you want to reset the database and import a new Spell.dbc.", style, settings);
+                if (res == MessageDialogResult.Affirmative)
+                {
+                    mySQL.execute(String.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
+                    if (!PopulateSelectSpell())
+                    {
+                        String errorMsg = "";
+                        try
+                        {
+                            var result = await this.ShowMessageAsync("Import Spell.dbc?",
+                                "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+                            if (result == MessageDialogResult.Affirmative)
+                            {
+                                var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
+                                await Task.Delay(1000);
+                                controller.SetCancelable(false);
+
+                                SpellDBC dbc = new SpellDBC();
+                                dbc.LoadDBCFile(this);
+                                await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                                await controller.CloseAsync();
+                                PopulateSelectSpell();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorMsg = ex.Message;
+                        }
+                        if (errorMsg.Length > 0)
+                        {
+                            await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
+                            return;
+                        }
+                    }
+                }
+            }
 
             if (sender == InsertANewRecord)
             {
@@ -708,6 +752,8 @@ namespace SpellEditor
             {
                 String query = String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID);
                 var q = mySQL.query(query);
+                if (q.Rows.Count == 0)
+                    return;
                 var row = q.Rows[0];
                 row.BeginEdit();
                 try
@@ -1287,6 +1333,8 @@ namespace SpellEditor
             // Attempt localisation on Death Touch
             DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," + 
                 "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+            if (res == null || res.Count == 0)
+                return false;
             int locale = 0;
             if (res[0] != null)
             {
@@ -1304,7 +1352,7 @@ namespace SpellEditor
             foreach (DataRow row in results)
                 SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
 
-            return SelectSpell.Items.Count != 0;
+            return true;
         }
 
         private async void NewIconClick(object sender, RoutedEventArgs e)

@@ -548,6 +548,11 @@
     </Grid>
     <controls:MetroWindow.WindowCommands>
         <controls:WindowCommands>
+            <Button Name="TruncateTable" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Truncate Table" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <Button Name="ExportDBC" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Export To Spell.dbc" VerticalAlignment="Center"/>
