@@ -13,7 +13,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin DBCs
         public DBC_Header header;
-        public Mechanic_DBC_Map body;
+        public DBC_Map body;
         // End DBCs
 
         public CreatureModelData()
@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        public struct Mechanic_DBC_Map
+        public struct DBC_Map
         {
             public DBC_Record[] records;
             public String[] pathStrings;
