@@ -21,8 +21,8 @@ namespace SpellVisualMapBuilder
 
     class Program
     {
-        private static UInt32 DBCStartingEntry = 15000;
-        private static UInt32 CTStartingEntry = 100000;
+        private static UInt32 DBCStartingEntry = 150000;
+        private static UInt32 CTStartingEntry = 150000;
         private static UInt32 MapEntry = 13;
         private static Int32[] MapTopLeft = { 138, 138 };
         private static Int32[] MapBottomRight = { -138, -138 };
