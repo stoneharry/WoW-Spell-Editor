@@ -26,6 +26,7 @@ namespace SpellVisualMapBuilder
         private static Int32[] MapTopLeft = { 138, 138 };
         private static Int32[] MapBottomRight = { -138, -138 };
         private static Int32 MapZ = -144;
+        private static Int32 CellSize = 7;
         private static HashSet<String> paths = new HashSet<String>();
 
         public static void Print(String message, params object[] args)
@@ -93,19 +94,18 @@ namespace SpellVisualMapBuilder
             int currY = MapTopLeft[1];
             int limitX = MapBottomRight[0];
             int limitY = MapBottomRight[1];
-            int cellSize = 7;
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
                 str.Append("insert into `creature` (`id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`," +
                     " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
                     " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
-                str.Append(String.Format("values('{0}','0','{1}','0','1','1','0','0','{2}','{3}','{4}','0','30','0','0','5','0','0','0','0','0','0');",
-                    creatureEntry++, 13, currX, currY, MapZ)); // id, map, x, y, z
-                currX = currX - cellSize;
+                str.Append(String.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','5','0','0','0','0','0','0');\n",
+                    creatureEntry++, 13, 0, currX, currY, MapZ)); // id, map, zone, x, y, z
+                currX -= CellSize;
                 if (currX <= limitX)
                 {
                     currX = MapTopLeft[0];
-                    currY = currY - cellSize;
+                    currY -= CellSize;
                     if (currY <= limitY)
                         throw new Exception("Spawned outside of defined grid.");
                 }
