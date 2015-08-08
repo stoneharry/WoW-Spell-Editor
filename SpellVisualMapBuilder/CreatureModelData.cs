@@ -70,6 +70,70 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
+        public void SaveDBCFile()
+        {
+            UInt32 stringBlockOffset = 1;
+
+            Dictionary<int, UInt32> offsetStorage = new Dictionary<int, UInt32>();
+            Dictionary<UInt32, string> reverseStorage = new Dictionary<UInt32, string>();
+
+            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            {
+                if (body.pathStrings[i].Length == 0)
+                    body.records[i].ModelPath = 0;
+                else
+                {
+                    int key = body.pathStrings[i].GetHashCode();
+
+                    if (offsetStorage.ContainsKey(key))
+                        body.records[i].ModelPath = offsetStorage[key];
+                    else
+                    {
+                        body.records[i].ModelPath = stringBlockOffset;
+                        stringBlockOffset += (UInt32)Encoding.UTF8.GetByteCount(body.pathStrings[i]) + 1;
+                        offsetStorage.Add(key, body.records[i].ModelPath);
+                        reverseStorage.Add(body.records[i].ModelPath, body.pathStrings[i]);
+                    }
+                }
+            }
+
+            header.StringBlockSize = (int)stringBlockOffset;
+
+            String path = "Export/CreatureModelData.dbc";
+
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            if (File.Exists(path))
+                File.Delete(path);
+            FileStream fileStream = new FileStream(path, FileMode.Create);
+            BinaryWriter writer = new BinaryWriter(fileStream);
+            int count = Marshal.SizeOf(typeof(DBC_Header));
+            byte[] buffer = new byte[count];
+            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            Marshal.StructureToPtr(header, handle.AddrOfPinnedObject(), true);
+            writer.Write(buffer, 0, count);
+            handle.Free();
+
+            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            {
+                count = Marshal.SizeOf(typeof(DBC_Record));
+                buffer = new byte[count];
+                handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                Marshal.StructureToPtr(body.records[i], handle.AddrOfPinnedObject(), true);
+                writer.Write(buffer, 0, count);
+                handle.Free();
+            }
+
+            UInt32[] offsetsStored = offsetStorage.Values.ToArray<UInt32>();
+
+            writer.Write(Encoding.UTF8.GetBytes("\0"));
+
+            for (int i = 0; i < offsetsStored.Length; ++i)
+                writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0"));
+
+            writer.Close();
+            fileStream.Close();
+        }
+
         public struct DBC_Map
         {
             public DBC_Record[] records;

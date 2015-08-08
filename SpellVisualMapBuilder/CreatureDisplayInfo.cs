@@ -53,6 +53,38 @@ namespace SpellEditor.Sources.DBC
             fileStream.Close();
         }
 
+        public void SaveDBCFile()
+        {
+            String path = "Export/CreatureDisplayInfo.dbc";
+
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            if (File.Exists(path))
+                File.Delete(path);
+            FileStream fileStream = new FileStream(path, FileMode.Create);
+            BinaryWriter writer = new BinaryWriter(fileStream);
+            int count = Marshal.SizeOf(typeof(DBC_Header));
+            byte[] buffer = new byte[count];
+            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            Marshal.StructureToPtr(header, handle.AddrOfPinnedObject(), true);
+            writer.Write(buffer, 0, count);
+            handle.Free();
+
+            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            {
+                count = Marshal.SizeOf(typeof(DBC_Record));
+                buffer = new byte[count];
+                handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                Marshal.StructureToPtr(body.records[i], handle.AddrOfPinnedObject(), true);
+                writer.Write(buffer, 0, count);
+                handle.Free();
+            }
+
+            writer.Write(Encoding.UTF8.GetBytes(body.StringBlock));
+
+            writer.Close();
+            fileStream.Close();
+        }
+
         public struct DBC_Map
         {
             public DBC_Record[] records;
