@@ -11,6 +11,16 @@ using System.Windows.Threading;
 
 namespace SpellEditor.Sources.DBC
 {
+    // Public use of a DBC Header file
+    public struct DBC_Header
+    {
+        public UInt32 Magic;
+        public UInt32 RecordCount;
+        public UInt32 FieldCount;
+        public UInt32 RecordSize;
+        public Int32 StringBlockSize;
+    };
+
     class SpellDBC
     {
         // Begin Window
