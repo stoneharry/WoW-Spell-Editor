@@ -150,7 +150,7 @@ namespace SpellEditor.Sources.DBC
             //   M2Scene::AddNewModel(GetM2Cache(), Modelpath, AlternateModel, 0)
             public UInt32 AlternateModel;
             public UInt32 sizeClass;
-            public float modelScale;
+            public UInt32 modelScale; // Documented as float, IS NOT
             public UInt32 BloodLevel;
             public UInt32 Footprint;
             public float footprintTextureLength;

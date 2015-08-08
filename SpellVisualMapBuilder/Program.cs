@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using SpellEditor.Sources.DBC;
+using MySql.Data.MySqlClient;
 
 namespace SpellVisualMapBuilder
 {
@@ -122,7 +123,8 @@ namespace SpellVisualMapBuilder
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
                 str.Append("INSERT INTO `creature_template` VALUES (");
-                str.Append(String.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i, stringPaths[i - DBCStartingEntry]));
+                str.Append(String.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i,
+                    MySqlHelper.EscapeString(stringPaths[i - DBCStartingEntry])));
                 str.Append("'','','0','1','1','0','35','0','1','1.14286','1','0','0','1500','2000','1','1','1','0','0','0','0'"
                     + ",'0','0','0','0','6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',"
                     + "'0','','0','3','1','4','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','','0');\n");
@@ -166,7 +168,7 @@ namespace SpellVisualMapBuilder
                 newRecord.geoBoxMinF2 = 0;
                 newRecord.geoBoxMaxF3 = 0;
                 newRecord.geoBoxMinF3 = 0;
-                newRecord.worldEffectScale = 0;
+                newRecord.worldEffectScale = 1;
                 newRecord.Unknown6 = 0;
                 newRecord.Unknown5 = 0;
                 newRecord.attachedEffectScale = 0;
