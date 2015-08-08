@@ -21,7 +21,7 @@ namespace SpellVisualMapBuilder
 
     class Program
     {
-        private static UInt32 DBCStartingEntry = 150000;
+        private static UInt32 DBCStartingEntry = 50000;
         private static UInt32 CTStartingEntry = 150000;
         private static UInt32 MapEntry = 13;
         private static Int32[] MapTopLeft = { 138, 138 };
@@ -100,8 +100,8 @@ namespace SpellVisualMapBuilder
                 str.Append("insert into `creature` (`id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`," +
                     " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
                     " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
-                str.Append(String.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','5','0','0','0','0','0','0');\n",
-                    creatureEntry++, 13, 0, currX, currY, MapZ)); // id, map, zone, x, y, z
+                str.Append(String.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','{6}','0','0','0','0','0','0');\n",
+                    creatureEntry++, 13, 0, currX, currY, MapZ, 0)); // id, map, zone, x, y, z, health
                 currX -= CellSize;
                 if (currX <= limitX)
                 {
@@ -128,6 +128,7 @@ namespace SpellVisualMapBuilder
                 str.Append("'','','0','1','1','0','35','0','1','1.14286','1','0','0','1500','2000','1','1','1','0','0','0','0'"
                     + ",'0','0','0','0','6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',"
                     + "'0','','0','3','1','4','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','','0');\n");
+                str.Append(String.Format("INSERT INTO `creature_model_info` VALUES ('{0}', '0', '0', '0', '0');\n", i));
             }
             File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
         }
