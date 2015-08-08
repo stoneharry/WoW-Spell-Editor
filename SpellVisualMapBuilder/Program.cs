@@ -66,8 +66,10 @@ namespace SpellVisualMapBuilder
                 displayInfo.SaveDBCFile();
 
                 Print("Creating creature_template queries...");
+                generateTemplateQueries();
 
                 Print("Creating creature queries... || NOT YET IMPLEMENTED");
+                generateSpawnQueries();
 
                 Print("Program finished successfully.");
             }
@@ -75,6 +77,35 @@ namespace SpellVisualMapBuilder
             {
                 Print("ERROR: " + e.Message);
             }
+        }
+
+        private static void generateSpawnQueries()
+        {
+            StringBuilder str = new StringBuilder();
+            uint newSize = (uint)paths.Count + DBCStartingEntry;
+            String[] stringPaths = paths.ToArray();
+            for (uint i = DBCStartingEntry; i < newSize; ++i)
+            {
+                
+            }
+            File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
+        }
+
+        private static void generateTemplateQueries()
+        {
+            StringBuilder str = new StringBuilder();
+            uint newSize = (uint)paths.Count + DBCStartingEntry;
+            String[] stringPaths = paths.ToArray();
+            uint creatureEntry = CTStartingEntry;
+            for (uint i = DBCStartingEntry; i < newSize; ++i)
+            {
+                str.Append("INSERT INTO `creature_template` VALUES (");
+                str.Append(String.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i, stringPaths[i - DBCStartingEntry]));
+                str.Append("'','','0','1','1','0','35','0','1','1.14286','1','0','0','1500','2000','1','1','1','0','0','0','0'"
+                    + ",'0','0','0','0','6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',"
+                    + "'0','','0','3','1','4','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','','0');\n");
+            }
+            File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
         }
 
         private static void populateNewEntries(CreatureModelData modelData, CreatureDisplayInfo displayInfo)
