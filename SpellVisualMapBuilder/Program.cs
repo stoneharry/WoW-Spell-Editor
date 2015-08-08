@@ -23,6 +23,9 @@ namespace SpellVisualMapBuilder
         private static UInt32 DBCStartingEntry = 15000;
         private static UInt32 CTStartingEntry = 100000;
         private static UInt32 MapEntry = 13;
+        private static Int32[] MapTopLeft = { 138, 138 };
+        private static Int32[] MapBottomRight = { -138, -138 };
+        private static Int32 MapZ = -144;
         private static HashSet<String> paths = new HashSet<String>();
 
         public static void Print(String message, params object[] args)
@@ -84,11 +87,30 @@ namespace SpellVisualMapBuilder
             StringBuilder str = new StringBuilder();
             uint newSize = (uint)paths.Count + DBCStartingEntry;
             String[] stringPaths = paths.ToArray();
+            uint creatureEntry = CTStartingEntry;
+
+            int currX = MapTopLeft[0];
+            int currY = MapTopLeft[1];
+            int limitX = MapBottomRight[0];
+            int limitY = MapBottomRight[1];
+            int cellSize = 7;
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
-                
+                str.Append("insert into `creature` (`id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`," +
+                    " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
+                    " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
+                str.Append(String.Format("values('{0}','0','{1}','0','1','1','0','0','{2}','{3}','{4}','0','30','0','0','5','0','0','0','0','0','0');",
+                    creatureEntry++, 13, currX, currY, MapZ)); // id, map, x, y, z
+                currX = currX - cellSize;
+                if (currX <= limitX)
+                {
+                    currX = MapTopLeft[0];
+                    currY = currY - cellSize;
+                    if (currY <= limitY)
+                        throw new Exception("Spawned outside of defined grid.");
+                }
             }
-            File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
+            File.WriteAllText("Export/Creature.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
         }
 
         private static void generateTemplateQueries()
