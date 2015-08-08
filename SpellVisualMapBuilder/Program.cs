@@ -147,7 +147,7 @@ namespace SpellVisualMapBuilder
                 CreatureModelData.DBC_Record newRecord = new CreatureModelData.DBC_Record();
                 newRecord.ID = entry++;
                 newRecord.Flags = 0;
-                newRecord.AlternateModel = 1;
+                newRecord.AlternateModel = 0;
                 newRecord.sizeClass = 1;
                 newRecord.modelScale = 1;
                 newRecord.BloodLevel = 0;
