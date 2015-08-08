@@ -73,7 +73,7 @@ namespace SpellVisualMapBuilder
                 Print("Creating creature_template queries...");
                 generateTemplateQueries();
 
-                Print("Creating creature queries... || NOT YET IMPLEMENTED");
+                Print("Creating creature queries...");
                 generateSpawnQueries();
 
                 Print("Program finished successfully.");
