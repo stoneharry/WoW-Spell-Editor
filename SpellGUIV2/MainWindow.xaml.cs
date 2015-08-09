@@ -456,36 +456,31 @@ namespace SpellEditor
             //mySQL.execute("TRUNCATE TABLE " + config.Table);
             if (!PopulateSelectSpell())
             {
-                errorMsg = "";
-                try
+                MetroDialogSettings settings = new MetroDialogSettings();
+                settings.AffirmativeButtonText = "YES";
+                settings.NegativeButtonText = "NO";
+                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+                var res = await this.ShowMessageAsync("Import Spell.dbc?",
+                    "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+                if (res == MessageDialogResult.Affirmative)
                 {
-                    MetroDialogSettings settings = new MetroDialogSettings();
-                    settings.AffirmativeButtonText = "YES";
-                    settings.NegativeButtonText = "NO";
-                    MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                    var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                        "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
-                    if (res == MessageDialogResult.Affirmative)
-                    {
-                        var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                        await Task.Delay(1000);
-                        controller.SetCancelable(false);
+                    var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
+                    await Task.Delay(1000);
+                    controller.SetCancelable(false);
 
-                        SpellDBC dbc = new SpellDBC();
-                        dbc.LoadDBCFile(this);
-                        await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
-                        await controller.CloseAsync();
-                        PopulateSelectSpell();
+                    SpellDBC dbc = new SpellDBC();
+                    dbc.LoadDBCFile(this);
+                    Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                    while (!t.IsCompleted)
+                        await Task.Delay(1000);
+                    await controller.CloseAsync();
+                    PopulateSelectSpell();
+
+                    if (SpellDBC.ErrorMessage.Length > 0)
+                    {
+                        HandleErrorMessage(SpellDBC.ErrorMessage);
+                        SpellDBC.ErrorMessage = "";
                     }
-                }
-                catch (Exception e)
-                {
-                    errorMsg = e.Message;
-                }
-                if (errorMsg.Length > 0)
-                {
-                    await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
-                    return;
                 }
             }
             // Load other DBC's
@@ -529,8 +524,7 @@ namespace SpellEditor
 
                     config.createFile(host, user, pass, port, db, tb);
                 }
-                else
-                    config.loadFile();
+                config.loadFile();
                 return config;
             }
             catch (Exception e)
@@ -629,32 +623,27 @@ namespace SpellEditor
                     mySQL.execute(String.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
                     if (!PopulateSelectSpell())
                     {
-                        String errorMsg = "";
-                        try
+                        res = await this.ShowMessageAsync("Import Spell.dbc?",
+                            "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+                        if (res == MessageDialogResult.Affirmative)
                         {
-                            var result = await this.ShowMessageAsync("Import Spell.dbc?",
-                                "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
-                            if (result == MessageDialogResult.Affirmative)
-                            {
-                                var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                                await Task.Delay(1000);
-                                controller.SetCancelable(false);
+                            var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
+                            await Task.Delay(1000);
+                            controller.SetCancelable(false);
 
-                                SpellDBC dbc = new SpellDBC();
-                                dbc.LoadDBCFile(this);
-                                await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
-                                await controller.CloseAsync();
-                                PopulateSelectSpell();
+                            SpellDBC dbc = new SpellDBC();
+                            dbc.LoadDBCFile(this);
+                            Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                            while (!t.IsCompleted)
+                                await Task.Delay(1000);
+                            await controller.CloseAsync();
+                            PopulateSelectSpell();
+
+                            if (SpellDBC.ErrorMessage.Length > 0)
+                            {
+                                HandleErrorMessage(SpellDBC.ErrorMessage);
+                                SpellDBC.ErrorMessage = "";
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            errorMsg = ex.Message;
-                        }
-                        if (errorMsg.Length > 0)
-                        {
-                            await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
-                            return;
                         }
                     }
                 }
