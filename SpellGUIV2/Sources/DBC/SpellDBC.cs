@@ -248,6 +248,7 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() => 
             {
+                UInt32 currentRecord = 0;
                 try
                 {
                     UInt32 count = header.RecordCount;
@@ -270,6 +271,7 @@ namespace SpellEditor.Sources.DBC
                             double percent = (double)index / (double)count;
                             UpdateProgress(percent);
                         }
+                        currentRecord = r.record.ID;
                         q.Append("(");
                         foreach (var f in r.record.GetType().GetFields())
                         {
@@ -371,7 +373,8 @@ namespace SpellEditor.Sources.DBC
                 }
                 catch (Exception e)
                 {
-                    ErrorMessage = "ERROR: " + e.Message + "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
+                    ErrorMessage = "ERROR on around spell ID " + currentRecord + ": " + e.Message +
+                        "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
                 }
             });
         }

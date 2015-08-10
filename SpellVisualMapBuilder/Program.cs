@@ -23,11 +23,11 @@ namespace SpellVisualMapBuilder
     {
         private static UInt32 DBCStartingEntry = 50000;
         private static UInt32 CTStartingEntry = 150000;
-        private static UInt32 MapEntry = 13;
-        private static Int32[] MapTopLeft = { 138, 138 };
-        private static Int32[] MapBottomRight = { -138, -138 };
-        private static Int32 MapZ = -144;
-        private static Int32 CellSize = 7;
+        private static UInt32 MapEntry = 900;
+        private static Int32[] MapTopLeft = { 14000, 14000 };
+        private static Int32[] MapBottomRight = { 9000, 9000 };
+        private static Int32 MapZ = 0;
+        private static Int32 CellSize = 125;
         private static HashSet<String> paths = new HashSet<String>();
 
         public static void Print(String message, params object[] args)
@@ -101,7 +101,7 @@ namespace SpellVisualMapBuilder
                     " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
                     " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
                 str.Append(String.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','{6}','0','0','0','0','0','0');\n",
-                    creatureEntry++, 13, 0, currX, currY, MapZ, 0)); // id, map, zone, x, y, z, health
+                    creatureEntry++, MapEntry, 0, currX, currY, MapZ, 100)); // id, map, zone, x, y, z, health
                 currX -= CellSize;
                 if (currX <= limitX)
                 {

@@ -99,8 +99,17 @@ namespace SpellEditor
 
         public async void HandleErrorMessage(string msg) { await this.ShowMessageAsync("Spell Editor", msg); }
 
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            File.WriteAllText("Error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
+            HandleErrorMessage(e.Exception.Message);
+            e.Handled = true;
+        }
+
         private void _Loaded(object sender, RoutedEventArgs e)
         {
+            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+
             try
             {
                 stringObjectMap.Add(0, SpellName0);
