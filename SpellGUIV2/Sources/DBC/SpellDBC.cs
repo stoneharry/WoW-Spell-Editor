@@ -419,9 +419,13 @@ namespace SpellEditor.Sources.DBC
                         {
                             case TypeCode.UInt32:
                             case TypeCode.Int32:
-                            case TypeCode.Single:
                                 {
                                     f.SetValueForValueType(ref body.records[i].record, rows[i][f.Name]);
+                                    break;
+                                }
+                            case TypeCode.Single:
+                                {
+                                    f.SetValueForValueType(ref body.records[i].record, Single.Parse(rows[i][f.Name].ToString()));
                                     break;
                                 }
                             case TypeCode.Object:
