@@ -53,6 +53,10 @@ namespace SpellEditor.Sources.Config
                     Pass = reader.ReadElementContentAsString();
                     reader.ReadToFollowing("port");
                     Port = reader.ReadElementContentAsString();
+                    reader.ReadToFollowing("database");
+                    Database = reader.ReadElementContentAsString();
+                    reader.ReadToFollowing("table");
+                    Table = reader.ReadElementContentAsString();
                     reader.Close();
                 }
             }
