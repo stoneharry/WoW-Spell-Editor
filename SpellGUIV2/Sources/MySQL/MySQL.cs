@@ -110,7 +110,7 @@ namespace SpellEditor.Sources.MySQL
                         str.Append(String.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Single:
-                        str.Append(String.Format(@"`{0}` DOUBLE(10, 10) NOT NULL DEFAULT '0', ", f.Name));
+                        str.Append(String.Format(@"`{0}` DOUBLE(20, 10) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Object:
                         {
