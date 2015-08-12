@@ -61,11 +61,11 @@ namespace SpellEditor.Sources.MySQL
             {
                 var adapter = new MySqlDataAdapter(query, conn);
                 DataSet DS = new DataSet();
+                adapter.SelectCommand.CommandTimeout = 0;
                 adapter.Fill(DS);
                 return DS.Tables[0];
             }
         }
-
 
         public void commitChanges(String query, DataTable dataTable)
         {
