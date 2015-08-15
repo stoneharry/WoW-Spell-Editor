@@ -110,7 +110,7 @@ namespace SpellEditor.Sources.MySQL
                         str.Append(String.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Single:
-                        str.Append(String.Format(@"`{0}` DOUBLE(20, 10) NOT NULL DEFAULT '0', ", f.Name));
+                        str.Append(String.Format(@"`{0}` FLOAT(25, 20) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Object:
                         {
@@ -138,7 +138,7 @@ namespace SpellEditor.Sources.MySQL
                 }
             }
 
-            str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;");
+            str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");
             
             return str.ToString();
         }

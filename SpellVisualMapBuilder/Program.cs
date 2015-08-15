@@ -23,11 +23,11 @@ namespace SpellVisualMapBuilder
     {
         private static UInt32 DBCStartingEntry = 50000;
         private static UInt32 CTStartingEntry = 150000;
-        private static UInt32 MapEntry = 900;
-        private static Int32[] MapTopLeft = { 14000, 14000 };
-        private static Int32[] MapBottomRight = { 9000, 9000 };
-        private static Int32 MapZ = 0;
-        private static Int32 CellSize = 125;
+        private static UInt32 MapEntry = 13;
+        private static Int32[] MapTopLeft = { 138, 138 };
+        private static Int32[] MapBottomRight = { -138, -138 };
+        private static Int32 MapZ = -144;
+        private static Int32 CellSize = 7;
         private static HashSet<String> paths = new HashSet<String>();
 
         public static void Print(String message, params object[] args)

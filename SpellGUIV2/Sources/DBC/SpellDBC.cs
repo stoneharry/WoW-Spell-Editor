@@ -279,9 +279,13 @@ namespace SpellEditor.Sources.DBC
                             {
                                 case TypeCode.UInt32:
                                 case TypeCode.Int32:
-                                case TypeCode.Single:
                                     {
                                         q.Append(String.Format("'{0}', ", f.GetValue(r.record)));
+                                        break;
+                                    }
+                                case TypeCode.Single:
+                                    {
+                                        q.Append(String.Format("cast('{0}' as decimal(11, 3)), ", f.GetValue(r.record)));
                                         break;
                                     }
                                 case TypeCode.Object:
