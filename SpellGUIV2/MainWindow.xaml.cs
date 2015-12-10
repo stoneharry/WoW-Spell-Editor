@@ -790,22 +790,20 @@ namespace SpellEditor
 
                     row["AttributesEx2"] = maskk;
 
+
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes3.Count; ++f)
+                    for (int f = 0; f < attributes1.Count; ++f)
                     {
-                        if (attributes3[f].IsChecked.Value == true)
-                        {
-                            maskk = maskk + flagg;
-                            flagg = flagg + flagg;
-                        }
-
-                        row["AttributesEx3"] = maskk;
-
-                        maskk = 0;
-                        flagg = 1;
+                        if (attributes1[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        flagg = flagg + flagg;
                     }
+
+                    row["AttributesEx3"] = maskk;
+
+                    maskk = 0;
+                    flagg = 1;
 
                     for (int f = 0; f < attributes4.Count; ++f)
                     {

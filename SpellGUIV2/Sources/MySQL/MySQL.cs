@@ -110,7 +110,7 @@ namespace SpellEditor.Sources.MySQL
                         str.Append(String.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Single:
-                        str.Append(String.Format(@"`{0}` FLOAT(25, 20) NOT NULL DEFAULT '0', ", f.Name));
+                        str.Append(String.Format(@"`{0}` FLOAT NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Object:
                         {
@@ -120,7 +120,7 @@ namespace SpellEditor.Sources.MySQL
                                 if (attr.Method == 1)
                                 {
                                     for (int i = 0; i < attr.Count; ++i)
-                                        str.Append(String.Format(@"`{0}{1}` VARCHAR(255) CHARACTER SET utf8, ", f.Name, i));
+                                        str.Append(String.Format(@"`{0}{1}` TEXT CHARACTER SET utf8, ", f.Name, i));
                                     break;
                                 }
                                 else if (attr.Method == 2)
