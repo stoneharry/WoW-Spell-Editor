@@ -794,9 +794,9 @@ namespace SpellEditor
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes1.Count; ++f)
+                    for (int f = 0; f < attributes3.Count; ++f)
                     {
-                        if (attributes1[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attributes3[f].IsChecked.Value == true) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
