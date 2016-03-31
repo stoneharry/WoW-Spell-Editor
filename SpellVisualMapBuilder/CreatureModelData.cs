@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
-                if (body.pathStrings[i].Length == 0)
+                if (String.IsNullOrEmpty(body.pathStrings[i]))
                     body.records[i].ModelPath = 0;
                 else
                 {
