@@ -1384,10 +1384,10 @@ namespace SpellEditor
                     ".\n\nThe first spell to be loaded will always take a while but afterwards it should be quite fast.");
                 controller.SetCancelable(false);
 
-                Timeline.DesiredFrameRateProperty.OverrideMetadata(
+               /* Timeline.DesiredFrameRateProperty.OverrideMetadata(
                     typeof(Timeline),
                     new FrameworkPropertyMetadata { DefaultValue = 30 }
-                );
+                );*/
 
                 await loadSpell(new UpdateTextFunc(controller.SetMessage));
 
@@ -1408,6 +1408,7 @@ namespace SpellEditor
         {
             return Task.Run(() =>
             {
+                mySQL.setUpdating(true);
                 updateProgress("Querying MySQL data...");
                 DataRowCollection rowResult = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
                 if (rowResult == null || rowResult.Count != 1)
@@ -1977,11 +1978,14 @@ namespace SpellEditor
                 updateProgress("Updating spell description variables & difficulty selection...");
                 loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
                 loadDifficulties.UpdateDifficultySelection();
+                mySQL.setUpdating(false);
             });
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (updating)
+                return;
             var item = sender as TabControl;
 
             if (item.SelectedIndex == 0) { PopulateSelectSpell(); }
