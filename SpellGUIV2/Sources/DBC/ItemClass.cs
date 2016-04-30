@@ -120,7 +120,9 @@ namespace SpellEditor.Sources.DBC
                 return;
             }
 
-            if (ID == 4) { main.EquippedItemInventoryTypeGrid.IsEnabled = true; }
+            if (ID == 4) {
+                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
+            }
             else
             {
                 foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }

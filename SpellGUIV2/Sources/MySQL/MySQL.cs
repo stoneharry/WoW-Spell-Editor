@@ -18,6 +18,7 @@ namespace SpellEditor.Sources.MySQL
         private Config.Config config;
         private MySqlConnection conn;
         public String Table;
+        private bool _updating = false;
 
         public MySQL(Config.Config config)
         {
@@ -69,6 +70,8 @@ namespace SpellEditor.Sources.MySQL
 
         public void commitChanges(String query, DataTable dataTable)
         {
+            if (_updating)
+                return;
             lock (syncLock)
             {
                 var adapter = new MySqlDataAdapter();
@@ -81,6 +84,8 @@ namespace SpellEditor.Sources.MySQL
 
         public void execute(string p)
         {
+            if (_updating)
+                return;
             //lock (syncLock)
             //{
                 var cmd = conn.CreateCommand();
@@ -141,6 +146,11 @@ namespace SpellEditor.Sources.MySQL
             str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");
             
             return str.ToString();
+        }
+
+        public void setUpdating(bool p)
+        {
+            _updating = true;
         }
     }
 }
