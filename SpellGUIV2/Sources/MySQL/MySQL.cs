@@ -150,7 +150,7 @@ namespace SpellEditor.Sources.MySQL
 
         public void setUpdating(bool p)
         {
-            _updating = true;
+            _updating = p;
         }
     }
 }

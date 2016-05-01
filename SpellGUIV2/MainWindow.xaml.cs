@@ -28,6 +28,7 @@ using SpellEditor.Sources.MySQL;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Media.Animation;
+using System.ComponentModel;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -444,6 +445,34 @@ namespace SpellEditor
         public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
+        private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
+        {
+            MetroDialogSettings settings = new MetroDialogSettings();
+            settings.AffirmativeButtonText = "YES";
+            settings.NegativeButtonText = "NO";
+            MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+            var res = await this.ShowMessageAsync("Import Spell.dbc?",
+                "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+            if (res == MessageDialogResult.Affirmative)
+            {
+                var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
+                await Task.Delay(1000);
+                controller.SetCancelable(false);
+
+                SpellDBC dbc = new SpellDBC();
+                dbc.LoadDBCFile(this);
+                await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+                await controller.CloseAsync();
+                PopulateSelectSpell();
+
+                if (SpellDBC.ErrorMessage.Length > 0)
+                {
+                    HandleErrorMessage(SpellDBC.ErrorMessage);
+                    SpellDBC.ErrorMessage = "";
+                }
+            }
+        }
+
         private async void loadAllData()
         {
             config = await getConfig();
@@ -463,37 +492,7 @@ namespace SpellEditor
                 await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
                 return;
             }
-            // DEBUG ////
-            //mySQL.execute("TRUNCATE TABLE " + config.Table);
-            if (!PopulateSelectSpell())
-            {
-                MetroDialogSettings settings = new MetroDialogSettings();
-                settings.AffirmativeButtonText = "YES";
-                settings.NegativeButtonText = "NO";
-                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                    "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
-                if (res == MessageDialogResult.Affirmative)
-                {
-                    var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                    await Task.Delay(1000);
-                    controller.SetCancelable(false);
-
-                    SpellDBC dbc = new SpellDBC();
-                    dbc.LoadDBCFile(this);
-                    Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
-                    while (!t.IsCompleted)
-                        await Task.Delay(1000);
-                    await controller.CloseAsync();
-                    PopulateSelectSpell();
-
-                    if (SpellDBC.ErrorMessage.Length > 0)
-                    {
-                        HandleErrorMessage(SpellDBC.ErrorMessage);
-                        SpellDBC.ErrorMessage = "";
-                    }
-                }
-            }
+            PopulateSelectSpell();
             // Load other DBC's
             loadCategories = new SpellCategory(this, mySQL);
             loadDispels = new SpellDispelType(this, mySQL);
@@ -632,7 +631,8 @@ namespace SpellEditor
                 if (res == MessageDialogResult.Affirmative)
                 {
                     mySQL.execute(String.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
-                    if (!PopulateSelectSpell())
+                    PopulateSelectSpell();
+                    if (SelectSpell.Items.Count == 0)
                     {
                         res = await this.ShowMessageAsync("Import Spell.dbc?",
                             "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
@@ -644,9 +644,7 @@ namespace SpellEditor
 
                             SpellDBC dbc = new SpellDBC();
                             dbc.LoadDBCFile(this);
-                            Task t = dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
-                            while (!t.IsCompleted)
-                                await Task.Delay(1000);
+                            await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
                             await controller.CloseAsync();
                             PopulateSelectSpell();
 
@@ -1269,6 +1267,8 @@ namespace SpellEditor
 
                     row.EndEdit();
                     mySQL.commitChanges(query, q.GetChanges());
+
+                    PopulateSelectSpell();
                 }
 
                 catch (Exception ex)
@@ -1323,34 +1323,80 @@ namespace SpellEditor
             await loadIcons.LoadImages();
         }
 
-        private bool PopulateSelectSpell()
+        private class Worker : BackgroundWorker
+        {
+            public MySQL __mySQL;
+            public Config __config;
+
+            public Worker(MySQL _mySQL, Config _config)
+            {
+                __mySQL = _mySQL;
+                __config = _config;
+                
+            }
+        }
+
+        private void PopulateSelectSpell()
         {
             SelectSpell.Items.Clear();
-            if (config == null || mySQL == null)
-                return false;
-            // Attempt localisation on Death Touch
-            DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," + 
-                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
-            if (res == null || res.Count == 0)
-                return false;
-            int locale = 0;
-            if (res[0] != null)
+            SpellsLoadedLabel.Content = "No spells loaded.";
+            Worker _worker = new Worker(mySQL, config);
+            _worker.WorkerReportsProgress = true;
+            _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
+
+            _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                for (int i = 0; i < 9; ++i)
+                if (_worker.__mySQL == null || _worker.__config == null)
+                    return;
+
+                // Attempt localisation on Death Touch, HACKY
+                DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+                if (res == null || res.Count == 0)
+                    return;
+                int locale = 0;
+                if (res[0] != null)
                 {
-                    if (res[0][i + 1].ToString().Length > 3)
+                    for (int i = 0; i < 9; ++i)
                     {
-                        locale = i;
-                        break;
+                        if (res[0][i + 1].ToString().Length > 3)
+                        {
+                            locale = i;
+                            break;
+                        }
                     }
                 }
-            }
-            // Retrieve rows
-            DataRowCollection results = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` ORDER BY `id`", config.Table, locale)).Rows;
-            foreach (DataRow row in results)
-                SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
 
-            return true;
+                UInt32 lowerBounds = 0;
+                UInt32 pageSize = 5000;
+                UInt32 targetSize = pageSize;
+                DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
+                lowerBounds += 100;
+                while (results != null && results.Count != 0)
+                {
+                    _worker.ReportProgress(0, results);
+                    results = GetSpellNames(lowerBounds, pageSize, locale);
+                    lowerBounds += pageSize;
+                }
+
+            };
+            _worker.RunWorkerAsync();
+        }
+
+        private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            DataRowCollection collection = (DataRowCollection) e.UserState;
+            SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
+            foreach (DataRow row in collection)
+            {
+                SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
+            }
+        }
+
+        private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
+        {
+            return mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` LIMIT {2}, {3}",
+                config.Table, locale, lowerBound, pageSize)).Rows;
         }
 
         private async void NewIconClick(object sender, RoutedEventArgs e)
@@ -1984,12 +2030,11 @@ namespace SpellEditor
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating)
+            if (updating || mySQL == null || config == null)
                 return;
             var item = sender as TabControl;
 
-            if (item.SelectedIndex == 0) { PopulateSelectSpell(); }
-            else if (item.SelectedIndex == item.Items.Count - 1) { PrepareIconEditor(); }
+            if (item.SelectedIndex == item.Items.Count - 1) { PrepareIconEditor(); }
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2268,6 +2313,16 @@ namespace SpellEditor
             if (sender == SpellEffect1) { Effect1.SelectedIndex = SpellEffect1.SelectedIndex; }
             if (sender == SpellEffect2) { Effect2.SelectedIndex = SpellEffect2.SelectedIndex; }
             if (sender == SpellEffect3) { Effect3.SelectedIndex = SpellEffect3.SelectedIndex; }
+        }
+
+        private class ItemDetail
+        {
+            private DataRow userState;
+
+            public ItemDetail(DataRow userState)
+            {
+                this.userState = userState;
+            }
         }
     };
 };
