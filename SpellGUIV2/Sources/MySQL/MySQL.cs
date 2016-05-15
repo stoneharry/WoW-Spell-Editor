@@ -76,6 +76,7 @@ namespace SpellEditor.Sources.MySQL
             {
                 var adapter = new MySqlDataAdapter();
                 var mcb = new MySqlCommandBuilder(adapter);
+                mcb.ConflictOption = ConflictOption.OverwriteChanges;
                 adapter.SelectCommand = new MySqlCommand(query, conn);
                 adapter.Update(dataTable);
                 dataTable.AcceptChanges();
