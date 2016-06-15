@@ -18,11 +18,16 @@ namespace SpellEditor.Sources.Constants
         TARGET_UNIT_SRC_AREA_ENTRY = 7,
         TARGET_UNIT_DEST_AREA_ENTRY = 8,
         TARGET_DEST_HOME = 9,
+        TARGET_UNUSED_10 = 10,
         TARGET_UNIT_SRC_AREA_UNK_11 = 11,
+        TARGET_UNUSED_12 = 12,
+        TARGET_UNUSED_13 = 13,
+        TARGET_UNUSED_14 = 14,
         TARGET_UNIT_SRC_AREA_ENEMY = 15,
         TARGET_UNIT_DEST_AREA_ENEMY = 16,
         TARGET_DEST_DB = 17,
         TARGET_DEST_CASTER = 18,
+        TARGET_UNUSED_19 = 19,
         TARGET_UNIT_CASTER_AREA_PARTY = 20,
         TARGET_UNIT_TARGET_ALLY = 21,
         TARGET_SRC_CASTER = 22,
@@ -112,6 +117,7 @@ namespace SpellEditor.Sources.Constants
         TARGET_DEST_CHANNEL_CASTER = 106,
         TARGET_UNK_DEST_AREA_UNK_107 = 107, // not enough info - only generic spells avalible
         TARGET_GAMEOBJECT_CONE = 108,
+        TARGET_UNUSED_109 = 109,
         TARGET_DEST_UNK_110 = 110, // 1 spell
     }
 }

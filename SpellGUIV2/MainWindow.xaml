@@ -24,6 +24,11 @@
                 <Grid>
                     <Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="473,40,0,0"/>
                     <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,40,0,0" Width="120" TextWrapping="Wrap" KeyDown="_KeyDown"/>
+
+                    <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="455,83,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="120" TextWrapping="NoWrap" KeyDown="_KeyDown"/>
+                    <Button Content="Clear" Click="Button_Click" Name="ClearNameFilter" Margin="673,83,577,588" />
+
                     <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="448,9,0,0"/>
                     <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged"/>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,460,0,0" Height="200" Width="1270">
@@ -192,8 +197,14 @@
                     <c:ThreadSafeTextBox x:Name="PerSecondPerLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,226,0,0" Width="125" TextWrapping="Wrap"/>
                     <Label Content="Mana Cost %:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="615,263,0,0"/>
                     <c:ThreadSafeTextBox x:Name="ManaCostPercent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,289,0,0" Width="125" TextWrapping="Wrap"/>
-                    <Label Content="Spell Family Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="600.5,325,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="SpellFamilyName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,351,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="960,200,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,226,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,262,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,288,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,324,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,350,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,387,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,413,0,0" Width="125" TextWrapping="Wrap"/>
                     <Label Content="Global Cooldown Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="589,387,0,0"/>
                     <c:ThreadSafeTextBox x:Name="StartRecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,413,0,0" Width="125" TextWrapping="Wrap"/>
                     <Label Content="Max Targets:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="799,15,0,0"/>
