@@ -661,17 +661,6 @@ namespace SpellEditor
         {
             if (mySQL == null) { return; }
 
-            if (sender == ClearNameFilter)
-            {
-                FilterSpellNames.Clear();
-                SelectSpell.Items.Clear();
-                foreach (DataRow row in spellTable.Rows)
-                {
-                    SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
-                }
-                return;
-            }
-
             if (sender == ExportDBC)
             {
                 MetroDialogSettings settings = new MetroDialogSettings();

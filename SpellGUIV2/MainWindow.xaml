@@ -27,7 +27,6 @@
 
                     <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="455,83,0,0"/>
                     <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="120" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                    <Button Content="Clear" Click="Button_Click" Name="ClearNameFilter" Margin="673,83,577,588" />
 
                     <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="448,9,0,0"/>
                     <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged"/>
