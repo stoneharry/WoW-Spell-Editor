@@ -56,6 +56,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MahApps.Metro">
       <HintPath>Resources\MahApps.Metro.dll</HintPath>
