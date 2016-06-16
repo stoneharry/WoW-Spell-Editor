@@ -95,6 +95,8 @@ namespace SpellEditor
         public UInt32 newIconID = 1;
         private Boolean updating;
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        private DataTable spellTable = new DataTable();
+        private int storedLocale = -1;
         // End Other
 
         public MainWindow() { InitializeComponent(); }
@@ -203,7 +205,7 @@ namespace SpellEditor
                     attributes3.Add(box);
                 }
 
-                att_flags = new string[] { "Ignore All Reistances", "Proc Only on Caster", "Continue to Tick while Offline", "Unknown 3", "Unknown 4", "Unknown 5", "Not Stealable", "Triggered", "Fixed Damage", "Activate from Event", "Spell vs Extended Cost", "Unknown 11", "Unknown 12", "Unknown 13", "Damage doesn't Break Auras", "Unknown 15", "Not Usable in Arena", "Usable in Arena", "Area Target Chain", "Unknown 19", "Don't Check Selfcast Power", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Pet Scaling", "Can Only be Casted in Outland", "Unknown 27", "Aimed Shot", "Unknown 29", "Unknown 30", "Polymorph" };
+                att_flags = new string[] { "Ignore All Resistances", "Proc Only on Caster", "Continue to Tick while Offline", "Unknown 3", "Unknown 4", "Unknown 5", "Not Stealable", "Triggered", "Fixed Damage", "Activate from Event", "Spell vs Extended Cost", "Unknown 11", "Unknown 12", "Unknown 13", "Damage doesn't Break Auras", "Unknown 15", "Not Usable in Arena", "Usable in Arena", "Area Target Chain", "Unknown 19", "Don't Check Selfcast Power", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Pet Scaling", "Can Only be Casted in Outland", "Unknown 27", "Aimed Shot", "Unknown 29", "Unknown 30", "Polymorph" };
 
                 for (int i = 0; i < att_flags.Length; ++i)
                 {
@@ -492,6 +494,10 @@ namespace SpellEditor
                 await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
                 return;
             }
+
+            spellTable.Columns.Add("id", typeof(System.UInt32));
+            spellTable.Columns.Add("SpellName" + GetLocale(), typeof(System.String));
+
             PopulateSelectSpell();
             // Load other DBC's
             loadCategories = new SpellCategory(this, mySQL);
@@ -545,6 +551,14 @@ namespace SpellEditor
             return null;
         }
 
+        private void _KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender == FilterSpellNames && e.Key == Key.Back)
+            {
+                _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
+            }
+        }
+
         private async void _KeyDown(object sender, KeyEventArgs e)
         {
             if (sender == this)
@@ -559,17 +573,26 @@ namespace SpellEditor
                     MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                     MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor", "Are you sure you want to exit?\n\nMake sure you have saved before doing this action or all progress will be lost!", style, settings);
 
-                    if (exitCode == MessageDialogResult.Affirmative) { Environment.Exit(0x1); }
-                    else if (exitCode == MessageDialogResult.Negative) { return; }
+                    if (exitCode == MessageDialogResult.Affirmative)
+                    {
+                        Environment.Exit(0x1);
+                    }
+                    else if (exitCode == MessageDialogResult.Negative)
+                    {
+                        return;
+                    }
                 }
-
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S)) { Button_Click(SaveSpellChanges, e); }
+                else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+                {
+                    Button_Click(SaveSpellChanges, e);
+                }
             }
-
-            if (sender == NavigateToSpell)
+            else if (sender == NavigateToSpell)
             {
-                if (e.Key != Key.Enter) { return; }
-
+                if (e.Key != Key.Enter)
+                {
+                    return;
+                }
                 try
                 {
                     TextBox box = (TextBox)sender;
@@ -589,14 +612,65 @@ namespace SpellEditor
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    HandleErrorMessage(ex.Message);
+                }
+            }
+            else if (sender == FilterSpellNames)
+            {
+                try
+                {
+                    var locale = GetLocale();
+                    var input = FilterSpellNames.Text;
+                    if (string.IsNullOrEmpty(input))
+                    {
+                        if (spellTable.Rows.Count == SelectSpell.Items.Count)
+                            return;
+                        SelectSpell.Items.Clear();
+                        foreach (DataRow row in spellTable.Rows)
+                        {
+                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], row["SpellName" + locale].ToString()));
+                        }
+                        return;
+                    }
+                    SelectSpell.Items.Clear();
+                    input = input.ToLower();
+                    foreach (DataRow row in spellTable.Rows)
+                    {
+                        var spellName = row["SpellName" + locale].ToString();
+                        if (spellName.ToLower().Contains(input))
+                        {
+                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], spellName));
+                        }
+                    }
 
-                catch (Exception ex) { HandleErrorMessage(ex.Message); }
+                    if (SelectSpell.Items.Count == 0 && !string.IsNullOrEmpty(FilterSpellNames.Text))
+                    {
+                        SelectSpell.Items.Add("No spell names containing \"" + FilterSpellNames.Text + "\"");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    HandleErrorMessage(ex.Message);
+                }
             }
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (mySQL == null) { return; }
+
+            if (sender == ClearNameFilter)
+            {
+                FilterSpellNames.Clear();
+                SelectSpell.Items.Clear();
+                foreach (DataRow row in spellTable.Rows)
+                {
+                    SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
+                }
+                return;
+            }
 
             if (sender == ExportDBC)
             {
@@ -1233,6 +1307,9 @@ namespace SpellEditor
                     row["StartRecoveryTime"] = UInt32.Parse(StartRecoveryTime.Text);
                     row["MaximumTargetLevel"] = UInt32.Parse(MaxTargetsLevel.Text);
                     row["SpellFamilyName"] = UInt32.Parse(SpellFamilyName.Text);
+                    row["SpellFamilyFlags"] = UInt32.Parse(SpellFamilyFlags.Text);
+                    row["SpellFamilyFlags1"] = UInt32.Parse(SpellFamilyFlags1.Text);
+                    row["SpellFamilyFlags2"] = UInt32.Parse(SpellFamilyFlags2.Text);
                     row["MaximumAffectedTargets"] = UInt32.Parse(MaxTargets.Text);
                     row["DamageClass"] = (UInt32)SpellDamageType.SelectedIndex;
                     row["PreventionType"] = (UInt32)PreventionType.SelectedIndex;
@@ -1336,6 +1413,32 @@ namespace SpellEditor
             }
         }
 
+        public int GetLocale()
+        {
+            if (storedLocale != -1)
+                return storedLocale;
+
+            // Attempt localisation on Death Touch, HACKY
+            DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+            if (res == null || res.Count == 0)
+                return -1;
+            int locale = 0;
+            if (res[0] != null)
+            {
+                for (int i = 0; i < 9; ++i)
+                {
+                    if (res[0][i + 1].ToString().Length > 3)
+                    {
+                        locale = i;
+                        break;
+                    }
+                }
+            }
+            storedLocale = locale;
+            return locale;
+        }
+
         private void PopulateSelectSpell()
         {
             SelectSpell.Items.Clear();
@@ -1343,6 +1446,8 @@ namespace SpellEditor
             Worker _worker = new Worker(mySQL, config);
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
+
+            FilterSpellNames.IsEnabled = false;
 
             _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
@@ -1367,6 +1472,8 @@ namespace SpellEditor
                     }
                 }
 
+                spellTable.Rows.Clear();
+
                 UInt32 lowerBounds = 0;
                 UInt32 pageSize = 5000;
                 UInt32 targetSize = pageSize;
@@ -1379,6 +1486,7 @@ namespace SpellEditor
                     lowerBounds += pageSize;
                 }
 
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => FilterSpellNames.IsEnabled = true));
             };
             _worker.RunWorkerAsync();
         }
@@ -1395,8 +1503,12 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-            return mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` LIMIT {2}, {3}",
-                config.Table, locale, lowerBound, pageSize)).Rows;
+            DataTable newSpellNames = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` LIMIT {2}, {3}",
+                 config.Table, locale, lowerBound, pageSize));
+
+            spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
+
+            return newSpellNames.Rows;
         }
 
         private async void NewIconClick(object sender, RoutedEventArgs e)
@@ -1991,6 +2103,9 @@ namespace SpellEditor
                 StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
                 MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
                 SpellFamilyName.threadSafeText = row["SpellFamilyName"].ToString();
+                SpellFamilyFlags.threadSafeText = row["SpellFamilyFlags"].ToString();
+                SpellFamilyFlags1.threadSafeText = row["SpellFamilyFlags1"].ToString();
+                SpellFamilyFlags2.threadSafeText = row["SpellFamilyFlags2"].ToString();
                 MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
                 SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
                 PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
