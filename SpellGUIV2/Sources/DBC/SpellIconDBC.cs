@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -93,7 +94,15 @@ namespace SpellEditor.Sources.DBC
         {
             if (mySQL == null) { return; }
 
-            var res = mySQL.query(String.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            DataRow res;
+            try
+            {
+                res = mySQL.query(String.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            }
+            catch (Exception e)
+            {
+                return;
+            }
             UInt32 iconInt = UInt32.Parse(res[0].ToString());
             UInt32 iconActiveInt = UInt32.Parse(res[1].ToString());
             UInt32 selectedRecord = UInt32.MaxValue;

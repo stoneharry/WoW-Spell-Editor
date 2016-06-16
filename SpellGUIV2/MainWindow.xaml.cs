@@ -551,6 +551,14 @@ namespace SpellEditor
             return null;
         }
 
+        private void _KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender == FilterSpellNames && e.Key == Key.Back)
+            {
+                _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
+            }
+        }
+
         private async void _KeyDown(object sender, KeyEventArgs e)
         {
             if (sender == this)
@@ -565,17 +573,26 @@ namespace SpellEditor
                     MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                     MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor", "Are you sure you want to exit?\n\nMake sure you have saved before doing this action or all progress will be lost!", style, settings);
 
-                    if (exitCode == MessageDialogResult.Affirmative) { Environment.Exit(0x1); }
-                    else if (exitCode == MessageDialogResult.Negative) { return; }
+                    if (exitCode == MessageDialogResult.Affirmative)
+                    {
+                        Environment.Exit(0x1);
+                    }
+                    else if (exitCode == MessageDialogResult.Negative)
+                    {
+                        return;
+                    }
                 }
-
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S)) { Button_Click(SaveSpellChanges, e); }
+                else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+                {
+                    Button_Click(SaveSpellChanges, e);
+                }
             }
-
-            if (sender == NavigateToSpell)
+            else if (sender == NavigateToSpell)
             {
-                if (e.Key != Key.Enter) { return; }
-
+                if (e.Key != Key.Enter)
+                {
+                    return;
+                }
                 try
                 {
                     TextBox box = (TextBox)sender;
@@ -595,28 +612,48 @@ namespace SpellEditor
                         }
                     }
                 }
-
-                catch (Exception ex) { HandleErrorMessage(ex.Message); }
+                catch (Exception ex)
+                {
+                    HandleErrorMessage(ex.Message);
+                }
             }
-
-            if (sender == FilterSpellNames)
+            else if (sender == FilterSpellNames)
             {
-                if (e.Key != Key.Enter) { return; }
-
                 try
                 {
+                    var locale = GetLocale();
+                    var input = FilterSpellNames.Text;
+                    if (string.IsNullOrEmpty(input))
+                    {
+                        if (spellTable.Rows.Count == SelectSpell.Items.Count)
+                            return;
+                        SelectSpell.Items.Clear();
+                        foreach (DataRow row in spellTable.Rows)
+                        {
+                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], row["SpellName" + locale].ToString()));
+                        }
+                        return;
+                    }
                     SelectSpell.Items.Clear();
+                    input = input.ToLower();
                     foreach (DataRow row in spellTable.Rows)
-                        if (string.IsNullOrEmpty(FilterSpellNames.Text) || (!string.IsNullOrEmpty(FilterSpellNames.Text) && row[1].ToString().ToLower().Contains(FilterSpellNames.Text.ToLower())))
-                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], row["SpellName" + GetLocale()]));
+                    {
+                        var spellName = row["SpellName" + locale].ToString();
+                        if (spellName.ToLower().Contains(input))
+                        {
+                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], spellName));
+                        }
+                    }
 
                     if (SelectSpell.Items.Count == 0 && !string.IsNullOrEmpty(FilterSpellNames.Text))
                     {
                         SelectSpell.Items.Add("No spell names containing \"" + FilterSpellNames.Text + "\"");
                     }
                 }
-
-                catch (Exception ex) { HandleErrorMessage(ex.Message); }
+                catch (Exception ex)
+                {
+                    HandleErrorMessage(ex.Message);
+                }
             }
         }
 
@@ -1410,6 +1447,8 @@ namespace SpellEditor
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
 
+            FilterSpellNames.IsEnabled = false;
+
             _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
                 if (_worker.__mySQL == null || _worker.__config == null)
@@ -1447,6 +1486,7 @@ namespace SpellEditor
                     lowerBounds += pageSize;
                 }
 
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => FilterSpellNames.IsEnabled = true));
             };
             _worker.RunWorkerAsync();
         }
