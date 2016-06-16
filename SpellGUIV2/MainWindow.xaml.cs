@@ -497,7 +497,9 @@ namespace SpellEditor
 
             spellTable.Columns.Add("id", typeof(System.UInt32));
             spellTable.Columns.Add("SpellName" + GetLocale(), typeof(System.String));
+            spellTable.Columns.Add("Icon", typeof(System.UInt32));
 
+            PrepareIconEditor();
             PopulateSelectSpell();
             // Load other DBC's
             loadCategories = new SpellCategory(this, mySQL);
@@ -559,6 +561,8 @@ namespace SpellEditor
             }
         }
 
+        private volatile Boolean imageLoadEventRunning = false;
+
         private async void _KeyDown(object sender, KeyEventArgs e)
         {
             if (sender == this)
@@ -619,29 +623,64 @@ namespace SpellEditor
             }
             else if (sender == FilterSpellNames)
             {
+                if (imageLoadEventRunning)
+                    return;
+                imageLoadEventRunning = true;
                 try
                 {
                     var locale = GetLocale();
                     var input = FilterSpellNames.Text;
-                    if (string.IsNullOrEmpty(input))
+                    bool badInput = string.IsNullOrEmpty(input);
+                    if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
                     {
-                        if (spellTable.Rows.Count == SelectSpell.Items.Count)
-                            return;
-                        SelectSpell.Items.Clear();
-                        foreach (DataRow row in spellTable.Rows)
-                        {
-                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], row["SpellName" + locale].ToString()));
-                        }
+                        imageLoadEventRunning = false;
                         return;
-                    }
+                    }    
                     SelectSpell.Items.Clear();
+                    string[] icons = loadIcons.body.StringBlock.Split('\0');
                     input = input.ToLower();
                     foreach (DataRow row in spellTable.Rows)
                     {
                         var spellName = row["SpellName" + locale].ToString();
-                        if (spellName.ToLower().Contains(input))
+                        if (badInput || spellName.ToLower().Contains(input))
                         {
-                            SelectSpell.Items.Add(String.Format("{0} - {1}", row["id"], spellName));
+                            var textBlock = new TextBlock();
+                            textBlock.Text = String.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
+                            var image = new System.Windows.Controls.Image();
+                            var iconId = Int32.Parse(row["SpellIconID"].ToString());
+                            if (iconId > 0)
+                            {
+                                image.Loaded += (o, args) =>
+                                {
+                                    FileStream fileStream = null;
+                                    try
+                                    {
+                                        fileStream = new FileStream(icons[iconId] + ".blp", FileMode.Open);
+                                        var blpImage = new SereniaBLPLib.BlpFile(fileStream);
+                                        var bit = blpImage.getBitmap(0);
+                                        image.Width = 32;
+                                        image.Height = 32;
+                                        image.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+                                        image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                                            bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty,
+                                            BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                                        //image.UpdateLayout();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        // These are only really thrown if the image could not be loaded
+                                    }
+                                    finally
+                                    {
+                                        if (fileStream != null)
+                                            fileStream.Close();
+                                    }
+                                };
+                            }
+                            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+                            stackPanel.Children.Add(image);
+                            stackPanel.Children.Add(textBlock);
+                            SelectSpell.Items.Add(stackPanel);
                         }
                     }
 
@@ -652,8 +691,9 @@ namespace SpellEditor
                 }
                 catch (Exception ex)
                 {
-                    HandleErrorMessage(ex.Message);
+                    // These are only really thrown if the image could not be loaded
                 }
+                imageLoadEventRunning = false;
             }
         }
 
@@ -1484,15 +1524,54 @@ namespace SpellEditor
         {
             DataRowCollection collection = (DataRowCollection) e.UserState;
             SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
+            int locale = GetLocale();
+            string[] icons = loadIcons.body.StringBlock.Split('\0');
             foreach (DataRow row in collection)
             {
-                SelectSpell.Items.Add(String.Format("{0} - {1}", row[0], row[1]));
+                var spellName = row["SpellName" + locale].ToString();
+                var textBlock = new TextBlock();
+                textBlock.Text = String.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
+                var image = new System.Windows.Controls.Image();
+                var iconId = Int32.Parse(row["SpellIconID"].ToString());
+                if (iconId > 0)
+                {
+                    image.Loaded += (o, args) =>
+                    {
+                        FileStream fileStream = null;
+                        try
+                        {
+                            fileStream = new FileStream(icons[iconId] + ".blp", FileMode.Open);
+                            var blpImage = new SereniaBLPLib.BlpFile(fileStream);
+                            var bit = blpImage.getBitmap(0);
+                            image.Width = 32;
+                            image.Height = 32;
+                            image.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+                            image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                                bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty,
+                                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                            //image.UpdateLayout();
+                        }
+                        catch (Exception ex)
+                        {
+                            // These are only really thrown if the image could not be loaded
+                        }
+                        finally
+                        {
+                            if (fileStream != null)
+                                fileStream.Close();
+                        }
+                    };
+                    var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+                    stackPanel.Children.Add(image);
+                    stackPanel.Children.Add(textBlock);
+                    SelectSpell.Items.Add(stackPanel);
+                }
             }
         }
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-            DataTable newSpellNames = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}` FROM `{0}` LIMIT {2}, {3}",
+            DataTable newSpellNames = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
