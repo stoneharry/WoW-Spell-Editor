@@ -218,7 +218,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        void ImageDown(object sender, EventArgs e)
+        public void ImageDown(object sender, EventArgs e)
         {
             main.NewIcon.Source = ((System.Windows.Controls.Image)sender).Source;
 
@@ -238,6 +238,45 @@ namespace SpellEditor.Sources.DBC
             }
 
             main.newIconID = ID;
+        }
+
+        public string getIconPath(int iconId)
+        {
+            string icon = "";
+            int offset = 0;   
+            UInt32 selectedRecord = UInt32.MaxValue;
+            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            {
+                if (body.records[i].ID == iconId)
+                {
+                    selectedRecord = i;
+                    break;
+                }
+            }      
+            try
+            {
+                if (selectedRecord == UInt32.MaxValue) {
+                    // Raising the exception is causing lag when a lot of spells do not exist, so just load nothing
+                    return "";
+                    //throw new Exception("The icon trying to be loaded does not exist in the SpellIcon.dbc");
+                }
+                offset = (int)body.records[selectedRecord].Name;
+                while (body.StringBlock[offset] != '\0')
+                {
+                    icon += body.StringBlock[offset++];
+                }
+                if (!File.Exists(icon + ".blp"))
+                {
+                    throw new Exception("File could not be found: " + "Icons\\" + icon + ".blp");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                icon = "";
+            }
+            return icon;
         }
 
         public struct Icon_DBC_Map
