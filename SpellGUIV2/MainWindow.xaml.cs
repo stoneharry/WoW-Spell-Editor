@@ -626,77 +626,40 @@ namespace SpellEditor
                 if (imageLoadEventRunning)
                     return;
                 imageLoadEventRunning = true;
-                try
+                var locale = GetLocale();
+                var input = FilterSpellNames.Text;
+                bool badInput = string.IsNullOrEmpty(input);
+                if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
                 {
-                    var locale = GetLocale();
-                    var input = FilterSpellNames.Text;
-                    bool badInput = string.IsNullOrEmpty(input);
-                    if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
-                    {
-                        imageLoadEventRunning = false;
-                        return;
-                    }    
-                    SelectSpell.Items.Clear();
-                    string[] icons = loadIcons.body.StringBlock.Split('\0');
-                    input = input.ToLower();
-                    foreach (DataRow row in spellTable.Rows)
-                    {
-                        var spellName = row["SpellName" + locale].ToString();
-                        if (badInput || spellName.ToLower().Contains(input))
-                        {
-                            var textBlock = new TextBlock();
-                            textBlock.Text = String.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
-                            var image = new System.Windows.Controls.Image();
-                            var iconId = Int32.Parse(row["SpellIconID"].ToString());
-                            if (iconId > 0)
-                            {
-                                image.IsVisibleChanged += (o, args) =>
-                                {
-                                    if (!((bool)args.NewValue))
-                                    {
-                                        return;
-                                    }
-                                    FileStream fileStream = null;
-                                    try
-                                    {
-                                        fileStream = new FileStream(loadIcons.getIconPath(iconId) + ".blp", FileMode.Open);
-                                        var blpImage = new SereniaBLPLib.BlpFile(fileStream);
-                                        var bit = blpImage.getBitmap(0);
-                                        image.Width = 32;
-                                        image.Height = 32;
-                                        image.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-                                        image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                                            bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty,
-                                            BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                                        //image.UpdateLayout();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        // These are only really thrown if the image could not be loaded
-                                    }
-                                    finally
-                                    {
-                                        if (fileStream != null)
-                                            fileStream.Close();
-                                    }
-                                };
-                            }
-                            var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-                            stackPanel.Children.Add(image);
-                            stackPanel.Children.Add(textBlock);
-                            SelectSpell.Items.Add(stackPanel);
-                        }
-                    }
+                    imageLoadEventRunning = false;
+                    return;
+                }
 
-                    if (SelectSpell.Items.Count == 0 && !string.IsNullOrEmpty(FilterSpellNames.Text))
-                    {
-                        SelectSpell.Items.Add("No spell names containing \"" + FilterSpellNames.Text + "\"");
-                    }
-                }
-                catch (Exception ex)
+                ICollectionView view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+                view.Filter = (o) =>
                 {
-                    // These are only really thrown if the image could not be loaded
-                }
+                    StackPanel panel = (StackPanel) o;
+                    using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (enumerator.Current is TextBlock)
+                            {
+                                TextBlock block = (TextBlock)enumerator.Current;
+                                string name = block.Text;
+                                string spellName = name.Substring(name.IndexOf(' ', 4) + 1);
+                                if (spellName.ToLower().Contains(input))
+                                {
+                                    enumerator.Dispose();
+                                    return true;
+                                }
+                            }
+                        }
+                        enumerator.Dispose();
+                    }
+                    return false;
+                };
+
                 imageLoadEventRunning = false;
             }
         }
