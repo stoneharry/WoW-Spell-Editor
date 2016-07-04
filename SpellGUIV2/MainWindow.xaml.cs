@@ -650,12 +650,16 @@ namespace SpellEditor
                             var iconId = Int32.Parse(row["SpellIconID"].ToString());
                             if (iconId > 0)
                             {
-                                image.Loaded += (o, args) =>
+                                image.IsVisibleChanged += (o, args) =>
                                 {
+                                    if (!((bool)args.NewValue))
+                                    {
+                                        return;
+                                    }
                                     FileStream fileStream = null;
                                     try
                                     {
-                                        fileStream = new FileStream(icons[iconId] + ".blp", FileMode.Open);
+                                        fileStream = new FileStream(loadIcons.getIconPath(iconId) + ".blp", FileMode.Open);
                                         var blpImage = new SereniaBLPLib.BlpFile(fileStream);
                                         var bit = blpImage.getBitmap(0);
                                         image.Width = 32;
@@ -1534,7 +1538,7 @@ namespace SpellEditor
                 var iconId = Int32.Parse(row["SpellIconID"].ToString());
                 if (iconId > 0)
                 {
-                    image.IsVisibleChanged/*Loaded*/ += (o, args) =>
+                    image.IsVisibleChanged += (o, args) =>
                     {
                         if (!((bool)args.NewValue))
                         {
