@@ -730,7 +730,7 @@ namespace SpellEditor
                 settings.NegativeButtonText = "NO";
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the MySQL table.\n\n" +
-                    "This feature should only be used when you want to reset the database and import a new Spell.dbc.", style, settings);
+                    "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
                     mySQL.execute(String.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
@@ -2235,9 +2235,24 @@ namespace SpellEditor
             if (added_items.Count == 1)
             {
                 ListBox box = (ListBox)sender;
-                String name = box.SelectedItem.ToString();
-                selectedID = UInt32.Parse(name.Substring(0, name.IndexOf(' ', 0)));
-                UpdateMainWindow();
+
+                StackPanel panel = (StackPanel) box.SelectedItem;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (enumerator.Current is TextBlock)
+                        {
+                            TextBlock block = (TextBlock)enumerator.Current;
+                            string name = block.Text;
+                            selectedID = UInt32.Parse(name.Substring(1, name.IndexOf(' ', 1)));
+                            UpdateMainWindow();
+                            enumerator.Dispose();
+                            return;
+                        }
+                    }
+                    enumerator.Dispose();
+                }
             }
         }
 
