@@ -99,7 +99,7 @@ namespace SpellEditor.Sources.DBC
             {
                 res = mySQL.query(String.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return;
             }

@@ -28,6 +28,8 @@
                     <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="455,83,0,0"/>
                     <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="120" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
 
+                    <c:ThreadSafeTextBox x:Name="SpellDescriptionGen" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="918,337,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+
                     <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="448,9,0,0"/>
                     <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged"/>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,460,0,0" Height="200" Width="1270">

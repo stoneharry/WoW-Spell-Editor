@@ -29,6 +29,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Media.Animation;
 using System.ComponentModel;
+using SpellEditor.Sources.SpellStringTools;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -441,7 +442,14 @@ namespace SpellEditor
                 loadAllData();
             }
 
-            catch (Exception ex) { HandleErrorMessage(ex.Message); }
+            catch (Exception ex)
+            {
+                HandleErrorMessage(ex.Message);
+            }
+
+            // DEBUG
+            SpellDBC dbc = new SpellDBC();
+            dbc.LoadDBCFile(this);
         }
 
         public delegate void UpdateProgressFunc(double value);
@@ -1521,7 +1529,7 @@ namespace SpellEditor
                                 BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
                             //image.UpdateLayout();
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             // These are only really thrown if the image could not be loaded
                         }
@@ -1611,6 +1619,7 @@ namespace SpellEditor
                     throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
                 var row = rowResult[0];
                 updateProgress("Updating text control's...");
+                SpellDescriptionGen.threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + GetLocale()].ToString(), row);
                 int i;
                 for (i = 0; i < 9; ++i)
                 {
@@ -2326,12 +2335,12 @@ namespace SpellEditor
 
             if (sender == Duration)
             {
-                for (int i = 0; i < loadDurations.body.lookup.Count; ++i)
+                for (int i = 0; i < SpellDuration.body.lookup.Count; ++i)
                 {
-                    if (loadDurations.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (SpellDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "DurationIndex", (UInt32)loadDurations.body.lookup[i].ID, selectedID));
+                            mySQL.Table, "DurationIndex", (UInt32)SpellDuration.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }

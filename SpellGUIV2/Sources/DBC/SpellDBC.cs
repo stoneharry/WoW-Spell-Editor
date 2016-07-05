@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Reflection;
 using MySql.Data.MySqlClient;
 using System.Windows.Threading;
+using SpellEditor.Sources.SpellStringTools;
+using System.Data;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -29,7 +31,7 @@ namespace SpellEditor.Sources.DBC
 
         // Begin DBCs
         public DBC_Header header;
-        private Spell_DBC_Body body;
+        public Spell_DBC_Body body;
         // End DBCs
 
         // Begin Files
@@ -123,6 +125,11 @@ namespace SpellEditor.Sources.DBC
 
                 reader.Close();
                 fileStream.Close();
+
+                foreach (Spell_DBC_RecordMap map in body.records)
+                {
+                    tryGenerate(map, 0);
+                }
             }
 
             catch (Exception ex)
@@ -133,6 +140,13 @@ namespace SpellEditor.Sources.DBC
             }
 
             return true;
+        }
+
+        private void tryGenerate(Spell_DBC_RecordMap map, int locale)
+        {
+            string input = map.spellDesc[locale];
+
+            string output = SpellStringParser.GetParsedForm(input, map.record);
         }
 
         private void SaveDBCFile()
@@ -381,6 +395,38 @@ namespace SpellEditor.Sources.DBC
                         "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
                 }
             });
+        }
+
+        public static Spell_DBC_Record GetRowToRecord(DataRow row)
+        {
+            var record = new Spell_DBC_Record();
+            record.SpellName = new UInt32[9];
+            record.SpellDescription = new UInt32[9];
+            record.SpellRank = new UInt32[9];
+            record.SpellToolTip = new UInt32[9];
+            record.SpellNameFlag = new UInt32[8];
+            record.SpellDescriptionFlags = new UInt32[8];
+            record.SpellRankFlags = new UInt32[8];
+            record.SpellToolTipFlags = new UInt32[8];
+            var fields = record.GetType().GetFields();
+            foreach (var f in fields)
+            {
+                switch (Type.GetTypeCode(f.FieldType))
+                {
+                    case TypeCode.UInt32:
+                    case TypeCode.Int32:
+                        {
+                            f.SetValueForValueType(ref record, row[f.Name]);
+                            break;
+                        }
+                    case TypeCode.Single:
+                        {
+                            f.SetValueForValueType(ref record, Single.Parse(row[f.Name].ToString()));
+                            break;
+                        }
+                }
+            }
+            return record;
         }
 
         public Task export(MySQL.MySQL mySQL, MainWindow.UpdateProgressFunc updateProgress)

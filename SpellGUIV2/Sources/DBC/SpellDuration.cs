@@ -17,7 +17,7 @@ namespace SpellEditor.Sources.DBC
 
         // Begin DBCs
         public DBC_Header header;
-        public SpellDuration_DBC_Body body;
+        public static SpellDuration_DBC_Body body;
         // End DBCs
 
         public SpellDuration(MainWindow window, MySQL.MySQL mySQLConn)
