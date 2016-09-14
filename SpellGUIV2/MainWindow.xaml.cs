@@ -51,7 +51,7 @@ namespace SpellEditor
 {
     partial class MainWindow
     {
-        // Begin DBCs
+        #region DBCDefinitions
         private SpellCategory loadCategories = null;
         private SpellDispelType loadDispels = null;
         private SpellMechanic loadMechanics = null;
@@ -67,9 +67,9 @@ namespace SpellEditor
         private TotemCategory loadTotemCategories = null;
         private SpellRuneCost loadRuneCosts = null;
         private SpellDescriptionVariables loadDescriptionVariables = null;
-        // End DBCs
+        #endregion
 
-        // Begin Boxes
+        #region Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
         private List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
         private List<ThreadSafeCheckBox> attributes1 = new List<ThreadSafeCheckBox>();
@@ -87,9 +87,9 @@ namespace SpellEditor
         private List<ThreadSafeCheckBox> interrupts2 = new List<ThreadSafeCheckBox>();
         private List<ThreadSafeCheckBox> interrupts3 = new List<ThreadSafeCheckBox>();
         public List<ThreadSafeCheckBox> equippedItemInventoryTypeMaskBoxes = new List<ThreadSafeCheckBox>();
-        // End Boxes
+        #endregion
 
-        // Begin Other
+        #region MemberVariables
         private MySQL mySQL;
         private Config config;
         public UInt32 selectedID = 0;
@@ -98,11 +98,17 @@ namespace SpellEditor
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
-        // End Other
+        #endregion
 
-        public MainWindow() { InitializeComponent(); }
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
 
-        public async void HandleErrorMessage(string msg) { await this.ShowMessageAsync("Spell Editor", msg); }
+        public async void HandleErrorMessage(string msg)
+        {
+            await this.ShowMessageAsync("Spell Editor", msg);
+        }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
@@ -111,6 +117,7 @@ namespace SpellEditor
             e.Handled = true;
         }
 
+        #region Loaded
         private void _Loaded(object sender, RoutedEventArgs e)
         {
             Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
@@ -451,10 +458,12 @@ namespace SpellEditor
             SpellDBC dbc = new SpellDBC();
             dbc.LoadDBCFile(this);
         }
+        #endregion
 
         public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
+        #region ImportSpellDBC
         private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
         {
             MetroDialogSettings settings = new MetroDialogSettings();
@@ -482,7 +491,9 @@ namespace SpellEditor
                 }
             }
         }
+        #endregion
 
+        #region InitialiseMemberVariables
         private async void loadAllData()
         {
             config = await getConfig();
@@ -560,6 +571,10 @@ namespace SpellEditor
             await this.ShowMessageAsync("ERROR", "An exception was thrown creating the config file.\n" + errorMsg);
             return null;
         }
+        #endregion
+
+        #region KeyHandlers
+        private volatile Boolean imageLoadEventRunning = false;
 
         private void _KeyUp(object sender, KeyEventArgs e)
         {
@@ -568,8 +583,6 @@ namespace SpellEditor
                 _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
             }
         }
-
-        private volatile Boolean imageLoadEventRunning = false;
 
         private async void _KeyDown(object sender, KeyEventArgs e)
         {
@@ -671,7 +684,9 @@ namespace SpellEditor
                 imageLoadEventRunning = false;
             }
         }
+        #endregion
 
+        #region ButtonClicks (and load spell god-function)
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (mySQL == null) { return; }
@@ -1383,7 +1398,9 @@ namespace SpellEditor
             if (sender == ResetActiveIconID)
                 mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "ActiveIconID", 0, selectedID)); 
         }
+        #endregion
 
+        #region Utilities
         static public T DeepCopy<T>(T obj)
         {
             BinaryFormatter s = new BinaryFormatter();
@@ -1442,7 +1459,9 @@ namespace SpellEditor
             storedLocale = locale;
             return locale;
         }
+        #endregion
 
+        #region PopulateSelectSpell
         private void PopulateSelectSpell()
         {
             SelectSpell.Items.Clear();
@@ -1556,7 +1575,9 @@ namespace SpellEditor
 
             return newSpellNames.Rows;
         }
+        #endregion
 
+        #region NewIconClick & UpdateMainWindow
         private async void NewIconClick(object sender, RoutedEventArgs e)
         {
             if (mySQL == null) { return; }
@@ -1575,8 +1596,6 @@ namespace SpellEditor
                 column = "ActiveIconID";
             mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
         }
-
-
 
         private async void UpdateMainWindow()
         {
@@ -1607,7 +1626,9 @@ namespace SpellEditor
                 updating = false;
             }
         }
+        #endregion
 
+        #region LoadSpell (load spell god-function)
         private Task loadSpell(UpdateTextFunc updateProgress)
         {
             return Task.Run(() =>
@@ -2189,7 +2210,9 @@ namespace SpellEditor
                 mySQL.setUpdating(false);
             });
         }
+        #endregion
 
+        #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (updating || mySQL == null || config == null)
@@ -2232,7 +2255,7 @@ namespace SpellEditor
             }
         }
 
-        static object Lock = new object();
+        private static object Lock = new object();
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -2502,4 +2525,5 @@ namespace SpellEditor
             }
         }
     };
+    #endregion
 };

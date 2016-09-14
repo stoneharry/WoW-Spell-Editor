@@ -12,12 +12,39 @@ namespace SpellEditor.Sources.SpellStringTools
     {
         private static string STR_SECONDS = " seconds";
         private static string STR_INFINITE_DUR = "permanently";
+        private static string STR_HEARTHSTONE_LOC = "(hearthstone location)";
 
         private struct TOKEN_TO_PARSER
         {
             public string TOKEN;
             public Func<string, Spell_DBC_Record, string> tokenFunc;
         }
+
+        private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$z",
+            tokenFunc = (str, record) =>
+            {
+                if (str.Contains(hearthstoneLocationParser.TOKEN))
+                {
+                    str = str.Replace(hearthstoneLocationParser.TOKEN, STR_HEARTHSTONE_LOC);
+                }
+                return str;
+            }
+        };
+
+        private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$v",
+            tokenFunc = (str, record) =>
+            {
+                if (str.Contains(maxTargetLevelParser.TOKEN))
+                {
+                    str = str.Replace(maxTargetLevelParser.TOKEN, record.MaximumTargetLevel.ToString());
+                }
+                return str;
+            }
+        };
 
         private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
         {
@@ -267,9 +294,12 @@ namespace SpellEditor.Sources.SpellStringTools
             }
         };
 
+        // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
+
         private static TOKEN_TO_PARSER[] TOKEN_PARSERS = {
             spellEffectParser, durationParser, stacksParser,
-            periodicTriggerParser, summaryDamage, targetsParser
+            periodicTriggerParser, summaryDamage, targetsParser,
+            maxTargetLevelParser, hearthstoneLocationParser
         };
 
         public static string GetParsedForm(string rawString, Spell_DBC_Record record)
@@ -286,5 +316,6 @@ namespace SpellEditor.Sources.SpellStringTools
             Spell_DBC_Record record = SpellDBC.GetRowToRecord(row);
             return GetParsedForm(rawString, record);
         }
+
     }
 }
