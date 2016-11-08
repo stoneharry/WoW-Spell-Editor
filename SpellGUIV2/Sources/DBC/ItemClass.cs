@@ -66,7 +66,7 @@ namespace SpellEditor.Sources.DBC
                 handle.Free();
             }
 
-            body.StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.StringBlockSize));
+            body.StringBlock = reader.ReadBytes(header.StringBlockSize);
 
             reader.Close();
             fileStream.Close();
@@ -86,22 +86,26 @@ namespace SpellEditor.Sources.DBC
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
-                int offset = (int)body.records[i].Name[0];
+                int offset = (int)body.records[i].Name[window.GetLanguage()];
 
                 if (offset == 0) { continue; }
 
                 int returnValue = offset;
 
-                string toAdd = "";
+				System.Collections.ArrayList al = new System.Collections.ArrayList(); 
 
-                while (body.StringBlock[offset] != 0) { toAdd += body.StringBlock[offset++]; }
+                while (body.StringBlock[offset] != 0) { al.Add(body.StringBlock[offset++]); }
+
+				byte[] toAdd = new byte[al.Count];
+				int n = 0;
+				foreach (byte o in al) { toAdd[n++] = o; }
 
                 ItemClassLookup temp;
 
                 temp.ID = (int)body.records[i].ID;
                 temp.comboBoxIndex = boxIndex;
 
-                main.EquippedItemClass.Items.Add(toAdd);
+				main.EquippedItemClass.Items.Add(Encoding.UTF8.GetString(toAdd));
 
                 body.lookup.Add(temp);
 
@@ -145,7 +149,7 @@ namespace SpellEditor.Sources.DBC
         {
             public ItemClass_DBC_Record[] records;
             public List<ItemClassLookup> lookup;
-            public string StringBlock;
+            public byte[] StringBlock;
         };
 
         public struct ItemClassLookup
