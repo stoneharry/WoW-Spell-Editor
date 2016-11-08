@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -83,16 +84,55 @@ namespace SpellEditor.Sources.DBC
 
                 AreaGroupLookup temp;
 
+				AreaGroup_DBC_Record agTemp = body.records[i];
+
+				System.Collections.ArrayList al = new System.Collections.ArrayList();
+
+				do
+				{
+					foreach (UInt32 val in agTemp.AreaID)
+						if (val!=0) 
+							al.Add(val);
+
+					agTemp = FindAreaGroup(agTemp.NextGroup);
+
+				} while (agTemp.NextGroup != 0);
+
                 temp.ID = id;
                 temp.comboBoxIndex = boxIndex;
+				Label areaGroupLab = new Label();
 
-                main.AreaGroup.Items.Add(id);
+				areaGroupLab.Content = id.ToString() + "\t\t";
+
+				String areaList_str = "";
+				foreach (UInt32 val in al)
+				{
+					areaList_str += "AreaId:";
+					areaList_str += val;
+					areaList_str += "\t\t";
+					areaList_str += window.GetAreaTableName(val);
+					areaList_str += "\n";
+				}
+
+				areaGroupLab.ToolTip = areaList_str;
+
+				main.AreaGroup.Items.Add(areaGroupLab);
 
                 body.lookup.Add(temp);
 
                 boxIndex++;
             }
         }
+
+		public AreaGroup_DBC_Record FindAreaGroup(UInt32 fId)
+		{
+			foreach (AreaGroup_DBC_Record o in body.records) 
+			{
+				if (o.ID == fId)
+					return o;
+			}
+			return new AreaGroup_DBC_Record();
+		}
 
         public void UpdateAreaGroupSelection()
         {
