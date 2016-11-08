@@ -25,7 +25,7 @@ namespace SpellEditor.Sources.MySQL
             this.config = config;
             this.Table = config.Table;
 
-            String connectionString = "server={0};port={1};uid={2};pwd={3};";
+			String connectionString = "server={0};port={1};uid={2};pwd={3};Charset=utf8;";
             connectionString = String.Format(connectionString,
                 config.Host, config.Port, config.User, config.Pass);
 
