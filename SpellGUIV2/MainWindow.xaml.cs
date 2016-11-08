@@ -46,10 +46,27 @@ public class VirtualStrTableEntry
     public UInt32 NewValue;
 };
 
+enum LocaleConstant
+{
+	LOCALE_enUS = 0,
+	LOCALE_koKR = 1,
+	LOCALE_frFR = 2,
+	LOCALE_deDE = 3,
+	LOCALE_zhCN = 4,
+	LOCALE_zhTW = 5,
+	LOCALE_esES = 6,
+	LOCALE_esMX = 7,
+	LOCALE_ruRU = 8
+};
+
+
 namespace SpellEditor
 {
     partial class MainWindow
     {
+		//todo:multilingual.Temporary define zhCN
+		private LocaleConstant Locale_language = LocaleConstant.LOCALE_zhCN;
+
         // Begin DBCs
         private SpellCategory loadCategories = null;
         private SpellDispelType loadDispels = null;
@@ -110,6 +127,7 @@ namespace SpellEditor
             e.Handled = true;
         }
 
+		public int GetLanguage(){return (int)Locale_language;}
         private void _Loaded(object sender, RoutedEventArgs e)
         {
             Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
@@ -437,6 +455,39 @@ namespace SpellEditor
                     ChannelInterruptFlagsGrid.Children.Add(box);
                     interrupts2.Add(box);
                 }
+
+				switch ((LocaleConstant)GetLanguage())
+				{
+					case LocaleConstant.LOCALE_enUS:
+						TabItem_English.Focus();
+						break;
+					case LocaleConstant.LOCALE_koKR:
+						TabItem_Korean.Focus();
+						break;
+					case LocaleConstant.LOCALE_frFR:
+						TabItem_French.Focus();
+						break;
+					case LocaleConstant.LOCALE_deDE:
+						TabItem_Deutsch.Focus();
+						break;
+					case LocaleConstant.LOCALE_zhCN:
+						TabItem_Chinese.Focus();
+						break;
+					case LocaleConstant.LOCALE_zhTW:
+						TabItem_Taiwanese.Focus();
+						break;
+					case LocaleConstant.LOCALE_esES:
+						TabItem_Mexican.Focus();
+						break;
+					case LocaleConstant.LOCALE_esMX:
+						TabItem_Portuguese.Focus();
+						break;
+					case LocaleConstant.LOCALE_ruRU:
+						TabItem_Russian.Focus();
+						break;
+					default:
+						break;
+				}
 
                 loadAllData();
             }
