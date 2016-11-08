@@ -603,18 +603,24 @@ namespace SpellEditor
 
                     int ID = Int32.Parse(box.Text);
 
-                    for (int i = 0; i < SelectSpell.Items.Count; ++i)
-                    {
-                        string item = SelectSpell.Items.GetItemAt(i).ToString();
+					Int32 count = 0;
+					foreach (StackPanel obj in SelectSpell.Items)
+					{
+						foreach (var item in obj.Children)
+							if (item is TextBlock)
+							{
+								TextBlock tb = (TextBlock)item;
 
-                        if (Int32.Parse(item.Split(' ')[0]) == ID)
-                        {
-                            SelectSpell.SelectedIndex = i;
-                            SelectSpell.ScrollIntoView(SelectSpell.Items.GetItemAt(i));
+								if (Int32.Parse(tb.Text.Split(' ')[1]) == ID)
+								{
+									SelectSpell.SelectedIndex = count;
+									SelectSpell.ScrollIntoView(obj);
 
-                            break;
-                        }
-                    }
+									break;
+								}
+							}
+						count++;
+					}
                 }
                 catch (Exception ex)
                 {
