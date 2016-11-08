@@ -67,6 +67,7 @@ namespace SpellEditor
 		//todo:multilingual.Temporary define zhCN
 		private LocaleConstant Locale_language = LocaleConstant.LOCALE_zhCN;
 
+		private AreaTable loadAreaTable = null;
         // Begin DBCs
         private SpellCategory loadCategories = null;
         private SpellDispelType loadDispels = null;
@@ -128,6 +129,9 @@ namespace SpellEditor
         }
 
 		public int GetLanguage(){return (int)Locale_language;}
+
+		public String GetAreaTableName(UInt32 id) {return loadAreaTable.body.lookup.ContainsKey(id) ? loadAreaTable.body.lookup[id].AreaName : ""; }
+
         private void _Loaded(object sender, RoutedEventArgs e)
         {
             Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
@@ -553,6 +557,7 @@ namespace SpellEditor
             PrepareIconEditor();
             PopulateSelectSpell();
             // Load other DBC's
+			loadAreaTable = new AreaTable(this, mySQL);
             loadCategories = new SpellCategory(this, mySQL);
             loadDispels = new SpellDispelType(this, mySQL);
             loadMechanics = new SpellMechanic(this, mySQL);
