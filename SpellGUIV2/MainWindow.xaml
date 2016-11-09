@@ -466,9 +466,13 @@
                     <Label Content="Equipped Item Class:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,35,0,0"/>
                     <c:ThreadSafeComboBox x:Name="EquippedItemClass" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,61,0,0" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="Equipped Item Inventory Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="964,35,0,0"/>
-                    <ScrollViewer Margin="876,61,68,346">
+                    <ScrollViewer Margin="909,61,99,346">
                         <Grid Name="EquippedItemInventoryTypeGrid" IsEnabled="False"/>
                     </ScrollViewer>
+                    <ScrollViewer Margin="607,61,413,346">
+                        <Grid x:Name="EquippedItemSubClassGrid" IsEnabled="False"/>
+                    </ScrollViewer>
+                    <Label Content="Equipped Item SubClass:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="666,35,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Flags">

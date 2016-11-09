@@ -104,6 +104,7 @@ namespace SpellEditor
         private List<ThreadSafeCheckBox> interrupts2 = new List<ThreadSafeCheckBox>();
         private List<ThreadSafeCheckBox> interrupts3 = new List<ThreadSafeCheckBox>();
         public List<ThreadSafeCheckBox> equippedItemInventoryTypeMaskBoxes = new List<ThreadSafeCheckBox>();
+		public List<ThreadSafeCheckBox> equippedItemSubClassMaskBoxes = new List<ThreadSafeCheckBox>();
         // End Boxes
 
         // Begin Other
@@ -325,6 +326,18 @@ namespace SpellEditor
                     EquippedItemInventoryTypeGrid.Children.Add(box);
                     equippedItemInventoryTypeMaskBoxes.Add(box);
                 }
+				
+				for (int i = 0; i < 22; ++i)
+				{
+					ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+					box.Content = "None";
+					box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
+
+					EquippedItemSubClassGrid.Children.Add(box);
+					equippedItemSubClassMaskBoxes.Add(box);
+				}
+
 
                 string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath", "Health" };
 
@@ -2106,6 +2119,25 @@ namespace SpellEditor
                 updateProgress("Updating item class selection...");
                 loadItemClasses.UpdateItemClassSelection();
 
+
+				updateProgress("Updating item subclass mask...");
+				mask = UInt32.Parse(row["EquippedItemSubClassMask"].ToString());
+				if (mask == 0)
+				{
+					equippedItemSubClassMaskBoxes[0].threadSafeChecked = true;
+					for (int f = 1; f < equippedItemSubClassMaskBoxes.Count; ++f) { equippedItemSubClassMaskBoxes[f].threadSafeChecked = false; }
+				}
+				else
+				{
+					equippedItemSubClassMaskBoxes[0].threadSafeChecked = false;
+					UInt32 flag = 1;
+					for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
+					{
+						equippedItemSubClassMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+						flag = flag + flag;
+					}
+				}
+
                 updateProgress("Updating inventory type...");
                 mask = UInt32.Parse(row["EquippedItemInventoryTypeMask"].ToString());
                 if (mask == 0)
@@ -2468,13 +2500,29 @@ namespace SpellEditor
             {
                 for (int i = 0; i < loadItemClasses.body.lookup.Count; ++i)
                 {
-                    if (EquippedItemClass.SelectedIndex == 5)
-                        EquippedItemInventoryTypeGrid.IsEnabled = true;
+					if (EquippedItemClass.SelectedIndex == 3)
+					{
+						UpdateItemSubClass(2);
+						EquippedItemSubClassGrid.IsEnabled = true;
+					}
+                    else if (EquippedItemClass.SelectedIndex == 5)
+					{
+						EquippedItemSubClassGrid.IsEnabled = true;
+						EquippedItemInventoryTypeGrid.IsEnabled = true;
+					} 
                     else
                     {
+
+						UpdateItemSubClass(0);
+
                         foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
                             box.IsChecked = false;
+
+						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
+							box.IsChecked = false;
+
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
+						EquippedItemSubClassGrid.IsEnabled = false;
                     }
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
@@ -2545,6 +2593,36 @@ namespace SpellEditor
             if (sender == SpellEffect3) { Effect3.SelectedIndex = SpellEffect3.SelectedIndex; }
         }
 
+		public void UpdateItemSubClass(int classId)
+		{
+			switch (classId)
+			{
+				case 0:
+					{
+						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
+						{
+							box.Content =  "None";
+							box.threadSafeChecked = false;
+						}
+						break;
+					}
+				case 2:
+					{
+						string[] str = { "axe", "axe2", "bow", "gun", "mace", "mace2", "polearm", "sword", "sword2", "obsolete", "staff", "exotic", "exotic2", "fist", "misc", "dagger", "thrown", "spear", "crossbow", "wand", "fishing pole" };
+
+						int num = 0;
+						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
+						{
+							box.Content = num < str.Length ? str[num] : "None";
+							box.threadSafeChecked = false;
+							num++;
+						}
+						break;
+					}
+				default:
+					break;
+			}
+		}
         private class ItemDetail
         {
             private DataRow userState;

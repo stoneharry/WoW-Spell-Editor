@@ -124,14 +124,23 @@ namespace SpellEditor.Sources.DBC
                 return;
             }
 
-            if (ID == 4) {
-                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
+			if (ID==2)
+			{
+				main.UpdateItemSubClass(ID);
+				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = true));
+			}
+            else if (ID == 4) 
+			{
+				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = true));
+				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
             }
             else
             {
                 foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }
+				foreach (ThreadSafeCheckBox box in main.equippedItemSubClassMaskBoxes) { box.threadSafeChecked = false; box.Content = "None"; }
 
-                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
+				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
+                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = false));
             }
 
             for (int i = 0; i < body.lookup.Count; ++i)
