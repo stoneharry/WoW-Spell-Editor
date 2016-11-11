@@ -116,31 +116,25 @@ namespace SpellEditor.Sources.DBC
         public void UpdateItemClassSelection()
         {
             int ID = Int32.Parse(mySQL.query(String.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
-
-            if (ID == -1)
+			           
+			if (ID == -1)
             {
                 main.EquippedItemClass.threadSafeIndex = 0;
-
+				//foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }
+				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
+            
                 return;
             }
 
-			if (ID==2)
+            if (ID == 2 || ID == 4) 
 			{
-				main.UpdateItemSubClass(ID);
-				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = true));
-			}
-            else if (ID == 4) 
-			{
-				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = true));
-				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
+				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
             }
             else
             {
                 foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes) { box.threadSafeChecked = false; }
-				foreach (ThreadSafeCheckBox box in main.equippedItemSubClassMaskBoxes) { box.threadSafeChecked = false; box.Content = "None"; }
 
-				main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
-                main.Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => main.EquippedItemSubClassGrid.IsEnabled = false));
+				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
             }
 
             for (int i = 0; i < body.lookup.Count; ++i)

@@ -81,6 +81,7 @@ namespace SpellEditor
         private SpellRange loadRanges = null;
         private SpellRadius loadRadiuses = null;
         private ItemClass loadItemClasses = null;
+		private ItemSubClass loadItemSubClasses = null;
         private TotemCategory loadTotemCategories = null;
         private SpellRuneCost loadRuneCosts = null;
         private SpellDescriptionVariables loadDescriptionVariables = null;
@@ -327,13 +328,13 @@ namespace SpellEditor
                     equippedItemInventoryTypeMaskBoxes.Add(box);
                 }
 				
-				for (int i = 0; i < 22; ++i)
+				for (int i = 0; i < 29; ++i)
 				{
 					ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
 					box.Content = "None";
 					box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
-
+					box.Visibility = System.Windows.Visibility.Hidden;
 					EquippedItemSubClassGrid.Children.Add(box);
 					equippedItemSubClassMaskBoxes.Add(box);
 				}
@@ -582,6 +583,7 @@ namespace SpellEditor
             loadRanges = new SpellRange(this, mySQL);
             loadRadiuses = new SpellRadius(this, mySQL);
             loadItemClasses = new ItemClass(this, mySQL);
+			loadItemSubClasses = new ItemSubClass(this, mySQL);
             loadTotemCategories = new TotemCategory(this, mySQL);
             loadRuneCosts = new SpellRuneCost(this, mySQL);
             loadDescriptionVariables = new SpellDescriptionVariables(this, mySQL);
@@ -1313,6 +1315,22 @@ namespace SpellEditor
 
                         row["EquippedItemInventoryTypeMask"] = (Int32)mask;
                     }
+
+					if (equippedItemSubClassMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemSubClassMask"] = 0; }
+					else
+					{
+						UInt32 mask = 0;
+						UInt32 flag = 1;
+
+						for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
+						{
+							if (equippedItemSubClassMaskBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+
+							flag = flag + flag;
+						}
+
+						row["EquippedItemSubClassMask"] = (Int32)mask;
+					}
 
                     row["Effect1"] = (UInt32)SpellEffect1.SelectedIndex;
                     row["Effect2"] = (UInt32)SpellEffect2.SelectedIndex;
@@ -2119,6 +2137,7 @@ namespace SpellEditor
                 updateProgress("Updating item class selection...");
                 loadItemClasses.UpdateItemClassSelection();
 
+				UpdateItemSubClass(int.Parse(row["EquippedItemClass"].ToString()));
 
 				updateProgress("Updating item subclass mask...");
 				mask = UInt32.Parse(row["EquippedItemSubClassMask"].ToString());
@@ -2498,31 +2517,16 @@ namespace SpellEditor
 
             if (sender == EquippedItemClass)
             {
+				UpdateItemSubClass(loadItemClasses.body.lookup[EquippedItemClass.SelectedIndex].ID);
                 for (int i = 0; i < loadItemClasses.body.lookup.Count; ++i)
                 {
-					if (EquippedItemClass.SelectedIndex == 3)
+					if (EquippedItemClass.SelectedIndex == 5 || EquippedItemClass.SelectedIndex == 3)
 					{
-						UpdateItemSubClass(2);
-						EquippedItemSubClassGrid.IsEnabled = true;
-					}
-                    else if (EquippedItemClass.SelectedIndex == 5)
-					{
-						EquippedItemSubClassGrid.IsEnabled = true;
 						EquippedItemInventoryTypeGrid.IsEnabled = true;
 					} 
                     else
                     {
-
-						UpdateItemSubClass(0);
-
-                        foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
-                            box.IsChecked = false;
-
-						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
-							box.IsChecked = false;
-
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
-						EquippedItemSubClassGrid.IsEnabled = false;
                     }
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
@@ -2595,32 +2599,42 @@ namespace SpellEditor
 
 		public void UpdateItemSubClass(int classId)
 		{
-			switch (classId)
+			if (classId == -1)
 			{
-				case 0:
-					{
-						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
-						{
-							box.Content =  "None";
-							box.threadSafeChecked = false;
-						}
-						break;
-					}
-				case 2:
-					{
-						string[] str = { "axe", "axe2", "bow", "gun", "mace", "mace2", "polearm", "sword", "sword2", "obsolete", "staff", "exotic", "exotic2", "fist", "misc", "dagger", "thrown", "spear", "crossbow", "wand", "fishing pole" };
+				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => EquippedItemInventoryTypeGrid.IsEnabled = false));
 
-						int num = 0;
-						foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
-						{
-							box.Content = num < str.Length ? str[num] : "None";
-							box.threadSafeChecked = false;
-							num++;
-						}
-						break;
-					}
-				default:
-					break;
+				foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
+				{
+					box.threadSafeContent = "None";
+					box.threadSafeVisibility = System.Windows.Visibility.Hidden;
+					//box.threadSafeEnabled = false;
+				}
+				return;
+			}
+			else
+			{
+				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => EquippedItemSubClassGrid.IsEnabled = true));
+
+			}
+			UInt32 num = 0;
+			foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
+			{
+				SpellEditor.Sources.DBC.ItemSubClass.ItemSubClassLookup itemLookup = (SpellEditor.Sources.DBC.ItemSubClass.ItemSubClassLookup)loadItemSubClasses.body.lookup.GetValue(classId, num);
+
+				if (itemLookup.Name != null)
+				{
+					box.threadSafeContent = itemLookup.Name;
+					//box.threadSafeEnabled = true;
+					box.threadSafeVisibility = System.Windows.Visibility.Visible;
+				}
+				else
+				{
+					box.threadSafeContent = "None";
+					box.threadSafeVisibility = System.Windows.Visibility.Hidden;
+					//box.threadSafeEnabled = false;
+				}
+				box.threadSafeChecked = false;
+				num++;
 			}
 		}
         private class ItemDetail
