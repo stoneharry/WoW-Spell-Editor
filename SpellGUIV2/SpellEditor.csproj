@@ -102,6 +102,7 @@
     <Compile Include="Sources\DBC\AreaGroup.cs" />
     <Compile Include="Sources\DBC\AreaTable.cs" />
     <Compile Include="Sources\DBC\ItemClass.cs" />
+    <Compile Include="Sources\DBC\ItemSubClass.cs" />
     <Compile Include="Sources\DBC\SpellCastTimes.cs" />
     <Compile Include="Sources\DBC\SpellCategory.cs" />
     <Compile Include="Sources\DBC\SpellDBC.cs" />
