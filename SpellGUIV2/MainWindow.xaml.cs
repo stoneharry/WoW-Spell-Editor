@@ -426,9 +426,9 @@ namespace SpellEditor
                     TargetA3.Items.Add(toDisplay);
                     TargetB3.Items.Add(toDisplay);
 
-                    ChainTarget1.Items.Add(toDisplay);
-                    ChainTarget2.Items.Add(toDisplay);
-                    ChainTarget3.Items.Add(toDisplay);
+                    //ChainTarget1.Items.Add(toDisplay);
+                    //ChainTarget2.Items.Add(toDisplay);
+                    //ChainTarget3.Items.Add(toDisplay);
                     ++number;
                 }
 
@@ -1362,9 +1362,9 @@ namespace SpellEditor
                     row["EffectMultipleValue1"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue2"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue3"] = float.Parse(MultipleValue1.Text);
-                    row["EffectChainTarget1"] = (UInt32)ChainTarget1.SelectedIndex;
-                    row["EffectChainTarget2"] = (UInt32)ChainTarget2.SelectedIndex;
-                    row["EffectChainTarget3"] = (UInt32)ChainTarget3.SelectedIndex;
+					row["EffectChainTarget1"] = (UInt32)ChainTarget1.threadSafeText;
+					row["EffectChainTarget2"] = (UInt32)ChainTarget2.threadSafeText;
+					row["EffectChainTarget3"] = (UInt32)ChainTarget3.threadSafeText;
                     row["EffectItemType1"] = UInt32.Parse(ItemType1.Text);
                     row["EffectItemType2"] = UInt32.Parse(ItemType2.Text);
                     row["EffectItemType3"] = UInt32.Parse(ItemType3.Text);
@@ -2220,9 +2220,9 @@ namespace SpellEditor
                 MultipleValue1.threadSafeText = row["EffectMultipleValue1"].ToString();
                 MultipleValue2.threadSafeText = row["EffectMultipleValue2"].ToString();
                 MultipleValue3.threadSafeText = row["EffectMultipleValue3"].ToString();
-                ChainTarget1.threadSafeIndex = Int32.Parse(row["EffectChainTarget1"].ToString());
-                ChainTarget2.threadSafeIndex = Int32.Parse(row["EffectChainTarget2"].ToString());
-                ChainTarget3.threadSafeIndex = Int32.Parse(row["EffectChainTarget3"].ToString());
+				ChainTarget1.threadSafeText = row["EffectChainTarget1"].ToString();
+				ChainTarget2.threadSafeText = row["EffectChainTarget2"].ToString();
+				ChainTarget3.threadSafeText = row["EffectChainTarget3"].ToString();
                 ItemType1.threadSafeText = row["EffectItemType1"].ToString();
                 ItemType2.threadSafeText = row["EffectItemType2"].ToString();
                 ItemType3.threadSafeText = row["EffectItemType3"].ToString();

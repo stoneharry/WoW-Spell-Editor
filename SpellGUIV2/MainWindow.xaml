@@ -301,7 +301,7 @@
                                         <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MultipleValue1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
                                         <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
@@ -349,7 +349,7 @@
                                         <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MultipleValue2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
                                         <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
@@ -397,7 +397,7 @@
                                         <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MultipleValue3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
                                         <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
