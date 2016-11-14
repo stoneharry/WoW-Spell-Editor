@@ -184,7 +184,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes1.Children.Add(box);
                     attributes0.Add(box);
@@ -197,7 +197,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes2.Children.Add(box);
                     attributes1.Add(box);
@@ -210,7 +210,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes3.Children.Add(box);
                     attributes2.Add(box);
@@ -223,7 +223,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes4.Children.Add(box);
                     attributes3.Add(box);
@@ -236,7 +236,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes5.Children.Add(box);
                     attributes4.Add(box);
@@ -249,7 +249,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes6.Children.Add(box);
                     attributes5.Add(box);
@@ -262,7 +262,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes7.Children.Add(box);
                     attributes6.Add(box);
@@ -275,7 +275,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     Attributes8.Children.Add(box);
                     attributes7.Add(box);
@@ -288,7 +288,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = stances_strings[i];
-                    box.Margin = new Thickness(5, (-15 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     StancesGrid.Children.Add(box);
                     stancesBoxes.Add(box);
@@ -301,7 +301,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = creature_type_strings[i];
-                    box.Margin = new Thickness(5, (-6.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     TargetCreatureType.Children.Add(box);
                     targetCreatureTypeBoxes.Add(box);
@@ -322,7 +322,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = equipped_item_inventory_type_mask_strings[i];
-                    box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     EquippedItemInventoryTypeGrid.Children.Add(box);
                     equippedItemInventoryTypeMaskBoxes.Add(box);
@@ -333,7 +333,7 @@ namespace SpellEditor
 					ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
 					box.Content = "None";
-					box.Margin = new Thickness(5, (-13.9 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 					box.Visibility = System.Windows.Visibility.Hidden;
 					EquippedItemSubClassGrid.Children.Add(box);
 					equippedItemSubClassMaskBoxes.Add(box);
@@ -368,7 +368,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = target_strings[i];
-                    box.Margin = new Thickness(5, (-10.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
                     TargetEditorGrid.Children.Add(box);
                     targetBoxes.Add(box);
@@ -381,7 +381,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = proc_strings[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
 
                     ProcEditorGrid.Children.Add(box);
@@ -439,7 +439,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = interrupt_strings[i];
-                    box.Margin = new Thickness(5, (-2.2 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
 
                     InterruptFlagsGrid.Children.Add(box);
@@ -453,9 +453,8 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = aura_interrupt_strings[i];
-                    box.Margin = new Thickness(5, (-13 + i) * 45, 0, 0);
-
-
+					box.Margin = new Thickness(0, 5, 0, 0);
+					
                     AuraInterruptFlagsGrid.Children.Add(box);
                     interrupts3.Add(box);
                 }
@@ -467,7 +466,7 @@ namespace SpellEditor
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
                     box.Content = channel_interrupt_strings[i];
-                    box.Margin = new Thickness(5, (-9.7 + i) * 45, 0, 0);
+					box.Margin = new Thickness(0, 5, 0, 0);
 
 
                     ChannelInterruptFlagsGrid.Children.Add(box);
@@ -1608,7 +1607,7 @@ namespace SpellEditor
                             var bit = blpImage.getBitmap(0);
                             image.Width = 32;
                             image.Height = 32;
-                            image.Margin = new System.Windows.Thickness(0, 0, 0, 0);
+                            image.Margin = new System.Windows.Thickness(1, 1, 1, 1);
                             image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                                 bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty,
                                 BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
