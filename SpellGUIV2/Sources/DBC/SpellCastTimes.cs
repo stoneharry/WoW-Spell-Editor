@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -67,9 +68,7 @@ namespace SpellEditor.Sources.DBC
 
             body.lookup = new List<SpellCastTimeLookup>();
 
-            int boxIndex = 1;
-
-            main.CastTime.Items.Add(0);
+            int boxIndex = 0;
 
             SpellCastTimeLookup t;
 
@@ -80,14 +79,19 @@ namespace SpellEditor.Sources.DBC
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
-                int castTime = (int)body.records[i].CastingTime;
+                //int castTime = (int)body.records[i].CastingTime;
+				Label castTime = new Label();
+
+				castTime.Content = body.records[i].CastingTime.ToString() + "\t";
+
+				castTime.ToolTip = "CastTime\t\t" + body.records[i].CastingTime + "\n" + "PerLevel\t\t" + body.records[i].CastingTimePerLevel.ToString() + "\n" + "MinimumCastingTime\t" + body.records[i].MinimumCastingTime + "\n";
 
                 SpellCastTimeLookup temp;
 
                 temp.ID = (int)body.records[i].ID;
                 temp.comboBoxIndex = boxIndex;
 
-                main.CastTime.Items.Add(castTime);
+				main.CastTime.Items.Add(castTime);
 
                 body.lookup.Add(temp);
 

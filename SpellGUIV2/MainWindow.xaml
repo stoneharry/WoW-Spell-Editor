@@ -33,7 +33,7 @@
                     <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="448,9,0,0"/>
                     <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged"/>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,460,0,0" Height="200" Width="1270">
-                        <TabItem Header="English">
+                        <TabItem x:Name="TabItem_English" Header="English">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -45,7 +45,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Korean">
+                        <TabItem Header="Korean" x:Name="TabItem_Korean">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -57,7 +57,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="French">
+                        <TabItem Header="French" x:Name="TabItem_French">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -69,7 +69,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Deutsch">
+                        <TabItem Header="Deutsch" x:Name="TabItem_Deutsch">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -81,7 +81,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Chinese">
+                        <TabItem x:Name="TabItem_Chinese" Header="Chinese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -93,7 +93,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Taiwanese">
+                        <TabItem Header="Taiwanese" x:Name="TabItem_Taiwanese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -105,7 +105,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Mexican">
+                        <TabItem Header="Mexican" x:Name="TabItem_Mexican">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -117,7 +117,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Portuguese">
+                        <TabItem Header="Portuguese" x:Name="TabItem_Portuguese">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
@@ -129,7 +129,7 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="912,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Russian">
+                        <TabItem Header="Russian" x:Name="TabItem_Russian">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
