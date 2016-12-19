@@ -23,10 +23,10 @@
             <TabItem Header="Select Spell">
                 <Grid>
                     <Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="473,40,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,40,0,0" Width="120" TextWrapping="Wrap" KeyDown="_KeyDown"/>
+                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,40,0,0" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown"/>
 
                     <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="455,83,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="120" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
 
                     <c:ThreadSafeTextBox x:Name="SpellDescriptionGen" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="918,337,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
 
