@@ -38,7 +38,7 @@ namespace SpellEditor.Sources.DBC
         private long fileSize;
         // End Files
 
-        public static String ErrorMessage = "";
+        public static string ErrorMessage = "";
 
         public bool LoadDBCFile(MainWindow window)
         {
@@ -224,7 +224,7 @@ namespace SpellEditor.Sources.DBC
 
             header.StringBlockSize = (int)stringBlockOffset;
 
-            String path = "Export/Spell.dbc";
+            string path = "Export/Spell.dbc";
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
@@ -278,7 +278,7 @@ namespace SpellEditor.Sources.DBC
                                 mySQL.execute(q.ToString());
                             }
                             q = new StringBuilder();
-                            q.Append(String.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
+                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
                         }
                         if (++index % 1000 == 0)
                         {
@@ -294,12 +294,12 @@ namespace SpellEditor.Sources.DBC
                                 case TypeCode.UInt32:
                                 case TypeCode.Int32:
                                     {
-                                        q.Append(String.Format("'{0}', ", f.GetValue(r.record)));
+                                        q.Append(string.Format("'{0}', ", f.GetValue(r.record)));
                                         break;
                                     }
                                 case TypeCode.Single:
                                     {
-                                        q.Append(String.Format("REPLACE('{0}', ',', '.'), ", f.GetValue(r.record)));
+                                        q.Append(string.Format("REPLACE('{0}', ',', '.'), ", f.GetValue(r.record)));
                                         break;
                                     }
                                 case TypeCode.Object:
@@ -314,25 +314,25 @@ namespace SpellEditor.Sources.DBC
                                                     case 1:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
+                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
                                                             break;
                                                         }
                                                     case 2:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
+                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
                                                             break;
                                                         }
                                                     case 3:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
+                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
                                                             break;
                                                         }
                                                     case 4:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
+                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
                                                             break;
                                                         }
                                                     default:
@@ -347,25 +347,25 @@ namespace SpellEditor.Sources.DBC
                                                     case 1:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
+                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
                                                             break;
                                                         }
                                                     case 2:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
                                                             break;
                                                         }
                                                     case 3:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
                                                             break;
                                                         }
                                                     case 4:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(String.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
                                                             break;
                                                         }
                                                     default:
@@ -400,14 +400,6 @@ namespace SpellEditor.Sources.DBC
         public static Spell_DBC_Record GetRowToRecord(DataRow row)
         {
             var record = new Spell_DBC_Record();
-            record.SpellName = new UInt32[9];
-            record.SpellDescription = new UInt32[9];
-            record.SpellRank = new UInt32[9];
-            record.SpellToolTip = new UInt32[9];
-            record.SpellNameFlag = new UInt32[8];
-            record.SpellDescriptionFlags = new UInt32[8];
-            record.SpellRankFlags = new UInt32[8];
-            record.SpellToolTipFlags = new UInt32[8];
             var fields = record.GetType().GetFields();
             foreach (var f in fields)
             {
@@ -433,7 +425,7 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                var rows = mySQL.query(String.Format("SELECT * FROM `{0}` ORDER BY `ID`", mySQL.Table)).Rows;
+                var rows = mySQL.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", mySQL.Table)).Rows;
                 uint numRows = UInt32.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 header = new DBC_Header();
@@ -450,10 +442,10 @@ namespace SpellEditor.Sources.DBC
                     if (i % 250 == 0)
                         updateProgress((double)i / (double)numRows);
                     body.records[i].record = new Spell_DBC_Record();
-                    body.records[i].spellName = new String[9];
-                    body.records[i].spellDesc = new String[9];
-                    body.records[i].spellRank = new String[9];
-                    body.records[i].spellTool = new String[9];
+                    body.records[i].spellName = new string[9];
+                    body.records[i].spellDesc = new string[9];
+                    body.records[i].spellRank = new string[9];
+                    body.records[i].spellTool = new string[9];
                     body.records[i].record.SpellName = new UInt32[9];
                     body.records[i].record.SpellDescription = new UInt32[9];
                     body.records[i].record.SpellRank = new UInt32[9];

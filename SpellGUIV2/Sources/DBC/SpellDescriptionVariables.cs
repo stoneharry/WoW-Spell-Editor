@@ -95,7 +95,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellDescriptionVariablesSelection()
         {
-            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

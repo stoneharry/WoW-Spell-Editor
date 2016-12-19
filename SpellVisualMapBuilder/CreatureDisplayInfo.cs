@@ -55,7 +55,7 @@ namespace SpellEditor.Sources.DBC
 
         public void SaveDBCFile()
         {
-            String path = "Export/CreatureDisplayInfo.dbc";
+            string path = "Export/CreatureDisplayInfo.dbc";
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
@@ -88,7 +88,7 @@ namespace SpellEditor.Sources.DBC
         public struct DBC_Map
         {
             public DBC_Record[] records;
-            public String StringBlock;
+            public string StringBlock;
         };
 
         public struct DBC_Record

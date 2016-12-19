@@ -17,7 +17,7 @@ namespace SpellEditor.Sources.MySQL
     {
         private Config.Config config;
         private MySqlConnection conn;
-        public String Table;
+        public string Table;
         private bool _updating = false;
 
         public MySQL(Config.Config config)
@@ -25,8 +25,8 @@ namespace SpellEditor.Sources.MySQL
             this.config = config;
             this.Table = config.Table;
 
-            String connectionString = "server={0};port={1};uid={2};pwd={3};";
-            connectionString = String.Format(connectionString,
+            string connectionString = "server={0};port={1};uid={2};pwd={3};";
+            connectionString = string.Format(connectionString,
                 config.Host, config.Port, config.User, config.Pass);
 
             conn = new MySqlConnection();
@@ -34,16 +34,16 @@ namespace SpellEditor.Sources.MySQL
             conn.Open();
             // Create DB
             var cmd = conn.CreateCommand();
-            cmd.CommandText = String.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", config.Database);
+            cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", config.Database);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
             cmd = conn.CreateCommand();
-            cmd.CommandText = String.Format("USE `{0}`;", config.Database);
+            cmd.CommandText = string.Format("USE `{0}`;", config.Database);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
             // Create Table
             cmd = conn.CreateCommand();
-            cmd.CommandText = String.Format(getTableCreateString(), config.Table);
+            cmd.CommandText = string.Format(getTableCreateString(), config.Table);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
@@ -56,7 +56,7 @@ namespace SpellEditor.Sources.MySQL
 
         private readonly object syncLock = new object();
 
-        public DataTable query(String query)
+        public DataTable query(string query)
         {
             lock (syncLock)
             {
@@ -68,7 +68,7 @@ namespace SpellEditor.Sources.MySQL
             }
         }
 
-        public void commitChanges(String query, DataTable dataTable)
+        public void commitChanges(string query, DataTable dataTable)
         {
             if (_updating)
                 return;
@@ -96,7 +96,7 @@ namespace SpellEditor.Sources.MySQL
             //}
         }
 
-        private String getTableCreateString()
+        private string getTableCreateString()
         {
             StringBuilder str = new StringBuilder();
             str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
@@ -109,14 +109,14 @@ namespace SpellEditor.Sources.MySQL
                 {
                     case TypeCode.UInt32:
                         {
-                            str.Append(String.Format(@"`{0}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name));
+                            str.Append(string.Format(@"`{0}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name));
                             break;
                         }
                     case TypeCode.Int32:
-                        str.Append(String.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
+                        str.Append(string.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Single:
-                        str.Append(String.Format(@"`{0}` FLOAT NOT NULL DEFAULT '0', ", f.Name));
+                        str.Append(string.Format(@"`{0}` FLOAT NOT NULL DEFAULT '0', ", f.Name));
                         break;
                     case TypeCode.Object:
                         {
@@ -126,13 +126,13 @@ namespace SpellEditor.Sources.MySQL
                                 if (attr.Method == 1)
                                 {
                                     for (int i = 0; i < attr.Count; ++i)
-                                        str.Append(String.Format(@"`{0}{1}` TEXT CHARACTER SET utf8, ", f.Name, i));
+                                        str.Append(string.Format(@"`{0}{1}` TEXT CHARACTER SET utf8, ", f.Name, i));
                                     break;
                                 }
                                 else if (attr.Method == 2)
                                 {
                                     for (int i = 0; i < attr.Count; ++i)
-                                        str.Append(String.Format(@"`{0}{1}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name, i));
+                                        str.Append(string.Format(@"`{0}{1}` int(10) unsigned NOT NULL DEFAULT '0', ", f.Name, i));
                                     break;
                                 }
                             }

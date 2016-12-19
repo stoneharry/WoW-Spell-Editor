@@ -52,7 +52,7 @@ namespace SpellEditor.Sources.DBC
             reader.Close();
             fileStream.Close();
 
-            body.pathStrings = new String[header.RecordCount];
+            body.pathStrings = new string[header.RecordCount];
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
-                if (String.IsNullOrEmpty(body.pathStrings[i]))
+                if (string.IsNullOrEmpty(body.pathStrings[i]))
                     body.records[i].ModelPath = 0;
                 else
                 {
@@ -99,7 +99,7 @@ namespace SpellEditor.Sources.DBC
 
             header.StringBlockSize = (int)stringBlockOffset;
 
-            String path = "Export/CreatureModelData.dbc";
+            string path = "Export/CreatureModelData.dbc";
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
@@ -137,7 +137,7 @@ namespace SpellEditor.Sources.DBC
         public struct DBC_Map
         {
             public DBC_Record[] records;
-            public String[] pathStrings;
+            public string[] pathStrings;
             public string StringBlock;
         };
 

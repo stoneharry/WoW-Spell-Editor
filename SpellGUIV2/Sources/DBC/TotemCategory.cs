@@ -110,7 +110,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-            var result = mySQL.query(String.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            var result = mySQL.query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
             int[] IDs = { Int32.Parse(result[0].ToString()), Int32.Parse(result[1].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)

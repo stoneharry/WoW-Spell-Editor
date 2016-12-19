@@ -161,104 +161,105 @@ namespace SpellEditor
                 stringObjectMap.Add(34, SpellDescription7);
                 stringObjectMap.Add(35, SpellDescription8);
 
-                string[] att_flags = { "Unknown 0", "On Next Ranged", "On Next Swing (Player)", "Is Replenishment", "Ability", "Trade Spell", "Passive Spell", "Hidden Client-Side", "Hide in Combat Log", "Target Main-Hand Item", "On Next Swing (NPCs)", "Unknown 11", "Daytime Only", "Night Only", "Indoors Only", "Outdoors Only", "No Shapeshift", "Requires Stealth", "Don't Affect Sheath State", "Spell Damage depends on Caster Level", "Stops Auto-Attack", "Impossible to Dodge, Parry or Block", "Track Target while Casting", "Castable While Dead", "Castable While Mounted", "Start Cooldown after Aura Fades", "Negative", "Castable While Sitting", "Cannot be used in Combat", "Unaffected by Invulnerability", "Breakable by Damage", "Aura Cannot be Cancelled" };
+                string[] attFlags = { "Unknown 0", "On Next Ranged", "On Next Swing (Player)", "Is Replenishment", "Ability", "Trade Spell", "Passive Spell", "Hidden Client-Side", "Hide in Combat Log", "Target Main-Hand Item", "On Next Swing (NPCs)", "Unknown 11", "Daytime Only", "Night Only", "Indoors Only", "Outdoors Only", "No Shapeshift", "Requires Stealth", "Don't Affect Sheath State", "Spell Damage depends on Caster Level", "Stops Auto-Attack", "Impossible to Dodge, Parry or Block", "Track Target while Casting", "Castable While Dead", "Castable While Mounted", "Start Cooldown after Aura Fades", "Negative", "Castable While Sitting", "Cannot be used in Combat", "Unaffected by Invulnerability", "Breakable by Damage", "Aura Cannot be Cancelled" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (var i = 0; i < attFlags.Length; ++i)
                 {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = att_flags[i];
-                    box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
+                    var box = new ThreadSafeCheckBox
+                    {
+                        Content = attFlags[i],
+                        Margin = new Thickness(5, (-15.5 + i)*45, 0, 0)
+                    };
 
                     Attributes1.Children.Add(box);
                     attributes0.Add(box);
                 }
 
-                att_flags = new string[] { "Dismiss Pet", "Drains All Power", "Channeled 1", "Cannot be Redirected", "Unknown 4", "Does not Break Stealth", "Channeled 2", "Cannot be Reflected", "Cannot Target in Combat", "Melee Combat Start", "Generates No Threat", "Unknown 11", "Pickpocket", "Far Sight", "Track Target while Channeling", "Remove Auras on Immunity", "Unaffected by School Immune", "Unautoscalable by Pet", "Stun, Polymorph, Daze, Hex", "Cannot Target Self", "Requires Combo Points on Target 1", "Unknown 21", "Required Combo Points on Target 2", "Unknown 23", "Fishing", "Unknown 25", "Focus Targeting Macro", "Unknown 27", "Hidden in Aura Bar", "Channel Display Name", "Enable Spell when Dodged", "Unknown 31" };
+                attFlags = new string[] { "Dismiss Pet", "Drains All Power", "Channeled 1", "Cannot be Redirected", "Unknown 4", "Does not Break Stealth", "Channeled 2", "Cannot be Reflected", "Cannot Target in Combat", "Melee Combat Start", "Generates No Threat", "Unknown 11", "Pickpocket", "Far Sight", "Track Target while Channeling", "Remove Auras on Immunity", "Unaffected by School Immune", "Unautoscalable by Pet", "Stun, Polymorph, Daze, Hex", "Cannot Target Self", "Requires Combo Points on Target 1", "Unknown 21", "Required Combo Points on Target 2", "Unknown 23", "Fishing", "Unknown 25", "Focus Targeting Macro", "Unknown 27", "Hidden in Aura Bar", "Channel Display Name", "Enable Spell when Dodged", "Unknown 31" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (var i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes2.Children.Add(box);
                     attributes1.Add(box);
                 }
 
-                att_flags = new string[] { "Can Target Dead Unit or Corpse", "Vanish, Shadowform, Ghost", "Can Target not in Line of Sight", "Unknown 3", "Display in Stance Bar", "Autorepeat Flag", "Requires Untapped Target", "Unknown 7", "Unknown 8", "Unknown 9", "Unknown 10 (Tame)", "Health Funnel", "Cleave, Heart Strike, Maul, Sunder Armor, Swipe", "Preserve Enchant in Arena", "Unknown 14", "Unknown 15", "Tame Beast", "Don't Reset Auto Actions", "Requires Dead Pet", "Don't Need Shapeshift", "Unknown 20", "Damage Reduced Shield", "Ambush, Backstab, Cheap Shot, Death Grip, Garrote, Judgements, Mutilate, Pounce, Ravage, Shiv, Shred", "Arcane Concentration", "Unknown 24", "Unknown 25", "Unaffected by School Immunity", "Requires Fishing Pole", "Unknown 28", "Cannot Crit", "Triggered can Trigger Proc", "Food Buff" };
+                attFlags = new string[] { "Can Target Dead Unit or Corpse", "Vanish, Shadowform, Ghost", "Can Target not in Line of Sight", "Unknown 3", "Display in Stance Bar", "Autorepeat Flag", "Requires Untapped Target", "Unknown 7", "Unknown 8", "Unknown 9", "Unknown 10 (Tame)", "Health Funnel", "Cleave, Heart Strike, Maul, Sunder Armor, Swipe", "Preserve Enchant in Arena", "Unknown 14", "Unknown 15", "Tame Beast", "Don't Reset Auto Actions", "Requires Dead Pet", "Don't Need Shapeshift", "Unknown 20", "Damage Reduced Shield", "Ambush, Backstab, Cheap Shot, Death Grip, Garrote, Judgements, Mutilate, Pounce, Ravage, Shiv, Shred", "Arcane Concentration", "Unknown 24", "Unknown 25", "Unaffected by School Immunity", "Requires Fishing Pole", "Unknown 28", "Cannot Crit", "Triggered can Trigger Proc", "Food Buff" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes3.Children.Add(box);
                     attributes2.Add(box);
                 }
 
-                att_flags = new string[] { "Unknown 0", "Unknown 1", "Unknown 2", "Blockable Spell", "Ignore Resurrection Timer", "Unknown 5", "Unknown 6", "Stack for Different Casters", "Only Target Players", "Triggered can Trigger Proc 2", "Requires Main-Hand", "Battleground Only", "Only Target Ghosts", "Hide Channel Bar", "Honorless Target", "Auto-Shoot", "Cannot Trigger Proc", "No Initial Aggro", "Cannot Miss", "Disable Procs", "Death Persistent", "Unknown 21", "Requires Wands", "Unknown 23", "Requires Off-Hand", "Can Proc with Triggered", "Drain Soul", "Unknown 28", "No Done Bonus", "Do not Display Range", "Unknown 31" };
+                attFlags = new string[] { "Unknown 0", "Unknown 1", "Unknown 2", "Blockable Spell", "Ignore Resurrection Timer", "Unknown 5", "Unknown 6", "Stack for Different Casters", "Only Target Players", "Triggered can Trigger Proc 2", "Requires Main-Hand", "Battleground Only", "Only Target Ghosts", "Hide Channel Bar", "Honorless Target", "Auto-Shoot", "Cannot Trigger Proc", "No Initial Aggro", "Cannot Miss", "Disable Procs", "Death Persistent", "Unknown 21", "Requires Wands", "Unknown 23", "Requires Off-Hand", "Can Proc with Triggered", "Drain Soul", "Unknown 28", "No Done Bonus", "Do not Display Range", "Unknown 31" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes4.Children.Add(box);
                     attributes3.Add(box);
                 }
 
-                att_flags = new string[] { "Ignore All Resistances", "Proc Only on Caster", "Continue to Tick while Offline", "Unknown 3", "Unknown 4", "Unknown 5", "Not Stealable", "Triggered", "Fixed Damage", "Activate from Event", "Spell vs Extended Cost", "Unknown 11", "Unknown 12", "Unknown 13", "Damage doesn't Break Auras", "Unknown 15", "Not Usable in Arena", "Usable in Arena", "Area Target Chain", "Unknown 19", "Don't Check Selfcast Power", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Pet Scaling", "Can Only be Casted in Outland", "Unknown 27", "Aimed Shot", "Unknown 29", "Unknown 30", "Polymorph" };
+                attFlags = new string[] { "Ignore All Resistances", "Proc Only on Caster", "Continue to Tick while Offline", "Unknown 3", "Unknown 4", "Unknown 5", "Not Stealable", "Triggered", "Fixed Damage", "Activate from Event", "Spell vs Extended Cost", "Unknown 11", "Unknown 12", "Unknown 13", "Damage doesn't Break Auras", "Unknown 15", "Not Usable in Arena", "Usable in Arena", "Area Target Chain", "Unknown 19", "Don't Check Selfcast Power", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Pet Scaling", "Can Only be Casted in Outland", "Unknown 27", "Aimed Shot", "Unknown 29", "Unknown 30", "Polymorph" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes5.Children.Add(box);
                     attributes4.Add(box);
                 }
 
-                att_flags = new string[] { "Unknown 0", "No Reagent While Preparation", "Unknown 2", "Usable while Stunned", "Unknown 4", "Single-Target Spell", "Unknown 6", "Unknown 7", "Unknown 8", "Start Periodic at Aura Apply", "Hide Duration", "Allow Target of Target as Target", "Cleave", "Haste Affect Duration", "Unknown 14", "Inflict on Multiple Targets", "Special Item Class Check", "Usable while Feared", "Usable feared Confused", "Don't Turn during Casting", "Unknown 20", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Don't Show Aura if Self-Cast", "Don't Show Aura if Not Self-Cast", "Unknown 29", "Unknown 30", "AoE Taunt" };
+                attFlags = new string[] { "Unknown 0", "No Reagent While Preparation", "Unknown 2", "Usable while Stunned", "Unknown 4", "Single-Target Spell", "Unknown 6", "Unknown 7", "Unknown 8", "Start Periodic at Aura Apply", "Hide Duration", "Allow Target of Target as Target", "Cleave", "Haste Affect Duration", "Unknown 14", "Inflict on Multiple Targets", "Special Item Class Check", "Usable while Feared", "Usable feared Confused", "Don't Turn during Casting", "Unknown 20", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Don't Show Aura if Self-Cast", "Don't Show Aura if Not Self-Cast", "Unknown 29", "Unknown 30", "AoE Taunt" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes6.Children.Add(box);
                     attributes5.Add(box);
                 }
 
-                att_flags = new string[] { "Don't Display Cooldown", "Only in Arena", "Ignore Caster Auras", "Assist Ignore Immune Flag", "Unknown 4", "Unknown 5", "Spell Cast Event", "Unknown 7", "Can't Target Crowd-Controlled", "Unknown 9", "Can Target Possessed Friends", "Not in Raid Instance", "Castable while on Vehicle", "Can Target Invisible", "Unknown 14", "Unknown 15", "Unknown 16", "Mount", "Cast by Charmer", "Unknown 19", "Only Visible to Caster", "Client UI Target Effects", "Unknown 22", "Unknown 23", "Can Target Untargetable", "Exorcism, Flash of Light", "Unknown 26", "Unknown 27", "Death Grip", "Not Done Percent Damage Mods", "Unknown 30", "Ignore Category Cooldown Mods" };
+                attFlags = new string[] { "Don't Display Cooldown", "Only in Arena", "Ignore Caster Auras", "Assist Ignore Immune Flag", "Unknown 4", "Unknown 5", "Spell Cast Event", "Unknown 7", "Can't Target Crowd-Controlled", "Unknown 9", "Can Target Possessed Friends", "Not in Raid Instance", "Castable while on Vehicle", "Can Target Invisible", "Unknown 14", "Unknown 15", "Unknown 16", "Mount", "Cast by Charmer", "Unknown 19", "Only Visible to Caster", "Client UI Target Effects", "Unknown 22", "Unknown 23", "Can Target Untargetable", "Exorcism, Flash of Light", "Unknown 26", "Unknown 27", "Death Grip", "Not Done Percent Damage Mods", "Unknown 30", "Ignore Category Cooldown Mods" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes7.Children.Add(box);
                     attributes6.Add(box);
                 }
 
-                att_flags = new string[] { "Feign Death", "Unknown 1", "Re-Activate at Resurrect", "Cheat Spell", "Soulstone Resurrection", "Totem", "No Pushback on Damage", "Unknown 7", "Horde Only", "Alliance Only", "Dispel Charges", "Interrupt only Non-Player", "Unknown 12", "Unknown 13", "Raise Dead", "Unknown 15", "Restore Secondary Power", "Unknown 17", "Charge", "Zone Teleport", "Blink, Divine Shield, Ice Block", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Unknown 27", "Consolidated Raid Buff", "Unknown 29", "Unknown 30", "Client Indicator" };
+                attFlags = new string[] { "Feign Death", "Unknown 1", "Re-Activate at Resurrect", "Cheat Spell", "Soulstone Resurrection", "Totem", "No Pushback on Damage", "Unknown 7", "Horde Only", "Alliance Only", "Dispel Charges", "Interrupt only Non-Player", "Unknown 12", "Unknown 13", "Raise Dead", "Unknown 15", "Restore Secondary Power", "Unknown 17", "Charge", "Zone Teleport", "Blink, Divine Shield, Ice Block", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Unknown 27", "Consolidated Raid Buff", "Unknown 29", "Unknown 30", "Client Indicator" };
 
-                for (int i = 0; i < att_flags.Length; ++i)
+                for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = att_flags[i];
+                    box.Content = attFlags[i];
                     box.Margin = new Thickness(5, (-15.5 + i) * 45, 0, 0);
 
                     Attributes8.Children.Add(box);
@@ -390,7 +391,7 @@ namespace SpellEditor
                 int number = 0;
                 foreach (Targets t in Enum.GetValues(typeof(Targets)))
                 {
-                    String toDisplay = number + " - " + t;
+                    string toDisplay = number + " - " + t;
                     TargetA1.Items.Add(toDisplay);
                     TargetB1.Items.Add(toDisplay);
                     TargetA2.Items.Add(toDisplay);
@@ -499,7 +500,7 @@ namespace SpellEditor
             config = await getConfig();
             if (config == null)
                 return;
-            String errorMsg = "";
+            string errorMsg = "";
             try
             {
                 mySQL = new MySQL(config);
@@ -539,19 +540,19 @@ namespace SpellEditor
 
         private async Task<Config> getConfig()
         {
-            String errorMsg = "";
+            string errorMsg = "";
             try
             {
                 Config config = new Config();
                 if (!File.Exists("config.xml"))
                 {
 
-                    String host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
-                    String user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
-                    String pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
-                    String port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
-                    String db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
-                    String tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
+                    string host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
+                    string user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
+                    string pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
+                    string port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
+                    string db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
+                    string tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
 
                     UInt32 result = 0;
                     if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
@@ -723,7 +724,7 @@ namespace SpellEditor
                     "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-                    mySQL.execute(String.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
+                    mySQL.execute(string.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
                     PopulateSelectSpell();
                     if (SelectSpell.Items.Count == 0)
                     {
@@ -788,7 +789,7 @@ namespace SpellEditor
                     return;
                 }
 
-                if (UInt32.Parse(mySQL.query(String.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(mySQL.query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage("ERROR: That spell ID is already taken.");
                     return;
@@ -797,11 +798,11 @@ namespace SpellEditor
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, oldIDIndex)).Rows[0];
+                    var row = mySQL.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
-                    str.Append(String.Format("INSERT INTO `{0}` VALUES ('{1}'", mySQL.Table, newID));
+                    str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", mySQL.Table, newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
-                        str.Append(String.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
+                        str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
                     str.Append(")");
                     mySQL.execute(str.ToString());
                 }
@@ -830,7 +831,7 @@ namespace SpellEditor
                     return;
                 }
                 
-                mySQL.execute(String.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, spellID));
+                mySQL.execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, spellID));
                 
                 selectedID = 0;
 
@@ -841,7 +842,7 @@ namespace SpellEditor
 
             if (sender == SaveSpellChanges)
             {
-                String query = String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID);
+                string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID);
                 var q = mySQL.query(query);
                 if (q.Rows.Count == 0)
                     return;
@@ -1385,18 +1386,18 @@ namespace SpellEditor
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
 
-                String column = null;
+                string column = null;
                 if (spellOrActive == MessageDialogResult.Affirmative)
                     column = "SpellIconID";
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
-                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
+                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
             }
 
             if (sender == ResetSpellIconID)
-                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "SpellIconID", 1, selectedID));
+                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "SpellIconID", 1, selectedID));
             if (sender == ResetActiveIconID)
-                mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "ActiveIconID", 0, selectedID)); 
+                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "ActiveIconID", 0, selectedID)); 
         }
         #endregion
 
@@ -1440,7 +1441,7 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-            DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+            DataRowCollection res = mySQL.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                 "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
             if (res == null || res.Count == 0)
                 return -1;
@@ -1478,7 +1479,7 @@ namespace SpellEditor
                     return;
 
                 // Attempt localisation on Death Touch, HACKY
-                DataRowCollection res = mySQL.query(String.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                DataRowCollection res = mySQL.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
                 if (res == null || res.Count == 0)
                     return;
@@ -1523,7 +1524,7 @@ namespace SpellEditor
             {
                 var spellName = row["SpellName" + locale].ToString();
                 var textBlock = new TextBlock();
-                textBlock.Text = String.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
+                textBlock.Text = string.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
                 var image = new System.Windows.Controls.Image();
                 var iconId = Int32.Parse(row["SpellIconID"].ToString());
                 if (iconId > 0)
@@ -1568,7 +1569,7 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-            DataTable newSpellNames = mySQL.query(String.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
+            DataTable newSpellNames = mySQL.query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
@@ -1589,12 +1590,12 @@ namespace SpellEditor
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Select whether to change the Spell Icon ID or the Active Icon ID.", style, settings);
 
-            String column = null;
+            string column = null;
             if (spellOrActive == MessageDialogResult.Affirmative)
                 column = "SpellIconID";
             else if (spellOrActive == MessageDialogResult.Negative)
                 column = "ActiveIconID";
-            mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
+            mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
         }
 
         private async void UpdateMainWindow()
@@ -1635,7 +1636,7 @@ namespace SpellEditor
             {
                 mySQL.setUpdating(true);
                 updateProgress("Querying MySQL data...");
-                DataRowCollection rowResult = mySQL.query(String.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+                DataRowCollection rowResult = mySQL.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
                 if (rowResult == null || rowResult.Count != 1)
                     throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
                 var row = rowResult[0];
@@ -1646,27 +1647,27 @@ namespace SpellEditor
                 {
                     ThreadSafeTextBox box;
                     stringObjectMap.TryGetValue(i, out box);
-                    box.threadSafeText = row[String.Format("SpellName{0}", i)];
+                    box.threadSafeText = row[string.Format("SpellName{0}", i)];
                 }
                 for (i = 0; i < 9; ++i)
                 {
                     ThreadSafeTextBox box;
                     stringObjectMap.TryGetValue(i + 9, out box);
-                    box.threadSafeText = row[String.Format("SpellRank{0}", i)];
+                    box.threadSafeText = row[string.Format("SpellRank{0}", i)];
                 }
 
                 for (i = 0; i < 9; ++i)
                 {
                     ThreadSafeTextBox box;
                     stringObjectMap.TryGetValue(i + 18, out box);
-                    box.threadSafeText = row[String.Format("SpellTooltip{0}", i)];
+                    box.threadSafeText = row[string.Format("SpellTooltip{0}", i)];
                 }
 
                 for (i = 0; i < 9; ++i)
                 {
                     ThreadSafeTextBox box;
                     stringObjectMap.TryGetValue(i + 27, out box);
-                    box.threadSafeText = row[String.Format("SpellDescription{0}", i)];
+                    box.threadSafeText = row[string.Format("SpellDescription{0}", i)];
                 }
 
                 updateProgress("Updating category & dispel & mechanic...");
@@ -2284,7 +2285,7 @@ namespace SpellEditor
                 {
                     if (loadFocusObjects.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "RequiresSpellFocus", (UInt32)loadFocusObjects.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2297,7 +2298,7 @@ namespace SpellEditor
                 {
                     if (loadAreaGroups.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "AreaGroupID", (UInt32)loadAreaGroups.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2310,7 +2311,7 @@ namespace SpellEditor
                 {
                     if (loadCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "Category", (UInt32)loadCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2323,7 +2324,7 @@ namespace SpellEditor
                 {
                     if (loadDispels.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "Dispel", (UInt32)loadDispels.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2336,7 +2337,7 @@ namespace SpellEditor
                 {
                     if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "Mechanic", (UInt32)loadMechanics.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2349,7 +2350,7 @@ namespace SpellEditor
                 {
                     if (loadCastTimes.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "CastingTimeIndex", (UInt32)loadCastTimes.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2362,7 +2363,7 @@ namespace SpellEditor
                 {
                     if (SpellDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "DurationIndex", (UInt32)SpellDuration.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2375,7 +2376,7 @@ namespace SpellEditor
                 {
                     if (loadDifficulties.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "SpellDifficultyID", (UInt32)loadDifficulties.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2388,7 +2389,7 @@ namespace SpellEditor
                 {
                     if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "RangeIndex", (UInt32)loadRanges.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2401,7 +2402,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "EffectRadiusIndex1", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2414,7 +2415,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "EffectRadiusIndex2", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2427,7 +2428,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "EffectRadiusIndex3", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2449,7 +2450,7 @@ namespace SpellEditor
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "EquippedItemClass", (UInt32)loadItemClasses.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2462,7 +2463,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "TotemCategory1", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2475,7 +2476,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "TotemCategory2", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2488,7 +2489,7 @@ namespace SpellEditor
                 {
                     if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "RuneCostID", (UInt32)loadRuneCosts.body.lookup[i].ID, selectedID));
                         break;
                     }
@@ -2501,7 +2502,7 @@ namespace SpellEditor
                 {
                     if (loadDescriptionVariables.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(String.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             mySQL.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.body.lookup[i].ID, selectedID));
                         break;
                     }

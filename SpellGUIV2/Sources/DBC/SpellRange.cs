@@ -108,7 +108,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellRangeSelection()
         {
-            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             for (int i = 0; i < body.lookup.Count; ++i)
             {

@@ -102,7 +102,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateRadiusIndexes()
         {
-            var result = mySQL.query(String.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+            var result = mySQL.query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
             int[] IDs = { Int32.Parse(result[0].ToString()), Int32.Parse(result[1].ToString()), Int32.Parse(result[2].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)

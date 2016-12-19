@@ -28,14 +28,14 @@ namespace SpellVisualMapBuilder
         private static Int32[] MapBottomRight = { -138, -138 };
         private static Int32 MapZ = -144;
         private static Int32 CellSize = 7;
-        private static HashSet<String> paths = new HashSet<String>();
+        private static HashSet<string> paths = new HashSet<string>();
 
-        public static void Print(String message, params object[] args)
+        public static void Print(string message, params object[] args)
         {
             if (args == null)
                 Console.WriteLine(message);
             else
-                Console.WriteLine(String.Format(message, args));
+                Console.WriteLine(string.Format(message, args));
         }
 
         static void Main(string[] args)
@@ -88,7 +88,7 @@ namespace SpellVisualMapBuilder
         {
             StringBuilder str = new StringBuilder();
             uint newSize = (uint)paths.Count + DBCStartingEntry;
-            String[] stringPaths = paths.ToArray();
+            string[] stringPaths = paths.ToArray();
             uint creatureEntry = CTStartingEntry;
 
             int currX = MapTopLeft[0];
@@ -100,7 +100,7 @@ namespace SpellVisualMapBuilder
                 str.Append("insert into `creature` (`id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`," +
                     " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
                     " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
-                str.Append(String.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','{6}','0','0','0','0','0','0');\n",
+                str.Append(string.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','{6}','0','0','0','0','0','0');\n",
                     creatureEntry++, MapEntry, 0, currX, currY, MapZ, 100)); // id, map, zone, x, y, z, health
                 currX -= CellSize;
                 if (currX <= limitX)
@@ -118,17 +118,17 @@ namespace SpellVisualMapBuilder
         {
             StringBuilder str = new StringBuilder();
             uint newSize = (uint)paths.Count + DBCStartingEntry;
-            String[] stringPaths = paths.ToArray();
+            string[] stringPaths = paths.ToArray();
             uint creatureEntry = CTStartingEntry;
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
                 str.Append("INSERT INTO `creature_template` VALUES (");
-                str.Append(String.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i,
+                str.Append(string.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i,
                     MySqlHelper.EscapeString(stringPaths[i - DBCStartingEntry])));
                 str.Append("'','','0','1','1','0','35','0','1','1.14286','1','0','0','1500','2000','1','1','1','0','0','0','0'"
                     + ",'0','0','0','0','6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',"
                     + "'0','','0','3','1','4','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','','0');\n");
-                str.Append(String.Format("INSERT INTO `creature_model_info` VALUES ('{0}', '0', '0', '0', '0');\n", i));
+                str.Append(string.Format("INSERT INTO `creature_model_info` VALUES ('{0}', '0', '0', '0', '0');\n", i));
             }
             File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));
         }
@@ -141,7 +141,7 @@ namespace SpellVisualMapBuilder
             Array.Resize(ref modelData.body.records, newSize);
             Array.Resize(ref modelData.body.pathStrings, newSize);
             modelData.header.RecordCount = (uint)newSize;
-            String[] stringPaths = paths.ToArray();
+            string[] stringPaths = paths.ToArray();
             uint entry = DBCStartingEntry;
             for (int i = index; i < newSize; ++i)
             {
@@ -211,11 +211,11 @@ namespace SpellVisualMapBuilder
                 loadAllSpells(subDir);
             foreach (FileInfo file in dir.GetFiles())
             {
-                String extension = file.Extension.ToLower();
+                string extension = file.Extension.ToLower();
                 if (extension.Equals(".m2"))
                 {
-                    String name = file.Name.Substring(0, file.Name.IndexOf('.'));
-                    String FullName = file.FullName;
+                    string name = file.Name.Substring(0, file.Name.IndexOf('.'));
+                    string FullName = file.FullName;
                     int index = FullName.IndexOf("SPELLS");
                     int lastIndex = FullName.LastIndexOf('\\');
                     FullName = FullName.Substring(index, lastIndex - index);

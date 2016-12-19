@@ -96,7 +96,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDurationIndexes()
         {
-            int ID = Int32.Parse(mySQL.query(String.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

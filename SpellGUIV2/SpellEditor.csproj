@@ -117,6 +117,8 @@
     <Compile Include="Sources\DBC\TotemCategory.cs" />
     <Compile Include="Sources\MySQL\MySQL.cs" />
     <Compile Include="Sources\SpellStringTools\SpellStringParser.cs" />
+    <Compile Include="Sources\SpellStringTools\Token.cs" />
+    <Compile Include="Sources\SpellStringTools\TokenConsumer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

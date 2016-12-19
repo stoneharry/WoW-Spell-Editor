@@ -9,14 +9,14 @@ namespace SpellEditor.Sources.Config
 {
     class Config
     {
-        public String Host = "127.0.0.1";
-        public String User = "root";
-        public String Pass = "12345";
-        public String Port = "3306";
-        public String Database = "SpellEditor";
-        public String Table = "Spell";
+        public string Host = "127.0.0.1";
+        public string User = "root";
+        public string Pass = "12345";
+        public string Port = "3306";
+        public string Database = "SpellEditor";
+        public string Table = "Spell";
 
-        public void createFile(String h, String u, String p, String po, String db, String tb)
+        public void createFile(string h, string u, string p, string po, string db, string tb)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;

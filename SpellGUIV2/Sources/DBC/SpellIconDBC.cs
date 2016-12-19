@@ -97,7 +97,7 @@ namespace SpellEditor.Sources.DBC
             DataRow res;
             try
             {
-                res = mySQL.query(String.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+                res = mySQL.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
             }
             catch (Exception)
             {
