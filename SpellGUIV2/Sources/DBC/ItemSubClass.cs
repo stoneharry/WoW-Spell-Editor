@@ -46,8 +46,6 @@ namespace SpellEditor.Sources.DBC
 
 			for (UInt32 i = 0; i < header.RecordCount; ++i)
 			{
-				ItemSubClass_DBC_Record ii;
-
 				body.records[i].Class = new UInt32();
 				body.records[i].subClass = new UInt32();
 				body.records[i].prerequisiteProficiency = new UInt32();

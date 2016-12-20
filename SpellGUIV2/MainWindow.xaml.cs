@@ -67,7 +67,7 @@ namespace SpellEditor
     {
         #region DBCDefinitions
 		//todo:multilingual.Temporary define zhCN
-		private LocaleConstant Locale_language = LocaleConstant.LOCALE_zhCN;
+		private LocaleConstant Locale_language;
 
         // Begin DBCs
         private AreaTable loadAreaTable = null;
@@ -138,7 +138,11 @@ namespace SpellEditor
             e.Handled = true;
         }
 
-		public int GetLanguage(){return (int)Locale_language;}
+		public int GetLanguage() {
+            // Disabled returning Locale_langauge until it can at least support multiple client types
+            return GetLocale();
+            //return (int)Locale_language;
+        }
 
 		public String GetAreaTableName(UInt32 id) {return loadAreaTable.body.lookup.ContainsKey(id) ? loadAreaTable.body.lookup[id].AreaName : ""; }
 
@@ -474,6 +478,8 @@ namespace SpellEditor
                     interrupts2.Add(box);
                 }
 
+                // TODO: This should happen when the language has been established 
+                /*
 				switch ((LocaleConstant)GetLanguage())
 				{
 					case LocaleConstant.LOCALE_enUS:
@@ -506,6 +512,7 @@ namespace SpellEditor
 					default:
 						break;
 				}
+                */
 
                 loadAllData();
             }
