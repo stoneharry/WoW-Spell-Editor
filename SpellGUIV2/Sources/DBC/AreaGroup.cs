@@ -136,7 +136,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateAreaGroupSelection()
         {
-            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = UInt32.Parse(mySQL.query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {
