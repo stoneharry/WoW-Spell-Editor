@@ -30,6 +30,7 @@ using MySql.Data.MySqlClient;
 using System.Windows.Media.Animation;
 using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
+using SpellEditor.Sources.SQLite;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -111,7 +112,8 @@ namespace SpellEditor
         #endregion
 
         #region MemberVariables
-        private MySQL mySQL;
+        //private MySQL mySQL;
+		private SQLite Sqlite;
         private Config config;
         public UInt32 selectedID = 0;
         public UInt32 newIconID = 1;
@@ -548,7 +550,7 @@ namespace SpellEditor
 
                 SpellDBC dbc = new SpellDBC();
                 dbc.LoadDBCFile(this);
-                await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+				await dbc.import(Sqlite, new UpdateProgressFunc(controller.SetProgress));
                 await controller.CloseAsync();
                 PopulateSelectSpell();
 
@@ -570,7 +572,7 @@ namespace SpellEditor
             string errorMsg = "";
             try
             {
-                mySQL = new MySQL(config);
+				Sqlite = new SQLite(config);
             }
             catch (Exception e)
             {
@@ -589,22 +591,22 @@ namespace SpellEditor
             PrepareIconEditor();
             PopulateSelectSpell();
             // Load other DBC's
-			loadAreaTable = new AreaTable(this, mySQL);
-            loadCategories = new SpellCategory(this, mySQL);
-            loadDispels = new SpellDispelType(this, mySQL);
-            loadMechanics = new SpellMechanic(this, mySQL);
-            loadFocusObjects = new SpellFocusObject(this, mySQL);
-            loadAreaGroups = new AreaGroup(this, mySQL);
-            loadDifficulties = new SpellDifficulty(this, mySQL);
-            loadCastTimes = new SpellCastTimes(this, mySQL);
-            loadDurations = new SpellDuration(this, mySQL);
-            loadRanges = new SpellRange(this, mySQL);
-            loadRadiuses = new SpellRadius(this, mySQL);
-            loadItemClasses = new ItemClass(this, mySQL);
-			loadItemSubClasses = new ItemSubClass(this, mySQL);
-            loadTotemCategories = new TotemCategory(this, mySQL);
-            loadRuneCosts = new SpellRuneCost(this, mySQL);
-            loadDescriptionVariables = new SpellDescriptionVariables(this, mySQL);
+			loadAreaTable = new AreaTable(this, Sqlite);
+			loadCategories = new SpellCategory(this, Sqlite);
+			loadDispels = new SpellDispelType(this, Sqlite);
+			loadMechanics = new SpellMechanic(this, Sqlite);
+			loadFocusObjects = new SpellFocusObject(this, Sqlite);
+			loadAreaGroups = new AreaGroup(this, Sqlite);
+			loadDifficulties = new SpellDifficulty(this, Sqlite);
+			loadCastTimes = new SpellCastTimes(this, Sqlite);
+			loadDurations = new SpellDuration(this, Sqlite);
+			loadRanges = new SpellRange(this, Sqlite);
+			loadRadiuses = new SpellRadius(this, Sqlite);
+			loadItemClasses = new ItemClass(this, Sqlite);
+			loadItemSubClasses = new ItemSubClass(this, Sqlite);
+			loadTotemCategories = new TotemCategory(this, Sqlite);
+			loadRuneCosts = new SpellRuneCost(this, Sqlite);
+			loadDescriptionVariables = new SpellDescriptionVariables(this, Sqlite);
         }
 
         private async Task<Config> getConfig()
@@ -765,7 +767,7 @@ namespace SpellEditor
         #region ButtonClicks (and load spell god-function)
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (mySQL == null) { return; }
+			if (Sqlite == null) { return; }
 
             if (sender == ExportDBC)
             {
@@ -783,7 +785,7 @@ namespace SpellEditor
                     controller.SetCancelable(false);
 
                     SpellDBC dbc = new SpellDBC();
-                    await dbc.export(mySQL, new UpdateProgressFunc(controller.SetProgress));
+					await dbc.export(Sqlite, new UpdateProgressFunc(controller.SetProgress));
                     await controller.CloseAsync();
                 }
                 return;
@@ -799,7 +801,7 @@ namespace SpellEditor
                     "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-                    mySQL.execute(string.Format("TRUNCATE TABLE `{0}`", mySQL.Table));
+					Sqlite.execute(string.Format("TRUNCATE TABLE `{0}`", Sqlite.Table));
                     PopulateSelectSpell();
                     if (SelectSpell.Items.Count == 0)
                     {
@@ -813,7 +815,7 @@ namespace SpellEditor
 
                             SpellDBC dbc = new SpellDBC();
                             dbc.LoadDBCFile(this);
-                            await dbc.import(mySQL, new UpdateProgressFunc(controller.SetProgress));
+							await dbc.import(Sqlite, new UpdateProgressFunc(controller.SetProgress));
                             await controller.CloseAsync();
                             PopulateSelectSpell();
 
@@ -864,7 +866,7 @@ namespace SpellEditor
                     return;
                 }
 
-                if (UInt32.Parse(mySQL.query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(Sqlite.query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage("ERROR: That spell ID is already taken.");
                     return;
@@ -873,13 +875,13 @@ namespace SpellEditor
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = mySQL.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, oldIDIndex)).Rows[0];
+                    var row = Sqlite.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", Sqlite.Table, oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
-                    str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", mySQL.Table, newID));
+                    str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", Sqlite.Table, newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
                         str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
                     str.Append(")");
-                    mySQL.execute(str.ToString());
+					Sqlite.execute(str.ToString());
                 }
                 else
                 {
@@ -905,8 +907,8 @@ namespace SpellEditor
                     HandleErrorMessage("ERROR: Input spell ID was not an integer.");
                     return;
                 }
-                
-                mySQL.execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, spellID));
+
+				Sqlite.execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, spellID));
                 
                 selectedID = 0;
 
@@ -917,8 +919,8 @@ namespace SpellEditor
 
             if (sender == SaveSpellChanges)
             {
-                string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", mySQL.Table, selectedID);
-                var q = mySQL.query(query);
+                string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", Sqlite.Table, selectedID);
+                var q = Sqlite.query(query);
                 if (q.Rows.Count == 0)
                     return;
                 var row = q.Rows[0];
@@ -1454,7 +1456,7 @@ namespace SpellEditor
                     row["SpellDescriptionFlags7"] = (uint)(TextFlags.NOT_EMPTY);
 
                     row.EndEdit();
-                    mySQL.commitChanges(query, q.GetChanges());
+					Sqlite.commitChanges(query, q.GetChanges());
 
                     PopulateSelectSpell();
                 }
@@ -1482,13 +1484,13 @@ namespace SpellEditor
                     column = "SpellIconID";
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
-                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
+				Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", Sqlite.Table, column, newIconID, selectedID));
             }
 
             if (sender == ResetSpellIconID)
-                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "SpellIconID", 1, selectedID));
+				Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", Sqlite.Table, "SpellIconID", 1, selectedID));
             if (sender == ResetActiveIconID)
-                mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, "ActiveIconID", 0, selectedID)); 
+				Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", Sqlite.Table, "ActiveIconID", 0, selectedID)); 
         }
         #endregion
 
@@ -1508,19 +1510,19 @@ namespace SpellEditor
 
         private async void PrepareIconEditor()
         {
-            loadIcons = new SpellIconDBC(this, mySQL);
+			loadIcons = new SpellIconDBC(this, Sqlite);
 
             await loadIcons.LoadImages();
         }
 
         private class Worker : BackgroundWorker
         {
-            public MySQL __mySQL;
+			public SQLite __Sqlite;
             public Config __config;
 
-            public Worker(MySQL _mySQL, Config _config)
+            public Worker(SQLite _mySQL, Config _config)
             {
-                __mySQL = _mySQL;
+				__Sqlite = _mySQL;
                 __config = _config;
                 
             }
@@ -1532,7 +1534,7 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-            DataRowCollection res = mySQL.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+			DataRowCollection res = Sqlite.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                 "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
             if (res == null || res.Count == 0)
                 return -1;
@@ -1558,7 +1560,7 @@ namespace SpellEditor
         {
             SelectSpell.Items.Clear();
             SpellsLoadedLabel.Content = "No spells loaded.";
-            Worker _worker = new Worker(mySQL, config);
+			Worker _worker = new Worker(Sqlite, config);
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
 
@@ -1566,11 +1568,11 @@ namespace SpellEditor
 
             _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                if (_worker.__mySQL == null || _worker.__config == null)
+				if (_worker.__Sqlite == null || _worker.__config == null)
                     return;
 
                 // Attempt localisation on Death Touch, HACKY
-                DataRowCollection res = mySQL.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+				DataRowCollection res = Sqlite.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
                 if (res == null || res.Count == 0)
                     return;
@@ -1660,7 +1662,7 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-            DataTable newSpellNames = mySQL.query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
+			DataTable newSpellNames = Sqlite.query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
@@ -1672,7 +1674,7 @@ namespace SpellEditor
         #region NewIconClick & UpdateMainWindow
         private async void NewIconClick(object sender, RoutedEventArgs e)
         {
-            if (mySQL == null) { return; }
+			if (Sqlite == null) { return; }
 
             MetroDialogSettings settings = new MetroDialogSettings();
             settings.AffirmativeButtonText = "Spell Icon ID";
@@ -1686,7 +1688,7 @@ namespace SpellEditor
                 column = "SpellIconID";
             else if (spellOrActive == MessageDialogResult.Negative)
                 column = "ActiveIconID";
-            mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", mySQL.Table, column, newIconID, selectedID));
+			Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", Sqlite.Table, column, newIconID, selectedID));
         }
 
         private async void UpdateMainWindow()
@@ -1725,9 +1727,9 @@ namespace SpellEditor
         {
             return Task.Run(() =>
             {
-                mySQL.setUpdating(true);
+				Sqlite.setUpdating(true);
                 updateProgress("Querying MySQL data...");
-                DataRowCollection rowResult = mySQL.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+				DataRowCollection rowResult = Sqlite.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
                 if (rowResult == null || rowResult.Count != 1)
                     throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
                 var row = rowResult[0];
@@ -2319,7 +2321,7 @@ namespace SpellEditor
                 updateProgress("Updating spell description variables & difficulty selection...");
                 loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
                 loadDifficulties.UpdateDifficultySelection();
-                mySQL.setUpdating(false);
+				Sqlite.setUpdating(false);
             });
         }
         #endregion
@@ -2327,7 +2329,7 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating || mySQL == null || config == null)
+			if (updating || Sqlite == null || config == null)
                 return;
             var item = sender as TabControl;
 
@@ -2371,7 +2373,7 @@ namespace SpellEditor
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (mySQL == null || updating) { return; }
+			if (Sqlite == null || updating) { return; }
             if (sender == EffectBaseValue1) { BasePoints1.Text = EffectBaseValue1.Text; }
             if (sender == EffectBaseValue2) { BasePoints2.Text = EffectBaseValue2.Text; }
             if (sender == EffectBaseValue3) { BasePoints3.Text = EffectBaseValue3.Text; }
@@ -2388,7 +2390,7 @@ namespace SpellEditor
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (mySQL == null || updating)
+			if (Sqlite == null || updating)
                 return;
             if (sender == RequiresSpellFocus)
             {
@@ -2396,8 +2398,8 @@ namespace SpellEditor
                 {
                     if (loadFocusObjects.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "RequiresSpellFocus", (UInt32)loadFocusObjects.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "RequiresSpellFocus", (UInt32)loadFocusObjects.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2409,8 +2411,8 @@ namespace SpellEditor
                 {
                     if (loadAreaGroups.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "AreaGroupID", (UInt32)loadAreaGroups.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "AreaGroupID", (UInt32)loadAreaGroups.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2422,8 +2424,8 @@ namespace SpellEditor
                 {
                     if (loadCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "Category", (UInt32)loadCategories.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "Category", (UInt32)loadCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2435,8 +2437,8 @@ namespace SpellEditor
                 {
                     if (loadDispels.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "Dispel", (UInt32)loadDispels.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "Dispel", (UInt32)loadDispels.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2448,8 +2450,8 @@ namespace SpellEditor
                 {
                     if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "Mechanic", (UInt32)loadMechanics.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "Mechanic", (UInt32)loadMechanics.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2461,8 +2463,8 @@ namespace SpellEditor
                 {
                     if (loadCastTimes.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "CastingTimeIndex", (UInt32)loadCastTimes.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "CastingTimeIndex", (UInt32)loadCastTimes.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2474,8 +2476,8 @@ namespace SpellEditor
                 {
                     if (SpellDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "DurationIndex", (UInt32)SpellDuration.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "DurationIndex", (UInt32)SpellDuration.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2487,8 +2489,8 @@ namespace SpellEditor
                 {
                     if (loadDifficulties.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "SpellDifficultyID", (UInt32)loadDifficulties.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "SpellDifficultyID", (UInt32)loadDifficulties.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2500,8 +2502,8 @@ namespace SpellEditor
                 {
                     if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "RangeIndex", (UInt32)loadRanges.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "RangeIndex", (UInt32)loadRanges.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2513,8 +2515,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "EffectRadiusIndex1", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "EffectRadiusIndex1", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2526,8 +2528,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "EffectRadiusIndex2", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "EffectRadiusIndex2", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2539,8 +2541,8 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "EffectRadiusIndex3", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "EffectRadiusIndex3", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2562,8 +2564,8 @@ namespace SpellEditor
 
                     if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "EquippedItemClass", (UInt32)loadItemClasses.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "EquippedItemClass", (UInt32)loadItemClasses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2575,8 +2577,8 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "TotemCategory1", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "TotemCategory1", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2588,8 +2590,8 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "TotemCategory2", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "TotemCategory2", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2601,8 +2603,8 @@ namespace SpellEditor
                 {
                     if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "RuneCostID", (UInt32)loadRuneCosts.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "RuneCostID", (UInt32)loadRuneCosts.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2614,8 +2616,8 @@ namespace SpellEditor
                 {
                     if (loadDescriptionVariables.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-                        mySQL.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            mySQL.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.body.lookup[i].ID, selectedID));
+						Sqlite.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+							Sqlite.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }

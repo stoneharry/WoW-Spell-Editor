@@ -13,7 +13,7 @@ namespace SpellEditor.Sources.DBC
 	{
 				  // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+        private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -21,10 +21,10 @@ namespace SpellEditor.Sources.DBC
 		public ItemSubClass_DBC_Map body;
         // End DBCs
 
-		public ItemSubClass(MainWindow window, MySQL.MySQL mySQLConn)
+		public ItemSubClass(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+            Sqlite = SqliteConn;
 
 			if (!File.Exists("DBC/ItemSubClass.dbc"))
             {

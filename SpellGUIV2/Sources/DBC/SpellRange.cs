@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+        private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public SpellRange_DBC_Map body;
         // End DBCs
 
-        public SpellRange(MainWindow window, MySQL.MySQL mySQLConn)
+        public SpellRange(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+            Sqlite = SqliteConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -112,7 +112,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellRangeSelection()
         {
-            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(Sqlite.query(string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
 
             for (int i = 0; i < body.lookup.Count; ++i)
             {

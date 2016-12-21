@@ -16,7 +16,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+        private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -28,10 +28,10 @@ namespace SpellEditor.Sources.DBC
         private static bool loadedAllIcons = false;
         // End Other
 
-        public SpellIconDBC(MainWindow window, MySQL.MySQL mySQLConn)
+        public SpellIconDBC(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+            Sqlite = SqliteConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -92,12 +92,12 @@ namespace SpellEditor.Sources.DBC
 
         public async void UpdateMainWindowIcons()
         {
-            if (mySQL == null) { return; }
+			if (Sqlite == null) { return; }
 
             DataRow res;
             try
             {
-                res = mySQL.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0];
+				res = Sqlite.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0];
             }
             catch (Exception)
             {

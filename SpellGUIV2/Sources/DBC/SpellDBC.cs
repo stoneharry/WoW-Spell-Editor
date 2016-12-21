@@ -258,7 +258,7 @@ namespace SpellEditor.Sources.DBC
             fileStream.Close();
         }
 
-        public Task import(MySQL.MySQL mySQL, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
+		public Task import(SQLite.SQLite Sqlite, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
         {
             return Task.Run(() => 
             {
@@ -275,10 +275,10 @@ namespace SpellEditor.Sources.DBC
                             if (q != null)
                             {
                                 q.Remove(q.Length - 2, 2);
-                                mySQL.execute(q.ToString());
+                                Sqlite.execute(q.ToString());
                             }
                             q = new StringBuilder();
-                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", mySQL.Table));
+                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", Sqlite.Table));
                         }
                         if (++index % 1000 == 0)
                         {
@@ -386,7 +386,7 @@ namespace SpellEditor.Sources.DBC
                     if (q.Length > 0)
                     {
                         q.Remove(q.Length - 2, 2);
-                        mySQL.execute(q.ToString());
+                        Sqlite.execute(q.ToString());
                     }
                 }
                 catch (Exception e)
@@ -421,11 +421,11 @@ namespace SpellEditor.Sources.DBC
             return record;
         }
 
-        public Task export(MySQL.MySQL mySQL, MainWindow.UpdateProgressFunc updateProgress)
+		public Task export(SQLite.SQLite Sqlite, MainWindow.UpdateProgressFunc updateProgress)
         {
             return Task.Run(() =>
             {
-                var rows = mySQL.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", mySQL.Table)).Rows;
+				var rows = Sqlite.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", Sqlite.Table)).Rows;
                 uint numRows = UInt32.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 header = new DBC_Header();

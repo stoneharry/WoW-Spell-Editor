@@ -15,7 +15,7 @@ namespace SpellEditor.Sources.DBC
 	{
 		  // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+		private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -23,10 +23,10 @@ namespace SpellEditor.Sources.DBC
 		public AreaTable_DBC_Map body;
         // End DBCs
 
-        public AreaTable(MainWindow window, MySQL.MySQL mySQLConn)
+        public AreaTable(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+			Sqlite = SqliteConn;
 
 			if (!File.Exists("DBC/AreaTable.dbc"))
             {

@@ -15,7 +15,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+        private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -23,10 +23,10 @@ namespace SpellEditor.Sources.DBC
         public ItemClass_DBC_Map body;
         // End DBCs
 
-        public ItemClass(MainWindow window, MySQL.MySQL mySQLConn)
+        public ItemClass(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+            Sqlite = SqliteConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -115,7 +115,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateItemClassSelection()
         {
-            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(Sqlite.query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == -1)
             {

@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private MySQL.MySQL mySQL;
+        private SQLite.SQLite Sqlite;
         // End Window
 
         // Begin DBCs
@@ -20,10 +20,10 @@ namespace SpellEditor.Sources.DBC
         public static SpellDuration_DBC_Body body;
         // End DBCs
 
-        public SpellDuration(MainWindow window, MySQL.MySQL mySQLConn)
+        public SpellDuration(MainWindow window, SQLite.SQLite SqliteConn)
         {
             main = window;
-            mySQL = mySQLConn;
+            Sqlite = SqliteConn;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -96,7 +96,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDurationIndexes()
         {
-            int ID = Int32.Parse(mySQL.query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", mySQL.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(Sqlite.query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {
