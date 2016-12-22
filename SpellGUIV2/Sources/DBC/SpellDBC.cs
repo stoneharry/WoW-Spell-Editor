@@ -314,25 +314,25 @@ namespace SpellEditor.Sources.DBC
                                                     case 1:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellName[i])));
+                                                                q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellName[i])));
                                                             break;
                                                         }
                                                     case 2:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellRank[i])));
+                                                                q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellRank[i])));
                                                             break;
                                                         }
                                                     case 3:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellDesc[i])));
+																q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellDesc[i])));
                                                             break;
                                                         }
                                                     case 4:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", MySqlHelper.EscapeString(r.spellTool[i])));
+																q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellTool[i])));
                                                             break;
                                                         }
                                                     default:
