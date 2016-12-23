@@ -29,16 +29,6 @@ namespace SpellEditor.Sources.SQLite
             conn.Open();
             // Create DB
             var cmd = conn.CreateCommand();
-			/*
-            cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", config.Database);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-            cmd = conn.CreateCommand();
-            cmd.CommandText = string.Format("USE `{0}`;", config.Database);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();*/
-            // Create Table
-            //cmd = conn.CreateCommand();
 
             cmd.CommandText = string.Format(getTableCreateString(), config.Table);
             cmd.ExecuteNonQuery();
@@ -150,5 +140,19 @@ namespace SpellEditor.Sources.SQLite
         {
             _updating = p;
         }
-    }
+
+		public static string EscapeString(string keyWord)
+		{
+			keyWord = keyWord.Replace("/", "//");
+			keyWord = keyWord.Replace("'", "''");
+			keyWord = keyWord.Replace("[", "/[");
+			keyWord = keyWord.Replace("]", "/]");
+			keyWord = keyWord.Replace("%", "/%");
+			keyWord = keyWord.Replace("&","/&");
+			keyWord = keyWord.Replace("_", "/_");
+			keyWord = keyWord.Replace("(", "/(");
+			keyWord = keyWord.Replace(")", "/)");
+			return keyWord;
+		}
+	}
 }

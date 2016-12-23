@@ -801,7 +801,7 @@ namespace SpellEditor
                     "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-					Sqlite.execute(string.Format("TRUNCATE TABLE `{0}`", Sqlite.Table));
+					Sqlite.execute(string.Format("delete from `{0}`", Sqlite.Table));
                     PopulateSelectSpell();
                     if (SelectSpell.Items.Count == 0)
                     {
