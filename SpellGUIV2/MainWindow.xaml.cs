@@ -142,7 +142,7 @@ namespace SpellEditor
 
 		public int GetLanguage() {
             // Disabled returning Locale_langauge until it can at least support multiple client types
-            return GetLocale();
+			return GetLocale() == -1 ? 0 : GetLocale();
             //return (int)Locale_language;
         }
 
