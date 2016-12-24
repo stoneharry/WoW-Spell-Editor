@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -20,10 +21,10 @@ namespace SpellEditor.Sources.DBC
         public SpellDispel_DBC_Map body;
         // End DBCs
 
-        public SpellDispelType(MainWindow window, SQLite.SQLite SqliteConn)
+        public SpellDispelType(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-            Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -106,7 +107,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDispelSelection()
         {
-            int ID = Int32.Parse(Sqlite.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(adapter.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             for (int i = 0; i < header.RecordCount; ++i)
             {

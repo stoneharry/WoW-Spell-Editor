@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
-using SpellEditor.Sources.Controls;
-using System.Windows.Threading;
-
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -15,7 +11,7 @@ namespace SpellEditor.Sources.DBC
 	{
 		  // Begin Window
         private MainWindow main;
-		private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -23,10 +19,10 @@ namespace SpellEditor.Sources.DBC
 		public AreaTable_DBC_Map body;
         // End DBCs
 
-        public AreaTable(MainWindow window, SQLite.SQLite SqliteConn)
+        public AreaTable(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-			Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
 			if (!File.Exists("DBC/AreaTable.dbc"))
             {

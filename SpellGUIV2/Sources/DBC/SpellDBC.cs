@@ -10,6 +10,7 @@ using MySql.Data.MySqlClient;
 using System.Windows.Threading;
 using SpellEditor.Sources.SpellStringTools;
 using System.Data;
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -258,7 +259,7 @@ namespace SpellEditor.Sources.DBC
             fileStream.Close();
         }
 
-		public Task import(SQLite.SQLite Sqlite, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
+		public Task import(DBAdapter adapter, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
         {
             return Task.Run(() => 
             {
@@ -275,10 +276,10 @@ namespace SpellEditor.Sources.DBC
                             if (q != null)
                             {
                                 q.Remove(q.Length - 2, 2);
-                                Sqlite.execute(q.ToString());
+                                adapter.execute(q.ToString());
                             }
                             q = new StringBuilder();
-                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", Sqlite.Table));
+                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", adapter.Table));
                         }
                         if (++index % 1000 == 0)
                         {
@@ -386,7 +387,7 @@ namespace SpellEditor.Sources.DBC
                     if (q.Length > 0)
                     {
                         q.Remove(q.Length - 2, 2);
-                        Sqlite.execute(q.ToString());
+                        adapter.execute(q.ToString());
                     }
                 }
                 catch (Exception e)
@@ -421,11 +422,11 @@ namespace SpellEditor.Sources.DBC
             return record;
         }
 
-		public Task export(SQLite.SQLite Sqlite, MainWindow.UpdateProgressFunc updateProgress)
+		public Task export(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
         {
             return Task.Run(() =>
             {
-				var rows = Sqlite.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", Sqlite.Table)).Rows;
+				var rows = adapter.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", adapter.Table)).Rows;
                 uint numRows = UInt32.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 header = new DBC_Header();

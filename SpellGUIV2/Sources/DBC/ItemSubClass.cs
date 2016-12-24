@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
 	class ItemSubClass
 	{
-				  // Begin Window
+		// Begin Window
         private MainWindow main;
-        private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -21,10 +22,10 @@ namespace SpellEditor.Sources.DBC
 		public ItemSubClass_DBC_Map body;
         // End DBCs
 
-		public ItemSubClass(MainWindow window, SQLite.SQLite SqliteConn)
+		public ItemSubClass(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-            Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
 			if (!File.Exists("DBC/ItemSubClass.dbc"))
             {

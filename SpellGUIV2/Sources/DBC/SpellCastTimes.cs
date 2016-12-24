@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -21,10 +22,10 @@ namespace SpellEditor.Sources.DBC
         public SpellCastTimes_DBC_Map body;
         // End DBCs
 
-        public SpellCastTimes(MainWindow window, SQLite.SQLite SqliteConn)
+        public SpellCastTimes(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-            Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -84,7 +85,9 @@ namespace SpellEditor.Sources.DBC
 
 				castTime.Content = body.records[i].CastingTime.ToString() + "\t";
 
-				castTime.ToolTip = "CastTime\t\t" + body.records[i].CastingTime + "\n" + "PerLevel\t\t" + body.records[i].CastingTimePerLevel.ToString() + "\n" + "MinimumCastingTime\t" + body.records[i].MinimumCastingTime + "\n";
+				castTime.ToolTip = "CastTime\t\t" + body.records[i].CastingTime + "\n" +
+                    "PerLevel\t\t" + body.records[i].CastingTimePerLevel.ToString() + "\n" +
+                    "MinimumCastingTime\t" + body.records[i].MinimumCastingTime + "\n";
 
                 SpellCastTimeLookup temp;
 
@@ -101,7 +104,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateCastTimeSelection()
         {
-            int ID = Int32.Parse(Sqlite.query(string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = Int32.Parse(adapter.query(string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

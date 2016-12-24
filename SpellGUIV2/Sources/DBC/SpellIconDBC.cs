@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Config;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -16,7 +17,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -28,10 +29,10 @@ namespace SpellEditor.Sources.DBC
         private static bool loadedAllIcons = false;
         // End Other
 
-        public SpellIconDBC(MainWindow window, SQLite.SQLite SqliteConn)
+        public SpellIconDBC(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-            Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -92,12 +93,14 @@ namespace SpellEditor.Sources.DBC
 
         public async void UpdateMainWindowIcons()
         {
-			if (Sqlite == null) { return; }
+			if (adapter == null) {
+                return;
+            }
 
             DataRow res;
             try
             {
-				res = Sqlite.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0];
+				res = adapter.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             }
             catch (Exception)
             {

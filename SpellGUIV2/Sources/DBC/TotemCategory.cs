@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-        private SQLite.SQLite Sqlite;
+        private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -20,10 +21,10 @@ namespace SpellEditor.Sources.DBC
         public TotemCategory_DBC_Map body;
         // End DBCs
 
-        public TotemCategory(MainWindow window, SQLite.SQLite SqliteConn)
+        public TotemCategory(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-			Sqlite = SqliteConn;
+            this.main = window;
+			this.adapter = adapter;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -114,7 +115,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-			var result = Sqlite.query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0];
+			var result = adapter.query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             int[] IDs = { Int32.Parse(result[0].ToString()), Int32.Parse(result[1].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)

@@ -10,12 +10,20 @@ using System.Reflection;
 
 namespace SpellEditor.Sources.SQLite
 {
-	class SQLite
+	class SQLite : DBAdapter
 	{
-		 private Config.Config config;
+		private Config.Config config;
         private SQLiteConnection conn = null;
-        public string Table;
-        private bool _updating = false;
+        public string Table
+        {
+            get;
+            set;
+        }
+        public bool Updating
+        {
+            get;
+            set;
+        }
 
         public SQLite(Config.Config config)
         {
@@ -57,7 +65,7 @@ namespace SpellEditor.Sources.SQLite
 
         public void commitChanges(string query, DataTable dataTable)
         {
-            if (_updating)
+            if (Updating)
                 return;
             lock (syncLock)
             {
@@ -72,18 +80,18 @@ namespace SpellEditor.Sources.SQLite
 
         public void execute(string p)
         {
-            if (_updating)
+            if (Updating)
                 return;
             //lock (syncLock)
             //{
-                var cmd = conn.CreateCommand();
+            var cmd = conn.CreateCommand();
                 cmd.CommandText = p;
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
             //}
         }
 
-        private string getTableCreateString()
+        public string getTableCreateString()
         {
             StringBuilder str = new StringBuilder();
             str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
@@ -134,11 +142,6 @@ namespace SpellEditor.Sources.SQLite
             str.Append(@"PRIMARY KEY (`ID`));");
             
             return str.ToString();
-        }
-
-        public void setUpdating(bool p)
-        {
-            _updating = p;
         }
 
 		public static string EscapeString(string keyWord)

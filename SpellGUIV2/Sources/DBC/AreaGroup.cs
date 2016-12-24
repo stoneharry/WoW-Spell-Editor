@@ -1,10 +1,8 @@
-﻿using System;
+﻿using SpellEditor.Sources.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
@@ -13,7 +11,7 @@ namespace SpellEditor.Sources.DBC
     {
         // Begin Window
         private MainWindow main;
-		private SQLite.SQLite Sqlite;
+		private DBAdapter adapter;
         // End Window
 
         // Begin DBCs
@@ -21,10 +19,10 @@ namespace SpellEditor.Sources.DBC
         public AreaGroup_DBC_Map body;
         // End DBCs
 
-        public AreaGroup(MainWindow window, SQLite.SQLite SqliteConn)
+        public AreaGroup(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-			Sqlite = SqliteConn;
+            this.main = window;
+            this.adapter = adapter;
 
             for (UInt32 i = 0; i < header.RecordCount; ++i)
             {
@@ -136,7 +134,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateAreaGroupSelection()
         {
-            uint ID = UInt32.Parse(Sqlite.query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", Sqlite.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = UInt32.Parse(adapter.query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

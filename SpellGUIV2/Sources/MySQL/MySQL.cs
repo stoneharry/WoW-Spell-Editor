@@ -13,12 +13,20 @@ using System.Runtime.CompilerServices;
 
 namespace SpellEditor.Sources.MySQL
 {
-    class MySQL
+    class MySQL : DBAdapter
     {
         private Config.Config config;
         private MySqlConnection conn;
-        public string Table;
-        private bool _updating = false;
+        public string Table
+        {
+            get;
+            set;
+        }
+        public bool Updating
+        {
+            get;
+            set;
+        }
 
         public MySQL(Config.Config config)
         {
@@ -70,7 +78,7 @@ namespace SpellEditor.Sources.MySQL
 
         public void commitChanges(string query, DataTable dataTable)
         {
-            if (_updating)
+            if (Updating)
                 return;
             lock (syncLock)
             {
@@ -85,18 +93,18 @@ namespace SpellEditor.Sources.MySQL
 
         public void execute(string p)
         {
-            if (_updating)
+            if (Updating)
                 return;
             //lock (syncLock)
             //{
-                var cmd = conn.CreateCommand();
+            var cmd = conn.CreateCommand();
                 cmd.CommandText = p;
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
             //}
         }
 
-        private string getTableCreateString()
+        public string getTableCreateString()
         {
             StringBuilder str = new StringBuilder();
             str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
@@ -147,11 +155,6 @@ namespace SpellEditor.Sources.MySQL
             str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");
             
             return str.ToString();
-        }
-
-        public void setUpdating(bool p)
-        {
-            _updating = p;
         }
     }
 }
