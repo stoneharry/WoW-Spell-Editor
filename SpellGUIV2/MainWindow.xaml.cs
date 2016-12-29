@@ -22,6 +22,7 @@ using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
+using SpellEditor.Sources.SQLite;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -562,7 +563,7 @@ namespace SpellEditor
             string errorMsg = "";
             try
             {
-                adapter = new MySQL(config); // TODO: SQLite
+                adapter = new SQLite(config); // TODO: SQLite
             }
             catch (Exception e)
             {
