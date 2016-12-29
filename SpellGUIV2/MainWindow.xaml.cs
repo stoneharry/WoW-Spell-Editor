@@ -1379,9 +1379,9 @@ namespace SpellEditor
                     row["EffectMultipleValue1"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue2"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue3"] = float.Parse(MultipleValue1.Text);
-					row["EffectChainTarget1"] = (UInt32)ChainTarget1.threadSafeText;
-					row["EffectChainTarget2"] = (UInt32)ChainTarget2.threadSafeText;
-					row["EffectChainTarget3"] = (UInt32)ChainTarget3.threadSafeText;
+					row["EffectChainTarget1"] = UInt32.Parse(ChainTarget1.Text);
+					row["EffectChainTarget2"] = UInt32.Parse(ChainTarget2.Text);
+                    row["EffectChainTarget3"] = UInt32.Parse(ChainTarget3.Text);
                     row["EffectItemType1"] = UInt32.Parse(ItemType1.Text);
                     row["EffectItemType2"] = UInt32.Parse(ItemType2.Text);
                     row["EffectItemType3"] = UInt32.Parse(ItemType3.Text);
