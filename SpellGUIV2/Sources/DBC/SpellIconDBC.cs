@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace SpellEditor.Sources.DBC
@@ -41,7 +42,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        public Task LoadImages()
+        public Task LoadImages(double margin)
         {
             return (new TaskFactory()).StartNew(() =>
             {
@@ -87,11 +88,11 @@ namespace SpellEditor.Sources.DBC
                 reader.Close();
                 fileStream.Close();
 
-                UpdateMainWindowIcons();
+                UpdateMainWindowIcons(margin);
             });
         }
 
-        public async void UpdateMainWindowIcons()
+        public async void UpdateMainWindowIcons(double margin)
         {
 			if (adapter == null) {
                 return;
@@ -182,9 +183,7 @@ namespace SpellEditor.Sources.DBC
                     for (int i = -5; i < 6; ++i)
                     {
                         ++iconIndex;
-
                         if (iconIndex >= icons.Length - 1) { break; }
-
                         int this_icons_offset = currentOffset;
 
                         currentOffset += icons[iconIndex].Length + 1;
@@ -204,9 +203,11 @@ namespace SpellEditor.Sources.DBC
                         {
                             System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
 
-                            temp.Width = 64;
-                            temp.Height = 64;
-                            temp.Margin = new System.Windows.Thickness(139 * i, 139 * j, 0, 0);
+                            temp.Width = 32;
+                            temp.Height = 32;
+                            temp.Margin = new System.Windows.Thickness(margin, 0, 0, 0);
+                            temp.VerticalAlignment = VerticalAlignment.Top;
+                            temp.HorizontalAlignment = HorizontalAlignment.Left;
                             temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
                             temp.Name = "Index_" + this_icons_offset;
                             temp.MouseDown += this.ImageDown;

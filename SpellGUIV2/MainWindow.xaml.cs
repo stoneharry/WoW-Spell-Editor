@@ -1506,7 +1506,7 @@ namespace SpellEditor
         {
 			loadIcons = new SpellIconDBC(this, adapter);
 
-            await loadIcons.LoadImages();
+            await loadIcons.LoadImages(slider.Value / 4);
         }
 
         private class Worker : BackgroundWorker
@@ -2670,6 +2670,22 @@ namespace SpellEditor
             public ItemDetail(DataRow userState)
             {
                 this.userState = userState;
+            }
+        }
+
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (IconGrid == null || !IconGrid.IsInitialized)
+            {
+                return;
+            }
+            double newSize = e.NewValue / 4;
+            var margin = new System.Windows.Thickness(newSize, 0, 0, 0);
+            foreach (Image image in IconGrid.Children)
+            {
+                image.Margin = margin;
+                image.Width = e.NewValue;
+                image.Height = e.NewValue;
             }
         }
     };
