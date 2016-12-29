@@ -45,8 +45,15 @@ namespace SpellEditor.Sources.SQLite
 
         ~SQLite()
         {
-            if (conn != null)
-                conn.Close();
+            try
+            {
+                if (conn != null)
+                    conn.Close();
+            }
+            catch (System.ObjectDisposedException)
+            {
+                Console.WriteLine("SQLite connection already disposed.");
+            }
         }
 
         private readonly object syncLock = new object();
