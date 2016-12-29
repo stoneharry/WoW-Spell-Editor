@@ -407,9 +407,13 @@ namespace SpellEditor.Sources.DBC
                 switch (Type.GetTypeCode(f.FieldType))
                 {
                     case TypeCode.UInt32:
+                        {
+                            f.SetValueForValueType(ref record, UInt32.Parse(row[f.Name].ToString()));
+                            break;
+                        }
                     case TypeCode.Int32:
                         {
-                            f.SetValueForValueType(ref record, row[f.Name]);
+                            f.SetValueForValueType(ref record, Int32.Parse(row[f.Name].ToString()));
                             break;
                         }
                     case TypeCode.Single:
