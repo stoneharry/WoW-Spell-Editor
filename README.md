@@ -1,4 +1,4 @@
-Spell-Editor-GUI-V2
+WoW Spell Editor (3.3.5a - 12340)
 ===================
 
 This is a spell editor designed to be used for WoW version 3.3.5a (12340).
