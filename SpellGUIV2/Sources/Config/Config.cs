@@ -9,12 +9,19 @@ namespace SpellEditor.Sources.Config
 {
     class Config
     {
+        public enum ConnectionType
+        {
+            SQLite,
+            MySQL
+        }
+
         public string Host = "127.0.0.1";
         public string User = "root";
         public string Pass = "12345";
         public string Port = "3306";
         public string Database = "SpellEditor";
         public string Table = "Spell";
+        public ConnectionType connectionType = ConnectionType.SQLite;
 
         public void createFile(string h, string u, string p, string po, string db, string tb)
         {

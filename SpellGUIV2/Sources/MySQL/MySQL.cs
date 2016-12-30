@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Config;
-using MySql.Data;
-using MySql.Data.MySqlClient;
+using System;
 using System.Data;
 using System.Reflection;
-using System.Collections;
-using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace SpellEditor.Sources.MySQL
 {

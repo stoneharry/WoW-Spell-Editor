@@ -22,17 +22,21 @@
         <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="750" Width="1300" SelectionChanged="TabControl_SelectionChanged">
             <TabItem Header="Select Spell">
                 <Grid>
-                    <Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="473,40,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,40,0,0" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="255*"/>
+                        <ColumnDefinition Width="1039*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="217.873,40,0,0" Grid.Column="1"/>
+                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,40,0,0" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Column="1"/>
 
-                    <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="455,83,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="548,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="199.873,83,0,0" Grid.Column="1"/>
+                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Column="1"/>
 
-                    <c:ThreadSafeTextBox x:Name="SpellDescriptionGen" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="918,337,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                    <c:ThreadSafeTextBox x:Name="SpellDescriptionGen" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="662.873,337,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" Grid.Column="1"/>
 
-                    <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="448,9,0,0"/>
-                    <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged"/>
-                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,460,0,0" Height="200" Width="1270">
+                    <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="192.873,9,0,0" Grid.Column="1"/>
+                    <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="456" Width="420" SelectionChanged="SelectSpell_SelectionChanged" Focusable="False" Grid.ColumnSpan="2"/>
+                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,460,0,0" Height="200" Width="1270" Grid.ColumnSpan="2">
                         <TabItem x:Name="TabItem_English" Header="English">
                             <Grid>
                                 <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
@@ -549,16 +553,22 @@
             </TabItem>
             <TabItem Header="Icon">
                 <Grid>
-                    <Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="32,48,0,0"/>
-                    <Image Name="CurrentIcon" Margin="115,31,1113,602" Height="64" Width="64"/>
-                    <Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="236,48,0,0"/>
-                    <Image Name="NewIcon" Margin="303,31,925,602" Height="64" Width="64"/>
-                    <ScrollViewer Margin="30,100,425,70">
-                        <Grid Name="IconGrid"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="14*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="628*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
+                    <Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
+                    <Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
+                    <Image Name="NewIcon" Margin="265.907,44,926,614" Height="64" Width="64" Grid.Column="2"/>
+                    <ScrollViewer Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2">
+                        <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1163"/>
                     </ScrollViewer>
-                    <Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click"/>
-                    <Button Name="ResetActiveIconID" Content="Reset Active Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="206,1,0,0" Height="30" Width="120" Click="Button_Click"/>
-                    <Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="737,43,0,0" Height="30" Width="100" Click="Button_Click"/>
+                    <Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
+                    <Button Name="ResetActiveIconID" Content="Reset Active Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
+                    <Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
+                    <Slider x:Name="slider" Margin="845.907,43,91,649" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="Controls icon width &amp; height (pixels)" Focusable="False" Grid.Column="2"/>
                 </Grid>
             </TabItem>
         </TabControl>

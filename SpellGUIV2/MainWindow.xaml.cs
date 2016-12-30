@@ -22,6 +22,7 @@ using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
+using SpellEditor.Sources.SQLite;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -136,7 +137,10 @@ namespace SpellEditor
             //return (int)Locale_language;
         }
 
-		public String GetAreaTableName(UInt32 id) {return loadAreaTable.body.lookup.ContainsKey(id) ? loadAreaTable.body.lookup[id].AreaName : ""; }
+		public String GetAreaTableName(UInt32 id)
+        {
+            return loadAreaTable.body.lookup.ContainsKey(id) ? loadAreaTable.body.lookup[id].AreaName : "";
+        }
 
         #region Loaded
         private void _Loaded(object sender, RoutedEventArgs e)
@@ -513,10 +517,6 @@ namespace SpellEditor
             {
                 HandleErrorMessage(ex.Message);
             }
-
-            // DEBUG
-            SpellDBC dbc = new SpellDBC();
-            dbc.LoadDBCFile(this);
         }
         #endregion
 
@@ -558,11 +558,22 @@ namespace SpellEditor
         {
             config = await getConfig();
             if (config == null)
+            {
+                await this.ShowMessageAsync("ERROR", "Config could not be loaded/created, fatal error.");
                 return;
+            }
             string errorMsg = "";
             try
             {
-                adapter = new MySQL(config); // TODO: SQLite
+                switch (config.connectionType)
+                {
+                    case Config.ConnectionType.MySQL:
+                        adapter = new MySQL(config);
+                        break;
+                    case Config.ConnectionType.SQLite:
+                        adapter = new SQLite(config);
+                        break;
+                }
             }
             catch (Exception e)
             {
@@ -605,9 +616,21 @@ namespace SpellEditor
             try
             {
                 Config config = new Config();
-                if (!File.Exists("config.xml"))
+                var settings = new MetroDialogSettings()
                 {
-
+                    AffirmativeButtonText = "SQLite",
+                    NegativeButtonText = "MySQL",
+                    AnimateHide = true,
+                    AnimateShow = true,
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                };
+                MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor",
+                    "Welcome to a WoW spell editor for version 3.3.5a (12340).\n\n" +
+                    "Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?",
+                    MessageDialogStyle.AffirmativeAndNegative, settings);
+                bool isSqlite = exitCode == MessageDialogResult.Affirmative;
+                if (!File.Exists("config.xml") && !isSqlite)
+                {
                     string host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
                     string user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
                     string pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
@@ -622,8 +645,13 @@ namespace SpellEditor
                         throw new Exception("The MySQL details input are not valid.");
 
                     config.createFile(host, user, pass, port, db, tb);
+                    
                 }
-                config.loadFile();
+                if (File.Exists("config.xml"))
+                {
+                    config.loadFile();
+                }
+                config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
                 return config;
             }
             catch (Exception e)
@@ -757,8 +785,9 @@ namespace SpellEditor
         #region ButtonClicks (and load spell god-function)
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-			if (adapter == null)
+            if (adapter == null)
             {
+                loadAllData();
                 return;
             }
 
@@ -1505,7 +1534,7 @@ namespace SpellEditor
         {
 			loadIcons = new SpellIconDBC(this, adapter);
 
-            await loadIcons.LoadImages();
+            await loadIcons.LoadImages(slider.Value / 4);
         }
 
         private class Worker : BackgroundWorker
@@ -2669,6 +2698,22 @@ namespace SpellEditor
             public ItemDetail(DataRow userState)
             {
                 this.userState = userState;
+            }
+        }
+
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (IconGrid == null || !IconGrid.IsInitialized)
+            {
+                return;
+            }
+            double newSize = e.NewValue / 4;
+            var margin = new System.Windows.Thickness(newSize, 0, 0, 0);
+            foreach (Image image in IconGrid.Children)
+            {
+                image.Margin = margin;
+                image.Width = e.NewValue;
+                image.Height = e.NewValue;
             }
         }
     };
