@@ -239,10 +239,20 @@ namespace SpellEditor.Sources.SpellStringTools
                                 var seconds = Single.Parse(durRec.BaseDuration.ToString()) / 1000f;
                                 newStr = seconds + STR_SECONDS;
                             }
-                            return str.Replace(durationParser.TOKEN, newStr);
+                            str = str.Replace(durationParser.TOKEN, newStr);
                         }
                     }
                 }
+
+				//Handling strings similar to "$1510d" (spell:1510)
+				Match _str = Regex.Match(str, "\\$([0-9]+)d");
+				if (_str.Success)
+				{
+					UInt32 _LinkId =  UInt32.Parse(_str.Groups[1].Value);
+
+					//todo: need add function for find Spell_DBC_Record by id
+					//Using database queries or stored in memory and find in memory??
+
                 return str;
             }
         };
