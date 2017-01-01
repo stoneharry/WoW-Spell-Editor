@@ -247,6 +247,9 @@ namespace SpellEditor.Sources.SpellStringTools
                 }
 
 				//Handling strings similar to "$1510d" (spell:1510)
+
+				//I may not be able to handle this very well, so I only modify one
+				//Is there a need to improve?
 				Match _str = Regex.Match(str, "\\$([0-9]+)d");
 				if (_str.Success)
 				{
