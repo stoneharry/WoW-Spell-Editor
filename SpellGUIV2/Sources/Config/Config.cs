@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace SpellEditor.Sources.Config
 {
-    class Config
+    public class Config
     {
         public enum ConnectionType
         {

@@ -129,7 +129,7 @@ namespace SpellEditor.Sources.DBC
 
                 foreach (Spell_DBC_RecordMap map in body.records)
                 {
-                    tryGenerate(map, 0);
+                    tryGenerate(map, 0,window);
                 }
             }
 
@@ -143,11 +143,11 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        private void tryGenerate(Spell_DBC_RecordMap map, int locale)
+        private void tryGenerate(Spell_DBC_RecordMap map, int locale,MainWindow windows)
         {
             string input = map.spellDesc[locale];
 
-            string output = SpellStringParser.GetParsedForm(input, map.record);
+            string output = SpellStringParser.GetParsedForm(input, map.record,	windows);
         }
 
         private void SaveDBCFile()
@@ -397,6 +397,15 @@ namespace SpellEditor.Sources.DBC
                 }
             });
         }
+
+		public static Spell_DBC_Record GetRecordById(UInt32 id,MainWindow mainWindows)
+		{
+			DataRowCollection Result = mainWindows.GetDBAdapter().query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
+			if (Result != null || Result.Count == 1)
+				return GetRowToRecord(Result[0]);
+
+			return new Spell_DBC_Record();
+		}
 
         public static Spell_DBC_Record GetRowToRecord(DataRow row)
         {
