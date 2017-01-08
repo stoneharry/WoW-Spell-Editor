@@ -109,6 +109,13 @@ namespace SpellEditor.Sources.DBC
         {
             int ID = Int32.Parse(adapter.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
+            if (ID == 0)
+            {
+                main.Category.threadSafeIndex = 0;
+
+                return;
+            }
+
             for (int i = 0; i < header.RecordCount; ++i)
             {
                 if (ID == body.records[i].ID)
