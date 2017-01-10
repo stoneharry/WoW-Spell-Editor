@@ -25,7 +25,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$z",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(hearthstoneLocationParser.TOKEN))
                 {
@@ -38,7 +38,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$v",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(maxTargetLevelParser.TOKEN))
                 {
@@ -51,7 +51,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$x1|$x2|$x3|$x",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 foreach (var token in targetsParser.TOKEN.Split('|'))
                 {
@@ -95,7 +95,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER summaryDamage = new TOKEN_TO_PARSER()
         {
             TOKEN = "$o1|$o2|$o3|$o",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
             var tokens = summaryDamage.TOKEN.Split('|');
             foreach (var token in tokens)
@@ -165,7 +165,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER stacksParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$n",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(stacksParser.TOKEN))
                 {
@@ -178,7 +178,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER periodicTriggerParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$t1|$t2|$t3|$t",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 var tokens = periodicTriggerParser.TOKEN.Split('|');
                 foreach (var token in tokens)
@@ -247,16 +247,11 @@ namespace SpellEditor.Sources.SpellStringTools
                 }
 
 				//Handling strings similar to "$1510d" (spell:1510)
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)d");
 
-				//I may not be able to handle this very well, so I only modify one
-				//Is there a need to improve?
-				Match _str = Regex.Match(str, "\\$([0-9]+)d");
-				if (_str.Success)
-				{
+				foreach (Match _str in _matches)
+				{ 
 					UInt32 _LinkId =  UInt32.Parse(_str.Groups[1].Value);
-
-					//todo: need add function for find Spell_DBC_Record by id
-					//Using database queries or stored in memory and find in memory??
 
 					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindos);
 
@@ -282,14 +277,14 @@ namespace SpellEditor.Sources.SpellStringTools
 						}
 					}
 				}
-                return str;
+				return str;
             }
         };
 
         private static TOKEN_TO_PARSER spellEffectParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$s1|$s2|$s3|$s",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 var tokens = spellEffectParser.TOKEN.Split('|');
 
