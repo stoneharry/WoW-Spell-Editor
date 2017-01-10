@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Text.RegularExpressions;
 using SpellEditor.Sources.Config;
+using System.Windows;
 
 namespace SpellEditor.Sources.SpellStringTools
 {
@@ -88,7 +89,35 @@ namespace SpellEditor.Sources.SpellStringTools
                         str = str.Replace(token, targetCount.ToString());
                     }
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)x([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						uint newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectChainTarget1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectChainTarget2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectChainTarget3;
+						}
+						str = str.Replace(_str.ToString(), newVal.ToString());
+					}
+				}
+				return str;
             }
         };
 
@@ -171,7 +200,22 @@ namespace SpellEditor.Sources.SpellStringTools
                 {
                     str = str.Replace(stacksParser.TOKEN, record.ProcCharges.ToString());
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)n");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _LinkId = UInt32.Parse(_str.Groups[1].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						str = str.Replace(_str.ToString(), _linkRecord.ProcCharges.ToString());
+					}
+				}
+
+				return str;
             }
         };
 
@@ -215,7 +259,36 @@ namespace SpellEditor.Sources.SpellStringTools
                         str = str.Replace(token, (singleVal / 1000).ToString());
                     }
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)t([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						uint newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectAmplitude1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectAmplitude2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectAmplitude3 ;
+						}
+						var singleVal = Single.Parse(newVal.ToString());
+						str = str.Replace(_str.ToString(), (singleVal / 1000).ToString());
+					}
+				}
+				return str;
             }
         };
 
@@ -324,7 +397,34 @@ namespace SpellEditor.Sources.SpellStringTools
                     }
                 }
 
-                return str;
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)s([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						int newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectBasePoints1 + _linkRecord.EffectDieSides1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectBasePoints2 + _linkRecord.EffectDieSides2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectBasePoints3 + _linkRecord.EffectDieSides3;
+						}
+						str = str.Replace(_str.ToString(), newVal.ToString());
+					}
+				}
+				return str;
             }
         };
 
