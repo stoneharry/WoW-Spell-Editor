@@ -114,6 +114,15 @@ namespace SpellEditor
         private int storedLocale = -1;
         #endregion
 
+		public Config GetConfig()
+		{
+			return config;
+		}
+
+		public DBAdapter GetDBAdapter()
+		{
+			return adapter;
+		}
         public MainWindow()
         {
             InitializeComponent();
@@ -1755,7 +1764,7 @@ namespace SpellEditor
                     throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
                 var row = rowResult[0];
                 updateProgress("Updating text control's...");
-                SpellDescriptionGen.threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + GetLocale()].ToString(), row);
+                SpellDescriptionGen.threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + GetLocale()].ToString(), row, this);
                 int i;
                 for (i = 0; i < 9; ++i)
                 {

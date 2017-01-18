@@ -2,7 +2,7 @@
 
 namespace SpellEditor.Sources.Config
 {
-    interface DBAdapter
+    public interface DBAdapter
     {
         string Table { get; set; }
         bool Updating { get; set; }

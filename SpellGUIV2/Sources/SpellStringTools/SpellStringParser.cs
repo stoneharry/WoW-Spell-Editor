@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using System.Text.RegularExpressions;
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.SpellStringTools
 {
@@ -17,13 +19,13 @@ namespace SpellEditor.Sources.SpellStringTools
         private struct TOKEN_TO_PARSER
         {
             public string TOKEN;
-            public Func<string, Spell_DBC_Record, string> tokenFunc;
+            public Func<string, Spell_DBC_Record, MainWindow, string> tokenFunc;
         }
 
         private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$z",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 if (str.Contains(hearthstoneLocationParser.TOKEN))
                 {
@@ -36,7 +38,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$v",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 if (str.Contains(maxTargetLevelParser.TOKEN))
                 {
@@ -49,7 +51,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$x1|$x2|$x3|$x",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 foreach (var token in targetsParser.TOKEN.Split('|'))
                 {
@@ -93,7 +95,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER summaryDamage = new TOKEN_TO_PARSER()
         {
             TOKEN = "$o1|$o2|$o3|$o",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
             var tokens = summaryDamage.TOKEN.Split('|');
             foreach (var token in tokens)
@@ -163,7 +165,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER stacksParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$n",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 if (str.Contains(stacksParser.TOKEN))
                 {
@@ -176,7 +178,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER periodicTriggerParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$t1|$t2|$t3|$t",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 var tokens = periodicTriggerParser.TOKEN.Split('|');
                 foreach (var token in tokens)
@@ -220,7 +222,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER durationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$d",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(durationParser.TOKEN))
                 {
@@ -239,10 +241,47 @@ namespace SpellEditor.Sources.SpellStringTools
                                 var seconds = Single.Parse(durRec.BaseDuration.ToString()) / 1000f;
                                 newStr = seconds + STR_SECONDS;
                             }
-                            return str.Replace(durationParser.TOKEN, newStr);
+                            str = str.Replace(durationParser.TOKEN, newStr);
                         }
                     }
                 }
+
+				//Handling strings similar to "$1510d" (spell:1510)
+
+				//I may not be able to handle this very well, so I only modify one
+				//Is there a need to improve?
+				Match _str = Regex.Match(str, "\\$([0-9]+)d");
+				if (_str.Success)
+				{
+					UInt32 _LinkId =  UInt32.Parse(_str.Groups[1].Value);
+
+					//todo: need add function for find Spell_DBC_Record by id
+					//Using database queries or stored in memory and find in memory??
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						foreach (SpellDuration.SpellDurationRecord durRec in SpellDuration.body.records)
+						{
+							if (durRec.ID == _linkRecord.DurationIndex)
+							{
+								string newStr;
+								// Convert duration to seconds
+								if (durRec.BaseDuration == -1)
+								{
+									newStr = STR_INFINITE_DUR;
+								}
+								else
+								{
+									var seconds = Single.Parse(durRec.BaseDuration.ToString()) / 1000f;
+									newStr = seconds + STR_SECONDS;
+								}
+								str = str.Replace(_str.ToString(), newStr);
+							}
+						}
+					}
+				}
                 return str;
             }
         };
@@ -250,7 +289,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER spellEffectParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$s1|$s2|$s3|$s",
-            tokenFunc = (str, record) =>
+            tokenFunc = (str, record,mainWindosw) =>
             {
                 var tokens = spellEffectParser.TOKEN.Split('|');
 
@@ -302,20 +341,24 @@ namespace SpellEditor.Sources.SpellStringTools
             maxTargetLevelParser, hearthstoneLocationParser
         };
 
-        public static string GetParsedForm(string rawString, Spell_DBC_Record record)
+		public static string GetParsedForm(string rawString, Spell_DBC_Record record, MainWindow mainWindow)
         {
             foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
             {
-                rawString = parser.tokenFunc(rawString, record);
+                rawString = parser.tokenFunc(rawString, record, mainWindow);
             }
             return rawString;
         }
 
-        public static string GetParsedForm(string rawString, DataRow row)
+		public static string GetParsedForm(string rawString, DataRow row, MainWindow mainWindow)
         {
             Spell_DBC_Record record = SpellDBC.GetRowToRecord(row);
-            return GetParsedForm(rawString, record);
+            return GetParsedForm(rawString, record,mainWindow);
         }
 
+		public static Spell_DBC_Record GetRecordById(UInt32 spellId, MainWindow mainWindow)
+		{
+			return SpellDBC.GetRecordById(spellId, mainWindow);
+		}
     }
 }

@@ -153,15 +153,8 @@ namespace SpellEditor.Sources.SQLite
 
 		public static string EscapeString(string keyWord)
 		{
-			keyWord = keyWord.Replace("/", "//");
 			keyWord = keyWord.Replace("'", "''");
-			keyWord = keyWord.Replace("[", "/[");
-			keyWord = keyWord.Replace("]", "/]");
-			keyWord = keyWord.Replace("%", "/%");
-			keyWord = keyWord.Replace("&","/&");
-			keyWord = keyWord.Replace("_", "/_");
-			keyWord = keyWord.Replace("(", "/(");
-			keyWord = keyWord.Replace(")", "/)");
+			
 			return keyWord;
 		}
 	}
