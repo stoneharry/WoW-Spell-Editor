@@ -123,7 +123,7 @@
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Config\DBAdapter.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
-    <Compile Include="Sources\Controls\TextFlags.cs" />
+    <Compile Include="Sources\Constants\TextFlags.cs" />
     <Compile Include="Sources\Controls\ThreadSafeCheckBox.cs" />
     <Compile Include="Sources\Controls\ThreadSafeComboBox.cs" />
     <Compile Include="Sources\Controls\ThreadSafeTextBox.cs" />
