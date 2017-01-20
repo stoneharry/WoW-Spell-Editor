@@ -503,36 +503,40 @@
                         <TabItem Header="Attributes">
                             <Grid>
                                 <Label Content="Attributes:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="92,8,0,0"/>
-                                <ScrollViewer Margin="10,35,939,394">
+                                <ScrollViewer Margin="10,35,939,10">
                                     <StackPanel Name="Attributes1"/>
                                 </ScrollViewer>
                                 <Label Content="Attributes Ex:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,8,0,0"/>
-                                <ScrollViewer Margin="326,35,627,394">
+                                <ScrollViewer Margin="326,35,627,10">
                                     <StackPanel Name="Attributes2"/>
                                 </ScrollViewer>
                                 <Label Content="Attributes Ex2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,8,0,0"/>
-                                <ScrollViewer Margin="638,35,310,394">
+                                <ScrollViewer Margin="638,35,310,10">
                                     <StackPanel Name="Attributes3"/>
                                 </ScrollViewer>
                                 <Label Content="Attributes Ex3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1027,9,0,0"/>
-                                <ScrollViewer Margin="955,35,10,394">
+                                <ScrollViewer Margin="955,35,10,10">
                                     <StackPanel Name="Attributes4"/>
                                 </ScrollViewer>
-                                <Label Content="Attributes Ex4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,218,0,0"/>
-                                <ScrollViewer Margin="10,244,940,185">
-                                    <StackPanel Name="Attributes5"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Attributes2">
+                            <Grid>
+                                <Label Content="Attributes Ex4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,9,0,0"/>
+                                <ScrollViewer Margin="10,35,940,10">
+                                    <StackPanel x:Name="Attributes5"/>
                                 </ScrollViewer>
-                                <Label Content="Attributes Ex5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="397,218,0,0"/>
-                                <ScrollViewer Margin="325,244,627,185">
-                                    <StackPanel Name="Attributes6"/>
+                                <Label Content="Attributes Ex5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="397,9,0,0"/>
+                                <ScrollViewer Margin="325,35,627,10">
+                                    <StackPanel x:Name="Attributes6"/>
                                 </ScrollViewer>
-                                <Label Content="Attributes Ex6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="708,218,0,0"/>
-                                <ScrollViewer Margin="638,244,310,185">
-                                    <StackPanel Name="Attributes7"/>
+                                <Label Content="Attributes Ex6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="708,9,0,0"/>
+                                <ScrollViewer Margin="638,35,310,10">
+                                    <StackPanel x:Name="Attributes7"/>
                                 </ScrollViewer>
-                                <Label Content="Attributes Ex7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1025,218,0,0"/>
-                                <ScrollViewer Margin="955,244,10,185">
-                                    <StackPanel Name="Attributes8"/>
+                                <Label Content="Attributes Ex7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1025,9,0,0"/>
+                                <ScrollViewer Margin="955,35,10,10">
+                                    <StackPanel x:Name="Attributes8"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
