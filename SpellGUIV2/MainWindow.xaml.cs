@@ -23,6 +23,7 @@ using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
+using SpellEditor.Sources.Tools.SpellClassMaskParser;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -97,7 +98,9 @@ namespace SpellEditor
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
-        #endregion
+
+		public SpellClassMaskParser spellClassMaskParser;
+		#endregion
 
 		public Config GetConfig()
 		{
@@ -585,6 +588,9 @@ namespace SpellEditor
 
             PrepareIconEditor();
             PopulateSelectSpell();
+
+			spellClassMaskParser = new SpellClassMaskParser(this);
+
             // Load other DBC's
 			loadAreaTable = new AreaTable(this, adapter);
 			loadCategories = new SpellCategory(this, adapter);
@@ -2303,7 +2309,13 @@ namespace SpellEditor
                 SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
                 SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
                 SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
-                SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
+
+				//todo: add tooltip to SpellMask
+
+
+
+
+				SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
                 ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
                 StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();

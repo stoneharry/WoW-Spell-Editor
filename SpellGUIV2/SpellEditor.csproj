@@ -147,6 +147,7 @@
     <Compile Include="Sources\DBC\SpellRuneCost.cs" />
     <Compile Include="Sources\DBC\TotemCategory.cs" />
     <Compile Include="Sources\MySQL\MySQL.cs" />
+    <Compile Include="Sources\Tools\SpellClassMaskParser\SpellClassMaskParser.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\TokenConsumer.cs" />
