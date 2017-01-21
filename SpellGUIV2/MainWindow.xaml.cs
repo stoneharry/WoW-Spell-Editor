@@ -834,7 +834,12 @@ namespace SpellEditor
                 {
                     adapter.execute(string.Format("delete from `{0}`", adapter.Table));
                     PopulateSelectSpell();
-                    if (SelectSpell.Items.Count == 0)
+
+					//Enabled the ImportDBC Button when Truncate table.
+					if (!ImportDBC.IsEnabled)
+						ImportDBC.IsEnabled = true;
+
+					if (SelectSpell.Items.Count == 0)
                     {
                         res = await this.ShowMessageAsync("Import Spell.dbc?",
                             "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
@@ -1640,7 +1645,12 @@ namespace SpellEditor
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            DataRowCollection collection = (DataRowCollection) e.UserState;
+			//Disable the ImportDBC button if the database is not empty.
+
+			if (spellTable.Rows.Count != 0 && ImportDBC.IsEnabled)
+				ImportDBC.IsEnabled = false;
+
+			DataRowCollection collection = (DataRowCollection) e.UserState;
             SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
             int locale = GetLocale();
             foreach (DataRow row in collection)
