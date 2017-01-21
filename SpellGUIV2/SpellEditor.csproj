@@ -122,6 +122,7 @@
     </ApplicationDefinition>
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Config\DBAdapter.cs" />
+    <Compile Include="Sources\Constants\Locale.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />
     <Compile Include="Sources\Controls\ThreadSafeCheckBox.cs" />
@@ -146,9 +147,9 @@
     <Compile Include="Sources\DBC\SpellRuneCost.cs" />
     <Compile Include="Sources\DBC\TotemCategory.cs" />
     <Compile Include="Sources\MySQL\MySQL.cs" />
-    <Compile Include="Sources\SpellStringTools\SpellStringParser.cs" />
-    <Compile Include="Sources\SpellStringTools\Token.cs" />
-    <Compile Include="Sources\SpellStringTools\TokenConsumer.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\TokenConsumer.cs" />
     <Compile Include="Sources\SQLite\SQLite.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
