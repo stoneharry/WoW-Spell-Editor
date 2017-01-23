@@ -486,8 +486,19 @@ namespace SpellEditor
 					SpellMask33.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
 				}
 
-                // TODO: This should happen when the language has been established 
-                /*
+				foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask21.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask22.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask23.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask31.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+
+
+				// TODO: This should happen when the language has been established 
+				/*
 				switch ((LocaleConstant)GetLanguage())
 				{
 					case LocaleConstant.LOCALE_enUS:
@@ -530,9 +541,23 @@ namespace SpellEditor
                 HandleErrorMessage(ex.Message);
             }
         }
-        #endregion
 
-        public delegate void UpdateProgressFunc(double value);
+		private void HandspellFamilyClassMask_Checked(object obj, RoutedEventArgs e)
+		{
+			ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent;
+
+			uint Mask = 0;
+			for (uint i = 0; i < 32; i++)
+			{
+				ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
+				Mask += cb.IsChecked == true ? (uint)Math.Pow(2, i) : 0;
+			}
+			father.Text = Mask.ToString();
+		}
+
+		#endregion
+
+		public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
         #region ImportSpellDBC
@@ -2338,7 +2363,6 @@ namespace SpellEditor
 				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
 
 				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
-					
 					
 				SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
