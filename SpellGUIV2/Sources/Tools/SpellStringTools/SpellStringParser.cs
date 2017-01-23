@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Text.RegularExpressions;
 using SpellEditor.Sources.Config;
+using System.Windows;
 
 namespace SpellEditor.Sources.SpellStringTools
 {
@@ -25,7 +26,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$z",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(hearthstoneLocationParser.TOKEN))
                 {
@@ -38,7 +39,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$v",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(maxTargetLevelParser.TOKEN))
                 {
@@ -51,7 +52,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$x1|$x2|$x3|$x",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 foreach (var token in targetsParser.TOKEN.Split('|'))
                 {
@@ -88,14 +89,42 @@ namespace SpellEditor.Sources.SpellStringTools
                         str = str.Replace(token, targetCount.ToString());
                     }
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)x([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						uint newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectChainTarget1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectChainTarget2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectChainTarget3;
+						}
+						str = str.Replace(_str.ToString(), newVal.ToString());
+					}
+				}
+				return str;
             }
         };
 
         private static TOKEN_TO_PARSER summaryDamage = new TOKEN_TO_PARSER()
         {
             TOKEN = "$o1|$o2|$o3|$o",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
             var tokens = summaryDamage.TOKEN.Split('|');
             foreach (var token in tokens)
@@ -165,20 +194,35 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER stacksParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$n",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 if (str.Contains(stacksParser.TOKEN))
                 {
                     str = str.Replace(stacksParser.TOKEN, record.ProcCharges.ToString());
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)n");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _LinkId = UInt32.Parse(_str.Groups[1].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						str = str.Replace(_str.ToString(), _linkRecord.ProcCharges.ToString());
+					}
+				}
+
+				return str;
             }
         };
 
         private static TOKEN_TO_PARSER periodicTriggerParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$t1|$t2|$t3|$t",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 var tokens = periodicTriggerParser.TOKEN.Split('|');
                 foreach (var token in tokens)
@@ -215,7 +259,36 @@ namespace SpellEditor.Sources.SpellStringTools
                         str = str.Replace(token, (singleVal / 1000).ToString());
                     }
                 }
-                return str;
+
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)t([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						uint newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectAmplitude1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectAmplitude2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectAmplitude3 ;
+						}
+						var singleVal = Single.Parse(newVal.ToString());
+						str = str.Replace(_str.ToString(), (singleVal / 1000).ToString());
+					}
+				}
+				return str;
             }
         };
 
@@ -247,16 +320,11 @@ namespace SpellEditor.Sources.SpellStringTools
                 }
 
 				//Handling strings similar to "$1510d" (spell:1510)
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)d");
 
-				//I may not be able to handle this very well, so I only modify one
-				//Is there a need to improve?
-				Match _str = Regex.Match(str, "\\$([0-9]+)d");
-				if (_str.Success)
-				{
+				foreach (Match _str in _matches)
+				{ 
 					UInt32 _LinkId =  UInt32.Parse(_str.Groups[1].Value);
-
-					//todo: need add function for find Spell_DBC_Record by id
-					//Using database queries or stored in memory and find in memory??
 
 					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindos);
 
@@ -282,14 +350,14 @@ namespace SpellEditor.Sources.SpellStringTools
 						}
 					}
 				}
-                return str;
+				return str;
             }
         };
 
         private static TOKEN_TO_PARSER spellEffectParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$s1|$s2|$s3|$s",
-            tokenFunc = (str, record,mainWindosw) =>
+            tokenFunc = (str, record,mainWindos) =>
             {
                 var tokens = spellEffectParser.TOKEN.Split('|');
 
@@ -329,7 +397,34 @@ namespace SpellEditor.Sources.SpellStringTools
                     }
                 }
 
-                return str;
+				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)s([1-3])");
+
+				foreach (Match _str in _matches)
+				{
+					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
+					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+
+					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+
+					if (_linkRecord.ID != 0)
+					{
+						int newVal = 0;
+						if (_index == 1)
+						{
+							newVal = _linkRecord.EffectBasePoints1 + _linkRecord.EffectDieSides1;
+						}
+						else if (_index == 2)
+						{
+							newVal = _linkRecord.EffectBasePoints2 + _linkRecord.EffectDieSides2;
+						}
+						else if (_index == 3)
+						{
+							newVal = _linkRecord.EffectBasePoints3 + _linkRecord.EffectDieSides3;
+						}
+						str = str.Replace(_str.ToString(), newVal.ToString());
+					}
+				}
+				return str;
             }
         };
 

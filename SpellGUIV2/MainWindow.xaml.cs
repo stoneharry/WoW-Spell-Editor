@@ -23,6 +23,7 @@ using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
+using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -40,27 +41,12 @@ public class VirtualStrTableEntry
     public UInt32 NewValue;
 };
 
-enum LocaleConstant
-{
-	LOCALE_enUS = 0,
-	LOCALE_koKR = 1,
-	LOCALE_frFR = 2,
-	LOCALE_deDE = 3,
-	LOCALE_zhCN = 4,
-	LOCALE_zhTW = 5,
-	LOCALE_esES = 6,
-	LOCALE_esMX = 7,
-	LOCALE_ruRU = 8
-};
-
 
 namespace SpellEditor
 {
-    partial class MainWindow
+	partial class MainWindow
     {
         #region DBCDefinitions
-		//todo:multilingual.Temporary define zhCN
-		private LocaleConstant Locale_language;
 
         // Begin DBCs
         private AreaTable loadAreaTable = null;
@@ -112,7 +98,9 @@ namespace SpellEditor
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
-        #endregion
+
+		public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
+		#endregion
 
 		public Config GetConfig()
 		{
@@ -483,8 +471,34 @@ namespace SpellEditor
                     interrupts2.Add(box);
                 }
 
-                // TODO: This should happen when the language has been established 
-                /*
+				 for (int i = 0; i < 32; ++i)
+				{
+					uint mask = (uint)Math.Pow(2, i);
+
+					SpellMask11.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask12.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask13.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask21.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask22.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask23.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask31.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask32.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask33.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+				}
+
+				foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask21.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask22.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask23.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask31.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+				foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+
+
+				// TODO: This should happen when the language has been established 
+				/*
 				switch ((LocaleConstant)GetLanguage())
 				{
 					case LocaleConstant.LOCALE_enUS:
@@ -527,9 +541,23 @@ namespace SpellEditor
                 HandleErrorMessage(ex.Message);
             }
         }
-        #endregion
 
-        public delegate void UpdateProgressFunc(double value);
+		private void HandspellFamilyClassMask_Checked(object obj, RoutedEventArgs e)
+		{
+			ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent;
+
+			uint Mask = 0;
+			for (uint i = 0; i < 32; i++)
+			{
+				ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
+				Mask += cb.IsChecked == true ? (uint)Math.Pow(2, i) : 0;
+			}
+			father.Text = Mask.ToString();
+		}
+
+		#endregion
+
+		public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
         #region ImportSpellDBC
@@ -600,6 +628,9 @@ namespace SpellEditor
 
             PrepareIconEditor();
             PopulateSelectSpell();
+
+			spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+
             // Load other DBC's
 			loadAreaTable = new AreaTable(this, adapter);
 			loadCategories = new SpellCategory(this, adapter);
@@ -834,7 +865,12 @@ namespace SpellEditor
                 {
                     adapter.execute(string.Format("delete from `{0}`", adapter.Table));
                     PopulateSelectSpell();
-                    if (SelectSpell.Items.Count == 0)
+
+					//Enabled the ImportDBC Button when Truncate table.
+					if (!ImportDBC.IsEnabled)
+						ImportDBC.IsEnabled = true;
+
+					if (SelectSpell.Items.Count == 0)
                     {
                         res = await this.ShowMessageAsync("Import Spell.dbc?",
                             "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
@@ -1640,7 +1676,12 @@ namespace SpellEditor
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            DataRowCollection collection = (DataRowCollection) e.UserState;
+			//Disable the ImportDBC button if the database is not empty.
+
+			if (spellTable.Rows.Count != 0 && ImportDBC.IsEnabled)
+				ImportDBC.IsEnabled = false;
+
+			DataRowCollection collection = (DataRowCollection) e.UserState;
             SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
             int locale = GetLocale();
             foreach (DataRow row in collection)
@@ -2308,7 +2349,22 @@ namespace SpellEditor
                 SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
                 SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
                 SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
-                SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
+
+				uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
+
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
+					
+				SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
                 ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
                 StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
@@ -2354,6 +2410,20 @@ namespace SpellEditor
 				adapter.Updating = false;
             });
         }
+
+		private void UpdateSpellMaskCheckBox(uint Mask, ThreadSafeComboBox ComBox)
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				uint _mask = (uint)Math.Pow(2, i);
+
+				ThreadSafeCheckBox safeCheckBox = (ThreadSafeCheckBox)ComBox.Items.GetItemAt(i);
+				
+				safeCheckBox.threadSafeChecked = false;
+				if ((Mask & _mask) != 0)
+					safeCheckBox.threadSafeChecked = true;
+			}
+		}
         #endregion
 
         #region SelectionChanges
@@ -2725,6 +2795,18 @@ namespace SpellEditor
                 image.Height = e.NewValue;
             }
         }
-    };
+
+		public string GetSpellNameById(uint spellId)
+		{
+			DataRow[] dr = spellTable.Select(string.Format("id = {0}", spellId));
+
+			if (dr.Length == 1)
+			{
+				return dr[0]["SpellName" + GetLocale()].ToString();
+			}
+			return "";
+		}
+
+	};
     #endregion
 };
