@@ -319,11 +319,11 @@
                                         <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True"/>
                                         <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Damage Multiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="EffectBonusMultiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
@@ -367,11 +367,11 @@
                                         <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Damage Multiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="EffectBonusMultiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
@@ -415,11 +415,11 @@
                                         <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
                                         <Label Content="Damage Multiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="EffectBonusMultiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>

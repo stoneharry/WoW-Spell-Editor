@@ -23,7 +23,7 @@ using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
-using SpellEditor.Sources.Tools.SpellClassMaskParser;
+using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -44,7 +44,7 @@ public class VirtualStrTableEntry
 
 namespace SpellEditor
 {
-    partial class MainWindow
+	partial class MainWindow
     {
         #region DBCDefinitions
 
@@ -99,7 +99,7 @@ namespace SpellEditor
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
 
-		public SpellClassMaskParser spellClassMaskParser;
+		public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
 		#endregion
 
 		public Config GetConfig()
@@ -471,6 +471,21 @@ namespace SpellEditor
                     interrupts2.Add(box);
                 }
 
+				 for (int i = 0; i < 32; ++i)
+				{
+					uint mask = (uint)Math.Pow(2, i);
+
+					SpellMask11.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask12.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask13.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask21.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask22.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask23.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask31.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask32.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+					SpellMask33.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+				}
+
                 // TODO: This should happen when the language has been established 
                 /*
 				switch ((LocaleConstant)GetLanguage())
@@ -589,7 +604,7 @@ namespace SpellEditor
             PrepareIconEditor();
             PopulateSelectSpell();
 
-			spellClassMaskParser = new SpellClassMaskParser(this);
+			spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
 
             // Load other DBC's
 			loadAreaTable = new AreaTable(this, adapter);
@@ -2310,11 +2325,21 @@ namespace SpellEditor
                 SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
                 SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
 
-				//todo: add tooltip to SpellMask
+				uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
 
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
+				UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
 
-
-
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
+					
+					
 				SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
                 ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
@@ -2361,6 +2386,20 @@ namespace SpellEditor
 				adapter.Updating = false;
             });
         }
+
+		private void UpdateSpellMaskCheckBox(uint Mask, ThreadSafeComboBox ComBox)
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				uint _mask = (uint)Math.Pow(2, i);
+
+				ThreadSafeCheckBox safeCheckBox = (ThreadSafeCheckBox)ComBox.Items.GetItemAt(i);
+				
+				safeCheckBox.threadSafeChecked = false;
+				if ((Mask & _mask) != 0)
+					safeCheckBox.threadSafeChecked = true;
+			}
+		}
         #endregion
 
         #region SelectionChanges
@@ -2732,6 +2771,18 @@ namespace SpellEditor
                 image.Height = e.NewValue;
             }
         }
-    };
+
+		public string GetSpellNameById(uint spellId)
+		{
+			DataRow[] dr = spellTable.Select(string.Format("id = {0}", spellId));
+
+			if (dr.Length == 1)
+			{
+				return dr[0]["SpellName" + GetLocale()].ToString();
+			}
+			return "";
+		}
+
+	};
     #endregion
 };
