@@ -454,7 +454,7 @@ namespace SpellEditor
 					box.Margin = new Thickness(0, 5, 0, 0);
 					
                     AuraInterruptFlagsGrid.Children.Add(box);
-                    interrupts3.Add(box);
+                    interrupts2.Add(box);
                 }
 
                 string[] channel_interrupt_strings = { "None", "On 1", "On 2", "On 3", "On 4", "On 5", "On 6", "On 7", "On 8", "On 9", "On 10", "On 11", "On 12", "On 13", "On 14", "On 15", "On 16", "On 17", "On 18" };
@@ -468,7 +468,7 @@ namespace SpellEditor
 
 
                     ChannelInterruptFlagsGrid.Children.Add(box);
-                    interrupts2.Add(box);
+                    interrupts3.Add(box);
                 }
 
 				 for (int i = 0; i < 32; ++i)
