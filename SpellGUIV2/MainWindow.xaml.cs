@@ -372,9 +372,9 @@ namespace SpellEditor
                     targetBoxes.Add(box);
                 }
 
-                string[] proc_strings = { "None", "Any Hostile Action", "On Gain Experience", "On Melee Attack", "On Crit Hit Victim", "On Cast Spell", "On Physical Attack Victim", "On Ranged Attack", "On Ranged Crit Attack", "On Physical Attack", "On Melee Attack Victim", "On Spell Hit", "On Ranged Crit Attack Victim", "On Crit Attack", "On Ranged Attack Victim", "On Pre Dispell Aura Victim", "On Spell Land Victim", "On Cast Specific Spell", "On Spell Hit Victim", "On Spell Crit Hit Victim", "On Target Death", "On Any Damage Victim", "On Trap Trigger", "On Auto Shot Hit", "On Absorb", "On Resist Victim", "On Dodge Victim", "On Death", "Remove On Use", "Misc", "On Block Victim", "On Spell Crit Hit" };
-
-                for (int i = 0; i < proc_strings.Length; ++i)
+				string[] proc_strings = { "None", "On Death", "On Target Killed (yielding XP or Honor)", "On Melee Attack Done", "On Melee Attack Received", "Physical Ability Damage Done", "On Physical Ability Damage Taken", "On Ranged Autoattack Done", "On Ranged Autoattack Taken", "On Ranged Ability Damage Done", "On Ranged Ability Damage Taken", "On Positive Spell Damage Done (Class NONE) HEAL??", "On Positive Spell Damage Taken (Class NONE) HEAL??", "On Spell Damage Done (Class NONE)", "On Spell Damage Received (Class NONE)", "On Positive Spell Damage Done (MAGIC)", "On Positive Spell Damage Taken (MAGIC)", "On Spell Damage Done (MAGIC)", "On Spell Damage Received (MAGIC)", "On Periodic Effect Done (Damage/heal)", "On Periodic Effect Taken (Damage/heal)", "On Any Damage Taken", "On Trap Trigger", "On Mainhand Autoattack Hit", "On Offhand Autoattack Hit", "On Death" };
+				// modified proc_strings according to https://wowdev.wiki/DB/Spell : 3.3.5.12340 -> procFlags
+				for (int i = 0; i < proc_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
