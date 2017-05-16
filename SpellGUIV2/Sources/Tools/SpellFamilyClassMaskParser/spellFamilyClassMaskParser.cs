@@ -16,7 +16,8 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 	{
 		public SpellFamilyClassMaskParser(MainWindow window)
 		{
-			spellFamilyClassMaskStore = new ArrayList[18, 3, 32];
+			spellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
+																	// by giving it some unique id for procces on our own spells
 
 			DataTable dt = window.GetDBAdapter().query(string.Format("SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM {0}",window.GetConfig().Table));
 

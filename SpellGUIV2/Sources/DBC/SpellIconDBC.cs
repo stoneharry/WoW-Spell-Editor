@@ -94,7 +94,7 @@ namespace SpellEditor.Sources.DBC
 
         public async void UpdateMainWindowIcons(double margin)
         {
-			if (adapter == null) {
+			if (adapter == null || main.selectedID == 0) { // adapter.query below caused unhandled exception with main.selectedID as 0.
                 return;
             }
 
