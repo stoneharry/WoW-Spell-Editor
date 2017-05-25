@@ -1407,20 +1407,18 @@ namespace SpellEditor
                         row["EquippedItemInventoryTypeMask"] = (Int32)mask;
                     }
 
-					if (equippedItemSubClassMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemSubClassMask"] = 0; }
+					if (EquippedItemClass.Text == "None")
+					{
+						row["EquippedItemClass"] = -1;
+						row["EquippedItemSubClassMask"] = 0;
+					}
 					else
 					{
-						UInt32 mask = 0;
-						UInt32 flag = 1;
-
-						for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
-						{
-							if (equippedItemSubClassMaskBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
-
-							flag = flag + flag;
-						}
-
-						row["EquippedItemSubClassMask"] = (Int32)mask;
+						uint Mask = 0;
+						for (int i = 0; i < equippedItemSubClassMaskBoxes.Count; i++)
+							Mask += equippedItemSubClassMaskBoxes[i].IsChecked.Value ? (uint)Math.Pow(2, i) : 0;
+						
+						row["EquippedItemSubClassMask"] = Mask;
 					}
 
                     row["Effect1"] = (UInt32)SpellEffect1.SelectedIndex;
