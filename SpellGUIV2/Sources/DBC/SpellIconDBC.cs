@@ -145,7 +145,7 @@ namespace SpellEditor.Sources.DBC
 
             catch (Exception ex)
             {
-                main.HandleErrorMessage(ex.Message);
+				main.Dispatcher.Invoke(new Action(()=>main.HandleErrorMessage(ex.Message)));
 
                 return;
             }
