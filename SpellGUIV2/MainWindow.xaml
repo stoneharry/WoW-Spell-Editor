@@ -567,10 +567,12 @@
                     <Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
                     <Image Name="NewIcon" Margin="265.907,44,926,614" Height="64" Width="64" Grid.Column="2"/>
                     <ScrollViewer Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2">
-                        <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1163"/>
+                        <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
                     </ScrollViewer>
                     <Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
                     <Button Name="ResetActiveIconID" Content="Reset Active Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
+                    <Label Content="Filter icons:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
                     <Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
                     <Slider x:Name="slider" Margin="845.907,43,91,649" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="Controls icon width &amp; height (pixels)" Focusable="False" Grid.Column="2"/>
                 </Grid>

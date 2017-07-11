@@ -24,6 +24,7 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
+using System.Collections;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -715,6 +716,10 @@ namespace SpellEditor
             {
                 _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
             }
+            else if (sender == FilterIcons && e.Key == Key.Back)
+            {
+                _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
+            }
         }
 
         private async void _KeyDown(object sender, KeyEventArgs e)
@@ -821,6 +826,15 @@ namespace SpellEditor
                 };
 
                 imageLoadEventRunning = false;
+            }
+            else if (sender == FilterIcons)
+            {
+                var input = FilterIcons.Text.ToLower();
+                foreach (Image image in IconGrid.Children)
+                {
+                    var name = image.ToolTip.ToString().ToLower();
+                    image.Visibility = name.Contains(input) ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
         #endregion

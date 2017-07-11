@@ -210,6 +210,7 @@ namespace SpellEditor.Sources.DBC
                             temp.HorizontalAlignment = HorizontalAlignment.Left;
                             temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
                             temp.Name = "Index_" + this_icons_offset;
+                            temp.ToolTip = icons[iconIndex];
                             temp.MouseDown += this.ImageDown;
 
                             main.IconGrid.Children.Add(temp);
