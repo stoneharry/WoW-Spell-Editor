@@ -118,7 +118,10 @@ namespace SpellEditor
 
         public async void HandleErrorMessage(string msg)
         {
-            await this.ShowMessageAsync("Spell Editor", msg);
+            if (Dispatcher.CheckAccess())
+                await this.ShowMessageAsync("Spell Editor", msg);
+            else
+                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync("Spell Editor", msg)));
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
