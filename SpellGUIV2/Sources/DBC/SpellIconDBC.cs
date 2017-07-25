@@ -28,6 +28,8 @@ namespace SpellEditor.Sources.DBC
 
         // Begin Other
         private static bool loadedAllIcons = false;
+        private double? iconSize = null;
+        private Thickness? iconMargin = null;
         // End Other
 
         public SpellIconDBC(MainWindow window, DBAdapter adapter)
@@ -90,6 +92,12 @@ namespace SpellEditor.Sources.DBC
 
                 UpdateMainWindowIcons(margin);
             });
+        }
+
+        public void updateIconSize(double newSize, Thickness margin)
+        {
+            iconSize = newSize;
+            iconMargin = margin;
         }
 
         public async void UpdateMainWindowIcons(double margin)
@@ -203,9 +211,9 @@ namespace SpellEditor.Sources.DBC
                         {
                             System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
 
-                            temp.Width = 32;
-                            temp.Height = 32;
-                            temp.Margin = new System.Windows.Thickness(margin, 0, 0, 0);
+                            temp.Width = iconSize == null ? 32 : iconSize.Value;
+                            temp.Height = iconSize == null ? 32 : iconSize.Value;
+                            temp.Margin = iconMargin == null ? new System.Windows.Thickness(margin, 0, 0, 0) : iconMargin.Value;
                             temp.VerticalAlignment = VerticalAlignment.Top;
                             temp.HorizontalAlignment = HorizontalAlignment.Left;
                             temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));

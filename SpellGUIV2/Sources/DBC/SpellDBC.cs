@@ -126,11 +126,6 @@ namespace SpellEditor.Sources.DBC
 
                 reader.Close();
                 fileStream.Close();
-
-                foreach (Spell_DBC_RecordMap map in body.records)
-                {
-                    tryGenerate(map, 0,window);
-                }
             }
 
             catch (Exception ex)
@@ -141,13 +136,6 @@ namespace SpellEditor.Sources.DBC
             }
 
             return true;
-        }
-
-        private void tryGenerate(Spell_DBC_RecordMap map, int locale,MainWindow windows)
-        {
-            string input = map.spellDesc[locale];
-
-            string output = SpellStringParser.GetParsedForm(input, map.record,	windows);
         }
 
         private void SaveDBCFile()
@@ -413,6 +401,9 @@ namespace SpellEditor.Sources.DBC
             var fields = record.GetType().GetFields();
             foreach (var f in fields)
             {
+                if (!row.Table.Columns.Contains(f.Name)) {
+                    continue;
+                }
                 switch (Type.GetTypeCode(f.FieldType))
                 {
                     case TypeCode.UInt32:
