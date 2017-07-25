@@ -389,9 +389,8 @@ namespace SpellEditor.Sources.DBC
 		public static Spell_DBC_Record GetRecordById(UInt32 id,MainWindow mainWindows)
 		{
 			DataRowCollection Result = mainWindows.GetDBAdapter().query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
-			if (Result != null || Result.Count == 1)
+			if (Result != null && Result.Count == 1)
 				return GetRowToRecord(Result[0]);
-
 			return new Spell_DBC_Record();
 		}
 
