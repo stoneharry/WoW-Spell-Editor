@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Config;
+﻿using SereniaBLPLib;
+using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -203,9 +204,24 @@ namespace SpellEditor.Sources.DBC
                             continue;
                         }
 
-                        fileStream = new FileStream(icons[iconIndex] + ".blp", FileMode.Open);
-                        image = new SereniaBLPLib.BlpFile(fileStream);
-                        bit = image.getBitmap(0);
+                        bool loaded = false;
+                        try
+                        {
+                            fileStream = new FileStream(icons[iconIndex] + ".blp", FileMode.Open);
+                            image = new BlpFile(fileStream);
+                            bit = image.getBitmap(0);
+                            loaded = true;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Error loading image, unsupported BLP format: {icons[iconIndex]}.blp\n{e.Message}\n{e}");
+                        }
+                        if (!loaded)
+                        {
+                            image?.close();
+                            fileStream?.Close();
+                            continue;
+                        }
 
                         await Task.Factory.StartNew(() =>
                         {
