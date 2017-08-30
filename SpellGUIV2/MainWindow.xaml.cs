@@ -397,7 +397,22 @@ namespace SpellEditor
                     targetBoxes.Add(box);
                 }
 
-				string[] proc_strings = { "None", "On Death", "On Target Killed (yielding XP or Honor)", "On Melee Attack Done", "On Melee Attack Received", "Physical Ability Damage Done", "On Physical Ability Damage Taken", "On Ranged Autoattack Done", "On Ranged Autoattack Taken", "On Ranged Ability Damage Done", "On Ranged Ability Damage Taken", "On Positive Spell Damage Done (Class NONE) HEAL??", "On Positive Spell Damage Taken (Class NONE) HEAL??", "On Spell Damage Done (Class NONE)", "On Spell Damage Received (Class NONE)", "On Positive Spell Damage Done (MAGIC)", "On Positive Spell Damage Taken (MAGIC)", "On Spell Damage Done (MAGIC)", "On Spell Damage Received (MAGIC)", "On Periodic Effect Done (Damage/heal)", "On Periodic Effect Taken (Damage/heal)", "On Any Damage Taken", "On Trap Trigger", "On Mainhand Autoattack Hit", "On Offhand Autoattack Hit", "On Death" };
+				string[] proc_strings = { "None", "On Death", "On Target Killed (yielding XP or Honor)", "On Melee Attack Done",
+					"On Melee Attack Received", "Physical Ability Damage Done", "On Physical Ability Damage Taken",
+					"On Ranged Autoattack Done", "On Ranged Autoattack Taken", "On Ranged Ability Damage Done",
+					"On Ranged Ability Damage Taken",
+					"On Heal Done (SpellDamageType NONE)","On Heal Taken (SpellDamageType NONE)",
+
+					"On Spell Damage Done (SpellDamageType NONE)", "On Spell Damage Received (SpellDamageType NONE)",
+
+					"On Heal Done (SpellDamageType MAGIC)", "On Heal Taken (SpellDamageType MAGIC)",
+
+					"On Spell Damage Done (SpellDamageType MAGIC)", "On Spell Damage Received (SpellDamageType MAGIC)",
+
+					"On Periodic Effect Done (Damage/heal)", "On Periodic Effect Taken (Damage/heal)",
+
+					"On Any Damage Taken",
+					"On Trap Trigger", "On Mainhand Autoattack Hit", "On Offhand Autoattack Hit", "On Death" };
 				// modified proc_strings according to https://wowdev.wiki/DB/Spell : 3.3.5.12340 -> procFlags
 				for (int i = 0; i < proc_strings.Length; ++i)
                 {
