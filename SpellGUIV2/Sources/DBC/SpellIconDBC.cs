@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Config;
+﻿using SereniaBLPLib;
+using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,6 +29,8 @@ namespace SpellEditor.Sources.DBC
 
         // Begin Other
         private static bool loadedAllIcons = false;
+        private double? iconSize = null;
+        private Thickness? iconMargin = null;
         // End Other
 
         public SpellIconDBC(MainWindow window, DBAdapter adapter)
@@ -92,6 +95,12 @@ namespace SpellEditor.Sources.DBC
             });
         }
 
+        public void updateIconSize(double newSize, Thickness margin)
+        {
+            iconSize = newSize;
+            iconMargin = margin;
+        }
+
         public async void UpdateMainWindowIcons(double margin)
         {
 			if (adapter == null || main.selectedID == 0) { // adapter.query below caused unhandled exception with main.selectedID as 0.
@@ -145,7 +154,7 @@ namespace SpellEditor.Sources.DBC
 
             catch (Exception ex)
             {
-                main.HandleErrorMessage(ex.Message);
+				main.Dispatcher.Invoke(new Action(()=>main.HandleErrorMessage(ex.Message)));
 
                 return;
             }
@@ -195,21 +204,37 @@ namespace SpellEditor.Sources.DBC
                             continue;
                         }
 
-                        fileStream = new FileStream(icons[iconIndex] + ".blp", FileMode.Open);
-                        image = new SereniaBLPLib.BlpFile(fileStream);
-                        bit = image.getBitmap(0);
+                        bool loaded = false;
+                        try
+                        {
+                            fileStream = new FileStream(icons[iconIndex] + ".blp", FileMode.Open);
+                            image = new BlpFile(fileStream);
+                            bit = image.getBitmap(0);
+                            loaded = true;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Error loading image, unsupported BLP format: {icons[iconIndex]}.blp\n{e.Message}\n{e}");
+                        }
+                        if (!loaded)
+                        {
+                            image?.close();
+                            fileStream?.Close();
+                            continue;
+                        }
 
                         await Task.Factory.StartNew(() =>
                         {
                             System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
 
-                            temp.Width = 32;
-                            temp.Height = 32;
-                            temp.Margin = new System.Windows.Thickness(margin, 0, 0, 0);
+                            temp.Width = iconSize == null ? 32 : iconSize.Value;
+                            temp.Height = iconSize == null ? 32 : iconSize.Value;
+                            temp.Margin = iconMargin == null ? new System.Windows.Thickness(margin, 0, 0, 0) : iconMargin.Value;
                             temp.VerticalAlignment = VerticalAlignment.Top;
                             temp.HorizontalAlignment = HorizontalAlignment.Left;
                             temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
                             temp.Name = "Index_" + this_icons_offset;
+                            temp.ToolTip = icons[iconIndex];
                             temp.MouseDown += this.ImageDown;
 
                             main.IconGrid.Children.Add(temp);
