@@ -23,7 +23,20 @@ namespace SpellEditor.Sources.SpellStringTools
             public Func<string, Spell_DBC_Record, MainWindow, string> tokenFunc;
         }
 
-        private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
+		private static TOKEN_TO_PARSER procChanceParser = new TOKEN_TO_PARSER()
+		{
+			TOKEN = "$h",
+			tokenFunc = (str, record, mainWindos) =>
+			{
+				if (str.Contains(procChanceParser.TOKEN))
+				{
+					str = str.Replace(procChanceParser.TOKEN, record.ProcChance.ToString());
+				}
+				return str;
+			}
+		};
+
+		private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$z",
             tokenFunc = (str, record,mainWindos) =>
@@ -431,7 +444,8 @@ namespace SpellEditor.Sources.SpellStringTools
         // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
 
         private static TOKEN_TO_PARSER[] TOKEN_PARSERS = {
-            spellEffectParser, durationParser, stacksParser,
+			procChanceParser,
+			spellEffectParser, durationParser, stacksParser,
             periodicTriggerParser, summaryDamage, targetsParser,
             maxTargetLevelParser, hearthstoneLocationParser
         };
