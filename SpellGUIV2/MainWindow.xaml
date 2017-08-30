@@ -287,14 +287,14 @@
 							<ScrollViewer Margin="7,186,962,38">
 								<StackPanel Name="TargetEditorGrid"/>
 							</ScrollViewer>
-							<Label Content="Procs:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="587,160,0,0"/>
-							<ScrollViewer Margin="456,186,513,38">
+							<Label Content="Procs:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="600,160,0,0"/>
+							<ScrollViewer Margin="456,186,478.4,38.2">
 								<StackPanel Name="ProcEditorGrid"/>
 							</ScrollViewer>
-							<Label Content="Proc Charges:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="773,160,0,0"/>
-							<c:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="768.5,186,0,0" Width="90" TextWrapping="Wrap"/>
-							<Label Content="Proc Chance:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="774,236,0,0"/>
-							<c:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="768,262,0,0" Width="90" TextWrapping="Wrap"/>
+							<Label Content="Proc Charges:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,160,0,0"/>
+							<c:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,186,0,0" Width="90" TextWrapping="Wrap"/>
+							<Label Content="Proc Chance:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,236,0,0"/>
+							<c:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
 						</Grid>
 					</TabItem>
 					<TabItem Header="Effects 2">
