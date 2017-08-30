@@ -24,6 +24,7 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
+using System.Collections;
 
 // Public use of a DBC Header file
 public struct DBC_Header
@@ -99,7 +100,9 @@ namespace SpellEditor
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
 
-		public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
+        private List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
+        private List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
+        public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
 		#endregion
 
 		public Config GetConfig()
@@ -118,7 +121,10 @@ namespace SpellEditor
 
         public async void HandleErrorMessage(string msg)
         {
-            await this.ShowMessageAsync("Spell Editor", msg);
+            if (Dispatcher.CheckAccess())
+                await this.ShowMessageAsync("Spell Editor", msg);
+            else
+                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync("Spell Editor", msg)));
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -182,6 +188,25 @@ namespace SpellEditor
                 stringObjectMap.Add(33, SpellDescription6);
                 stringObjectMap.Add(34, SpellDescription7);
                 stringObjectMap.Add(35, SpellDescription8);
+
+                spellDescGenFields.Add(SpellDescriptionGen0);
+                spellDescGenFields.Add(SpellDescriptionGen1);
+                spellDescGenFields.Add(SpellDescriptionGen2);
+                spellDescGenFields.Add(SpellDescriptionGen3);
+                spellDescGenFields.Add(SpellDescriptionGen4);
+                spellDescGenFields.Add(SpellDescriptionGen5);
+                spellDescGenFields.Add(SpellDescriptionGen6);
+                spellDescGenFields.Add(SpellDescriptionGen7);
+                spellDescGenFields.Add(SpellDescriptionGen8);
+                spellTooltipGenFields.Add(SpellTooltipGen0);
+                spellTooltipGenFields.Add(SpellTooltipGen1);
+                spellTooltipGenFields.Add(SpellTooltipGen2);
+                spellTooltipGenFields.Add(SpellTooltipGen3);
+                spellTooltipGenFields.Add(SpellTooltipGen4);
+                spellTooltipGenFields.Add(SpellTooltipGen5);
+                spellTooltipGenFields.Add(SpellTooltipGen6);
+                spellTooltipGenFields.Add(SpellTooltipGen7);
+                spellTooltipGenFields.Add(SpellTooltipGen8);
 
                 string[] attFlags = { "Unknown 0", "On Next Ranged", "On Next Swing (Player)", "Is Replenishment", "Ability", "Trade Spell", "Passive Spell", "Hidden Client-Side", "Hide in Combat Log", "Target Main-Hand Item", "On Next Swing (NPCs)", "Unknown 11", "Daytime Only", "Night Only", "Indoors Only", "Outdoors Only", "No Shapeshift", "Requires Stealth", "Don't Affect Sheath State", "Spell Damage depends on Caster Level", "Stops Auto-Attack", "Impossible to Dodge, Parry or Block", "Track Target while Casting", "Castable While Dead", "Castable While Mounted", "Start Cooldown after Aura Fades", "Negative", "Castable While Sitting", "Cannot be used in Combat", "Unaffected by Invulnerability", "Breakable by Damage", "Aura Cannot be Cancelled" };
 
@@ -712,6 +737,10 @@ namespace SpellEditor
             {
                 _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
             }
+            else if (sender == FilterIcons && e.Key == Key.Back)
+            {
+                _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
+            }
         }
 
         private async void _KeyDown(object sender, KeyEventArgs e)
@@ -818,6 +847,15 @@ namespace SpellEditor
                 };
 
                 imageLoadEventRunning = false;
+            }
+            else if (sender == FilterIcons)
+            {
+                var input = FilterIcons.Text.ToLower();
+                foreach (Image image in IconGrid.Children)
+                {
+                    var name = image.ToolTip.ToString().ToLower();
+                    image.Visibility = name.Contains(input) ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
         #endregion
@@ -1407,20 +1445,18 @@ namespace SpellEditor
                         row["EquippedItemInventoryTypeMask"] = (Int32)mask;
                     }
 
-					if (equippedItemSubClassMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemSubClassMask"] = 0; }
+					if (EquippedItemClass.Text == "None")
+					{
+						row["EquippedItemClass"] = -1;
+						row["EquippedItemSubClassMask"] = 0;
+					}
 					else
 					{
-						UInt32 mask = 0;
-						UInt32 flag = 1;
-
-						for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
-						{
-							if (equippedItemSubClassMaskBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
-
-							flag = flag + flag;
-						}
-
-						row["EquippedItemSubClassMask"] = (Int32)mask;
+						uint Mask = 0;
+						for (int i = 0; i < equippedItemSubClassMaskBoxes.Count; i++)
+							Mask += equippedItemSubClassMaskBoxes[i].IsChecked.Value ? (uint)Math.Pow(2, i) : 0;
+						
+						row["EquippedItemSubClassMask"] = Mask;
 					}
 
                     row["Effect1"] = (UInt32)SpellEffect1.SelectedIndex;
@@ -1793,6 +1829,22 @@ namespace SpellEditor
         }
         #endregion
 
+
+        private void SpellDescriptionGen_TextChanged(object sender, TextChangedEventArgs e) => SpellGenRefresh(sender as ThreadSafeTextBox, 0);
+        private void SpellTooltipGen_TextChanged(object sender, TextChangedEventArgs e) => SpellGenRefresh(sender as ThreadSafeTextBox, 1);
+        private void SpellGenRefresh(ThreadSafeTextBox sender, int type)
+        {
+            int locale;
+            if (!int.TryParse(sender.Name[sender.Name.Length - 1].ToString(), out locale))
+                return;
+            var spell = GetSpellRowById(selectedID);
+            var text = SpellStringParser.GetParsedForm(sender.Text, spell, this);
+            if (type == 0)
+                spellDescGenFields[locale].threadSafeText = text;
+            else if (type == 1)
+                spellTooltipGenFields[locale].threadSafeText = text;
+        }
+
         #region LoadSpell (load spell god-function)
         private Task loadSpell(UpdateTextFunc updateProgress)
         {
@@ -1805,8 +1857,12 @@ namespace SpellEditor
                     throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
                 var row = rowResult[0];
                 updateProgress("Updating text control's...");
-                SpellDescriptionGen.threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + GetLocale()].ToString(), row, this);
                 int i;
+                for (i = 0; i < 9; ++i)
+                {
+                    spellDescGenFields[i].threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + i].ToString(), row, this);
+                    spellTooltipGenFields[i].threadSafeText = SpellStringParser.GetParsedForm(row["SpellTooltip" + i].ToString(), row, this);
+                }
                 for (i = 0; i < 9; ++i)
                 {
                     ThreadSafeTextBox box;
@@ -2788,6 +2844,7 @@ namespace SpellEditor
             }
             double newSize = e.NewValue / 4;
             var margin = new System.Windows.Thickness(newSize, 0, 0, 0);
+            loadIcons?.updateIconSize(newSize, margin);
             foreach (Image image in IconGrid.Children)
             {
                 image.Margin = margin;
@@ -2796,17 +2853,15 @@ namespace SpellEditor
             }
         }
 
-		public string GetSpellNameById(uint spellId)
-		{
-			DataRow[] dr = spellTable.Select(string.Format("id = {0}", spellId));
+        public DataRow GetSpellRowById(uint spellId) => adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
 
+        public string GetSpellNameById(uint spellId)
+		{
+			var dr = spellTable.Select(string.Format("id = {0}", spellId));
 			if (dr.Length == 1)
-			{
 				return dr[0]["SpellName" + GetLocale()].ToString();
-			}
 			return "";
 		}
-
-	};
+    };
     #endregion
 };
