@@ -406,7 +406,10 @@ namespace SpellEditor.Sources.SpellStringTools
                                     + record.EffectBasePoints2 + record.EffectDieSides2
                                     + record.EffectBasePoints3 + record.EffectDieSides3;
                         }
-                        str = str.Replace(token, newVal.ToString());
+						if (newVal < 0)
+							newVal *= -1;
+
+						str = str.Replace(token, newVal.ToString());
                     }
                 }
 
