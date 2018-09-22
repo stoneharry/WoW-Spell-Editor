@@ -63,7 +63,7 @@ $g(Mr:Mrs) (specific gender description)
            the same as quests like senjor\lady
 ------------------------------------------------------
 $l - Specific locale description(mostly with the ruRU locale)
-          typocal form: $l:Êåêñ:Êåêñà:Êåêñîâ)(if try to translate it $l:One_Cake:two_Cakes:lot_cakes(higher than 2)
+          typocal form: $l:ÃŠÃ¥ÃªÃ±:ÃŠÃ¥ÃªÃ±Ã :ÃŠÃ¥ÃªÃ±Ã®Ã¢)(if try to translate it $l:One_Cake:two_Cakes:lot_cakes(higher than 2)
           (nevermind, a feature of the Russian language)
 ------------------------------------------------------
 $q - misc value
@@ -122,9 +122,9 @@ we know that this spell deals a 60% of weapon damage +150%, this can be present 
 Unknown params of formulas:
 $MWS - some of meele spells
 $PL
-$FLOOR
-$COND
-$GT
+$FLOOR - I presume the math.floor function, see https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
+$COND - Condition?
+$GT - Greater than?
 
 unused tags:
 $j
