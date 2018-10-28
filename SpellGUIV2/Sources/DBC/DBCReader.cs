@@ -20,6 +20,11 @@ namespace SpellEditor.Sources.DBC
             this.filePath = filePath;
         }
 
+        public string LookupStringOffset(uint offset)
+        {
+            return stringsMap[offset].Value;
+        }
+
         /**
          * Reads a DBC record from a given binary reader.
          */

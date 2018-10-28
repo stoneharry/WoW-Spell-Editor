@@ -146,13 +146,13 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() => 
             {
-                /*UInt32 currentRecord = 0;
+                uint currentRecord = 0;
                 try
                 {
-                    UInt32 count = Header.RecordCount;
-                    UInt32 index = 0;
+                    uint count = Header.RecordCount;
+                    uint index = 0;
                     StringBuilder q = null;
-                    foreach (Spell_DBC_RecordMap r in Body.records)
+                    foreach (var recordMap in Body.RecordMaps)
                     {
                         // This might be needed? Disabled unless bugs are reported around this
                         //if (r.record.ID == 0)
@@ -172,21 +172,21 @@ namespace SpellEditor.Sources.DBC
                             double percent = (double)index / (double)count;
                             UpdateProgress(percent);
                         }
-                        currentRecord = r.record.ID;
+                        currentRecord = (uint)recordMap["ID"];
                         q.Append("(");
-                        foreach (var f in r.record.GetType().GetFields())
+                        foreach (var f in typeof(Spell_DBC_Record).GetFields())
                         {
                             switch (Type.GetTypeCode(f.FieldType))
                             {
                                 case TypeCode.UInt32:
                                 case TypeCode.Int32:
                                     {
-                                        q.Append(string.Format("'{0}', ", f.GetValue(r.record)));
+                                        q.Append(string.Format("'{0}', ", recordMap[f.Name]));
                                         break;
                                     }
                                 case TypeCode.Single:
                                     {
-                                        q.Append(string.Format("REPLACE('{0}', ',', '.'), ", f.GetValue(r.record)));
+                                        q.Append(string.Format("REPLACE('{0}', ',', '.'), ", recordMap[f.Name]));
                                         break;
                                     }
                                 case TypeCode.Object:
@@ -196,15 +196,19 @@ namespace SpellEditor.Sources.DBC
                                         {
                                             if (attr.Method == 1)
                                             {
-                                                switch (attr.Type)
-                                                {
-                                                    case 1:
-                                                        {
-                                                            for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellName[i])));
+                                                //switch (attr.Type)
+                                                //{
+                                                   // case 1:
+                                                    //    {
+                                                            uint[] array = (uint[]) recordMap[f.Name];
+                                                            for (int i = 0; i < array.Length; ++i)
+                                                            {
+                                                                var lookupResult = reader.LookupStringOffset(array[i]);
+                                                                q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(lookupResult)));
+                                                            }
                                                             break;
-                                                        }
-                                                    case 2:
+                                                    //    }
+                                                    /*case 2:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
                                                                 q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(r.spellRank[i])));
@@ -224,7 +228,8 @@ namespace SpellEditor.Sources.DBC
                                                         }
                                                     default:
                                                         throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
-                                                }
+                                                        */
+                                                //}
                                                 break;
                                             }
                                             else if (attr.Method == 2)
@@ -234,25 +239,25 @@ namespace SpellEditor.Sources.DBC
                                                     case 1:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellNameFlag[i]));
+                                                                q.Append(string.Format("\"{0}\", ", recordMap[f.Name]));
                                                             break;
                                                         }
                                                     case 2:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellRankFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", recordMap[f.Name]));
                                                             break;
                                                         }
                                                     case 3:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellDescriptionFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", recordMap[f.Name]));
                                                             break;
                                                         }
                                                     case 4:
                                                         {
                                                             for (int i = 0; i < attr.Count; ++i)
-                                                                q.Append(string.Format("\"{0}\", ", r.record.SpellToolTipFlags[i]));
+                                                                q.Append(string.Format("\"{0}\", ", recordMap[f.Name]));
                                                             break;
                                                         }
                                                     default:
@@ -280,7 +285,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     ErrorMessage = "ERROR on around spell ID " + currentRecord + ": " + e.Message +
                         "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
-                }*/
+                }
             });
         }
 
