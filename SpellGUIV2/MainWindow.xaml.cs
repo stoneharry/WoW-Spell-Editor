@@ -122,9 +122,9 @@ namespace SpellEditor
             //return (int)Locale_language;
         }
 
-		public String GetAreaTableName(UInt32 id)
+		public string GetAreaTableName(uint id)
         {
-            return loadAreaTable.body.lookup.ContainsKey(id) ? loadAreaTable.body.lookup[id].AreaName : "";
+            return loadAreaTable.Lookups.ContainsKey(id) ? loadAreaTable.Lookups[id].AreaName : "";
         }
 
         #region Loaded
@@ -654,7 +654,7 @@ namespace SpellEditor
 			spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
 
             // Load other DBC's
-			loadAreaTable = new AreaTable(this, adapter);
+			loadAreaTable = new AreaTable(this);
 			loadCategories = new SpellCategory(this, adapter);
 			loadDispels = new SpellDispelType(this, adapter);
 			loadMechanics = new SpellMechanic(this, adapter);

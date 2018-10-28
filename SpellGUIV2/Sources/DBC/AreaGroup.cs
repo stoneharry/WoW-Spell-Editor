@@ -38,43 +38,45 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-                    uint id = (uint) record["ID"];
+                    uint id = (uint)record["ID"];
 
                     AreaGroupLookup temp;
 
-				    ArrayList al = new ArrayList();
+                    ArrayList al = new ArrayList();
 
                     var recordPointer = record;
-				    do
-				    {
+                    do
+                    {
                         foreach (uint val in (uint[])recordPointer["AreaID"])
                         {
                             if (val != 0)
                                 al.Add(val);
-                            recordPointer = FindAreaGroup((uint) recordPointer["NextGroup"]);
+                            recordPointer = FindAreaGroup((uint)recordPointer["NextGroup"]);
                         }
-				    } while ((uint) recordPointer["NextGroup"] != 0);
+                    } while ((uint)recordPointer["NextGroup"] != 0);
 
                     temp.ID = (int)id;
                     temp.comboBoxIndex = boxIndex;
-				    Label areaGroupLab = new Label();
+                    Label areaGroupLab = new Label();
 
-				    string areaList_str = "";
-				    foreach (uint val in al)
-				    {
-					    areaList_str += "AreaId:";
-					    areaList_str += val;
-					    areaList_str += "\t\t";
-					    areaList_str += window.GetAreaTableName(val);
-					    areaList_str += "\n";
-				    }
+                    string areaList_str = "";
+                    foreach (uint val in al)
+                    {
+                        areaList_str += "AreaId:";
+                        areaList_str += val;
+                        areaList_str += "\t\t";
+                        areaList_str += window.GetAreaTableName(val);
+                        areaList_str += "\n";
+                    }
 
-				    areaGroupLab.ToolTip = areaList_str;
+                    areaGroupLab.ToolTip = areaList_str;
 
-                    string contentString = "";
+                    string contentString = record["ID"].ToString() + ": ";
                     foreach (uint val in al)
                         contentString += window.GetAreaTableName(val) + ", ";
-                    areaGroupLab.Content = contentString.Substring(0, contentString.Length - 2);
+                    if (al.Count > 0)
+                        contentString = contentString.Substring(0, contentString.Length - 2);
+                    areaGroupLab.Content = contentString;
 
                     main.AreaGroup.Items.Add(areaGroupLab);
 
