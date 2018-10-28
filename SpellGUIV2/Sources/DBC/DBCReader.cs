@@ -25,6 +25,11 @@ namespace SpellEditor.Sources.DBC
             return stringsMap[offset].Value;
         }
 
+        public void CleanStringsMap()
+        {
+            stringsMap = null;
+        }
+
         /**
          * Reads a DBC record from a given binary reader.
          */

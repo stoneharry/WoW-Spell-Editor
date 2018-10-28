@@ -33,116 +33,124 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        private void SaveDBCFile()
+        private void SaveDBCFile(Spell_DBC_RecordMap[] recordMap)
         {
-           /* uint stringBlockOffset = 1;
+            uint stringBlockOffset = 1;
 
             Dictionary<int, uint> offsetStorage = new Dictionary<int, uint>();
             Dictionary<uint, string> reverseStorage = new Dictionary<uint, string>();
 
+            // Populate string <-> offset lookup maps, this could do with a refactor
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 for (uint j = 0; j < 9; ++j)
                 {
-                    if (Body.records[i].spellName[j].Length == 0) { Body.records[i].record.SpellName[j] = 0; }
+                    // spell name
+                    if (recordMap[i].spellName[j].Length == 0)
+                        recordMap[i].record.SpellName[j] = 0;
                     else
                     {
-                        int key = Body.records[i].spellName[j].GetHashCode();
-
-                        if (offsetStorage.ContainsKey(key)) { Body.records[i].record.SpellName[j] = offsetStorage[key]; }
+                        int key = recordMap[i].spellName[j].GetHashCode();
+                        if (offsetStorage.ContainsKey(key))
+                            recordMap[i].record.SpellName[j] = offsetStorage[key];
                         else
                         {
-                            Body.records[i].record.SpellName[j] = stringBlockOffset;
-                            stringBlockOffset += (uint)Encoding.UTF8.GetByteCount(Body.records[i].spellName[j]) + 1;
-                            offsetStorage.Add(key, Body.records[i].record.SpellName[j]);
-                            reverseStorage.Add(Body.records[i].record.SpellName[j], Body.records[i].spellName[j]);
+                            recordMap[i].record.SpellName[j] = stringBlockOffset;
+                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellName[j]) + 1;
+                            offsetStorage.Add(key, recordMap[i].record.SpellName[j]);
+                            reverseStorage.Add(recordMap[i].record.SpellName[j], recordMap[i].spellName[j]);
                         }
                     }
-
-                    if (Body.records[i].spellRank[j].Length == 0) { Body.records[i].record.SpellRank[j] = 0; }
+                    // spell rank
+                    if (recordMap[i].spellRank[j].Length == 0)
+                        recordMap[i].record.SpellRank[j] = 0;
                     else
                     {
-                        int key = Body.records[i].spellRank[j].GetHashCode();
-
-                        if (offsetStorage.ContainsKey(key)) { Body.records[i].record.SpellRank[j] = offsetStorage[key]; }
+                        int key = recordMap[i].spellRank[j].GetHashCode();
+                        if (offsetStorage.ContainsKey(key))
+                            recordMap[i].record.SpellRank[j] = offsetStorage[key];
                         else
                         {
-                            Body.records[i].record.SpellRank[j] = stringBlockOffset;
-                            stringBlockOffset += (uint)Encoding.UTF8.GetByteCount(Body.records[i].spellRank[j]) + 1;
-                            offsetStorage.Add(key, Body.records[i].record.SpellRank[j]);
-                            reverseStorage.Add(Body.records[i].record.SpellRank[j], Body.records[i].spellRank[j]);
+                            recordMap[i].record.SpellRank[j] = stringBlockOffset;
+                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellRank[j]) + 1;
+                            offsetStorage.Add(key, recordMap[i].record.SpellRank[j]);
+                            reverseStorage.Add(recordMap[i].record.SpellRank[j], recordMap[i].spellRank[j]);
                         }
                     }
-
-                    if (Body.records[i].spellTool[j].Length == 0) { Body.records[i].record.SpellToolTip[j] = 0; }
+                    // spell tooltip
+                    if (recordMap[i].spellTool[j].Length == 0)
+                        recordMap[i].record.SpellToolTip[j] = 0;
                     else
                     {
-                        int key = Body.records[i].spellTool[j].GetHashCode();
-
-                        if (offsetStorage.ContainsKey(key)) { Body.records[i].record.SpellToolTip[j] = offsetStorage[key]; }
+                        int key = recordMap[i].spellTool[j].GetHashCode();
+                        if (offsetStorage.ContainsKey(key))
+                            recordMap[i].record.SpellToolTip[j] = offsetStorage[key];
                         else
                         {
-                            Body.records[i].record.SpellToolTip[j] = stringBlockOffset;
-                            stringBlockOffset += (uint)Encoding.UTF8.GetByteCount(Body.records[i].spellTool[j]) + 1;
-                            offsetStorage.Add(key, Body.records[i].record.SpellToolTip[j]);
-                            reverseStorage.Add(Body.records[i].record.SpellToolTip[j], Body.records[i].spellTool[j]);
+                            recordMap[i].record.SpellToolTip[j] = stringBlockOffset;
+                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellTool[j]) + 1;
+                            offsetStorage.Add(key, recordMap[i].record.SpellToolTip[j]);
+                            reverseStorage.Add(recordMap[i].record.SpellToolTip[j], recordMap[i].spellTool[j]);
                         }
                     }
-
-                    if (Body.records[i].spellDesc[j].Length == 0) { Body.records[i].record.SpellDescription[j] = 0; }
+                    // spell description
+                    if (recordMap[i].spellDesc[j].Length == 0)
+                        recordMap[i].record.SpellDescription[j] = 0;
                     else
                     {
-                        int key = Body.records[i].spellDesc[j].GetHashCode();
-
-                        if (offsetStorage.ContainsKey(key)) { Body.records[i].record.SpellDescription[j] = offsetStorage[key]; }
+                        int key = recordMap[i].spellDesc[j].GetHashCode();
+                        if (offsetStorage.ContainsKey(key))
+                            recordMap[i].record.SpellDescription[j] = offsetStorage[key];
                         else
                         {
-                            Body.records[i].record.SpellDescription[j] = stringBlockOffset;
-                            stringBlockOffset += (uint)Encoding.UTF8.GetByteCount(Body.records[i].spellDesc[j]) + 1;
-                            offsetStorage.Add(key, Body.records[i].record.SpellDescription[j]);
-                            reverseStorage.Add(Body.records[i].record.SpellDescription[j], Body.records[i].spellDesc[j]);
+                            recordMap[i].record.SpellDescription[j] = stringBlockOffset;
+                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellDesc[j]) + 1;
+                            offsetStorage.Add(key, recordMap[i].record.SpellDescription[j]);
+                            reverseStorage.Add(recordMap[i].record.SpellDescription[j], recordMap[i].spellDesc[j]);
                         }
                     }
                 }
             }
 
-            Header.StringBlockSize = (int)stringBlockOffset;
+            Header.StringBlockSize = (int) stringBlockOffset;
 
+            // Write spell.dbc file
             string path = "Export/Spell.dbc";
-
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
                 File.Delete(path);
-            FileStream fileStream = new FileStream("Export/Spell.dbc", FileMode.Create);
-            BinaryWriter writer = new BinaryWriter(fileStream);
-            int count = Marshal.SizeOf(typeof(DBC_Header));
-            byte[] buffer = new byte[count];
-            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
-            writer.Write(buffer, 0, count);
-            handle.Free();
-
-            for (uint i = 0; i < Header.RecordCount; ++i)
+            using (FileStream fileStream = new FileStream("Export/Spell.dbc", FileMode.Create))
             {
-                count = Marshal.SizeOf(typeof(Spell_DBC_Record));
-                buffer = new byte[count];
-                handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                Marshal.StructureToPtr(Body.records[i].record, handle.AddrOfPinnedObject(), true);
-                writer.Write(buffer, 0, count);
-                handle.Free();
+                using (BinaryWriter writer = new BinaryWriter(fileStream))
+                {
+                    int count = Marshal.SizeOf(typeof(DBC_Header));
+                    byte[] buffer = new byte[count];
+                    GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                    Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
+                    writer.Write(buffer, 0, count);
+                    handle.Free();
+
+                    for (uint i = 0; i < Header.RecordCount; ++i)
+                    {
+                        count = Marshal.SizeOf(typeof(Spell_DBC_Record));
+                        buffer = new byte[count];
+                        handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                        Marshal.StructureToPtr(recordMap[i].record, handle.AddrOfPinnedObject(), true);
+                        writer.Write(buffer, 0, count);
+                        handle.Free();
+                    }
+
+                    uint[] offsetsStored = offsetStorage.Values.ToArray();
+
+                    writer.Write(Encoding.UTF8.GetBytes("\0"));
+
+                    for (int i = 0; i < offsetsStored.Length; ++i)
+                        writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0"));
+                }
             }
-
-            uint[] offsetsStored = offsetStorage.Values.ToArray<uint>();
-
-            writer.Write(Encoding.UTF8.GetBytes("\0"));
-
-            for (int i = 0; i < offsetsStored.Length; ++i) { writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0")); }
-
-            writer.Close();
-            fileStream.Close();*/
         }
 
-		public Task import(DBAdapter adapter, SpellEditor.MainWindow.UpdateProgressFunc UpdateProgress)
+		public Task import(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
         {
             return Task.Run(() => 
             {
@@ -169,7 +177,7 @@ namespace SpellEditor.Sources.DBC
                         }
                         if (++index % 1000 == 0)
                         {
-                            double percent = (double)index / (double)count;
+                            double percent = index / count;
                             UpdateProgress(percent);
                         }
                         currentRecord = (uint)recordMap["ID"];
@@ -196,7 +204,7 @@ namespace SpellEditor.Sources.DBC
                                         {
                                             if (attr.Method == 1)
                                             {
-                                                uint[] array = (uint[]) recordMap[f.Name];
+                                                uint[] array = (uint[])recordMap[f.Name];
                                                 for (int i = 0; i < array.Length; ++i)
                                                 {
                                                     var lookupResult = reader.LookupStringOffset(array[i]);
@@ -206,7 +214,7 @@ namespace SpellEditor.Sources.DBC
                                             }
                                             else if (attr.Method == 2)
                                             {
-                                                uint[] array = (uint[]) recordMap[f.Name];
+                                                uint[] array = (uint[])recordMap[f.Name];
                                                 for (int i = 0; i < array.Length; ++i)
                                                     q.Append(string.Format("\'{0}\', ", array[i]));
                                                 break;
@@ -232,6 +240,9 @@ namespace SpellEditor.Sources.DBC
                     ErrorMessage = "ERROR on around spell ID " + currentRecord + ": " + e.Message +
                         "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
                 }
+                // We have attempted to import the Spell.dbc so clean up unneeded data
+                // This will be recreated if the import process is started again
+                reader.CleanStringsMap();
             });
         }
 
@@ -288,43 +299,46 @@ namespace SpellEditor.Sources.DBC
                 Header.RecordSize = 936;
                 Header.StringBlockSize = 0;
 
-                /*Body.records = new Spell_DBC_RecordMap[numRows];
+                var recordMap = new Spell_DBC_RecordMap[numRows];
                 for (int i = 0; i < numRows; ++i)
                 {
-                    Body.records[i] = new Spell_DBC_RecordMap();
+                    recordMap[i] = new Spell_DBC_RecordMap();
                     if (i % 250 == 0)
-                        updateProgress((double)i / (double)numRows);
-                    Body.records[i].record = new Spell_DBC_Record();
-                    Body.records[i].spellName = new string[9];
-                    Body.records[i].spellDesc = new string[9];
-                    Body.records[i].spellRank = new string[9];
-                    Body.records[i].spellTool = new string[9];
-                    Body.records[i].record.SpellName = new uint[9];
-                    Body.records[i].record.SpellDescription = new uint[9];
-                    Body.records[i].record.SpellRank = new uint[9];
-                    Body.records[i].record.SpellToolTip = new uint[9];
-                    Body.records[i].record.SpellNameFlag = new uint[8];
-                    Body.records[i].record.SpellDescriptionFlags = new uint[8];
-                    Body.records[i].record.SpellRankFlags = new uint[8];
-                    Body.records[i].record.SpellToolTipFlags = new uint[8];
-                    var fields = Body.records[i].record.GetType().GetFields();
+                    {
+                        double percent = i / numRows;
+                        updateProgress(percent);
+                    }
+                    recordMap[i].record = new Spell_DBC_Record();
+                    recordMap[i].spellName = new string[9];
+                    recordMap[i].spellDesc = new string[9];
+                    recordMap[i].spellRank = new string[9];
+                    recordMap[i].spellTool = new string[9];
+                    recordMap[i].record.SpellName = new uint[9];
+                    recordMap[i].record.SpellDescription = new uint[9];
+                    recordMap[i].record.SpellRank = new uint[9];
+                    recordMap[i].record.SpellToolTip = new uint[9];
+                    recordMap[i].record.SpellNameFlag = new uint[8];
+                    recordMap[i].record.SpellDescriptionFlags = new uint[8];
+                    recordMap[i].record.SpellRankFlags = new uint[8];
+                    recordMap[i].record.SpellToolTipFlags = new uint[8];
+                    var fields = recordMap[i].record.GetType().GetFields();
                     foreach (var f in fields)
                     {
                         switch (Type.GetTypeCode(f.FieldType))
                         {
-                            case TypeCode.uint:
+                            case TypeCode.UInt32:
                                 {
-                                    f.SetValueForValueType(ref Body.records[i].record, uint.Parse(rows[i][f.Name].ToString()));
+                                    f.SetValueForValueType(ref recordMap[i].record, uint.Parse(rows[i][f.Name].ToString()));
                                     break;
                                 }
-                            case TypeCode.int:
+                            case TypeCode.Int32:
                                 {
-                                    f.SetValueForValueType(ref Body.records[i].record, int.Parse(rows[i][f.Name].ToString()));
+                                    f.SetValueForValueType(ref recordMap[i].record, int.Parse(rows[i][f.Name].ToString()));
                                     break;
                                 }
                             case TypeCode.Single:
                                 {
-                                    f.SetValueForValueType(ref Body.records[i].record, Single.Parse(rows[i][f.Name].ToString()));
+                                    f.SetValueForValueType(ref recordMap[i].record, float.Parse(rows[i][f.Name].ToString()));
                                     break;
                                 }
                             case TypeCode.Object:
@@ -339,25 +353,25 @@ namespace SpellEditor.Sources.DBC
                                                 case 1:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].spellName[j] = rows[i]["SpellName" + j].ToString();
+                                                            recordMap[i].spellName[j] = rows[i]["SpellName" + j].ToString();
                                                         break;
                                                     }
                                                 case 2:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].spellRank[j] = rows[i]["SpellRank" + j].ToString();
+                                                            recordMap[i].spellRank[j] = rows[i]["SpellRank" + j].ToString();
                                                         break;
                                                     }
                                                 case 3:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].spellDesc[j] = rows[i]["SpellDescription" + j].ToString();
+                                                            recordMap[i].spellDesc[j] = rows[i]["SpellDescription" + j].ToString();
                                                         break;
                                                     }
                                                 case 4:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].spellTool[j] = rows[i]["SpellToolTip" + j].ToString();
+                                                            recordMap[i].spellTool[j] = rows[i]["SpellToolTip" + j].ToString();
                                                         break;
                                                     }
                                                 default:
@@ -372,25 +386,25 @@ namespace SpellEditor.Sources.DBC
                                                 case 1:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].record.SpellNameFlag[j] = uint.Parse(rows[i]["SpellNameFlag" + j].ToString());
+                                                            recordMap[i].record.SpellNameFlag[j] = uint.Parse(rows[i]["SpellNameFlag" + j].ToString());
                                                         break;
                                                     }
                                                 case 2:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].record.SpellRankFlags[j] = uint.Parse(rows[i]["SpellRankFlags" + j].ToString());
+                                                            recordMap[i].record.SpellRankFlags[j] = uint.Parse(rows[i]["SpellRankFlags" + j].ToString());
                                                         break;
                                                     }
                                                 case 3:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].record.SpellDescriptionFlags[j] = uint.Parse(rows[i]["SpellDescriptionFlags" + j].ToString());
+                                                            recordMap[i].record.SpellDescriptionFlags[j] = uint.Parse(rows[i]["SpellDescriptionFlags" + j].ToString());
                                                         break;
                                                     }
                                                 case 4:
                                                     {
                                                         for (int j = 0; j < attr.Count; ++j)
-                                                            Body.records[i].record.SpellToolTipFlags[j] = uint.Parse(rows[i]["SpellToolTipFlags" + j].ToString());
+                                                            recordMap[i].record.SpellToolTipFlags[j] = uint.Parse(rows[i]["SpellToolTipFlags" + j].ToString());
                                                         break;
                                                     }
                                                 default:
@@ -406,7 +420,7 @@ namespace SpellEditor.Sources.DBC
                         }
                     }
                 }
-                SaveDBCFile();*/
+                SaveDBCFile(recordMap);
             });
         }
     }
