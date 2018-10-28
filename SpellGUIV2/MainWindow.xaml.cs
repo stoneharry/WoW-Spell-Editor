@@ -2763,12 +2763,12 @@ namespace SpellEditor
 
             if (sender == SpellDescriptionVariables)
             {
-                for (int i = 0; i < loadDescriptionVariables.body.lookup.Count; ++i)
+                for (int i = 0; i < loadDescriptionVariables.Lookups.Count; ++i)
                 {
-                    if (loadDescriptionVariables.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.body.lookup[i].ID, selectedID));
+							adapter.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
