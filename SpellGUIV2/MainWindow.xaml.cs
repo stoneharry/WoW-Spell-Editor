@@ -590,7 +590,7 @@ namespace SpellEditor
             settings.NegativeButtonText = "NO";
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
+                "It appears the table in the database is empty. Would you like to import the DBC/Spell.dbc file now?", style, settings);
             if (res == MessageDialogResult.Affirmative)
             {
                 var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");

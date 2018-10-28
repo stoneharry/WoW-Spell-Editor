@@ -177,7 +177,8 @@ namespace SpellEditor.Sources.DBC
                         }
                         if (++index % 1000 == 0)
                         {
-                            double percent = index / count;
+                            // Visual studio says these casts are redundant but it does not work without them
+                            double percent = (double)index / (double)count;
                             UpdateProgress(percent);
                         }
                         currentRecord = (uint)recordMap["ID"];
@@ -305,7 +306,8 @@ namespace SpellEditor.Sources.DBC
                     recordMap[i] = new Spell_DBC_RecordMap();
                     if (i % 250 == 0)
                     {
-                        double percent = i / numRows;
+                        // Visual studio says these casts are redundant but it does not work without them
+                        double percent = (double) i / (double) numRows;
                         updateProgress(percent);
                     }
                     recordMap[i].record = new Spell_DBC_Record();
