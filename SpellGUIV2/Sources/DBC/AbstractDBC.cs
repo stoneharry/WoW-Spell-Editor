@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
 
 		protected void ReadDBCFile<RecordType>(string filePath)
         {
-            reader = new DBCReader("DBC/Spell.dbc");
+            reader = new DBCReader(filePath);
             Header = reader.ReadDBCHeader();
             reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
             reader.ReadStringBlock();

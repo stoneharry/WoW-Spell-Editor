@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
         private string filePath;
         private long fileSize;
         private long filePosition;
-        private DBC_Header header;
+        private DBC_Header Header;
         private Dictionary<uint, VirtualStrTableEntry> stringsMap;
 
         public DBCReader(string filePath)
@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.DBC
                     header = ReadStruct<DBC_Header>(reader, readBuffer);
                 }
             }
-            this.header = header;
+            this.Header = header;
             return header;
         }
 
@@ -81,19 +81,19 @@ namespace SpellEditor.Sources.DBC
          */
         public void ReadDBCRecords<RecordStruct>(DBC_Body body, int recordSize)
         {
-            if (header.RecordSize != recordSize)
-                throw new Exception($"The DBC [{ filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ header.RecordSize }] got [{ recordSize }].");
+            if (Header.RecordSize != recordSize)
+                throw new Exception($"The DBC [{ filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ Header.RecordSize }] got [{ recordSize }].");
 
-            body.RecordMaps = new Dictionary<string, object>[header.RecordCount];
-            for (int i = 0; i < header.RecordCount; ++i)
-                body.RecordMaps[i] = new Dictionary<string, object>((int) header.FieldCount);
+            body.RecordMaps = new Dictionary<string, object>[Header.RecordCount];
+            for (int i = 0; i < Header.RecordCount; ++i)
+                body.RecordMaps[i] = new Dictionary<string, object>((int) Header.FieldCount);
             byte[] readBuffer;
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
                     reader.BaseStream.Position = filePosition;
-                    for (uint i = 0; i < header.RecordCount; ++i)
+                    for (uint i = 0; i < Header.RecordCount; ++i)
                     {
                         readBuffer = new byte[recordSize];
                         readBuffer = reader.ReadBytes(recordSize);
@@ -124,7 +124,7 @@ namespace SpellEditor.Sources.DBC
                     reader.BaseStream.Position = filePosition;
                     stringsMap = new Dictionary<uint, VirtualStrTableEntry>();
 
-                    StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(header.StringBlockSize));
+                    StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(Header.StringBlockSize));
                     string temp = "";
 
                     uint lastString = 0;

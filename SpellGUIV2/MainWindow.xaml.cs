@@ -2557,12 +2557,12 @@ namespace SpellEditor
 
             if (sender == AreaGroup)
             {
-                for (int i = 0; i < loadAreaGroups.body.lookup.Count; ++i)
+                for (int i = 0; i < loadAreaGroups.Lookups.Count; ++i)
                 {
-                    if (loadAreaGroups.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "AreaGroupID", (UInt32)loadAreaGroups.body.lookup[i].ID, selectedID));
+							adapter.Table, "AreaGroupID", (UInt32)loadAreaGroups.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
