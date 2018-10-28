@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellCastTimes
+    class SpellCastTimes : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

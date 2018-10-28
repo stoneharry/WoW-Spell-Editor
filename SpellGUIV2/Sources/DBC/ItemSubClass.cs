@@ -10,8 +10,8 @@ using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
-	class ItemSubClass
-	{
+	class ItemSubClass : AbstractDBC
+    {
 		// Begin Window
         private MainWindow main;
         private DBAdapter adapter;

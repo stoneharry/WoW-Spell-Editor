@@ -24,24 +24,6 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
-using System.Collections;
-
-// Public use of a DBC Header file
-public struct DBC_Header
-{
-    public UInt32 Magic;
-    public UInt32 RecordCount;
-    public UInt32 FieldCount;
-    public UInt32 RecordSize;
-    public Int32 StringBlockSize;
-};
-
-public class VirtualStrTableEntry
-{
-    public string Value;
-    public UInt32 NewValue;
-};
-
 
 namespace SpellEditor
 {

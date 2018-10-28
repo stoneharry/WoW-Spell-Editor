@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
-    class AreaGroup
+    class AreaGroup : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

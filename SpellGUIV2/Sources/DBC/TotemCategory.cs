@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
-    class TotemCategory
+    class TotemCategory : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

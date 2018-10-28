@@ -12,7 +12,7 @@ using System.Windows.Threading;
 
 namespace SpellEditor.Sources.DBC
 {
-    class ItemClass
+    class ItemClass : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

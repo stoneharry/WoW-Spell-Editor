@@ -6,25 +6,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using MySql.Data.MySqlClient;
-using System.Windows.Threading;
-using SpellEditor.Sources.SpellStringTools;
 using System.Data;
 using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
-    // Public use of a DBC Header file
-    public struct DBC_Header
-    {
-        public UInt32 Magic;
-        public UInt32 RecordCount;
-        public UInt32 FieldCount;
-        public UInt32 RecordSize;
-        public Int32 StringBlockSize;
-    };
-
-    class SpellDBC
+    class SpellDBC : AbstractDBC
     {
         // Begin Window
         private MainWindow main;
@@ -259,6 +246,9 @@ namespace SpellEditor.Sources.DBC
                     StringBuilder q = null;
                     foreach (Spell_DBC_RecordMap r in body.records)
                     {
+                        // This might be needed? Disabled unless bugs are reported around this
+                        //if (r.record.ID == 0)
+                        //  continue;
                         if (index == 0 || index % 250 == 0)
                         {
                             if (q != null)

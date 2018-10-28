@@ -193,6 +193,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Compile Include="Sources\DBC\AbstractDBC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

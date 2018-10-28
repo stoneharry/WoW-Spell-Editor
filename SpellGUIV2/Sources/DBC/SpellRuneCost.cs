@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellRuneCost
+    class SpellRuneCost : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

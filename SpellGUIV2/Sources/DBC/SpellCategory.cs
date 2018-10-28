@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SpellEditor.Sources.DBC
 {
 
-    class SpellCategory
+    class SpellCategory : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

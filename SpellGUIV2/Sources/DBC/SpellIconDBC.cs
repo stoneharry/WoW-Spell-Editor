@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellIconDBC
+    class SpellIconDBC : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

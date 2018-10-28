@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellMechanic
+    class SpellMechanic : AbstractDBC
     {
         // Begin Window
         private MainWindow main;

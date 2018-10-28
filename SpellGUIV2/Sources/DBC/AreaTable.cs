@@ -7,8 +7,8 @@ using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
-	class AreaTable
-	{
+	class AreaTable : AbstractDBC
+    {
 		  // Begin Window
         private MainWindow main;
         private DBAdapter adapter;
