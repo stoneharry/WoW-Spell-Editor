@@ -1,138 +1,128 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
     class SpellDifficulty : AbstractDBC
     {
-        // Begin Window
         private MainWindow main;
         private DBAdapter adapter;
-        // End Window
 
-        // Begin DBCs
-        public DBC_Header header;
-        public SpellDifficulty_DBC_Map body;
-        // End DBCs
+        public List<SpellDifficultyLookup> Lookups = new List<SpellDifficultyLookup>();
 
         public SpellDifficulty(MainWindow window, DBAdapter adapter)
         {
-            this.main = window;
+            main = window;
             this.adapter = adapter;
 
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            try
             {
-                body.records[i].ID = new UInt32();
-                body.records[i].Difficulties = new UInt32[4];
+                ReadDBCFile<SpellDifficulty_DBC_Record>("DBC/SpellDifficulty.dbc");
+
+                int boxIndex = 1;
+                main.Difficulty.Items.Add(0);
+                SpellDifficultyLookup t;
+                t.ID = 0;
+                t.comboBoxIndex = 0;
+                Lookups.Add(t);
+
+                for (uint i = 0; i < Header.RecordCount; ++i)
+                {
+                    var record = Body.RecordMaps[i];
+
+                    uint[] difficulties = (uint[]) record["Difficulties"];
+                    uint id = (uint) record["ID"];
+
+                    SpellDifficultyLookup temp;
+                    temp.ID = id;
+                    temp.comboBoxIndex = boxIndex;
+                    Lookups.Add(temp);
+
+                    Label label = new Label();
+                    label.Content = id + ": " + string.Join(", ", difficulties);
+
+                    string tooltip = "";
+                    for (int diffIndex = 0; diffIndex < difficulties.Length; ++diffIndex)
+                    {
+                        tooltip += "[" + difficulties[diffIndex] + "] ";
+                        var rows = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulties[diffIndex])).Rows;
+                        if (rows.Count > 0)
+                        {
+                            var row = rows[0];
+                            string selectedLocale = "";
+                            for (int locale = 0; locale < 8; ++i)
+                            {
+                                var name = row["SpellName" + locale].ToString();
+                                if (name.Length > 0)
+                                {
+                                    selectedLocale = name;
+                                    break;
+                                }
+                            }
+                            tooltip += selectedLocale;
+                        }
+                        tooltip += "\n";
+                    }
+                    label.ToolTip = tooltip;
+
+                    main.Difficulty.Items.Add(label);
+
+                    boxIndex++;
+                }
+                reader.CleanStringsMap();
+                // In this DBC we don't actually need to keep the DBC data now that
+                // we have extracted the lookup tables. Nulling it out may help with
+                // memory consumption.
+                reader = null;
+                Body = null;
             }
-
-            if (!File.Exists("DBC/SpellDifficulty.dbc"))
+            catch (Exception ex)
             {
-                main.HandleErrorMessage("SpellDifficulty.dbc was not found!");
-
+                window.HandleErrorMessage(ex.Message);
                 return;
-            }
-
-            FileStream fileStream = new FileStream("DBC/SpellDifficulty.dbc", FileMode.Open);
-            int count = Marshal.SizeOf(typeof(DBC_Header));
-            byte[] readBuffer = new byte[count];
-            BinaryReader reader = new BinaryReader(fileStream);
-            readBuffer = reader.ReadBytes(count);
-            GCHandle handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-            header = (DBC_Header)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(DBC_Header));
-            handle.Free();
-
-            body.records = new SpellDifficulty_DBC_Record[header.RecordCount];
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                count = Marshal.SizeOf(typeof(SpellDifficulty_DBC_Record));
-                readBuffer = new byte[count];
-                reader = new BinaryReader(fileStream);
-                readBuffer = reader.ReadBytes(count);
-                handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-                body.records[i] = (SpellDifficulty_DBC_Record)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellDifficulty_DBC_Record));
-                handle.Free();
-            }
-
-            reader.Close();
-            fileStream.Close();
-
-            body.lookup = new List<SpellDifficultyLookup>();
-
-            int boxIndex = 1;
-
-            main.Difficulty.Items.Add(0);
-
-            SpellDifficultyLookup t;
-
-            t.ID = 0;
-            t.comboBoxIndex = 0;
-
-            body.lookup.Add(t);
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                int id = (int)body.records[i].ID;
-
-                SpellDifficultyLookup temp;
-
-                temp.ID = id;
-                temp.comboBoxIndex = boxIndex;
-
-                main.Difficulty.Items.Add(id);
-
-                body.lookup.Add(temp);
-
-                boxIndex++;
             }
         }
 
         public void UpdateDifficultySelection()
         {
-            int ID = Int32.Parse(adapter.query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
-
+            uint ID = uint.Parse(adapter.query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.Difficulty.threadSafeIndex = 0;
-
                 return;
             }
-
-            for (int i = 0; i < body.lookup.Count; ++i)
+            for (int i = 0; i < Lookups.Count; ++i)
             {
-                if (ID == body.lookup[i].ID)
+                if (ID == Lookups[i].ID)
                 {
-                    main.Difficulty.threadSafeIndex = body.lookup[i].comboBoxIndex;
-
+                    main.Difficulty.threadSafeIndex = Lookups[i].comboBoxIndex;
                     break;
                 }
             }
         }
     }
 
-    public struct SpellDifficulty_DBC_Map
-    {
-        public SpellDifficulty_DBC_Record[] records;
-        public List<SpellDifficultyLookup> lookup;
-    };
-
     public struct SpellDifficultyLookup
     {
-        public int ID;
+        public uint ID;
         public int comboBoxIndex;
     };
-
+ 
+    /*
+     * Seems to point to other spells, for example:
+     Id: 6
+     Normal10Men: 50864 = Omar's Seal of Approval, You have Omar's 10 Man Normal Seal of Approval!
+     Normal25Men: 69848 = Omar's Seal of Approval, You have Omar's 25 Man Normal Seal of Approval!
+     Heroic10Men: 69849 = Omar's Seal of Approval, You have Omar's 10 Man Heroic Seal of Approval!
+     Heroic25Men: 69850 = Omar's Seal of Approval, You have Omar's 25 Man Heroic Seal of Approval!
+    */
     public struct SpellDifficulty_DBC_Record
     {
-        public UInt32 ID;
+        public uint ID;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public UInt32[] Difficulties;
+        public uint[] Difficulties;
     };
 }

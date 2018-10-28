@@ -2635,12 +2635,12 @@ namespace SpellEditor
 
             if (sender == Difficulty)
             {
-                for (int i = 0; i < loadDifficulties.body.lookup.Count; ++i)
+                for (int i = 0; i < loadDifficulties.Lookups.Count; ++i)
                 {
-                    if (loadDifficulties.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "SpellDifficultyID", (UInt32)loadDifficulties.body.lookup[i].ID, selectedID));
+							adapter.Table, "SpellDifficultyID", (UInt32)loadDifficulties.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
