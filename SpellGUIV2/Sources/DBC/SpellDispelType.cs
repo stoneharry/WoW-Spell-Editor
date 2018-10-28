@@ -107,12 +107,11 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDispelSelection()
         {
-            int ID = Int32.Parse(adapter.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = int.Parse(adapter.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
-            if (ID == 0)
+            if (ID == 0 || ID == -1)
             {
                 main.Category.threadSafeIndex = 0;
-
                 return;
             }
 

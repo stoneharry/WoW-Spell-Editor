@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -21,10 +17,10 @@ namespace SpellEditor.Sources.Controls
             {
                 if (Dispatcher.CheckAccess())
                 {
-                    SelectedIndex = Int32.Parse(value.ToString());
+                    SelectedIndex = int.Parse(value.ToString());
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SelectedIndex = Int32.Parse(value.ToString())));
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SelectedIndex = int.Parse(value.ToString())));
             }
         }
 
