@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
         KeyDown="_KeyDown"
-        Loaded="_Loaded">
+        Loaded="_Loaded"
+        SizeChanged="window_SizeChanged">
 	<controls:MetroWindow.Resources>
 		<ResourceDictionary>
 			<Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
@@ -21,7 +22,7 @@
 	<Grid>
 		<TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="699" Width="1282" SelectionChanged="TabControl_SelectionChanged">
 			<TabItem Header="Select Spell">
-				<Grid>
+				<Grid Name="SelectSpellTabGrid">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="255*"/>
 						<ColumnDefinition Width="1039*"/>
@@ -167,7 +168,7 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="Base">
-				<Grid>
+				<Grid Name="BaseTabGrid">
 					<Label Content="Category:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="72,15,0,0"/>
 					<c:ThreadSafeComboBox x:Name="Category" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,41,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
 					<Label Content="Dispel Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="64,77,0,0"/>
@@ -519,7 +520,7 @@
 							</Grid>
 						</TabItem>
 						<TabItem Header="Attributes">
-							<Grid>
+							<Grid Name="AttributesTabGrid">
 								<Label Content="Attributes:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="92,8,0,0"/>
 								<ScrollViewer Margin="10,35,939,10">
 									<StackPanel Name="Attributes1"/>
@@ -539,7 +540,7 @@
 							</Grid>
 						</TabItem>
 						<TabItem Header="Attributes2">
-							<Grid>
+							<Grid Name="Attributes2TabGrid">
 								<Label Content="Attributes Ex4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,9,0,0"/>
 								<ScrollViewer Margin="10,35,940,10">
 									<StackPanel x:Name="Attributes5"/>
@@ -584,7 +585,7 @@
 					<Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
 					<Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
 					<Image Name="NewIcon" Margin="265.907,44,926,614" Height="64" Width="64" Grid.Column="2"/>
-					<ScrollViewer Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
+					<ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
 						<WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
 					</ScrollViewer>
 					<Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
