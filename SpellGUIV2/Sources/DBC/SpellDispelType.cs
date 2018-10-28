@@ -111,7 +111,7 @@ namespace SpellEditor.Sources.DBC
 
             if (ID == 0 || ID == -1)
             {
-                main.Category.threadSafeIndex = 0;
+                main.Category.threadSafeIndex = body.lookup[1].comboBoxIndex;
                 return;
             }
 
