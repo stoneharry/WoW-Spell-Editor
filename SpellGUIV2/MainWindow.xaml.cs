@@ -2700,8 +2700,9 @@ namespace SpellEditor
 
             if (sender == EquippedItemClass)
             {
-				UpdateItemSubClass(loadItemClasses.body.lookup[EquippedItemClass.SelectedIndex].ID);
-                for (int i = 0; i < loadItemClasses.body.lookup.Count; ++i)
+                int itemSubClass = loadItemClasses.Lookups[EquippedItemClass.SelectedIndex].ID;
+                UpdateItemSubClass(itemSubClass);
+                for (int i = 0; i < loadItemClasses.Lookups.Count; ++i)
                 {
 					if (EquippedItemClass.SelectedIndex == 5 || EquippedItemClass.SelectedIndex == 3)
 					{
@@ -2712,10 +2713,10 @@ namespace SpellEditor
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
                     }
 
-                    if (loadItemClasses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadItemClasses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EquippedItemClass", (UInt32)loadItemClasses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2784,36 +2785,36 @@ namespace SpellEditor
 		{
 			if (classId == -1)
 			{
-				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => EquippedItemInventoryTypeGrid.IsEnabled = false));
+				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() 
+                    => EquippedItemInventoryTypeGrid.IsEnabled = false));
 
 				foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
 				{
 					box.threadSafeContent = "None";
-					box.threadSafeVisibility = System.Windows.Visibility.Hidden;
+					box.threadSafeVisibility = Visibility.Hidden;
 					//box.threadSafeEnabled = false;
 				}
 				return;
 			}
 			else
 			{
-				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() => EquippedItemSubClassGrid.IsEnabled = true));
-
+				Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() 
+                    => EquippedItemSubClassGrid.IsEnabled = true));
 			}
-			UInt32 num = 0;
+			uint num = 0;
 			foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
 			{
-				SpellEditor.Sources.DBC.ItemSubClass.ItemSubClassLookup itemLookup = (SpellEditor.Sources.DBC.ItemSubClass.ItemSubClassLookup)loadItemSubClasses.body.lookup.GetValue(classId, num);
-
+				ItemSubClass.ItemSubClassLookup itemLookup = (ItemSubClass.ItemSubClassLookup) loadItemSubClasses.Lookups.GetValue(classId, num);
 				if (itemLookup.Name != null)
 				{
 					box.threadSafeContent = itemLookup.Name;
 					//box.threadSafeEnabled = true;
-					box.threadSafeVisibility = System.Windows.Visibility.Visible;
+					box.threadSafeVisibility = Visibility.Visible;
 				}
 				else
 				{
 					box.threadSafeContent = "None";
-					box.threadSafeVisibility = System.Windows.Visibility.Hidden;
+					box.threadSafeVisibility = Visibility.Hidden;
 					//box.threadSafeEnabled = false;
 				}
 				box.threadSafeChecked = false;
@@ -2837,7 +2838,7 @@ namespace SpellEditor
                 return;
             }
             double newSize = e.NewValue / 4;
-            var margin = new System.Windows.Thickness(newSize, 0, 0, 0);
+            var margin = new Thickness(newSize, 0, 0, 0);
             loadIcons?.updateIconSize(newSize, margin);
             foreach (Image image in IconGrid.Children)
             {

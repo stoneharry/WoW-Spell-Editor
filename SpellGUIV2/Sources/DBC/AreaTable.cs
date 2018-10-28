@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Runtime.InteropServices;
-using SpellEditor.Sources.Config;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -54,9 +51,9 @@ namespace SpellEditor.Sources.DBC
         [Serializable]
         public struct AreaTable_DBC_Record
         {
-            // These fields are used through reflection, disable warning
-            #pragma warning disable 0649
-            #pragma warning disable 0169
+// These fields are used through reflection, disable warning
+#pragma warning disable 0649
+#pragma warning disable 0169
             public uint ID;
 			public uint Map;
 			public uint zone;
@@ -77,8 +74,8 @@ namespace SpellEditor.Sources.DBC
 			public float MinElevation;
 			public float AmbientMultiplier;
 			public uint Light;
-            #pragma warning restore 0649
-            #pragma warning restore 0169
+#pragma warning restore 0649
+#pragma warning restore 0169
         };
     };
 }
