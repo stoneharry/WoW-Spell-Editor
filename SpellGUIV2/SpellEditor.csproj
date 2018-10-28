@@ -134,6 +134,7 @@
     <Compile Include="Sources\Controls\ThreadSafeTextBox.cs" />
     <Compile Include="Sources\DBC\AreaGroup.cs" />
     <Compile Include="Sources\DBC\AreaTable.cs" />
+    <Compile Include="Sources\DBC\DBCReader.cs" />
     <Compile Include="Sources\DBC\ItemClass.cs" />
     <Compile Include="Sources\DBC\ItemSubClass.cs" />
     <Compile Include="Sources\DBC\SpellCastTimes.cs" />

@@ -1,13 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace SpellEditor.Sources.DBC
 {
-    abstract class AbstractDBC
+    public abstract class AbstractDBC
     {
+        protected DBC_Header Header;
+        protected DBC_Body Body = new DBC_Body();
+        protected DBCReader reader;
+
+		protected void ReadDBCFile<RecordType>(string filePath)
+        {
+            reader = new DBCReader("DBC/Spell.dbc");
+            Header = reader.ReadDBCHeader();
+            reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
+            reader.ReadStringBlock();
+        }
+
         public struct DBC_Header
         {
             public uint Magic;
@@ -15,6 +24,11 @@ namespace SpellEditor.Sources.DBC
             public uint FieldCount;
             public uint RecordSize;
             public int StringBlockSize;
+        };
+
+        public class DBC_Body
+        {
+            public Dictionary<string, object>[] RecordMaps;
         };
 
         public class VirtualStrTableEntry
