@@ -1,103 +1,63 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
 
     class SpellCategory : AbstractDBC
     {
-        // Begin Window
         private MainWindow main;
         private DBAdapter adapter;
-        // End Window
 
-        // Begin DBCs
-        public DBC_Header header;
-        public SpellCategory_DBC_Map body;
-        // End DBCs
+        public List<SpellCategoryLookup> Lookups = new List<SpellCategoryLookup>();
 
         public SpellCategory(MainWindow window, DBAdapter adapter)
         {
-            this.main = window;
+            main = window;
             this.adapter = adapter;
 
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            try
             {
-                body.records[i].ID = new UInt32();
-                body.records[i].Flags = new UInt32();
+                ReadDBCFile<SpellCategory_DBC_Record>("DBC/SpellCategory.dbc");
+
+                int boxIndex = 1;
+                main.Category.Items.Add(0);
+                SpellCategoryLookup t;
+                t.ID = 0;
+                t.comboBoxIndex = 0;
+                Lookups.Add(t);
+
+                for (uint i = 0; i < Header.RecordCount; ++i)
+                {
+                    var record = Body.RecordMaps[i];
+                    uint id = (uint) record["ID"];
+
+                    SpellCategoryLookup temp;
+                    temp.ID = id;
+                    temp.comboBoxIndex = boxIndex;
+                    Lookups.Add(temp);
+                    main.Category.Items.Add(id);
+
+                    boxIndex++;
+                }
+                reader.CleanStringsMap();
+                // In this DBC we don't actually need to keep the DBC data now that
+                // we have extracted the lookup tables. Nulling it out may help with
+                // memory consumption.
+                reader = null;
+                Body = null;
             }
-
-            if (!File.Exists("DBC/SpellCategory.dbc"))
+            catch (Exception ex)
             {
-                main.HandleErrorMessage("SpellCategory.dbc was not found!");
-
+                window.HandleErrorMessage(ex.Message);
                 return;
-            }
-
-            FileStream fileStream = new FileStream("DBC/SpellCategory.dbc", FileMode.Open);
-            int count = Marshal.SizeOf(typeof(DBC_Header));
-            byte[] readBuffer = new byte[count];
-            BinaryReader reader = new BinaryReader(fileStream);
-            readBuffer = reader.ReadBytes(count);
-            GCHandle handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-            header = (DBC_Header)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(DBC_Header));
-            handle.Free();
-
-            body.records = new SpellCategory_DBC_Record[header.RecordCount];
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                count = Marshal.SizeOf(typeof(SpellCategory_DBC_Record));
-                readBuffer = new byte[count];
-                reader = new BinaryReader(fileStream);
-                readBuffer = reader.ReadBytes(count);
-                handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-                body.records[i] = (SpellCategory_DBC_Record)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellCategory_DBC_Record));
-                handle.Free();
-            }
-
-            reader.Close();
-            fileStream.Close();
-
-            body.lookup = new List<SpellCategoryLookup>();
-
-            int boxIndex = 1;
-
-            main.Category.Items.Add(0);
-
-            SpellCategoryLookup t;
-
-            t.ID = 0;
-            t.comboBoxIndex = 0;
-
-            body.lookup.Add(t);
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                int id = (int)body.records[i].ID;
-
-                SpellCategoryLookup temp;
-
-                temp.ID = id;
-                temp.comboBoxIndex = boxIndex;
-
-                main.Category.Items.Add(id);
-
-                body.lookup.Add(temp);
-
-                boxIndex++;
             }
         }
 
         public void UpdateCategorySelection()
         {
-			int ID = Int32.Parse(adapter.query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+			uint ID = uint.Parse(adapter.query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {
@@ -106,33 +66,26 @@ namespace SpellEditor.Sources.DBC
                 return;
             }
 
-            for (int i = 0; i < body.lookup.Count; ++i)
+            for (int i = 0; i < Lookups.Count; ++i)
             {
-                if (ID == body.lookup[i].ID)
+                if (ID == Lookups[i].ID)
                 {
-                    main.Category.threadSafeIndex = body.lookup[i].comboBoxIndex;
-
+                    main.Category.threadSafeIndex = Lookups[i].comboBoxIndex;
                     break;
                 }
             }
         }
     }
 
-    public struct SpellCategory_DBC_Map
-    {
-        public SpellCategory_DBC_Record[] records;
-        public List<SpellCategoryLookup> lookup;
-    };
-
     public struct SpellCategoryLookup
     {
-        public int ID;
+        public uint ID;
         public int comboBoxIndex;
     };
 
     public struct SpellCategory_DBC_Record
     {
-        public UInt32 ID;
-        public UInt32 Flags;
+        public uint ID;
+        public uint Flags;
     };
 }

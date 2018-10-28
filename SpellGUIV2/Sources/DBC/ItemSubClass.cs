@@ -6,16 +6,10 @@ namespace SpellEditor.Sources.DBC
 {
 	class ItemSubClass : AbstractDBC
     {
-        private MainWindow main;
-        private DBAdapter adapter;
-
         public ItemSubClassLookup[,] Lookups = new ItemSubClassLookup[29, 32];
 
         public ItemSubClass(MainWindow window, DBAdapter adapter)
         {
-            main = window;
-            this.adapter = adapter;
-
             try
             {
                 ReadDBCFile<ItemSubClass_DBC_Record>("DBC/ItemSubClass.dbc");

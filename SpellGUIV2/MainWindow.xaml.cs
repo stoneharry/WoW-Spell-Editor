@@ -2570,12 +2570,12 @@ namespace SpellEditor
 
             if (sender == Category)
             {
-                for (int i = 0; i < loadCategories.body.lookup.Count; ++i)
+                for (int i = 0; i < loadCategories.Lookups.Count; ++i)
                 {
-                    if (loadCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "Category", (UInt32)loadCategories.body.lookup[i].ID, selectedID));
+							adapter.Table, "Category", (UInt32)loadCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2609,12 +2609,12 @@ namespace SpellEditor
 
             if (sender == CastTime)
             {
-                for (int i = 0; i < loadCastTimes.body.lookup.Count; ++i)
+                for (int i = 0; i < loadCastTimes.Lookups.Count; ++i)
                 {
-                    if (loadCastTimes.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "CastingTimeIndex", (UInt32)loadCastTimes.body.lookup[i].ID, selectedID));
+							adapter.Table, "CastingTimeIndex", (UInt32)loadCastTimes.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
