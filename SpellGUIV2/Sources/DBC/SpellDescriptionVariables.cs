@@ -1,6 +1,7 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -38,7 +39,10 @@ namespace SpellEditor.Sources.DBC
                     temp.ID = id;
                     temp.comboBoxIndex = boxIndex;
                     Lookups.Add(temp);
-                    main.SpellDescriptionVariables.Items.Add(id + ": " + description);
+                    Label label = new Label();
+                    label.Content = id + ": " + (description.Length <= 30 ? description : (description.Substring(0, 29) + "..."));
+                    label.ToolTip = id + ": " + description;
+                    main.SpellDescriptionVariables.Items.Add(label);
 
                     boxIndex++;
                 }

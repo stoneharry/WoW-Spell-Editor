@@ -2544,12 +2544,12 @@ namespace SpellEditor
                 return;
             if (sender == RequiresSpellFocus)
             {
-                for (int i = 0; i < loadFocusObjects.body.lookup.Count; ++i)
+                for (int i = 0; i < loadFocusObjects.Lookups.Count; ++i)
                 {
-                    if (loadFocusObjects.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadFocusObjects.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "RequiresSpellFocus", (UInt32)loadFocusObjects.body.lookup[i].ID, selectedID));
+							adapter.Table, "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
