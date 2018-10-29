@@ -2648,12 +2648,12 @@ namespace SpellEditor
 
             if (sender == Range)
             {
-                for (int i = 0; i < loadRanges.body.lookup.Count; ++i)
+                for (int i = 0; i < loadRanges.Lookups.Count; ++i)
                 {
-                    if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRanges.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "RangeIndex", loadRanges.body.lookup[i].ID, selectedID));
+							adapter.Table, "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2750,12 +2750,12 @@ namespace SpellEditor
 
             if (sender == RuneCost)
             {
-                for (int i = 0; i < loadRuneCosts.body.lookup.Count; ++i)
+                for (int i = 0; i < loadRuneCosts.Lookups.Count; ++i)
                 {
-                    if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRuneCosts.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "RuneCostID", loadRuneCosts.body.lookup[i].ID, selectedID));
+							adapter.Table, "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2768,7 +2768,7 @@ namespace SpellEditor
                     if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "SpellDescriptionVariableID", (UInt32)loadDescriptionVariables.Lookups[i].ID, selectedID));
+							adapter.Table, "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
