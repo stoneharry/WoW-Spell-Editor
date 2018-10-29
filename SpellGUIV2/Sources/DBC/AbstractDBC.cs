@@ -9,7 +9,7 @@ namespace SpellEditor.Sources.DBC
         protected DBC_Body Body = new DBC_Body();
         protected DBCReader reader;
 
-		protected void ReadDBCFile<RecordType>(string filePath)
+        protected void ReadDBCFile<RecordType>(string filePath)
         {
             reader = new DBCReader(filePath);
             Header = reader.ReadDBCHeader();

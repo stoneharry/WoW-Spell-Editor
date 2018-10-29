@@ -2562,7 +2562,7 @@ namespace SpellEditor
                     if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "AreaGroupID", (UInt32)loadAreaGroups.Lookups[i].ID, selectedID));
+							adapter.Table, "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2575,7 +2575,7 @@ namespace SpellEditor
                     if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "Category", (UInt32)loadCategories.Lookups[i].ID, selectedID));
+							adapter.Table, "Category", loadCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2583,12 +2583,12 @@ namespace SpellEditor
 
             if (sender == DispelType)
             {
-                for (int i = 0; i < loadDispels.body.lookup.Count; ++i)
+                for (int i = 0; i < loadDispels.Lookups.Count; ++i)
                 {
-                    if (loadDispels.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDispels.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "Dispel", loadDispels.body.lookup[i].ID, selectedID));
+							adapter.Table, "Dispel", loadDispels.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2601,7 +2601,7 @@ namespace SpellEditor
                     if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "Mechanic", (UInt32)loadMechanics.body.lookup[i].ID, selectedID));
+							adapter.Table, "Mechanic", loadMechanics.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2614,7 +2614,7 @@ namespace SpellEditor
                     if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "CastingTimeIndex", (UInt32)loadCastTimes.Lookups[i].ID, selectedID));
+							adapter.Table, "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2627,7 +2627,7 @@ namespace SpellEditor
                     if (SpellDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "DurationIndex", (UInt32)SpellDuration.body.lookup[i].ID, selectedID));
+							adapter.Table, "DurationIndex", SpellDuration.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2640,7 +2640,7 @@ namespace SpellEditor
                     if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "SpellDifficultyID", (UInt32)loadDifficulties.Lookups[i].ID, selectedID));
+							adapter.Table, "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2653,7 +2653,7 @@ namespace SpellEditor
                     if (loadRanges.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "RangeIndex", (UInt32)loadRanges.body.lookup[i].ID, selectedID));
+							adapter.Table, "RangeIndex", loadRanges.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2666,7 +2666,7 @@ namespace SpellEditor
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex1", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex1", loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2679,7 +2679,7 @@ namespace SpellEditor
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex2", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex2", loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2692,7 +2692,7 @@ namespace SpellEditor
                     if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex3", (UInt32)loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex3", loadRadiuses.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2729,7 +2729,7 @@ namespace SpellEditor
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "TotemCategory1", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
+							adapter.Table, "TotemCategory1", loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2742,7 +2742,7 @@ namespace SpellEditor
                     if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "TotemCategory2", (UInt32)loadTotemCategories.body.lookup[i].ID, selectedID));
+							adapter.Table, "TotemCategory2", loadTotemCategories.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2755,7 +2755,7 @@ namespace SpellEditor
                     if (loadRuneCosts.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "RuneCostID", (UInt32)loadRuneCosts.body.lookup[i].ID, selectedID));
+							adapter.Table, "RuneCostID", loadRuneCosts.body.lookup[i].ID, selectedID));
                         break;
                     }
                 }
