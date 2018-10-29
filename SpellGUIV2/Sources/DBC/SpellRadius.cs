@@ -1,103 +1,65 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
     class SpellRadius : AbstractDBC
     {
-        // Begin Window
         private MainWindow main;
         private DBAdapter adapter;
-        // End Window
 
-        // Begin DBCs
-        public DBC_Header header;
-        public SpellRadiusMap body;
-        // End DBCs
+        public List<RadiusLookup> Lookups = new List<RadiusLookup>();
 
         public SpellRadius(MainWindow window, DBAdapter adapter)
         {
-            this.main = window;
+            main = window;
             this.adapter = adapter;
 
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
+            try
             {
-                body.records[i].ID = new UInt32();
-                body.records[i].Radius = new float();
-                body.records[i].RadiusPerLevel = new float();
-                body.records[i].MaximumRadius = new float();
+                ReadDBCFile<SpellRadiusRecord>("DBC/SpellRadius.dbc");
+
+                int boxIndex = 1;
+                main.RadiusIndex1.Items.Add("0 - 0");
+                main.RadiusIndex2.Items.Add("0 - 0");
+                main.RadiusIndex3.Items.Add("0 - 0");
+                RadiusLookup t;
+                t.ID = 0;
+                t.comboBoxIndex = 0;
+                Lookups.Add(t);
+
+                for (uint i = 0; i < Header.RecordCount; ++i)
+                {
+                    var record = Body.RecordMaps[i];
+
+                    float radius = (float) record["Radius"];
+                    float maximumRadius = (float) record["MaximumRadius"];
+
+                    RadiusLookup temp;
+                    temp.ID = (uint) record["ID"];
+                    temp.comboBoxIndex = boxIndex;
+                    Lookups.Add(temp);
+
+                    // Some attempt to pad the label better
+                    string label = $"{ String.Format("{0,-23}", $"{ radius } - { maximumRadius}") }\t(Radius - MaxRadius)";
+                    main.RadiusIndex1.Items.Add(label);
+                    main.RadiusIndex2.Items.Add(label);
+                    main.RadiusIndex3.Items.Add(label);
+
+                    ++boxIndex;
+                }
+                reader.CleanStringsMap();
+                // In this DBC we don't actually need to keep the DBC data now that
+                // we have extracted the lookup tables. Nulling it out may help with
+                // memory consumption.
+                reader = null;
+                Body = null;
             }
-
-            if (!File.Exists("DBC/SpellRadius.dbc"))
+            catch (Exception ex)
             {
-                main.HandleErrorMessage("SpellRadius.dbc was not found!");
-
+                window.HandleErrorMessage(ex.Message);
                 return;
-            }
-
-            FileStream fileStream = new FileStream("DBC/SpellRadius.dbc", FileMode.Open);
-            int count = Marshal.SizeOf(typeof(DBC_Header));
-            byte[] readBuffer = new byte[count];
-            BinaryReader reader = new BinaryReader(fileStream);
-            readBuffer = reader.ReadBytes(count);
-            GCHandle handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-            header = (DBC_Header)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(DBC_Header));
-            handle.Free();
-
-            body.records = new SpellRadiusRecord[header.RecordCount];
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                count = Marshal.SizeOf(typeof(SpellRadiusRecord));
-                readBuffer = new byte[count];
-                reader = new BinaryReader(fileStream);
-                readBuffer = reader.ReadBytes(count);
-                handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
-                body.records[i] = (SpellRadiusRecord)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(SpellRadiusRecord));
-                handle.Free();
-            }
-
-            reader.Close();
-            fileStream.Close();
-
-            body.lookup = new List<RadiusLookup>();
-
-            int boxIndex = 1;
-
-            main.RadiusIndex1.Items.Add("0 - 0");
-            main.RadiusIndex2.Items.Add("0 - 0");
-            main.RadiusIndex3.Items.Add("0 - 0");
-
-            RadiusLookup t;
-
-            t.ID = 0;
-            t.comboBoxIndex = 0;
-
-            body.lookup.Add(t);
-
-            for (UInt32 i = 0; i < header.RecordCount; ++i)
-            {
-                int radius = (int)body.records[i].Radius;
-                int maximumRadius = (int)body.records[i].MaximumRadius;
-
-                RadiusLookup temp;
-
-                temp.ID = (int)body.records[i].ID;
-                temp.comboBoxIndex = boxIndex;
-
-                main.RadiusIndex1.Items.Add(radius + " - " + maximumRadius);
-                main.RadiusIndex2.Items.Add(radius + " - " + maximumRadius);
-                main.RadiusIndex3.Items.Add(radius + " - " + maximumRadius);
-
-                body.lookup.Add(temp);
-
-                boxIndex++;
             }
         }
 
@@ -105,97 +67,84 @@ namespace SpellEditor.Sources.DBC
         {
             var result = adapter.query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
                 adapter.Table, main.selectedID)).Rows[0];
-            int[] IDs = { Int32.Parse(result[0].ToString()), Int32.Parse(result[1].ToString()), Int32.Parse(result[2].ToString()) };
+            uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)
             {
-                int ID = IDs[j];
+                uint ID = IDs[j];
 
                 if (ID == 0)
                 {
                     switch (j)
                     {
                         case 0:
-                            {
-                                main.RadiusIndex1.threadSafeIndex = 0;
-
-                                break;
-                            }
+                        {
+                            main.RadiusIndex1.threadSafeIndex = 0;
+                            break;
+                        }
 
                         case 1:
-                            {
-                                main.RadiusIndex2.threadSafeIndex = 0;
-
-                                break;
-                            }
+                        {
+                            main.RadiusIndex2.threadSafeIndex = 0;
+                            break;
+                        }
 
                         case 2:
-                            {
-                                main.RadiusIndex3.threadSafeIndex = 0;
-
-                                break;
-                            }
-
-                        default: { break; }
+                        {
+                            main.RadiusIndex3.threadSafeIndex = 0;
+                            break;
+                        }
                     }
 
                     continue;
                 }
 
-                for (int i = 0; i < body.lookup.Count; ++i)
+                for (int i = 0; i < Lookups.Count; ++i)
                 {
-                    if (ID == body.lookup[i].ID)
+                    if (ID == Lookups[i].ID)
                     {
                         switch (j)
                         {
                             case 0:
-                                {
-                                    main.RadiusIndex1.threadSafeIndex = body.lookup[i].comboBoxIndex;
-
-                                    break;
-                                }
+                            {
+                                main.RadiusIndex1.threadSafeIndex = Lookups[i].comboBoxIndex;
+                                break;
+                            }
 
                             case 1:
-                                {
-                                    main.RadiusIndex2.threadSafeIndex = body.lookup[i].comboBoxIndex;
-
-                                    break;
-                                }
+                            {
+                                main.RadiusIndex2.threadSafeIndex = Lookups[i].comboBoxIndex;
+                                break;
+                            }
 
                             case 2:
-                                {
-                                    main.RadiusIndex3.threadSafeIndex = body.lookup[i].comboBoxIndex;
-
-                                    break;
-                                }
-
-                            default: { break; }
+                            {
+                                main.RadiusIndex3.threadSafeIndex = Lookups[i].comboBoxIndex;
+                                break;
+                            }
                         }
-
-                        continue;
                     }
                 }
             }
         }
 
-        public struct SpellRadiusMap
-        {
-            public SpellRadiusRecord[] records;
-            public List<RadiusLookup> lookup;
-        };
-
         public struct RadiusLookup
         {
-            public int ID;
+            public uint ID;
             public int comboBoxIndex;
         };
 
         public struct SpellRadiusRecord
         {
-            public UInt32 ID;
+// These fields are used through reflection, disable warning
+#pragma warning disable 0649
+#pragma warning disable 0169
+            public uint ID;
             public float Radius;
             public float RadiusPerLevel;
             public float MaximumRadius;
+#pragma warning restore 0649
+#pragma warning restore 0169
         };
     };
 }

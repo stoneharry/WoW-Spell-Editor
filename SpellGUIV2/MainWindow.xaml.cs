@@ -2596,12 +2596,12 @@ namespace SpellEditor
 
             if (sender == MechanicType)
             {
-                for (int i = 0; i < loadMechanics.body.lookup.Count; ++i)
+                for (int i = 0; i < loadMechanics.Lookups.Count; ++i)
                 {
-                    if (loadMechanics.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadMechanics.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "Mechanic", loadMechanics.body.lookup[i].ID, selectedID));
+							adapter.Table, "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2661,12 +2661,12 @@ namespace SpellEditor
 
             if (sender == RadiusIndex1)
             {
-                for (int i = 0; i < loadRadiuses.body.lookup.Count; ++i)
+                for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex1", loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2674,12 +2674,12 @@ namespace SpellEditor
 
             if (sender == RadiusIndex2)
             {
-                for (int i = 0; i < loadRadiuses.body.lookup.Count; ++i)
+                for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex2", loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2687,12 +2687,12 @@ namespace SpellEditor
 
             if (sender == RadiusIndex3)
             {
-                for (int i = 0; i < loadRadiuses.body.lookup.Count; ++i)
+                for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "EffectRadiusIndex3", loadRadiuses.body.lookup[i].ID, selectedID));
+							adapter.Table, "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
