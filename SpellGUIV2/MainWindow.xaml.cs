@@ -39,7 +39,7 @@ namespace SpellEditor
         private SpellFocusObject loadFocusObjects = null;
         private AreaGroup loadAreaGroups = null;
         private SpellCastTimes loadCastTimes = null;
-        private SpellDuration loadDurations = null;
+        public SpellDuration loadDurations = null;
         private SpellDifficulty loadDifficulties = null;
         private SpellIconDBC loadIcons = null;
         private SpellRange loadRanges = null;
@@ -2622,12 +2622,12 @@ namespace SpellEditor
 
             if (sender == Duration)
             {
-                for (int i = 0; i < SpellDuration.body.lookup.Count; ++i)
+                for (int i = 0; i < loadDurations.Lookups.Count; ++i)
                 {
-                    if (SpellDuration.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDurations.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "DurationIndex", SpellDuration.body.lookup[i].ID, selectedID));
+							adapter.Table, "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
                         break;
                     }
                 }

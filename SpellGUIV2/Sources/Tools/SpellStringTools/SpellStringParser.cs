@@ -137,7 +137,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER summaryDamage = new TOKEN_TO_PARSER()
         {
             TOKEN = "$o1|$o2|$o3|$o",
-            tokenFunc = (str, record,mainWindos) =>
+            tokenFunc = (str, record, mainWindow) =>
             {
             var tokens = summaryDamage.TOKEN.Split('|');
             foreach (var token in tokens)
@@ -179,24 +179,21 @@ namespace SpellEditor.Sources.SpellStringTools
                                         record.EffectAmplitude2 +
                                         record.EffectAmplitude3) / 1000;
                         }
-                        foreach (SpellDuration.SpellDurationRecord durRec in SpellDuration.body.records)
+                        var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
+                        if (entry != null)
                         {
-                            if (durRec.ID == record.DurationIndex)
+                            string newStr;
+                            int baseDuration = int.Parse(entry["BaseDuration"].ToString());
+                            // Convert duration to seconds
+                            if (baseDuration == -1)
+                                newStr = STR_INFINITE_DUR;
+                            else
                             {
-                                string newStr;
-                                // Convert duration to seconds
-                                if (durRec.BaseDuration == -1)
-                                {
-                                    newStr = STR_INFINITE_DUR;
-                                }
-                                else
-                                {
-                                    var seconds = double.Parse(durRec.BaseDuration.ToString()) / 1000;
-                                    var total = damage * (seconds / cooldown);
-                                    newStr = total.ToString();
-                                }
-                                str = str.Replace(token, newStr);
+                                var seconds = double.Parse(baseDuration.ToString()) / 1000;
+                                var total = damage * (seconds / cooldown);
+                                newStr = total.ToString();
                             }
+                            str = str.Replace(token, newStr);
                         }
                     }
                 }
@@ -308,27 +305,24 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER durationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$d",
-            tokenFunc = (str, record,mainWindos) =>
+            tokenFunc = (str, record, mainWindow) =>
             {
                 if (str.Contains(durationParser.TOKEN))
                 {
-                    foreach (SpellDuration.SpellDurationRecord durRec in SpellDuration.body.records)
+                    var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
+                    if (entry != null)
                     {
-                        if (durRec.ID == record.DurationIndex)
+                        string newStr;
+                        int baseDuration = int.Parse(entry["BaseDuration"].ToString());
+                        // Convert duration to seconds
+                        if (baseDuration == -1)
+                            newStr = STR_INFINITE_DUR;
+                        else
                         {
-                            string newStr;
-                            // Convert duration to seconds
-                            if (durRec.BaseDuration == -1)
-                            {
-                                newStr = STR_INFINITE_DUR;
-                            }
-                            else
-                            {
-                                var seconds = Single.Parse(durRec.BaseDuration.ToString()) / 1000f;
-                                newStr = seconds + STR_SECONDS;
-                            }
-                            str = str.Replace(durationParser.TOKEN, newStr);
+                            var seconds = float.Parse(baseDuration.ToString()) / 1000f;
+                            newStr = seconds + STR_SECONDS;
                         }
+                        str = str.Replace(durationParser.TOKEN, newStr);
                     }
                 }
 
@@ -337,30 +331,27 @@ namespace SpellEditor.Sources.SpellStringTools
 
 				foreach (Match _str in _matches)
 				{ 
-					UInt32 _LinkId =  UInt32.Parse(_str.Groups[1].Value);
+					uint _LinkId =  uint.Parse(_str.Groups[1].Value);
 
-					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindos);
+					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindow);
 
 					if (_linkRecord.ID != 0)
 					{
-						foreach (SpellDuration.SpellDurationRecord durRec in SpellDuration.body.records)
-						{
-							if (durRec.ID == _linkRecord.DurationIndex)
-							{
-								string newStr;
-								// Convert duration to seconds
-								if (durRec.BaseDuration == -1)
-								{
-									newStr = STR_INFINITE_DUR;
-								}
-								else
-								{
-									var seconds = Single.Parse(durRec.BaseDuration.ToString()) / 1000f;
-									newStr = seconds + STR_SECONDS;
-								}
-								str = str.Replace(_str.ToString(), newStr);
-							}
-						}
+                        var entry = mainWindow.loadDurations.LookupRecord(_linkRecord.DurationIndex);
+                        if (entry != null)
+                        {
+                            string newStr;
+                            int baseDuration = int.Parse(entry["BaseDuration"].ToString());
+                            // Convert duration to seconds
+                            if (baseDuration == -1)
+                                newStr = STR_INFINITE_DUR;
+                            else
+                            {
+                                var seconds = float.Parse(baseDuration.ToString()) / 1000f;
+                                newStr = seconds + STR_SECONDS;
+                            }
+                            str = str.Replace(_str.ToString(), newStr);
+                        }
 					}
 				}
 				return str;
@@ -465,7 +456,7 @@ namespace SpellEditor.Sources.SpellStringTools
 		public static string GetParsedForm(string rawString, DataRow row, MainWindow mainWindow)
         {
             Spell_DBC_Record record = SpellDBC.GetRowToRecord(row);
-            return GetParsedForm(rawString, record,mainWindow);
+            return GetParsedForm(rawString, record, mainWindow);
         }
 
 		public static Spell_DBC_Record GetRecordById(UInt32 spellId, MainWindow mainWindow)

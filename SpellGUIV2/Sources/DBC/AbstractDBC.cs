@@ -17,6 +17,19 @@ namespace SpellEditor.Sources.DBC
             reader.ReadStringBlock();
         }
 
+        public Dictionary<string, object> LookupRecord(uint ID) => LookupRecord(ID, "ID");
+        public Dictionary<string, object> LookupRecord(uint ID, string IDKey)
+        {
+            foreach (Dictionary<string, object> entry in Body.RecordMaps)
+            {
+                if (!entry.ContainsKey(IDKey))
+                    continue;
+                if ((uint) entry[IDKey] == ID)
+                    return entry;
+            }
+            return null;
+        }
+
         public struct DBC_Header
         {
             public uint Magic;
