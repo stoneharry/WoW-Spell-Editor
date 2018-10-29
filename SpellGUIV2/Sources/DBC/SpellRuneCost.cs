@@ -85,6 +85,7 @@ namespace SpellEditor.Sources.DBC
 
         public struct SpellRuneCost_DBC_Record
         {
+// These fields are used through reflection, disable warning
 #pragma warning disable 0649
 #pragma warning disable 0169
             public uint ID;

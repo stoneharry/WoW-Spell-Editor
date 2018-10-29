@@ -2724,12 +2724,12 @@ namespace SpellEditor
 
             if (sender == TotemCategory1)
             {
-                for (int i = 0; i < loadTotemCategories.body.lookup.Count; ++i)
+                for (int i = 0; i < loadTotemCategories.Lookups.Count; ++i)
                 {
-                    if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "TotemCategory1", loadTotemCategories.body.lookup[i].ID, selectedID));
+							adapter.Table, "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2737,12 +2737,12 @@ namespace SpellEditor
 
             if (sender == TotemCategory2)
             {
-                for (int i = 0; i < loadTotemCategories.body.lookup.Count; ++i)
+                for (int i = 0; i < loadTotemCategories.Lookups.Count; ++i)
                 {
-                    if (loadTotemCategories.body.lookup[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
 						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-							adapter.Table, "TotemCategory2", loadTotemCategories.body.lookup[i].ID, selectedID));
+							adapter.Table, "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
