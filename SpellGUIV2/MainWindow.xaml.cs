@@ -640,36 +640,46 @@ namespace SpellEditor
             }
             if (errorMsg.Length > 0)
             {
-                await this.ShowMessageAsync("ERROR", "An error occured setting up the MySQL connection:\n" + errorMsg);
+                await this.ShowMessageAsync("ERROR", "An error occured setting up the database connection:\n" + errorMsg);
                 return;
             }
 
-            spellTable.Columns.Add("id", typeof(System.UInt32));
-            spellTable.Columns.Add("SpellName" + GetLocale(), typeof(System.String));
-            spellTable.Columns.Add("Icon", typeof(System.UInt32));
+            var controller = await this.ShowProgressAsync("Please wait", "Loading dbc files and populating UI elements...");
+            controller.SetCancelable(false);
+            await Task.Delay(500);
+            using (var d = Dispatcher.DisableProcessing())
+            {
+                spellTable.Columns.Add("id", typeof(System.UInt32));
+                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(System.String));
+                spellTable.Columns.Add("Icon", typeof(System.UInt32));
 
-            PrepareIconEditor();
-            PopulateSelectSpell();
+                PopulateSelectSpell();
 
-			spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+                spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
 
-            // Load other DBC's
-			loadAreaTable = new AreaTable(this);
-			loadCategories = new SpellCategory(this, adapter);
-			loadDispels = new SpellDispelType(this, adapter);
-			loadMechanics = new SpellMechanic(this, adapter);
-			loadFocusObjects = new SpellFocusObject(this, adapter);
-			loadAreaGroups = new AreaGroup(this, adapter);
-			loadDifficulties = new SpellDifficulty(this, adapter);
-			loadCastTimes = new SpellCastTimes(this, adapter);
-			loadDurations = new SpellDuration(this, adapter);
-			loadRanges = new SpellRange(this, adapter);
-			loadRadiuses = new SpellRadius(this, adapter);
-			loadItemClasses = new ItemClass(this, adapter);
-			loadItemSubClasses = new ItemSubClass(this, adapter);
-			loadTotemCategories = new TotemCategory(this, adapter);
-			loadRuneCosts = new SpellRuneCost(this, adapter);
-			loadDescriptionVariables = new SpellDescriptionVariables(this, adapter);
+                // Load other DBC's
+                loadAreaTable = new AreaTable(this);
+                loadCategories = new SpellCategory(this, adapter);
+                loadDispels = new SpellDispelType(this, adapter);
+                loadMechanics = new SpellMechanic(this, adapter);
+                loadFocusObjects = new SpellFocusObject(this, adapter);
+                loadAreaGroups = new AreaGroup(this, adapter);
+                loadDifficulties = new SpellDifficulty(this, adapter);
+                loadCastTimes = new SpellCastTimes(this, adapter);
+                loadDurations = new SpellDuration(this, adapter);
+                loadRanges = new SpellRange(this, adapter);
+                loadRadiuses = new SpellRadius(this, adapter);
+                loadItemClasses = new ItemClass(this, adapter);
+                loadItemSubClasses = new ItemSubClass(this, adapter);
+                loadTotemCategories = new TotemCategory(this, adapter);
+                loadRuneCosts = new SpellRuneCost(this, adapter);
+                loadIcons = new SpellIconDBC(this, adapter);
+                loadDescriptionVariables = new SpellDescriptionVariables(this, adapter);
+
+                PrepareIconEditor();
+            }
+
+            await controller.CloseAsync();
         }
 
         private async Task<Config> getConfig()
@@ -1608,11 +1618,10 @@ namespace SpellEditor
             }
         }
 
-        private async void PrepareIconEditor()
+        private void PrepareIconEditor()
         {
-			loadIcons = new SpellIconDBC(this, adapter);
-
-            await loadIcons.LoadImages(slider.Value / 4);
+            loadIcons.LoadImages(64);
+            loadIcons.updateIconSize(64, new Thickness(16, 0, 0, 0));
         }
 
         private class Worker : BackgroundWorker
@@ -1723,7 +1732,7 @@ namespace SpellEditor
                 var textBlock = new TextBlock();
                 textBlock.Text = string.Format(" {0} - {1}", row["id"], row["SpellName" + locale].ToString());
                 var image = new System.Windows.Controls.Image();
-                var iconId = Int32.Parse(row["SpellIconID"].ToString());
+                var iconId = uint.Parse(row["SpellIconID"].ToString());
                 if (iconId > 0)
                 {
                     image.IsVisibleChanged += (o, args) =>
@@ -1735,7 +1744,7 @@ namespace SpellEditor
                         FileStream fileStream = null;
                         try
                         {
-                            fileStream = new FileStream(loadIcons.getIconPath(iconId) + ".blp", FileMode.Open);
+                            fileStream = new FileStream(loadIcons.GetIconPath(iconId) + ".blp", FileMode.Open);
                             var blpImage = new SereniaBLPLib.BlpFile(fileStream);
                             var bit = blpImage.getBitmap(0);
                             image.Width = 32;
