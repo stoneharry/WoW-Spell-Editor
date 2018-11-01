@@ -53,7 +53,7 @@ namespace SpellEditor.Sources.DBC
                         {
                             var row = rows[0];
                             string selectedLocale = "";
-                            for (int locale = 0; locale < 8; ++i)
+                            for (int locale = 0; locale < 8; ++locale)
                             {
                                 var name = row["SpellName" + locale].ToString();
                                 if (name.Length > 0)
