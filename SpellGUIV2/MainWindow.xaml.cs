@@ -908,7 +908,7 @@ namespace SpellEditor
                     "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-                    adapter.execute(string.Format("delete from `{0}`", adapter.Table));
+                    adapter.Execute(string.Format("delete from `{0}`", adapter.Table));
                     PopulateSelectSpell();
 
 					//Enabled the ImportDBC Button when Truncate table.
@@ -993,7 +993,7 @@ namespace SpellEditor
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
                         str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
                     str.Append(")");
-					adapter.execute(str.ToString());
+					adapter.Execute(str.ToString());
                 }
                 else
                 {
@@ -1020,7 +1020,7 @@ namespace SpellEditor
                     return;
                 }
 
-				adapter.execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, spellID));
+				adapter.Execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, spellID));
                 
                 selectedID = 0;
 
@@ -1566,7 +1566,7 @@ namespace SpellEditor
                     row["SpellDescriptionFlags7"] = (uint)(TextFlags.NOT_EMPTY);
 
                     row.EndEdit();
-					adapter.commitChanges(query, q.GetChanges());
+					adapter.CommitChanges(query, q.GetChanges());
 
                     PopulateSelectSpell();
                 }
@@ -1594,13 +1594,13 @@ namespace SpellEditor
                     column = "SpellIconID";
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
-				adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+				adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
             }
 
             if (sender == ResetSpellIconID)
-				adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "SpellIconID", 1, selectedID));
+				adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "SpellIconID", 1, selectedID));
             if (sender == ResetActiveIconID)
-				adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "ActiveIconID", 0, selectedID)); 
+				adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "ActiveIconID", 0, selectedID)); 
         }
         #endregion
 
@@ -1801,7 +1801,7 @@ namespace SpellEditor
                 column = "SpellIconID";
             else if (spellOrActive == MessageDialogResult.Negative)
                 column = "ActiveIconID";
-			adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+			adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
         }
 
         private async void UpdateMainWindow()
@@ -2557,7 +2557,7 @@ namespace SpellEditor
                 {
                     if (loadFocusObjects.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2570,7 +2570,7 @@ namespace SpellEditor
                 {
                     if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2583,7 +2583,7 @@ namespace SpellEditor
                 {
                     if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "Category", loadCategories.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2596,7 +2596,7 @@ namespace SpellEditor
                 {
                     if (loadDispels.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "Dispel", loadDispels.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2609,7 +2609,7 @@ namespace SpellEditor
                 {
                     if (loadMechanics.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2622,7 +2622,7 @@ namespace SpellEditor
                 {
                     if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2635,7 +2635,7 @@ namespace SpellEditor
                 {
                     if (loadDurations.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2648,7 +2648,7 @@ namespace SpellEditor
                 {
                     if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2661,7 +2661,7 @@ namespace SpellEditor
                 {
                     if (loadRanges.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2674,7 +2674,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2687,7 +2687,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2700,7 +2700,7 @@ namespace SpellEditor
                 {
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2724,7 +2724,7 @@ namespace SpellEditor
 
                     if (loadItemClasses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2737,7 +2737,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2750,7 +2750,7 @@ namespace SpellEditor
                 {
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2763,7 +2763,7 @@ namespace SpellEditor
                 {
                     if (loadRuneCosts.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
                         break;
                     }
@@ -2776,7 +2776,7 @@ namespace SpellEditor
                 {
                     if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
-						adapter.execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
+						adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
 							adapter.Table, "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
                         break;
                     }

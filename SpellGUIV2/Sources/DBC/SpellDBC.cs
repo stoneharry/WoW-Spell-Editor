@@ -170,7 +170,7 @@ namespace SpellEditor.Sources.DBC
                             if (q != null)
                             {
                                 q.Remove(q.Length - 2, 2);
-                                adapter.execute(q.ToString());
+                                adapter.Execute(q.ToString());
                             }
                             q = new StringBuilder();
                             q.Append(string.Format("INSERT INTO `{0}` VALUES ", adapter.Table));
@@ -233,7 +233,7 @@ namespace SpellEditor.Sources.DBC
                     if (q.Length > 0)
                     {
                         q.Remove(q.Length - 2, 2);
-                        adapter.execute(q.ToString());
+                        adapter.Execute(q.ToString());
                     }
                 }
                 catch (Exception e)

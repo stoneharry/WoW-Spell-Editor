@@ -8,8 +8,8 @@ namespace SpellEditor.Sources.Config
         bool Updating { get; set; }
 
         DataTable query(string query);
-        void commitChanges(string query, DataTable dataTable);
-        void execute(string p);
-        string getTableCreateString();
+        void CommitChanges(string query, DataTable dataTable);
+        void Execute(string p);
+        string GetTableCreateString();
     }
 }

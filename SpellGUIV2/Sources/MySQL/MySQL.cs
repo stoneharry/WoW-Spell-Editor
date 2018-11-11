@@ -45,7 +45,7 @@ namespace SpellEditor.Sources.MySQL
             cmd.Dispose();
             // Create Table
             cmd = conn.CreateCommand();
-            cmd.CommandText = string.Format(getTableCreateString(), config.Table);
+            cmd.CommandText = string.Format(GetTableCreateString(), config.Table);
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.MySQL
             }
         }
 
-        public void commitChanges(string query, DataTable dataTable)
+        public void CommitChanges(string query, DataTable dataTable)
         {
             if (Updating)
                 return;
@@ -85,7 +85,7 @@ namespace SpellEditor.Sources.MySQL
             }
         }
 
-        public void execute(string p)
+        public void Execute(string p)
         {
             if (Updating)
                 return;
@@ -98,7 +98,7 @@ namespace SpellEditor.Sources.MySQL
             //}
         }
 
-        public string getTableCreateString()
+        public string GetTableCreateString()
         {
             StringBuilder str = new StringBuilder();
             str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
