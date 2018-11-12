@@ -19,6 +19,8 @@ The spell.dbc exists client side inside the MPQ files. DBFilesClient/Spell.dbc. 
 
 This means that if you wish to modify spells it is usually necessary to update both the client and the server. You can deploy a custom MPQ and if neccessary a custom wow.exe binary. There are plenty of guides for this out there, e.g: http://www.modcraft.io/index.php?board=78.0
 
+----
+
 When you first open the spell editor program it will ask which database type you want to use. The databases for editing the spells have different advantages and disadvantages:
 
 **A) MySQL:**
@@ -32,6 +34,8 @@ MySQL also has many IDE's (SQLyog, Navicat, HediSQL, etc) that will allow you to
 B) **SQLite:**
 
 As the name implies, this is a lightweight version of SQL. It will save all the data to a single local flat file. This means the program has no dependency on having a MySQL server running but only a single person can be working on the data at any given time. It is a lot harder to query this data too.
+
+----
 
 Once you have selected and configured the database you want to use, you can then import a spell.dbc file into the database. On the header for the program you will see a button for 'Import spell.dbc'. Click this and it will import any spell.dbc file found in the DBC folder - this folder must be in the same directory as the spell editor program.
 
