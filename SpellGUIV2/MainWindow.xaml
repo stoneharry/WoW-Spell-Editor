@@ -575,17 +575,13 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="Icon">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="14*"/>
-						<ColumnDefinition Width="5*"/>
-						<ColumnDefinition Width="628*"/>
-					</Grid.ColumnDefinitions>
-					<Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
-					<Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
+                <Grid>
+                    <Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
+                    <Grid Name="CurrentIconGrid"/>
+                    <Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
 					<Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
-					<Image Name="NewIcon" Margin="265.907,44,926,614" Height="64" Width="64" Grid.Column="2"/>
-					<ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
+                    <Grid Name="NewIconGrid"/>
+                    <ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
 						<WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
 					</ScrollViewer>
 					<Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>

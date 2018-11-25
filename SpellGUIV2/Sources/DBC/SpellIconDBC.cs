@@ -89,12 +89,23 @@ namespace SpellEditor.Sources.DBC
                 using (BlpFile image = new BlpFile(fileStream))
                 {
                     Bitmap bit = image.getBitmap(0);
-                    main.CurrentIcon.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
-                        BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                    System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+
+                    temp.Width = iconSize == null ? 32 : iconSize.Value;
+                    temp.Height = iconSize == null ? 32 : iconSize.Value;
+                    temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
+                    temp.VerticalAlignment = VerticalAlignment.Top;
+                    temp.HorizontalAlignment = HorizontalAlignment.Left;
+                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                    temp.Name = "CurrentSpellIcon";
+
+                    // Code smells here on hacky positioning and updating the icon
+                    temp.Margin = new Thickness(103, 38, 0, 0);
+                    main.CurrentIconGrid.Children.Clear();
+                    main.CurrentIconGrid.Children.Add(temp);
                 }
             }
-
+            
             // Load all icons available if have not already
             if (!loadedAllIcons)
             {
@@ -148,10 +159,23 @@ namespace SpellEditor.Sources.DBC
 
         public void ImageDown(object sender, EventArgs e)
         {
-            main.NewIcon.Source = ((System.Windows.Controls.Image)sender).Source;
-            System.Windows.Controls.Image temp = (System.Windows.Controls.Image)sender;
+            var image = (System.Windows.Controls.Image)sender;
+            System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
 
-            uint offset = uint.Parse(temp.Name.Substring(6));
+            temp.Width = iconSize == null ? 32 : iconSize.Value;
+            temp.Height = iconSize == null ? 32 : iconSize.Value;
+            temp.Margin = iconMargin == null ? new Thickness(16, 0, 0, 0) : iconMargin.Value;
+            temp.VerticalAlignment = VerticalAlignment.Top;
+            temp.HorizontalAlignment = HorizontalAlignment.Left;
+            temp.Source = image.Source;
+            temp.Name = "NewSpellIcon";
+
+            // Code smells here on hacky positioning and updating the icon
+            temp.Margin = new Thickness(285, 38, 0, 0);
+            main.NewIconGrid.Children.Clear();
+            main.NewIconGrid.Children.Add(temp);
+
+            uint offset = uint.Parse(image.Name.Substring(6));
             uint ID = 0;
 
             for (int i = 0; i < Header.RecordCount; ++i)
