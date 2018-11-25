@@ -123,7 +123,7 @@ namespace SpellEditor.Sources.DBC
             {
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                 {
-                    int count = Marshal.SizeOf(typeof(DBC_Header));
+                    int count = Marshal.SizeOf(typeof(DBCHeader));
                     byte[] buffer = new byte[count];
                     GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                     Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
@@ -293,7 +293,7 @@ namespace SpellEditor.Sources.DBC
 				var rows = adapter.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", adapter.Table)).Rows;
                 uint numRows = uint.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
-                Header = new DBC_Header();
+                Header = new DBCHeader();
                 Header.FieldCount = 234;
                 Header.Magic = 1128416343;
                 Header.RecordCount = numRows;

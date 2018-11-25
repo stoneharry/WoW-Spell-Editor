@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
         private string filePath;
         private long fileSize;
         private long filePosition;
-        private DBC_Header Header;
+        private DBCHeader Header;
         private Dictionary<uint, VirtualStrTableEntry> stringsMap;
 
         public DBCReader(string filePath)
@@ -55,19 +55,19 @@ namespace SpellEditor.Sources.DBC
         /**
          * Reads the DBC Header, saving it to the class and returning it
          */
-        public DBC_Header ReadDBCHeader()
+        public DBCHeader ReadDBCHeader()
         {
-            DBC_Header header;
+            DBCHeader header;
             using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
             {
                 fileSize = fileStream.Length;
-                int count = Marshal.SizeOf(typeof(DBC_Header));
+                int count = Marshal.SizeOf(typeof(DBCHeader));
                 byte[] readBuffer = new byte[count];
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
                     readBuffer = reader.ReadBytes(count);
                     filePosition = reader.BaseStream.Position;
-                    header = ReadStruct<DBC_Header>(reader, readBuffer);
+                    header = ReadStruct<DBCHeader>(reader, readBuffer);
                 }
             }
             this.Header = header;
@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
          * array of key value pairs inside the body. The key value pairs are
          * column name to column value.
          */
-        public void ReadDBCRecords<RecordStruct>(DBC_Body body, int recordSize)
+        public void ReadDBCRecords<RecordStruct>(DBCBody body, int recordSize)
         {
             if (Header.RecordSize != recordSize)
                 throw new Exception($"The DBC [{ filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ Header.RecordSize }] got [{ recordSize }].");

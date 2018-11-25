@@ -5,8 +5,8 @@ namespace SpellEditor.Sources.DBC
 {
     public abstract class AbstractDBC
     {
-        protected DBC_Header Header;
-        protected DBC_Body Body = new DBC_Body();
+        protected DBCHeader Header;
+        protected DBCBody Body = new DBCBody();
         protected DBCReader reader;
 
         protected void ReadDBCFile<RecordType>(string filePath)
@@ -30,7 +30,7 @@ namespace SpellEditor.Sources.DBC
             return null;
         }
 
-        public struct DBC_Header
+        public struct DBCHeader
         {
             public uint Magic;
             public uint RecordCount;
@@ -39,7 +39,7 @@ namespace SpellEditor.Sources.DBC
             public int StringBlockSize;
         };
 
-        public class DBC_Body
+        public class DBCBody
         {
             public Dictionary<string, object>[] RecordMaps;
         };
