@@ -33,7 +33,7 @@ namespace SpellEditor.Sources.DBC
                     var record = Body.RecordMaps[i];
                     uint id = (uint) record["ID"];
                     uint offset = (uint) record["Formula"];
-                    string description = offset == 0 ? "" : reader.LookupStringOffset(offset);
+                    string description = offset == 0 ? "" : Reader.LookupStringOffset(offset);
 
                     SpellDescriptionVariablesLookup temp;
                     temp.ID = id;
@@ -46,11 +46,11 @@ namespace SpellEditor.Sources.DBC
 
                     boxIndex++;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)

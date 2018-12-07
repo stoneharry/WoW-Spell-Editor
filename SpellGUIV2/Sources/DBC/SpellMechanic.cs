@@ -37,7 +37,7 @@ namespace SpellEditor.Sources.DBC
                     uint offset = ((uint[])record["Name"])[window.GetLanguage()];
                     if (offset == 0)
                         continue;
-                    string name = reader.LookupStringOffset(offset);
+                    string name = Reader.LookupStringOffset(offset);
 
                     MechanicLookup temp;
                     temp.ID = (uint) record["ID"];
@@ -50,11 +50,11 @@ namespace SpellEditor.Sources.DBC
 
                     ++boxIndex;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)

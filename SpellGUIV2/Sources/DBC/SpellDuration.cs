@@ -43,7 +43,7 @@ namespace SpellEditor.Sources.DBC
 
                     ++boxIndex;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
             }
             catch (Exception ex)
             {

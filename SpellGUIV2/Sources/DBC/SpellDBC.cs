@@ -208,7 +208,7 @@ namespace SpellEditor.Sources.DBC
                                                 uint[] array = (uint[])recordMap[f.Name];
                                                 for (int i = 0; i < array.Length; ++i)
                                                 {
-                                                    var lookupResult = reader.LookupStringOffset(array[i]);
+                                                    var lookupResult = Reader.LookupStringOffset(array[i]);
                                                     q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(lookupResult)));
                                                 }
                                                 break;
@@ -243,7 +243,7 @@ namespace SpellEditor.Sources.DBC
                 }
                 // We have attempted to import the Spell.dbc so clean up unneeded data
                 // This will be recreated if the import process is started again
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
             });
         }
 

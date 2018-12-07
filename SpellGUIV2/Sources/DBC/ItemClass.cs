@@ -42,15 +42,15 @@ namespace SpellEditor.Sources.DBC
                     ItemClassLookup temp;
                     temp.ID = int.Parse(record["ID"].ToString());
                     temp.comboBoxIndex = boxIndex;
-                    window.EquippedItemClass.Items.Add(reader.LookupStringOffset(offset));
+                    window.EquippedItemClass.Items.Add(Reader.LookupStringOffset(offset));
                     Lookups.Add(temp);
                     boxIndex++;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)

@@ -23,14 +23,14 @@ namespace SpellEditor.Sources.DBC
                         continue;
                     ItemSubClassLookup temp;
                     temp.ID = (uint)record["subClass"];
-                    temp.Name = reader.LookupStringOffset(offset);
+                    temp.Name = Reader.LookupStringOffset(offset);
                     Lookups[(uint) record["Class"], temp.ID] = temp;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)

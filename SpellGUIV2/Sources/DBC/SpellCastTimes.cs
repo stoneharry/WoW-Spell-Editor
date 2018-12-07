@@ -46,11 +46,11 @@ namespace SpellEditor.Sources.DBC
                     main.CastTime.Items.Add(castTime);
                     boxIndex++;
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)

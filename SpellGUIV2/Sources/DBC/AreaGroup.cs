@@ -83,9 +83,9 @@ namespace SpellEditor.Sources.DBC
                     Lookups.Add(temp);
 
                     boxIndex++;
-                    reader.CleanStringsMap();
+                    Reader.CleanStringsMap();
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
             }
             catch (Exception ex)
             {

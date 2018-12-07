@@ -7,14 +7,14 @@ namespace SpellEditor.Sources.DBC
     {
         protected DBCHeader Header;
         protected DBCBody Body = new DBCBody();
-        protected DBCReader reader;
+        protected DBCReader Reader;
 
         protected void ReadDBCFile<RecordType>(string filePath)
         {
-            reader = new DBCReader(filePath);
-            Header = reader.ReadDBCHeader();
-            reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
-            reader.ReadStringBlock();
+            Reader = new DBCReader(filePath);
+            Header = Reader.ReadDBCHeader();
+            Reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
+            Reader.ReadStringBlock();
         }
 
         public Dictionary<string, object> LookupRecord(uint ID) => LookupRecord(ID, "ID");

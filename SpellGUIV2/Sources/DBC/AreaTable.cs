@@ -25,14 +25,14 @@ namespace SpellEditor.Sources.DBC
                         continue;
 				    AreaTableLookup temp;
                     temp.ID = (uint) record["ID"];
-				    temp.AreaName = reader.LookupStringOffset(offset);
+				    temp.AreaName = Reader.LookupStringOffset(offset);
 				    Lookups.Add(temp.ID, temp);
                 }
-                reader.CleanStringsMap();
+                Reader.CleanStringsMap();
                 // In this DBC we don't actually need to keep the DBC data now that
                 // we have extracted the lookup tables. Nulling it out may help with
                 // memory consumption.
-                reader = null;
+                Reader = null;
                 Body = null;
             }
             catch (Exception ex)
