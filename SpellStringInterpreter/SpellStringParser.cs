@@ -16,6 +16,8 @@ namespace SpellStringInterpreter
         private static string TOKEN_REGEX = 
             $"{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
+        // Parse a string like: "Hello world 1 + 5 + 7 = ${1 + 5 + 7}, 5 / 10.15 - 1 + 0.25 = ${5/10.15-1+0.25}"
+        // Can parse references like "$s1"
         public string ParseString(string str)
         {
             var formulas = FindFormulas(str);
@@ -27,6 +29,7 @@ namespace SpellStringInterpreter
             return str;
         }
 
+        // Find ${} and $vars in the formula string
         private List<string> FindFormulas(string str)
         {
             var regexMatches = Regex.Matches(str, FORMULA_REGEX);
@@ -38,6 +41,7 @@ namespace SpellStringInterpreter
             return tokenList;
         }
 
+        // Parse a formula string resolving all references and calculating arithmetic
         private string ParseFormula(string formula)
         {
             var matches = Regex.Matches(formula, TOKEN_REGEX);
@@ -58,20 +62,19 @@ namespace SpellStringInterpreter
             return formula.Substring(2, formula.Length - 3).Trim();
         }
 
-        private void ProcessTokenArithmetic(List<Token> tokens, int index)
+        // Return true if the token is a arithmetic operator
+        private bool IsTokenTypeOperator(TokenType type)
         {
-            var token = tokens[index];
-            var prevToken = index - 1 < 0 ? null : tokens[index - 1];
-            var nextToken = index + 1 == tokens.Count ? null : tokens[index + 1];
-            var type = token.Type;
-            // If not any of these token types return
-            if (!(type == TokenType.DIVIDE ||
+            return type == TokenType.DIVIDE ||
                 type == TokenType.MULTIPLY ||
                 type == TokenType.PLUS ||
-                type == TokenType.MINUS))
-                return;
+                type == TokenType.MINUS;
+        }
+
+        private bool IsValidPointers(Token token, Token prevToken, Token nextToken)
+        {
             // If previous and next is not a token we log an error and return
-            // All references should be resolved
+            // All reference tokens should be resolved at this point
             if (prevToken == null ||
                 nextToken == null ||
                 prevToken.Type != TokenType.NUMBER ||
@@ -81,9 +84,14 @@ namespace SpellStringInterpreter
                     Console.WriteLine($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
                 else
                     Console.WriteLine($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
-                return;
+                return false;
             }
-            // If prev value has been wiped out as it was used for a calc then find the prev valid token
+            return true;
+        }
+
+        private Token FindResolvedPrevToken(Token token, Token prevToken, int index, List<Token> tokens)
+        {
+            // If prev value has been cleared because it was used in a calc already then find the previous valid token to use
             int tries = 1;
             while (prevToken.ResolvedValue is string && ((string)prevToken.ResolvedValue).Length == 0)
             {
@@ -92,22 +100,37 @@ namespace SpellStringInterpreter
                 if (newIndex < 0)
                 {
                     Console.WriteLine("Unable to find previous resolved token for " + token);
-                    return;
+                    return prevToken;
                 }
                 prevToken = tokens[newIndex];
             }
-            // We should be able to do the math now. Calculate it on current node
+            return prevToken;
+        }
+
+        // Calculate any arithmetic in the token list. Requires all references to be resolved
+        private void ProcessTokenArithmetic(List<Token> tokens, int index)
+        {
+            var token = tokens[index];
+            var prevToken = index - 1 < 0 ? null : tokens[index - 1];
+            var nextToken = index + 1 == tokens.Count ? null : tokens[index + 1];
+            // Validation
+            if (!IsTokenTypeOperator(token.Type))
+                return;
+            if (!IsValidPointers(token, prevToken, nextToken))
+                return;
+            prevToken = FindResolvedPrevToken(token, prevToken, index, tokens);
+            // Casting and calc setup
             double nextValue;
             double prevValue;
-            // The resolved value could be a string or already a double
             if (nextToken.ResolvedValue is string && ((string)nextToken.ResolvedValue).Length > 0)
                 nextValue = double.Parse((string)nextToken.ResolvedValue);
-            else
+            else 
                 nextValue = (double)nextToken.ResolvedValue;
             if (prevToken.ResolvedValue is string && ((string)prevToken.ResolvedValue).Length > 0)
                 prevValue = double.Parse((string)prevToken.ResolvedValue);
             else
                 prevValue = (double)prevToken.ResolvedValue;
+            // Calculation
             if (token.Type == TokenType.DIVIDE)
                 token.ResolvedValue = prevValue / nextValue;
             else if (token.Type == TokenType.PLUS)
@@ -116,10 +139,12 @@ namespace SpellStringInterpreter
                 token.ResolvedValue = prevValue * nextValue;
             else if (token.Type == TokenType.MINUS)
                 token.ResolvedValue = prevValue - nextValue;
+            // Clear used tokens
             prevToken.ResolvedValue = "";
             nextToken.ResolvedValue = "";
         }
 
+        // Tokenises all the token string matches found in the formula and resolves any references
         private List<Token> TokenizeFormulaMatches(MatchCollection matches)
         {
             var tokens = new List<Token>(matches.Count);
@@ -163,8 +188,10 @@ namespace SpellStringInterpreter
 
         private class Token
         {
+            // Value read from the formula string
             public string Value;
             public TokenType Type = TokenType.UNKNOWN;
+            // Value derived
             public object ResolvedValue;
 
             public Token(string value)
@@ -173,9 +200,10 @@ namespace SpellStringInterpreter
                 DetermineType();
             }
 
+            // Interpret what the string token represents with regex
             private void DetermineType()
             {
-                // Reference must come before Number because the regex for number can also detect references
+                // Reference must be checked before Number because the regex for number can also detect references
                 if (Regex.IsMatch(Value, REFERENCE_REGEX))
                     Type = TokenType.REFERENCE;
                 else if (Regex.IsMatch(Value, NUMBER_REGEX))
