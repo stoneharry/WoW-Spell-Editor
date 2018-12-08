@@ -156,6 +156,8 @@
     <Compile Include="Sources\Tools\SpellStringTools\SpellStringReferenceResolver.cs" />
     <Compile Include="Sources\SQLite\SQLite.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

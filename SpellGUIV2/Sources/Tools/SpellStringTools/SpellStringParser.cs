@@ -1,21 +1,21 @@
-﻿using System;
+﻿using SpellEditor.Sources.Tools.SpellStringTools;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
 
 namespace SpellEditor.Sources.SpellStringTools
 {
-    class SpellStringParser
+    public class SpellStringParser
     {
-        //
-        private static string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*"; // \\$\\w|\\$\\{.*?}
-        private static string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";
-        private static string REFERENCE_REGEX = "\\$\\w+";
-        private static string PLUS_REGEX = "\\+";
-        private static string MINUS_REGEX = "\\-";
-        private static string MULTIPLY_REGEX = "\\*";
-        private static string DIVIDE_REGEX = "\\/";
-        private static string TOKEN_REGEX = 
+        public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*"; // \\$\\w|\\$\\{.*?}
+        public static readonly string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";
+        public static readonly string REFERENCE_REGEX = "\\$\\w+";
+        public static readonly string PLUS_REGEX = "\\+";
+        public static readonly string MINUS_REGEX = "\\-";
+        public static readonly string MULTIPLY_REGEX = "\\*";
+        public static readonly string DIVIDE_REGEX = "\\/";
+        public static readonly string TOKEN_REGEX = 
             $"{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
         private string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
@@ -195,54 +195,5 @@ namespace SpellEditor.Sources.SpellStringTools
             }
             return tokens;
         }
-
-        private class Token
-        {
-            // Value read from the formula string
-            public string Value;
-            public TokenType Type = TokenType.UNKNOWN;
-            // Value derived
-            public object ResolvedValue;
-
-            public Token(string value)
-            {
-                Value = value;
-                DetermineType();
-            }
-
-            // Interpret what the string token represents with regex
-            private void DetermineType()
-            {
-                // Reference must be checked before Number because the regex for number can also detect references
-                if (Regex.IsMatch(Value, REFERENCE_REGEX))
-                    Type = TokenType.REFERENCE;
-                else if (Regex.IsMatch(Value, NUMBER_REGEX))
-                    Type = TokenType.NUMBER;
-                else if (Regex.IsMatch(Value, PLUS_REGEX))
-                    Type = TokenType.PLUS;
-                else if (Regex.IsMatch(Value, MINUS_REGEX))
-                    Type = TokenType.MINUS;
-                else if (Regex.IsMatch(Value, DIVIDE_REGEX))
-                    Type = TokenType.DIVIDE;
-                else if (Regex.IsMatch(Value, MULTIPLY_REGEX))
-                    Type = TokenType.MULTIPLY;
-            }
-
-            public override string ToString()
-            {
-                return $"Token[{ Value }, { Type }, { ResolvedValue }]";
-            }
-        }
-
-        private enum TokenType
-        {
-            NUMBER,
-            PLUS,
-            MINUS,
-            MULTIPLY,
-            DIVIDE,
-            REFERENCE,
-            UNKNOWN
-        };
     }
 }
