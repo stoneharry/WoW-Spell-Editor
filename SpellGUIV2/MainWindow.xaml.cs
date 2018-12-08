@@ -75,12 +75,13 @@ namespace SpellEditor
         #region MemberVariables
 		private DBAdapter adapter;
         private Config config;
-        public UInt32 selectedID = 0;
-        public UInt32 newIconID = 1;
-        private Boolean updating;
+        public uint selectedID = 0;
+        public uint newIconID = 1;
+        private bool updating;
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         private DataTable spellTable = new DataTable();
         private int storedLocale = -1;
+        private SpellStringParser SpellStringParser = new SpellStringParser();
 
         private List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
         private List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
@@ -1806,11 +1807,12 @@ namespace SpellEditor
 
         private async void UpdateMainWindow()
         {
+            ProgressDialogController controller = null;
             try
             {
                 updating = true;
 
-                var controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID +
+                controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID +
                     ".\n\nThe first spell to be loaded will always take a while but afterwards it should be quite fast.");
                 controller.SetCancelable(false);
 
@@ -1828,9 +1830,10 @@ namespace SpellEditor
 
             catch (Exception ex)
             {
-                HandleErrorMessage(ex.Message);
-
                 updating = false;
+                if (controller != null)
+                    await controller.CloseAsync();
+                HandleErrorMessage(ex.Message);
             }
         }
         #endregion
@@ -1844,7 +1847,7 @@ namespace SpellEditor
             if (!int.TryParse(sender.Name[sender.Name.Length - 1].ToString(), out locale))
                 return;
             var spell = GetSpellRowById(selectedID);
-            var text = SpellStringParser.GetParsedForm(sender.Text, spell, this);
+            var text = SpellStringParser.ParseString(sender.Text, spell, this);
             if (type == 0)
                 spellDescGenFields[locale].threadSafeText = text;
             else if (type == 1)
@@ -1864,8 +1867,8 @@ namespace SpellEditor
             int i;
             for (i = 0; i < 9; ++i)
             {
-                spellDescGenFields[i].threadSafeText = SpellStringParser.GetParsedForm(row["SpellDescription" + i].ToString(), row, this);
-                spellTooltipGenFields[i].threadSafeText = SpellStringParser.GetParsedForm(row["SpellTooltip" + i].ToString(), row, this);
+                spellDescGenFields[i].threadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
+                spellTooltipGenFields[i].threadSafeText = SpellStringParser.ParseString(row["SpellTooltip" + i].ToString(), row, this);
             }
             for (i = 0; i < 9; ++i)
             {

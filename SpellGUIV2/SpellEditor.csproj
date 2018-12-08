@@ -152,11 +152,10 @@
     <Compile Include="Sources\DBC\SpellRuneCost.cs" />
     <Compile Include="Sources\DBC\TotemCategory.cs" />
     <Compile Include="Sources\MySQL\MySQL.cs" />
-    <Compile Include="Sources\Tools\SpellFamilyClassMaskParser\SpellFamilyClassMaskParser.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\TokenConsumer.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\SpellFamilyClassMaskParser.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\SpellStringReferenceResolver.cs" />
     <Compile Include="Sources\SQLite\SQLite.cs" />
+    <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

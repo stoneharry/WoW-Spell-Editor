@@ -1,467 +1,248 @@
-﻿using SpellEditor.Sources.DBC;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using System.Text.RegularExpressions;
-using SpellEditor.Sources.Config;
-using System.Windows;
 
 namespace SpellEditor.Sources.SpellStringTools
 {
     class SpellStringParser
     {
-        private static string STR_SECONDS = " seconds";
-        private static string STR_INFINITE_DUR = "permanently";
-        private static string STR_HEARTHSTONE_LOC = "(hearthstone location)";
+        //
+        private static string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*"; // \\$\\w|\\$\\{.*?}
+        private static string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";
+        private static string REFERENCE_REGEX = "\\$\\w+";
+        private static string PLUS_REGEX = "\\+";
+        private static string MINUS_REGEX = "\\-";
+        private static string MULTIPLY_REGEX = "\\*";
+        private static string DIVIDE_REGEX = "\\/";
+        private static string TOKEN_REGEX = 
+            $"{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
-        private struct TOKEN_TO_PARSER
+        private string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
         {
-            public string TOKEN;
-            public Func<string, Spell_DBC_Record, MainWindow, string> tokenFunc;
+            return SpellStringReferenceResolver.GetParsedForm(reference, spell, mainWindow);
         }
 
-		private static TOKEN_TO_PARSER procChanceParser = new TOKEN_TO_PARSER()
-		{
-			TOKEN = "$h",
-			tokenFunc = (str, record, mainWindos) =>
-			{
-				if (str.Contains(procChanceParser.TOKEN))
-				{
-					str = str.Replace(procChanceParser.TOKEN, record.ProcChance.ToString());
-				}
-				return str;
-			}
-		};
-
-		private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
+        // Parse a string like: "Hello world 1 + 5 + 7 = ${1 + 5 + 7}, 5 / 10.15 - 1 + 0.25 = ${5/10.15-1+0.25}"
+        // Can parse references like "$s1"
+        public string ParseString(string str, DataRow spell, MainWindow mainWindow)
         {
-            TOKEN = "$z",
-            tokenFunc = (str, record,mainWindos) =>
+            var formulas = FindFormulas(str);
+            foreach (var formula in formulas)
             {
-                if (str.Contains(hearthstoneLocationParser.TOKEN))
-                {
-                    str = str.Replace(hearthstoneLocationParser.TOKEN, STR_HEARTHSTONE_LOC);
-                }
-                return str;
+                Console.WriteLine(formula + "\t----\t" + "Processing");
+                str = str.Replace(formula, ParseFormula(formula, spell, mainWindow));
             }
-        };
-
-        private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$v",
-            tokenFunc = (str, record,mainWindos) =>
-            {
-                if (str.Contains(maxTargetLevelParser.TOKEN))
-                {
-                    str = str.Replace(maxTargetLevelParser.TOKEN, record.MaximumTargetLevel.ToString());
-                }
-                return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$x1|$x2|$x3|$x",
-            tokenFunc = (str, record,mainWindos) =>
-            {
-                foreach (var token in targetsParser.TOKEN.Split('|'))
-                {
-                    if (str.Contains(token))
-                    {
-                        uint index = 0;
-                        if (token.Length == 2)
-                        {
-                            index = 4;
-                        }
-                        else
-                        {
-                            index = uint.Parse(token[2].ToString());
-                        }
-                        uint targetCount = 0;
-                        if (index == 1)
-                        {
-                            targetCount = record.EffectChainTarget1;
-                        }
-                        else if (index == 2)
-                        {
-                            targetCount = record.EffectChainTarget2;
-                        }
-                        else if (index == 3)
-                        {
-                            targetCount = record.EffectChainTarget3;
-                        }
-                        else if (index == 4)
-                        {
-                            targetCount = record.EffectChainTarget1
-                                    + record.EffectChainTarget2
-                                    + record.EffectChainTarget3;
-                        }
-                        str = str.Replace(token, targetCount.ToString());
-                    }
-                }
-
-				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)x([1-3])");
-
-				foreach (Match _str in _matches)
-				{
-					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
-
-					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
-
-					if (_linkRecord.ID != 0)
-					{
-						uint newVal = 0;
-						if (_index == 1)
-						{
-							newVal = _linkRecord.EffectChainTarget1;
-						}
-						else if (_index == 2)
-						{
-							newVal = _linkRecord.EffectChainTarget2;
-						}
-						else if (_index == 3)
-						{
-							newVal = _linkRecord.EffectChainTarget3;
-						}
-						str = str.Replace(_str.ToString(), newVal.ToString());
-					}
-				}
-				return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER summaryDamage = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$o1|$o2|$o3|$o",
-            tokenFunc = (str, record, mainWindow) =>
-            {
-            var tokens = summaryDamage.TOKEN.Split('|');
-            foreach (var token in tokens)
-            {
-                    if (str.Contains(token))
-                    {
-                        uint index = 0;
-                        double cooldown = 0;
-                        if (token.Length == 2)
-                        {
-                            index = 4;
-                        }
-                        else
-                        {
-                            index = uint.Parse(token[2].ToString());
-                        }
-                        int damage = 0;
-                        if (index == 1)
-                        {
-                            damage = record.EffectDieSides1 + record.EffectBasePoints1;
-                            cooldown = record.EffectAmplitude1 / 1000;
-                        }
-                        else if (index == 2)
-                        {
-                            damage = record.EffectDieSides2 + record.EffectBasePoints2;
-                            cooldown = record.EffectAmplitude2 / 1000;
-                        }
-                        else if (index == 3)
-                        {
-                            damage = record.EffectDieSides3 + record.EffectBasePoints3;
-                            cooldown = record.EffectAmplitude3 / 1000;
-                        }
-                        else if (index == 4)
-                        {
-                            damage = (record.EffectDieSides1 + record.EffectBasePoints1) + 
-                                    (record.EffectDieSides2 + record.EffectBasePoints2) +
-                                    (record.EffectDieSides3 + record.EffectBasePoints3);
-                            cooldown = (record.EffectAmplitude1 +
-                                        record.EffectAmplitude2 +
-                                        record.EffectAmplitude3) / 1000;
-                        }
-                        var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
-                        if (entry != null)
-                        {
-                            string newStr;
-                            int baseDuration = int.Parse(entry["BaseDuration"].ToString());
-                            // Convert duration to seconds
-                            if (baseDuration == -1)
-                                newStr = STR_INFINITE_DUR;
-                            else
-                            {
-                                var seconds = double.Parse(baseDuration.ToString()) / 1000;
-                                var total = damage * (seconds / cooldown);
-                                newStr = total.ToString();
-                            }
-                            str = str.Replace(token, newStr);
-                        }
-                    }
-                }
-                return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER stacksParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$n",
-            tokenFunc = (str, record,mainWindos) =>
-            {
-                if (str.Contains(stacksParser.TOKEN))
-                {
-                    str = str.Replace(stacksParser.TOKEN, record.ProcCharges.ToString());
-                }
-
-				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)n");
-
-				foreach (Match _str in _matches)
-				{
-					UInt32 _LinkId = UInt32.Parse(_str.Groups[1].Value);
-
-					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId, mainWindos);
-
-					if (_linkRecord.ID != 0)
-					{
-						str = str.Replace(_str.ToString(), _linkRecord.ProcCharges.ToString());
-					}
-				}
-
-				return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER periodicTriggerParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$t1|$t2|$t3|$t",
-            tokenFunc = (str, record,mainWindos) =>
-            {
-                var tokens = periodicTriggerParser.TOKEN.Split('|');
-                foreach (var token in tokens)
-                {
-                    if (str.Contains(token))
-                    {
-                        uint index = 0;
-                        if (token.Length == 2)
-                        {
-                            index = 4;
-                        }
-                        else
-                        {
-                            index = uint.Parse(token[2].ToString());
-                        }
-                        uint newVal = 0;
-                        if (index == 1)
-                        {
-                            newVal = record.EffectAmplitude1;
-                        }
-                        else if (index == 2)
-                        {
-                            newVal = record.EffectAmplitude2;
-                        }
-                        else if (index == 3)
-                        {
-                            newVal = record.EffectAmplitude3;
-                        }
-                        else if (index == 4)
-                        {
-                            newVal = record.EffectAmplitude1 + record.EffectAmplitude2 + record.EffectAmplitude3;
-                        }
-                        var singleVal = Single.Parse(newVal.ToString());
-                        str = str.Replace(token, (singleVal / 1000).ToString());
-                    }
-                }
-
-				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)t([1-3])");
-
-				foreach (Match _str in _matches)
-				{
-					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
-
-					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
-
-					if (_linkRecord.ID != 0)
-					{
-						uint newVal = 0;
-						if (_index == 1)
-						{
-							newVal = _linkRecord.EffectAmplitude1;
-						}
-						else if (_index == 2)
-						{
-							newVal = _linkRecord.EffectAmplitude2;
-						}
-						else if (_index == 3)
-						{
-							newVal = _linkRecord.EffectAmplitude3 ;
-						}
-						var singleVal = Single.Parse(newVal.ToString());
-						str = str.Replace(_str.ToString(), (singleVal / 1000).ToString());
-					}
-				}
-				return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER durationParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$d",
-            tokenFunc = (str, record, mainWindow) =>
-            {
-                if (str.Contains(durationParser.TOKEN))
-                {
-                    var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
-                    if (entry != null)
-                    {
-                        string newStr;
-                        int baseDuration = int.Parse(entry["BaseDuration"].ToString());
-                        // Convert duration to seconds
-                        if (baseDuration == -1)
-                            newStr = STR_INFINITE_DUR;
-                        else
-                        {
-                            var seconds = float.Parse(baseDuration.ToString()) / 1000f;
-                            newStr = seconds + STR_SECONDS;
-                        }
-                        str = str.Replace(durationParser.TOKEN, newStr);
-                    }
-                }
-
-				//Handling strings similar to "$1510d" (spell:1510)
-				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)d");
-
-				foreach (Match _str in _matches)
-				{ 
-					uint _LinkId =  uint.Parse(_str.Groups[1].Value);
-
-					Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindow);
-
-					if (_linkRecord.ID != 0)
-					{
-                        var entry = mainWindow.loadDurations.LookupRecord(_linkRecord.DurationIndex);
-                        if (entry != null)
-                        {
-                            string newStr;
-                            int baseDuration = int.Parse(entry["BaseDuration"].ToString());
-                            // Convert duration to seconds
-                            if (baseDuration == -1)
-                                newStr = STR_INFINITE_DUR;
-                            else
-                            {
-                                var seconds = float.Parse(baseDuration.ToString()) / 1000f;
-                                newStr = seconds + STR_SECONDS;
-                            }
-                            str = str.Replace(_str.ToString(), newStr);
-                        }
-					}
-				}
-				return str;
-            }
-        };
-
-        private static TOKEN_TO_PARSER spellEffectParser = new TOKEN_TO_PARSER()
-        {
-            TOKEN = "$s1|$s2|$s3|$s",
-            tokenFunc = (str, record,mainWindos) =>
-            {
-                var tokens = spellEffectParser.TOKEN.Split('|');
-
-                foreach (var token in tokens)
-                {
-                    if (str.Contains(token))
-                    {
-                        var index = 0;
-                        if (token.Length == 2)
-                        {
-                            index = 4;
-                        }
-                        else
-                        {
-                            index = Int32.Parse(token[2].ToString());
-                        }
-                        int newVal = 0;
-                        if (index == 1)
-                        {
-                            newVal = record.EffectBasePoints1 + record.EffectDieSides1;
-                        }
-                        else if (index == 2)
-                        {
-                            newVal = record.EffectBasePoints2 + record.EffectDieSides2;
-                        }
-                        else if (index == 3)
-                        {
-                            newVal = record.EffectBasePoints3 + record.EffectDieSides3;
-                        }
-                        else if (index == 4)
-                        {
-                            newVal = record.EffectBasePoints1 + record.EffectDieSides1
-                                    + record.EffectBasePoints2 + record.EffectDieSides2
-                                    + record.EffectBasePoints3 + record.EffectDieSides3;
-                        }
-						if (newVal < 0)
-							newVal *= -1;
-
-						str = str.Replace(token, newVal.ToString());
-                    }
-                }
-
-				MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)s([1-3])");
-
-				foreach (Match _str in _matches)
-				{
-					UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-					UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
-
-					Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
-
-					if (_linkRecord.ID != 0)
-					{
-						int newVal = 0;
-						if (_index == 1)
-						{
-							newVal = _linkRecord.EffectBasePoints1 + _linkRecord.EffectDieSides1;
-						}
-						else if (_index == 2)
-						{
-							newVal = _linkRecord.EffectBasePoints2 + _linkRecord.EffectDieSides2;
-						}
-						else if (_index == 3)
-						{
-							newVal = _linkRecord.EffectBasePoints3 + _linkRecord.EffectDieSides3;
-						}
-						str = str.Replace(_str.ToString(), newVal.ToString());
-					}
-				}
-				return str;
-            }
-        };
-
-        // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
-
-        private static TOKEN_TO_PARSER[] TOKEN_PARSERS = {
-			procChanceParser,
-			spellEffectParser, durationParser, stacksParser,
-            periodicTriggerParser, summaryDamage, targetsParser,
-            maxTargetLevelParser, hearthstoneLocationParser
-        };
-
-		public static string GetParsedForm(string rawString, Spell_DBC_Record record, MainWindow mainWindow)
-        {
-            foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
-            {
-                rawString = parser.tokenFunc(rawString, record, mainWindow);
-            }
-            return rawString;
+            return str;
         }
 
-		public static string GetParsedForm(string rawString, DataRow row, MainWindow mainWindow)
+        // Find ${} and $vars in the formula string
+        private List<string> FindFormulas(string str)
         {
-            Spell_DBC_Record record = SpellDBC.GetRowToRecord(row);
-            return GetParsedForm(rawString, record, mainWindow);
+            var regexMatches = Regex.Matches(str, FORMULA_REGEX);
+            var tokenList = new List<string>(regexMatches.Count);
+            foreach (var tokenStr in regexMatches)
+            {
+                tokenList.Add(tokenStr.ToString());
+            }
+            return tokenList;
         }
 
-		public static Spell_DBC_Record GetRecordById(UInt32 spellId, MainWindow mainWindow)
-		{
-			return SpellDBC.GetRecordById(spellId, mainWindow);
-		}
+        // Parse a formula string resolving all references and calculating arithmetic
+        private string ParseFormula(string formula, DataRow spell, MainWindow mainWindow)
+        {
+            var matches = Regex.Matches(formula, TOKEN_REGEX);
+            var tokens = TokenizeFormulaMatches(matches, spell, mainWindow);
+            // Derive token values
+            for (int index = 0; index < tokens.Count; ++index)
+            {
+                ProcessTokenArithmetic(tokens, index);
+            }
+            // Replace tokens with derived token values in formula
+            for (int index = 0; index < tokens.Count; ++index)
+            {
+                Console.WriteLine($"> Token '{ tokens[index].Value }' derived value '{ tokens[index].ResolvedValue }'");
+                if (tokens[index].ResolvedValue != null)
+                {
+                    var regex = new Regex(Regex.Escape(tokens[index].Value));
+                    formula = regex.Replace(formula, tokens[index].ResolvedValue.ToString(), 1);
+                }
+            }
+            // Strip prefix ${ and suffix }
+            if (formula.StartsWith("${") && formula.EndsWith("}"))
+                return formula.Substring(2, formula.Length - 3).Trim();
+            // Strip $
+            else if (formula.StartsWith("$"))
+                return formula.Substring(1).Trim();
+            return formula.Trim();
+        }
+
+        // Return true if the token is a arithmetic operator
+        private bool IsTokenTypeOperator(TokenType type)
+        {
+            return type == TokenType.DIVIDE ||
+                type == TokenType.MULTIPLY ||
+                type == TokenType.PLUS ||
+                type == TokenType.MINUS;
+        }
+
+        private bool IsValidPointers(Token token, Token prevToken, Token nextToken)
+        {
+            // If previous and next is not a token we log an error and return
+            // All reference tokens should be resolved at this point
+            if (prevToken == null ||
+                nextToken == null ||
+                prevToken.Type != TokenType.NUMBER ||
+                nextToken.Type != TokenType.NUMBER)
+            {
+                if (prevToken == null || nextToken == null)
+                    Console.WriteLine($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
+                else
+                    Console.WriteLine($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
+                return false;
+            }
+            return true;
+        }
+
+        private Token FindResolvedPrevToken(Token token, Token prevToken, int index, List<Token> tokens)
+        {
+            // If prev value has been cleared because it was used in a calc already then find the previous valid token to use
+            int tries = 1;
+            while (prevToken.ResolvedValue is string && ((string)prevToken.ResolvedValue).Length == 0)
+            {
+                ++tries;
+                int newIndex = index - tries;
+                if (newIndex < 0)
+                {
+                    Console.WriteLine("Unable to find previous resolved token for " + token);
+                    return prevToken;
+                }
+                prevToken = tokens[newIndex];
+            }
+            return prevToken;
+        }
+
+        // Calculate any arithmetic in the token list. Requires all references to be resolved
+        private void ProcessTokenArithmetic(List<Token> tokens, int index)
+        {
+            var token = tokens[index];
+            var prevToken = index - 1 < 0 ? null : tokens[index - 1];
+            var nextToken = index + 1 == tokens.Count ? null : tokens[index + 1];
+            // Validation
+            if (!IsTokenTypeOperator(token.Type))
+                return;
+            if (!IsValidPointers(token, prevToken, nextToken))
+                return;
+            prevToken = FindResolvedPrevToken(token, prevToken, index, tokens);
+            // Casting and calc setup
+            double nextValue;
+            double prevValue;
+            if (nextToken.ResolvedValue is string && ((string)nextToken.ResolvedValue).Length > 0)
+                nextValue = double.Parse((string)nextToken.ResolvedValue);
+            else 
+                nextValue = (double)nextToken.ResolvedValue;
+            if (prevToken.ResolvedValue is string && ((string)prevToken.ResolvedValue).Length > 0)
+                prevValue = double.Parse((string)prevToken.ResolvedValue);
+            else
+                prevValue = (double)prevToken.ResolvedValue;
+            // Calculation
+            if (token.Type == TokenType.DIVIDE)
+                token.ResolvedValue = prevValue / nextValue;
+            else if (token.Type == TokenType.PLUS)
+                token.ResolvedValue = prevValue + nextValue;
+            else if (token.Type == TokenType.MULTIPLY)
+                token.ResolvedValue = prevValue * nextValue;
+            else if (token.Type == TokenType.MINUS)
+                token.ResolvedValue = prevValue - nextValue;
+            // Clear used tokens
+            prevToken.ResolvedValue = "";
+            nextToken.ResolvedValue = "";
+        }
+
+        // Tokenises all the token string matches found in the formula and resolves any references
+        private List<Token> TokenizeFormulaMatches(MatchCollection matches, DataRow spell, MainWindow mainWindow)
+        {
+            var tokens = new List<Token>(matches.Count);
+            foreach (var currentMatch in matches)
+            {
+                var token = new Token(currentMatch.ToString());
+                switch (token.Type)
+                {
+                    case TokenType.DIVIDE:
+                    case TokenType.PLUS:
+                    case TokenType.MULTIPLY:
+                    case TokenType.MINUS:
+                        break;
+                    case TokenType.NUMBER:
+                        double temp;
+                        if (double.TryParse(token.Value, out temp))
+                            token.ResolvedValue = temp;
+                        else
+                            token.ResolvedValue = 0D;
+                        break;
+                    case TokenType.REFERENCE:
+                        token.ResolvedValue = ResolveReference(token.Value, spell, mainWindow);
+                        if (token.ResolvedValue != null && !token.ResolvedValue.ToString().StartsWith("$"))
+                            token.Type = TokenType.NUMBER;
+                        break;
+                    default:
+                        Console.WriteLine($"Unknown token: '{ token.Value }'");
+                        break;
+                }
+                tokens.Add(token);
+
+                Console.WriteLine($"Token: [{ token.Value }, {token.Type.ToString() }, { token.ResolvedValue }]");
+            }
+            return tokens;
+        }
+
+        private class Token
+        {
+            // Value read from the formula string
+            public string Value;
+            public TokenType Type = TokenType.UNKNOWN;
+            // Value derived
+            public object ResolvedValue;
+
+            public Token(string value)
+            {
+                Value = value;
+                DetermineType();
+            }
+
+            // Interpret what the string token represents with regex
+            private void DetermineType()
+            {
+                // Reference must be checked before Number because the regex for number can also detect references
+                if (Regex.IsMatch(Value, REFERENCE_REGEX))
+                    Type = TokenType.REFERENCE;
+                else if (Regex.IsMatch(Value, NUMBER_REGEX))
+                    Type = TokenType.NUMBER;
+                else if (Regex.IsMatch(Value, PLUS_REGEX))
+                    Type = TokenType.PLUS;
+                else if (Regex.IsMatch(Value, MINUS_REGEX))
+                    Type = TokenType.MINUS;
+                else if (Regex.IsMatch(Value, DIVIDE_REGEX))
+                    Type = TokenType.DIVIDE;
+                else if (Regex.IsMatch(Value, MULTIPLY_REGEX))
+                    Type = TokenType.MULTIPLY;
+            }
+
+            public override string ToString()
+            {
+                return $"Token[{ Value }, { Type }, { ResolvedValue }]";
+            }
+        }
+
+        private enum TokenType
+        {
+            NUMBER,
+            PLUS,
+            MINUS,
+            MULTIPLY,
+            DIVIDE,
+            REFERENCE,
+            UNKNOWN
+        };
     }
 }

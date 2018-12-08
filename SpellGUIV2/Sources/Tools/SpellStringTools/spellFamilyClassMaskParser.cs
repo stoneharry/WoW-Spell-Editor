@@ -16,7 +16,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 	{
 		public SpellFamilyClassMaskParser(MainWindow window)
 		{
-			spellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
+			SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
 																	// by giving it some unique id for procces on our own spells
 
 			DataTable dt = window.GetDBAdapter().query(string.Format("SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM {0}",window.GetConfig().Table));
@@ -40,10 +40,10 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 
 							if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
 							{
-								if (spellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
-									spellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
+								if (SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
+									SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
 
-								spellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(id);
+								SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(id);
 							}
 						}
 					}
@@ -52,11 +52,11 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 		}
 
 		//classMaskStore[spellFamily,MaskIndex,MaskSlot] = spellList
-		public ArrayList[,,] spellFamilyClassMaskStore;
+		public ArrayList[,,] SpellFamilyClassMaskStore;
 
 		public ArrayList GetSpellList(uint familyName, uint MaskIndex, uint MaskSlot)
 		{
-			return (ArrayList)spellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
+			return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
 		}
 
 		public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName)
