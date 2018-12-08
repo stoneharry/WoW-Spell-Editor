@@ -440,10 +440,29 @@ namespace SpellEditor.Sources.SpellStringTools
 
 		public static string GetParsedForm(string rawString, Spell_DBC_Record record, MainWindow mainWindow)
         {
-            foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
+            // If a token starts with $ and a number, it references that as a spell id
+            Spell_DBC_Record otherRecord;
+            var match = Regex.Match(rawString, "\\$\\d+");
+            if (match.Success)
             {
-                rawString = parser.tokenFunc(rawString, record, mainWindow);
+                uint otherId;
+                if (!uint.TryParse(match.Value.Substring(1), out otherId))
+                {
+                    Console.WriteLine("Failed to parse other spell id: " + rawString);
+                    return rawString;
+                }
+                otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
+                int offset = match.Index + match.Value.Length;
+                bool hasPrefix = rawString.StartsWith("$");
+                rawString = rawString.Substring(match.Index + match.Value.Length);
+                if (hasPrefix)
+                    rawString = "$" + rawString;
+                foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
+                    rawString = parser.tokenFunc(rawString, otherRecord, mainWindow);
+                return rawString;
             }
+            foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
+                rawString = parser.tokenFunc(rawString, record, mainWindow);
             return rawString;
         }
 
