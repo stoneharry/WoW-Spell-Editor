@@ -155,7 +155,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     body.Records.Add(rows[i]);
                 }
-                Header.StringBlockSize = body.GenerateStringOffsetsMap(binding, updateProgress);
+                Header.StringBlockSize = body.GenerateStringOffsetsMap(binding);
                 SaveDbcFile(updateProgress, body, binding);
             });
         }
@@ -222,10 +222,7 @@ namespace SpellEditor.Sources.DBC
                             }
                             else if (entry.Type == BindingType.STRING_OFFSET)
                             {
-                                if (int.TryParse(data, out int value))
-                                    writer.Write(value);
-                                else
-                                    writer.Write(0);
+                                writer.Write(data.Length == 0 ? 0 : body.OffsetStorage[data.GetHashCode()]);
                             }
                             else
                                 throw new Exception($"Unknwon type: {entry.Type} on entry {entry.Name} binding {binding.Name}");
@@ -264,48 +261,28 @@ namespace SpellEditor.Sources.DBC
             public Dictionary<int, string> ReverseStorage;
 
             // Returns new header stringBlockOffset
-            public int GenerateStringOffsetsMap(Binding.Binding binding, MainWindow.UpdateProgressFunc updateProgress)
+            public int GenerateStringOffsetsMap(Binding.Binding binding)
             {
                 // Start at 1 as 0 is hardcoded as '\0'
                 int stringBlockOffset = 1;
                 // Performance gain by collecting the fields to iterate first
                 var fields = binding.Fields.Where(field => field.Type == BindingType.STRING_OFFSET).ToArray();
-                // Crude attempt to estimate the initial capacity
-                var initialCapacity = (fields.Length * Records.Count) / 2;
-                OffsetStorage = new Dictionary<int, int>(initialCapacity);
-                ReverseStorage = new Dictionary<int, string>(initialCapacity);
-                var watch = new Stopwatch();
-                watch.Start();
+                OffsetStorage = new Dictionary<int, int>();
+                ReverseStorage = new Dictionary<int, string>();
                 // Populate string <-> offset lookup maps
                 for (int i = 0; i < Records.Count; ++i)
                 {
-                    if (i % 500 == 0)
-                    {
-                        // Visual studio says these casts are redundant but it does not work without them
-                        double percent = (double)i / (double)Records.Count;
-                        updateProgress(percent);
-                        watch.Stop();
-                        Console.WriteLine($"Generated 500 offset map records in {watch.ElapsedMilliseconds}ms");
-                        watch.Reset();
-                        watch.Start();
-                    }
                     foreach (var entry in fields)
                     {
                         string str = Records[i][entry.Name].ToString();
                         if (str.Length == 0)
-                        {
-                            Records[i][entry.Name] = 0;
                             continue;
-                        }
                         var key = str.GetHashCode();
-                        if (OffsetStorage.ContainsKey(key))
-                            Records[i][entry.Name] = OffsetStorage[key];
-                        else
+                        if (!OffsetStorage.ContainsKey(key))
                         {
-                            Records[i][entry.Name] = stringBlockOffset;
-                            stringBlockOffset += Encoding.UTF8.GetByteCount(str) + 1;
                             OffsetStorage.Add(key, stringBlockOffset);
                             ReverseStorage.Add(stringBlockOffset, str);
+                            stringBlockOffset += Encoding.UTF8.GetByteCount(str) + 1;
                         }
                     }
                 }
