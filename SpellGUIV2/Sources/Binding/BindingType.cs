@@ -6,6 +6,7 @@
         UINT,
         FLOAT,
         DOUBLE,
-        UNKNOWN
+        UNKNOWN,
+        STRING_OFFSET
     }
 }

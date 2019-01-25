@@ -7,10 +7,12 @@ namespace SpellEditor.Sources.Binding
         public readonly BindingType Type;
         public readonly string Name;
 
-        public BindingEntry(string type, string name)
+        public BindingEntry(string[] parts)
         {
-            Name = name;
-            Type = DetermineType(type);
+            Name = parts[1];
+            Type = DetermineType(parts[0]);
+            if (parts.Length > 2 && parts[2].Equals("string", StringComparison.InvariantCultureIgnoreCase))
+                Type = BindingType.STRING_OFFSET;
             if (Name.Length == 0)
                 Type = BindingType.UNKNOWN;
         }

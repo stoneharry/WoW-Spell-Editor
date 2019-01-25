@@ -28,7 +28,7 @@ namespace SpellEditor.Sources.Binding
                     // try to read first two words
                     if (parts.Length < 2)
                         continue;
-                    var entry = new BindingEntry(parts[0], parts[1]);
+                    var entry = new BindingEntry(parts);
                     if (entry.Type != BindingType.UNKNOWN)
                         bindingEntryList.Add(entry);
                 }

@@ -3,6 +3,7 @@ using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -154,14 +155,13 @@ namespace SpellEditor.Sources.DBC
                 {
                     body.Records.Add(rows[i]);
                 }
+                Header.StringBlockSize = body.GenerateStringOffsetsMap(binding, updateProgress);
                 SaveDbcFile(updateProgress, body, binding);
             });
         }
 
         protected void SaveDbcFile(MainWindow.UpdateProgressFunc updateProgress, DBCBodyToSerialize body, Binding.Binding binding)
         {
-            Header.StringBlockSize = 0;//(int)stringBlockOffset;
-
             string path = $"Export/{binding.Name}.dbc";
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
@@ -170,13 +170,14 @@ namespace SpellEditor.Sources.DBC
             {
                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                 {
+                    // Write the header file
                     int count = Marshal.SizeOf(typeof(DBCHeader));
                     byte[] buffer = new byte[count];
                     GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                     Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
                     writer.Write(buffer, 0, count);
                     handle.Free();
-
+                    // Write each record
                     for (int i = 0; i < Header.RecordCount; ++i)
                     {
                         if (i % 250 == 0)
@@ -219,17 +220,22 @@ namespace SpellEditor.Sources.DBC
                                 else
                                     writer.Write(0d);
                             }
+                            else if (entry.Type == BindingType.STRING_OFFSET)
+                            {
+                                if (int.TryParse(data, out int value))
+                                    writer.Write(value);
+                                else
+                                    writer.Write(0);
+                            }
                             else
                                 throw new Exception($"Unknwon type: {entry.Type} on entry {entry.Name} binding {binding.Name}");
                         }
                     }
-
-                    /*uint[] offsetsStored = offsetStorage.Values.ToArray();
-
+                    // Write string block
+                    int[] offsetsStored = body.OffsetStorage.Values.ToArray();
                     writer.Write(Encoding.UTF8.GetBytes("\0"));
-
                     for (int i = 0; i < offsetsStored.Length; ++i)
-                        writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0"));*/
+                        writer.Write(Encoding.UTF8.GetBytes(body.ReverseStorage[offsetsStored[i]] + "\0"));
                 }
             }
         }
@@ -254,6 +260,57 @@ namespace SpellEditor.Sources.DBC
         public class DBCBodyToSerialize
         {
             public List<DataRow> Records;
+            public Dictionary<int, int> OffsetStorage;
+            public Dictionary<int, string> ReverseStorage;
+
+            // Returns new header stringBlockOffset
+            public int GenerateStringOffsetsMap(Binding.Binding binding, MainWindow.UpdateProgressFunc updateProgress)
+            {
+                // Start at 1 as 0 is hardcoded as '\0'
+                int stringBlockOffset = 1;
+                // Performance gain by collecting the fields to iterate first
+                var fields = binding.Fields.Where(field => field.Type == BindingType.STRING_OFFSET).ToArray();
+                // Crude attempt to estimate the initial capacity
+                var initialCapacity = (fields.Length * Records.Count) / 2;
+                OffsetStorage = new Dictionary<int, int>(initialCapacity);
+                ReverseStorage = new Dictionary<int, string>(initialCapacity);
+                var watch = new Stopwatch();
+                watch.Start();
+                // Populate string <-> offset lookup maps
+                for (int i = 0; i < Records.Count; ++i)
+                {
+                    if (i % 500 == 0)
+                    {
+                        // Visual studio says these casts are redundant but it does not work without them
+                        double percent = (double)i / (double)Records.Count;
+                        updateProgress(percent);
+                        watch.Stop();
+                        Console.WriteLine($"Generated 500 offset map records in {watch.ElapsedMilliseconds}ms");
+                        watch.Reset();
+                        watch.Start();
+                    }
+                    foreach (var entry in fields)
+                    {
+                        string str = Records[i][entry.Name].ToString();
+                        if (str.Length == 0)
+                        {
+                            Records[i][entry.Name] = 0;
+                            continue;
+                        }
+                        var key = str.GetHashCode();
+                        if (OffsetStorage.ContainsKey(key))
+                            Records[i][entry.Name] = OffsetStorage[key];
+                        else
+                        {
+                            Records[i][entry.Name] = stringBlockOffset;
+                            stringBlockOffset += Encoding.UTF8.GetByteCount(str) + 1;
+                            OffsetStorage.Add(key, stringBlockOffset);
+                            ReverseStorage.Add(stringBlockOffset, str);
+                        }
+                    }
+                }
+                return stringBlockOffset;
+            }
         }
 
         public class VirtualStrTableEntry
