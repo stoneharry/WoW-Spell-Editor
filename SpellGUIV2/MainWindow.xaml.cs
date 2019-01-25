@@ -600,7 +600,7 @@ namespace SpellEditor
 
                 SpellDBC dbc = new SpellDBC();
                 dbc.LoadDBCFile(this);
-				await dbc.import(adapter, new UpdateProgressFunc(controller.SetProgress));
+				await dbc.ImportTOSQL(adapter, new UpdateProgressFunc(controller.SetProgress));
                 await controller.CloseAsync();
                 PopulateSelectSpell();
 
@@ -893,7 +893,7 @@ namespace SpellEditor
                     controller.SetCancelable(false);
 
                     SpellDBC dbc = new SpellDBC();
-					await dbc.export(adapter, new UpdateProgressFunc(controller.SetProgress));
+					await dbc.Export(adapter, new UpdateProgressFunc(controller.SetProgress));
                     await controller.CloseAsync();
                 }
                 return;
@@ -928,7 +928,7 @@ namespace SpellEditor
 
                             SpellDBC dbc = new SpellDBC();
                             dbc.LoadDBCFile(this);
-							await dbc.import(adapter, new UpdateProgressFunc(controller.SetProgress));
+							await dbc.ImportTOSQL(adapter, new UpdateProgressFunc(controller.SetProgress));
                             await controller.CloseAsync();
                             PopulateSelectSpell();
 

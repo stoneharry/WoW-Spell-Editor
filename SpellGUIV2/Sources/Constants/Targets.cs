@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Constants
 {
+    /**
+     *  TARGET_SRC_CASTER, TARGET_UNIT_SRC_AREA_ENTRY (22, 7)
+     *  
+     * caster is the source of an aoe, area entry means it targets everything, using
+     * condition source type implicit targets you can limit the amount of things it 
+     * targets, area entry without conditions targets ALL
+     * 
+     *  TARGET_DEST_CASTER_LEFT, TARGET_DEST_DYNOBJ_ENEMY (50, 28)
+     *  
+     * target a dynamicObject aura object to the left of caster, <range> yds to the
+     * left precisely
+     */
     public enum Targets
     {
         TARGET_UNIT_NONE = 0,

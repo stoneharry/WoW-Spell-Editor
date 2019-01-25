@@ -150,101 +150,9 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-		public Task import(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
+		public Task ImportTOSQL(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
         {
-            return Task.Run(() => 
-            {
-                uint currentRecord = 0;
-                try
-                {
-                    uint count = Header.RecordCount;
-                    uint index = 0;
-                    StringBuilder q = null;
-                    foreach (var recordMap in Body.RecordMaps)
-                    {
-                        // This might be needed? Disabled unless bugs are reported around this
-                        //if (r.record.ID == 0)
-                        //  continue;
-                        if (index == 0 || index % 250 == 0)
-                        {
-                            if (q != null)
-                            {
-                                q.Remove(q.Length - 2, 2);
-                                adapter.Execute(q.ToString());
-                            }
-                            q = new StringBuilder();
-                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", adapter.Table));
-                        }
-                        if (++index % 1000 == 0)
-                        {
-                            // Visual studio says these casts are redundant but it does not work without them
-                            double percent = (double)index / (double)count;
-                            UpdateProgress(percent);
-                        }
-                        currentRecord = (uint)recordMap["ID"];
-                        q.Append("(");
-                        foreach (var f in typeof(Spell_DBC_Record).GetFields())
-                        {
-                            switch (Type.GetTypeCode(f.FieldType))
-                            {
-                                case TypeCode.UInt32:
-                                case TypeCode.Int32:
-                                    {
-                                        q.Append(string.Format("'{0}', ", recordMap[f.Name]));
-                                        break;
-                                    }
-                                case TypeCode.Single:
-                                    {
-                                        q.Append(string.Format("REPLACE('{0}', ',', '.'), ", recordMap[f.Name]));
-                                        break;
-                                    }
-                                case TypeCode.Object:
-                                    {
-                                        var attr = f.GetCustomAttribute<HandleField>();
-                                        if (attr != null)
-                                        {
-                                            if (attr.Method == 1)
-                                            {
-                                                uint[] array = (uint[])recordMap[f.Name];
-                                                for (int i = 0; i < array.Length; ++i)
-                                                {
-                                                    var lookupResult = Reader.LookupStringOffset(array[i]);
-                                                    q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(lookupResult)));
-                                                }
-                                                break;
-                                            }
-                                            else if (attr.Method == 2)
-                                            {
-                                                uint[] array = (uint[])recordMap[f.Name];
-                                                for (int i = 0; i < array.Length; ++i)
-                                                    q.Append(string.Format("\'{0}\', ", array[i]));
-                                                break;
-                                            }
-                                        }
-                                        goto default;
-                                    }
-                                default:
-                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
-                            }
-                        }
-                        q.Remove(q.Length - 2, 2);
-                        q.Append("), ");
-                    }
-                    if (q.Length > 0)
-                    {
-                        q.Remove(q.Length - 2, 2);
-                        adapter.Execute(q.ToString());
-                    }
-                }
-                catch (Exception e)
-                {
-                    ErrorMessage = "ERROR on around spell ID " + currentRecord + ": " + e.Message +
-                        "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
-                }
-                // We have attempted to import the Spell.dbc so clean up unneeded data
-                // This will be recreated if the import process is started again
-                Reader.CleanStringsMap();
-            });
+            return ImportToSQL<Spell_DBC_Record>(adapter, UpdateProgress, "ID");
         }
 
 		public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
@@ -286,8 +194,9 @@ namespace SpellEditor.Sources.DBC
             return record;
         }
 
-		public Task export(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
+		public Task Export(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
         {
+            return ExportToDBC(adapter, updateProgress, "ID", "Spell");
             return Task.Run(() =>
             {
 				var rows = adapter.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", adapter.Table)).Rows;
