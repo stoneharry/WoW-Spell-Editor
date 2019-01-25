@@ -19,6 +19,18 @@ namespace SpellEditor.Sources.DBC
         protected DBCBody Body = new DBCBody();
         protected DBCReader Reader;
 
+        protected void ReadDBCFile(string filePath)
+        {
+            Reader = new DBCReader(filePath);
+            Header = Reader.ReadDBCHeader();
+            var name = Path.GetFileNameWithoutExtension(filePath);
+            var binding = BindingManager.GetInstance().FindBinding(name);
+            if (binding != null)
+                Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
+            else
+                throw new Exception($"Binding not found: {name}.txt");
+            Reader.ReadStringBlock();
+        }
         protected void ReadDBCFile<RecordType>(string filePath)
         {
             Reader = new DBCReader(filePath);
@@ -242,7 +254,7 @@ namespace SpellEditor.Sources.DBC
             public Dictionary<string, object>[] RecordMaps;
         };
 
-        public class DBCBodyToSerialize
+        protected class DBCBodyToSerialize
         {
             public List<DataRow> Records;
             public Dictionary<int, int> OffsetStorage;

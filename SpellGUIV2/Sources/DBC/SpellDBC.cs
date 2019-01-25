@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<Spell_DBC_Record>("DBC/Spell.dbc");
+                ReadDBCFile("DBC/Spell.dbc");
             }
             catch (Exception ex)
             {
