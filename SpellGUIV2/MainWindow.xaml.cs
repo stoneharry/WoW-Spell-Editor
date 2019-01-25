@@ -99,6 +99,16 @@ namespace SpellEditor
 		}
         public MainWindow()
         {
+            // If no debugger is attached then output console text to a file
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                var ostrm = new FileStream("debug_output.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                var writer = new StreamWriter(ostrm);
+                Console.SetOut(writer);
+            }
+            Console.WriteLine("######################################################");
+            Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
+            Console.WriteLine("######################################################");
             InitializeComponent();
         }
 
@@ -112,7 +122,8 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            File.WriteAllText("Error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
+            Console.WriteLine("ERROR: " + e.Exception.Message);
+            File.WriteAllText("error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
             HandleErrorMessage(e.Exception.Message);
             e.Handled = true;
         }
