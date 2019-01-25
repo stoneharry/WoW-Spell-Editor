@@ -150,5 +150,11 @@ namespace SpellEditor.Sources.MySQL
             
             return str.ToString();
         }
+
+        public string EscapeString(string keyWord)
+        {
+            keyWord = keyWord.Replace("'", "''");
+            return keyWord;
+        }
     }
 }

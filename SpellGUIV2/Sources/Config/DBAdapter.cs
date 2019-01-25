@@ -10,6 +10,7 @@ namespace SpellEditor.Sources.Config
         DataTable query(string query);
         void CommitChanges(string query, DataTable dataTable);
         void Execute(string p);
+        string EscapeString(string str);
         string GetTableCreateString();
     }
 }

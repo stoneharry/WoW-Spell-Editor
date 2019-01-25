@@ -23,7 +23,11 @@ namespace SpellEditor.Sources.DBC
         {
             Reader = new DBCReader(filePath);
             Header = Reader.ReadDBCHeader();
-            Reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
+            // Hardcode for Spell.dbc for now
+            if (filePath.EndsWith("Spell.dbc"))
+                Reader.ReadDBCRecords(Body, Marshal.SizeOf(typeof(RecordType)), "Spell");
+            else
+                Reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
             Reader.ReadStringBlock();
         }
 
@@ -34,16 +38,17 @@ namespace SpellEditor.Sources.DBC
             {
                 if (!entry.ContainsKey(IDKey))
                     continue;
-                if ((uint) entry[IDKey] == ID)
+                if ((uint)entry[IDKey] == ID)
                     return entry;
             }
             return null;
         }
 
-        public Task ImportToSQL<RecordStruct>(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey)
+        public Task ImportToSql(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
+                var binding = BindingManager.GetInstance().FindBinding(bindingName);
                 uint currentRecord = 0;
                 uint count = Header.RecordCount;
                 uint updateRate = count < 100 ? 100 : count / 100;
@@ -72,48 +77,33 @@ namespace SpellEditor.Sources.DBC
                     }
                     currentRecord = (uint)recordMap[IdKey];
                     q.Append("(");
-                    foreach (var f in typeof(RecordStruct).GetFields())
+                    foreach (var field in binding.Fields)
                     {
-                        switch (Type.GetTypeCode(f.FieldType))
+                        switch (field.Type)
                         {
-                            case TypeCode.UInt32:
-                            case TypeCode.Int32:
+                            case BindingType.INT:
+                            case BindingType.UINT:
                                 {
-                                    q.Append(string.Format("'{0}', ", recordMap[f.Name]));
+                                    q.Append(string.Format("'{0}', ", recordMap[field.Name]));
                                     break;
                                 }
-                            case TypeCode.Single:
+                            case BindingType.FLOAT:
+                            case BindingType.DOUBLE:
                                 {
-                                    q.Append(string.Format("REPLACE('{0}', ',', '.'), ", recordMap[f.Name]));
+                                    q.Append(string.Format("REPLACE('{0}', ',', '.'), ", recordMap[field.Name]));
                                     break;
                                 }
-                            case TypeCode.Object:
+                            case BindingType.STRING_OFFSET:
                                 {
-                                    var attr = f.GetCustomAttribute<HandleField>();
-                                    if (attr != null)
-                                    {
-                                        if (attr.Method == 1)
-                                        {
-                                            uint[] array = (uint[])recordMap[f.Name];
-                                            for (int i = 0; i < array.Length; ++i)
-                                            {
-                                                var lookupResult = Reader.LookupStringOffset(array[i]);
-                                                q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(lookupResult)));
-                                            }
-                                            break;
-                                        }
-                                        else if (attr.Method == 2)
-                                        {
-                                            uint[] array = (uint[])recordMap[f.Name];
-                                            for (int i = 0; i < array.Length; ++i)
-                                                q.Append(string.Format("\'{0}\', ", array[i]));
-                                            break;
-                                        }
-                                    }
-                                    goto default;
+                                    var strOffset = (uint)recordMap[field.Name];
+                                    var lookupResult = Reader.LookupStringOffset(strOffset);
+                                    q.Append(string.Format("\'{0}\', ", adapter.EscapeString(lookupResult)));
+                                    break;
                                 }
+                            case BindingType.UNKNOWN:
+                                break;
                             default:
-                                throw new Exception($"ERROR: Record[{currentRecord}] Unhandled type: {f.FieldType} on field: {f.Name}");
+                                throw new Exception($"ERROR: Record[{currentRecord}] Unhandled type: {field.Type} on field: {field.Name}");
                         }
                     }
                     q.Remove(q.Length - 2, 2);
@@ -130,7 +120,7 @@ namespace SpellEditor.Sources.DBC
             });
         }
 
-        public Task ExportToDBC(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
+        public Task ExportToDbc(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
@@ -250,8 +240,6 @@ namespace SpellEditor.Sources.DBC
         {
             // Column Name -> Column Value
             public Dictionary<string, object>[] RecordMaps;
-            // Colum Name -> String Value
-            public Dictionary<string, string[]> StringMaps;
         };
 
         public class DBCBodyToSerialize

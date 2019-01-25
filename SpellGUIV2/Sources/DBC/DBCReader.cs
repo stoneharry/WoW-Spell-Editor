@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Binding;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -108,12 +109,65 @@ namespace SpellEditor.Sources.DBC
                 }
             }
         }
+        public void ReadDBCRecords(DBCBody body, int recordSize, string bindingName)
+        {
+            var binding = BindingManager.GetInstance().FindBinding(bindingName);
+            if (binding == null)
+                throw new Exception($"Binding not found: {bindingName}.txt");
+            if (Header.RecordSize != recordSize)
+                throw new Exception($"The DBC [{ filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ Header.RecordSize }] got [{ recordSize }].");
+
+            body.RecordMaps = new Dictionary<string, object>[Header.RecordCount];
+            for (int i = 0; i < Header.RecordCount; ++i)
+                body.RecordMaps[i] = new Dictionary<string, object>((int)Header.FieldCount);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                using (BinaryReader reader = new BinaryReader(fileStream))
+                {
+                    reader.BaseStream.Position = filePosition;
+                    for (uint i = 0; i < Header.RecordCount; ++i)
+                    {
+                        var entry = body.RecordMaps[i];
+                        foreach (var field in binding.Fields)
+                        {
+                            switch (field.Type)
+                            {
+                                case BindingType.INT:
+                                    {
+                                        entry.Add(field.Name, reader.ReadInt32());
+                                        break;
+                                    }
+                                case BindingType.STRING_OFFSET:
+                                case BindingType.UINT:
+                                    {
+                                        entry.Add(field.Name, reader.ReadUInt32());
+                                        break;
+                                    }
+                                case BindingType.FLOAT:
+                                    {
+                                        entry.Add(field.Name, reader.ReadSingle());
+                                        break;
+                                    }
+                                case BindingType.DOUBLE:
+                                    {
+                                        entry.Add(field.Name, reader.ReadDouble());
+                                        break;
+                                    }
+                                default:
+                                    throw new Exception($"Found unkown field type for column {field.Name} type {field.Type} in binding {binding.Name}");
+                            }
+                        }      
+                    }
+                    filePosition = reader.BaseStream.Position;
+                }
+            }
+        }
 
         /**
-         * Reads the string block from the DBC file and saves it to the stringsMap
-         * The position is saved into the map value so that spell records can
-         * reverse lookup strings.
-         */
+            * Reads the string block from the DBC file and saves it to the stringsMap
+            * The position is saved into the map value so that spell records can
+            * reverse lookup strings.
+            */
         public void ReadStringBlock()
         {
             string StringBlock;

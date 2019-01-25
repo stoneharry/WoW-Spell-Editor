@@ -151,10 +151,9 @@ namespace SpellEditor.Sources.SQLite
             return str.ToString();
         }
 
-		public static string EscapeString(string keyWord)
+		public string EscapeString(string keyWord)
 		{
 			keyWord = keyWord.Replace("'", "''");
-			
 			return keyWord;
 		}
 	}

@@ -611,7 +611,7 @@ namespace SpellEditor
 
                 SpellDBC dbc = new SpellDBC();
                 dbc.LoadDBCFile(this);
-				await dbc.ImportTOSQL(adapter, new UpdateProgressFunc(controller.SetProgress));
+				await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress));
                 await controller.CloseAsync();
                 PopulateSelectSpell();
 
@@ -939,7 +939,7 @@ namespace SpellEditor
 
                             SpellDBC dbc = new SpellDBC();
                             dbc.LoadDBCFile(this);
-							await dbc.ImportTOSQL(adapter, new UpdateProgressFunc(controller.SetProgress));
+							await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress));
                             await controller.CloseAsync();
                             PopulateSelectSpell();
 

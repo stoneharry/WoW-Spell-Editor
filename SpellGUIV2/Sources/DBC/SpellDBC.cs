@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
@@ -33,126 +29,9 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        private void SaveDBCFile(Spell_DBC_RecordMap[] recordMap)
+		public Task ImportToSql(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
         {
-            uint stringBlockOffset = 1;
-
-            Dictionary<int, uint> offsetStorage = new Dictionary<int, uint>();
-            Dictionary<uint, string> reverseStorage = new Dictionary<uint, string>();
-
-            // Populate string <-> offset lookup maps, this could do with a refactor
-            for (uint i = 0; i < Header.RecordCount; ++i)
-            {
-                for (uint j = 0; j < 9; ++j)
-                {
-                    // spell name
-                    if (recordMap[i].spellName[j].Length == 0)
-                        recordMap[i].record.SpellName[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellName[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellName[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellName[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellName[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellName[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellName[j], recordMap[i].spellName[j]);
-                        }
-                    }
-                    // spell rank
-                    if (recordMap[i].spellRank[j].Length == 0)
-                        recordMap[i].record.SpellRank[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellRank[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellRank[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellRank[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellRank[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellRank[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellRank[j], recordMap[i].spellRank[j]);
-                        }
-                    }
-                    // spell tooltip
-                    if (recordMap[i].spellTool[j].Length == 0)
-                        recordMap[i].record.SpellToolTip[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellTool[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellToolTip[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellToolTip[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellTool[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellToolTip[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellToolTip[j], recordMap[i].spellTool[j]);
-                        }
-                    }
-                    // spell description
-                    if (recordMap[i].spellDesc[j].Length == 0)
-                        recordMap[i].record.SpellDescription[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellDesc[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellDescription[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellDescription[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellDesc[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellDescription[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellDescription[j], recordMap[i].spellDesc[j]);
-                        }
-                    }
-                }
-            }
-
-            Header.StringBlockSize = (int) stringBlockOffset;
-
-            // Write spell.dbc file
-            string path = "Export/Spell.dbc";
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            if (File.Exists(path))
-                File.Delete(path);
-            using (FileStream fileStream = new FileStream("Export/Spell.dbc", FileMode.Create))
-            {
-                using (BinaryWriter writer = new BinaryWriter(fileStream))
-                {
-                    int count = Marshal.SizeOf(typeof(DBCHeader));
-                    byte[] buffer = new byte[count];
-                    GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                    Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
-                    writer.Write(buffer, 0, count);
-                    handle.Free();
-
-                    for (uint i = 0; i < Header.RecordCount; ++i)
-                    {
-                        count = Marshal.SizeOf(typeof(Spell_DBC_Record));
-                        buffer = new byte[count];
-                        handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                        Marshal.StructureToPtr(recordMap[i].record, handle.AddrOfPinnedObject(), true);
-                        writer.Write(buffer, 0, count);
-                        handle.Free();
-                    }
-
-                    uint[] offsetsStored = offsetStorage.Values.ToArray();
-
-                    writer.Write(Encoding.UTF8.GetBytes("\0"));
-
-                    for (int i = 0; i < offsetsStored.Length; ++i)
-                        writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0"));
-                }
-            }
-        }
-
-		public Task ImportTOSQL(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
-        {
-            return ImportToSQL<Spell_DBC_Record>(adapter, UpdateProgress, "ID");
+            return ImportToSql(adapter, UpdateProgress, "ID", "Spell");
         }
 
 		public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
@@ -196,7 +75,7 @@ namespace SpellEditor.Sources.DBC
 
 		public Task Export(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
         {
-            return ExportToDBC(adapter, updateProgress, "ID", "Spell");
+            return ExportToDbc(adapter, updateProgress, "ID", "Spell");
         }
     }
 
