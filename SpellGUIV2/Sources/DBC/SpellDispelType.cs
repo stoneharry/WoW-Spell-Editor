@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellDispelType : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellDispel_DBC_Lookup> Lookups = new List<SpellDispel_DBC_Lookup>();
 
-        public SpellDispelType(MainWindow window, DBAdapter adapter)
+        public SpellDispelType(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -59,7 +59,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDispelSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.DispelType.threadSafeIndex = 0;

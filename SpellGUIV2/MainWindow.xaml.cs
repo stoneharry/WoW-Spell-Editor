@@ -73,7 +73,7 @@ namespace SpellEditor
         #endregion
 
         #region MemberVariables
-		private DBAdapter adapter;
+		private IDatabaseAdapter adapter;
         private Config config;
         public uint selectedID = 0;
         public uint newIconID = 1;
@@ -93,7 +93,7 @@ namespace SpellEditor
 			return config;
 		}
 
-		public DBAdapter GetDBAdapter()
+		public IDatabaseAdapter GetDBAdapter()
 		{
 			return adapter;
 		}
@@ -990,7 +990,7 @@ namespace SpellEditor
                     return;
                 }
 
-                if (UInt32.Parse(adapter.query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage("ERROR: That spell ID is already taken.");
                     return;
@@ -999,7 +999,7 @@ namespace SpellEditor
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
+                    var row = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
                     str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", adapter.Table, newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
@@ -1044,7 +1044,7 @@ namespace SpellEditor
             if (sender == SaveSpellChanges)
             {
                 string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, selectedID);
-                var q = adapter.query(query);
+                var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
                 var row = q.Rows[0];
@@ -1638,10 +1638,10 @@ namespace SpellEditor
 
         private class Worker : BackgroundWorker
         {
-			public DBAdapter __adapter;
+			public IDatabaseAdapter __adapter;
             public Config __config;
 
-            public Worker(DBAdapter _adapter, Config _config)
+            public Worker(IDatabaseAdapter _adapter, Config _config)
             {
 				__adapter = _adapter;
                 __config = _config;
@@ -1654,7 +1654,7 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-			DataRowCollection res = adapter.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+			DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                 "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
             if (res == null || res.Count == 0)
                 return -1;
@@ -1692,7 +1692,7 @@ namespace SpellEditor
                     return;
 
                 // Attempt localisation on Death Touch, HACKY
-				DataRowCollection res = adapter.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+				DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
                 if (res == null || res.Count == 0)
                     return;
@@ -1787,7 +1787,7 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-			DataTable newSpellNames = adapter.query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
+			DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
@@ -1870,7 +1870,7 @@ namespace SpellEditor
         {
 			adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-			DataRowCollection rowResult = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+			DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
@@ -2871,7 +2871,7 @@ namespace SpellEditor
             }
         }
 
-        public DataRow GetSpellRowById(uint spellId) => adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
+        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
 
         public string GetSpellNameById(uint spellId)
 		{

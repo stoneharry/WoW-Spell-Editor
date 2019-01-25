@@ -23,9 +23,9 @@ namespace SpellEditor.Sources.DBC
         {
             Reader = new DBCReader(filePath);
             Header = Reader.ReadDBCHeader();
-            // Hardcode for Spell.dbc for now
-            if (filePath.EndsWith("Spell.dbc"))
-                Reader.ReadDBCRecords(Body, Marshal.SizeOf(typeof(RecordType)), "Spell");
+            var name = Path.GetFileNameWithoutExtension(filePath);
+            if (BindingManager.GetInstance().FindBinding(name) != null)
+                Reader.ReadDBCRecords(Body, Marshal.SizeOf(typeof(RecordType)), name);
             else
                 Reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
             Reader.ReadStringBlock();
@@ -44,7 +44,7 @@ namespace SpellEditor.Sources.DBC
             return null;
         }
 
-        public Task ImportToSql(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey, string bindingName)
+        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
@@ -120,7 +120,7 @@ namespace SpellEditor.Sources.DBC
             });
         }
 
-        public Task ExportToDbc(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
+        public Task ExportToDbc(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
@@ -129,7 +129,7 @@ namespace SpellEditor.Sources.DBC
                     throw new Exception("Binding not found: " + bindingName);
 
                 var orderClause = IdKey.Length > 0 ? $" ORDER BY `{IdKey}`" : "";
-                var rows = adapter.query(string.Format($"SELECT * FROM `{adapter.Table}`{orderClause}")).Rows;
+                var rows = adapter.Query(string.Format($"SELECT * FROM `{adapter.Table}`{orderClause}")).Rows;
                 uint numRows = uint.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 Header = new DBCHeader();

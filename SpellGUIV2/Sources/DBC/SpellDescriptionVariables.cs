@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellDescriptionVariables : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellDescriptionVariablesLookup> Lookups = new List<SpellDescriptionVariablesLookup>();
 
-        public SpellDescriptionVariables(MainWindow window, DBAdapter adapter)
+        public SpellDescriptionVariables(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -62,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellDescriptionVariablesSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

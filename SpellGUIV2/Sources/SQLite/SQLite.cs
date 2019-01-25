@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using SpellEditor.Sources.Config;
-using System.Reflection;
+using SpellEditor.Sources.Binding;
 
 namespace SpellEditor.Sources.SQLite
 {
-	class SQLite : DBAdapter
+	class SQLite : IDatabaseAdapter
 	{
-		private Config.Config config;
-        private SQLiteConnection conn = null;
+        private readonly object _syncLock = new object();
+        private Config.Config _config;
+        private SQLiteConnection _connection = null;
         public string Table
         {
             get;
@@ -27,46 +25,44 @@ namespace SpellEditor.Sources.SQLite
 
         public SQLite(Config.Config config)
         {
-            this.config = config;
-            this.Table = config.Table;
+            _config = config;
+            Table = config.Table;
 
-			string connectionString = "Data Source =" + Environment.CurrentDirectory + "\\SpellEditor.db"; ;
+			var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{config.Database}.db";
 
-			conn = new SQLiteConnection(connectionString);
-            //conn.ConnectionString = connectionString;
-            conn.Open();
-            // Create DB
-            var cmd = conn.CreateCommand();
-
-            cmd.CommandText = string.Format(GetTableCreateString(), config.Table);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
+			_connection = new SQLiteConnection(connectionString);
+            _connection.Open();
+            // Create binding tables
+            foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+            {
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         ~SQLite()
         {
-            try
-            {
-                if (conn != null)
-                    conn.Close();
-            }
-            catch (System.ObjectDisposedException)
-            {
-                Console.WriteLine("SQLite connection already disposed.");
-            }
+            if (_connection != null && _connection.State != ConnectionState.Closed)
+                _connection.Close();
         }
 
-        private readonly object syncLock = new object();
-
-        public DataTable query(string query)
+        public DataTable Query(string query)
         {
-            lock (syncLock)
+            lock (_syncLock)
             {
-                var adapter = new SQLiteDataAdapter(query, conn);
-                DataSet DS = new DataSet();
-                adapter.SelectCommand.CommandTimeout = 0;
-                adapter.Fill(DS);
-                return DS.Tables[0];
+                using (var adapter = new SQLiteDataAdapter(query, _connection))
+                {
+                    using (var dataSet = new DataSet())
+                    {
+                        adapter.SelectCommand.CommandTimeout = 0;
+                        adapter.Fill(dataSet);
+                        return dataSet.Tables[0];
+                    }
+
+                }
             }
         }
 
@@ -74,14 +70,18 @@ namespace SpellEditor.Sources.SQLite
         {
             if (Updating)
                 return;
-            lock (syncLock)
+            lock (_syncLock)
             {
-                var adapter = new SQLiteDataAdapter();
-                var mcb = new SQLiteCommandBuilder(adapter);
-                mcb.ConflictOption = ConflictOption.OverwriteChanges;
-                adapter.SelectCommand = new SQLiteCommand(query, conn);
-                adapter.Update(dataTable);
-                dataTable.AcceptChanges();
+                using (var adapter = new SQLiteDataAdapter())
+                {
+                    using (var mcb = new SQLiteCommandBuilder(adapter))
+                    {
+                        mcb.ConflictOption = ConflictOption.OverwriteChanges;
+                        adapter.SelectCommand = new SQLiteCommand(query, _connection);
+                        adapter.Update(dataTable);
+                        dataTable.AcceptChanges();
+                    }
+                }
             }
         }
 
@@ -89,65 +89,47 @@ namespace SpellEditor.Sources.SQLite
         {
             if (Updating)
                 return;
-            //lock (syncLock)
-            //{
-            var cmd = conn.CreateCommand();
+            using (var cmd = _connection.CreateCommand())
+            {
                 cmd.CommandText = p;
                 cmd.ExecuteNonQuery();
-                cmd.Dispose();
-            //}
+            }
         }
 
-        public string GetTableCreateString()
+        public string GetTableCreateString(Binding.Binding binding)
         {
             StringBuilder str = new StringBuilder();
             str.Append(@"CREATE TABLE IF NOT EXISTS `{0}` (");
-
-            var structure = new SpellEditor.Sources.DBC.Spell_DBC_Record();
-            var fields = structure.GetType().GetFields();
-            foreach (var f in fields)
+            foreach (var field in binding.Fields)
             {
-                switch (Type.GetTypeCode(f.FieldType))
+                switch (field.Type)
                 {
-                    case TypeCode.UInt32:
+                    case BindingType.UINT:
                         {
-							str.Append(string.Format(@"`{0}` INTEGER(10) NOT NULL DEFAULT '0', ", f.Name));
+                            str.Append(string.Format(@"`{0}` INTEGER(10) NOT NULL DEFAULT '0', ", field.Name));
                             break;
                         }
-                    case TypeCode.Int32:
-						str.Append(string.Format(@"`{0}` INTEGER(11) NOT NULL DEFAULT '0', ", f.Name));
-                        break;
-                    case TypeCode.Single:
-						str.Append(string.Format(@"`{0}` REAL NOT NULL DEFAULT '0', ", f.Name));
-                        break;
-                    case TypeCode.Object:
+                    case BindingType.INT:
                         {
-                            var attr = f.GetCustomAttribute<SpellEditor.Sources.DBC.HandleField>();
-                            if (attr != null)
-                            {
-                                if (attr.Method == 1)
-                                {
-                                    for (int i = 0; i < attr.Count; ++i)
-										str.Append(string.Format(@"`{0}{1}` TEXT, ", f.Name, i));
-                                    break;
-                                }
-                                else if (attr.Method == 2)
-                                {
-                                    for (int i = 0; i < attr.Count; ++i)
-										str.Append(string.Format(@"`{0}{1}` INTEGER(10) NOT NULL DEFAULT '0', ", f.Name, i));
-                                    break;
-                                }
-                            }
-                            goto default;
+                            str.Append(string.Format(@"`{0}` INTEGER(11) NOT NULL DEFAULT '0', ", field.Name));
+                            break;
+                        }
+                    case BindingType.FLOAT:
+                        {
+                            str.Append(string.Format(@"`{0}` REAL NOT NULL DEFAULT '0', ", field.Name));
+                            break;
+                        }
+                    case BindingType.STRING_OFFSET:
+                        {
+                            str.Append(string.Format(@"`{0}` TEXT, ", field.Name));
+                            break;
                         }
                     default:
-                        throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
+                        throw new Exception($"ERROR: Unhandled type: {field.Type} on field: {field.Name} on binding: {binding.Name}");
 
                 }
             }
-
             str.Append(@"PRIMARY KEY (`ID`));");
-            
             return str.ToString();
         }
 

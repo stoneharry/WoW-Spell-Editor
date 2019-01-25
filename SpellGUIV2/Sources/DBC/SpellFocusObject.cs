@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellFocusObject : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellFocusObjectLookup> Lookups = new List<SpellFocusObjectLookup>();
 
-        public SpellFocusObject(MainWindow window, DBAdapter adapter)
+        public SpellFocusObject(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -65,7 +65,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellFocusObjectSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.RequiresSpellFocus.threadSafeIndex = 0;

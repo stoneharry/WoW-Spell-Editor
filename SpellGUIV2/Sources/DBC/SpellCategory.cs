@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellCategory : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellCategoryLookup> Lookups = new List<SpellCategoryLookup>();
 
-        public SpellCategory(MainWindow window, DBAdapter adapter)
+        public SpellCategory(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -57,7 +57,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateCategorySelection()
         {
-			uint ID = uint.Parse(adapter.query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+			uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

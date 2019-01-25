@@ -42,6 +42,11 @@ namespace SpellEditor.Sources.Binding
             Console.WriteLine($"Loaded {bindingList.Count} bindings.");
         }
 
+        public Binding[] GetAllBindings()
+        {
+            return _bindings.ToArray();
+        }
+
         public static BindingManager GetInstance()
         {
             return _instance;

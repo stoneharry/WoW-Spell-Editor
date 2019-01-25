@@ -16,7 +16,7 @@ namespace SpellEditor.Sources.DBC
     class SpellIconDBC : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         private static bool loadedAllIcons = false;
         private double? iconSize = null;
@@ -24,7 +24,7 @@ namespace SpellEditor.Sources.DBC
 
         public List<Icon_DBC_Lookup> Lookups = new List<Icon_DBC_Lookup>();
 
-        public SpellIconDBC(MainWindow window, DBAdapter adapter)
+        public SpellIconDBC(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
             if (adapter == null || main.selectedID == 0)
                 return;
 
-            DataRow res = adapter.query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
+            DataRow res = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             uint iconInt = uint.Parse(res[0].ToString());
             uint iconActiveInt = uint.Parse(res[1].ToString());
 

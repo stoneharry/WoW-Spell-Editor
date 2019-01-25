@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellMechanic : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<MechanicLookup> Lookups = new List<MechanicLookup>();
 
-        public SpellMechanic(MainWindow window, DBAdapter adapter)
+        public SpellMechanic(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -66,7 +66,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateMechanicSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.MechanicType.threadSafeIndex = 0;

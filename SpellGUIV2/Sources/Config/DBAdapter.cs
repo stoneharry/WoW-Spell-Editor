@@ -2,15 +2,15 @@
 
 namespace SpellEditor.Sources.Config
 {
-    public interface DBAdapter
+    public interface IDatabaseAdapter
     {
         string Table { get; set; }
         bool Updating { get; set; }
 
-        DataTable query(string query);
+        DataTable Query(string query);
         void CommitChanges(string query, DataTable dataTable);
         void Execute(string p);
         string EscapeString(string str);
-        string GetTableCreateString();
+        string GetTableCreateString(Binding.Binding binding);
     }
 }

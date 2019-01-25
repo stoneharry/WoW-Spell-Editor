@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellRuneCost : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellRuneCostLookup> Lookups = new List<SpellRuneCostLookup>();
 
-        public SpellRuneCost(MainWindow window, DBAdapter adapter)
+        public SpellRuneCost(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -61,7 +61,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellRuneCostSelection()
         {
-			uint ID = uint.Parse(adapter.query(string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+			uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.RuneCost.threadSafeIndex = 0;

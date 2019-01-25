@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class SpellRange : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellRangeLookup> Lookups = new List<SpellRangeLookup>();
 
-        public SpellRange(MainWindow window, DBAdapter adapter)
+        public SpellRange(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -61,7 +61,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellRangeSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)

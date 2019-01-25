@@ -8,7 +8,7 @@ namespace SpellEditor.Sources.DBC
     {
         public ItemSubClassLookup[,] Lookups = new ItemSubClassLookup[29, 32];
 
-        public ItemSubClass(MainWindow window, DBAdapter adapter)
+        public ItemSubClass(MainWindow window, IDatabaseAdapter adapter)
         {
             try
             {

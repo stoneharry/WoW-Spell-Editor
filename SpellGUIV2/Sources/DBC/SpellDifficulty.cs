@@ -9,11 +9,11 @@ namespace SpellEditor.Sources.DBC
     class SpellDifficulty : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellDifficultyLookup> Lookups = new List<SpellDifficultyLookup>();
 
-        public SpellDifficulty(MainWindow window, DBAdapter adapter)
+        public SpellDifficulty(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -48,7 +48,7 @@ namespace SpellEditor.Sources.DBC
                     for (int diffIndex = 0; diffIndex < difficulties.Length; ++diffIndex)
                     {
                         tooltip += "[" + difficulties[diffIndex] + "] ";
-                        var rows = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulties[diffIndex])).Rows;
+                        var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulties[diffIndex])).Rows;
                         if (rows.Count > 0)
                         {
                             var row = rows[0];
@@ -88,7 +88,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDifficultySelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.Difficulty.threadSafeIndex = 0;

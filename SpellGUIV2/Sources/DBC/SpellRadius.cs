@@ -7,11 +7,11 @@ namespace SpellEditor.Sources.DBC
     class SpellRadius : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<RadiusLookup> Lookups = new List<RadiusLookup>();
 
-        public SpellRadius(MainWindow window, DBAdapter adapter)
+        public SpellRadius(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -65,7 +65,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateRadiusIndexes()
         {
-            var result = adapter.query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
+            var result = adapter.Query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
                 adapter.Table, main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
 

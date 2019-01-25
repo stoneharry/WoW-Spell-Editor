@@ -8,11 +8,11 @@ namespace SpellEditor.Sources.DBC
     class TotemCategory : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<TotemCategoryLookup> Lookups = new List<TotemCategoryLookup>();
 
-        public TotemCategory(MainWindow window, DBAdapter adapter)
+        public TotemCategory(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
 			this.adapter = adapter;
@@ -64,7 +64,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-			var result = adapter.query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
+			var result = adapter.Query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
 
             for (int j = 0; j < IDs.Length; ++j)

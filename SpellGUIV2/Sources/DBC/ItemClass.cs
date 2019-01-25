@@ -10,11 +10,11 @@ namespace SpellEditor.Sources.DBC
     class ItemClass : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<ItemClassLookup> Lookups;
 
-        public ItemClass(MainWindow window, DBAdapter adapter)
+        public ItemClass(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
@@ -62,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateItemClassSelection()
         {
-            int ID = int.Parse(adapter.query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = int.Parse(adapter.Query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == -1)
             {
