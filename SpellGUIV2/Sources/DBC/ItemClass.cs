@@ -21,7 +21,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<ItemClass_DBC_Record>("DBC/ItemClass.dbc");
+                ReadDBCFile("DBC/ItemClass.dbc");
 
                 Lookups = new List<ItemClassLookup>();
 
@@ -35,8 +35,8 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    int locale = window.GetLanguage() + 1;
+                    uint offset = (uint)record["Name" + locale];
                     if (offset == 0)
                         continue;
                     ItemClassLookup temp;
@@ -101,21 +101,6 @@ namespace SpellEditor.Sources.DBC
         {
             public int ID;
             public int comboBoxIndex;
-        };
-
-        public struct ItemClass_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public uint SecondaryID;
-            public uint IsWeapon;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint Flags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

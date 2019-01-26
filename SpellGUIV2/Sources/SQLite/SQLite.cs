@@ -43,12 +43,6 @@ namespace SpellEditor.Sources.SQLite
             }
         }
 
-        ~SQLite()
-        {
-            if (_connection != null && _connection.State != ConnectionState.Closed)
-                _connection.Close();
-        }
-
         public DataTable Query(string query)
         {
             lock (_syncLock)

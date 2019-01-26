@@ -77,7 +77,7 @@ namespace SpellEditor.Sources.DBC
                         contentString += window.GetAreaTableName(val) + ", ";
                     if (al.Count > 0)
                         contentString = contentString.Substring(0, contentString.Length - 2);
-                    areaGroupLab.Content = contentString.Length > 120 ? (contentString.Substring(0, 110) + "..") : contentString;
+                    areaGroupLab.Content = contentString.Length > 120 ? (contentString.Substring(0, 110) + "...") : contentString;
 
                     main.AreaGroup.Items.Add(areaGroupLab);
 
