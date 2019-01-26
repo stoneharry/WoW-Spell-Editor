@@ -8,18 +8,18 @@ namespace SpellEditor.Sources.DBC
     class SpellMechanic : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<MechanicLookup> Lookups = new List<MechanicLookup>();
 
-        public SpellMechanic(MainWindow window, DBAdapter adapter)
+        public SpellMechanic(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<Mechanic_DBC_Record>("DBC/SpellMechanic.dbc");
+                ReadDBCFile("DBC/SpellMechanic.dbc");
 
                 int boxIndex = 1;
                 main.MechanicType.Items.Add("None");
@@ -34,7 +34,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     var record = Body.RecordMaps[i];
 
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
                         continue;
                     string name = Reader.LookupStringOffset(offset);
@@ -66,7 +66,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateMechanicSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.MechanicType.threadSafeIndex = 0;
@@ -88,19 +88,6 @@ namespace SpellEditor.Sources.DBC
             public uint offset;
             public int stringHash;
             public int comboBoxIndex;
-        };
-
-        public struct Mechanic_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint NameFlags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

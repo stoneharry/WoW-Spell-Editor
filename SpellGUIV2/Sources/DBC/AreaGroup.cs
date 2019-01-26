@@ -11,18 +11,18 @@ namespace SpellEditor.Sources.DBC
     class AreaGroup : AbstractDBC
     {
         private MainWindow main;
-		private DBAdapter adapter;
+		private IDatabaseAdapter adapter;
         
         public List<AreaGroupLookup> Lookups;
 
-        public AreaGroup(MainWindow window, DBAdapter adapter)
+        public AreaGroup(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<AreaGroup_DBC_Record>("DBC/AreaGroup.dbc");
+                ReadDBCFile("DBC/AreaGroup.dbc");
 
                 Lookups = new List<AreaGroupLookup>();
                 int boxIndex = 1;
@@ -47,12 +47,13 @@ namespace SpellEditor.Sources.DBC
                     var recordPointer = record;
                     do
                     {
-                        foreach (uint val in (uint[])recordPointer["AreaID"])
+                        for (int areaIdCol = 1; areaIdCol <= 6; ++areaIdCol)
                         {
+                            uint val = (uint)recordPointer["AreaId" + areaIdCol];
                             if (val != 0)
                                 al.Add(val);
-                            recordPointer = FindAreaGroup((uint)recordPointer["NextGroup"]);
                         }
+                        recordPointer = FindAreaGroup((uint)recordPointer["NextGroup"]);
                     } while ((uint)recordPointer["NextGroup"] != 0);
 
                     temp.ID = (int)id;
@@ -76,7 +77,7 @@ namespace SpellEditor.Sources.DBC
                         contentString += window.GetAreaTableName(val) + ", ";
                     if (al.Count > 0)
                         contentString = contentString.Substring(0, contentString.Length - 2);
-                    areaGroupLab.Content = contentString;
+                    areaGroupLab.Content = contentString.Length > 120 ? (contentString.Substring(0, 110) + "...") : contentString;
 
                     main.AreaGroup.Items.Add(areaGroupLab);
 
@@ -109,7 +110,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateAreaGroupSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {
@@ -132,13 +133,5 @@ namespace SpellEditor.Sources.DBC
     {
         public int ID;
         public int comboBoxIndex;
-    };
-
-    public struct AreaGroup_DBC_Record
-    {
-        public uint ID;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public uint[] AreaID;
-        public uint NextGroup;
     };
 }

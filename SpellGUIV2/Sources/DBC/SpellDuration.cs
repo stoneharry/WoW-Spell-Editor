@@ -8,18 +8,18 @@ namespace SpellEditor.Sources.DBC
     public class SpellDuration : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellDurationLookup> Lookups = new List<SpellDurationLookup>();
 
-        public SpellDuration(MainWindow window, DBAdapter adapter)
+        public SpellDuration(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<SpellDurationRecord>("DBC/SpellDuration.dbc");
+                ReadDBCFile("DBC/SpellDuration.dbc");
 
                 int boxIndex = 1;
                 main.Duration.Items.Add(0);
@@ -54,13 +54,12 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDurationIndexes()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.Duration.threadSafeIndex = 0;
                 return;
             }
-
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
@@ -75,14 +74,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct SpellDurationRecord
-        {
-            public uint ID;
-            public uint BaseDuration;
-            public int PerLevel;
-            public int MaximumDuration;
         };
     };
 }

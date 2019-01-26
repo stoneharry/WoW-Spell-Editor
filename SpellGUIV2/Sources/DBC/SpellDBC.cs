@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
@@ -15,15 +11,13 @@ namespace SpellEditor.Sources.DBC
     {
         private MainWindow main;
 
-        public static string ErrorMessage = "";
-
         public bool LoadDBCFile(MainWindow window)
         {
             main = window;
 
             try
             {
-                ReadDBCFile<Spell_DBC_Record>("DBC/Spell.dbc");
+                ReadDBCFile("DBC/Spell.dbc");
             }
             catch (Exception ex)
             {
@@ -33,223 +27,15 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        private void SaveDBCFile(Spell_DBC_RecordMap[] recordMap)
+		public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
         {
-            uint stringBlockOffset = 1;
-
-            Dictionary<int, uint> offsetStorage = new Dictionary<int, uint>();
-            Dictionary<uint, string> reverseStorage = new Dictionary<uint, string>();
-
-            // Populate string <-> offset lookup maps, this could do with a refactor
-            for (uint i = 0; i < Header.RecordCount; ++i)
-            {
-                for (uint j = 0; j < 9; ++j)
-                {
-                    // spell name
-                    if (recordMap[i].spellName[j].Length == 0)
-                        recordMap[i].record.SpellName[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellName[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellName[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellName[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellName[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellName[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellName[j], recordMap[i].spellName[j]);
-                        }
-                    }
-                    // spell rank
-                    if (recordMap[i].spellRank[j].Length == 0)
-                        recordMap[i].record.SpellRank[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellRank[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellRank[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellRank[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellRank[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellRank[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellRank[j], recordMap[i].spellRank[j]);
-                        }
-                    }
-                    // spell tooltip
-                    if (recordMap[i].spellTool[j].Length == 0)
-                        recordMap[i].record.SpellToolTip[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellTool[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellToolTip[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellToolTip[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellTool[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellToolTip[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellToolTip[j], recordMap[i].spellTool[j]);
-                        }
-                    }
-                    // spell description
-                    if (recordMap[i].spellDesc[j].Length == 0)
-                        recordMap[i].record.SpellDescription[j] = 0;
-                    else
-                    {
-                        int key = recordMap[i].spellDesc[j].GetHashCode();
-                        if (offsetStorage.ContainsKey(key))
-                            recordMap[i].record.SpellDescription[j] = offsetStorage[key];
-                        else
-                        {
-                            recordMap[i].record.SpellDescription[j] = stringBlockOffset;
-                            stringBlockOffset += (uint) Encoding.UTF8.GetByteCount(recordMap[i].spellDesc[j]) + 1;
-                            offsetStorage.Add(key, recordMap[i].record.SpellDescription[j]);
-                            reverseStorage.Add(recordMap[i].record.SpellDescription[j], recordMap[i].spellDesc[j]);
-                        }
-                    }
-                }
-            }
-
-            Header.StringBlockSize = (int) stringBlockOffset;
-
-            // Write spell.dbc file
-            string path = "Export/Spell.dbc";
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            if (File.Exists(path))
-                File.Delete(path);
-            using (FileStream fileStream = new FileStream("Export/Spell.dbc", FileMode.Create))
-            {
-                using (BinaryWriter writer = new BinaryWriter(fileStream))
-                {
-                    int count = Marshal.SizeOf(typeof(DBCHeader));
-                    byte[] buffer = new byte[count];
-                    GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                    Marshal.StructureToPtr(Header, handle.AddrOfPinnedObject(), true);
-                    writer.Write(buffer, 0, count);
-                    handle.Free();
-
-                    for (uint i = 0; i < Header.RecordCount; ++i)
-                    {
-                        count = Marshal.SizeOf(typeof(Spell_DBC_Record));
-                        buffer = new byte[count];
-                        handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                        Marshal.StructureToPtr(recordMap[i].record, handle.AddrOfPinnedObject(), true);
-                        writer.Write(buffer, 0, count);
-                        handle.Free();
-                    }
-
-                    uint[] offsetsStored = offsetStorage.Values.ToArray();
-
-                    writer.Write(Encoding.UTF8.GetBytes("\0"));
-
-                    for (int i = 0; i < offsetsStored.Length; ++i)
-                        writer.Write(Encoding.UTF8.GetBytes(reverseStorage[offsetsStored[i]] + "\0"));
-                }
-            }
-        }
-
-		public Task import(DBAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
-        {
-            return Task.Run(() => 
-            {
-                uint currentRecord = 0;
-                try
-                {
-                    uint count = Header.RecordCount;
-                    uint index = 0;
-                    StringBuilder q = null;
-                    foreach (var recordMap in Body.RecordMaps)
-                    {
-                        // This might be needed? Disabled unless bugs are reported around this
-                        //if (r.record.ID == 0)
-                        //  continue;
-                        if (index == 0 || index % 250 == 0)
-                        {
-                            if (q != null)
-                            {
-                                q.Remove(q.Length - 2, 2);
-                                adapter.Execute(q.ToString());
-                            }
-                            q = new StringBuilder();
-                            q.Append(string.Format("INSERT INTO `{0}` VALUES ", adapter.Table));
-                        }
-                        if (++index % 1000 == 0)
-                        {
-                            // Visual studio says these casts are redundant but it does not work without them
-                            double percent = (double)index / (double)count;
-                            UpdateProgress(percent);
-                        }
-                        currentRecord = (uint)recordMap["ID"];
-                        q.Append("(");
-                        foreach (var f in typeof(Spell_DBC_Record).GetFields())
-                        {
-                            switch (Type.GetTypeCode(f.FieldType))
-                            {
-                                case TypeCode.UInt32:
-                                case TypeCode.Int32:
-                                    {
-                                        q.Append(string.Format("'{0}', ", recordMap[f.Name]));
-                                        break;
-                                    }
-                                case TypeCode.Single:
-                                    {
-                                        q.Append(string.Format("REPLACE('{0}', ',', '.'), ", recordMap[f.Name]));
-                                        break;
-                                    }
-                                case TypeCode.Object:
-                                    {
-                                        var attr = f.GetCustomAttribute<HandleField>();
-                                        if (attr != null)
-                                        {
-                                            if (attr.Method == 1)
-                                            {
-                                                uint[] array = (uint[])recordMap[f.Name];
-                                                for (int i = 0; i < array.Length; ++i)
-                                                {
-                                                    var lookupResult = Reader.LookupStringOffset(array[i]);
-                                                    q.Append(string.Format("\'{0}\', ", SQLite.SQLite.EscapeString(lookupResult)));
-                                                }
-                                                break;
-                                            }
-                                            else if (attr.Method == 2)
-                                            {
-                                                uint[] array = (uint[])recordMap[f.Name];
-                                                for (int i = 0; i < array.Length; ++i)
-                                                    q.Append(string.Format("\'{0}\', ", array[i]));
-                                                break;
-                                            }
-                                        }
-                                        goto default;
-                                    }
-                                default:
-                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name);
-                            }
-                        }
-                        q.Remove(q.Length - 2, 2);
-                        q.Append("), ");
-                    }
-                    if (q.Length > 0)
-                    {
-                        q.Remove(q.Length - 2, 2);
-                        adapter.Execute(q.ToString());
-                    }
-                }
-                catch (Exception e)
-                {
-                    ErrorMessage = "ERROR on around spell ID " + currentRecord + ": " + e.Message +
-                        "\n\nNot all the data would have been imported because of this error. Considering truncating the table and trying again.";
-                }
-                // We have attempted to import the Spell.dbc so clean up unneeded data
-                // This will be recreated if the import process is started again
-                Reader.CleanStringsMap();
-            });
+            
+            return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
         }
 
 		public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
 		{
-			DataRowCollection Result = mainWindows.GetDBAdapter().query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
+			DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
 			if (Result != null && Result.Count == 1)
 				return GetRowToRecord(Result[0]);
 			return new Spell_DBC_Record();
@@ -286,144 +72,9 @@ namespace SpellEditor.Sources.DBC
             return record;
         }
 
-		public Task export(DBAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
+		public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
         {
-            return Task.Run(() =>
-            {
-				var rows = adapter.query(string.Format("SELECT * FROM `{0}` ORDER BY `ID`", adapter.Table)).Rows;
-                uint numRows = uint.Parse(rows.Count.ToString());
-                // Hardcode for 3.3.5a 12340
-                Header = new DBCHeader();
-                Header.FieldCount = 234;
-                Header.Magic = 1128416343;
-                Header.RecordCount = numRows;
-                Header.RecordSize = 936;
-                Header.StringBlockSize = 0;
-
-                var recordMap = new Spell_DBC_RecordMap[numRows];
-                for (int i = 0; i < numRows; ++i)
-                {
-                    recordMap[i] = new Spell_DBC_RecordMap();
-                    if (i % 250 == 0)
-                    {
-                        // Visual studio says these casts are redundant but it does not work without them
-                        double percent = (double) i / (double) numRows;
-                        updateProgress(percent);
-                    }
-                    recordMap[i].record = new Spell_DBC_Record();
-                    recordMap[i].spellName = new string[9];
-                    recordMap[i].spellDesc = new string[9];
-                    recordMap[i].spellRank = new string[9];
-                    recordMap[i].spellTool = new string[9];
-                    recordMap[i].record.SpellName = new uint[9];
-                    recordMap[i].record.SpellDescription = new uint[9];
-                    recordMap[i].record.SpellRank = new uint[9];
-                    recordMap[i].record.SpellToolTip = new uint[9];
-                    recordMap[i].record.SpellNameFlag = new uint[8];
-                    recordMap[i].record.SpellDescriptionFlags = new uint[8];
-                    recordMap[i].record.SpellRankFlags = new uint[8];
-                    recordMap[i].record.SpellToolTipFlags = new uint[8];
-                    var fields = recordMap[i].record.GetType().GetFields();
-                    foreach (var f in fields)
-                    {
-                        switch (Type.GetTypeCode(f.FieldType))
-                        {
-                            case TypeCode.UInt32:
-                                {
-                                    f.SetValueForValueType(ref recordMap[i].record, uint.Parse(rows[i][f.Name].ToString()));
-                                    break;
-                                }
-                            case TypeCode.Int32:
-                                {
-                                    f.SetValueForValueType(ref recordMap[i].record, int.Parse(rows[i][f.Name].ToString()));
-                                    break;
-                                }
-                            case TypeCode.Single:
-                                {
-                                    f.SetValueForValueType(ref recordMap[i].record, float.Parse(rows[i][f.Name].ToString()));
-                                    break;
-                                }
-                            case TypeCode.Object:
-                                {
-                                    var attr = f.GetCustomAttribute<HandleField>();
-                                    if (attr != null)
-                                    {
-                                        if (attr.Method == 1)
-                                        {
-                                            switch (attr.Type)
-                                            {
-                                                case 1:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].spellName[j] = rows[i]["SpellName" + j].ToString();
-                                                        break;
-                                                    }
-                                                case 2:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].spellRank[j] = rows[i]["SpellRank" + j].ToString();
-                                                        break;
-                                                    }
-                                                case 3:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].spellDesc[j] = rows[i]["SpellDescription" + j].ToString();
-                                                        break;
-                                                    }
-                                                case 4:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].spellTool[j] = rows[i]["SpellToolTip" + j].ToString();
-                                                        break;
-                                                    }
-                                                default:
-                                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
-                                            }
-                                            break;
-                                        }
-                                        else if (attr.Method == 2)
-                                        {
-                                            switch (attr.Type)
-                                            {
-                                                case 1:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].record.SpellNameFlag[j] = uint.Parse(rows[i]["SpellNameFlag" + j].ToString());
-                                                        break;
-                                                    }
-                                                case 2:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].record.SpellRankFlags[j] = uint.Parse(rows[i]["SpellRankFlags" + j].ToString());
-                                                        break;
-                                                    }
-                                                case 3:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].record.SpellDescriptionFlags[j] = uint.Parse(rows[i]["SpellDescriptionFlags" + j].ToString());
-                                                        break;
-                                                    }
-                                                case 4:
-                                                    {
-                                                        for (int j = 0; j < attr.Count; ++j)
-                                                            recordMap[i].record.SpellToolTipFlags[j] = uint.Parse(rows[i]["SpellToolTipFlags" + j].ToString());
-                                                        break;
-                                                    }
-                                                default:
-                                                    throw new Exception("ERROR: Unhandled type: " + f.FieldType + " on field: " + f.Name + " TYPE: " + attr.Type);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    goto default;
-                                }
-                            default:
-                                throw new Exception("Unhandled type: " + Type.GetTypeCode(f.FieldType).ToString() + ", field: " + f.Name);
-                        }
-                    }
-                }
-                SaveDBCFile(recordMap);
-            });
+            return ExportToDbc(adapter, updateProgress, "ID", "Spell");
         }
     }
 

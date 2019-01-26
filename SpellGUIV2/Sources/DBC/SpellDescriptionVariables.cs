@@ -8,18 +8,18 @@ namespace SpellEditor.Sources.DBC
     class SpellDescriptionVariables : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellDescriptionVariablesLookup> Lookups = new List<SpellDescriptionVariablesLookup>();
 
-        public SpellDescriptionVariables(MainWindow window, DBAdapter adapter)
+        public SpellDescriptionVariables(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<SpellDescriptionVariables_DBC_Record>("DBC/SpellDescriptionVariables.dbc");
+                ReadDBCFile("DBC/SpellDescriptionVariables.dbc");
 
                 int boxIndex = 1;
                 main.SpellDescriptionVariables.Items.Add(0);
@@ -62,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellDescriptionVariablesSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {
@@ -84,18 +84,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        [Serializable]
-        public struct SpellDescriptionVariables_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public uint Formula;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

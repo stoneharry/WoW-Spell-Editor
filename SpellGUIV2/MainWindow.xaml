@@ -598,12 +598,12 @@
 		<controls:WindowCommands>
 			<Button Name="ImportDBC" Click="ImportSpellDbcButton">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Import Spell.dbc to MySQL" VerticalAlignment="Center"/>
+					<TextBlock Text="Import Spell.dbc to SQL" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 			<Button Name="ExportDBC" Click="Button_Click">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Export MySQL to Spell.dbc" VerticalAlignment="Center"/>
+					<TextBlock Text="Export SQL to Spell.dbc" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 			<Button Name="TruncateTable" Click="Button_Click">

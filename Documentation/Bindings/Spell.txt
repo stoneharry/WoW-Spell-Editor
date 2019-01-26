@@ -1,0 +1,235 @@
+# Spell.dbc structure for 3.3.5a 12340
+uint ID
+uint Category
+uint Dispel
+uint Mechanic
+uint Attributes
+uint AttributesEx
+uint AttributesEx2
+uint AttributesEx3
+uint AttributesEx4
+uint AttributesEx5
+uint AttributesEx6
+uint AttributesEx7
+uint Stances
+uint Unknown1
+uint StancesNot
+uint Unknown2
+uint Targets
+uint TargetCreatureType
+uint RequiresSpellFocus
+uint FacingCasterFlags
+uint CasterAuraState
+uint TargetAuraState
+uint CasterAuraStateNot
+uint TargetAuraStateNot
+uint CasterAuraSpell
+uint TargetAuraSpell
+uint ExcludeCasterAuraSpell
+uint ExcludeTargetAuraSpell
+uint CastingTimeIndex
+uint RecoveryTime
+uint CategoryRecoveryTime
+uint InterruptFlags
+uint AuraInterruptFlags
+uint ChannelInterruptFlags
+uint ProcFlags
+uint ProcChance
+uint ProcCharges
+uint MaximumLevel
+uint BaseLevel
+uint SpellLevel
+uint DurationIndex
+uint PowerType
+uint ManaCost
+uint ManaCostPerLevel
+uint ManaPerSecond
+uint ManaPerSecondPerLevel
+uint RangeIndex
+float Speed
+uint ModalNextSpell
+uint StackAmount
+uint Totem1
+uint Totem2
+int Reagent1
+int Reagent2
+int Reagent3
+int Reagent4
+int Reagent5
+int Reagent6
+int Reagent7
+int Reagent8
+uint ReagentCount1
+uint ReagentCount2
+uint ReagentCount3
+uint ReagentCount4
+uint ReagentCount5
+uint ReagentCount6
+uint ReagentCount7
+uint ReagentCount8
+int EquippedItemClass
+int EquippedItemSubClassMask
+int EquippedItemInventoryTypeMask
+uint Effect1
+uint Effect2
+uint Effect3
+int EffectDieSides1
+int EffectDieSides2
+int EffectDieSides3
+float EffectRealPointsPerLevel1
+float EffectRealPointsPerLevel2
+float EffectRealPointsPerLevel3
+int EffectBasePoints1
+int EffectBasePoints2
+int EffectBasePoints3
+uint EffectMechanic1
+uint EffectMechanic2
+uint EffectMechanic3
+uint EffectImplicitTargetA1
+uint EffectImplicitTargetA2
+uint EffectImplicitTargetA3
+uint EffectImplicitTargetB1
+uint EffectImplicitTargetB2
+uint EffectImplicitTargetB3
+uint EffectRadiusIndex1
+uint EffectRadiusIndex2
+uint EffectRadiusIndex3
+uint EffectApplyAuraName1
+uint EffectApplyAuraName2
+uint EffectApplyAuraName3
+uint EffectAmplitude1
+uint EffectAmplitude2
+uint EffectAmplitude3
+float EffectMultipleValue1
+float EffectMultipleValue2
+float EffectMultipleValue3
+uint EffectChainTarget1
+uint EffectChainTarget2
+uint EffectChainTarget3
+uint EffectItemType1
+uint EffectItemType2
+uint EffectItemType3
+int EffectMiscValue1
+int EffectMiscValue2
+int EffectMiscValue3
+int EffectMiscValueB1
+int EffectMiscValueB2
+int EffectMiscValueB3
+uint EffectTriggerSpell1
+uint EffectTriggerSpell2
+uint EffectTriggerSpell3
+float EffectPointsPerComboPoint1
+float EffectPointsPerComboPoint2
+float EffectPointsPerComboPoint3
+uint EffectSpellClassMaskA1
+uint EffectSpellClassMaskA2
+uint EffectSpellClassMaskA3
+uint EffectSpellClassMaskB1
+uint EffectSpellClassMaskB2
+uint EffectSpellClassMaskB3
+uint EffectSpellClassMaskC1
+uint EffectSpellClassMaskC2
+uint EffectSpellClassMaskC3
+uint SpellVisual1
+uint SpellVisual2
+uint SpellIconID
+uint ActiveIconID
+uint SpellPriority
+uint SpellName0 string
+uint SpellName1 string
+uint SpellName2 string
+uint SpellName3 string
+uint SpellName4 string
+uint SpellName5 string
+uint SpellName6 string
+uint SpellName7 string
+uint SpellName8 string
+uint SpellNameFlag0
+uint SpellNameFlag1
+uint SpellNameFlag2
+uint SpellNameFlag3
+uint SpellNameFlag4
+uint SpellNameFlag5
+uint SpellNameFlag6
+uint SpellNameFlag7
+uint SpellRank0 string
+uint SpellRank1 string
+uint SpellRank2 string
+uint SpellRank3 string
+uint SpellRank4 string
+uint SpellRank5 string
+uint SpellRank6 string
+uint SpellRank7 string
+uint SpellRank8 string
+uint SpellRankFlags0
+uint SpellRankFlags1
+uint SpellRankFlags2
+uint SpellRankFlags3
+uint SpellRankFlags4
+uint SpellRankFlags5
+uint SpellRankFlags6
+uint SpellRankFlags7
+uint SpellDescription0 string
+uint SpellDescription1 string
+uint SpellDescription2 string
+uint SpellDescription3 string
+uint SpellDescription4 string
+uint SpellDescription5 string
+uint SpellDescription6 string
+uint SpellDescription7 string
+uint SpellDescription8 string
+uint SpellDescriptionFlags0
+uint SpellDescriptionFlags1
+uint SpellDescriptionFlags2
+uint SpellDescriptionFlags3
+uint SpellDescriptionFlags4
+uint SpellDescriptionFlags5
+uint SpellDescriptionFlags6
+uint SpellDescriptionFlags7
+uint SpellToolTip0 string
+uint SpellToolTip1 string
+uint SpellToolTip2 string
+uint SpellToolTip3 string
+uint SpellToolTip4 string
+uint SpellToolTip5 string
+uint SpellToolTip6 string
+uint SpellToolTip7 string
+uint SpellToolTip8 string
+uint SpellToolTipFlags0
+uint SpellToolTipFlags1
+uint SpellToolTipFlags2
+uint SpellToolTipFlags3
+uint SpellToolTipFlags4
+uint SpellToolTipFlags5
+uint SpellToolTipFlags6
+uint SpellToolTipFlags7
+uint ManaCostPercentage
+uint StartRecoveryCategory
+uint StartRecoveryTime
+uint MaximumTargetLevel
+uint SpellFamilyName
+uint SpellFamilyFlags
+uint SpellFamilyFlags1
+uint SpellFamilyFlags2
+uint MaximumAffectedTargets
+uint DamageClass
+uint PreventionType
+uint StanceBarOrder
+float EffectDamageMultiplier1
+float EffectDamageMultiplier2
+float EffectDamageMultiplier3
+uint MinimumFactionId
+uint MinimumReputation
+uint RequiredAuraVision
+uint TotemCategory1
+uint TotemCategory2
+uint AreaGroupID
+uint SchoolMask
+uint RuneCostID
+uint SpellMissileID
+uint PowerDisplayId
+float EffectBonusMultiplier1
+float EffectBonusMultiplier2
+float EffectBonusMultiplier3
+uint SpellDescriptionVariableID
+uint SpellDifficultyID

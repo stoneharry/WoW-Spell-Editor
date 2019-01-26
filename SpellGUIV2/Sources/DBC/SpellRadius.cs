@@ -7,18 +7,18 @@ namespace SpellEditor.Sources.DBC
     class SpellRadius : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<RadiusLookup> Lookups = new List<RadiusLookup>();
 
-        public SpellRadius(MainWindow window, DBAdapter adapter)
+        public SpellRadius(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<SpellRadiusRecord>("DBC/SpellRadius.dbc");
+                ReadDBCFile("DBC/SpellRadius.dbc");
 
                 int boxIndex = 1;
                 main.RadiusIndex1.Items.Add("0 - 0");
@@ -65,10 +65,9 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateRadiusIndexes()
         {
-            var result = adapter.query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
+            var result = adapter.Query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
                 adapter.Table, main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
-
             for (int j = 0; j < IDs.Length; ++j)
             {
                 uint ID = IDs[j];
@@ -82,23 +81,19 @@ namespace SpellEditor.Sources.DBC
                             main.RadiusIndex1.threadSafeIndex = 0;
                             break;
                         }
-
                         case 1:
                         {
                             main.RadiusIndex2.threadSafeIndex = 0;
                             break;
                         }
-
                         case 2:
                         {
                             main.RadiusIndex3.threadSafeIndex = 0;
                             break;
                         }
                     }
-
                     continue;
                 }
-
                 for (int i = 0; i < Lookups.Count; ++i)
                 {
                     if (ID == Lookups[i].ID)
@@ -110,13 +105,11 @@ namespace SpellEditor.Sources.DBC
                                 main.RadiusIndex1.threadSafeIndex = Lookups[i].comboBoxIndex;
                                 break;
                             }
-
                             case 1:
                             {
                                 main.RadiusIndex2.threadSafeIndex = Lookups[i].comboBoxIndex;
                                 break;
                             }
-
                             case 2:
                             {
                                 main.RadiusIndex3.threadSafeIndex = Lookups[i].comboBoxIndex;
@@ -132,19 +125,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct SpellRadiusRecord
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public float Radius;
-            public float RadiusPerLevel;
-            public float MaximumRadius;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

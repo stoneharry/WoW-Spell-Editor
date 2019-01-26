@@ -10,18 +10,18 @@ namespace SpellEditor.Sources.DBC
     class ItemClass : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<ItemClassLookup> Lookups;
 
-        public ItemClass(MainWindow window, DBAdapter adapter)
+        public ItemClass(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<ItemClass_DBC_Record>("DBC/ItemClass.dbc");
+                ReadDBCFile("DBC/ItemClass.dbc");
 
                 Lookups = new List<ItemClassLookup>();
 
@@ -35,8 +35,8 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    int locale = window.GetLanguage() + 1;
+                    uint offset = (uint)record["Name" + locale];
                     if (offset == 0)
                         continue;
                     ItemClassLookup temp;
@@ -62,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateItemClassSelection()
         {
-            int ID = int.Parse(adapter.query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            int ID = int.Parse(adapter.Query(string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
 
             if (ID == -1)
             {
@@ -101,21 +101,6 @@ namespace SpellEditor.Sources.DBC
         {
             public int ID;
             public int comboBoxIndex;
-        };
-
-        public struct ItemClass_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public uint SecondaryID;
-            public uint IsWeapon;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint Flags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

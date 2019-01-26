@@ -1,25 +1,24 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace SpellEditor.Sources.DBC
 {
     class TotemCategory : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<TotemCategoryLookup> Lookups = new List<TotemCategoryLookup>();
 
-        public TotemCategory(MainWindow window, DBAdapter adapter)
+        public TotemCategory(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
 			this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<TotemCategory_DBC_Record>("DBC/TotemCategory.dbc");
+                ReadDBCFile("DBC/TotemCategory.dbc");
 
                 int boxIndex = 1;
                 main.TotemCategory1.Items.Add("None");
@@ -32,7 +31,7 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
                         continue;
                     string name = Reader.LookupStringOffset(offset);
@@ -64,9 +63,8 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-			var result = adapter.query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
+			var result = adapter.Query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
-
             for (int j = 0; j < IDs.Length; ++j)
             {
                 uint ID = IDs[j];
@@ -110,21 +108,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct TotemCategory_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint NameFlags;
-            public uint CategoryType;
-            public uint CategoryMask;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

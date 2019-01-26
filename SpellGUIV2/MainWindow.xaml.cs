@@ -24,6 +24,7 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
+using SpellEditor.Sources.Binding;
 
 namespace SpellEditor
 {
@@ -50,6 +51,34 @@ namespace SpellEditor
         private SpellRuneCost loadRuneCosts = null;
         private SpellDescriptionVariables loadDescriptionVariables = null;
         #endregion
+        private Dictionary<string, AbstractDBC> bindingToDbcMap;
+
+        // FIXME: Hardcoded map for now
+        public AbstractDBC FindDbcForBinding(string bindingName)
+        {
+            if (bindingToDbcMap == null)
+            {
+                bindingToDbcMap = new Dictionary<string, AbstractDBC>();
+                bindingToDbcMap.Add("AreaGroup", loadAreaGroups);
+                bindingToDbcMap.Add("AreaTable", loadAreaTable);
+                bindingToDbcMap.Add("SpellCategory", loadCategories);
+                bindingToDbcMap.Add("SpellDispelType", loadDispels);
+                bindingToDbcMap.Add("SpellMechanic", loadMechanics);
+                bindingToDbcMap.Add("SpellFocusObject", loadFocusObjects);
+                bindingToDbcMap.Add("SpellCastTimes", loadCastTimes);
+                bindingToDbcMap.Add("SpellDuration", loadDurations);
+                bindingToDbcMap.Add("SpellDifficulty", loadDifficulties);
+                bindingToDbcMap.Add("SpellIcon", loadIcons);
+                bindingToDbcMap.Add("SpellRange", loadRanges);
+                bindingToDbcMap.Add("SpellRadius", loadRadiuses);
+                bindingToDbcMap.Add("ItemClass", loadItemClasses);
+                bindingToDbcMap.Add("ItemSubClass", loadItemSubClasses);
+                bindingToDbcMap.Add("TotemCategory", loadTotemCategories);
+                bindingToDbcMap.Add("SpellRuneCost", loadRuneCosts);
+                bindingToDbcMap.Add("SpellDescriptionVariables", loadDescriptionVariables);
+            }
+            return bindingToDbcMap.ContainsKey(bindingName) ? bindingToDbcMap[bindingName] : null;
+        }
 
         #region Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
@@ -73,7 +102,7 @@ namespace SpellEditor
         #endregion
 
         #region MemberVariables
-		private DBAdapter adapter;
+		private IDatabaseAdapter adapter;
         private Config config;
         public uint selectedID = 0;
         public uint newIconID = 1;
@@ -93,12 +122,22 @@ namespace SpellEditor
 			return config;
 		}
 
-		public DBAdapter GetDBAdapter()
+		public IDatabaseAdapter GetDBAdapter()
 		{
 			return adapter;
 		}
         public MainWindow()
         {
+            // If no debugger is attached then output console text to a file
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                var ostrm = new FileStream("debug_output.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                var writer = new StreamWriter(ostrm);
+                Console.SetOut(writer);
+            }
+            Console.WriteLine("######################################################");
+            Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
+            Console.WriteLine("######################################################");
             InitializeComponent();
         }
 
@@ -112,7 +151,8 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            File.WriteAllText("Error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
+            Console.WriteLine("ERROR: " + e.Exception.Message);
+            File.WriteAllText("error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
             HandleErrorMessage(e.Exception.Message);
             e.Handled = true;
         }
@@ -586,29 +626,46 @@ namespace SpellEditor
         #region ImportSpellDBC
         private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
         {
+            await ImportDbcDialogAction();
+        }
+
+        private async Task ImportDbcDialogAction()
+        {
             MetroDialogSettings settings = new MetroDialogSettings();
             settings.AffirmativeButtonText = "YES";
             settings.NegativeButtonText = "NO";
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+            // TODO: Create frame where you select DBC files to import
             var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                "It appears the table in the database is empty. Would you like to import the DBC/Spell.dbc file now?", style, settings);
+                "It appears the table in the database is empty. Would you like to import the DBC files now?\n\n" + 
+                "Each \\Binding\\*.txt will cause the matching \\DBC\\*.dbc to be loaded.", style, settings);
             if (res == MessageDialogResult.Affirmative)
             {
-                var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                await Task.Delay(1000);
+                var controller = await this.ShowProgressAsync("Please wait", "Importing Spell.dbc...");
                 controller.SetCancelable(false);
+                await Task.Delay(1000);
 
+                // Hardcoded spell.dbc
                 SpellDBC dbc = new SpellDBC();
                 dbc.LoadDBCFile(this);
-				await dbc.import(adapter, new UpdateProgressFunc(controller.SetProgress));
+                await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "Spell");
+                // Load other DBC's
+                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                {
+                    var abstractDbc = FindDbcForBinding(binding.Name);
+                    if (abstractDbc == null)
+                        continue;
+                    if (!abstractDbc.HasData())
+                        abstractDbc.ReloadContents();
+                    if (!binding.Name.Equals("Spell"))
+                    {
+                        controller.SetMessage($"Importing {binding.Name}.dbc...");
+                        await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", binding.Name);
+                    }
+                }
+                
                 await controller.CloseAsync();
                 PopulateSelectSpell();
-
-                if (SpellDBC.ErrorMessage.Length > 0)
-                {
-                    HandleErrorMessage(SpellDBC.ErrorMessage);
-                    SpellDBC.ErrorMessage = "";
-                }
             }
         }
         #endregion
@@ -893,7 +950,7 @@ namespace SpellEditor
                     controller.SetCancelable(false);
 
                     SpellDBC dbc = new SpellDBC();
-					await dbc.export(adapter, new UpdateProgressFunc(controller.SetProgress));
+					await dbc.Export(adapter, new UpdateProgressFunc(controller.SetProgress));
                     await controller.CloseAsync();
                 }
                 return;
@@ -905,11 +962,12 @@ namespace SpellEditor
                 settings.AffirmativeButtonText = "YES";
                 settings.NegativeButtonText = "NO";
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the MySQL table.\n\n" +
-                    "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
+                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the SQL tables.\n\n" +
+                    "This feature should only be used when you want to reset the tables and import new DBCs.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-                    adapter.Execute(string.Format("delete from `{0}`", adapter.Table));
+                    foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                        adapter.Execute(string.Format("delete from `{0}`", binding.Name));
                     PopulateSelectSpell();
 
 					//Enabled the ImportDBC Button when Truncate table.
@@ -917,28 +975,7 @@ namespace SpellEditor
 						ImportDBC.IsEnabled = true;
 
 					if (SelectSpell.Items.Count == 0)
-                    {
-                        res = await this.ShowMessageAsync("Import Spell.dbc?",
-                            "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
-                        if (res == MessageDialogResult.Affirmative)
-                        {
-                            var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                            await Task.Delay(1000);
-                            controller.SetCancelable(false);
-
-                            SpellDBC dbc = new SpellDBC();
-                            dbc.LoadDBCFile(this);
-							await dbc.import(adapter, new UpdateProgressFunc(controller.SetProgress));
-                            await controller.CloseAsync();
-                            PopulateSelectSpell();
-
-                            if (SpellDBC.ErrorMessage.Length > 0)
-                            {
-                                HandleErrorMessage(SpellDBC.ErrorMessage);
-                                SpellDBC.ErrorMessage = "";
-                            }
-                        }
-                    }
+                        await ImportDbcDialogAction();
                 }
             }
 
@@ -979,7 +1016,7 @@ namespace SpellEditor
                     return;
                 }
 
-                if (UInt32.Parse(adapter.query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage("ERROR: That spell ID is already taken.");
                     return;
@@ -988,7 +1025,7 @@ namespace SpellEditor
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
+                    var row = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
                     str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", adapter.Table, newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
@@ -1033,7 +1070,7 @@ namespace SpellEditor
             if (sender == SaveSpellChanges)
             {
                 string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, selectedID);
-                var q = adapter.query(query);
+                var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
                 var row = q.Rows[0];
@@ -1627,10 +1664,10 @@ namespace SpellEditor
 
         private class Worker : BackgroundWorker
         {
-			public DBAdapter __adapter;
+			public IDatabaseAdapter __adapter;
             public Config __config;
 
-            public Worker(DBAdapter _adapter, Config _config)
+            public Worker(IDatabaseAdapter _adapter, Config _config)
             {
 				__adapter = _adapter;
                 __config = _config;
@@ -1643,7 +1680,7 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-			DataRowCollection res = adapter.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+			DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                 "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
             if (res == null || res.Count == 0)
                 return -1;
@@ -1681,7 +1718,7 @@ namespace SpellEditor
                     return;
 
                 // Attempt localisation on Death Touch, HACKY
-				DataRowCollection res = adapter.query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+				DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
                 if (res == null || res.Count == 0)
                     return;
@@ -1776,7 +1813,7 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
         {
-			DataTable newSpellNames = adapter.query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
+			DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
@@ -1859,7 +1896,7 @@ namespace SpellEditor
         {
 			adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-			DataRowCollection rowResult = adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+			DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
@@ -2860,7 +2897,7 @@ namespace SpellEditor
             }
         }
 
-        public DataRow GetSpellRowById(uint spellId) => adapter.query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
+        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
 
         public string GetSpellNameById(uint spellId)
 		{

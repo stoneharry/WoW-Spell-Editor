@@ -1,25 +1,24 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace SpellEditor.Sources.DBC
 {
     class SpellRuneCost : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellRuneCostLookup> Lookups = new List<SpellRuneCostLookup>();
 
-        public SpellRuneCost(MainWindow window, DBAdapter adapter)
+        public SpellRuneCost(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
 
             try
             {
-                ReadDBCFile<SpellRuneCost_DBC_Record>("DBC/SpellRuneCost.dbc");
+                ReadDBCFile("DBC/SpellRuneCost.dbc");
 
                 int boxIndex = 1;
                 main.RuneCost.Items.Add(0);
@@ -33,7 +32,9 @@ namespace SpellEditor.Sources.DBC
                     var record = Body.RecordMaps[i];
 
                     uint id = (uint) record["ID"];
-                    uint[] runeCosts = (uint[]) record["RuneCost"];
+                    uint runeCost1 = (uint)record["RuneCost1"];
+                    uint runeCost2 = (uint)record["RuneCost2"];
+                    uint runeCost3 = (uint)record["RuneCost3"];
                     uint runepowerGain = (uint) record["RunePowerGain"];
 
                     SpellRuneCostLookup temp;
@@ -41,7 +42,7 @@ namespace SpellEditor.Sources.DBC
                     temp.comboBoxIndex = boxIndex;
                     Lookups.Add(temp);
 
-                    main.RuneCost.Items.Add($"Cost [{ string.Join(", ", runeCosts) }] Gain [{ runepowerGain }] ID [{ id }]");
+                    main.RuneCost.Items.Add($"Cost [{runeCost1}, {runeCost2}, {runeCost3}] Gain [{ runepowerGain }] ID [{ id }]");
 
                     ++boxIndex;
                 }
@@ -61,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellRuneCostSelection()
         {
-			uint ID = uint.Parse(adapter.query(string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+			uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.RuneCost.threadSafeIndex = 0;
@@ -81,19 +82,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct SpellRuneCost_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-            public uint[] RuneCost;
-            public uint RunePowerGain;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

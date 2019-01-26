@@ -8,18 +8,18 @@ namespace SpellEditor.Sources.DBC
     class SpellCastTimes : AbstractDBC
     {
         private MainWindow main;
-        private DBAdapter adapter;
+        private IDatabaseAdapter adapter;
 
         public List<SpellCastTimeLookup> Lookups = new List<SpellCastTimeLookup>();
 
-        public SpellCastTimes(MainWindow window, DBAdapter adapter)
+        public SpellCastTimes(MainWindow window, IDatabaseAdapter adapter)
         {
             main = window;
             this.adapter = adapter;
             
             try
             {
-                ReadDBCFile<SpellCastTimes_DBC_Record>("DBC/SpellCastTimes.dbc");
+                ReadDBCFile("DBC/SpellCastTimes.dbc");
 
                 int boxIndex = 0;
 
@@ -62,7 +62,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateCastTimeSelection()
         {
-            uint ID = uint.Parse(adapter.query(string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.CastTime.threadSafeIndex = 0;
@@ -84,13 +84,5 @@ namespace SpellEditor.Sources.DBC
     {
         public uint ID;
         public int comboBoxIndex;
-    };
-
-    public struct SpellCastTimes_DBC_Record
-    {
-        public uint ID;
-        public int CastingTime;
-        public float CastingTimePerLevel;
-        public int MinimumCastingTime;
     };
 }
