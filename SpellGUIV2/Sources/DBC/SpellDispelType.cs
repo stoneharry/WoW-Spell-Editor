@@ -19,17 +19,15 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellDispel_DBC_Record>("DBC/SpellDispelType.dbc");
+                ReadDBCFile("DBC/SpellDispelType.dbc");
 
                 int boxIndex = 0;
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
-                    {
                         continue;
-                    }
                     var description = Reader.LookupStringOffset(offset);
 
                     SpellDispel_DBC_Lookup temp;
@@ -81,23 +79,6 @@ namespace SpellEditor.Sources.DBC
             public uint offset;
             public int stringHash;
             public int comboBoxIndex;
-        };
-
-        [Serializable]
-        public struct SpellDispel_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint NameFlags;
-            public uint Combinations;
-            public uint ImmunityPossible;
-            public uint InternalName;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

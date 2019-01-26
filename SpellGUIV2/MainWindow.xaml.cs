@@ -59,12 +59,12 @@ namespace SpellEditor
             if (bindingToDbcMap == null)
             {
                 bindingToDbcMap = new Dictionary<string, AbstractDBC>();
+                bindingToDbcMap.Add("AreaGroup", loadAreaGroups);
                 bindingToDbcMap.Add("AreaTable", loadAreaTable);
                 bindingToDbcMap.Add("SpellCategory", loadCategories);
-                bindingToDbcMap.Add("Dispel", loadDispels);
-                bindingToDbcMap.Add("Mechanics", loadMechanics);
-                bindingToDbcMap.Add("FocusObject", loadFocusObjects);
-                bindingToDbcMap.Add("AreaGroup", loadAreaGroups);
+                bindingToDbcMap.Add("SpellDispelType", loadDispels);
+                bindingToDbcMap.Add("SpellMechanic", loadMechanics);
+                bindingToDbcMap.Add("SpellFocusObject", loadFocusObjects);
                 bindingToDbcMap.Add("SpellCastTimes", loadCastTimes);
                 bindingToDbcMap.Add("SpellDuration", loadDurations);
                 bindingToDbcMap.Add("SpellDifficulty", loadDifficulties);
@@ -635,13 +635,14 @@ namespace SpellEditor
             settings.AffirmativeButtonText = "YES";
             settings.NegativeButtonText = "NO";
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+            // TODO: Create frame where you select DBC files to import
             var res = await this.ShowMessageAsync("Import Spell.dbc?",
                 "It appears the table in the database is empty. Would you like to import the DBC/Spell.dbc file now?", style, settings);
             if (res == MessageDialogResult.Affirmative)
             {
-                var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                await Task.Delay(1000);
+                var controller = await this.ShowProgressAsync("Please wait", "Importing Spell.dbc...");
                 controller.SetCancelable(false);
+                await Task.Delay(1000);
 
                 // Hardcoded spell.dbc
                 SpellDBC dbc = new SpellDBC();
@@ -656,17 +657,14 @@ namespace SpellEditor
                     if (!abstractDbc.HasData())
                         abstractDbc.ReloadContents();
                     if (!binding.Name.Equals("Spell"))
+                    {
+                        controller.SetMessage($"Importing {binding.Name}.dbc...");
                         await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", binding.Name);
+                    }
                 }
                 
                 await controller.CloseAsync();
                 PopulateSelectSpell();
-
-                if (SpellDBC.ErrorMessage.Length > 0)
-                {
-                    HandleErrorMessage(SpellDBC.ErrorMessage);
-                    SpellDBC.ErrorMessage = "";
-                }
             }
         }
         #endregion

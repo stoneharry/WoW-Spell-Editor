@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellRange_DBC_Record>("DBC/SpellRange.dbc");
+                ReadDBCFile("DBC/SpellRange.dbc");
 
                 int boxIndex = 0;
                 for (uint i = 0; i < Header.RecordCount; ++i)
@@ -31,7 +31,7 @@ namespace SpellEditor.Sources.DBC
                     float MinimumRangeFriend = (float) record["MinimumRangeFriend"];
                     float MaximumRangeFriend = (float) record["MaximumRangeFriend"];
 
-                    uint offset = ((uint[]) record["Name"])[window.GetLanguage()];
+                    uint offset = (uint) record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
                         continue;
                     string name = Reader.LookupStringOffset(offset);
@@ -76,27 +76,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct SpellRange_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public float MinimumRangeHostile;
-            public float MinimumRangeFriend;
-            public float MaximumRangeHostile;
-            public float MaximumRangeFriend;
-            public int Type;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint NameFlags;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] ShortName;
-            public uint ShortNameFlags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

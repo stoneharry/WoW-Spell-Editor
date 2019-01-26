@@ -1,7 +1,6 @@
 ﻿using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -19,7 +18,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellFocusObject_DBC_Record>("DBC/SpellFocusObject.dbc");
+                ReadDBCFile("DBC/SpellFocusObject.dbc");
 
                 int boxIndex = 1;
                 main.RequiresSpellFocus.Items.Add("None");
@@ -32,8 +31,7 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
                         continue;
                     string name = Reader.LookupStringOffset(offset);
@@ -71,7 +69,6 @@ namespace SpellEditor.Sources.DBC
                 main.RequiresSpellFocus.threadSafeIndex = 0;
                 return;
             }
-
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
@@ -88,19 +85,6 @@ namespace SpellEditor.Sources.DBC
             public uint offset;
             public int stringHash;
             public int comboBoxIndex;
-        };
-
-        public struct SpellFocusObject_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint Flags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

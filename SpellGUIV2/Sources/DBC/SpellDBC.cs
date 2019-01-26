@@ -11,8 +11,6 @@ namespace SpellEditor.Sources.DBC
     {
         private MainWindow main;
 
-        public static string ErrorMessage = "";
-
         public bool LoadDBCFile(MainWindow window)
         {
             main = window;

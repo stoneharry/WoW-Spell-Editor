@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellCategory_DBC_Record>("DBC/SpellCategory.dbc");
+                ReadDBCFile("DBC/SpellCategory.dbc");
 
                 int boxIndex = 1;
                 main.Category.Items.Add(0);
@@ -81,11 +81,5 @@ namespace SpellEditor.Sources.DBC
     {
         public uint ID;
         public int comboBoxIndex;
-    };
-
-    public struct SpellCategory_DBC_Record
-    {
-        public uint ID;
-        public uint Flags;
-    };
+    }
 }

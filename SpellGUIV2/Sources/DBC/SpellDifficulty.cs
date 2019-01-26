@@ -20,7 +20,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellDifficulty_DBC_Record>("DBC/SpellDifficulty.dbc");
+                ReadDBCFile("DBC/SpellDifficulty.dbc");
 
                 int boxIndex = 1;
                 main.Difficulty.Items.Add(0);
@@ -32,8 +32,14 @@ namespace SpellEditor.Sources.DBC
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-
-                    uint[] difficulties = (uint[]) record["Difficulties"];
+                    /*
+                     * Seems to point to other spells, for example:
+                     Id: 6
+                     Normal10Men: 50864 = Omar's Seal of Approval, You have Omar's 10 Man Normal Seal of Approval!
+                     Normal25Men: 69848 = Omar's Seal of Approval, You have Omar's 25 Man Normal Seal of Approval!
+                     Heroic10Men: 69849 = Omar's Seal of Approval, You have Omar's 10 Man Heroic Seal of Approval!
+                     Heroic25Men: 69850 = Omar's Seal of Approval, You have Omar's 25 Man Heroic Seal of Approval!
+                    */
                     uint id = (uint) record["ID"];
 
                     SpellDifficultyLookup temp;
@@ -42,13 +48,16 @@ namespace SpellEditor.Sources.DBC
                     Lookups.Add(temp);
 
                     Label label = new Label();
-                    label.Content = id + ": " + string.Join(", ", difficulties);
+                    string content = id + ": ";
+                    
 
                     string tooltip = "";
-                    for (int diffIndex = 0; diffIndex < difficulties.Length; ++diffIndex)
+                    for (int diffIndex = 1; diffIndex <= 4; ++diffIndex)
                     {
-                        tooltip += "[" + difficulties[diffIndex] + "] ";
-                        var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulties[diffIndex])).Rows;
+                        var difficulty = record["Difficulties" + diffIndex].ToString();
+                        content += difficulty + ", ";
+                        tooltip += "[" + difficulty + "] ";
+                        var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulty)).Rows;
                         if (rows.Count > 0)
                         {
                             var row = rows[0];
@@ -66,6 +75,7 @@ namespace SpellEditor.Sources.DBC
                         }
                         tooltip += "\n";
                     }
+                    label.Content = content.Substring(0, content.Length - 2);
                     label.ToolTip = tooltip;
 
                     main.Difficulty.Items.Add(label);
@@ -109,20 +119,5 @@ namespace SpellEditor.Sources.DBC
     {
         public uint ID;
         public int comboBoxIndex;
-    };
- 
-    /*
-     * Seems to point to other spells, for example:
-     Id: 6
-     Normal10Men: 50864 = Omar's Seal of Approval, You have Omar's 10 Man Normal Seal of Approval!
-     Normal25Men: 69848 = Omar's Seal of Approval, You have Omar's 25 Man Normal Seal of Approval!
-     Heroic10Men: 69849 = Omar's Seal of Approval, You have Omar's 10 Man Heroic Seal of Approval!
-     Heroic25Men: 69850 = Omar's Seal of Approval, You have Omar's 25 Man Heroic Seal of Approval!
-    */
-    public struct SpellDifficulty_DBC_Record
-    {
-        public uint ID;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] Difficulties;
     };
 }

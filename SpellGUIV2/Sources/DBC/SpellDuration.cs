@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellDurationRecord>("DBC/SpellDuration.dbc");
+                ReadDBCFile("DBC/SpellDuration.dbc");
 
                 int boxIndex = 1;
                 main.Duration.Items.Add(0);
@@ -60,7 +60,6 @@ namespace SpellEditor.Sources.DBC
                 main.Duration.threadSafeIndex = 0;
                 return;
             }
-
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
@@ -75,14 +74,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        public struct SpellDurationRecord
-        {
-            public uint ID;
-            public uint BaseDuration;
-            public int PerLevel;
-            public int MaximumDuration;
         };
     };
 }

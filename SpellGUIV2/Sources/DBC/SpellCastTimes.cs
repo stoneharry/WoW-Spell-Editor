@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
             
             try
             {
-                ReadDBCFile<SpellCastTimes_DBC_Record>("DBC/SpellCastTimes.dbc");
+                ReadDBCFile("DBC/SpellCastTimes.dbc");
 
                 int boxIndex = 0;
 
@@ -84,13 +84,5 @@ namespace SpellEditor.Sources.DBC
     {
         public uint ID;
         public int comboBoxIndex;
-    };
-
-    public struct SpellCastTimes_DBC_Record
-    {
-        public uint ID;
-        public int CastingTime;
-        public float CastingTimePerLevel;
-        public int MinimumCastingTime;
     };
 }

@@ -1,0 +1,9 @@
+# AreaGroup.dbc structure for 3.3.5a 12340
+uint ID
+uint AreaId1
+uint AreaId2
+uint AreaId3
+uint AreaId4
+uint AreaId5
+uint AreaId6
+uint NextGroup

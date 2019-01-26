@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<Mechanic_DBC_Record>("DBC/SpellMechanic.dbc");
+                ReadDBCFile("DBC/SpellMechanic.dbc");
 
                 int boxIndex = 1;
                 main.MechanicType.Items.Add("None");
@@ -34,7 +34,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     var record = Body.RecordMaps[i];
 
-                    uint offset = ((uint[])record["Name"])[window.GetLanguage()];
+                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
                     if (offset == 0)
                         continue;
                     string name = Reader.LookupStringOffset(offset);
@@ -88,19 +88,6 @@ namespace SpellEditor.Sources.DBC
             public uint offset;
             public int stringHash;
             public int comboBoxIndex;
-        };
-
-        public struct Mechanic_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public uint[] Name;
-            public uint NameFlags;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

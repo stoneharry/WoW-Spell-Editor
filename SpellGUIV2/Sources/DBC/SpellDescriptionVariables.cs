@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<SpellDescriptionVariables_DBC_Record>("DBC/SpellDescriptionVariables.dbc");
+                ReadDBCFile("DBC/SpellDescriptionVariables.dbc");
 
                 int boxIndex = 1;
                 main.SpellDescriptionVariables.Items.Add(0);
@@ -84,18 +84,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
-        };
-
-        [Serializable]
-        public struct SpellDescriptionVariables_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public uint Formula;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
     };
 }

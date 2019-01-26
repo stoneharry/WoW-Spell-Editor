@@ -31,7 +31,7 @@ namespace SpellEditor.Sources.DBC
 
             try
             {
-                ReadDBCFile<Icon_DBC_Record>("DBC/SpellIcon.dbc");
+                ReadDBCFile("DBC/SpellIcon.dbc");
 
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
@@ -229,16 +229,5 @@ namespace SpellEditor.Sources.DBC
             public uint Offset;
             public string Name;
         }
-
-        public struct Icon_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint ID;
-            public uint Name;
-#pragma warning restore 0649
-#pragma warning restore 0169
-        };
     };
 }
