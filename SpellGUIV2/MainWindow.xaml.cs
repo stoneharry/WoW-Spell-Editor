@@ -24,6 +24,7 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.MySQL;
 using SpellEditor.Sources.SQLite;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
+using SpellEditor.Sources.Binding;
 
 namespace SpellEditor
 {
@@ -50,6 +51,34 @@ namespace SpellEditor
         private SpellRuneCost loadRuneCosts = null;
         private SpellDescriptionVariables loadDescriptionVariables = null;
         #endregion
+        private Dictionary<string, AbstractDBC> bindingToDbcMap;
+
+        // FIXME: Hardcoded map for now
+        public AbstractDBC FindDbcForBinding(string bindingName)
+        {
+            if (bindingToDbcMap == null)
+            {
+                bindingToDbcMap = new Dictionary<string, AbstractDBC>();
+                bindingToDbcMap.Add("AreaTable", loadAreaTable);
+                bindingToDbcMap.Add("SpellCategory", loadCategories);
+                bindingToDbcMap.Add("Dispel", loadDispels);
+                bindingToDbcMap.Add("Mechanics", loadMechanics);
+                bindingToDbcMap.Add("FocusObject", loadFocusObjects);
+                bindingToDbcMap.Add("AreaGroup", loadAreaGroups);
+                bindingToDbcMap.Add("SpellCastTimes", loadCastTimes);
+                bindingToDbcMap.Add("SpellDuration", loadDurations);
+                bindingToDbcMap.Add("SpellDifficulty", loadDifficulties);
+                bindingToDbcMap.Add("SpellIcon", loadIcons);
+                bindingToDbcMap.Add("SpellRange", loadRanges);
+                bindingToDbcMap.Add("SpellRadius", loadRadiuses);
+                bindingToDbcMap.Add("ItemClass", loadItemClasses);
+                bindingToDbcMap.Add("ItemSubClass", loadItemSubClasses);
+                bindingToDbcMap.Add("TotemCategory", loadTotemCategories);
+                bindingToDbcMap.Add("SpellRuneCost", loadRuneCosts);
+                bindingToDbcMap.Add("SpellDescriptionVariables", loadDescriptionVariables);
+            }
+            return bindingToDbcMap.ContainsKey(bindingName) ? bindingToDbcMap[bindingName] : null;
+        }
 
         #region Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
@@ -597,6 +626,11 @@ namespace SpellEditor
         #region ImportSpellDBC
         private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
         {
+            await ImportDbcDialogAction();
+        }
+
+        private async Task ImportDbcDialogAction()
+        {
             MetroDialogSettings settings = new MetroDialogSettings();
             settings.AffirmativeButtonText = "YES";
             settings.NegativeButtonText = "NO";
@@ -609,9 +643,22 @@ namespace SpellEditor
                 await Task.Delay(1000);
                 controller.SetCancelable(false);
 
+                // Hardcoded spell.dbc
                 SpellDBC dbc = new SpellDBC();
                 dbc.LoadDBCFile(this);
-				await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress));
+                await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "Spell");
+                // Load other DBC's
+                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                {
+                    var abstractDbc = FindDbcForBinding(binding.Name);
+                    if (abstractDbc == null)
+                        continue;
+                    if (!abstractDbc.HasData())
+                        abstractDbc.ReloadContents();
+                    if (!binding.Name.Equals("Spell"))
+                        await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", binding.Name);
+                }
+                
                 await controller.CloseAsync();
                 PopulateSelectSpell();
 
@@ -928,28 +975,7 @@ namespace SpellEditor
 						ImportDBC.IsEnabled = true;
 
 					if (SelectSpell.Items.Count == 0)
-                    {
-                        res = await this.ShowMessageAsync("Import Spell.dbc?",
-                            "It appears the table in the database is empty. Would you like to import a Spell.dbc now?", style, settings);
-                        if (res == MessageDialogResult.Affirmative)
-                        {
-                            var controller = await this.ShowProgressAsync("Please wait...", "Importing the Spell.dbc. Cancelling this task will corrupt the table.");
-                            await Task.Delay(1000);
-                            controller.SetCancelable(false);
-
-                            SpellDBC dbc = new SpellDBC();
-                            dbc.LoadDBCFile(this);
-							await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress));
-                            await controller.CloseAsync();
-                            PopulateSelectSpell();
-
-                            if (SpellDBC.ErrorMessage.Length > 0)
-                            {
-                                HandleErrorMessage(SpellDBC.ErrorMessage);
-                                SpellDBC.ErrorMessage = "";
-                            }
-                        }
-                    }
+                        await ImportDbcDialogAction();
                 }
             }
 

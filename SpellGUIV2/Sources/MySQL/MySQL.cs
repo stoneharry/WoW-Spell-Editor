@@ -3,6 +3,7 @@ using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using System;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -138,7 +139,15 @@ namespace SpellEditor.Sources.MySQL
 
                 }
             }
-            str.Append(@"PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");       
+            var idField = binding.Fields.Where(record => record.Name.ToLower().Equals("id")).FirstOrDefault();
+            if (idField != null)
+                str.Append($"PRIMARY KEY (`{idField.Name}`)) ");
+            else
+            {
+                str = str.Remove(str.Length - 2, 2);
+                str = str.Append(") ");
+            } 
+            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");   
             return str.ToString();
         }
 

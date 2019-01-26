@@ -15,15 +15,23 @@ namespace SpellEditor.Sources.DBC
 {
     public abstract class AbstractDBC
     {
+        private string _filePath;
         protected DBCHeader Header;
-        protected DBCBody Body = new DBCBody();
+        protected DBCBody Body;
         protected DBCReader Reader;
 
         protected void ReadDBCFile(string filePath)
         {
-            Reader = new DBCReader(filePath);
+            _filePath = filePath;
+            ReloadContents();
+        }
+
+        public void ReloadContents()
+        {
+            Body = new DBCBody();
+            Reader = new DBCReader(_filePath);
             Header = Reader.ReadDBCHeader();
-            var name = Path.GetFileNameWithoutExtension(filePath);
+            var name = Path.GetFileNameWithoutExtension(_filePath);
             var binding = BindingManager.GetInstance().FindBinding(name);
             if (binding != null)
                 Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
@@ -31,8 +39,10 @@ namespace SpellEditor.Sources.DBC
                 throw new Exception($"Binding not found: {name}.txt");
             Reader.ReadStringBlock();
         }
+
         protected void ReadDBCFile<RecordType>(string filePath)
         {
+            Body = new DBCBody();
             Reader = new DBCReader(filePath);
             Header = Reader.ReadDBCHeader();
             var name = Path.GetFileNameWithoutExtension(filePath);
@@ -79,7 +89,7 @@ namespace SpellEditor.Sources.DBC
                             adapter.Execute(q.ToString());
                         }
                         q = new StringBuilder();
-                        q.Append(string.Format("INSERT INTO `{0}` VALUES ", adapter.Table));
+                        q.Append(string.Format("INSERT INTO `{0}` VALUES ", bindingName));
                     }
                     if (++index % updateRate == 0)
                     {
@@ -87,7 +97,7 @@ namespace SpellEditor.Sources.DBC
                         double percent = (double)index / (double)count;
                         UpdateProgress(percent);
                     }
-                    currentRecord = (uint)recordMap[IdKey];
+                    currentRecord = recordMap.ContainsKey(IdKey) ? (uint)recordMap[IdKey] : 0;
                     q.Append("(");
                     foreach (var field in binding.Fields)
                     {
@@ -140,8 +150,8 @@ namespace SpellEditor.Sources.DBC
                 if (binding == null)
                     throw new Exception("Binding not found: " + bindingName);
 
-                var orderClause = IdKey.Length > 0 ? $" ORDER BY `{IdKey}`" : "";
-                var rows = adapter.Query(string.Format($"SELECT * FROM `{adapter.Table}`{orderClause}")).Rows;
+                var orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
+                var rows = adapter.Query(string.Format($"SELECT * FROM `{bindingName}`{orderClause}")).Rows;
                 uint numRows = uint.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 Header = new DBCHeader();
@@ -237,6 +247,11 @@ namespace SpellEditor.Sources.DBC
                         writer.Write(Encoding.UTF8.GetBytes(body.ReverseStorage[offsetsStored[i]] + "\0"));
                 }
             }
+        }
+
+        public bool HasData()
+        {
+            return Body != null && Body.RecordMaps != null && Body.RecordMaps.Count() > 0;
         }
 
         public struct DBCHeader

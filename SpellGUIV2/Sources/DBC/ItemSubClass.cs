@@ -12,13 +12,13 @@ namespace SpellEditor.Sources.DBC
         {
             try
             {
-                ReadDBCFile<ItemSubClass_DBC_Record>("DBC/ItemSubClass.dbc");
+                ReadDBCFile("DBC/ItemSubClass.dbc");
 
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
-
-                    uint offset = ((uint[])record["displayName"])[window.GetLanguage()];
+                    int locale = window.GetLanguage() + 1;
+                    uint offset = (uint)record["displayName" + locale];
                     if (offset == 0)
                         continue;
                     ItemSubClassLookup temp;
@@ -44,32 +44,6 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public string Name;
-        };
-
-        [Serializable]
-        public struct ItemSubClass_DBC_Record
-        {
-// These fields are used through reflection, disable warning
-#pragma warning disable 0649
-#pragma warning disable 0169
-            public uint Class;
-			public uint subClass;
-			public uint prerequisiteProficiency;
-			public uint postrequisiteProficiency;
-			public uint flags;
-			public uint displayFlags;
-			public uint weaponParrySeq;
-			public uint weaponReadySeq;
-			public uint weaponAttackSeq;
-			public uint WeaponSwingSize;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-			public uint[] displayName;
-			public uint displayNameFlag;
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-			public uint[] verboseName;
-			public uint verboseNameFlag;
-#pragma warning restore 0649
-#pragma warning restore 0169
         };
 	}
 }

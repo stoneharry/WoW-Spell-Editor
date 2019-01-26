@@ -29,9 +29,10 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-		public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress)
+		public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
         {
-            return ImportToSql(adapter, UpdateProgress, "ID", "Spell");
+            
+            return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
         }
 
 		public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)

@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Text;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Binding;
+using System.Linq;
 
 namespace SpellEditor.Sources.SQLite
 {
@@ -123,7 +124,12 @@ namespace SpellEditor.Sources.SQLite
 
                 }
             }
-            str.Append(@"PRIMARY KEY (`ID`));");
+            var idField = binding.Fields.Where(record => record.Name.ToLower().Equals("id")).FirstOrDefault();
+            if (idField != null)
+                str.Append($"PRIMARY KEY (`{idField.Name}`)");
+            else
+                str.Remove(str.Length - 2, 2);
+            str.Append(");");
             return str.ToString();
         }
 
