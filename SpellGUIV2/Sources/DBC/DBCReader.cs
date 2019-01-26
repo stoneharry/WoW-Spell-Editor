@@ -23,6 +23,8 @@ namespace SpellEditor.Sources.DBC
 
         public string LookupStringOffset(uint offset)
         {
+            if (_stringsMap == null)
+                return "";
             return _stringsMap[offset].Value;
         }
 
@@ -80,35 +82,6 @@ namespace SpellEditor.Sources.DBC
          * array of key value pairs inside the body. The key value pairs are
          * column name to column value.
          */
-        public void ReadDBCRecords<RecordStruct>(DBCBody body, int recordSize)
-        {
-            if (_header.RecordSize != recordSize)
-                throw new Exception($"The DBC [{ _filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ _header.RecordSize }] got [{ recordSize }].");
-
-            body.RecordMaps = new Dictionary<string, object>[_header.RecordCount];
-            for (int i = 0; i < _header.RecordCount; ++i)
-                body.RecordMaps[i] = new Dictionary<string, object>((int) _header.FieldCount);
-            byte[] readBuffer;
-            using (FileStream fileStream = new FileStream(_filePath, FileMode.Open))
-            {
-                using (BinaryReader reader = new BinaryReader(fileStream))
-                {
-                    reader.BaseStream.Position = _filePosition;
-                    for (uint i = 0; i < _header.RecordCount; ++i)
-                    {
-                        readBuffer = new byte[recordSize];
-                        readBuffer = reader.ReadBytes(recordSize);
-
-                        RecordStruct record = ReadStruct<RecordStruct>(reader, readBuffer);
-
-                        var entry = body.RecordMaps[i];
-                        foreach (var field in typeof(RecordStruct).GetFields())
-                            entry.Add(field.Name, field.GetValue(record));
-                    }
-                    _filePosition = reader.BaseStream.Position;
-                }
-            }
-        }
         public void ReadDBCRecords(DBCBody body, int recordSize, string bindingName)
         {
             var binding = BindingManager.GetInstance().FindBinding(bindingName);

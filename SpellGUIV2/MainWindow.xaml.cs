@@ -637,7 +637,8 @@ namespace SpellEditor
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             // TODO: Create frame where you select DBC files to import
             var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                "It appears the table in the database is empty. Would you like to import the DBC/Spell.dbc file now?", style, settings);
+                "It appears the table in the database is empty. Would you like to import the DBC files now?\n\n" + 
+                "Each \\Binding\\*.txt will cause the matching \\DBC\\*.dbc to be loaded.", style, settings);
             if (res == MessageDialogResult.Affirmative)
             {
                 var controller = await this.ShowProgressAsync("Please wait", "Importing Spell.dbc...");
@@ -961,11 +962,12 @@ namespace SpellEditor
                 settings.AffirmativeButtonText = "YES";
                 settings.NegativeButtonText = "NO";
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the MySQL table.\n\n" +
-                    "This feature should only be used when you want to reset the table and import a new Spell.dbc.", style, settings);
+                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the SQL tables.\n\n" +
+                    "This feature should only be used when you want to reset the tables and import new DBCs.", style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
-                    adapter.Execute(string.Format("delete from `{0}`", adapter.Table));
+                    foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                        adapter.Execute(string.Format("delete from `{0}`", binding.Name));
                     PopulateSelectSpell();
 
 					//Enabled the ImportDBC Button when Truncate table.

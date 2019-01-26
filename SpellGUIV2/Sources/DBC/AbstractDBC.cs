@@ -3,10 +3,8 @@ using SpellEditor.Sources.Config;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,19 +35,6 @@ namespace SpellEditor.Sources.DBC
                 Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
             else
                 throw new Exception($"Binding not found: {name}.txt");
-            Reader.ReadStringBlock();
-        }
-
-        protected void ReadDBCFile<RecordType>(string filePath)
-        {
-            Body = new DBCBody();
-            Reader = new DBCReader(filePath);
-            Header = Reader.ReadDBCHeader();
-            var name = Path.GetFileNameWithoutExtension(filePath);
-            if (BindingManager.GetInstance().FindBinding(name) != null)
-                Reader.ReadDBCRecords(Body, Marshal.SizeOf(typeof(RecordType)), name);
-            else
-                Reader.ReadDBCRecords<RecordType>(Body, Marshal.SizeOf(typeof(RecordType)));
             Reader.ReadStringBlock();
         }
 
