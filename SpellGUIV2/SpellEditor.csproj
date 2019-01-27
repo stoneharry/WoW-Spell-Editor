@@ -124,12 +124,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImportExportWindow.xaml.cs">
+      <DependentUpon>ImportExportWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\Binding\Binding.cs" />
     <Compile Include="Sources\Binding\BindingType.cs" />
     <Compile Include="Sources\Binding\BindingEntry.cs" />
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
-    <Compile Include="Sources\Config\DBAdapter.cs" />
+    <Compile Include="Sources\Config\IDatabaseAdapter.cs" />
+    <Compile Include="Sources\UIControls\ImportExportUi.cs" />
     <Compile Include="Sources\Constants\Locale.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />
@@ -162,6 +166,10 @@
     <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
+    <Page Include="ImportExportWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

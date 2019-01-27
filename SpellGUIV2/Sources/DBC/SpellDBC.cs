@@ -29,7 +29,6 @@ namespace SpellEditor.Sources.DBC
 
 		public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
         {
-            
             return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
         }
 

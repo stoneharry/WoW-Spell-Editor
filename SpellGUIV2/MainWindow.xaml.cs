@@ -77,6 +77,13 @@ namespace SpellEditor
                 bindingToDbcMap.Add("SpellRuneCost", loadRuneCosts);
                 bindingToDbcMap.Add("SpellDescriptionVariables", loadDescriptionVariables);
             }
+            // Lazily load hardcoded spell.dbc
+            if (bindingName.Equals("Spell") && !bindingToDbcMap.ContainsKey("Spell"))
+            {
+                var dbc = new SpellDBC();
+                dbc.LoadDBCFile(this);
+                bindingToDbcMap.Add("Spell", dbc);
+            }
             return bindingToDbcMap.ContainsKey(bindingName) ? bindingToDbcMap[bindingName] : null;
         }
 
@@ -626,7 +633,30 @@ namespace SpellEditor
         #region ImportSpellDBC
         private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
         {
-            await ImportDbcDialogAction();
+            var window = new ImportExportWindow();
+            var controller = await this.ShowProgressAsync("Import/Export", "Paused while configuring import/export settings...");
+            controller.SetCancelable(false);
+            window.Show();
+            window.Width = window.Width / 2;
+            while (window.IsVisible && window.BindingImportList.Count() == 0)
+            {
+                await Task.Delay(100);
+            }
+            if (window.IsVisible)
+                window.Close();
+            foreach (var bindingName in window.BindingImportList)
+            {
+                var abstractDbc = FindDbcForBinding(bindingName);
+                if (abstractDbc == null)
+                    continue;
+                if (!abstractDbc.HasData())
+                    abstractDbc.ReloadContents();
+                controller.SetMessage($"Importing {bindingName}.dbc...");
+                await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
+            }
+            PopulateSelectSpell();
+            await controller.CloseAsync();
+            //await ImportDbcDialogAction();
         }
 
         private async Task ImportDbcDialogAction()
@@ -969,13 +999,6 @@ namespace SpellEditor
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
                         adapter.Execute(string.Format("delete from `{0}`", binding.Name));
                     PopulateSelectSpell();
-
-					//Enabled the ImportDBC Button when Truncate table.
-					if (!ImportDBC.IsEnabled)
-						ImportDBC.IsEnabled = true;
-
-					if (SelectSpell.Items.Count == 0)
-                        await ImportDbcDialogAction();
                 }
             }
 
@@ -1756,11 +1779,6 @@ namespace SpellEditor
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-			//Disable the ImportDBC button if the database is not empty.
-
-			if (spellTable.Rows.Count != 0 && ImportDBC.IsEnabled)
-				ImportDBC.IsEnabled = false;
-
 			DataRowCollection collection = (DataRowCollection) e.UserState;
             SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
             int locale = GetLocale();

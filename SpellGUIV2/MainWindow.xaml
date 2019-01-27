@@ -598,7 +598,7 @@
 		<controls:WindowCommands>
 			<Button Name="ImportDBC" Click="ImportSpellDbcButton">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Import Spell.dbc to SQL" VerticalAlignment="Center"/>
+					<TextBlock Text="Import DBC files to SQL" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 			<Button Name="ExportDBC" Click="Button_Click">
