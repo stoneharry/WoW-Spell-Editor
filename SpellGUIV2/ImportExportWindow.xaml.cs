@@ -14,15 +14,18 @@ using System.Windows.Threading;
 using SpellEditor.Sources.Binding;
 using System.Windows.Controls.Primitives;
 using System.Threading;
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor
 {
 	partial class ImportExportWindow
     {
+        private IDatabaseAdapter _Adapter;
         public List<string> BindingImportList = new List<string>();
 
-        public ImportExportWindow()
+        public ImportExportWindow(IDatabaseAdapter adapter)
         {
+            _Adapter = adapter;
             InitializeComponent();
         }
 
@@ -50,6 +53,10 @@ namespace SpellEditor
             var contents = ImportGrid.Children;
             if (contents.Count > 0)
                 return;
+            contents.Add(new Label()
+            {
+                Content = "The Spell DBC is the file that needs to be imported for this program to work."
+            });
             var importBtn = new Button()
             {
                 Content = "Import Checked DBC Files",
@@ -59,13 +66,35 @@ namespace SpellEditor
             contents.Add(importBtn);
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
+                var noData = !TableHasData(binding.Name);
                 contents.Add(new CheckBox()
                 {
                     Name = binding.Name + "CheckBox",
                     Content = $"Import DBC\\{binding.Name}.dbc",
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
+                    VerticalAlignment = VerticalAlignment.Center,
+                    IsEnabled = noData,
+                    IsChecked = noData && binding.Name.Equals("Spell")
                 });
+            }
+        }
+
+        private bool TableHasData(string tableName)
+        {
+            try
+            {
+                var table = _Adapter.Query("SELECT COUNT(*) FROM " + tableName);
+                if (table.Rows.Count == 1)
+                {
+                    if (int.Parse(table.Rows[0][0].ToString()) > 0)
+                        return true;
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("WARNING: ImportExportWindow triggered: " + e.Message);
+                return false;
             }
         }
 

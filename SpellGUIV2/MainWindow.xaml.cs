@@ -633,7 +633,7 @@ namespace SpellEditor
         #region ImportSpellDBC
         private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
         {
-            var window = new ImportExportWindow();
+            var window = new ImportExportWindow(adapter);
             var controller = await this.ShowProgressAsync("Import/Export", "Paused while configuring import/export settings...");
             controller.SetCancelable(false);
             window.Show();
