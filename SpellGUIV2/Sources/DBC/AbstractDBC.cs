@@ -56,6 +56,7 @@ namespace SpellEditor.Sources.DBC
             return Task.Run(() =>
             {
                 var binding = BindingManager.GetInstance().FindBinding(bindingName);
+                adapter.Execute(adapter.GetTableCreateString(binding));
                 uint currentRecord = 0;
                 uint count = Header.RecordCount;
                 uint updateRate = count < 100 ? 100 : count / 100;

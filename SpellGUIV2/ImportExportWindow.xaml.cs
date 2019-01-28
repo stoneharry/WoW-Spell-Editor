@@ -66,35 +66,32 @@ namespace SpellEditor
             contents.Add(importBtn);
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
-                var noData = !TableHasData(binding.Name);
+                var numRows = GetNumRowsForTable(binding.Name);
                 contents.Add(new CheckBox()
                 {
                     Name = binding.Name + "CheckBox",
-                    Content = $"Import DBC\\{binding.Name}.dbc",
+                    Content = $"Import DBC\\{binding.Name}.dbc{(numRows > 0 ? $" - {numRows} rows" : "")}",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
-                    IsEnabled = noData,
-                    IsChecked = noData && binding.Name.Equals("Spell")
+                    IsEnabled = numRows == 0,
+                    IsChecked = numRows == 0 && binding.Name.Equals("Spell")
                 });
             }
         }
 
-        private bool TableHasData(string tableName)
+        private int GetNumRowsForTable(string tableName)
         {
             try
             {
                 var table = _Adapter.Query("SELECT COUNT(*) FROM " + tableName);
                 if (table.Rows.Count == 1)
-                {
-                    if (int.Parse(table.Rows[0][0].ToString()) > 0)
-                        return true;
-                }
-                return false;
+                    return int.Parse(table.Rows[0][0].ToString());
+                return 0;
             }
             catch (Exception e)
             {
                 Console.WriteLine("WARNING: ImportExportWindow triggered: " + e.Message);
-                return false;
+                return -1;
             }
         }
 
