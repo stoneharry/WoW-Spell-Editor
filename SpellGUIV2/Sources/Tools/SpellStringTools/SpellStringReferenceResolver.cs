@@ -8,7 +8,7 @@ namespace SpellEditor.Sources.SpellStringTools
     internal class SpellStringReferenceResolver
     {
         private static string STR_SECONDS = " seconds";
-        private static string STR_INFINITE_DUR = "permanently";
+        private static string STR_INFINITE_DUR = "until cancelled";
         private static string STR_HEARTHSTONE_LOC = "(hearthstone location)";
 
         private struct TOKEN_TO_PARSER
