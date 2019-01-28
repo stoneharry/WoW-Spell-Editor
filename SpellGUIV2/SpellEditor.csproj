@@ -133,7 +133,6 @@
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Config\IDatabaseAdapter.cs" />
-    <Compile Include="Sources\UIControls\ImportExportUi.cs" />
     <Compile Include="Sources\Constants\Locale.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
     <Compile Include="Sources\Constants\TextFlags.cs" />

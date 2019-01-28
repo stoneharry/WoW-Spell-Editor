@@ -307,9 +307,9 @@ namespace SpellEditor.Sources.SpellStringTools
                     if (entry != null)
                     {
                         string newStr;
-                        int baseDuration = int.Parse(entry["BaseDuration"].ToString());
+                        uint baseDuration = uint.Parse(entry["BaseDuration"].ToString());
                         // Convert duration to seconds
-                        if (baseDuration == -1)
+                        if (baseDuration == uint.MaxValue)
                             newStr = STR_INFINITE_DUR;
                         else
                         {

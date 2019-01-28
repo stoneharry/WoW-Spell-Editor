@@ -24,14 +24,6 @@ namespace SpellEditor
         public ImportExportWindow()
         {
             InitializeComponent();
-            IsVisibleChanged += _VisiblityChanged;
-        }
-
-        private void _VisiblityChanged(object sender, DependencyPropertyChangedEventArgs args)
-        {
-            var element = sender as UIElement;
-            if (element.IsVisible)
-                BindingImportList = new List<string>();
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -70,7 +62,7 @@ namespace SpellEditor
                 contents.Add(new CheckBox()
                 {
                     Name = binding.Name + "CheckBox",
-                    Content = $"Import DBC\\{binding.Name}.dbc?",
+                    Content = $"Import DBC\\{binding.Name}.dbc",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 });
