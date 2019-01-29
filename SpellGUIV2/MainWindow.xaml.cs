@@ -21,8 +21,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
 using SpellEditor.Sources.SpellStringTools;
-using SpellEditor.Sources.MySQL;
-using SpellEditor.Sources.SQLite;
+using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Binding;
 
@@ -630,73 +629,36 @@ namespace SpellEditor
 		public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
-        #region ImportSpellDBC
-        private async void ImportSpellDbcButton(object sender, RoutedEventArgs e)
+        #region ImportExportSpellDBC
+        private async void ImportExportSpellDbcButton(object sender, RoutedEventArgs e)
         {
             var window = new ImportExportWindow(adapter);
             var controller = await this.ShowProgressAsync("Import/Export", "Paused while configuring import/export settings...");
             controller.SetCancelable(false);
             window.Show();
             window.Width = window.Width / 2;
-            while (window.IsVisible && window.BindingImportList.Count() == 0)
-            {
+            while (window.IsVisible && !window.IsDataSelected())
                 await Task.Delay(100);
-            }
             if (window.IsVisible)
                 window.Close();
-            foreach (var bindingName in window.BindingImportList)
+            var isImport = window.BindingImportList.Count > 0;
+            var bindingList = isImport ? window.BindingImportList : window.BindingExportList;
+            foreach (var bindingName in bindingList)
             {
+                controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
                 var abstractDbc = FindDbcForBinding(bindingName);
                 if (abstractDbc == null)
                     continue;
-                if (!abstractDbc.HasData())
+                if (isImport && !abstractDbc.HasData())
                     abstractDbc.ReloadContents();
-                controller.SetMessage($"Importing {bindingName}.dbc...");
-                await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
+                if (isImport)
+                    await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
+                else
+                    await abstractDbc.ExportToDbc(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
             }
+            controller.SetMessage("Reloading UI...");
             PopulateSelectSpell();
             await controller.CloseAsync();
-            //await ImportDbcDialogAction();
-        }
-
-        private async Task ImportDbcDialogAction()
-        {
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "YES";
-            settings.NegativeButtonText = "NO";
-            MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            // TODO: Create frame where you select DBC files to import
-            var res = await this.ShowMessageAsync("Import Spell.dbc?",
-                "It appears the table in the database is empty. Would you like to import the DBC files now?\n\n" + 
-                "Each \\Binding\\*.txt will cause the matching \\DBC\\*.dbc to be loaded.", style, settings);
-            if (res == MessageDialogResult.Affirmative)
-            {
-                var controller = await this.ShowProgressAsync("Please wait", "Importing Spell.dbc...");
-                controller.SetCancelable(false);
-                await Task.Delay(1000);
-
-                // Hardcoded spell.dbc
-                SpellDBC dbc = new SpellDBC();
-                dbc.LoadDBCFile(this);
-                await dbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "Spell");
-                // Load other DBC's
-                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
-                {
-                    var abstractDbc = FindDbcForBinding(binding.Name);
-                    if (abstractDbc == null)
-                        continue;
-                    if (!abstractDbc.HasData())
-                        abstractDbc.ReloadContents();
-                    if (!binding.Name.Equals("Spell"))
-                    {
-                        controller.SetMessage($"Importing {binding.Name}.dbc...");
-                        await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", binding.Name);
-                    }
-                }
-                
-                await controller.CloseAsync();
-                PopulateSelectSpell();
-            }
         }
         #endregion
 
@@ -961,28 +923,6 @@ namespace SpellEditor
             if (adapter == null)
             {
                 loadAllData();
-                return;
-            }
-
-            if (sender == ExportDBC)
-            {
-                MetroDialogSettings settings = new MetroDialogSettings();
-                settings.AffirmativeButtonText = "YES";
-                settings.NegativeButtonText = "NO";
-                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync("Export Spell.dbc?",
-                    "Exporting to a new Spell.dbc can be very slow depending on your connection to the MySQL server."
-                    + " It will be exported to a 'Export' folder. Are you sure you wish to continue?", style, settings);
-                if (res == MessageDialogResult.Affirmative)
-                {
-                    var controller = await this.ShowProgressAsync("Please wait...", "Exporting to a new Spell.dbc.");
-                    //await Task.Delay(1000);
-                    controller.SetCancelable(false);
-
-                    SpellDBC dbc = new SpellDBC();
-					await dbc.Export(adapter, new UpdateProgressFunc(controller.SetProgress));
-                    await controller.CloseAsync();
-                }
                 return;
             }
             

@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace SpellEditor.Sources.Config
+namespace SpellEditor.Sources.Database
 {
     public interface IDatabaseAdapter
     {

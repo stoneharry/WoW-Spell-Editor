@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
-using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Database;
 
 namespace SpellEditor.Sources.DBC
 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Database;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,6 +16,9 @@ namespace SpellEditor.Sources.Binding
             Fields = bindingEntryList.ToArray();
         }
 
+        /**
+         * Calculates and returns the size of the structure represented by this binding.
+         */
         public int CalcRecordSize()
         {
             int size = 0;
@@ -46,6 +50,31 @@ namespace SpellEditor.Sources.Binding
                 }
             }
             return size;
+        }
+
+
+        /**
+         * Returns the number of rows in the database for the given binding/table name.
+         * 
+         * Returns -1 if an exception is raised, most likely because the table does not exist.
+         * 
+         * A better way to query for the table existing would be to query the performance_schema,
+         * but this requires more permissions for a MySQL user.
+         */
+        public int GetNumRowsInTable(IDatabaseAdapter adapter)
+        {
+            try
+            {
+                var table = adapter.Query("SELECT COUNT(*) FROM " + Name);
+                if (table.Rows.Count == 1)
+                    return int.Parse(table.Rows[0][0].ToString());
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("WARNING: ImportExportWindow triggered: " + e.Message);
+                return -1;
+            }
         }
     }
 }

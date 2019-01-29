@@ -596,14 +596,9 @@
 	</Grid>
 	<controls:MetroWindow.WindowCommands>
 		<controls:WindowCommands>
-			<Button Name="ImportDBC" Click="ImportSpellDbcButton">
+			<Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Import DBC files to SQL" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<Button Name="ExportDBC" Click="Button_Click">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Export SQL to Spell.dbc" VerticalAlignment="Center"/>
+					<TextBlock Text="Import/Export" VerticalAlignment="Center"/>
 				</StackPanel>
 			</Button>
 			<Button Name="TruncateTable" Click="Button_Click">

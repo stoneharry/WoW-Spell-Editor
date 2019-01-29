@@ -18,13 +18,11 @@
 	<Grid>
 		<TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
       <TabItem Header="Import">
-        <UniformGrid Name="ImportGrid" Columns = "1">
-        </UniformGrid>
+        <UniformGrid Name="ImportGrid" Columns = "1"/>
       </TabItem>
-			<TabItem Header="Export">
-        <UniformGrid Name="ExportGrid">
-        </UniformGrid>
-			</TabItem>
+      <TabItem Header="Export">
+        <UniformGrid Name="ExportGrid" Columns = "1"/>
+      </TabItem>
 		</TabControl>
 	</Grid>
 </controls:MetroWindow>

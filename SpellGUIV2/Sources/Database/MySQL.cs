@@ -1,13 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.Config;
 using System;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
-namespace SpellEditor.Sources.MySQL
+namespace SpellEditor.Sources.Database
 {
     class MySQL : IDatabaseAdapter
     {

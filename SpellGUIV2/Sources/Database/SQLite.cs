@@ -2,11 +2,10 @@
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
-using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Binding;
 using System.Linq;
 
-namespace SpellEditor.Sources.SQLite
+namespace SpellEditor.Sources.Database
 {
 	class SQLite : IDatabaseAdapter
 	{

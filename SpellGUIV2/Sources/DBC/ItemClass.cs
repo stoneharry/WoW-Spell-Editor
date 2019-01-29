@@ -1,8 +1,7 @@
-﻿using SpellEditor.Sources.Config;
+﻿using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Controls;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
 
 namespace SpellEditor.Sources.DBC

@@ -1,5 +1,5 @@
 ﻿using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,13 +28,12 @@ namespace SpellEditor.Sources.DBC
         {
             Body = new DBCBody();
             Reader = new DBCReader(_filePath);
-            Header = Reader.ReadDBCHeader();
             var name = Path.GetFileNameWithoutExtension(_filePath);
             var binding = BindingManager.GetInstance().FindBinding(name);
-            if (binding != null)
-                Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
-            else
+            if (binding == null)
                 throw new Exception($"Binding not found: {name}.txt");
+            Header = Reader.ReadDBCHeader();
+            Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
             Reader.ReadStringBlock();
         }
 
@@ -141,18 +140,16 @@ namespace SpellEditor.Sources.DBC
                 uint numRows = uint.Parse(rows.Count.ToString());
                 // Hardcode for 3.3.5a 12340
                 Header = new DBCHeader();
-                Header.FieldCount = 234;
+                Header.FieldCount = (uint)binding.Fields.Count();
                 Header.Magic = 1128416343;
                 Header.RecordCount = numRows;
-                Header.RecordSize = 936;
+                Header.RecordSize = (uint)binding.CalcRecordSize();
                 Header.StringBlockSize = 0;
 
                 var body = new DBCBodyToSerialize();
                 body.Records = new List<DataRow>((int)Header.RecordCount);
                 for (int i = 0; i < numRows; ++i)
-                {
                     body.Records.Add(rows[i]);
-                }
                 Header.StringBlockSize = body.GenerateStringOffsetsMap(binding);
                 SaveDbcFile(updateProgress, body, binding);
             });

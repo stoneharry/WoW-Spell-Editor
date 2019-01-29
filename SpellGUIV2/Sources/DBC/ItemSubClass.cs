@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Database;
 
 namespace SpellEditor.Sources.DBC
 {
