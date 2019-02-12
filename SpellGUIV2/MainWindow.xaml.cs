@@ -1569,6 +1569,8 @@ namespace SpellEditor
                     row.EndEdit();
 					adapter.CommitChanges(query, q.GetChanges());
 
+                    ShowFlyoutMessage($"Saved spell {selectedID}.");
+
                     PopulateSelectSpell();
                 }
 
@@ -1606,6 +1608,12 @@ namespace SpellEditor
         #endregion
 
         #region Utilities
+        public void ShowFlyoutMessage(string message)
+        {
+            Flyout.IsOpen = true;
+            FlyoutText.Text = message;
+        }
+
         static public T DeepCopy<T>(T obj)
         {
             BinaryFormatter s = new BinaryFormatter();
@@ -1680,7 +1688,7 @@ namespace SpellEditor
 				if (_worker.__adapter == null || _worker.__config == null)
                     return;
 
-                // Attempt localisation on Death Touch, HACKY
+                // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
 				DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
                 if (res == null || res.Count == 0)

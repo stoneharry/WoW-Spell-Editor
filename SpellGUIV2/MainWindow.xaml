@@ -19,6 +19,13 @@
 			<Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
 		</ResourceDictionary>
 	</controls:MetroWindow.Resources>
+  <controls:MetroWindow.Flyouts>
+    <controls:FlyoutsControl>
+      <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
+        <TextBlock Name="FlyoutText" Text="Placeholder." FontSize ="20" VerticalAlignment="Center"/>
+      </controls:Flyout>
+    </controls:FlyoutsControl>
+  </controls:MetroWindow.Flyouts>
 	<Grid>
 		<TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="699" Width="1282" SelectionChanged="TabControl_SelectionChanged">
 			<TabItem Header="Select Spell">
@@ -594,7 +601,7 @@
 			</TabItem>
 		</TabControl>
 	</Grid>
-	<controls:MetroWindow.WindowCommands>
+  <controls:MetroWindow.RightWindowCommands>
 		<controls:WindowCommands>
 			<Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
 				<StackPanel Orientation="Horizontal">
@@ -622,5 +629,5 @@
 				</StackPanel>
 			</Button>
 		</controls:WindowCommands>
-	</controls:MetroWindow.WindowCommands>
+	</controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>
