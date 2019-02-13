@@ -82,13 +82,15 @@ namespace SpellEditor.Sources.DBC
          * array of key value pairs inside the body. The key value pairs are
          * column name to column value.
          */
-        public void ReadDBCRecords(DBCBody body, int recordSize, string bindingName)
+        public void ReadDBCRecords(DBCBody body, string bindingName)
         {
             var binding = BindingManager.GetInstance().FindBinding(bindingName);
             if (binding == null)
                 throw new Exception($"Binding not found: {bindingName}.txt");
-            if (_header.RecordSize != recordSize)
-                throw new Exception($"The DBC [{ _filePath }] is not supported! It's version is not 3.3.5a 12340, expected record size [{ _header.RecordSize }] got [{ recordSize }].");
+            if (_header.RecordSize != binding.CalcRecordSize())
+                throw new Exception($"Binding [{_filePath}] fields size does not match the DBC header record size; expected record size [{_header.RecordSize}] got [{binding.CalcRecordSize()}].");
+            if (_header.FieldCount != binding.CalcFieldCount())
+                throw new Exception($"Binding [{_filePath}] field count does not match the DBC field count; expected [{_header.FieldCount}] got [{binding.CalcFieldCount()}].");
 
             body.RecordMaps = new Dictionary<string, object>[_header.RecordCount];
             for (int i = 0; i < _header.RecordCount; ++i)

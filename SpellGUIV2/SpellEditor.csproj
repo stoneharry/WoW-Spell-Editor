@@ -142,6 +142,7 @@
     <Compile Include="Sources\Controls\ThreadSafeComboBox.cs" />
     <Compile Include="Sources\Controls\ThreadSafeTextBox.cs" />
     <Compile Include="Sources\DBC\AreaGroup.cs" />
+    <Compile Include="Sources\DBC\GenericDbc.cs" />
     <Compile Include="Sources\DBC\AreaTable.cs" />
     <Compile Include="Sources\DBC\DBCReader.cs" />
     <Compile Include="Sources\DBC\ItemClass.cs" />

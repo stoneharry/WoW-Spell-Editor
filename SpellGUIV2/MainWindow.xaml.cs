@@ -146,6 +146,8 @@ namespace SpellEditor
             Console.WriteLine("######################################################");
             InitializeComponent();
         }
+        // Ensure redirected console output is flushed
+        ~MainWindow() => Console.Out.Flush();
 
         public async void HandleErrorMessage(string msg)
         {
@@ -161,6 +163,7 @@ namespace SpellEditor
             File.WriteAllText("error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
             HandleErrorMessage(e.Exception.Message);
             e.Handled = true;
+            Console.Out.Flush();
         }
 
 		public int GetLanguage() {
@@ -648,7 +651,17 @@ namespace SpellEditor
                 controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
                 var abstractDbc = FindDbcForBinding(bindingName);
                 if (abstractDbc == null)
-                    continue;
+                {
+                    try
+                    {
+                        abstractDbc = new GenericDbc($"DBC/{bindingName}.dbc");
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine($"ERROR: Failed to load DBC/{bindingName}.dbc: {exception.Message}\n{exception}");
+                        continue;
+                    }
+                }
                 if (isImport && !abstractDbc.HasData())
                     abstractDbc.ReloadContents();
                 if (isImport)

@@ -33,7 +33,7 @@ namespace SpellEditor.Sources.DBC
             if (binding == null)
                 throw new Exception($"Binding not found: {name}.txt");
             Header = Reader.ReadDBCHeader();
-            Reader.ReadDBCRecords(Body, binding.CalcRecordSize(), name);
+            Reader.ReadDBCRecords(Body, name);
             Reader.ReadStringBlock();
         }
 
@@ -55,7 +55,7 @@ namespace SpellEditor.Sources.DBC
             return Task.Run(() =>
             {
                 var binding = BindingManager.GetInstance().FindBinding(bindingName);
-                adapter.Execute(adapter.GetTableCreateString(binding));
+                adapter.Execute(string.Format(adapter.GetTableCreateString(binding), binding.Name));
                 uint currentRecord = 0;
                 uint count = Header.RecordCount;
                 uint updateRate = count < 100 ? 100 : count / 100;

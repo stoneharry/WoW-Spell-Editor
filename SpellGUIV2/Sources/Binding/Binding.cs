@@ -52,6 +52,16 @@ namespace SpellEditor.Sources.Binding
             return size;
         }
 
+        /**
+         * Calculates and returns the number of fields the structure represented by this binding contains.
+         */
+        public uint CalcFieldCount()
+        {
+            if (Fields == null)
+                return 0;
+            return (uint) Fields.Length;
+        }
+
 
         /**
          * Returns the number of rows in the database for the given binding/table name.
