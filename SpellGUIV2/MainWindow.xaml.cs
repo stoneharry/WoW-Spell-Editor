@@ -399,15 +399,6 @@ namespace SpellEditor
 
                 for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
 
-                string[] effect_strings = { "0 NONE", "1 INSTAKILL", "2 SCHOOL_DAMAGE", "3 DUMMY", "4 PORTAL_TELEPORT unused", "5 TELEPORT_UNITS", "6 APPLY_AURA", "7 ENVIRONMENTAL_DAMAGE", "8 POWER_DRAIN", "9 HEALTH_LEECH", "10 HEAL", "11 BIND", "12 PORTAL", "13 RITUAL_BASE unused", "14 RITUAL_SPECIALIZE unused", "15 RITUAL_ACTIVATE_PORTAL unused", "16 QUEST_COMPLETE", "17 WEAPON_DAMAGE_NOSCHOOL", "18 RESURRECT", "19 ADD_EXTRA_ATTACKS", "20 DODGE one spell: Dodge", "21 EVADE one spell: Evade (DND)", "22 PARRY", "23 BLOCK one spell: Block", "24 CREATE_ITEM", "25 WEAPON", "26 DEFENSE one spell: Defense", "27 PERSISTENT_AREA_AURA", "28 SUMMON", "29 LEAP", "30 ENERGIZE", "31 WEAPON_PERCENT_DAMAGE", "32 TRIGGER_MISSILE", "33 OPEN_LOCK", "34 SUMMON_CHANGE_ITEM", "35 APPLY_AREA_AURA_PARTY", "36 LEARN_SPELL", "37 SPELL_DEFENSE one spell: SPELLDEFENSE (DND)", "38 DISPEL", "39 LANGUAGE", "40 DUAL_WIELD", "41 JUMP", "42 JUMP_DEST", "43 TELEPORT_UNITS_FACE_CASTER", "44 SKILL_STEP", "45 ADD_HONOR honor/pvp related", "46 SPAWN clientside, unit appears as if it was just spawned", "47 TRADE_SKILL", "48 STEALTH one spell: Base Stealth", "49 DETECT one spell: Detect", "50 TRANS_DOOR", "51 FORCE_CRITICAL_HIT unused", "52 GUARANTEE_HIT one spell: zzOLDCritical Shot", "53 ENCHANT_ITEM", "54 ENCHANT_ITEM_TEMPORARY", "55 TAMECREATURE", "56 SUMMON_PET", "57 LEARN_PET_SPELL", "58 WEAPON_DAMAGE", "59 CREATE_RANDOM_ITEM create item base at spell specific loot", "60 PROFICIENCY", "61 SEND_EVENT", "62 POWER_BURN", "63 THREAT", "64 TRIGGER_SPELL", "65 APPLY_AREA_AURA_RAID", "66 CREATE_MANA_GEM (possibly recharge it, misc - is item ID)", "67 HEAL_MAX_HEALTH", "68 INTERRUPT_CAST", "69 DISTRACT", "70 PULL one spell: Distract Move", "71 PICKPOCKET", "72 ADD_FARSIGHT", "73 UNTRAIN_TALENTS", "74 APPLY_GLYPH", "75 HEAL_MECHANICAL one spell: Mechanical Patch Kit", "76 SUMMON_OBJECT_WILD", "77 SCRIPT_EFFECT", "78 ATTACK", "79 SANCTUARY", "80 ADD_COMBO_POINTS", "81 CREATE_HOUSE one spell: Create House (TEST)", "82 BIND_SIGHT", "83 DUEL", "84 STUCK", "85 SUMMON_PLAYER", "86 ACTIVATE_OBJECT", "87 GAMEOBJECT_DAMAGE", "88 GAMEOBJECT_REPAIR", "89 GAMEOBJECT_SET_DESTRUCTION_STATE", "90 KILL_CREDIT Kill credit but only for single person", "91 THREAT_ALL one spell: zzOLDBrainwash", "92 ENCHANT_HELD_ITEM", "93 FORCE_DESELECT", "94 SELF_RESURRECT", "95 SKINNING", "96 CHARGE", "97 CAST_BUTTON (totem bar since 3.2.2a)", "98 KNOCK_BACK", "99 DISENCHANT", "100 INEBRIATE", "101 FEED_PET", "102 DISMISS_PET", "103 REPUTATION", "104 SUMMON_OBJECT_SLOT1", "105 SUMMON_OBJECT_SLOT2", "106 SUMMON_OBJECT_SLOT3", "107 SUMMON_OBJECT_SLOT4", "108 DISPEL_MECHANIC", "109 SUMMON_DEAD_PET", "110 DESTROY_ALL_TOTEMS", "111 DURABILITY_DAMAGE", "112 112", "113 RESURRECT_NEW", "114 ATTACK_ME", "115 DURABILITY_DAMAGE_PCT", "116 SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags...", "117 SPIRIT_HEAL one spell: Spirit Heal", "118 SKILL professions and more", "119 APPLY_AREA_AURA_PET", "120 TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test", "121 NORMALIZED_WEAPON_DMG", "122 122 unused", "123 SEND_TAXI taxi/flight related (misc value is taxi path id)", "124 PULL_TOWARDS", "125 MODIFY_THREAT_PERCENT", "126 STEAL_BENEFICIAL_BUFF spell steal effect?", "127 PROSPECTING Prospecting spell", "128 APPLY_AREA_AURA_FRIEND", "129 APPLY_AREA_AURA_ENEMY", "130 REDIRECT_THREAT", "131 PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc)", "132 PLAY_MUSIC sound id in misc value (SoundEntries.dbc)", "133 UNLEARN_SPECIALIZATION unlearn profession specialization", "134 KILL_CREDIT misc value is creature entry", "135 CALL_PET", "136 HEAL_PCT", "137 ENERGIZE_PCT", "138 LEAP_BACK Leap back", "139 CLEAR_QUEST Reset quest status (miscValue - quest ID)", "140 FORCE_CAST", "141 FORCE_CAST_WITH_VALUE", "142 TRIGGER_SPELL_WITH_VALUE", "143 APPLY_AREA_AURA_OWNER", "144 KNOCK_BACK_DEST", "145 PULL_TOWARDS_DEST Black Hole Effect", "146 ACTIVATE_RUNE", "147 QUEST_FAIL quest fail", "148 TRIGGER_MISSILE_SPELL_WITH_VALUE", "149 CHARGE_DEST", "150 QUEST_START", "151 TRIGGER_SPELL_2", "152 SUMMON_RAF_FRIEND summon Refer-a-Friend", "153 CREATE_TAMED_PET misc value is creature entry", "154 DISCOVER_TAXI", "155 TITAN_GRIP Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal.", "156 ENCHANT_ITEM_PRISMATIC", "157 CREATE_ITEM_2 create item or create item template and replace by some randon spell loot item", "158 MILLING milling", "159 ALLOW_RENAME_PET allow rename pet once again", "160 160 1 spell - 45534", "161 TALENT_SPEC_COUNT second talent spec (learn/revert)", "162 TALENT_SPEC_SELECT activate primary/secondary spec", "163 unused", "164 REMOVE_AURA" };
-
-                for (int i = 0; i < effect_strings.Length; ++i)
-                {
-                    Effect1.Items.Add(effect_strings[i]);
-                    Effect2.Items.Add(effect_strings[i]);
-                    Effect3.Items.Add(effect_strings[i]);
-                }
-
                 string[] damage_prevention_types = { "None", "Magic", "Melee", "Ranged", "None", "Silence", "Pacify" };
 
                 for (int i = 0; i < damage_prevention_types.Length; ++i)
@@ -2357,25 +2348,15 @@ namespace SpellEditor
                 }
             }
             updateProgress("Updating effects 1-3...");
-            // Some duplication of fields here
-            Effect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
-            Effect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
-            Effect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
             SpellEffect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
             SpellEffect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
             SpellEffect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
-            EffectDieSides1.threadSafeText = row["EffectDieSides1"].ToString();
-            EffectDieSides2.threadSafeText = row["EffectDieSides2"].ToString();
-            EffectDieSides3.threadSafeText = row["EffectDieSides3"].ToString();
             DieSides1.threadSafeText = row["EffectDieSides1"].ToString();
             DieSides2.threadSafeText = row["EffectDieSides2"].ToString();
             DieSides3.threadSafeText = row["EffectDieSides3"].ToString();
             BasePointsPerLevel1.threadSafeText = row["EffectRealPointsPerLevel1"].ToString();
             BasePointsPerLevel2.threadSafeText = row["EffectRealPointsPerLevel2"].ToString();
             BasePointsPerLevel3.threadSafeText = row["EffectRealPointsPerLevel3"].ToString();
-            EffectBaseValue1.threadSafeText = row["EffectBasePoints1"].ToString();
-            EffectBaseValue2.threadSafeText = row["EffectBasePoints2"].ToString();
-            EffectBaseValue3.threadSafeText = row["EffectBasePoints3"].ToString();
             BasePoints1.threadSafeText = row["EffectBasePoints1"].ToString();
             BasePoints2.threadSafeText = row["EffectBasePoints2"].ToString();
             BasePoints3.threadSafeText = row["EffectBasePoints3"].ToString();
@@ -2550,21 +2531,9 @@ namespace SpellEditor
 
         private static object Lock = new object();
 
+        // TODO(Harry): Remove unrequired hook
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-			if (adapter == null || updating) { return; }
-            if (sender == EffectBaseValue1) { BasePoints1.Text = EffectBaseValue1.Text; }
-            if (sender == EffectBaseValue2) { BasePoints2.Text = EffectBaseValue2.Text; }
-            if (sender == EffectBaseValue3) { BasePoints3.Text = EffectBaseValue3.Text; }
-            if (sender == BasePoints1) { EffectBaseValue1.Text = BasePoints1.Text; }
-            if (sender == BasePoints2) { EffectBaseValue2.Text = BasePoints2.Text; }
-            if (sender == BasePoints3) { EffectBaseValue3.Text = BasePoints3.Text; }
-            if (sender == EffectDieSides1) { DieSides1.Text = EffectDieSides1.Text; }
-            if (sender == EffectDieSides2) { DieSides2.Text = EffectDieSides2.Text; }
-            if (sender == EffectDieSides3) { DieSides3.Text = EffectDieSides3.Text; }
-            if (sender == DieSides1) { EffectDieSides1.Text = DieSides1.Text; }
-            if (sender == DieSides2) { EffectDieSides2.Text = DieSides2.Text; }
-            if (sender == DieSides3) { EffectDieSides3.Text = DieSides3.Text; }
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2802,12 +2771,6 @@ namespace SpellEditor
                     }
                 }
             }
-            if (sender == Effect1) { SpellEffect1.SelectedIndex = Effect1.SelectedIndex; }
-            if (sender == Effect2) { SpellEffect2.SelectedIndex = Effect2.SelectedIndex; }
-            if (sender == Effect3) { SpellEffect3.SelectedIndex = Effect3.SelectedIndex; }
-            if (sender == SpellEffect1) { Effect1.SelectedIndex = SpellEffect1.SelectedIndex; }
-            if (sender == SpellEffect2) { Effect2.SelectedIndex = SpellEffect2.SelectedIndex; }
-            if (sender == SpellEffect3) { Effect3.SelectedIndex = SpellEffect3.SelectedIndex; }
         }
 
 		public void UpdateItemSubClass(int classId)
