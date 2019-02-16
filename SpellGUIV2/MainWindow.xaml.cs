@@ -1782,9 +1782,9 @@ namespace SpellEditor
             }
         }
 
-        private DataRowCollection GetSpellNames(UInt32 lowerBound, UInt32 pageSize, int locale)
+        private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
-			DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` LIMIT {2}, {3}",
+			DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` ORDER BY `id` LIMIT {2}, {3}",
                  config.Table, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
