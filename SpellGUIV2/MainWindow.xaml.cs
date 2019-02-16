@@ -1424,7 +1424,8 @@ namespace SpellEditor
                     row["MaximumLevel"] = UInt32.Parse(MaximumLevel.Text);
                     row["BaseLevel"] = UInt32.Parse(BaseLevel.Text);
                     row["SpellLevel"] = UInt32.Parse(SpellLevel.Text);
-                    row["PowerType"] = PowerType.SelectedIndex == 13 ? 4294967294 : (UInt32)PowerType.SelectedIndex;
+                    // Handle 'Health' power type manually
+                    row["PowerType"] = PowerType.SelectedIndex == 13 ? (uint.MaxValue - 1) : (uint)PowerType.SelectedIndex;
                     row["ManaCost"] = UInt32.Parse(PowerCost.Text);
                     row["ManaCostPerLevel"] = UInt32.Parse(ManaCostPerLevel.Text);
                     row["ManaPerSecond"] = UInt32.Parse(ManaCostPerSecond.Text);
@@ -2281,9 +2282,9 @@ namespace SpellEditor
 
             loadDurations.UpdateDurationIndexes();
 
-            Int32 powerType = Int32.Parse(row["PowerType"].ToString());
-            // Dirty hack fix
-            if (powerType < 0)
+            uint powerType = uint.Parse(row["PowerType"].ToString());
+            // Manually handle 'Health' power type
+            if (powerType == (uint.MaxValue - 1))
                 powerType = 13;
             PowerType.threadSafeIndex = powerType;
             PowerCost.threadSafeText = UInt32.Parse(row["ManaCost"].ToString());
