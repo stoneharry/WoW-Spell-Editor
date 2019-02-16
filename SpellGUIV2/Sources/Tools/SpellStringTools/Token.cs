@@ -23,6 +23,8 @@ namespace SpellEditor.Sources.Tools.SpellStringTools
             // Reference must be checked before Number because the regex for number can also detect references
             if (Regex.IsMatch(Value, SpellStringParser.REFERENCE_REGEX))
                 Type = TokenType.REFERENCE;
+            else if (Regex.IsMatch(Value, SpellStringParser.MODIFY_FORMULA_REGEX))
+                Type = TokenType.MODIFY_FORMULA;
             else if (Regex.IsMatch(Value, SpellStringParser.NUMBER_REGEX))
                 Type = TokenType.NUMBER;
             else if (Regex.IsMatch(Value, SpellStringParser.PLUS_REGEX))

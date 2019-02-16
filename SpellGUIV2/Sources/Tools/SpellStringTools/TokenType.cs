@@ -8,6 +8,7 @@
         MULTIPLY,
         DIVIDE,
         REFERENCE,
+        MODIFY_FORMULA,
         UNKNOWN
     };
 }

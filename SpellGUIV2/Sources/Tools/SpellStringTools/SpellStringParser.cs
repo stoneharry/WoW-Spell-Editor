@@ -8,17 +8,19 @@ namespace SpellEditor.Sources.SpellStringTools
 {
     public class SpellStringParser
     {
-        public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*";
-        public static readonly string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";
-        public static readonly string REFERENCE_REGEX = "\\$\\w+";
-        public static readonly string PLUS_REGEX = "\\+";
-        public static readonly string MINUS_REGEX = "\\-";
-        public static readonly string MULTIPLY_REGEX = "\\*";
-        public static readonly string DIVIDE_REGEX = "\\/";
+        public static readonly string MODIFY_FORMULA_REGEX = "\\$(\\/|\\*|\\-|)+\\d+\\;\\d+\\w+";    // $/10;17057s1
+        public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*";                         // ${1 + $s1} | $s1
+        public static readonly string ALL_FORMULA_REGEX = $"{MODIFY_FORMULA_REGEX}|{FORMULA_REGEX}";
+        public static readonly string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";                           // 12 | 12.26
+        public static readonly string REFERENCE_REGEX = "\\$\\w+";                                  // $s1
+        public static readonly string PLUS_REGEX = "\\+";                                           // +
+        public static readonly string MINUS_REGEX = "\\-";                                          // -
+        public static readonly string MULTIPLY_REGEX = "\\*";                                       // *
+        public static readonly string DIVIDE_REGEX = "\\/";                                         // /
         public static readonly string TOKEN_REGEX = 
-            $"{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
+            $"{MODIFY_FORMULA_REGEX }|{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
-        private string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
+        protected string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
         {
             return SpellStringReferenceResolver.GetParsedForm(reference, spell, mainWindow);
         }
@@ -37,9 +39,9 @@ namespace SpellEditor.Sources.SpellStringTools
         }
 
         // Find ${} and $vars in the formula string
-        private List<string> FindFormulas(string str)
+        protected List<string> FindFormulas(string str)
         {
-            var regexMatches = Regex.Matches(str, FORMULA_REGEX);
+            var regexMatches = Regex.Matches(str, ALL_FORMULA_REGEX);
             var tokenList = new List<string>(regexMatches.Count);
             foreach (var tokenStr in regexMatches)
             {
@@ -172,28 +174,68 @@ namespace SpellEditor.Sources.SpellStringTools
                     case TokenType.PLUS:
                     case TokenType.MULTIPLY:
                     case TokenType.MINUS:
-                        break;
+                        {
+                            break;
+                        }
                     case TokenType.NUMBER:
-                        double temp;
-                        if (double.TryParse(token.Value, out temp))
-                            token.ResolvedValue = temp;
-                        else
-                            token.ResolvedValue = 0D;
-                        break;
+                        {
+                            double temp;
+                            if (double.TryParse(token.Value, out temp))
+                                token.ResolvedValue = temp;
+                            else
+                                token.ResolvedValue = 0D;
+                            break;
+                        }
                     case TokenType.REFERENCE:
-                        token.ResolvedValue = ResolveReference(token.Value, spell, mainWindow);
-                        if (token.ResolvedValue != null && !token.ResolvedValue.ToString().StartsWith("$"))
-                            token.Type = TokenType.NUMBER;
-                        break;
+                        {
+                            token.ResolvedValue = ResolveReference(token.Value, spell, mainWindow);
+                            if (token.ResolvedValue != null && !token.ResolvedValue.ToString().StartsWith("$"))
+                                token.Type = TokenType.NUMBER;
+                            break;
+                        }
+                    case TokenType.MODIFY_FORMULA:
+                        {
+                            token.ResolvedValue = ResolveModifyFormula(token.Value, spell, mainWindow);
+                            break;
+                        }
                     default:
-                        Console.WriteLine($"Unknown token: '{ token.Value }'");
-                        break;
+                        {
+                            Console.WriteLine($"Unknown token: '{ token.Value }'");
+                            break;
+                        }
                 }
                 tokens.Add(token);
-
                 Console.WriteLine($"Token: [{ token.Value }, {token.Type.ToString() }, { token.ResolvedValue }]");
             }
             return tokens;
+        }
+
+        private string ResolveModifyFormula(string value, DataRow spell, MainWindow mainWindow)
+        {
+            var valueParts = value.Split(';');
+            if (valueParts.Length != 2)
+            {
+                return "<ERROR: Expected one ; character, got a different amount>";
+            }
+            var modifier = valueParts[0].Replace('$', ' ').TrimStart();
+            var reference = "$" + valueParts[1];
+            var resolvedRef = ResolveReference(reference, spell, mainWindow);
+
+            if (modifier.Length > 0 &&
+                int.TryParse(modifier.Substring(1), out int number) &&
+                int.TryParse(resolvedRef, out int refNumber))
+            {
+                var token = new Token("" + modifier[0]);
+                if (token.Type == TokenType.DIVIDE)
+                    resolvedRef = (refNumber / number).ToString();
+                else if (token.Type == TokenType.MULTIPLY)
+                    resolvedRef = (refNumber * number).ToString();
+                else if (token.Type == TokenType.PLUS)
+                    resolvedRef = (refNumber + number).ToString();
+                else if (token.Type == TokenType.MINUS)
+                    resolvedRef = (refNumber - number).ToString();
+            }
+            return resolvedRef;
         }
     }
 }
