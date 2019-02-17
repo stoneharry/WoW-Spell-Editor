@@ -8,21 +8,21 @@
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
         Loaded="_Loaded">
-	<controls:MetroWindow.Resources>
-		<ResourceDictionary>
-			<Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
-			<Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
-			<Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
-		</ResourceDictionary>
-	</controls:MetroWindow.Resources>
-	<Grid>
-		<TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
+    <controls:MetroWindow.Resources>
+        <ResourceDictionary>
+            <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+        </ResourceDictionary>
+    </controls:MetroWindow.Resources>
+    <Grid>
+        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
       <TabItem Header="Import">
         <UniformGrid Name="ImportGrid" Columns = "1"/>
       </TabItem>
       <TabItem Header="Export">
         <UniformGrid Name="ExportGrid" Columns = "1"/>
       </TabItem>
-		</TabControl>
-	</Grid>
+        </TabControl>
+    </Grid>
 </controls:MetroWindow>

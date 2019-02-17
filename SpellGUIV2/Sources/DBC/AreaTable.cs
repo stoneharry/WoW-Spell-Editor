@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
-	class AreaTable : AbstractDBC
+    class AreaTable : AbstractDBC
     {
         public Dictionary<uint, AreaTableLookup> Lookups;
 
@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     var record = Body.RecordMaps[i];
                     int locale = window.GetLanguage() + 1;
-				    AreaTableLookup temp;
+                    AreaTableLookup temp;
                     temp.ID = (uint) record["ID"];
                     temp.AreaName = Reader.LookupStringOffset((uint) record["Name" + locale]);
                     Lookups.Add(temp.ID, temp);
@@ -38,7 +38,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-		public struct AreaTableLookup
+        public struct AreaTableLookup
         {
             public uint ID;
             public string AreaName;

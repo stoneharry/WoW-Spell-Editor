@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace SpellEditor.Sources.Database
 {
-	class SQLite : IDatabaseAdapter
-	{
+    class SQLite : IDatabaseAdapter
+    {
         private readonly object _syncLock = new object();
         private Config.Config _config;
         private SQLiteConnection _connection = null;
@@ -28,9 +28,9 @@ namespace SpellEditor.Sources.Database
             _config = config;
             Table = config.Table;
 
-			var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{config.Database}.db";
+            var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{config.Database}.db";
 
-			_connection = new SQLiteConnection(connectionString);
+            _connection = new SQLiteConnection(connectionString);
             _connection.Open();
             // Create binding tables
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
@@ -132,10 +132,10 @@ namespace SpellEditor.Sources.Database
             return str.ToString();
         }
 
-		public string EscapeString(string keyWord)
-		{
-			keyWord = keyWord.Replace("'", "''");
-			return keyWord;
-		}
-	}
+        public string EscapeString(string keyWord)
+        {
+            keyWord = keyWord.Replace("'", "''");
+            return keyWord;
+        }
+    }
 }

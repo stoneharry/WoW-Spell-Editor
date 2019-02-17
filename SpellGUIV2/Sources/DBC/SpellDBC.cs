@@ -27,18 +27,18 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-		public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
+        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
         {
             return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
         }
 
-		public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
-		{
-			DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
-			if (Result != null && Result.Count == 1)
-				return GetRowToRecord(Result[0]);
-			return new Spell_DBC_Record();
-		}
+        public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
+        {
+            DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
+            if (Result != null && Result.Count == 1)
+                return GetRowToRecord(Result[0]);
+            return new Spell_DBC_Record();
+        }
 
         public static Spell_DBC_Record GetRowToRecord(DataRow row)
         {
@@ -71,7 +71,7 @@ namespace SpellEditor.Sources.DBC
             return record;
         }
 
-		public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
+        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
         {
             return ExportToDbc(adapter, updateProgress, "ID", "Spell");
         }
