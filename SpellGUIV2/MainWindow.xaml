@@ -567,11 +567,11 @@
                         <TabItem Header="Misc">
                             <Grid>
                                 <Label Content="Creature Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="174.5,49,0,0"/>
-                                <ScrollViewer Margin="62,75,882,259">
+                                <ScrollViewer Margin="62,75,882,10">
                                     <StackPanel Name="TargetCreatureType"/>
                                 </ScrollViewer>
                                 <Label Content="Stances:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="569.5,49,0,0"/>
-                                <ScrollViewer Margin="440,75,504,259">
+                                <ScrollViewer Margin="440,75,504,10">
                                     <StackPanel Name="StancesGrid"/>
                                 </ScrollViewer>
                             </Grid>
