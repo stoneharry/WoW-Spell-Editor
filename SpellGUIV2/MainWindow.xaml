@@ -12,13 +12,13 @@
         KeyDown="_KeyDown"
         Loaded="_Loaded"
         SizeChanged="window_SizeChanged">
-	<controls:MetroWindow.Resources>
-		<ResourceDictionary>
-			<Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
-			<Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
-			<Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
-		</ResourceDictionary>
-	</controls:MetroWindow.Resources>
+    <controls:MetroWindow.Resources>
+        <ResourceDictionary>
+            <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+        </ResourceDictionary>
+    </controls:MetroWindow.Resources>
   <controls:MetroWindow.Flyouts>
     <controls:FlyoutsControl>
       <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
@@ -26,590 +26,590 @@
       </controls:Flyout>
     </controls:FlyoutsControl>
   </controls:MetroWindow.Flyouts>
-	<Grid>
-		<TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="699" Width="1282" SelectionChanged="TabControl_SelectionChanged">
-			<TabItem Header="Select Spell">
-				<Grid Name="SelectSpellTabGrid">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="255*"/>
-						<ColumnDefinition Width="1039*"/>
-					</Grid.ColumnDefinitions>
-					<Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="217.873,40,0,0" Grid.Column="1"/>
-					<c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,40,0,0" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Column="1"/>
+    <Grid>
+        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" Height="699" Width="1282" SelectionChanged="TabControl_SelectionChanged">
+            <TabItem Header="Select Spell">
+                <Grid Name="SelectSpellTabGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="255*"/>
+                        <ColumnDefinition Width="1039*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Go to spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="217.873,40,0,0" Grid.Column="1"/>
+                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,40,0,0" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Column="1"/>
 
-					<Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="199.873,83,0,0" Grid.Column="1"/>
-					<c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Column="1"/>
+                    <Label Content="Filter by name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="199.873,83,0,0" Grid.Column="1"/>
+                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Column="1"/>
 
-					<Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="192.873,9,0,0" Grid.Column="1"/>
-					<ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="642" Width="443" SelectionChanged="SelectSpell_SelectionChanged" Focusable="False" Grid.ColumnSpan="2"/>
-					<TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="193,114,0,0" Height="546" Width="822" Grid.Column="1">
-						<TabItem x:Name="TabItem_English" Header="English">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip0" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,326,0,0" RenderTransformOrigin="0.834,0.57" Width="120"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription0" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
-								<Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Korean" x:Name="TabItem_Korean">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip1" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="French" x:Name="TabItem_French">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip2" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Deutsch" x:Name="TabItem_Deutsch">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip3" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem x:Name="TabItem_Chinese" Header="Chinese">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip4" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Taiwanese" x:Name="TabItem_Taiwanese">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip5" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Mexican" x:Name="TabItem_Mexican">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip6" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Portuguese" x:Name="TabItem_Portuguese">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip7" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Russian" x:Name="TabItem_Russian">
-							<Grid>
-								<Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellRank8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltip8" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellDescriptionGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-								<c:ThreadSafeTextBox x:Name="SpellTooltipGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
-							</Grid>
-						</TabItem>
-					</TabControl>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Base">
-				<Grid Name="BaseTabGrid">
-					<Label Content="Category:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="72,15,0,0"/>
-					<c:ThreadSafeComboBox x:Name="Category" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,41,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Dispel Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="64,77,0,0"/>
-					<c:ThreadSafeComboBox x:Name="DispelType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,103,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Mechanic Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55,139,0,0"/>
-					<c:ThreadSafeComboBox x:Name="MechanicType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Cast Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,200,0,0"/>
-					<c:ThreadSafeComboBox x:Name="CastTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,226,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Duration:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="72,263,0,0"/>
-					<c:ThreadSafeComboBox x:Name="Duration" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Range:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="78,325,0,0"/>
-					<c:ThreadSafeComboBox x:Name="Range" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,351,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Caster Aura State:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="49,387,0,0"/>
-					<c:ThreadSafeComboBox x:Name="CasterAuraState" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,413,0,0" Width="125"/>
-					<Label Content="Spell Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="255,15,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,41,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Base Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="255,77,0,0"/>
-					<c:ThreadSafeTextBox x:Name="BaseLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,103,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Max Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="257,139,0,0"/>
-					<c:ThreadSafeTextBox x:Name="MaximumLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,165,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Visual 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="248,200,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellVisual1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,226,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Visual 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="248,263,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellVisual2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,289,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Speed:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="265,325,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Speed" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,351,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Target Aura State:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="236,387,0,0"/>
-					<c:ThreadSafeComboBox x:Name="TargetAuraState" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,413,0,0" Width="125"/>
-					<Label Content="Recovery Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="428,15,0,0"/>
-					<c:ThreadSafeTextBox x:Name="RecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,41,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Category Recovery Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="402,77,0,0"/>
-					<c:ThreadSafeTextBox x:Name="CategoryRecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,103,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Missile ID:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="427,139,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellMissileID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,165,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Stacks:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="450,200,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Stacks" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,226,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Difficulty:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,263,0,0"/>
-					<c:ThreadSafeComboBox x:Name="Difficulty" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Power Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="435,325,0,0"/>
-					<c:ThreadSafeComboBox x:Name="PowerType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,351,0,0" Width="125"/>
-					<Label Content="Global Cooldown Category:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="395,387,0,0"/>
-					<c:ThreadSafeTextBox x:Name="StartRecoveryCategory" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,413,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Power Cost:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,15,0,0"/>
-					<c:ThreadSafeTextBox x:Name="PowerCost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,41,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Mana Cost Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="595.5,77,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ManaCostPerLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,103,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Mana Cost Per Second:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="590,139,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ManaCostPerSecond" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,165,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Per Second Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="594,200,0,0"/>
-					<c:ThreadSafeTextBox x:Name="PerSecondPerLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,226,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Mana Cost %:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="615,263,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ManaCostPercent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,289,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Family Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="960,200,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellFamilyName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,226,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Family Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,262,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellFamilyFlags" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,288,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Family Flags1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,324,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellFamilyFlags1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,350,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Spell Family Flags2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,387,0,0"/>
-					<c:ThreadSafeTextBox x:Name="SpellFamilyFlags2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,413,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Global Cooldown Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="589,387,0,0"/>
-					<c:ThreadSafeTextBox x:Name="StartRecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,413,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Max Targets:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="799,15,0,0"/>
-					<c:ThreadSafeTextBox x:Name="MaxTargets" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,41,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Max Targets Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="784,77,0,0"/>
-					<c:ThreadSafeTextBox x:Name="MaxTargetsLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,103,0,0" Width="125" TextWrapping="Wrap"/>
-					<Label Content="Totem Category 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="783,139,0,0"/>
-					<c:ThreadSafeComboBox x:Name="TotemCategory1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Totem Category 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="783,200,0,0"/>
-					<c:ThreadSafeComboBox x:Name="TotemCategory2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,226,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Area Group:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="801,263,0,0"/>
-					<c:ThreadSafeComboBox x:Name="AreaGroup" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Prevention Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="788.5,325,0,0"/>
-					<c:ThreadSafeComboBox x:Name="PreventionType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,351,0,0" Width="125"/>
-					<Label Content="Spell Damage Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="780,387,0,0"/>
-					<c:ThreadSafeComboBox x:Name="SpellDamageType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,413,0,0" Width="125"/>
-					<Label Content="Requires Spell Focus:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="958,15,0,0"/>
-					<c:ThreadSafeComboBox x:Name="RequiresSpellFocus" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,41,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Rune Cost:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="982,77,0,0"/>
-					<c:ThreadSafeComboBox x:Name="RuneCost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,103,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Spell Description Variables:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="940,139,0,0"/>
-					<c:ThreadSafeComboBox x:Name="SpellDescriptionVariables" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="School:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-45,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S1" Content="Physical" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-19,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S2" Content="Holy" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-1,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S3" Content="Fire" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,17,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S4" Content="Nature" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,35,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S5" Content="Frost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,53,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S6" Content="Shadow" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,71,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="S7" Content="Arcane" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,89,0,0"/>
-					<c:ThreadSafeCheckBox x:Name="FacingFrontFlag" Content="Facing Front" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,147,0,0"/>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Effects">
-				<TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-5,0,-230,-15" Height="659" Width="1280">
-					<TabItem Header="Effects 1">
-						<Grid>
+                    <Label Name="SpellsLoadedLabel" Content="No spells loaded." VerticalAlignment="Top" HorizontalAlignment="Left" Margin="192.873,9,0,0" Grid.Column="1"/>
+                    <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="642" Width="443" SelectionChanged="SelectSpell_SelectionChanged" Focusable="False" Grid.ColumnSpan="2"/>
+                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="193,114,0,0" Height="546" Width="822" Grid.Column="1">
+                        <TabItem x:Name="TabItem_English" Header="English">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip0" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,326,0,0" RenderTransformOrigin="0.834,0.57" Width="120"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription0" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Korean" x:Name="TabItem_Korean">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip1" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="French" x:Name="TabItem_French">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip2" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Deutsch" x:Name="TabItem_Deutsch">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip3" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="TabItem_Chinese" Header="Chinese">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip4" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Taiwanese" x:Name="TabItem_Taiwanese">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip5" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Mexican" x:Name="TabItem_Mexican">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip6" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Portuguese" x:Name="TabItem_Portuguese">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip7" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Russian" x:Name="TabItem_Russian">
+                            <Grid>
+                                <Label Content="Spell Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="105,3,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellRank8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltip8" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Base">
+                <Grid Name="BaseTabGrid">
+                    <Label Content="Category:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="72,15,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="Category" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,41,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Dispel Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="64,77,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="DispelType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,103,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Mechanic Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55,139,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="MechanicType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Cast Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,200,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="CastTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,226,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Duration:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="72,263,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="Duration" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Range:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="78,325,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="Range" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,351,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Caster Aura State:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="49,387,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="CasterAuraState" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="39,413,0,0" Width="125"/>
+                    <Label Content="Spell Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="255,15,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,41,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Base Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="255,77,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="BaseLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,103,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Max Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="257,139,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="MaximumLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,165,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Visual 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="248,200,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellVisual1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,226,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Visual 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="248,263,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellVisual2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,289,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Speed:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="265,325,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Speed" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,351,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Target Aura State:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="236,387,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="TargetAuraState" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="226,413,0,0" Width="125"/>
+                    <Label Content="Recovery Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="428,15,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="RecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,41,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Category Recovery Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="402,77,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="CategoryRecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,103,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Missile ID:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="427,139,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellMissileID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,165,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Stacks:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="450,200,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Stacks" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,226,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Difficulty:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,263,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="Difficulty" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Power Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="435,325,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="PowerType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,351,0,0" Width="125"/>
+                    <Label Content="Global Cooldown Category:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="395,387,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="StartRecoveryCategory" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="410,413,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Power Cost:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,15,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="PowerCost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,41,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Mana Cost Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="595.5,77,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ManaCostPerLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,103,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Mana Cost Per Second:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="590,139,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ManaCostPerSecond" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,165,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Per Second Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="594,200,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="PerSecondPerLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,226,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Mana Cost %:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="615,263,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ManaCostPercent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,289,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="960,200,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,226,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,262,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,288,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,324,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,350,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Spell Family Flags2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="962,387,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,413,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Global Cooldown Time:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="589,387,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="StartRecoveryTime" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="593,413,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Max Targets:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="799,15,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="MaxTargets" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,41,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Max Targets Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="784,77,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="MaxTargetsLevel" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,103,0,0" Width="125" TextWrapping="Wrap"/>
+                    <Label Content="Totem Category 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="783,139,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="TotemCategory1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Totem Category 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="783,200,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="TotemCategory2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,226,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Area Group:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="801,263,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="AreaGroup" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,289,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Prevention Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="788.5,325,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="PreventionType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,351,0,0" Width="125"/>
+                    <Label Content="Spell Damage Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="780,387,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="SpellDamageType" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="775,413,0,0" Width="125"/>
+                    <Label Content="Requires Spell Focus:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="958,15,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="RequiresSpellFocus" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,41,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Rune Cost:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="982,77,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="RuneCost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,103,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Spell Description Variables:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="940,139,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="SpellDescriptionVariables" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="953,165,0,0" Width="125" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="School:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-45,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S1" Content="Physical" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-19,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S2" Content="Holy" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,-1,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S3" Content="Fire" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,17,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S4" Content="Nature" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,35,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S5" Content="Frost" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,53,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S6" Content="Shadow" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,71,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="S7" Content="Arcane" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,89,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="FacingFrontFlag" Content="Facing Front" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,147,0,0"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Effects">
+                <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-5,0,-230,-15" Height="659" Width="1280">
+                    <TabItem Header="Effects 1">
+                        <Grid>
               <Label Content="Targets:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="130,10,0,0"/>
-							<ScrollViewer Margin="7,41,962,38">
-								<StackPanel Name="TargetEditorGrid"/>
-							</ScrollViewer>
-							<Label Content="Procs:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="590,18,0,0"/>
-							<ScrollViewer Margin="456,49,478,38">
-								<StackPanel Name="ProcEditorGrid"/>
-							</ScrollViewer>
-							<Label Content="Proc Charges:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,160,0,0"/>
-							<c:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,186,0,0" Width="90" TextWrapping="Wrap"/>
-							<Label Content="Proc Chance:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,236,0,0"/>
-							<c:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
-						</Grid>
-					</TabItem>
-					<TabItem Header="Effects 2">
-						<Grid>
-							<TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="606" Width="1276">
-								<TabItem Header="Spell Effect 1">
-									<Grid>
-										<Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="DieSides1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePointsPerLevel1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="Mechanic1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
-										<Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
-										<Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
-										<Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
-										<c:ThreadSafeComboBox x:Name="RadiusIndex1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
-										<c:ThreadSafeComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
-										<Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
-										<c:ThreadSafeTextBox x:Name="Amplitude1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MultipleValue1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
-										<Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
-										<c:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
-										<c:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True"/>
-										<Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Damage Multiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="EffectBonusMultiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
-									</Grid>
-								</TabItem>
-								<TabItem Header="Spell Effect 2">
-									<Grid>
-										<Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePoints2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="DieSides2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePointsPerLevel2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="Mechanic2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
-										<Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
-										<Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
-										<Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
-										<c:ThreadSafeComboBox x:Name="RadiusIndex2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
-										<c:ThreadSafeComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
-										<Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
-										<c:ThreadSafeTextBox x:Name="Amplitude2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MultipleValue2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
-										<Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
-										<c:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
-										<c:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Damage Multiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="EffectBonusMultiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
-									</Grid>
-								</TabItem>
-								<TabItem Header="Spell Effect 3">
-									<Grid>
-										<Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePoints3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="DieSides3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="BasePointsPerLevel3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="Mechanic3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
-										<Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
-										<Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="TargetB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
-										<Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
-										<c:ThreadSafeComboBox x:Name="RadiusIndex3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
-										<Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
-										<c:ThreadSafeComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
-										<Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
-										<c:ThreadSafeTextBox x:Name="Amplitude3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MultipleValue3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
-										<Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
-										<c:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
-										<c:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
-										<c:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
-										<c:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
-										<c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
-										<Label Content="Damage Multiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
-										<Label Content="EffectBonusMultiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
-										<c:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
-									</Grid>
-								</TabItem>
-							</TabControl>
-						</Grid>
-					</TabItem>
-				</TabControl>
-			</TabItem>
-			<TabItem Header="Items">
-				<Grid>
-					<Label Content="Item Tool 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,35,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Totem1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,61,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Item Tool 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,97,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Totem2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,123,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="225,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="365,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="505,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="647,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="787,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="927,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent 8:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1067,371,0,0"/>
-					<c:ThreadSafeTextBox x:Name="Reagent8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,397,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="67,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="207,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="347,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="487,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="629,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="769,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="909,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Reagent Count 8:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1049,445,0,0"/>
-					<c:ThreadSafeTextBox x:Name="ReagentCount8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,471,0,0" Width="120" TextWrapping="Wrap"/>
-					<Label Content="Equipped Item Class:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,35,0,0"/>
-					<c:ThreadSafeComboBox x:Name="EquippedItemClass" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,61,0,0" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
-					<Label Content="Equipped Item Inventory Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="964,35,0,0"/>
-					<ScrollViewer Margin="909,61,99,346">
-						<StackPanel Name="EquippedItemInventoryTypeGrid" IsEnabled="False"/>
-					</ScrollViewer>
-					<ScrollViewer Margin="607,61,413,346">
-						<StackPanel x:Name="EquippedItemSubClassGrid" IsEnabled="False"/>
-					</ScrollViewer>
-					<Label Content="Equipped Item SubClass:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="666,35,0,0"/>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Flags">
-				<Grid>
-					<TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1264">
-						<TabItem Header="Interrupts">
-							<Grid>
-								<Label Content="Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="125,10,0,0"/>
-								<ScrollViewer Margin="10,36,934,0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-									<StackPanel Name="InterruptFlagsGrid"/>
-								</ScrollViewer>
-								<Label Content="Aura Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="495,10,0,0"/>
-								<ScrollViewer Margin="395,36,549,0">
-									<StackPanel Name="AuraInterruptFlagsGrid"/>
-								</ScrollViewer>
-								<Label Content="Channel Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="892,10,0,0"/>
-								<ScrollViewer Margin="799,36,145,100" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-									<StackPanel Name="ChannelInterruptFlagsGrid"/>
-								</ScrollViewer>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Attributes">
-							<Grid Name="AttributesTabGrid">
-								<Label Content="Attributes:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="92,8,0,0"/>
-								<ScrollViewer Margin="10,35,939,10">
-									<StackPanel Name="Attributes1"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,8,0,0"/>
-								<ScrollViewer Margin="326,35,627,10">
-									<StackPanel Name="Attributes2"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,8,0,0"/>
-								<ScrollViewer Margin="638,35,310,10">
-									<StackPanel Name="Attributes3"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1027,9,0,0"/>
-								<ScrollViewer Margin="955,35,10,10">
-									<StackPanel Name="Attributes4"/>
-								</ScrollViewer>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Attributes2">
-							<Grid Name="Attributes2TabGrid">
-								<Label Content="Attributes Ex4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,9,0,0"/>
-								<ScrollViewer Margin="10,35,940,10">
-									<StackPanel x:Name="Attributes5"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="397,9,0,0"/>
-								<ScrollViewer Margin="325,35,627,10">
-									<StackPanel x:Name="Attributes6"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="708,9,0,0"/>
-								<ScrollViewer Margin="638,35,310,10">
-									<StackPanel x:Name="Attributes7"/>
-								</ScrollViewer>
-								<Label Content="Attributes Ex7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1025,9,0,0"/>
-								<ScrollViewer Margin="955,35,10,10">
-									<StackPanel x:Name="Attributes8"/>
-								</ScrollViewer>
-							</Grid>
-						</TabItem>
-						<TabItem Header="Misc">
-							<Grid>
-								<Label Content="Creature Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="174.5,49,0,0"/>
-								<ScrollViewer Margin="62,75,882,259">
-									<StackPanel Name="TargetCreatureType"/>
-								</ScrollViewer>
-								<Label Content="Stances:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="569.5,49,0,0"/>
-								<ScrollViewer Margin="440,75,504,259">
-									<StackPanel Name="StancesGrid"/>
-								</ScrollViewer>
-							</Grid>
-						</TabItem>
-					</TabControl>
-				</Grid>
-			</TabItem>
-			<TabItem Header="Icon">
+                            <ScrollViewer Margin="7,41,962,38">
+                                <StackPanel Name="TargetEditorGrid"/>
+                            </ScrollViewer>
+                            <Label Content="Procs:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="590,18,0,0"/>
+                            <ScrollViewer Margin="456,49,478,38">
+                                <StackPanel Name="ProcEditorGrid"/>
+                            </ScrollViewer>
+                            <Label Content="Proc Charges:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,160,0,0"/>
+                            <c:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,186,0,0" Width="90" TextWrapping="Wrap"/>
+                            <Label Content="Proc Chance:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,236,0,0"/>
+                            <c:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Effects 2">
+                        <Grid>
+                            <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="606" Width="1276">
+                                <TabItem Header="Spell Effect 1">
+                                    <Grid>
+                                        <Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="DieSides1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="Mechanic1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
+                                        <Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
+                                        <Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
+                                        <Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="RadiusIndex1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
+                                        <Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="Amplitude1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MultipleValue1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True"/>
+                                        <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Damage Multiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="EffectBonusMultiplier 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="Spell Effect 2">
+                                    <Grid>
+                                        <Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePoints2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="DieSides2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="Mechanic2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
+                                        <Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
+                                        <Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
+                                        <Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="RadiusIndex2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
+                                        <Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="Amplitude2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MultipleValue2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Damage Multiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="EffectBonusMultiplier 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="Spell Effect 3">
+                                    <Grid>
+                                        <Label Content="Spell Effect:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="71,41,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,41,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Base Points:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="69,73,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePoints3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Die Sides:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="DieSides3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Real Points Per Level:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Mechanic:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="Mechanic3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
+                                        <Label Content="Target A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,197,0,0" Width="200"/>
+                                        <Label Content="Target B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="TargetB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,228,0,0" Width="200"/>
+                                        <Label Content="Radius:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="94,259,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="RadiusIndex3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,259,0,0" Width="200" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <Label Content="Apply Aura Name:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,290,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,290,0,0" Width="200"/>
+                                        <Label Content="Amplitude:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,321,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="Amplitude3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,321,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Multiple Value:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="53,351,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MultipleValue3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,351,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Chain Target:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="62,382,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,382,0,0" Width="200"/>
+                                        <Label Content="Item Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="77,413,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,413,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Trigger Spell:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="431,42,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,41,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Points Per Combo Point:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="371,72,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,72,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value A:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,103,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,103,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Misc Value B:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="429,135,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="510,135,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="Spell Class Mask 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,166,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,166,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Spell Class Mask 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,197,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,197,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Spell Class Mask 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,228,0,0"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,228,0,0" Width="200" IsEditable="True" IsReadOnly="True" />
+                                        <Label Content="Damage Multiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="388,259,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,259,0,0" Width="200" TextWrapping="Wrap"/>
+                                        <Label Content="EffectBonusMultiplier 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="374,290,0,0"/>
+                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="510,290,0,0" Width="200" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <TabItem Header="Items">
+                <Grid>
+                    <Label Content="Item Tool 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,35,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Totem1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,61,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Item Tool 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,97,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Totem2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,123,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="225,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="365,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="505,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="647,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="787,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="927,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent 8:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1067,371,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,397,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 1:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="67,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="207,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="347,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="487,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="629,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="769,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="909,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Reagent Count 8:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1049,445,0,0"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,471,0,0" Width="120" TextWrapping="Wrap"/>
+                    <Label Content="Equipped Item Class:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,35,0,0"/>
+                    <c:ThreadSafeComboBox x:Name="EquippedItemClass" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,61,0,0" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <Label Content="Equipped Item Inventory Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="964,35,0,0"/>
+                    <ScrollViewer Margin="909,61,99,346">
+                        <StackPanel Name="EquippedItemInventoryTypeGrid" IsEnabled="False"/>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="607,61,413,346">
+                        <StackPanel x:Name="EquippedItemSubClassGrid" IsEnabled="False"/>
+                    </ScrollViewer>
+                    <Label Content="Equipped Item SubClass:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="666,35,0,0"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Flags">
+                <Grid>
+                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1264">
+                        <TabItem Header="Interrupts">
+                            <Grid>
+                                <Label Content="Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="125,10,0,0"/>
+                                <ScrollViewer Margin="10,36,934,0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <StackPanel Name="InterruptFlagsGrid"/>
+                                </ScrollViewer>
+                                <Label Content="Aura Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="495,10,0,0"/>
+                                <ScrollViewer Margin="395,36,549,0">
+                                    <StackPanel Name="AuraInterruptFlagsGrid"/>
+                                </ScrollViewer>
+                                <Label Content="Channel Interrupt Flags:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="892,10,0,0"/>
+                                <ScrollViewer Margin="799,36,145,100" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <StackPanel Name="ChannelInterruptFlagsGrid"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Attributes">
+                            <Grid Name="AttributesTabGrid">
+                                <Label Content="Attributes:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="92,8,0,0"/>
+                                <ScrollViewer Margin="10,35,939,10">
+                                    <StackPanel Name="Attributes1"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,8,0,0"/>
+                                <ScrollViewer Margin="326,35,627,10">
+                                    <StackPanel Name="Attributes2"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex2:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,8,0,0"/>
+                                <ScrollViewer Margin="638,35,310,10">
+                                    <StackPanel Name="Attributes3"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex3:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1027,9,0,0"/>
+                                <ScrollViewer Margin="955,35,10,10">
+                                    <StackPanel Name="Attributes4"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Attributes2">
+                            <Grid Name="Attributes2TabGrid">
+                                <Label Content="Attributes Ex4:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,9,0,0"/>
+                                <ScrollViewer Margin="10,35,940,10">
+                                    <StackPanel x:Name="Attributes5"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex5:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="397,9,0,0"/>
+                                <ScrollViewer Margin="325,35,627,10">
+                                    <StackPanel x:Name="Attributes6"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex6:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="708,9,0,0"/>
+                                <ScrollViewer Margin="638,35,310,10">
+                                    <StackPanel x:Name="Attributes7"/>
+                                </ScrollViewer>
+                                <Label Content="Attributes Ex7:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1025,9,0,0"/>
+                                <ScrollViewer Margin="955,35,10,10">
+                                    <StackPanel x:Name="Attributes8"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Misc">
+                            <Grid>
+                                <Label Content="Creature Type:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="174.5,49,0,0"/>
+                                <ScrollViewer Margin="62,75,882,259">
+                                    <StackPanel Name="TargetCreatureType"/>
+                                </ScrollViewer>
+                                <Label Content="Stances:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="569.5,49,0,0"/>
+                                <ScrollViewer Margin="440,75,504,259">
+                                    <StackPanel Name="StancesGrid"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Icon">
                 <Grid>
                     <Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
                     <Grid Name="CurrentIconGrid"/>
                     <Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
-					<Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
+                    <Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
                     <Grid Name="NewIconGrid"/>
                     <ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
-						<WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
-					</ScrollViewer>
-					<Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
-					<Button Name="ResetActiveIconID" Content="Reset Active Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
-					<Label Content="Filter icons:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
-					<c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-					<Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
-					<Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="Controls icon width &amp; height (pixels)" Focusable="False" Grid.Column="2"/>
-				</Grid>
-			</TabItem>
-		</TabControl>
-	</Grid>
+                        <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
+                    </ScrollViewer>
+                    <Button Name="ResetSpellIconID" Content="Reset Spell Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
+                    <Button Name="ResetActiveIconID" Content="Reset Active Icon ID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
+                    <Label Content="Filter icons:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
+                    <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="Controls icon width &amp; height (pixels)" Focusable="False" Grid.Column="2"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
   <controls:MetroWindow.RightWindowCommands>
-		<controls:WindowCommands>
-			<Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Import/Export" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<Button Name="TruncateTable" Click="Button_Click">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Truncate Table" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<Button Name="InsertANewRecord" Click="Button_Click">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="New Spell" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<Button Name="DeleteARecord" Click="Button_Click">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Delete Spell" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<Button Name="SaveSpellChanges" Click="Button_Click">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Save Spell Changes" VerticalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-		</controls:WindowCommands>
-	</controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Import/Export" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Name="TruncateTable" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Truncate Table" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Name="InsertANewRecord" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="New Spell" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Name="DeleteARecord" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Delete Spell" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Name="SaveSpellChanges" Click="Button_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Save Spell Changes" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>

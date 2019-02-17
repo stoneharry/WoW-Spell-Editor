@@ -9,7 +9,7 @@ namespace SpellEditor.Sources.DBC
     class AreaGroup : AbstractDBC
     {
         private MainWindow main;
-		private IDatabaseAdapter adapter;
+        private IDatabaseAdapter adapter;
         
         public List<AreaGroupLookup> Lookups;
 
@@ -94,17 +94,17 @@ namespace SpellEditor.Sources.DBC
             
         }
 
-		public Dictionary<string, object> FindAreaGroup(uint fId)
-		{
-			foreach (var record in Body.RecordMaps) 
-			{
-				if ((uint) record["ID"] == fId)
-					return record;
-			}
+        public Dictionary<string, object> FindAreaGroup(uint fId)
+        {
+            foreach (var record in Body.RecordMaps) 
+            {
+                if ((uint) record["ID"] == fId)
+                    return record;
+            }
             var returnVal = new Dictionary<string, object>();
             returnVal.Add("NextGroup", (uint) 0);
             return returnVal;
-		}
+        }
 
         public void UpdateAreaGroupSelection()
         {

@@ -11,7 +11,7 @@ using SpellEditor.Sources.Database;
 
 namespace SpellEditor
 {
-	partial class ImportExportWindow
+    partial class ImportExportWindow
     {
         private IDatabaseAdapter _Adapter;
         public List<string> BindingImportList = new List<string>();

@@ -3,7 +3,7 @@ using SpellEditor.Sources.Database;
 
 namespace SpellEditor.Sources.DBC
 {
-	class ItemSubClass : AbstractDBC
+    class ItemSubClass : AbstractDBC
     {
         public ItemSubClassLookup[,] Lookups = new ItemSubClassLookup[29, 32];
 
@@ -39,10 +39,10 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-		public struct ItemSubClassLookup
+        public struct ItemSubClassLookup
         {
             public uint ID;
             public string Name;
         };
-	}
+    }
 }

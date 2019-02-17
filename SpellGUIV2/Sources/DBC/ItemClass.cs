@@ -68,21 +68,21 @@ namespace SpellEditor.Sources.DBC
                 main.EquippedItemClass.threadSafeIndex = 0;
                 //foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes)
                 //  box.threadSafeChecked = false;
-				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
                     => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
                 return;
             }
 
             if (ID == 2 || ID == 4) 
-			{
-				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+            {
+                main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
                     => main.EquippedItemInventoryTypeGrid.IsEnabled = true));
             }
             else
             {
                 foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes)
                     box.threadSafeChecked = false;
-				main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                main.Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
                     => main.EquippedItemInventoryTypeGrid.IsEnabled = false));
             }
 

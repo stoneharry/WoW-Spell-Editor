@@ -30,61 +30,61 @@ namespace SpellEditor.Sources.Controls
             }
         }
 
-		public object threadSafeEnabled
-		{
-			get
-			{
-				if (!Dispatcher.CheckAccess())
-					return IsEnabled;
-				return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsEnabled));
-			}
-			set
-			{
-				if (Dispatcher.CheckAccess())
-				{
-					IsEnabled = (Boolean)value;
-					return;
-				}
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => IsEnabled = (Boolean)value));
-			}
-		}
+        public object threadSafeEnabled
+        {
+            get
+            {
+                if (!Dispatcher.CheckAccess())
+                    return IsEnabled;
+                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsEnabled));
+            }
+            set
+            {
+                if (Dispatcher.CheckAccess())
+                {
+                    IsEnabled = (Boolean)value;
+                    return;
+                }
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => IsEnabled = (Boolean)value));
+            }
+        }
 
-		public object threadSafeVisibility
-		{
-			get
-			{
-				if (!Dispatcher.CheckAccess())
-					return Visibility;
-				return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Visibility));
-			}
-			set
-			{
-				if (Dispatcher.CheckAccess())
-				{
-					Visibility = (Visibility)value;
-					return;
-				}
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Visibility = (Visibility)value));
-			}
-		}
+        public object threadSafeVisibility
+        {
+            get
+            {
+                if (!Dispatcher.CheckAccess())
+                    return Visibility;
+                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Visibility));
+            }
+            set
+            {
+                if (Dispatcher.CheckAccess())
+                {
+                    Visibility = (Visibility)value;
+                    return;
+                }
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Visibility = (Visibility)value));
+            }
+        }
 
-		public object threadSafeContent
-		{
-			get
-			{
-				if (!Dispatcher.CheckAccess())
-					return Content;
-				return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Content));
-			}
-			set
-			{
-				if (Dispatcher.CheckAccess())
-				{
-					Content = value;
-					return;
-				}
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Content = value));
-			}
-		}
+        public object threadSafeContent
+        {
+            get
+            {
+                if (!Dispatcher.CheckAccess())
+                    return Content;
+                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Content));
+            }
+            set
+            {
+                if (Dispatcher.CheckAccess())
+                {
+                    Content = value;
+                    return;
+                }
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Content = value));
+            }
+        }
     }
 }
