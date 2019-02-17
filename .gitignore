@@ -176,3 +176,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+#Ignore '.vs' directory
+.vs/
