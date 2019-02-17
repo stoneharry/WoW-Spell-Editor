@@ -138,7 +138,7 @@ namespace SpellEditor
         public MainWindow()
         {
             // If no debugger is attached then output console text to a file
-            if (!System.Diagnostics.Debugger.IsAttached)
+            if (!Debugger.IsAttached)
             {
                 var ostrm = new FileStream("debug_output.txt", FileMode.OpenOrCreate, FileAccess.Write);
                 var writer = new StreamWriter(ostrm);
