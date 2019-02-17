@@ -56,7 +56,7 @@ namespace SpellEditor
             var importBtn = new Button()
             {
                 Content = "Import Checked DBC Files",
-                Padding = new Thickness(4, 10, 4, 10)
+                Padding = new Thickness(4, 5, 4, 5)
             };
             importBtn.Click += ImportClick;
             contents.Add(importBtn);
@@ -87,7 +87,7 @@ namespace SpellEditor
             var exportBtn = new Button()
             {
                 Content = "Export Checked DBC Files",
-                Padding = new Thickness(4, 10, 4, 10)
+                Padding = new Thickness(4, 5, 4, 5)
             };
             exportBtn.Click += ExportClick;
             contents.Add(exportBtn);
