@@ -65,9 +65,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip1" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -81,9 +81,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip2" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -97,9 +97,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip3" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -113,9 +113,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName4" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip4" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -129,9 +129,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName5" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip5" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -145,9 +145,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName6" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip6" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -161,9 +161,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName7" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip7" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
@@ -177,9 +177,9 @@
                                 <c:ThreadSafeTextBox x:Name="SpellName8" VerticalAlignment="Top" HorizontalAlignment="Left" Height="118" Width="240" Margin="22,29,0,0" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <Label Content="Spell Rank:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="405,4,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellRank8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,29,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,171,0,0"/>
+                                <Label Content="Spell Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,171,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltip8" TextChanged="SpellTooltipGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,202,0,0" Height="119" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
-                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,326,0,0"/>
+                                <Label Content="Spell Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="102,326,0,0"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
