@@ -71,6 +71,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="French" x:Name="TabItem_French">
@@ -85,6 +87,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Deutsch" x:Name="TabItem_Deutsch">
@@ -99,6 +103,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="TabItem_Chinese" Header="Chinese">
@@ -113,6 +119,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Taiwanese" x:Name="TabItem_Taiwanese">
@@ -127,6 +135,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Mexican" x:Name="TabItem_Mexican">
@@ -141,6 +151,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Portuguese" x:Name="TabItem_Portuguese">
@@ -155,6 +167,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Russian" x:Name="TabItem_Russian">
@@ -169,6 +183,8 @@
                                 <c:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellDescriptionGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,357,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
                                 <c:ThreadSafeTextBox x:Name="SpellTooltipGen8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="319,202,0,0" Height="118" Width="240" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
+                                <Label Content="Spell Ingame Tooltip:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="376,171,0,0" RenderTransformOrigin="0.202,0.398"/>
+                                <Label Content="Spell Ingame Description:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363,326,0,0" Width="157"/>
                             </Grid>
                         </TabItem>
                     </TabControl>
