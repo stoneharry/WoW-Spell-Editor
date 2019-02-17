@@ -25,6 +25,8 @@ using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Binding;
 using System.Diagnostics;
+using System.Threading;
+using System.Globalization;
 
 namespace SpellEditor
 {
@@ -142,13 +144,24 @@ namespace SpellEditor
                 var writer = new StreamWriter(ostrm);
                 Console.SetOut(writer);
             }
+            // Ensure the decimal seperator used is always a full stop
+            var customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            Thread.CurrentThread.CurrentCulture = customCulture;
+            // Banner
             Console.WriteLine("######################################################");
             Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
             Console.WriteLine("######################################################");
             InitializeComponent();
         }
         // Ensure redirected console output is flushed
-        ~MainWindow() => Console.Out.Flush();
+        ~MainWindow()
+        {
+            Console.WriteLine("######################################################");
+            Console.WriteLine($"Stopped WoW Spell Editor - {DateTime.Now.ToString()}");
+            Console.WriteLine("######################################################");
+            Console.Out.Flush();
+        }
 
         public async void HandleErrorMessage(string msg)
         {
@@ -1755,7 +1768,6 @@ namespace SpellEditor
             var watch = new Stopwatch();
             watch.Start();
             DataRowCollection collection = (DataRowCollection)e.UserState;
-            SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
             int locale = GetLocale();
             var newElements = new List<UIElement>();
             foreach (DataRow row in collection)
@@ -1775,6 +1787,7 @@ namespace SpellEditor
                     newElements.Add(stackPanel);
                 }
             }
+            SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
             foreach (var element in newElements)
                 SelectSpell.Items.Add(element);
             watch.Stop();
