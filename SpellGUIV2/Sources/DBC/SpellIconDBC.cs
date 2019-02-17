@@ -2,7 +2,9 @@
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,7 +32,6 @@ namespace SpellEditor.Sources.DBC
             try
             {
                 ReadDBCFile("DBC/SpellIcon.dbc");
-
                 for (uint i = 0; i < Header.RecordCount; ++i)
                 {
                     var record = Body.RecordMaps[i];
@@ -71,11 +72,23 @@ namespace SpellEditor.Sources.DBC
             iconMargin = margin;
         }
 
+        private class Worker : BackgroundWorker
+        {
+            public IDatabaseAdapter _adapter;
+
+            public Worker(IDatabaseAdapter _adapter)
+            {
+                this._adapter = _adapter;
+            }
+        }
+
         public void UpdateMainWindowIcons(double margin)
         {
             // adapter.query below caused unhandled exception with main.selectedID as 0.
             if (adapter == null || main.selectedID == 0)
                 return;
+            
+            // Convert to background worker here
 
             DataRow res = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
             uint iconInt = uint.Parse(res[0].ToString());
@@ -86,72 +99,84 @@ namespace SpellEditor.Sources.DBC
             {
                 using (BlpFile image = new BlpFile(fileStream))
                 {
-                    Bitmap bit = image.getBitmap(0);
-                    System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+                    using (var bit = image.getBitmap(0))
+                    {
+                        System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
 
-                    temp.Width = iconSize == null ? 32 : iconSize.Value;
-                    temp.Height = iconSize == null ? 32 : iconSize.Value;
-                    temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
-                    temp.VerticalAlignment = VerticalAlignment.Top;
-                    temp.HorizontalAlignment = HorizontalAlignment.Left;
-                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                    temp.Name = "CurrentSpellIcon";
+                        temp.Width = iconSize == null ? 32 : iconSize.Value;
+                        temp.Height = iconSize == null ? 32 : iconSize.Value;
+                        temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
+                        temp.VerticalAlignment = VerticalAlignment.Top;
+                        temp.HorizontalAlignment = HorizontalAlignment.Left;
+                        temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                            bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, 
+                            BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                        temp.Name = "CurrentSpellIcon";
 
-                    // Code smells here on hacky positioning and updating the icon
-                    temp.Margin = new Thickness(103, 38, 0, 0);
-                    main.CurrentIconGrid.Children.Clear();
-                    main.CurrentIconGrid.Children.Add(temp);
+                        // Code smells here on hacky positioning and updating the icon
+                        temp.Margin = new Thickness(103, 38, 0, 0);
+                        main.CurrentIconGrid.Children.Clear();
+                        main.CurrentIconGrid.Children.Add(temp);
+                    }
                 }
             }
             
             // Load all icons available if have not already
             if (!loadedAllIcons)
             {
-                loadedAllIcons = true;
+                var watch = new Stopwatch();
+                watch.Start();
+                LoadAllIcons(margin);
+                watch.Stop();
+                Console.WriteLine($"Loaded all icons as UI elements in {watch.ElapsedMilliseconds}ms");
+            }
+        }
 
-                List<Icon_DBC_Lookup> lookups = Lookups.ToList();
-                foreach (var entry in lookups)
+        public void LoadAllIcons(double margin)
+        {
+            loadedAllIcons = true;
+            List<Icon_DBC_Lookup> lookups = Lookups.ToList();
+            foreach (var entry in lookups)
+            {
+                var path = entry.Name;
+                if (!File.Exists(path + ".blp"))
                 {
-                    var path = entry.Name;
-                    if (!File.Exists(path + ".blp"))
+                    Console.WriteLine("Warning: Icon not found: " + path + ".blp");
+                    continue;
+                }
+                bool loaded = false;
+                Bitmap bit = null;
+                try
+                {
+                    using (FileStream fileStream = new FileStream(path + ".blp", FileMode.Open))
                     {
-                        Console.WriteLine("Warning: Icon not found: " + path + ".blp");
-                        continue;
-                    }
-                    bool loaded = false;
-                    Bitmap bit = null;
-                    try
-                    {
-                        using (FileStream fileStream = new FileStream(path + ".blp", FileMode.Open))
+                        using (BlpFile image = new BlpFile(fileStream))
                         {
-                            using (BlpFile image = new BlpFile(fileStream))
-                            {
-                                bit = image.getBitmap(0);
-                                loaded = true;
-                            }
+                            bit = image.getBitmap(0);
+                            loaded = true;
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($"Error loading image, unsupported BLP format: {path}.blp\n{e.Message}\n{e}");
-                    }
-                    if (!loaded)
-                        continue;
-
-                    System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
-
-                    temp.Width = iconSize == null ? 32 : iconSize.Value;
-                    temp.Height = iconSize == null ? 32 : iconSize.Value;
-                    temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
-                    temp.VerticalAlignment = VerticalAlignment.Top;
-                    temp.HorizontalAlignment = HorizontalAlignment.Left;
-                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                    temp.Name = "Index_" + entry.Offset;
-                    temp.ToolTip = path;
-                    temp.MouseDown += ImageDown;
-
-                    main.IconGrid.Children.Add(temp);
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error loading image, unsupported BLP format: {path}.blp\n{e.Message}\n{e}");
+                }
+                if (!loaded)
+                    continue;
+
+                System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+                temp.Width = iconSize == null ? 32 : iconSize.Value;
+                temp.Height = iconSize == null ? 32 : iconSize.Value;
+                temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
+                temp.VerticalAlignment = VerticalAlignment.Top;
+                temp.HorizontalAlignment = HorizontalAlignment.Left;
+                temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                temp.Name = "Index_" + entry.Offset;
+                temp.ToolTip = path;
+                temp.MouseDown += ImageDown;
+
+                main.IconGrid.Children.Add(temp);
+                bit.Dispose();
             }
         }
 

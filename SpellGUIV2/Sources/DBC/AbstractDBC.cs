@@ -3,6 +3,7 @@ using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -26,6 +27,9 @@ namespace SpellEditor.Sources.DBC
 
         public void ReloadContents()
         {
+            var bodyWatch = new Stopwatch();
+            var stringWatch = new Stopwatch();
+            bodyWatch.Start();
             Body = new DBCBody();
             Reader = new DBCReader(_filePath);
             var name = Path.GetFileNameWithoutExtension(_filePath);
@@ -34,7 +38,13 @@ namespace SpellEditor.Sources.DBC
                 throw new Exception($"Binding not found: {name}.txt");
             Header = Reader.ReadDBCHeader();
             Reader.ReadDBCRecords(Body, name);
+            bodyWatch.Stop();
+            stringWatch.Start();
             Reader.ReadStringBlock();
+            stringWatch.Stop();
+            var totalElapsed = stringWatch.ElapsedMilliseconds + bodyWatch.ElapsedMilliseconds;
+            Console.WriteLine(
+                $"Loaded {name}.dbc into memory in {totalElapsed}ms. Records: {bodyWatch.ElapsedMilliseconds}ms, strings: {stringWatch.ElapsedMilliseconds}ms");
         }
 
         public Dictionary<string, object> LookupRecord(uint ID) => LookupRecord(ID, "ID");

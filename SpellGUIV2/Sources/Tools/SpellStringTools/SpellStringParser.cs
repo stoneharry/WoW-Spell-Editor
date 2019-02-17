@@ -25,7 +25,7 @@ namespace SpellEditor.Sources.SpellStringTools
             return SpellStringReferenceResolver.GetParsedForm(reference, spell, mainWindow);
         }
 
-        // Parse a string like: "Hello world 1 + 5 + 7 = ${1 + 5 + 7}, 5 / 10.15 - 1 + 0.25 = ${5/10.15-1+0.25}"
+        // Parse a string like: "Hello world 1 + 5 + 7 = ${1 + 5 + 7}, 5 / 10.15 - 1 + 0.25 = ${5/10.15-1+0.25} and $/10;17057s1"
         // Can parse references like "$s1"
         public string ParseString(string str, DataRow spell, MainWindow mainWindow)
         {
