@@ -1,9 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    
+
     <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
-    
     <system:String x:Key="tabSelectSpell">Select Spell</system:String>
     <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
     <system:String x:Key="labGoToSpell">Go to spell:</system:String>
@@ -17,16 +16,12 @@
     <system:String x:Key="tabMexican">Mexican</system:String>
     <system:String x:Key="tabPortuguese">Portuguese</system:String>
     <system:String x:Key="tabRussian">Russian</system:String>
-
     <system:String x:Key="labSpellName">Spell Name:</system:String>
     <system:String x:Key="labSpellRank">Spell Rank:</system:String>
     <system:String x:Key="labSpellTooltip">Spell Tooltip:</system:String>
     <system:String x:Key="labSpellIngameTooltip">Spell Ingame Tooltip:</system:String>
     <system:String x:Key="labSpellDescription">Spell Description:</system:String>
     <system:String x:Key="labSpellIngameDescription">Spell Ingame Description:</system:String>
-
-
-
     <system:String x:Key="Base">Base</system:String>
     <system:String x:Key="Effects">Effects</system:String>
     <system:String x:Key="Effects1">Effects 1</system:String>
@@ -41,10 +36,58 @@
     <system:String x:Key="Attributes">Attributes</system:String>
     <system:String x:Key="Attributes2">Attributes2</system:String>
     <system:String x:Key="Misc">Misc</system:String>
-
     <system:String x:Key="butResetSpellIconID">Reset Spell Icon ID</system:String>
     <system:String x:Key="butResetActiveIconID">Reset Active Icon ID</system:String>
-    
+    <system:String x:Key="labCategory">Category:</system:String>
+    <system:String x:Key="labDispelType">Dispel Type:</system:String>
+    <system:String x:Key="labMechanicType">Mechanic Type:</system:String>
+    <system:String x:Key="labCastTime">Cast Time:</system:String>
+    <system:String x:Key="labDuration">Duration:</system:String>
+    <system:String x:Key="labRange">Range:</system:String>
+    <system:String x:Key="labCasterAuraState">Caster Aura State:</system:String>
+    <system:String x:Key="labSpellLevel">Spell Level:</system:String>
+    <system:String x:Key="labBaseLevel">Base Level:</system:String>
+    <system:String x:Key="labMaxLevel">Max Level:</system:String>
+    <system:String x:Key="labSpellVisual1">Spell Visual 1:</system:String>
+    <system:String x:Key="labSpellVisual2">Spell Visual 2:</system:String>
+    <system:String x:Key="labSpeed">Speed:</system:String>
+    <system:String x:Key="labTargetAuraState">Target Aura State:</system:String>
+    <system:String x:Key="labRecoveryTime">Recovery Time:</system:String>
+    <system:String x:Key="labCategoryRecoveryTime">Category Recovery Time:</system:String>
+    <system:String x:Key="labSpellMissileID">Spell Missile ID:</system:String>
+    <system:String x:Key="labStacks">Stacks:</system:String>
+    <system:String x:Key="labDifficulty">Difficulty:</system:String>
+    <system:String x:Key="labPowerType">Power Type:</system:String>
+    <system:String x:Key="labGlobalCooldownCategory">Global Cooldown Category:</system:String>
+    <system:String x:Key="labPowerCost">Power Cost:</system:String>
+    <system:String x:Key="labManaCostPerLevel">Mana Cost Per Level:</system:String>
+    <system:String x:Key="labManaCostPerSecond">Mana Cost Per Second:</system:String>
+    <system:String x:Key="labPerSecondPerLevel">Per Second Per Level:</system:String>
+    <system:String x:Key="labManaCost%">Mana Cost %:</system:String>
+    <system:String x:Key="labSpellFamilyName">Spell Family Name:</system:String>
+    <system:String x:Key="labSpellFamilyFlags">Spell Family Flags:</system:String>
+    <system:String x:Key="labSpellFamilyFlags1">Spell Family Flags1:</system:String>
+    <system:String x:Key="labSpellFamilyFlags2">Spell Family Flags2:</system:String>
+    <system:String x:Key="labGlobalCooldownTime">Global Cooldown Time:</system:String>
+    <system:String x:Key="labMaxTargets">Max Targets:</system:String>
+    <system:String x:Key="labMaxTargetsLevel">Max Targets Level:</system:String>
+    <system:String x:Key="labTotemCategory1">Totem Category 1:</system:String>
+    <system:String x:Key="labTotemCategory2">Totem Category 2:</system:String>
+    <system:String x:Key="labAreaGroup">Area Group:</system:String>
+    <system:String x:Key="labPreventionType">Prevention Type:</system:String>
+    <system:String x:Key="labSpellDamageType">Spell Damage Type:</system:String>
+    <system:String x:Key="labRequiresSpellFocus">Requires Spell Focus:</system:String>
+    <system:String x:Key="labRuneCost">Rune Cost:</system:String>
+    <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
+    <system:String x:Key="labSchool">School:</system:String>
+    <system:String x:Key="checkboxPhysical">Physical</system:String>
+    <system:String x:Key="checkboxHoly">Holy</system:String>
+    <system:String x:Key="checkboxFire">Fire</system:String>
+    <system:String x:Key="checkboxNature">Nature</system:String>
+    <system:String x:Key="checkboxFrost">Frost</system:String>
+    <system:String x:Key="checkboxShadow">Shadow</system:String>
+    <system:String x:Key="checkboxArcane">Arcane</system:String>
+    <system:String x:Key="checkboxFacingFrontFlag">FacingFrontFlag</system:String>
 
 
 </ResourceDictionary>
