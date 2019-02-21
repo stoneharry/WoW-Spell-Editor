@@ -153,4 +153,16 @@
     <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
     <system:String x:Key="labCreatureType">Creature Type:</system:String>
     <system:String x:Key="labStances">Stances:</system:String>
+    <system:String x:Key="labCurrentIcon">Current Icon:</system:String>
+    <system:String x:Key="labNewIcon">New Icon:</system:String>
+    <system:String x:Key="labFiltericons">Filter icons:</system:String>
+    <system:String x:Key="butSaveIcon">Confirm</system:String>
+
+    <system:String x:Key="butImportExportDBC">Import/Export</system:String>
+    <system:String x:Key="butTruncateTable">Truncate Table</system:String>
+    <system:String x:Key="butInsertANewRecord">New Spell</system:String>
+    <system:String x:Key="butDeleteARecord">Delete Spell</system:String>
+    <system:String x:Key="butSaveSpellChanges">Save Spell Changes</system:String>
+    
+    
 </ResourceDictionary>

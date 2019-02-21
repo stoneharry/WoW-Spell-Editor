@@ -582,19 +582,19 @@
             </TabItem>
             <TabItem Header="{DynamicResource Icon}">
                 <Grid>
-                    <Label Content="Current Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
+                    <Label Content="{DynamicResource labCurrentIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
                     <Grid Name="CurrentIconGrid"/>
                     <Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
-                    <Label Content="New Icon:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
+                    <Label Content="{DynamicResource labNewIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
                     <Grid Name="NewIconGrid"/>
                     <ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
                         <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
                     </ScrollViewer>
                     <Button Name="ResetSpellIconID" Content="{DynamicResource butResetSpellIconID}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
                     <Button Name="ResetActiveIconID" Content="{DynamicResource butResetActiveIconID}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
-                    <Label Content="Filter icons:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
+                    <Label Content="{DynamicResource labFiltericons}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
                     <c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                    <Button Name="SaveIcon" Content="Confirm" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
+                    <Button Name="SaveIcon" Content="{DynamicResource butSaveIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
                     <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="Controls icon width &amp; height (pixels)" Focusable="False" Grid.Column="2"/>
                 </Grid>
             </TabItem>
@@ -604,27 +604,27 @@
         <controls:WindowCommands>
             <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Import/Export" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
             <Button Name="TruncateTable" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Truncate Table" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
             <Button Name="InsertANewRecord" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="New Spell" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource butInsertANewRecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
             <Button Name="DeleteARecord" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Delete Spell" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource butDeleteARecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
             <Button Name="SaveSpellChanges" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Save Spell Changes" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </controls:WindowCommands>
