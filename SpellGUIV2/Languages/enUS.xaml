@@ -92,7 +92,6 @@
     <system:String x:Key="labProcs">Procs:</system:String>
     <system:String x:Key="labProcCharges">Proc Charges:</system:String>
     <system:String x:Key="labProcChance">Proc Chance:</system:String>
-
     <system:String x:Key="labSpellEffect">Spell Effect:</system:String>
     <system:String x:Key="labBasePoints">Base Points:</system:String>
     <system:String x:Key="labDieSides">Die Sides:</system:String>
@@ -120,4 +119,25 @@
     <system:String x:Key="labDamageMultiplier3">Damage Multiplier 3:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
 
+    <system:String x:Key="labItemTool1">Item Tool 1:</system:String>
+    <system:String x:Key="labItemTool2">Item Tool 2:</system:String>
+    <system:String x:Key="labReagent1">Reagent 1:</system:String>
+    <system:String x:Key="labReagent2">Reagent 2:</system:String>
+    <system:String x:Key="labReagent3">Reagent 3:</system:String>
+    <system:String x:Key="labReagent4">Reagent 4:</system:String>
+    <system:String x:Key="labReagent5">Reagent 5:</system:String>
+    <system:String x:Key="labReagent6">Reagent 6:</system:String>
+    <system:String x:Key="labReagent7">Reagent 7:</system:String>
+    <system:String x:Key="labReagent8">Reagent 8:</system:String>
+    <system:String x:Key="labReagentCount1">Reagent Count 1:</system:String>
+    <system:String x:Key="labReagentCount2">Reagent Count 2:</system:String>
+    <system:String x:Key="labReagentCount3">Reagent Count 3:</system:String>
+    <system:String x:Key="labReagentCount4">Reagent Count 4:</system:String>
+    <system:String x:Key="labReagentCount5">Reagent Count 5:</system:String>
+    <system:String x:Key="labReagentCount6">Reagent Count 6:</system:String>
+    <system:String x:Key="labReagentCount7">Reagent Count 7:</system:String>
+    <system:String x:Key="labReagentCount8">Reagent Count 8:</system:String>
+    <system:String x:Key="labEquippedItemClass">Equipped Item Class:</system:String>
+    <system:String x:Key="labEquippedItemInventoryType">Equipped Item Inventory Type:</system:String>
+    <system:String x:Key="labEquippedItemSubClass">Equipped Item SubClass:</system:String>
 </ResourceDictionary>
