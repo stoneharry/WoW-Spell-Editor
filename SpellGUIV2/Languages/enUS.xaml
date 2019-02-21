@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-
+    <!--UI string start-->
     <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
     <system:String x:Key="tabSelectSpell">Select Spell</system:String>
     <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
@@ -118,7 +118,6 @@
     <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
     <system:String x:Key="labDamageMultiplier3">Damage Multiplier 3:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
-
     <system:String x:Key="labItemTool1">Item Tool 1:</system:String>
     <system:String x:Key="labItemTool2">Item Tool 2:</system:String>
     <system:String x:Key="labReagent1">Reagent 1:</system:String>
@@ -158,16 +157,17 @@
     <system:String x:Key="labFiltericons">Filter icons:</system:String>
     <system:String x:Key="butSaveIcon">Confirm</system:String>
     <system:String x:Key="sliderChangeIconSizeTooltip">Controls icon width &amp; height (pixels)</system:String>
-    
     <system:String x:Key="butImportExportDBC">Import/Export</system:String>
     <system:String x:Key="butTruncateTable">Truncate Table</system:String>
     <system:String x:Key="butInsertANewRecord">New Spell</system:String>
     <system:String x:Key="butDeleteARecord">Delete Spell</system:String>
     <system:String x:Key="butSaveSpellChanges">Save Spell Changes</system:String>
-
     <system:String x:Key="butImportExportWindowImport">Import</system:String>
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
+    <!--UI string end-->
 
-
+    <!--Code string start-->
+    
+    <!--Code string end-->
 </ResourceDictionary>
