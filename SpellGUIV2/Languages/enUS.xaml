@@ -1,4 +1,50 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
+    
+    <system:String x:Key="tabSelectSpell">Select Spell</system:String>
+    <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
+    <system:String x:Key="labGoToSpell">Go to spell:</system:String>
+    <system:String x:Key="labFilterBtName">Filter by name:</system:String>
+    <system:String x:Key="tabEnglish">English</system:String>
+    <system:String x:Key="tabKorean">Korean</system:String>
+    <system:String x:Key="tabFrench">French</system:String>
+    <system:String x:Key="tabDeutsch">Deutsch</system:String>
+    <system:String x:Key="tabChinese">Chinese</system:String>
+    <system:String x:Key="tabTaiwanese">Taiwanese</system:String>
+    <system:String x:Key="tabMexican">Mexican</system:String>
+    <system:String x:Key="tabPortuguese">Portuguese</system:String>
+    <system:String x:Key="tabRussian">Russian</system:String>
+
+    <system:String x:Key="labSpellName">Spell Name:</system:String>
+    <system:String x:Key="labSpellRank">Spell Rank:</system:String>
+    <system:String x:Key="labSpellTooltip">Spell Tooltip:</system:String>
+    <system:String x:Key="labSpellIngameTooltip">Spell Ingame Tooltip:</system:String>
+    <system:String x:Key="labSpellDescription">Spell Description:</system:String>
+    <system:String x:Key="labSpellIngameDescription">Spell Ingame Description:</system:String>
+
+
+
+    <system:String x:Key="Base">Base</system:String>
+    <system:String x:Key="Effects">Effects</system:String>
+    <system:String x:Key="Effects1">Effects 1</system:String>
+    <system:String x:Key="Effects2">Effects 2</system:String>
+    <system:String x:Key="SpellEffects1">Spell Effects 1</system:String>
+    <system:String x:Key="SpellEffects2">Spell Effects 2</system:String>
+    <system:String x:Key="SpellEffects3">Spell Effects 3</system:String>
+    <system:String x:Key="Items">Items</system:String>
+    <system:String x:Key="Flags">Flags</system:String>
+    <system:String x:Key="Icon">Icon</system:String>
+    <system:String x:Key="Interrupts">Interrupts</system:String>
+    <system:String x:Key="Attributes">Attributes</system:String>
+    <system:String x:Key="Attributes2">Attributes2</system:String>
+    <system:String x:Key="Misc">Misc</system:String>
+
+    <system:String x:Key="butResetSpellIconID">Reset Spell Icon ID</system:String>
+    <system:String x:Key="butResetActiveIconID">Reset Active Icon ID</system:String>
+    
+
+
 </ResourceDictionary>
