@@ -140,4 +140,17 @@
     <system:String x:Key="labEquippedItemClass">Equipped Item Class:</system:String>
     <system:String x:Key="labEquippedItemInventoryType">Equipped Item Inventory Type:</system:String>
     <system:String x:Key="labEquippedItemSubClass">Equipped Item SubClass:</system:String>
+    <system:String x:Key="labInterruptFlags">Interrupt Flags:</system:String>
+    <system:String x:Key="labAuraInterruptFlags">Aura Interrupt Flags:</system:String>
+    <system:String x:Key="labChannelInterruptFlags">Channel Interrupt Flags:</system:String>
+    <system:String x:Key="labAttributes">Attributes:</system:String>
+    <system:String x:Key="labAttributesEx">Attributes Ex:</system:String>
+    <system:String x:Key="labAttributesEx2">Attributes Ex2:</system:String>
+    <system:String x:Key="labAttributesEx3">Attributes Ex3:</system:String>
+    <system:String x:Key="labAttributesEx4">Attributes Ex4:</system:String>
+    <system:String x:Key="labAttributesEx5">Attributes Ex5:</system:String>
+    <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
+    <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
+    <system:String x:Key="labCreatureType">Creature Type:</system:String>
+    <system:String x:Key="labStances">Stances:</system:String>
 </ResourceDictionary>
