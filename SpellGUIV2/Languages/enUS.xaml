@@ -88,6 +88,36 @@
     <system:String x:Key="checkboxShadow">Shadow</system:String>
     <system:String x:Key="checkboxArcane">Arcane</system:String>
     <system:String x:Key="checkboxFacingFrontFlag">FacingFrontFlag</system:String>
+    <system:String x:Key="labTargets">Targets:</system:String>
+    <system:String x:Key="labProcs">Procs:</system:String>
+    <system:String x:Key="labProcCharges">Proc Charges:</system:String>
+    <system:String x:Key="labProcChance">Proc Chance:</system:String>
 
+    <system:String x:Key="labSpellEffect">Spell Effect:</system:String>
+    <system:String x:Key="labBasePoints">Base Points:</system:String>
+    <system:String x:Key="labDieSides">Die Sides:</system:String>
+    <system:String x:Key="labRealPointsPerLevel">Real Points Per Level:</system:String>
+    <system:String x:Key="labMechanic">Mechanic:</system:String>
+    <system:String x:Key="labTargetA">Target A:</system:String>
+    <system:String x:Key="labTargetB">Target B:</system:String>
+    <system:String x:Key="labRadius">Radius:</system:String>
+    <system:String x:Key="labApplyAuraName">Apply Aura Name:</system:String>
+    <system:String x:Key="labAmplitude">Amplitude:</system:String>
+    <system:String x:Key="labMultipleValue">Multiple Value:</system:String>
+    <system:String x:Key="labChainTarget">Chain Target:</system:String>
+    <system:String x:Key="labItemType">Item Type:</system:String>
+    <system:String x:Key="labTriggerSpell">Trigger Spell:</system:String>
+    <system:String x:Key="labPointsPerComboPoint">Points Per Combo Point:</system:String>
+    <system:String x:Key="labMiscValueA">Misc Value A:</system:String>
+    <system:String x:Key="labMiscValueB">Misc Value B:</system:String>
+    <system:String x:Key="labSpellClassMask1">Spell Class Mask 1:</system:String>
+    <system:String x:Key="labSpellClassMask2">Spell Class Mask 2:</system:String>
+    <system:String x:Key="labSpellClassMask3">Spell Class Mask 3:</system:String>
+    <system:String x:Key="labDamageMultiplier1">Damage Multiplier 1:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier1">EffectBonusMultiplier 1:</system:String>
+    <system:String x:Key="labDamageMultiplier2">Damage Multiplier 2:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
+    <system:String x:Key="labDamageMultiplier3">Damage Multiplier 3:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
 
 </ResourceDictionary>
