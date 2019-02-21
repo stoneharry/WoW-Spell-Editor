@@ -41,7 +41,7 @@
                     <Label Content="{DynamicResource labFilterBtName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="199.873,83,0,0" Grid.Column="1"/>
                     <c:ThreadSafeTextBox x:Name="FilterSpellNames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="292.873,83,0,0" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Column="1"/>
 
-                    <Label Name="SpellsLoadedLabel" Content="{DynamicResource labSpellsLoaded}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="193,0,0,613" Grid.Column="1"/>
+                    <Label Name="SpellsLoadedLabel" Content="{DynamicResource labSpellsLoaded}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="192.873,9,0,0" Grid.Column="1"/>
                     <ListBox Name="SelectSpell" VerticalAlignment="Top" HorizontalAlignment="Left" Height="642" Width="443" SelectionChanged="SelectSpell_SelectionChanged" Focusable="False" Grid.ColumnSpan="2"/>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="193,114,0,0" Height="546" Width="822" Grid.Column="1">
                         <TabItem x:Name="TabItem_English" Header="{DynamicResource tabEnglish}">
