@@ -283,7 +283,7 @@
                     <c:ThreadSafeCheckBox x:Name="S5" Content="{DynamicResource checkboxFrost}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,53,0,0"/>
                     <c:ThreadSafeCheckBox x:Name="S6" Content="{DynamicResource checkboxShadow}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,71,0,0"/>
                     <c:ThreadSafeCheckBox x:Name="S7" Content="{DynamicResource checkboxArcane}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,89,0,0"/>
-                    <c:ThreadSafeCheckBox x:Name="{DynamicResource checkboxFacingFrontFlag}" Content="Facing Front" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,147,0,0"/>
+                    <c:ThreadSafeCheckBox x:Name="FacingFrontFlag" Content="{DynamicResource checkboxFacingFront}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1139,147,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Effects}">

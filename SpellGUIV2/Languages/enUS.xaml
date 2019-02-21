@@ -87,7 +87,7 @@
     <system:String x:Key="checkboxFrost">Frost</system:String>
     <system:String x:Key="checkboxShadow">Shadow</system:String>
     <system:String x:Key="checkboxArcane">Arcane</system:String>
-    <system:String x:Key="checkboxFacingFrontFlag">FacingFrontFlag</system:String>
+    <system:String x:Key="checkboxFacingFront">FacingFront</system:String>
     <system:String x:Key="labTargets">Targets:</system:String>
     <system:String x:Key="labProcs">Procs:</system:String>
     <system:String x:Key="labProcCharges">Proc Charges:</system:String>
