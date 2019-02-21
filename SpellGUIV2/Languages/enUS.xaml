@@ -157,7 +157,8 @@
     <system:String x:Key="labNewIcon">New Icon:</system:String>
     <system:String x:Key="labFiltericons">Filter icons:</system:String>
     <system:String x:Key="butSaveIcon">Confirm</system:String>
-
+    <system:String x:Key="sliderChangeIconSizeTooltip">Controls icon width &amp; height (pixels)</system:String>
+    
     <system:String x:Key="butImportExportDBC">Import/Export</system:String>
     <system:String x:Key="butTruncateTable">Truncate Table</system:String>
     <system:String x:Key="butInsertANewRecord">New Spell</system:String>
