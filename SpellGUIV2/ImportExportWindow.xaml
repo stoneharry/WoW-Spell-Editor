@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
-        Title="Import and Export"
+        Title="{DynamicResource ImportExportWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
         Loaded="_Loaded">
@@ -17,10 +17,10 @@
     </controls:MetroWindow.Resources>
     <Grid>
         <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
-      <TabItem Header="Import">
+      <TabItem Header="{DynamicResource butImportExportWindowImport}">
         <UniformGrid Name="ImportGrid" Columns = "1"/>
       </TabItem>
-      <TabItem Header="Export">
+      <TabItem Header="{DynamicResource butImportExportWindowExport}">
         <UniformGrid Name="ExportGrid" Columns = "1"/>
       </TabItem>
         </TabControl>

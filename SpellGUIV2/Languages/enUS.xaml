@@ -163,6 +163,10 @@
     <system:String x:Key="butInsertANewRecord">New Spell</system:String>
     <system:String x:Key="butDeleteARecord">Delete Spell</system:String>
     <system:String x:Key="butSaveSpellChanges">Save Spell Changes</system:String>
-    
-    
+
+    <system:String x:Key="butImportExportWindowImport">Import</system:String>
+    <system:String x:Key="butImportExportWindowExport">Export</system:String>
+    <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
+
+
 </ResourceDictionary>
