@@ -153,6 +153,16 @@ namespace SpellEditor
             Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
             Console.WriteLine("######################################################");
             InitializeComponent();
+
+            foreach (var item in Directory.GetFiles("Languages"))
+            {
+                FileInfo f = new FileInfo(item);
+                string fileName = new FileInfo(item).Name.Replace(f.Extension, "");
+                MultilingualSwitch.Items.Add(fileName);
+
+                if (fileName == "enUS")
+                    MultilingualSwitch.SelectedIndex = MultilingualSwitch.Items.Count-1;
+            }
         }
         // Ensure redirected console output is flushed
         ~MainWindow()
@@ -2966,5 +2976,12 @@ namespace SpellEditor
             }
         }
         #endregion
+
+        private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string language = e.AddedItems[0].ToString();
+            string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", language == "enUS" ? "application" : "SiteOfOrigin", language);
+            Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
+        }
     };
 };

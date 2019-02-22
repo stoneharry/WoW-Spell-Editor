@@ -627,6 +627,7 @@
                     <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
+            <ComboBox Name="MultilingualSwitch" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" SelectionChanged="MultilingualSwitch_SelectionChanged"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>
