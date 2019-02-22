@@ -2980,6 +2980,8 @@ namespace SpellEditor
             foreach (var item in Directory.GetFiles("Languages"))
             {
                 FileInfo f = new FileInfo(item);
+                if (f.Extension != ".xaml")
+                    continue;
                 string fileName = new FileInfo(item).Name.Replace(f.Extension, "");
                 if (fileName != "enUS")
                     MultilingualSwitch.Items.Add(fileName);
