@@ -169,6 +169,10 @@
     <!--UI string end-->
 
     <!--Code string start-->
-    
+    <system:String x:Key="SpellEditor">Spell Editor</system:String>
+    <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor for version 3.3.5a (12340).
+
+Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
+
     <!--Code string end-->
 </ResourceDictionary>

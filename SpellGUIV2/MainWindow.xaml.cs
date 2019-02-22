@@ -774,9 +774,8 @@ namespace SpellEditor
                     AnimateShow = true,
                     ColorScheme = MetroDialogColorScheme.Accented,
                 };
-                MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor",
-                    "Welcome to a WoW spell editor for version 3.3.5a (12340).\n\n" +
-                    "Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?",
+                MessageDialogResult exitCode = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(),
+                    TryFindResource("Welcome").ToString(),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
                 if (!File.Exists("config.xml") && !isSqlite)
