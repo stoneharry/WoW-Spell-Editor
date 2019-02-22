@@ -2976,21 +2976,19 @@ namespace SpellEditor
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
+            MultilingualSwitch.Items.Add("enUS");
             foreach (var item in Directory.GetFiles("Languages"))
             {
                 FileInfo f = new FileInfo(item);
                 string fileName = new FileInfo(item).Name.Replace(f.Extension, "");
-                MultilingualSwitch.Items.Add(fileName);
+                if (fileName != "enUS")
+                    MultilingualSwitch.Items.Add(fileName);
+            }
+            MultilingualSwitch.SelectedIndex = 0;
 
-                if (fileName == "enUS")
-                    MultilingualSwitch.SelectedIndex = MultilingualSwitch.Items.Count - 1;
-            }
-            if (MultilingualSwitch.Items.Count == 0)
-            {
-                MultilingualSwitch.Items.Add("enUS");
-                MultilingualSwitch.SelectedIndex = 0;
-            }
             //todo: load config.
+            //MultilingualSwitch.SelectedIndex = config.language;
+
         }
     };
 };
