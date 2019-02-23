@@ -127,11 +127,6 @@ namespace SpellEditor
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
         #endregion
 
-        public Config GetConfig()
-        {
-            return config;
-        }
-
         public IDatabaseAdapter GetDBAdapter()
         {
             return adapter;
@@ -656,7 +651,7 @@ namespace SpellEditor
         #region InitialiseMemberVariables
         private async void loadAllData()
         {
-            config = await getConfig();
+            config = await GetConfig();
             if (config == null)
             {
                 await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), TryFindResource("String2").ToString());
@@ -723,8 +718,10 @@ namespace SpellEditor
             await controller.CloseAsync();
         }
 
-        private async Task<Config> getConfig()
+        private async Task<Config> GetConfig()
         {
+            if (config != null)
+                return config;
             string errorMsg = "";
             try
             {
@@ -755,8 +752,7 @@ namespace SpellEditor
                             !uint.TryParse(port, out result))
                         throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
 
-                    config.WriteConfigFile(host, user, pass, port, db);
-                    
+                    config.WriteConfigFile(host, user, pass, port, db, config.Language);
                 }
                 if (File.Exists("config.xml"))
                 {
@@ -2926,47 +2922,22 @@ namespace SpellEditor
         }
         #endregion
 
-        public void changeConfigValue(string key, string value)
-        {
-            if (!File.Exists("config.xml"))
-                return;
-
-            var xml = new XmlDocument();
-            xml.Load("config.xml");
-            var node = xml.SelectSingleNode("MySQL/" + key);
-
-            if (node == null)
-                return;
-
-            node.InnerText = value;
-            xml.Save("config.xml");
-
-            if (GetConfig() != null)
-                config.ReadConfigFile();
-        }
-
-        public string getConfigValue(string key)
-        {
-            var xml = new XmlDocument();
-            if (!File.Exists("config.xml"))
-                return "";
-
-            xml.Load("config.xml");
-            var node = xml.SelectSingleNode("MySQL/" + key);
-            return node==null ? "" : node.InnerText;
-        }
-
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string language = e.AddedItems[0].ToString();
-            string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", language == "enUS" ? "application" : "SiteOfOrigin", language);
+            string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
-            changeConfigValue("language", language);
+            config.UpdateConfigValue("language", language);
         }
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
-            string configLanguage = getConfigValue("language");
+            if (config == null)
+            {
+                config = new Config();
+                config.WriteConfigFile();
+            }
+            string configLanguage = config.GetConfigValue("language");
             configLanguage = configLanguage == "" ? "enUS" : configLanguage;
 
             MultilingualSwitch.Items.Add("enUS");

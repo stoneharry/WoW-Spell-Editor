@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
+using System.IO;
 using System.Xml;
 
 namespace SpellEditor.Sources.Config
@@ -21,7 +21,8 @@ namespace SpellEditor.Sources.Config
 
         public ConnectionType connectionType = ConnectionType.SQLite;
 
-        public void WriteConfigFile(string host, string user, string pass, string port, string database)
+        public void WriteConfigFile() => WriteConfigFile(Host, User, Pass, Port, Database, Language);
+        public void WriteConfigFile(string host, string user, string pass, string port, string database, string language)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -35,7 +36,7 @@ namespace SpellEditor.Sources.Config
                 writer.WriteElementString("password", pass);
                 writer.WriteElementString("port", port);
                 writer.WriteElementString("database", database);
-                writer.WriteElementString("language", Language);
+                writer.WriteElementString("language", language);
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }
@@ -74,12 +75,37 @@ namespace SpellEditor.Sources.Config
                         hasError = true;
                 }
                 if (hasError)
-                    WriteConfigFile(Host, User, Pass, Port, Language);
+                    WriteConfigFile(Host, User, Pass, Port, Database, Language);
             }
             catch (Exception e)
             {
                 throw new Exception("ERROR: config.xml is corrupt - please delete it and run the program again.\n" + e.Message);
             }
+        }
+
+        public void UpdateConfigValue(string key, string value)
+        {
+            if (!File.Exists("config.xml"))
+                return;
+            var xml = new XmlDocument();
+            xml.Load("config.xml");
+            var node = xml.SelectSingleNode("MySQL/" + key);
+            if (node == null)
+                return;
+            node.InnerText = value;
+            xml.Save("config.xml");
+
+            ReadConfigFile();
+        }
+
+        public string GetConfigValue(string key)
+        {
+            var xml = new XmlDocument();
+            if (!File.Exists("config.xml"))
+                return "";
+            xml.Load("config.xml");
+            var node = xml.SelectSingleNode("MySQL/" + key);
+            return node == null ? "" : node.InnerText;
         }
     }
 }

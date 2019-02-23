@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections;
-using SpellEditor.Sources.Config;
 using System.Data;
-using System.Windows;
-using System.Windows.Controls;
 using SpellEditor.Sources.Controls;
 
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
