@@ -27,6 +27,7 @@ using SpellEditor.Sources.Binding;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
+using System.Xml;
 
 namespace SpellEditor
 {
@@ -126,11 +127,6 @@ namespace SpellEditor
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
         #endregion
 
-        public Config GetConfig()
-        {
-            return config;
-        }
-
         public IDatabaseAdapter GetDBAdapter()
         {
             return adapter;
@@ -166,9 +162,9 @@ namespace SpellEditor
         public async void HandleErrorMessage(string msg)
         {
             if (Dispatcher.CheckAccess())
-                await this.ShowMessageAsync("Spell Editor", msg);
+                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), msg);
             else
-                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync("Spell Editor", msg)));
+                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), msg)));
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -254,8 +250,7 @@ namespace SpellEditor
                 spellTooltipGenFields.Add(SpellTooltipGen7);
                 spellTooltipGenFields.Add(SpellTooltipGen8);
 
-                string[] attFlags = { "Unknown 0", "On Next Ranged", "On Next Swing (Player)", "Is Replenishment", "Ability", "Trade Spell", "Passive Spell", "Hidden Client-Side", "Hide in Combat Log", "Target Main-Hand Item", "On Next Swing (NPCs)", "Unknown 11", "Daytime Only", "Night Only", "Indoors Only", "Outdoors Only", "No Shapeshift", "Requires Stealth", "Don't Affect Sheath State", "Spell Damage depends on Caster Level", "Stops Auto-Attack", "Impossible to Dodge, Parry or Block", "Track Target while Casting", "Castable While Dead", "Castable While Mounted", "Start Cooldown after Aura Fades", "Negative", "Castable While Sitting", "Cannot be used in Combat", "Unaffected by Invulnerability", "Breakable by Damage", "Aura Cannot be Cancelled" };
-
+                string[] attFlags = TryFindResource("attFlags_strings").ToString().Split('|');
                 for (var i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -267,8 +262,7 @@ namespace SpellEditor
                     attributes0.Add(box);
                 }
 
-                attFlags = new string[] { "Dismiss Pet", "Drains All Power", "Channeled 1", "Cannot be Redirected", "Unknown 4", "Does not Break Stealth", "Channeled 2", "Cannot be Reflected", "Cannot Target in Combat", "Melee Combat Start", "Generates No Threat", "Unknown 11", "Pickpocket", "Far Sight", "Track Target while Channeling", "Remove Auras on Immunity", "Unaffected by School Immune", "Unautoscalable by Pet", "Stun, Polymorph, Daze, Hex", "Cannot Target Self", "Requires Combo Points on Target 1", "Unknown 21", "Required Combo Points on Target 2", "Unknown 23", "Fishing", "Unknown 25", "Focus Targeting Macro", "Unknown 27", "Hidden in Aura Bar", "Channel Display Name", "Enable Spell when Dodged", "Unknown 31" };
-
+                attFlags = TryFindResource("attFlagsEx_strings").ToString().Split('|');
                 for (var i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -280,8 +274,7 @@ namespace SpellEditor
                     attributes1.Add(box);
                 }
 
-                attFlags = new string[] { "Can Target Dead Unit or Corpse", "Vanish, Shadowform, Ghost", "Can Target not in Line of Sight", "Unknown 3", "Display in Stance Bar", "Autorepeat Flag", "Requires Untapped Target", "Unknown 7", "Unknown 8", "Unknown 9", "Unknown 10 (Tame)", "Health Funnel", "Cleave, Heart Strike, Maul, Sunder Armor, Swipe", "Preserve Enchant in Arena", "Unknown 14", "Unknown 15", "Tame Beast", "Don't Reset Auto Actions", "Requires Dead Pet", "Don't Need Shapeshift", "Unknown 20", "Damage Reduced Shield", "Ambush, Backstab, Cheap Shot, Death Grip, Garrote, Judgements, Mutilate, Pounce, Ravage, Shiv, Shred", "Arcane Concentration", "Unknown 24", "Unknown 25", "Unaffected by School Immunity", "Requires Fishing Pole", "Unknown 28", "Cannot Crit", "Triggered can Trigger Proc", "Food Buff" };
-
+                attFlags = TryFindResource("attFlagsEx1_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -293,8 +286,7 @@ namespace SpellEditor
                     attributes2.Add(box);
                 }
 
-                attFlags = new string[] { "Unknown 0", "Unknown 1", "Unknown 2", "Blockable Spell", "Ignore Resurrection Timer", "Unknown 5", "Unknown 6", "Stack for Different Casters", "Only Target Players", "Triggered can Trigger Proc 2", "Requires Main-Hand", "Battleground Only", "Only Target Ghosts", "Hide Channel Bar", "Honorless Target", "Auto-Shoot", "Cannot Trigger Proc", "No Initial Aggro", "Cannot Miss", "Disable Procs", "Death Persistent", "Unknown 21", "Requires Wands", "Unknown 23", "Requires Off-Hand", "Can Proc with Triggered", "Drain Soul", "Unknown 28", "No Done Bonus", "Do not Display Range", "Unknown 31" };
-
+                attFlags = TryFindResource("attFlagsEx2_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -306,8 +298,7 @@ namespace SpellEditor
                     attributes3.Add(box);
                 }
 
-                attFlags = new string[] { "Ignore All Resistances", "Proc Only on Caster", "Continue to Tick while Offline", "Unknown 3", "Unknown 4", "Unknown 5", "Not Stealable", "Triggered", "Fixed Damage", "Activate from Event", "Spell vs Extended Cost", "Unknown 11", "Unknown 12", "Unknown 13", "Damage doesn't Break Auras", "Unknown 15", "Not Usable in Arena", "Usable in Arena", "Area Target Chain", "Unknown 19", "Don't Check Selfcast Power", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Pet Scaling", "Can Only be Casted in Outland", "Unknown 27", "Aimed Shot", "Unknown 29", "Unknown 30", "Polymorph" };
-
+                attFlags = TryFindResource("attFlagsEx3_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -319,8 +310,7 @@ namespace SpellEditor
                     attributes4.Add(box);
                 }
 
-                attFlags = new string[] { "Unknown 0", "No Reagent While Preparation", "Unknown 2", "Usable while Stunned", "Unknown 4", "Single-Target Spell", "Unknown 6", "Unknown 7", "Unknown 8", "Start Periodic at Aura Apply", "Hide Duration", "Allow Target of Target as Target", "Cleave", "Haste Affect Duration", "Unknown 14", "Inflict on Multiple Targets", "Special Item Class Check", "Usable while Feared", "Usable feared Confused", "Don't Turn during Casting", "Unknown 20", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Don't Show Aura if Self-Cast", "Don't Show Aura if Not Self-Cast", "Unknown 29", "Unknown 30", "AoE Taunt" };
-
+                attFlags = TryFindResource("attFlagsEx4_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -332,8 +322,7 @@ namespace SpellEditor
                     attributes5.Add(box);
                 }
 
-                attFlags = new string[] { "Don't Display Cooldown", "Only in Arena", "Ignore Caster Auras", "Assist Ignore Immune Flag", "Unknown 4", "Unknown 5", "Spell Cast Event", "Unknown 7", "Can't Target Crowd-Controlled", "Unknown 9", "Can Target Possessed Friends", "Not in Raid Instance", "Castable while on Vehicle", "Can Target Invisible", "Unknown 14", "Unknown 15", "Unknown 16", "Mount", "Cast by Charmer", "Unknown 19", "Only Visible to Caster", "Client UI Target Effects", "Unknown 22", "Unknown 23", "Can Target Untargetable", "Exorcism, Flash of Light", "Unknown 26", "Unknown 27", "Death Grip", "Not Done Percent Damage Mods", "Unknown 30", "Ignore Category Cooldown Mods" };
-
+                attFlags = TryFindResource("attFlagsEx5_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -345,8 +334,7 @@ namespace SpellEditor
                     attributes6.Add(box);
                 }
 
-                attFlags = new string[] { "Feign Death", "Unknown 1", "Re-Activate at Resurrect", "Cheat Spell", "Soulstone Resurrection", "Totem", "No Pushback on Damage", "Unknown 7", "Horde Only", "Alliance Only", "Dispel Charges", "Interrupt only Non-Player", "Unknown 12", "Unknown 13", "Raise Dead", "Unknown 15", "Restore Secondary Power", "Unknown 17", "Charge", "Zone Teleport", "Blink, Divine Shield, Ice Block", "Unknown 21", "Unknown 22", "Unknown 23", "Unknown 24", "Unknown 25", "Unknown 26", "Unknown 27", "Consolidated Raid Buff", "Unknown 29", "Unknown 30", "Client Indicator" };
-
+                attFlags = TryFindResource("attFlagsEx6_strings").ToString().Split('|');
                 for (int i = 0; i < attFlags.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -358,8 +346,7 @@ namespace SpellEditor
                     attributes7.Add(box);
                 }
 
-                string[] stances_strings = { "None", "Cat", "Tree", "Travel", "Aqua", "Bear", "Ambient", "Ghoul", "Dire Bear", "Steves Ghoul", "Tharonja Skeleton", "Test of Strength", "BLB Player", "Shadow Dance", "Creature Bear", "Creature Cat", "Ghost Wolf", "Battle Stance", "Defensive Stance", "Berserker Stance", "Test", "Zombie", "Metamorphosis", "Undead", "Master Angler", "Flight (Epic)", "Shadow", "Flight (Normal)", "Stealth", "Moonkin", "Spirit of Redemption" };
-
+                string[] stances_strings = TryFindResource("stances_strings").ToString().Split('|');
                 for (int i = 0; i < stances_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -372,8 +359,7 @@ namespace SpellEditor
                     stancesBoxes.Add(box);
                 }
 
-                string[] creature_type_strings = { "None", "Beast", "Dragonkin", "Demon", "Elemental", "Giant", "Undead", "Humanoid", "Critter", "Mechanical", "Not specified", "Totem", "Non-combat Pet", "Gas Cloud" };
-
+                string[] creature_type_strings = TryFindResource("creature_type_strings").ToString().Split('|');
                 for (int i = 0; i < creature_type_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -386,16 +372,13 @@ namespace SpellEditor
                     targetCreatureTypeBoxes.Add(box);
                 }
 
-                string[] caster_aura_state_strings = { "None", "Defense", "Healthless 20%", "Berserking", "Judgement", "Hunter Parry", "Victory Rush", "Unknown 1", "Healthless 35%", "Enrage", "Unknown 2", "Health Above 75%" };
-
+                string[] caster_aura_state_strings = TryFindResource("caster_aura_state_strings").ToString().Split('|');
                 for (int i = 0; i < caster_aura_state_strings.Length; ++i) { CasterAuraState.Items.Add(caster_aura_state_strings[i]); }
 
-                string[] target_aura_state_strings = { "None", "Healthless 20%", "Berserking", "Healthless 35%", "Conflagrate", "Swiftmend", "Deadly Poison", "Bleeding" };
-
+                string[] target_aura_state_strings = TryFindResource("target_aura_state_strings").ToString().Split('|');
                 for (int i = 0; i < target_aura_state_strings.Length; ++i) { TargetAuraState.Items.Add(target_aura_state_strings[i]); }
 
-                string[] equipped_item_inventory_type_mask_strings = { "Non-Equip", "Head", "Necklace", "Shoulders", "Body", "Chest", "Waist", "Legs", "Feet", "Wrists", "Hands", "Finger", "Trinket", "Weapon", "Shield", "Ranged", "Cloak", "Two-Handed Weapon", "Bag", "Tabard", "Robe", "Main-Hand", "Off-Hand", "Holdable", "Ammo", "Thrown", "Ranged Right", "Quiver", "Relic" };
-
+                string[] equipped_item_inventory_type_mask_strings = TryFindResource("equipped_item_inventory_type_mask_strings").ToString().Split('|');
                 for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -411,7 +394,7 @@ namespace SpellEditor
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                    box.Content = "None";
+                    box.Content = TryFindResource("None").ToString();
                     box.Margin = new Thickness(0, 5, 0, 0);
                     box.Visibility = System.Windows.Visibility.Hidden;
                     EquippedItemSubClassGrid.Children.Add(box);
@@ -419,20 +402,17 @@ namespace SpellEditor
                 }
 
 
-                string[] school_strings = { "Mana", "Rage", "Focus", "Energy", "Happiness", "Runes", "Runic Power", "Steam", "Pyrite", "Heat", "Ooze", "Blood", "Wrath", "Health" };
-
+                string[] school_strings = TryFindResource("school_strings").ToString().Split('|');
                 for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
 
-                string[] damage_prevention_types = { "None", "Magic", "Melee", "Ranged", "None", "Silence", "Pacify" };
-
+                string[] damage_prevention_types = TryFindResource("damage_prevention_types").ToString().Split('|');
                 for (int i = 0; i < damage_prevention_types.Length; ++i)
                 {
                     if (i < 4) { SpellDamageType.Items.Add(damage_prevention_types[i]); }
                     else { PreventionType.Items.Add(damage_prevention_types[i]); }
                 }
 
-                string[] target_strings = { "None", "Unused 1", "Unit", "Unit in Raid", "Unit in Party", "Item Enchantment", "Blank AoE Source Location", "Target AoE Destination Location", "Enemy", "Ally", "Corpse of an Enemy", "Dead Unit", "Gameobject", "Trade Item", "String", "Gameobject Item", "Corpse of an Ally", "Mini Pet", "Glyph", "Destination Target", "Unused 20", "Passenger" };
-
+                string[] target_strings = TryFindResource("target_strings").ToString().Split('|');
                 for (int i = 0; i < target_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -444,23 +424,7 @@ namespace SpellEditor
                     targetBoxes.Add(box);
                 }
 
-                string[] proc_strings = { "None", "On Death", "On Target Killed (yielding XP or Honor)", "On Melee Attack Done",
-                    "On Melee Attack Received", "Physical Ability Damage Done", "On Physical Ability Damage Taken",
-                    "On Ranged Autoattack Done", "On Ranged Autoattack Taken", "On Ranged Ability Damage Done",
-                    "On Ranged Ability Damage Taken",
-                    "On Heal Done (SpellDamageType NONE)","On Heal Taken (SpellDamageType NONE)",
-
-                    "On Spell Damage Done (SpellDamageType NONE)", "On Spell Damage Received (SpellDamageType NONE)",
-
-                    "On Heal Done (SpellDamageType MAGIC)", "On Heal Taken (SpellDamageType MAGIC)",
-
-                    "On Spell Damage Done (SpellDamageType MAGIC)", "On Spell Damage Received (SpellDamageType MAGIC)",
-
-                    "On Periodic Effect Done (Damage/heal)", "On Periodic Effect Taken (Damage/heal)",
-
-                    "On Any Damage Taken",
-                    "On Trap Trigger", "On Mainhand Autoattack Hit", "On Offhand Autoattack Hit", "On Death" };
-                // modified proc_strings according to https://wowdev.wiki/DB/Spell : 3.3.5.12340 -> procFlags
+                string[] proc_strings = TryFindResource("proc_strings").ToString().Split('|');
                 for (int i = 0; i < proc_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -473,8 +437,7 @@ namespace SpellEditor
                     procBoxes.Add(box);
                 }
 
-                string[] spell_aura_effect_names = { "SPELL_AURA_NONE", "SPELL_AURA_BIND_SIGHT", "SPELL_AURA_MOD_POSSESS", "SPELL_AURA_PERIODIC_DAMAGE", "SPELL_AURA_DUMMY", "SPELL_AURA_MOD_CONFUSE", "SPELL_AURA_MOD_CHARM", "SPELL_AURA_MOD_FEAR", "SPELL_AURA_PERIODIC_HEAL", "SPELL_AURA_MOD_ATTACKSPEED", "SPELL_AURA_MOD_THREAT", "SPELL_AURA_MOD_TAUNT", "SPELL_AURA_MOD_STUN", "SPELL_AURA_MOD_DAMAGE_DONE", "SPELL_AURA_MOD_DAMAGE_TAKEN", "SPELL_AURA_DAMAGE_SHIELD", "SPELL_AURA_MOD_STEALTH", "SPELL_AURA_MOD_STEALTH_DETECT", "SPELL_AURA_MOD_INVISIBILITY", "SPELL_AURA_MOD_INVISIBILITY_DETECT", "SPELL_AURA_OBS_MOD_HEALTH", "SPELL_AURA_OBS_MOD_POWER", "SPELL_AURA_MOD_RESISTANCE", "SPELL_AURA_PERIODIC_TRIGGER_SPELL", "SPELL_AURA_PERIODIC_ENERGIZE", "SPELL_AURA_MOD_PACIFY", "SPELL_AURA_MOD_ROOT", "SPELL_AURA_MOD_SILENCE", "SPELL_AURA_REFLECT_SPELLS", "SPELL_AURA_MOD_STAT", "SPELL_AURA_MOD_SKILL", "SPELL_AURA_MOD_INCREASE_SPEED", "SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED", "SPELL_AURA_MOD_DECREASE_SPEED", "SPELL_AURA_MOD_INCREASE_HEALTH", "SPELL_AURA_MOD_INCREASE_ENERGY", "SPELL_AURA_MOD_SHAPESHIFT", "SPELL_AURA_EFFECT_IMMUNITY", "SPELL_AURA_STATE_IMMUNITY", "SPELL_AURA_SCHOOL_IMMUNITY", "SPELL_AURA_DAMAGE_IMMUNITY", "SPELL_AURA_DISPEL_IMMUNITY", "SPELL_AURA_PROC_TRIGGER_SPELL", "SPELL_AURA_PROC_TRIGGER_DAMAGE", "SPELL_AURA_TRACK_CREATURES", "SPELL_AURA_TRACK_RESOURCES", "SPELL_AURA_46", "SPELL_AURA_MOD_PARRY_PERCENT", "SPELL_AURA_48", "SPELL_AURA_MOD_DODGE_PERCENT", "SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT", "SPELL_AURA_MOD_BLOCK_PERCENT", "SPELL_AURA_MOD_WEAPON_CRIT_PERCENT", "SPELL_AURA_PERIODIC_LEECH", "SPELL_AURA_MOD_HIT_CHANCE", "SPELL_AURA_MOD_SPELL_HIT_CHANCE", "SPELL_AURA_TRANSFORM", "SPELL_AURA_MOD_SPELL_CRIT_CHANCE", "SPELL_AURA_MOD_INCREASE_SWIM_SPEED", "SPELL_AURA_MOD_DAMAGE_DONE_CREATURE", "SPELL_AURA_MOD_PACIFY_SILENCE", "SPELL_AURA_MOD_SCALE", "SPELL_AURA_PERIODIC_HEALTH_FUNNEL", "SPELL_AURA_63", "SPELL_AURA_PERIODIC_MANA_LEECH", "SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK", "SPELL_AURA_FEIGN_DEATH", "SPELL_AURA_MOD_DISARM", "SPELL_AURA_MOD_STALKED", "SPELL_AURA_SCHOOL_ABSORB", "SPELL_AURA_EXTRA_ATTACKS", "SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL", "SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT", "SPELL_AURA_MOD_POWER_COST_SCHOOL", "SPELL_AURA_REFLECT_SPELLS_SCHOOL", "SPELL_AURA_MOD_LANGUAGE", "SPELL_AURA_FAR_SIGHT", "SPELL_AURA_MECHANIC_IMMUNITY", "SPELL_AURA_MOUNTED", "SPELL_AURA_MOD_DAMAGE_PERCENT_DONE", "SPELL_AURA_MOD_PERCENT_STAT", "SPELL_AURA_SPLIT_DAMAGE_PCT", "SPELL_AURA_WATER_BREATHING", "SPELL_AURA_MOD_BASE_RESISTANCE", "SPELL_AURA_MOD_REGEN", "SPELL_AURA_MOD_POWER_REGEN", "SPELL_AURA_CHANNEL_DEATH_ITEM", "SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN", "SPELL_AURA_MOD_HEALTH_REGEN_PERCENT", "SPELL_AURA_PERIODIC_DAMAGE_PERCENT", "SPELL_AURA_90", "SPELL_AURA_MOD_DETECT_RANGE", "SPELL_AURA_PREVENTS_FLEEING", "SPELL_AURA_MOD_UNATTACKABLE", "SPELL_AURA_INTERRUPT_REGEN", "SPELL_AURA_GHOST", "SPELL_AURA_SPELL_MAGNET", "SPELL_AURA_MANA_SHIELD", "SPELL_AURA_MOD_SKILL_TALENT", "SPELL_AURA_MOD_ATTACK_POWER", "SPELL_AURA_AURAS_VISIBLE", "SPELL_AURA_MOD_RESISTANCE_PCT", "SPELL_AURA_MOD_MELEE_ATTACK_POWER_VERSUS", "SPELL_AURA_MOD_TOTAL_THREAT", "SPELL_AURA_WATER_WALK", "SPELL_AURA_FEATHER_FALL", "SPELL_AURA_HOVER", "SPELL_AURA_ADD_FLAT_MODIFIER", "SPELL_AURA_ADD_PCT_MODIFIER", "SPELL_AURA_ADD_TARGET_TRIGGER", "SPELL_AURA_MOD_POWER_REGEN_PERCENT", "SPELL_AURA_ADD_CASTER_HIT_TRIGGER", "SPELL_AURA_OVERRIDE_CLASS_SCRIPTS", "SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN", "SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN_PCT", "SPELL_AURA_MOD_HEALING", "SPELL_AURA_MOD_REGEN_DURING_COMBAT", "SPELL_AURA_MOD_MECHANIC_RESISTANCE", "SPELL_AURA_MOD_HEALING_PCT", "SPELL_AURA_119", "SPELL_AURA_UNTRACKABLE", "SPELL_AURA_EMPATHY", "SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT", "SPELL_AURA_MOD_TARGET_RESISTANCE", "SPELL_AURA_MOD_RANGED_ATTACK_POWER", "SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN", "SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT", "SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS", "SPELL_AURA_MOD_POSSESS_PET", "SPELL_AURA_MOD_SPEED_ALWAYS", "SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS", "SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS", "SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT", "SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT", "SPELL_AURA_MOD_MANA_REGEN_INTERRUPT", "SPELL_AURA_MOD_HEALING_DONE", "SPELL_AURA_MOD_HEALING_DONE_PERCENT", "SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE", "SPELL_AURA_MOD_MELEE_HASTE", "SPELL_AURA_FORCE_REACTION", "SPELL_AURA_MOD_RANGED_HASTE", "SPELL_AURA_MOD_RANGED_AMMO_HASTE", "SPELL_AURA_MOD_BASE_RESISTANCE_PCT", "SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE", "SPELL_AURA_SAFE_FALL", "SPELL_AURA_MOD_PET_TALENT_POINTS", "SPELL_AURA_ALLOW_TAME_PET_TYPE", "SPELL_AURA_MECHANIC_IMMUNITY_MASK", "SPELL_AURA_RETAIN_COMBO_POINTS", "SPELL_AURA_REDUCE_PUSHBACK", "SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT", "SPELL_AURA_TRACK_STEALTHED", "SPELL_AURA_MOD_DETECTED_RANGE", "SPELL_AURA_SPLIT_DAMAGE_FLAT", "SPELL_AURA_MOD_STEALTH_LEVEL", "SPELL_AURA_MOD_WATER_BREATHING", "SPELL_AURA_MOD_REPUTATION_GAIN", "SPELL_AURA_PET_DAMAGE_MULTI", "SPELL_AURA_MOD_SHIELD_BLOCKVALUE", "SPELL_AURA_NO_PVP_CREDIT", "SPELL_AURA_MOD_AOE_AVOIDANCE", "SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT", "SPELL_AURA_POWER_BURN", "SPELL_AURA_MOD_CRIT_DAMAGE_BONUS", "SPELL_AURA_164", "SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS", "SPELL_AURA_MOD_ATTACK_POWER_PCT", "SPELL_AURA_MOD_RANGED_ATTACK_POWER_PCT", "SPELL_AURA_MOD_DAMAGE_DONE_VERSUS", "SPELL_AURA_MOD_CRIT_PERCENT_VERSUS", "SPELL_AURA_DETECT_AMORE", "SPELL_AURA_MOD_SPEED_NOT_STACK", "SPELL_AURA_MOD_MOUNTED_SPEED_NOT_STACK", "SPELL_AURA_173", "SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT", "SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT", "SPELL_AURA_SPIRIT_OF_REDEMPTION", "SPELL_AURA_AOE_CHARM", "SPELL_AURA_MOD_DEBUFF_RESISTANCE", "SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE", "SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS", "SPELL_AURA_181", "SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT", "SPELL_AURA_MOD_CRITICAL_THREAT", "SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE", "SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE", "SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE", "SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE", "SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE", "SPELL_AURA_MOD_RATING", "SPELL_AURA_MOD_FACTION_REPUTATION_GAIN", "SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED", "SPELL_AURA_MOD_MELEE_RANGED_HASTE", "SPELL_AURA_MELEE_SLOW", "SPELL_AURA_MOD_TARGET_ABSORB_SCHOOL", "SPELL_AURA_MOD_TARGET_ABILITY_ABSORB_SCHOOL", "SPELL_AURA_MOD_COOLDOWN", "SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE", "SPELL_AURA_198", "SPELL_AURA_MOD_INCREASES_SPELL_PCT_TO_HIT", "SPELL_AURA_MOD_XP_PCT", "SPELL_AURA_FLY", "SPELL_AURA_IGNORE_COMBAT_RESULT", "SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_DAMAGE", "SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE", "SPELL_AURA_MOD_SCHOOL_CRIT_DMG_TAKEN", "SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED", "SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED", "SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED", "SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS", "SPELL_AURA_MOD_VEHICLE_SPEED_ALWAYS", "SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK", "SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT", "SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT", "SPELL_AURA_214", "SPELL_AURA_ARENA_PREPARATION", "SPELL_AURA_HASTE_SPELLS", "SPELL_AURA_MOD_MELEE_HASTE_2", "SPELL_AURA_HASTE_RANGED", "SPELL_AURA_MOD_MANA_REGEN_FROM_STAT", "SPELL_AURA_MOD_RATING_FROM_STAT", "SPELL_AURA_MOD_DETAUNT", "SPELL_AURA_222", "SPELL_AURA_RAID_PROC_FROM_CHARGE", "SPELL_AURA_224", "SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE", "SPELL_AURA_PERIODIC_DUMMY", "SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE", "SPELL_AURA_DETECT_STEALTH", "SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE", "SPELL_AURA_230", "SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE", "SPELL_AURA_MECHANIC_DURATION_MOD", "SPELL_AURA_CHANGE_MODEL_FOR_ALL_HUMANOIDS", "SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK", "SPELL_AURA_MOD_DISPEL_RESIST", "SPELL_AURA_CONTROL_VEHICLE", "SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER", "SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER", "SPELL_AURA_MOD_SCALE_2", "SPELL_AURA_MOD_EXPERTISE", "SPELL_AURA_FORCE_MOVE_FORWARD", "SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING", "SPELL_AURA_MOD_FACTION", "SPELL_AURA_COMPREHEND_LANGUAGE", "SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL", "SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK", "SPELL_AURA_CLONE_CASTER", "SPELL_AURA_MOD_COMBAT_RESULT_CHANCE", "SPELL_AURA_CONVERT_RUNE", "SPELL_AURA_MOD_INCREASE_HEALTH_2", "SPELL_AURA_MOD_ENEMY_DODGE", "SPELL_AURA_MOD_SPEED_SLOW_ALL", "SPELL_AURA_MOD_BLOCK_CRIT_CHANCE", "SPELL_AURA_MOD_DISARM_OFFHAND", "SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT", "SPELL_AURA_NO_REAGENT_USE", "SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS", "SPELL_AURA_258", "SPELL_AURA_MOD_HOT_PCT", "SPELL_AURA_SCREEN_EFFECT", "SPELL_AURA_PHASE", "SPELL_AURA_ABILITY_IGNORE_AURASTATE", "SPELL_AURA_ALLOW_ONLY_ABILITY", "SPELL_AURA_264", "SPELL_AURA_265", "SPELL_AURA_266", "SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL", "SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT", "SPELL_AURA_MOD_IGNORE_TARGET_RESIST", "SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST", "SPELL_AURA_MOD_DAMAGE_FROM_CASTER", "SPELL_AURA_IGNORE_MELEE_RESET", "SPELL_AURA_X_RAY", "SPELL_AURA_ABILITY_CONSUME_NO_AMMO", "SPELL_AURA_MOD_IGNORE_SHAPESHIFT", "SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC", "SPELL_AURA_MOD_MAX_AFFECTED_TARGETS", "SPELL_AURA_MOD_DISARM_RANGED", "SPELL_AURA_INITIALIZE_IMAGES", "SPELL_AURA_MOD_ARMOR_PENETRATION_PCT", "SPELL_AURA_MOD_HONOR_GAIN_PCT", "SPELL_AURA_MOD_BASE_HEALTH_PCT", "SPELL_AURA_MOD_HEALING_RECEIVED", "SPELL_AURA_LINKED", "SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR", "SPELL_AURA_ABILITY_PERIODIC_CRIT", "SPELL_AURA_DEFLECT_SPELLS", "SPELL_AURA_IGNORE_HIT_DIRECTION", "SPELL_AURA_289", "SPELL_AURA_MOD_CRIT_PCT", "SPELL_AURA_MOD_XP_QUEST_PCT", "SPELL_AURA_OPEN_STABLE", "SPELL_AURA_OVERRIDE_SPELLS", "SPELL_AURA_PREVENT_REGENERATE_POWER", "SPELL_AURA_295", "SPELL_AURA_SET_VEHICLE_ID", "SPELL_AURA_BLOCK_SPELL_FAMILY", "SPELL_AURA_STRANGULATE", "SPELL_AURA_299", "SPELL_AURA_SHARE_DAMAGE_PCT", "SPELL_AURA_SCHOOL_HEAL_ABSORB", "SPELL_AURA_302", "SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE", "SPELL_AURA_MOD_FAKE_INEBRIATE", "SPELL_AURA_MOD_MINIMUM_SPEED", "SPELL_AURA_306", "SPELL_AURA_HEAL_ABSORB_TEST", "SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER", "SPELL_AURA_309", "SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE", "SPELL_AURA_311", "SPELL_AURA_312", "SPELL_AURA_313", "SPELL_AURA_PREVENT_RESURRECTION", "SPELL_AURA_UNDERWATER_WALKING", "SPELL_AURA_PERIODIC_HASTE" };
-
+                string[] spell_aura_effect_names = TryFindResource("spell_aura_effect_names").ToString().Split('|');
                 for (int i = 0; i < spell_aura_effect_names.Length; ++i)
                 {
                     ApplyAuraName1.Items.Add(i + "- " + spell_aura_effect_names[i]);
@@ -482,8 +445,7 @@ namespace SpellEditor
                     ApplyAuraName3.Items.Add(i + "- " + spell_aura_effect_names[i]);
                 }
 
-                string[] spell_effect_names = { "NULL", "INSTANT_KILL", "SCHOOL_DAMAGE", "DUMMY", "PORTAL_TELEPORT", "TELEPORT_UNITS", "APPLY_AURA", "ENVIRONMENTAL_DAMAGE", "POWER_DRAIN", "HEALTH_LEECH", "HEAL", "BIND", "PORTAL", "RITUAL_BASE", "RITUAL_SPECIALIZE", "RITUAL_ACTIVATE_PORTAL", "QUEST_COMPLETE", "WEAPON_DAMAGE_NOSCHOOL", "RESURRECT", "ADD_EXTRA_ATTACKS", "DODGE", "EVADE", "PARRY", "BLOCK", "CREATE_ITEM", "WEAPON", "DEFENSE", "PERSISTENT_AREA_AURA", "SUMMON", "LEAP", "ENERGIZE", "WEAPON_PERCENT_DAMAGE", "TRIGGER_MISSILE", "OPEN_LOCK", "TRANSFORM_ITEM", "APPLY_GROUP_AREA_AURA", "LEARN_SPELL", "SPELL_DEFENSE", "DISPEL", "LANGUAGE", "DUAL_WIELD", "LEAP_41", "SUMMON_GUARDIAN", "TELEPORT_UNITS_FACE_CASTER", "SKILL_STEP", "UNDEFINED_45", "SPAWN", "TRADE_SKILL", "STEALTH", "DETECT", "SUMMON_OBJECT", "FORCE_CRITICAL_HIT", "GUARANTEE_HIT", "ENCHANT_ITEM", "ENCHANT_ITEM_TEMPORARY", "TAMECREATURE", "SUMMON_PET", "LEARN_PET_SPELL", "WEAPON_DAMAGE", "OPEN_LOCK_ITEM", "PROFICIENCY", "SEND_EVENT", "POWER_BURN", "THREAT", "TRIGGER_SPELL", "APPLY_RAID_AREA_AURA", "POWER_FUNNEL", "HEAL_MAX_HEALTH", "INTERRUPT_CAST", "DISTRACT", "PULL", "PICKPOCKET", "ADD_FARSIGHT", "UNTRAIN_TALENTS", "USE_GLYPH", "HEAL_MECHANICAL", "SUMMON_OBJECT_WILD", "SCRIPT_EFFECT", "ATTACK", "SANCTUARY", "ADD_COMBO_POINTS", "CREATE_HOUSE", "BIND_SIGHT", "DUEL", "STUCK", "SUMMON_PLAYER", "ACTIVATE_OBJECT", "BUILDING_DAMAGE", "BUILDING_REPAIR", "BUILDING_SWITCH_STATE", "KILL_CREDIT_90", "THREAT_ALL", "ENCHANT_HELD_ITEM", "SUMMON_PHANTASM", "SELF_RESURRECT", "SKINNING", "CHARGE", "SUMMON_MULTIPLE_TOTEMS", "KNOCK_BACK", "DISENCHANT", "INEBRIATE", "FEED_PET", "DISMISS_PET", "REPUTATION", "SUMMON_OBJECT_SLOT1", "SUMMON_OBJECT_SLOT2", "SUMMON_OBJECT_SLOT3", "SUMMON_OBJECT_SLOT4", "DISPEL_MECHANIC", "SUMMON_DEAD_PET", "DESTROY_ALL_TOTEMS", "DURABILITY_DAMAGE", "NONE_112", "RESURRECT_FLAT", "ATTACK_ME", "DURABILITY_DAMAGE_PCT", "SKIN_PLAYER_CORPSE", "SPIRIT_HEAL", "SKILL", "APPLY_PET_AREA_AURA", "TELEPORT_GRAVEYARD", "DUMMYMELEE", "UNKNOWN1", "START_TAXI", "PLAYER_PULL", "UNKNOWN4", "UNKNOWN5", "PROSPECTING", "APPLY_FRIEND_AREA_AURA", "APPLY_ENEMY_AREA_AURA", "UNKNOWN10", "UNKNOWN11", "PLAY_MUSIC", "FORGET_SPECIALIZATION", "KILL_CREDIT", "UNKNOWN15", "UNKNOWN16", "UNKNOWN17", "UNKNOWN18", "CLEAR_QUEST", "UNKNOWN20", "UNKNOWN21", "TRIGGER_SPELL_WITH_VALUE", "APPLY_OWNER_AREA_AURA", "UNKNOWN23", "UNKNOWN24", "ACTIVATE_RUNES", "UNKNOWN26", "UNKNOWN27", "QUEST_FAIL", "UNKNOWN28", "UNKNOWN29", "UNKNOWN30", "SUMMON_TARGET", "SUMMON_REFER_A_FRIEND", "TAME_CREATURE", "ADD_SOCKET", "CREATE_ITEM2", "MILLING", "UNKNOWN37", "UNKNOWN38", "LEARN_SPEC", "ACTIVATE_SPEC", "UNKNOWN" };
-
+                string[] spell_effect_names = TryFindResource("spell_effect_names").ToString().Split('|');
                 for (int i = 0; i < spell_effect_names.Length; ++i)
                 {
                     SpellEffect1.Items.Add(i + "- " + spell_effect_names[i]);
@@ -491,8 +453,7 @@ namespace SpellEditor
                     SpellEffect3.Items.Add(i + "- " + spell_effect_names[i]);
                 }
 
-                string[] mechanic_names = { "None", "Charmed", "Disoriented", "Disarmed", "Distracted", "Fleeing", "Clumsy", "Rooted", "Pacified", "Silenced", "Asleep", "Ensnared", "Stunned", "Frozen", "Incapacipated", "Bleeding", "Healing", "Polymorphed", "Banished", "Shielded", "Shackled", "Mounted", "Seduced", "Turned", "Horrified", "Invulnarable", "Interrupted", "Dazed", "Discovery", "Invulnerable", "Sapped", "Enraged" };
-
+                string[] mechanic_names = TryFindResource("mechanic_names").ToString().Split('|');
                 for (int i = 0; i < mechanic_names.Length; ++i)
                 {
                     Mechanic1.Items.Add(mechanic_names[i]);
@@ -517,8 +478,7 @@ namespace SpellEditor
                     ++number;
                 }
 
-                string[] interrupt_strings = { "None", "On Movement", "On Knockback", "On Interrupt Casting", "On Interrupt School", "On Damage Taken", "On Interrupt All" };
-
+                string[] interrupt_strings = TryFindResource("interrupt_strings").ToString().Split('|');
                 for (int i = 0; i < interrupt_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -531,8 +491,7 @@ namespace SpellEditor
                     interrupts1.Add(box);
                 }
 
-                string[] aura_interrupt_strings = { "None", "On Hit By Spell", "On Take Damage", "On Casting", "On Moving", "On Turning", "On Jumping", "Not Mounted", "Not Above Water", "Not Underwater", "Not Sheathed", "On Talk", "On Use", "On Melee Attack", "On Spell Attack", "Unknown 14", "On Transform", "Unknown 16", "On Mount", "Not Seated", "On Change Map", "Immune or Lost Selection", "Unknown 21", "On Teleport", "On Enter PvP Combat", "On Direct Damage", "Landing" };
-
+                string[] aura_interrupt_strings = TryFindResource("aura_interrupt_strings").ToString().Split('|');
                 for (int i = 0; i < aura_interrupt_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -544,8 +503,7 @@ namespace SpellEditor
                     interrupts2.Add(box);
                 }
 
-                string[] channel_interrupt_strings = { "None", "On 1", "On 2", "On 3", "On 4", "On 5", "On 6", "On 7", "On 8", "On 9", "On 10", "On 11", "On 12", "On 13", "On 14", "On 15", "On 16", "On 17", "On 18" };
-
+                string[] channel_interrupt_strings = TryFindResource("channel_interrupt_strings").ToString().Split('|');
                 for (int i = 0; i < channel_interrupt_strings.Length; ++i)
                 {
                     ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -651,7 +609,7 @@ namespace SpellEditor
         private async void ImportExportSpellDbcButton(object sender, RoutedEventArgs e)
         {
             var window = new ImportExportWindow(adapter);
-            var controller = await this.ShowProgressAsync("Import/Export", "Paused while configuring import/export settings...");
+            var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), TryFindResource("String1").ToString());
             controller.SetCancelable(false);
             window.Show();
             window.Width = window.Width / 2;
@@ -684,7 +642,7 @@ namespace SpellEditor
                 else
                     await abstractDbc.ExportToDbc(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
             }
-            controller.SetMessage("Reloading UI...");
+            controller.SetMessage(TryFindResource("ReloadingUI").ToString());
             PopulateSelectSpell();
             await controller.CloseAsync();
         }
@@ -693,10 +651,10 @@ namespace SpellEditor
         #region InitialiseMemberVariables
         private async void loadAllData()
         {
-            config = await getConfig();
+            config = await GetConfig();
             if (config == null)
             {
-                await this.ShowMessageAsync("ERROR", "Config could not be loaded/created, fatal error.");
+                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), TryFindResource("String2").ToString());
                 return;
             }
             string errorMsg = "";
@@ -718,11 +676,11 @@ namespace SpellEditor
             }
             if (errorMsg.Length > 0)
             {
-                await this.ShowMessageAsync("ERROR", "An error occured setting up the database connection:\n" + errorMsg);
+                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}", TryFindResource("Input_MySQL_Error").ToString(), errorMsg));
                 return;
             }
 
-            var controller = await this.ShowProgressAsync("Please wait", "Loading dbc files and populating UI elements...");
+            var controller = await this.ShowProgressAsync(TryFindResource("PleaseWait").ToString(), TryFindResource("PleaseWait_2").ToString());
             controller.SetCancelable(false);
             await Task.Delay(500);
             using (var d = Dispatcher.DisableProcessing())
@@ -760,8 +718,10 @@ namespace SpellEditor
             await controller.CloseAsync();
         }
 
-        private async Task<Config> getConfig()
+        private async Task<Config> GetConfig()
         {
+            if (config != null)
+                return config;
             string errorMsg = "";
             try
             {
@@ -774,32 +734,29 @@ namespace SpellEditor
                     AnimateShow = true,
                     ColorScheme = MetroDialogColorScheme.Accented,
                 };
-                MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor",
-                    "Welcome to a WoW spell editor for version 3.3.5a (12340).\n\n" +
-                    "Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?",
+                MessageDialogResult exitCode = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(),
+                    TryFindResource("Welcome").ToString(),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
                 if (!File.Exists("config.xml") && !isSqlite)
                 {
-                    string host = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL host:");
-                    string user = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL username:");
-                    string pass = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL password:");
-                    string port = await this.ShowInputAsync("Input MySQL Details", "Input your MySQL port:");
-                    string db = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL database to create/use:");
-                    string tb = await this.ShowInputAsync("Input MySQL Details", "Input which MySQL table to create/use:");
+                    string host = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_1").ToString());
+                    string user = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_2").ToString());
+                    string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
+                    string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
+                    string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
 
-                    UInt32 result = 0;
-                    if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
-                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 || tb.Length == 0 ||
-                            !UInt32.TryParse(port, out result))
-                        throw new Exception("The MySQL details input are not valid.");
+                    uint result = 0;
+                    if (host == null || user == null || pass == null || port == null || db == null ||
+                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
+                            !uint.TryParse(port, out result))
+                        throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
 
-                    config.createFile(host, user, pass, port, db, tb);
-                    
+                    config.WriteConfigFile(host, user, pass, port, db, config.Language);
                 }
                 if (File.Exists("config.xml"))
                 {
-                    config.loadFile();
+                    config.ReadConfigFile();
                 }
                 config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
                 return config;
@@ -808,7 +765,7 @@ namespace SpellEditor
             {
                 errorMsg = e.Message;
             }
-            await this.ShowMessageAsync("ERROR", "An exception was thrown creating the config file.\n" + errorMsg);
+            await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}", TryFindResource("String3").ToString(), errorMsg));
             return null;
         }
         #endregion
@@ -836,11 +793,11 @@ namespace SpellEditor
                 {
                     MetroDialogSettings settings = new MetroDialogSettings();
 
-                    settings.AffirmativeButtonText = "YES";
-                    settings.NegativeButtonText = "NO";
+                    settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
+                    settings.NegativeButtonText = TryFindResource("No").ToString();
 
                     MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                    MessageDialogResult exitCode = await this.ShowMessageAsync("Spell Editor", "Are you sure you want to exit?\n\nMake sure you have saved before doing this action or all progress will be lost!", style, settings);
+                    MessageDialogResult exitCode = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("Exit").ToString(), style, settings);
 
                     if (exitCode == MessageDialogResult.Affirmative)
                     {
@@ -957,11 +914,10 @@ namespace SpellEditor
             if (sender == TruncateTable)
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
-                settings.AffirmativeButtonText = "YES";
-                settings.NegativeButtonText = "NO";
+                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
+                settings.NegativeButtonText = TryFindResource("No").ToString();
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync("ARE YOU SURE?", "Truncating the table will remove ALL data in the SQL tables.\n\n" +
-                    "This feature should only be used when you want to reset the tables and import new DBCs.", style, settings);
+                var res = await this.ShowMessageAsync(TryFindResource("TruncateTable1").ToString(), TryFindResource("TruncateTable2").ToString(), style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
@@ -974,11 +930,11 @@ namespace SpellEditor
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
 
-                settings.AffirmativeButtonText = "YES";
-                settings.NegativeButtonText = "NO";
+                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
+                settings.NegativeButtonText = TryFindResource("No").ToString();
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult copySpell = await this.ShowMessageAsync("Spell Editor", "Copy an existing record?", style, settings);
+                MessageDialogResult copySpell = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord1").ToString(), style, settings);
 
                 UInt32 oldIDIndex = UInt32.MaxValue;
 
@@ -986,39 +942,39 @@ namespace SpellEditor
                 {
                     UInt32 oldID = 0;
 
-                    string inputCopySpell = await this.ShowInputAsync("Spell Editor", "Input the spell ID to copy from.");
+                    string inputCopySpell = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord2").ToString());
                     if (inputCopySpell == null) { return; }
 
                     if (!UInt32.TryParse(inputCopySpell, out oldID))
                     {
-                        HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                        HandleErrorMessage(TryFindResource("CopySpellRecord3").ToString());
                         return;
                     }
                     oldIDIndex = oldID;
                 }
 
-                string inputNewRecord = await this.ShowInputAsync("Spell Editor", "Input the new spell ID.");
+                string inputNewRecord = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord4").ToString());
                 if (inputNewRecord == null) { return; }
 
                 UInt32 newID = 0;
                 if (!UInt32.TryParse(inputNewRecord, out newID))
                 {
-                    HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                    HandleErrorMessage(TryFindResource("CopySpellRecord5").ToString());
                     return;
                 }
 
-                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `spell` WHERE `ID` = '{0}'", newID)).Rows[0][0].ToString()) > 0)
                 {
-                    HandleErrorMessage("ERROR: That spell ID is already taken.");
+                    HandleErrorMessage(TryFindResource("CopySpellRecord6").ToString());
                     return;
                 }
 
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
+                    var row = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}' LIMIT 1", oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
-                    str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", adapter.Table, newID));
+                    str.Append(string.Format("INSERT INTO `spell` VALUES ('{0}'", newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
                         str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
                     str.Append(")");
@@ -1027,40 +983,40 @@ namespace SpellEditor
                 else
                 {
                     // Create new spell
-                    HandleErrorMessage("Creating a new spell from scratch is currently not implemented. Please copy an existing spell.");
+                    HandleErrorMessage(TryFindResource("CopySpellRecord7").ToString());
                     return;
                 }
 
                 PopulateSelectSpell();
 
-                await this.ShowMessageAsync("Spell Editor", "Created new record with ID " + inputNewRecord + " sucessfully.");
+                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), string.Format(TryFindResource("CopySpellRecord8").ToString(), inputNewRecord));
             }
 
             if (sender == DeleteARecord)
             {
-                string input = await this.ShowInputAsync("Spell Editor", "Input the spell ID to delete.");
+                string input = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("DeleteSpellRecord1").ToString());
 
                 if (input == null) { return; }
 
                 UInt32 spellID = 0;
                 if (!UInt32.TryParse(input, out spellID))
                 {
-                    HandleErrorMessage("ERROR: Input spell ID was not an integer.");
+                    HandleErrorMessage(TryFindResource("DeleteSpellRecord2").ToString());
                     return;
                 }
 
-                adapter.Execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, spellID));
+                adapter.Execute(string.Format("DELETE FROM `spell` WHERE `ID` = '{0}'", spellID));
                 
                 selectedID = 0;
 
                 PopulateSelectSpell();
 
-                await this.ShowMessageAsync("Spell Editor", "Deleted record successfully.");
+                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("DeleteSpellRecord3").ToString());
             }
 
             if (sender == SaveSpellChanges)
             {
-                string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, selectedID);
+                string query = string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}' LIMIT 1", selectedID);
                 var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
@@ -1482,7 +1438,7 @@ namespace SpellEditor
                         row["EquippedItemInventoryTypeMask"] = (Int32)mask;
                     }
 
-                    if (EquippedItemClass.Text == "None")
+                    if (EquippedItemClass.Text == TryFindResource("None").ToString())
                     {
                         row["EquippedItemClass"] = -1;
                         row["EquippedItemSubClassMask"] = 0;
@@ -1615,24 +1571,24 @@ namespace SpellEditor
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
 
-                settings.AffirmativeButtonText = "YES";
-                settings.NegativeButtonText = "NO";
+                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
+                settings.NegativeButtonText = TryFindResource("No").ToString();
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Yes for Spell Icon ID.\nNo for Active Icon ID.", style, settings);
+                MessageDialogResult spellOrActive = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("SaveIcon").ToString(), style, settings);
 
                 string column = null;
                 if (spellOrActive == MessageDialogResult.Affirmative)
                     column = "SpellIconID";
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", column, newIconID, selectedID));
             }
 
             if (sender == ResetSpellIconID)
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "SpellIconID", 1, selectedID));
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "SpellIconID", 1, selectedID));
             if (sender == ResetActiveIconID)
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "ActiveIconID", 0, selectedID)); 
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "ActiveIconID", 0, selectedID)); 
         }
         #endregion
 
@@ -1682,8 +1638,8 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-            DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+            DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
             if (res == null || res.Count == 0)
                 return -1;
             int locale = 0;
@@ -1709,7 +1665,7 @@ namespace SpellEditor
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
             SelectSpell.Items.Clear();
-            SpellsLoadedLabel.Content = "No spells loaded.";
+            SpellsLoadedLabel.Content = TryFindResource("no_spells_loaded").ToString();
             var _worker = new SpellListQueryWorker(adapter, config, selectSpellWatch);
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
@@ -1722,8 +1678,8 @@ namespace SpellEditor
                     return;
 
                 // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
-                DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+                DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
                 if (res == null || res.Count == 0)
                     return;
                 int locale = 0;
@@ -1787,7 +1743,7 @@ namespace SpellEditor
                     newElements.Add(stackPanel);
                 }
             }
-            SpellsLoadedLabel.Content = "Highest Spell ID Loaded: " + collection[collection.Count - 1][0].ToString();
+            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), collection[collection.Count - 1][0]);
             foreach (var element in newElements)
                 SelectSpell.Items.Add(element);
             watch.Stop();
@@ -1829,7 +1785,7 @@ namespace SpellEditor
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
             DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` ORDER BY `id` LIMIT {2}, {3}",
-                 config.Table, locale, lowerBound, pageSize));
+                 "spell", locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
 
@@ -1843,18 +1799,18 @@ namespace SpellEditor
             if (adapter == null) { return; }
 
             MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = "Spell Icon ID";
-            settings.NegativeButtonText = "Active Icon ID";
+            settings.AffirmativeButtonText = TryFindResource("SpellIconID").ToString();
+            settings.NegativeButtonText = TryFindResource("ActiveIconID").ToString();
 
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            MessageDialogResult spellOrActive = await this.ShowMessageAsync("Spell Editor", "Select whether to change the Spell Icon ID or the Active Icon ID.", style, settings);
+            MessageDialogResult spellOrActive = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("String4").ToString(), style, settings);
 
             string column = null;
             if (spellOrActive == MessageDialogResult.Affirmative)
                 column = "SpellIconID";
             else if (spellOrActive == MessageDialogResult.Negative)
                 column = "ActiveIconID";
-            adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+            adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", column, newIconID, selectedID));
         }
 
         private async void UpdateMainWindow()
@@ -1864,8 +1820,7 @@ namespace SpellEditor
             {
                 updating = true;
 
-                controller = await this.ShowProgressAsync("Please wait...", "Loading Spell: " + selectedID +
-                    ".\n\nThe first spell to be loaded will always take a while but afterwards it should be quite fast.");
+                controller = await this.ShowProgressAsync(TryFindResource("UpdateMainWindow1").ToString(), string.Format(TryFindResource("UpdateMainWindow2").ToString(), selectedID));
                 controller.SetCancelable(false);
 
                /* Timeline.DesiredFrameRateProperty.OverrideMetadata(
@@ -1911,7 +1866,7 @@ namespace SpellEditor
         {
             adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-            DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+            DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}'", selectedID)).Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
@@ -2545,7 +2500,7 @@ namespace SpellEditor
             var added_items = e.AddedItems;
             if (added_items.Count > 1)
             {
-                await this.ShowMessageAsync("Spell Editor", "Only one spell can be selected at a time.");
+                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("String5").ToString());
                 ((ListBox)sender).UnselectAll();
                 return;
             }
@@ -2591,7 +2546,7 @@ namespace SpellEditor
                     if (loadFocusObjects.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
+                            "spell", "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2604,7 +2559,7 @@ namespace SpellEditor
                     if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
+                            "spell", "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2617,7 +2572,7 @@ namespace SpellEditor
                     if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Category", loadCategories.Lookups[i].ID, selectedID));
+                            "spell", "Category", loadCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2630,7 +2585,7 @@ namespace SpellEditor
                     if (loadDispels.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Dispel", loadDispels.Lookups[i].ID, selectedID));
+                            "spell", "Dispel", loadDispels.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2643,7 +2598,7 @@ namespace SpellEditor
                     if (loadMechanics.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
+                            "spell", "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2656,7 +2611,7 @@ namespace SpellEditor
                     if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
+                            "spell", "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2669,7 +2624,7 @@ namespace SpellEditor
                     if (loadDurations.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
+                            "spell", "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2682,7 +2637,7 @@ namespace SpellEditor
                     if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
+                            "spell", "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2695,7 +2650,7 @@ namespace SpellEditor
                     if (loadRanges.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
+                            "spell", "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2708,7 +2663,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2721,7 +2676,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2734,7 +2689,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2758,7 +2713,7 @@ namespace SpellEditor
                     if (loadItemClasses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
+                            "spell", "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2771,7 +2726,7 @@ namespace SpellEditor
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
+                            "spell", "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2784,7 +2739,7 @@ namespace SpellEditor
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
+                            "spell", "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2797,7 +2752,7 @@ namespace SpellEditor
                     if (loadRuneCosts.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
+                            "spell", "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2810,7 +2765,7 @@ namespace SpellEditor
                     if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
+                            "spell", "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2826,7 +2781,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
                 {
-                    box.threadSafeContent = "None";
+                    box.threadSafeContent = TryFindResource("None").ToString();
                     box.threadSafeVisibility = Visibility.Hidden;
                     //box.threadSafeEnabled = false;
                 }
@@ -2849,7 +2804,7 @@ namespace SpellEditor
                 }
                 else
                 {
-                    box.threadSafeContent = "None";
+                    box.threadSafeContent = TryFindResource("None").ToString(); ;
                     box.threadSafeVisibility = Visibility.Hidden;
                     //box.threadSafeEnabled = false;
                 }
@@ -2884,7 +2839,7 @@ namespace SpellEditor
             }
         }
 
-        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
+        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", "spell", spellId)).Rows[0];
 
         public string GetSpellNameById(uint spellId)
         {
@@ -2966,5 +2921,40 @@ namespace SpellEditor
             }
         }
         #endregion
+
+        private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string language = e.AddedItems[0].ToString();
+            string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
+            Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
+            config.UpdateConfigValue("language", language);
+        }
+
+        private void MultilingualSwitch_Initialized(object sender, EventArgs e)
+        {
+            if (config == null)
+            {
+                config = new Config();
+                config.WriteConfigFile();
+            }
+            string configLanguage = config.GetConfigValue("language");
+            configLanguage = configLanguage == "" ? "enUS" : configLanguage;
+
+            MultilingualSwitch.Items.Add("enUS");
+            int index = 0;
+            foreach (var item in Directory.GetFiles("Languages"))
+            {
+                FileInfo f = new FileInfo(item);
+                if (f.Extension != ".xaml")
+                    continue;
+                string fileName = new FileInfo(item).Name.Replace(f.Extension, "");
+                if (fileName != "enUS")
+                    MultilingualSwitch.Items.Add(fileName);
+
+                if (fileName == configLanguage)
+                    index = MultilingualSwitch.Items.Count - 1;
+            }
+            MultilingualSwitch.SelectedIndex = index;
+        }
     };
 };

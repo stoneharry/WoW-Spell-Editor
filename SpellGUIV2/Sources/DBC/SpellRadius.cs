@@ -66,7 +66,7 @@ namespace SpellEditor.Sources.DBC
         public void UpdateRadiusIndexes()
         {
             var result = adapter.Query(string.Format("SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", 
-                adapter.Table, main.selectedID)).Rows[0];
+                "spell", main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
             for (int j = 0; j < IDs.Length; ++j)
             {

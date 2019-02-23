@@ -63,7 +63,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateSpellFocusObjectSelection()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.RequiresSpellFocus.threadSafeIndex = 0;

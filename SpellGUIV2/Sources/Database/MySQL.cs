@@ -12,11 +12,6 @@ namespace SpellEditor.Sources.Database
         private readonly object _syncLock = new object();
         private Config.Config _config;
         private MySqlConnection _connection;
-        public string Table
-        {
-            get;
-            set;
-        }
         public bool Updating
         {
             get;
@@ -26,7 +21,6 @@ namespace SpellEditor.Sources.Database
         public MySQL(Config.Config config)
         {
             _config = config;
-            Table = config.Table;
 
             string connectionString = "server={0};port={1};uid={2};pwd={3};Charset=utf8;";
                 connectionString = string.Format(connectionString,

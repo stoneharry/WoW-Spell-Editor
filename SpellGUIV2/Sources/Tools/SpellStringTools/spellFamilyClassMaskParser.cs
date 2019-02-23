@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections;
-using SpellEditor.Sources.Config;
 using System.Data;
-using System.Windows;
-using System.Windows.Controls;
 using SpellEditor.Sources.Controls;
 
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
@@ -19,7 +12,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
                                                                     // by giving it some unique id for procces on our own spells
 
-            DataTable dt = window.GetDBAdapter().Query(string.Format("SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM {0}",window.GetConfig().Table));
+            DataTable dt = window.GetDBAdapter().Query("SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell");
 
             foreach (DataRow dr in dt.Rows)
             {

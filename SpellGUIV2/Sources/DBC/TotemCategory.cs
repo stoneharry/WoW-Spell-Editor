@@ -63,7 +63,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateTotemCategoriesSelection()
         {
-            var result = adapter.Query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0];
+            var result = adapter.Query(string.Format("SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0];
             uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
             for (int j = 0; j < IDs.Length; ++j)
             {

@@ -12,11 +12,6 @@ namespace SpellEditor.Sources.Database
         private readonly object _syncLock = new object();
         private Config.Config _config;
         private SQLiteConnection _connection = null;
-        public string Table
-        {
-            get;
-            set;
-        }
         public bool Updating
         {
             get;
@@ -26,7 +21,6 @@ namespace SpellEditor.Sources.Database
         public SQLite(Config.Config config)
         {
             _config = config;
-            Table = config.Table;
 
             var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{config.Database}.db";
 

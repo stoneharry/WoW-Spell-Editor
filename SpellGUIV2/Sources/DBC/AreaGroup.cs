@@ -108,7 +108,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateAreaGroupSelection()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
 
             if (ID == 0)
             {

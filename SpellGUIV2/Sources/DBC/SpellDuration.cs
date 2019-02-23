@@ -54,7 +54,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDurationIndexes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.Duration.threadSafeIndex = 0;

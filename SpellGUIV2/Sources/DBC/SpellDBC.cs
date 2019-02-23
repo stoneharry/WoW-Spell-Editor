@@ -34,7 +34,7 @@ namespace SpellEditor.Sources.DBC
 
         public static Spell_DBC_Record GetRecordById(uint id,MainWindow mainWindows)
         {
-            DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", mainWindows.GetConfig().Table, id)).Rows;
+            DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}'", id)).Rows;
             if (Result != null && Result.Count == 1)
                 return GetRowToRecord(Result[0]);
             return new Spell_DBC_Record();
