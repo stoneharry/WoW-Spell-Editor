@@ -56,7 +56,7 @@ namespace SpellEditor.Sources.DBC
                         var difficulty = record["Difficulties" + diffIndex].ToString();
                         content += difficulty + ", ";
                         tooltip += "[" + difficulty + "] ";
-                        var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, difficulty)).Rows;
+                        var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", "spell", difficulty)).Rows;
                         if (rows.Count > 0)
                         {
                             var row = rows[0];
@@ -97,7 +97,7 @@ namespace SpellEditor.Sources.DBC
 
         public void UpdateDifficultySelection()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, main.selectedID)).Rows[0][0].ToString());
+            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
             if (ID == 0)
             {
                 main.Difficulty.threadSafeIndex = 0;

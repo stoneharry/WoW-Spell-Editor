@@ -748,20 +748,19 @@ namespace SpellEditor
                     string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
                     string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
                     string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
-                    string tb = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_6").ToString());
 
-                    UInt32 result = 0;
-                    if (host == null || user == null || pass == null || port == null || db == null || tb == null ||
-                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 || tb.Length == 0 ||
-                            !UInt32.TryParse(port, out result))
+                    uint result = 0;
+                    if (host == null || user == null || pass == null || port == null || db == null ||
+                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
+                            !uint.TryParse(port, out result))
                         throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
 
-                    config.createFile(host, user, pass, port, db, tb);
+                    config.WriteConfigFile(host, user, pass, port, db);
                     
                 }
                 if (File.Exists("config.xml"))
                 {
-                    config.loadFile();
+                    config.ReadConfigFile();
                 }
                 config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
                 return config;
@@ -968,7 +967,7 @@ namespace SpellEditor
                     return;
                 }
 
-                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, newID)).Rows[0][0].ToString()) > 0)
+                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `spell` WHERE `ID` = '{0}'", newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage(TryFindResource("CopySpellRecord6").ToString());
                     return;
@@ -977,9 +976,9 @@ namespace SpellEditor
                 if (oldIDIndex != UInt32.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, oldIDIndex)).Rows[0];
+                    var row = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}' LIMIT 1", oldIDIndex)).Rows[0];
                     StringBuilder str = new StringBuilder();
-                    str.Append(string.Format("INSERT INTO `{0}` VALUES ('{1}'", adapter.Table, newID));
+                    str.Append(string.Format("INSERT INTO `spell` VALUES ('{0}'", newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
                         str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
                     str.Append(")");
@@ -1010,7 +1009,7 @@ namespace SpellEditor
                     return;
                 }
 
-                adapter.Execute(string.Format("DELETE FROM `{0}` WHERE `ID` = '{1}'", adapter.Table, spellID));
+                adapter.Execute(string.Format("DELETE FROM `spell` WHERE `ID` = '{0}'", spellID));
                 
                 selectedID = 0;
 
@@ -1021,7 +1020,7 @@ namespace SpellEditor
 
             if (sender == SaveSpellChanges)
             {
-                string query = string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, selectedID);
+                string query = string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}' LIMIT 1", selectedID);
                 var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
@@ -1587,13 +1586,13 @@ namespace SpellEditor
                     column = "SpellIconID";
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", column, newIconID, selectedID));
             }
 
             if (sender == ResetSpellIconID)
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "SpellIconID", 1, selectedID));
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "SpellIconID", 1, selectedID));
             if (sender == ResetActiveIconID)
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, "ActiveIconID", 0, selectedID)); 
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "ActiveIconID", 0, selectedID)); 
         }
         #endregion
 
@@ -1643,8 +1642,8 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
-            DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+            DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
             if (res == null || res.Count == 0)
                 return -1;
             int locale = 0;
@@ -1683,8 +1682,8 @@ namespace SpellEditor
                     return;
 
                 // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
-                DataRowCollection res = adapter.Query(string.Format("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `{0}` WHERE `ID` = '5'", config.Table)).Rows;
+                DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
+                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
                 if (res == null || res.Count == 0)
                     return;
                 int locale = 0;
@@ -1790,7 +1789,7 @@ namespace SpellEditor
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
             DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` ORDER BY `id` LIMIT {2}, {3}",
-                 config.Table, locale, lowerBound, pageSize));
+                 "spell", locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
 
@@ -1815,7 +1814,7 @@ namespace SpellEditor
                 column = "SpellIconID";
             else if (spellOrActive == MessageDialogResult.Negative)
                 column = "ActiveIconID";
-            adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", adapter.Table, column, newIconID, selectedID));
+            adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", column, newIconID, selectedID));
         }
 
         private async void UpdateMainWindow()
@@ -1871,7 +1870,7 @@ namespace SpellEditor
         {
             adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-            DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}'", config.Table, selectedID)).Rows;
+            DataRowCollection rowResult = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}'", selectedID)).Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
@@ -2551,7 +2550,7 @@ namespace SpellEditor
                     if (loadFocusObjects.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
+                            "spell", "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2564,7 +2563,7 @@ namespace SpellEditor
                     if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
+                            "spell", "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2577,7 +2576,7 @@ namespace SpellEditor
                     if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Category", loadCategories.Lookups[i].ID, selectedID));
+                            "spell", "Category", loadCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2590,7 +2589,7 @@ namespace SpellEditor
                     if (loadDispels.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Dispel", loadDispels.Lookups[i].ID, selectedID));
+                            "spell", "Dispel", loadDispels.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2603,7 +2602,7 @@ namespace SpellEditor
                     if (loadMechanics.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
+                            "spell", "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2616,7 +2615,7 @@ namespace SpellEditor
                     if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
+                            "spell", "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2629,7 +2628,7 @@ namespace SpellEditor
                     if (loadDurations.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
+                            "spell", "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2642,7 +2641,7 @@ namespace SpellEditor
                     if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
+                            "spell", "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2655,7 +2654,7 @@ namespace SpellEditor
                     if (loadRanges.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
+                            "spell", "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2668,7 +2667,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2681,7 +2680,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2694,7 +2693,7 @@ namespace SpellEditor
                     if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
+                            "spell", "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2718,7 +2717,7 @@ namespace SpellEditor
                     if (loadItemClasses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
+                            "spell", "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2731,7 +2730,7 @@ namespace SpellEditor
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
+                            "spell", "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2744,7 +2743,7 @@ namespace SpellEditor
                     if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
+                            "spell", "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2757,7 +2756,7 @@ namespace SpellEditor
                     if (loadRuneCosts.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
+                            "spell", "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2770,7 +2769,7 @@ namespace SpellEditor
                     if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
-                            adapter.Table, "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
+                            "spell", "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
                         break;
                     }
                 }
@@ -2844,7 +2843,7 @@ namespace SpellEditor
             }
         }
 
-        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", adapter.Table, spellId)).Rows[0];
+        public DataRow GetSpellRowById(uint spellId) => adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", "spell", spellId)).Rows[0];
 
         public string GetSpellNameById(uint spellId)
         {
@@ -2943,7 +2942,7 @@ namespace SpellEditor
             xml.Save("config.xml");
 
             if (GetConfig() != null)
-                config.loadFile();
+                config.ReadConfigFile();
         }
 
         public string getConfigValue(string key)

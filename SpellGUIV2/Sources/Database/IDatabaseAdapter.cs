@@ -4,7 +4,6 @@ namespace SpellEditor.Sources.Database
 {
     public interface IDatabaseAdapter
     {
-        string Table { get; set; }
         bool Updating { get; set; }
 
         DataTable Query(string query);

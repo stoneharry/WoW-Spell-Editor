@@ -17,12 +17,11 @@ namespace SpellEditor.Sources.Config
         public string Pass = "12345";
         public string Port = "3306";
         public string Database = "SpellEditor";
-        public string Table = "Spell";
         public string Language = "enUS";
 
         public ConnectionType connectionType = ConnectionType.SQLite;
 
-        public void createFile(string h, string u, string p, string po, string db, string tb)
+        public void WriteConfigFile(string host, string user, string pass, string port, string database)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -31,47 +30,55 @@ namespace SpellEditor.Sources.Config
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("MySQL");
-
-                writer.WriteElementString("host", h);
-                writer.WriteElementString("username", u);
-                writer.WriteElementString("password", p);
-                writer.WriteElementString("port", po);
-                writer.WriteElementString("database", db);
-                writer.WriteElementString("table", tb);
+                writer.WriteElementString("host", host);
+                writer.WriteElementString("username", user);
+                writer.WriteElementString("password", pass);
+                writer.WriteElementString("port", port);
+                writer.WriteElementString("database", database);
                 writer.WriteElementString("language", Language);
-
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
-                writer.Close();
             }
         }
 
-        public void loadFile()
+        public void ReadConfigFile()
         {
             try
             {
+                bool hasError = false;
                 using (XmlReader reader = XmlReader.Create("config.xml"))
                 {
-                    reader.ReadToFollowing("host");
-                    Host = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("username");
-                    User = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("password");
-                    Pass = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("port");
-                    Port = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("database");
-                    Database = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("table");
-                    Table = reader.ReadElementContentAsString();
-                    reader.ReadToFollowing("language");
-                    Language = reader.ReadElementContentAsString();
-                    reader.Close();
+                    if (reader.ReadToFollowing("host"))
+                        Host = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
+                    if (reader.ReadToFollowing("username"))
+                        User = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
+                    if (reader.ReadToFollowing("password"))
+                        Pass = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
+                    if (reader.ReadToFollowing("port"))
+                        Port = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
+                    if (reader.ReadToFollowing("database"))
+                        Database = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
+                    if (reader.ReadToFollowing("language"))
+                        Language = reader.ReadElementContentAsString();
+                    else
+                        hasError = true;
                 }
+                if (hasError)
+                    WriteConfigFile(Host, User, Pass, Port, Language);
             }
             catch (Exception e)
             {
-                throw new Exception("config.xml is corrupt - please delete it and run the program again.\n" + e.Message);
+                throw new Exception("ERROR: config.xml is corrupt - please delete it and run the program again.\n" + e.Message);
             }
         }
     }
