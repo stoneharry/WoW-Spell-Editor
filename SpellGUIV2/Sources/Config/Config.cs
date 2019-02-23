@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using System.Xml;
 
 namespace SpellEditor.Sources.Config
@@ -17,6 +18,8 @@ namespace SpellEditor.Sources.Config
         public string Port = "3306";
         public string Database = "SpellEditor";
         public string Table = "Spell";
+        public string Language = "enUS";
+
         public ConnectionType connectionType = ConnectionType.SQLite;
 
         public void createFile(string h, string u, string p, string po, string db, string tb)
@@ -35,6 +38,7 @@ namespace SpellEditor.Sources.Config
                 writer.WriteElementString("port", po);
                 writer.WriteElementString("database", db);
                 writer.WriteElementString("table", tb);
+                writer.WriteElementString("language", Language);
 
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
@@ -60,6 +64,8 @@ namespace SpellEditor.Sources.Config
                     Database = reader.ReadElementContentAsString();
                     reader.ReadToFollowing("table");
                     Table = reader.ReadElementContentAsString();
+                    reader.ReadToFollowing("language");
+                    Language = reader.ReadElementContentAsString();
                     reader.Close();
                 }
             }

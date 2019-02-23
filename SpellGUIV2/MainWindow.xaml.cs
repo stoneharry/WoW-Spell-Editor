@@ -27,6 +27,7 @@ using SpellEditor.Sources.Binding;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
+using System.Xml;
 
 namespace SpellEditor
 {
@@ -2926,16 +2927,45 @@ namespace SpellEditor
         }
         #endregion
 
+        public void changeConfigValue(string key, string value)
+        {
+            var xml = new XmlDocument();
+            xml.Load("config.xml");
+            var node = xml.SelectSingleNode("MySQL/" + key);
+
+            if (node == null)
+                return;
+
+            node.InnerText = value;
+            xml.Save("config.xml");
+
+            if (GetConfig() != null)
+                config.loadFile();
+        }
+
+        public string getConfigValue(string key)
+        {
+            var xml = new XmlDocument();
+            xml.Load("config.xml");
+            var node = xml.SelectSingleNode("MySQL/" + key);
+            return node==null ? "" : node.InnerText;
+        }
+
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string language = e.AddedItems[0].ToString();
             string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", language == "enUS" ? "application" : "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
+            changeConfigValue("language", language);
         }
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
+            string configLanguage = getConfigValue("language");
+            configLanguage = configLanguage == "" ? "enUS" : configLanguage;
+
             MultilingualSwitch.Items.Add("enUS");
+            int index = 0;
             foreach (var item in Directory.GetFiles("Languages"))
             {
                 FileInfo f = new FileInfo(item);
@@ -2944,12 +2974,11 @@ namespace SpellEditor
                 string fileName = new FileInfo(item).Name.Replace(f.Extension, "");
                 if (fileName != "enUS")
                     MultilingualSwitch.Items.Add(fileName);
+
+                if (fileName == configLanguage)
+                    index = MultilingualSwitch.Items.Count - 1;
             }
-            MultilingualSwitch.SelectedIndex = 0;
-
-            //todo: load config.
-            //MultilingualSwitch.SelectedIndex = config.language;
-
+            MultilingualSwitch.SelectedIndex = index;
         }
     };
 };
