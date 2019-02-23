@@ -5,8 +5,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- We use the first ResourceDictionary for multiple languages. Use the internal enUS.xaml as the default.-->
-                <ResourceDictionary Source="pack://application:,,,/Languages/enUS.xaml"/>
+                <!-- Use the enUS.xaml as the default.-->
+                <ResourceDictionary Source="pack://SiteOfOrigin:,,,/Languages/enUS.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
