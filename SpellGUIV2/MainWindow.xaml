@@ -315,7 +315,7 @@
                                         <c:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,73,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,103,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="DieSides1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,103,0,0" Width="200" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labReal PointsPerLevel}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
+                                        <Label Content="{DynamicResource labRealPointsPerLevel}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="BasePointsPerLevel1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,135,0,0" Width="200" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMechanic}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="79,166,0,0"/>
                                         <c:ThreadSafeComboBox x:Name="Mechanic1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="142,166,0,0" Width="200"/>
