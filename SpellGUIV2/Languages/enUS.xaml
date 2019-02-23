@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    <!--UI string start-->
+    <!--#region UI String-->
     <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
     <system:String x:Key="tabSelectSpell">Select Spell</system:String>
     <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
@@ -166,17 +166,55 @@
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
-    <!--UI string end-->
+    <!--#endregion-->
 
-    <!--Code string start-->
+    <!--#region code string-->
     <system:String x:Key="SpellEditor">Spell Editor</system:String>
+    <system:String x:Key="PleaseWait">Please wait</system:String>
+    <system:String x:Key="PleaseWait_2">Loading dbc files and populating UI elements...</system:String>
+    <system:String x:Key="Yes">YES</system:String>
+    <system:String x:Key="None">None</system:String>
+    <system:String x:Key="No">NO</system:String>
+    <system:String x:Key="ERROR">ERROR</system:String>
+    <system:String x:Key="Import/Export">Import/Export</system:String>
+    <system:String x:Key="ReloadingUI">Reloading UI...</system:String>
+    <system:String x:Key="Input_MySQL_Details">Input MySQL Details</system:String>
+    <system:String x:Key="Input_MySQL_Details_1">Input your MySQL host:</system:String>
+    <system:String x:Key="Input_MySQL_Details_2">Input your MySQL username:</system:String>
+    <system:String x:Key="Input_MySQL_Details_3">Input your MySQL password:</system:String>
+    <system:String x:Key="Input_MySQL_Details_4">Input your MySQL port:</system:String>
+    <system:String x:Key="Input_MySQL_Details_5">Input which MySQL database to create/use:</system:String>
+    <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
+    <system:String x:Key="Input_MySQL_Error">An error occured setting up the database connection:</system:String>
+    <system:String x:Key="Input_MySQL_Error_2">The MySQL details input are not valid.</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor for version 3.3.5a (12340).&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
-    <system:String x:Key="PleaseWait">Please wait</system:String>
-
-    <system:String x:Key="Yes">YES</system:String>
-    <system:String x:Key="No">NO</system:String>
-
+    <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">Truncating the table will remove ALL data in the SQL tables.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBCs.</system:String>
+    <system:String x:Key="CopySpellRecord1">Copy an existing record?</system:String>
+    <system:String x:Key="CopySpellRecord2">Input the spell ID to copy from.</system:String>
+    <system:String x:Key="CopySpellRecord3">ERROR: Input spell ID was not an integer.</system:String>
+    <system:String x:Key="CopySpellRecord4">Input the new spell ID.</system:String>
+    <system:String x:Key="CopySpellRecord5">ERROR: Input spell ID was not an integer.</system:String>
+    <system:String x:Key="CopySpellRecord6">ERROR: That spell ID is already taken.</system:String>
+    <system:String x:Key="CopySpellRecord7">Creating a new spell from scratch is currently not implemented. Please copy an existing spell.</system:String>
+    <system:String x:Key="CopySpellRecord8">"Created new record with ID {0} sucessfully.</system:String>
+    <system:String x:Key="DeleteSpellRecord1">Input the spell ID to delete.</system:String>
+    <system:String x:Key="DeleteSpellRecord2">ERROR: Input spell ID was not an integer.</system:String>
+    <system:String x:Key="DeleteSpellRecord3">Deleted record successfully.</system:String>
+    <system:String x:Key="SaveIcon">Yes for Spell Icon ID.\nNo for Active Icon ID.</system:String>
+    <system:String x:Key="no_spells_loaded">No spells loaded</system:String>
+    <system:String x:Key="Highest_Spell_ID">Highest Spell ID Loaded: {0}</system:String>
+    <system:String x:Key="SpellIconID">Spell Icon ID</system:String>
+    <system:String x:Key="ActiveIconID">Active Icon ID</system:String>
+    <system:String x:Key="UpdateMainWindow1">Please wait...</system:String>
+    <system:String x:Key="UpdateMainWindow2">Loading Spell: {0} .\n\nThe first spell to be loaded will always take a while but afterwards it should be quite fast.</system:String>
+    <system:String x:Key="String1">Paused while configuring import/export settings...</system:String>
+    <system:String x:Key="String2">Config could not be loaded/created, fatal error.</system:String>
+    <system:String x:Key="String3">An exception was thrown creating the config file.</system:String>
+    <system:String x:Key="String4">Select whether to change the Spell Icon ID or the Active Icon ID.</system:String>
+    <system:String x:Key="String5">Only one spell can be selected at a time.</system:String>
+    <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
         Unknown 0 |
         On Next Ranged |
@@ -1208,7 +1246,6 @@
         On Offhand Autoattack Hit |
         On Death
     </system:String>
-
-
-    <!--Code string end-->
+    <!--#endregion-->
+    <!--#endregion-->
 </ResourceDictionary>
