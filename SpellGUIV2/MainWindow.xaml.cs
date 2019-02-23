@@ -2929,6 +2929,9 @@ namespace SpellEditor
 
         public void changeConfigValue(string key, string value)
         {
+            if (!File.Exists("config.xml"))
+                return;
+
             var xml = new XmlDocument();
             xml.Load("config.xml");
             var node = xml.SelectSingleNode("MySQL/" + key);
@@ -2946,6 +2949,9 @@ namespace SpellEditor
         public string getConfigValue(string key)
         {
             var xml = new XmlDocument();
+            if (!File.Exists("config.xml"))
+                return "";
+
             xml.Load("config.xml");
             var node = xml.SelectSingleNode("MySQL/" + key);
             return node==null ? "" : node.InnerText;
