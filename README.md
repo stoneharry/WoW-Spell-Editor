@@ -1,7 +1,7 @@
 WoW Spell Editor (3.3.5a - 12340)
 ===================
 
-This is a spell editor designed to be used for WoW version 3.3.5a (12340).
+This is a spell editor designed to be used for WoW version 3.3.5a (12340). It also supports importing/exporting of any patch version DBC <-> SQLite/MySQL with the use of text file bindings found in the `Bindings` directory.
 
 You could update it to be used with other versions relatively easily, but there is no easy way for me to make it support many versions at once with the current implementation.
 
@@ -37,11 +37,11 @@ As the name implies, this is a lightweight version of SQL. It will save all the 
 
 ----
 
-Once you have selected and configured the database you want to use, you can then import a spell.dbc file into the database. On the header for the program you will see a button for 'Import spell.dbc'. Click this and it will import any spell.dbc file found in the DBC folder - this folder must be in the same directory as the spell editor program.
+Once you have selected and configured the database you want to use, you can then import a spell.dbc file into the database. On the header for the program you will see a button for 'Import/Export'. Click this and select `spell.dbc`. You can import and export any other DBC files you have bindings for, but they must be inside the `DBC` folder distributed with the program.
 
 After the spell.dbc has been imported you can edit spells at your leisure. You only need to import the spell.dbc once, you do not need to repeat this task each run of the program.
 
-Once you are ready to test your spell changes in game, you must export the data back into a spell.dbc. The button for this is on the program header bar, the same place as the 'Import spell.dbc' button was. The spell.dbc will be created in a 'Export' folder in the same folder as the spell editor program.
+Once you are ready to test your spell changes in game, you must export the data back into a `spell.dbc`. Use the 'Import/Export' button on the header bar and select the `spell.dbc` in the export panel. The new DBC files will be created in a 'Export' folder in the same folder as the spell editor program.
 
 This new spell.dbc file will need to be updated both client side and server side, as explained at the start of this little guide.
 
