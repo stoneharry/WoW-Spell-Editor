@@ -1,0 +1,1251 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <!--#region UI String-->
+    <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
+    <system:String x:Key="tabSelectSpell">Choisir un sort</system:String>
+    <system:String x:Key="labSpellsLoaded">Aucun sort chargé.</system:String>
+    <system:String x:Key="labGoToSpell">Aller à épeler:</system:String>
+    <system:String x:Key="labFilterBtName">Filtrer par nom:</system:String>
+    <system:String x:Key="tabEnglish">Anglais</system:String>
+    <system:String x:Key="tabKorean">Coréen</system:String>
+    <system:String x:Key="tabFrench">Français</system:String>
+    <system:String x:Key="tabDeutsch">Deutsch</system:String>
+    <system:String x:Key="tabChinese">Chinois</system:String>
+    <system:String x:Key="tabTaiwanese">Taïwanais</system:String>
+    <system:String x:Key="tabMexican">Mexicain</system:String>
+    <system:String x:Key="tabPortuguese">Portugais</system:String>
+    <system:String x:Key="tabRussian">Russe</system:String>
+    <system:String x:Key="labSpellName">Nom spell:</system:String>
+    <system:String x:Key="labSpellRank">Rang spell:</system:String>
+    <system:String x:Key="labSpellTooltip">Info-bulle sur le sort:</system:String>
+    <system:String x:Key="labSpellIngameTooltip">Infobulle en jeu:</system:String>
+    <system:String x:Key="labSpellDescription">Description spell:</system:String>
+    <system:String x:Key="labSpellIngameDescription">Spell Ingame Description:</system:String>
+    <system:String x:Key="Base">Base</system:String>
+    <system:String x:Key="Effects">Effets</system:String>
+    <system:String x:Key="Effects1">Effets 1</system:String>
+    <system:String x:Key="Effects2">Effets 2</system:String>
+    <system:String x:Key="SpellEffects1">Spell Effets 1</system:String>
+    <system:String x:Key="SpellEffects2">Spell Effets 2</system:String>
+    <system:String x:Key="SpellEffects3">Spell Effets 3</system:String>
+    <system:String x:Key="Items">Items</system:String>
+    <system:String x:Key="Flags">Flags</system:String>
+    <system:String x:Key="Icon">Icône</system:String>
+    <system:String x:Key="Interrupts">Interruptions</system:String>
+    <system:String x:Key="Attributes">Attributes</system:String>
+    <system:String x:Key="Attributes2">Attributes2</system:String>
+    <system:String x:Key="Misc">Misc</system:String>
+    <system:String x:Key="butResetSpellIconID">Reset Spell Icon ID</system:String>
+    <system:String x:Key="butResetActiveIconID">Reset Active Icon ID</system:String>
+    <system:String x:Key="labCategory">Catégorie:</system:String>
+    <system:String x:Key="labDispelType">Dissipation Type:</system:String>
+    <system:String x:Key="labMechanicType">Mécanicien Type:</system:String>
+    <system:String x:Key="labCastTime">Cast Time:</system:String>
+    <system:String x:Key="labDuration">Durée:</system:String>
+    <system:String x:Key="labRange">Intervalle:</system:String>
+    <system:String x:Key="labCasterAuraState">État Aura du lanceur:</system:String>
+    <system:String x:Key="labSpellLevel">Spell Niveau:</system:String>
+    <system:String x:Key="labBaseLevel">Base Niveau:</system:String>
+    <system:String x:Key="labMaxLevel">Max Niveau:</system:String>
+    <system:String x:Key="labSpellVisual1">Spell Visual 1:</system:String>
+    <system:String x:Key="labSpellVisual2">Spell Visual 2:</system:String>
+    <system:String x:Key="labSpeed">La vitesse:</system:String>
+    <system:String x:Key="labTargetAuraState">État d'aura ciblé:</system:String>
+    <system:String x:Key="labRecoveryTime">Le temps de récupération:</system:String>
+    <system:String x:Key="labCategoryRecoveryTime">Temps de récupération de la catégorie:</system:String>
+    <system:String x:Key="labSpellMissileID">Spell Missile ID:</system:String>
+    <system:String x:Key="labStacks">Stacks:</system:String>
+    <system:String x:Key="labDifficulty">Difficulté:</system:String>
+    <system:String x:Key="labPowerType">Type d'alimentation:</system:String>
+    <system:String x:Key="labGlobalCooldownCategory">Catégorie de temps de recharge global:</system:String>
+    <system:String x:Key="labPowerCost">Coût d'énergie:</system:String>
+    <system:String x:Key="labManaCostPerLevel">Coût en mana par niveau:</system:String>
+    <system:String x:Key="labManaCostPerSecond">Coût en mana par seconde:</system:String>
+    <system:String x:Key="labPerSecondPerLevel">Par seconde par niveau:</system:String>
+    <system:String x:Key="labManaCost%">Mana Cost %:</system:String>
+    <system:String x:Key="labSpellFamilyName">Spell Family Name:</system:String>
+    <system:String x:Key="labSpellFamilyFlags">Spell Family Flags:</system:String>
+    <system:String x:Key="labSpellFamilyFlags1">Spell Family Flags1:</system:String>
+    <system:String x:Key="labSpellFamilyFlags2">Spell Family Flags2:</system:String>
+    <system:String x:Key="labGlobalCooldownTime">Temps de recharge global:</system:String>
+    <system:String x:Key="labMaxTargets">Cibles Max:</system:String>
+    <system:String x:Key="labMaxTargetsLevel">Niveau de cible maximum:</system:String>
+    <system:String x:Key="labTotemCategory1">Totem Catégorie 1:</system:String>
+    <system:String x:Key="labTotemCategory2">Totem Catégorie 2:</system:String>
+    <system:String x:Key="labAreaGroup">Area Group:</system:String>
+    <system:String x:Key="labPreventionType">Prévention Type:</system:String>
+    <system:String x:Key="labSpellDamageType">Spell Damage Type:</system:String>
+    <system:String x:Key="labRequiresSpellFocus">Requiert Spell Focus:</system:String>
+    <system:String x:Key="labRuneCost">Coût runique:</system:String>
+    <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
+    <system:String x:Key="labSchool">École:</system:String>
+    <system:String x:Key="checkboxPhysical">Physique</system:String>
+    <system:String x:Key="checkboxHoly">Saint</system:String>
+    <system:String x:Key="checkboxFire">Feu</system:String>
+    <system:String x:Key="checkboxNature">La nature</system:String>
+    <system:String x:Key="checkboxFrost">Gel</system:String>
+    <system:String x:Key="checkboxShadow">Ombre</system:String>
+    <system:String x:Key="checkboxArcane">Ésotérique</system:String>
+    <system:String x:Key="checkboxFacingFront">FacingFront</system:String>
+    <system:String x:Key="labTargets">Cibles:</system:String>
+    <system:String x:Key="labProcs">Procs:</system:String>
+    <system:String x:Key="labProcCharges">Proc Charges:</system:String>
+    <system:String x:Key="labProcChance">Proc Chance:</system:String>
+    <system:String x:Key="labSpellEffect">Spell Effect:</system:String>
+    <system:String x:Key="labBasePoints">Base Points:</system:String>
+    <system:String x:Key="labDieSides">Die Sides:</system:String>
+    <system:String x:Key="labRealPointsPerLevel">Real Points Per Level:</system:String>
+    <system:String x:Key="labMechanic">Mécanicien:</system:String>
+    <system:String x:Key="labTargetA">Cible A:</system:String>
+    <system:String x:Key="labTargetB">Cible B:</system:String>
+    <system:String x:Key="labRadius">Rayon:</system:String>
+    <system:String x:Key="labApplyAuraName">Appliquer le nom Aura:</system:String>
+    <system:String x:Key="labAmplitude">Amplitude:</system:String>
+    <system:String x:Key="labMultipleValue">Valeur multiple:</system:String>
+    <system:String x:Key="labChainTarget">Cible de la chaîne:</system:String>
+    <system:String x:Key="labItemType">Type d'élément:</system:String>
+    <system:String x:Key="labTriggerSpell">Trigger Spell:</system:String>
+    <system:String x:Key="labPointsPerComboPoint">Points Per Combo Point:</system:String>
+    <system:String x:Key="labMiscValueA">Misc Value A:</system:String>
+    <system:String x:Key="labMiscValueB">Misc Value B:</system:String>
+    <system:String x:Key="labSpellClassMask1">Spell Class Mask 1:</system:String>
+    <system:String x:Key="labSpellClassMask2">Spell Class Mask 2:</system:String>
+    <system:String x:Key="labSpellClassMask3">Spell Class Mask 3:</system:String>
+    <system:String x:Key="labDamageMultiplier1">Multiplicateur de dégâts 1:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier1">EffectBonusMultiplier 1:</system:String>
+    <system:String x:Key="labDamageMultiplier2">Multiplicateur de dégâts 2:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
+    <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
+    <system:String x:Key="labItemTool1">Item Tool 1:</system:String>
+    <system:String x:Key="labItemTool2">Item Tool 2:</system:String>
+    <system:String x:Key="labReagent1">Réactif 1:</system:String>
+    <system:String x:Key="labReagent2">Réactif 2:</system:String>
+    <system:String x:Key="labReagent3">Réactif 3:</system:String>
+    <system:String x:Key="labReagent4">Réactif 4:</system:String>
+    <system:String x:Key="labReagent5">Réactif 5:</system:String>
+    <system:String x:Key="labReagent6">Réactif 6:</system:String>
+    <system:String x:Key="labReagent7">Réactif 7:</system:String>
+    <system:String x:Key="labReagent8">Reagent 8:</system:String>
+    <system:String x:Key="labReagentCount1">Nombre de réactifs 1:</system:String>
+    <system:String x:Key="labReagentCount2">Nombre de réactifs 2:</system:String>
+    <system:String x:Key="labReagentCount3">Nombre de réactifs 3:</system:String>
+    <system:String x:Key="labReagentCount4">Nombre de réactifs 4:</system:String>
+    <system:String x:Key="labReagentCount5">Nombre de réactifs 5:</system:String>
+    <system:String x:Key="labReagentCount6">Nombre de réactifs 6:</system:String>
+    <system:String x:Key="labReagentCount7">Nombre de réactifs 7:</system:String>
+    <system:String x:Key="labReagentCount8">Nombre de réactifs 8:</system:String>
+    <system:String x:Key="labEquippedItemClass">Classe d'objets équipée:</system:String>
+    <system:String x:Key="labEquippedItemInventoryType">Type d'inventaire de l'objet équipé:</system:String>
+    <system:String x:Key="labEquippedItemSubClass">Sous-classe d'élément équipé:</system:String>
+    <system:String x:Key="labInterruptFlags">Drapeaux d'interruption:</system:String>
+    <system:String x:Key="labAuraInterruptFlags">Drapeaux d'interruption d'aura:</system:String>
+    <system:String x:Key="labChannelInterruptFlags">Drapeaux d'interruption de canal:</system:String>
+    <system:String x:Key="labAttributes">Les attributs:</system:String>
+    <system:String x:Key="labAttributesEx">Attributes Ex:</system:String>
+    <system:String x:Key="labAttributesEx2">Attributes Ex2:</system:String>
+    <system:String x:Key="labAttributesEx3">Attributes Ex3:</system:String>
+    <system:String x:Key="labAttributesEx4">Attributes Ex4:</system:String>
+    <system:String x:Key="labAttributesEx5">Attributes Ex5:</system:String>
+    <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
+    <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
+    <system:String x:Key="labCreatureType">Type de créature:</system:String>
+    <system:String x:Key="labStances">Stances:</system:String>
+    <system:String x:Key="labCurrentIcon">Icône actuelle:</system:String>
+    <system:String x:Key="labNewIcon">Nouvelle icône:</system:String>
+    <system:String x:Key="labFiltericons">Icônes de filtre:</system:String>
+    <system:String x:Key="butSaveIcon">Confirmer</system:String>
+    <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur de l’icône &amp; hauteur (pixels)</system:String>
+    <system:String x:Key="butImportExportDBC">Import/Export</system:String>
+    <system:String x:Key="butTruncateTable">Table tronquée</system:String>
+    <system:String x:Key="butInsertANewRecord">Nouveau spell</system:String>
+    <system:String x:Key="butDeleteARecord">Supprimer Spell</system:String>
+    <system:String x:Key="butSaveSpellChanges">Enregistrer les modifications spell</system:String>
+    <system:String x:Key="butImportExportWindowImport">Importation</system:String>
+    <system:String x:Key="butImportExportWindowExport">Exportation</system:String>
+    <system:String x:Key="ImportExportWindowTitle">Importer et exporter</system:String>
+    <system:String x:Key="butMultilingualSwitch">Multilingue</system:String>
+    <!--#endregion-->
+
+    <!--#region code string-->
+    <system:String x:Key="SpellEditor">Éditeur Spell</system:String>
+    <system:String x:Key="PleaseWait">S'il vous plaît, attendez</system:String>
+    <system:String x:Key="PleaseWait_2">Chargement de fichiers dbc et remplissage d'éléments d'interface utilisateur...</system:String>
+    <system:String x:Key="Yes">OUI</system:String>
+    <system:String x:Key="None">Aucun</system:String>
+    <system:String x:Key="No">NON</system:String>
+    <system:String x:Key="ERROR">ERREUR</system:String>
+    <system:String x:Key="Import/Export">Import/Export</system:String>
+    <system:String x:Key="ReloadingUI">Rechargement de l'interface utilisateur...</system:String>
+    <system:String x:Key="Input_MySQL_Details">Entrer les détails MySQL</system:String>
+    <system:String x:Key="Input_MySQL_Details_1">Entrez votre hôte MySQL:</system:String>
+    <system:String x:Key="Input_MySQL_Details_2">Entrez votre nom d'utilisateur MySQL:</system:String>
+    <system:String x:Key="Input_MySQL_Details_3">Entrez votre mot de passe MySQL:</system:String>
+    <system:String x:Key="Input_MySQL_Details_4">Entrez votre port MySQL:</system:String>
+    <system:String x:Key="Input_MySQL_Details_5">Entrez la base de données MySQL à créer / utiliser:</system:String>
+    <system:String x:Key="Input_MySQL_Details_6">Entrez la table MySQL à créer / utiliser:</system:String>
+    <system:String x:Key="Input_MySQL_Error">Une erreur est survenue lors de la configuration de la connexion à la base de données:</system:String>
+    <system:String x:Key="Input_MySQL_Error_2">Les détails de MySQL ne sont pas valides.</system:String>
+    <system:String x:Key="Welcome" xml:space="preserve">Bienvenue dans l’éditeur de sorts WoW pour la version 3.3.5a (12340).&#x0a;&#x0a;Souhaitez-vous utiliser la version locale de l’éditeur (SQLite) ou vous connecter à un serveur (MySQL)?</system:String>
+    <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout progrès sera perdu!</system:String>
+    <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR?</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">Si vous tronquez la table, TOUTES les données des tables SQL seront supprimées.&#x0a;&#x0a;Cette fonctionnalité ne doit être utilisée que lorsque vous souhaitez réinitialiser les tables et importer de nouveaux DBC.</system:String>
+    <system:String x:Key="CopySpellRecord1">Copier un enregistrement existant?</system:String>
+    <system:String x:Key="CopySpellRecord2">Entrez l'identifiant du sort pour copier.</system:String>
+    <system:String x:Key="CopySpellRecord3">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
+    <system:String x:Key="CopySpellRecord4">Entrez le nouvel identifiant de sort.</system:String>
+    <system:String x:Key="CopySpellRecord5">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
+    <system:String x:Key="CopySpellRecord6">ERREUR: cet identifiant est déjà pris.</system:String>
+    <system:String x:Key="CopySpellRecord7">La création d'un nouveau sort à partir de rien n'est actuellement pas implémentée. Veuillez copier un sort existant.</system:String>
+    <system:String x:Key="CopySpellRecord8">Nouvel enregistrement créé avec l’ID {0} avec succès.</system:String>
+    <system:String x:Key="DeleteSpellRecord1">Entrez l'identifiant du sort à supprimer.</system:String>
+    <system:String x:Key="DeleteSpellRecord2">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
+    <system:String x:Key="DeleteSpellRecord3">Enregistrement supprimé avec succès.</system:String>
+    <system:String x:Key="SaveIcon">Oui pour l’ID d’orthographe.\nPas d’identité pour l’ID d’icône actif.</system:String>
+    <system:String x:Key="no_spells_loaded">Aucun sort chargé</system:String>
+    <system:String x:Key="Highest_Spell_ID">ID d'orthographe le plus élevé chargé: {0}</system:String>
+    <system:String x:Key="SpellIconID">Épeler l'ID de l'icône</system:String>
+    <system:String x:Key="ActiveIconID">ID d'icône actif</system:String>
+    <system:String x:Key="UpdateMainWindow1">S'il vous plaît, attendez...</system:String>
+    <system:String x:Key="UpdateMainWindow2">Chargement du sort: {0}.\n\nLe premier sort à charger prendra toujours un certain temps, mais il devrait ensuite être assez rapide.</system:String>
+    <system:String x:Key="String1">En pause lors de la configuration des paramètres d'importation / exportation ...</system:String>
+    <system:String x:Key="String2">La configuration n'a pas pu être chargée / créée, erreur fatale.</system:String>
+    <system:String x:Key="String3">Une exception a été levée lors de la création du fichier de configuration.</system:String>
+    <system:String x:Key="String4">Indiquez si vous souhaitez modifier l'ID d'icône de l'orthographe ou l'ID de l'icône active.</system:String>
+    <system:String x:Key="String5">Un seul sort peut être sélectionné à la fois.</system:String>
+    <!--#region some array of strings-->
+    <system:String x:Key="attFlags_strings">
+		Inconnu 0 |
+        Au prochain rangé |
+        Au prochain coup (Joueur) |
+        Est le réapprovisionnement |
+        Capacité |
+        Sort de commerce |
+        Sort passif |
+        Caché côté client |
+        Masquer dans le journal de combat |
+        Cible Main-Main Item |
+        Sur la prochaine balançoire (NPC) |
+        Inconnu 11 |
+        Jour seulement |
+        Nuit seulement |
+        Seulement à l'intérieur |
+        Extérieur seulement |
+        Pas de changement de forme |
+        Requiert Stealth |
+        N'affecte pas l'état de la gaine |
+        Les dégâts des sorts dépendent du niveau de lanceur |
+        Arrête l'attaque automatique |
+        Impossible d'esquiver, de parer ou de bloquer |
+        Suivre la cible lors du casting |
+        Castable Bien Morte |
+        Castable Bien Monté |
+        Début du temps de recharge après la disparition de l'aura |
+        Négatif |
+        Castable en position assise |
+        Ne peut pas être utilisé en combat |
+        Insensible à l'invulnérabilité |
+        Cassable par dommages |
+        Aura ne peut pas être annulé
+    </system:String>
+    <system:String x:Key="attFlagsEx_strings">
+		Rejeter un animal de compagnie |
+		Draine tout le pouvoir |
+		Canalisé 1 |
+		Ne peut pas être redirigé |
+		Inconnu 4 |
+		Ne brise pas la furtivité |
+		Canalisé 2 |
+		Ne peut pas être reflété |
+		Ne peut pas cibler en combat |
+		Début de combat en mêlée |
+		Ne génère aucune menace |
+		Inconnu 11 |
+		Pickpocket |
+		Vue lointaine |
+		Suivre la cible pendant la canalisation |
+		Supprimer les auras sur l'immunité |
+		Insensible à l'école immunitaire |
+		Unautoscalable par Pet |
+		Stun, Polymorph, Daze, Hex |
+		Ne peut pas se cibler |
+		Nécessite des points de combo sur la cible 1 |
+		Inconnu 21 |
+		Points combinés requis sur la cible 2 |
+		Inconnu 23 |
+		Pêche |
+		Inconnu 25 |
+		Focus Macro de ciblage |
+		Inconnu 27 |
+		Caché dans Aura Bar |
+		Nom d'affichage de la chaîne |
+		Activer le sort une fois esquivé |
+		Inconnu 31
+    </system:String>
+    <system:String x:Key="attFlagsEx1_strings">
+		Peut cibler une unité ou un cadavre mort |
+		Vanish, Shadowform, Ghost |
+		Peut cibler pas en ligne de vue |
+		Inconnu 3 |
+		Display in Stance Bar |
+		Drapeau de répétition automatique |
+		Requiert une cible inexploitée |
+		Inconnu 7 |
+		Inconnu 8 |
+		Inconnu 9 |
+		Inconnu 10 (apprivoisé) |
+		Entonnoir de santé |
+		Cleave, Heart Strike, Maul, Sunder Armor, Swipe |
+		Preserve Enchant in Arena |
+		Inconnu 14 |
+		Inconnu 15 |
+		Apprivoiser la bête |
+		Ne pas réinitialiser les actions automatiques |
+		Requiert l'animal mort |
+		Pas besoin de changement de forme |
+		Inconnu 20 |
+		Dégâts réduits Bouclier |
+		Embuscade, Coup de poignard, Coup bas, Prise de mort, Garrot, Jugements, Mutilate, Pounce, Ravage, Shiv, Shred |
+		Concentration arcanique |
+		Inconnu 24 |
+		Inconnu 25 |
+		Insensible à l'immunité scolaire |
+		Nécessite une canne à pêche |
+		Inconnu 28 |
+		Ne peut pas critique |
+		Triggered can Trigger Proc |
+		Buff alimentaire
+    </system:String>
+    <system:String x:Key="attFlagsEx2_strings">
+		Inconnu 0 |
+		Inconnu 1 |
+		Inconnu 2 |
+		Sort bloquable |
+		Ignorer le minuteur de résurrection |
+		Inconnu 5 |
+		Inconnu 6 |
+		Pile pour différentes roulettes |
+		Seuls les joueurs ciblés |
+		Triggered can Trigger Proc 2 |
+		Requiert Main-Main |
+		Champ de bataille seulement |
+		Ne cible que les fantômes |
+		Masquer la barre des chaînes |
+		Cible sans honneur |
+		Prise de vue automatique |
+		Ne peut pas déclencher Proc |
+		Aucune agression initiale |
+		Ne peut pas manquer |
+		Désactiver Procs |
+		Mort persistante |
+		Inconnu 21 |
+		Nécessite des baguettes
+		Inconnu 23 |
+		Nécessite une main gauche |
+		Can Proc avec Triggered |
+		Drain Soul |
+		Inconnu 28 |
+		Bonus No Done |
+		Ne pas afficher la plage |
+		Inconnu 31
+    </system:String>
+    <system:String x:Key="attFlagsEx3_strings">
+		Ignorer toutes les résistances |
+		Proc seulement sur le lanceur |
+		Continuer à cocher en mode hors connexion |
+		Inconnu 3 |
+		Inconnu 4 |
+		Inconnu 5 |
+		Non volable |
+		Déclenché |
+		Dommages fixes |
+		Activer depuis l'événement |
+		Sort vs coût prolongé |
+		Inconnu 11 |
+		Inconnu 12 |
+		Inconnu 13 |
+		Les dégâts ne brisent pas les auras |
+		Inconnu 15 |
+		Non utilisable dans Arena |
+		Utilisable en Arena |
+		Zone cible de la chaîne |
+		Inconnu 19 |
+		Ne pas vérifier la puissance Selfcast |
+		Inconnu 21 |
+		Inconnu 22 |
+		Inconnu 23 |
+		Inconnu 24 |
+		Mise à l'échelle d'animaux |
+		Ne peut être moulé qu'en Outreterre |
+		Inconnu 27 |
+		Visée |
+		Inconnu 29 |
+		Inconnu 30 |
+		Polymorphe
+    </system:String>
+    <system:String x:Key="attFlagsEx4_strings">
+		Inconnu 0 |
+		Pas de réactif pendant la préparation |
+		Inconnu 2 |
+		Utilisable en état d'étourdissement |
+		Inconnu 4 |
+		Sort à cible unique |
+		Inconnu 6 |
+		Inconnu 7 |
+		Inconnu 8 |
+		Commencer le périodique chez Aura Apply |
+		Masquer la durée |
+		Autoriser la cible de la cible comme cible |
+		Cliver
+		Haste Affect Duration |
+		Inconnu 14 |
+		Inflire sur plusieurs cibles |
+		Contrôle de classe d'élément spécial |
+		Utilisable tant que craint |
+		Utilisable craint confus |
+		Ne pas tourner pendant le casting |
+		Inconnu 20 |
+		Inconnu 21 |
+		Inconnu 22 |
+		Inconnu 23 |
+		Inconnu 24 |
+		Inconnu 25 |
+		Inconnu 26 |
+		Ne pas montrer Aura si Self-Cast |
+		Ne pas montrer Aura si pas Self-Cast |
+		Inconnu 29 |
+		Inconnu 30 |
+		AoE Taunt
+    </system:String>
+    <system:String x:Key="attFlagsEx5_strings">
+		Ne pas afficher le temps de recharge |
+		Seulement dans Arena |
+		Ignorer les auras du lanceur |
+		Assist Ignore Immune Flag |
+		Inconnu 4 |
+		Inconnu 5 |
+		Spell Cast Event |
+		Inconnu 7 |
+		Ne peut pas cibler contrôlé par la foule |
+		Inconnu 9 |
+		Peut cibler les amis possédés |
+		Pas en instance de raid |
+		Castable en véhicule |
+		Peut cibler invisible |
+		Inconnu 14 |
+		Inconnu 15 |
+		Inconnu 16 |
+		Mount |
+		Cast par charmeur |
+		Inconnu 19 |
+		Visible uniquement à la roulette |
+		Effets cibles de l'interface utilisateur du client |
+		Inconnu 22 |
+		Inconnu 23 |
+		Peut cibler Untargetable |
+		Exorcisme, éclair de lumière |
+		Inconnu 26 |
+		Inconnu 27 |
+		Death Grip |
+		Pas fait Pourcentage de dégâts Mods |
+		Inconnu 30 |
+		Ignorer les Mods de Recharge de la catégorie
+    </system:String>
+    <system:String x:Key="attFlagsEx6_strings">
+		Feign Death |
+		Inconnu 1 |
+		Réactiver à la résurrection |
+		Triche sort |
+		Résurrection de la pierre d'âme |
+		Totem |
+		Pas de refoulement sur les dégâts |
+		Inconnu 7 |
+		Horde seulement |
+		Alliance seulement |
+		Dissiper les frais |
+		Interrompre uniquement les non-joueurs |
+		Inconnu 12 |
+		Inconnu 13 |
+		Raise Dead |
+		Inconnu 15 |
+		Restaurer l'alimentation secondaire |
+		Inconnu 17 |
+		Charge |
+		Téléport de zone |
+		Blink, bouclier divin, bloc de glace |
+		Inconnu 21 |
+		Inconnu 22 |
+		Inconnu 23 |
+		Inconnu 24 |
+		Inconnu 25 |
+		Inconnu 26 |
+		Inconnu 27 |
+		Buff Raid consolidé |
+		Inconnu 29 |
+		Inconnu 30 |
+		Indicateur Client
+    </system:String>
+    <system:String x:Key="stances_strings">
+		Aucun |
+		Chat |
+		Arbre |
+		Voyage |
+		Aqua |
+		Ours |
+		Ambiant |
+		Goule |
+		Ours terrible |
+		Steves Ghoul |
+		Squelette de Tharonja |
+		Test de force |
+		Lecteur BLB |
+		Danse des ombres |
+		Créature Ours |
+		Chat de créature |
+		Loup fantôme |
+		Position de bataille |
+		Position défensive |
+		Position de Berserker |
+		Test |
+		Zombie |
+		Métamorphose |
+		Morts-vivants |
+		Maître pêcheur |
+		Vol (épique) |
+		Shadow |
+		Vol (normal) |
+		Furtif |
+		Moonkin |
+		Esprit de rédemption
+    </system:String>
+    <system:String x:Key="creature_type_strings">
+		Aucun |
+		La bête |
+		Dragonkin |
+		Démon |
+		Élémentaire |
+		Géant |
+		Morts-vivants |
+		Humanoïde |
+		Critter |
+		Mécanique |
+		Non spécifié |
+		Totem |
+		Animal de compagnie non combattant |
+		Nuage de gaz
+    </system:String>
+    <system:String x:Key="caster_aura_state_strings">
+		Aucun |
+		Défense |
+		Healthless 20% |
+		Berserking |
+		Jugement |
+		Hunter Parry |
+		Victoire Rush |
+		Inconnu 1 |
+		Healthless 35% |
+		Enrager |
+		Inconnu 2 |
+		Santé supérieure à 75%
+    </system:String>
+    <system:String x:Key="target_aura_state_strings">
+		Aucun |
+		Healthless 20% |
+		Berserking |
+		Healthless 35% |
+		Conflagrate |
+		Swiftmend |
+		Poison mortel |
+		Saignement
+    </system:String>
+    <system:String x:Key="equipped_item_inventory_type_mask_strings">
+		Non-équipé |
+		La tête |
+		Collier |
+		Épaules |
+		Corps |
+		Coffre |
+		Taille |
+		Les jambes |
+		Les pieds |
+		Poignets |
+		Les mains |
+		Doigt |
+		Bibelot |
+		Arme |
+		Bouclier |
+		À distance |
+		Cape |
+		Arme à deux mains |
+		Sac |
+		Tabard |
+		Robe |
+		Main-Main |
+		Hors main |
+		Holdable |
+		Munitions |
+		Jeté |
+		Ranged Right |
+		Carquois |
+		Relique
+    </system:String>
+    <system:String x:Key="school_strings">
+		Mana |
+		Rage |
+		Focus |
+		Énergie |
+		Le bonheur |
+		Runes |
+		Puissance runique |
+		Vapeur |
+		Pyrite |
+		Chaleur |
+		Limon |
+		Le sang |
+		La colère |
+		Santé
+    </system:String>
+    <system:String x:Key="damage_prevention_types">
+		Aucun |
+		Magie |
+		Mêlée |
+		À distance |
+		Aucun |
+		Silence |
+		Pacifier
+    </system:String>
+    <system:String x:Key="target_strings">
+		Aucun |
+		Inutilisé 1 |
+		Unité |
+		Unité en raid |
+		Unité en fête |
+		Item Enchantment |
+		Emplacement source AoE vide |
+		Lieu de destination zone cible |
+		Ennemi |
+		Allié |
+		Cadavre d'un ennemi |
+		Unité morte |
+		Gameobject |
+		Article de commerce |
+		String |
+		Objet Gameobject |
+		Cadavre d'un allié |
+		Mini animal de compagnie |
+		Glyphe |
+		Cible de destination |
+		Inutilisé 20 |
+		Passager
+    </system:String>
+    <system:String x:Key="spell_aura_effect_names">
+        SPELL_AURA_NONE |
+        SPELL_AURA_BIND_SIGHT |
+        SPELL_AURA_MOD_POSSESS |
+        SPELL_AURA_PERIODIC_DAMAGE |
+        SPELL_AURA_DUMMY |
+        SPELL_AURA_MOD_CONFUSE |
+        SPELL_AURA_MOD_CHARM |
+        SPELL_AURA_MOD_FEAR |
+        SPELL_AURA_PERIODIC_HEAL |
+        SPELL_AURA_MOD_ATTACKSPEED |
+        SPELL_AURA_MOD_THREAT |
+        SPELL_AURA_MOD_TAUNT |
+        SPELL_AURA_MOD_STUN |
+        SPELL_AURA_MOD_DAMAGE_DONE |
+        SPELL_AURA_MOD_DAMAGE_TAKEN |
+        SPELL_AURA_DAMAGE_SHIELD |
+        SPELL_AURA_MOD_STEALTH |
+        SPELL_AURA_MOD_STEALTH_DETECT |
+        SPELL_AURA_MOD_INVISIBILITY |
+        SPELL_AURA_MOD_INVISIBILITY_DETECT |
+        SPELL_AURA_OBS_MOD_HEALTH |
+        SPELL_AURA_OBS_MOD_POWER |
+        SPELL_AURA_MOD_RESISTANCE |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL |
+        SPELL_AURA_PERIODIC_ENERGIZE |
+        SPELL_AURA_MOD_PACIFY |
+        SPELL_AURA_MOD_ROOT |
+        SPELL_AURA_MOD_SILENCE |
+        SPELL_AURA_REFLECT_SPELLS |
+        SPELL_AURA_MOD_STAT |
+        SPELL_AURA_MOD_SKILL |
+        SPELL_AURA_MOD_INCREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED |
+        SPELL_AURA_MOD_DECREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_HEALTH |
+        SPELL_AURA_MOD_INCREASE_ENERGY |
+        SPELL_AURA_MOD_SHAPESHIFT |
+        SPELL_AURA_EFFECT_IMMUNITY |
+        SPELL_AURA_STATE_IMMUNITY |
+        SPELL_AURA_SCHOOL_IMMUNITY |
+        SPELL_AURA_DAMAGE_IMMUNITY |
+        SPELL_AURA_DISPEL_IMMUNITY |
+        SPELL_AURA_PROC_TRIGGER_SPELL |
+        SPELL_AURA_PROC_TRIGGER_DAMAGE |
+        SPELL_AURA_TRACK_CREATURES |
+        SPELL_AURA_TRACK_RESOURCES |
+        SPELL_AURA_46 |
+        SPELL_AURA_MOD_PARRY_PERCENT |
+        SPELL_AURA_48 |
+        SPELL_AURA_MOD_DODGE_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT |
+        SPELL_AURA_MOD_BLOCK_PERCENT |
+        SPELL_AURA_MOD_WEAPON_CRIT_PERCENT |
+        SPELL_AURA_PERIODIC_LEECH |
+        SPELL_AURA_MOD_HIT_CHANCE |
+        SPELL_AURA_MOD_SPELL_HIT_CHANCE |
+        SPELL_AURA_TRANSFORM |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_INCREASE_SWIM_SPEED |
+        SPELL_AURA_MOD_DAMAGE_DONE_CREATURE |
+        SPELL_AURA_MOD_PACIFY_SILENCE |
+        SPELL_AURA_MOD_SCALE |
+        SPELL_AURA_PERIODIC_HEALTH_FUNNEL |
+        SPELL_AURA_63 |
+        SPELL_AURA_PERIODIC_MANA_LEECH |
+        SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK |
+        SPELL_AURA_FEIGN_DEATH |
+        SPELL_AURA_MOD_DISARM |
+        SPELL_AURA_MOD_STALKED |
+        SPELL_AURA_SCHOOL_ABSORB |
+        SPELL_AURA_EXTRA_ATTACKS |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL |
+        SPELL_AURA_REFLECT_SPELLS_SCHOOL |
+        SPELL_AURA_MOD_LANGUAGE |
+        SPELL_AURA_FAR_SIGHT |
+        SPELL_AURA_MECHANIC_IMMUNITY |
+        SPELL_AURA_MOUNTED |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_DONE |
+        SPELL_AURA_MOD_PERCENT_STAT |
+        SPELL_AURA_SPLIT_DAMAGE_PCT |
+        SPELL_AURA_WATER_BREATHING |
+        SPELL_AURA_MOD_BASE_RESISTANCE |
+        SPELL_AURA_MOD_REGEN |
+        SPELL_AURA_MOD_POWER_REGEN |
+        SPELL_AURA_CHANNEL_DEATH_ITEM |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN |
+        SPELL_AURA_MOD_HEALTH_REGEN_PERCENT |
+        SPELL_AURA_PERIODIC_DAMAGE_PERCENT |
+        SPELL_AURA_90 |
+        SPELL_AURA_MOD_DETECT_RANGE |
+        SPELL_AURA_PREVENTS_FLEEING |
+        SPELL_AURA_MOD_UNATTACKABLE |
+        SPELL_AURA_INTERRUPT_REGEN |
+        SPELL_AURA_GHOST |
+        SPELL_AURA_SPELL_MAGNET |
+        SPELL_AURA_MANA_SHIELD |
+        SPELL_AURA_MOD_SKILL_TALENT |
+        SPELL_AURA_MOD_ATTACK_POWER |
+        SPELL_AURA_AURAS_VISIBLE |
+        SPELL_AURA_MOD_RESISTANCE_PCT |
+        SPELL_AURA_MOD_MELEE_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_TOTAL_THREAT |
+        SPELL_AURA_WATER_WALK |
+        SPELL_AURA_FEATHER_FALL |
+        SPELL_AURA_HOVER |
+        SPELL_AURA_ADD_FLAT_MODIFIER |
+        SPELL_AURA_ADD_PCT_MODIFIER |
+        SPELL_AURA_ADD_TARGET_TRIGGER |
+        SPELL_AURA_MOD_POWER_REGEN_PERCENT |
+        SPELL_AURA_ADD_CASTER_HIT_TRIGGER |
+        SPELL_AURA_OVERRIDE_CLASS_SCRIPTS |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_MOD_HEALING |
+        SPELL_AURA_MOD_REGEN_DURING_COMBAT |
+        SPELL_AURA_MOD_MECHANIC_RESISTANCE |
+        SPELL_AURA_MOD_HEALING_PCT |
+        SPELL_AURA_119 |
+        SPELL_AURA_UNTRACKABLE |
+        SPELL_AURA_EMPATHY |
+        SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT |
+        SPELL_AURA_MOD_TARGET_RESISTANCE |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_POSSESS_PET |
+        SPELL_AURA_MOD_SPEED_ALWAYS |
+        SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT |
+        SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT |
+        SPELL_AURA_MOD_MANA_REGEN_INTERRUPT |
+        SPELL_AURA_MOD_HEALING_DONE |
+        SPELL_AURA_MOD_HEALING_DONE_PERCENT |
+        SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE |
+        SPELL_AURA_MOD_MELEE_HASTE |
+        SPELL_AURA_FORCE_REACTION |
+        SPELL_AURA_MOD_RANGED_HASTE |
+        SPELL_AURA_MOD_RANGED_AMMO_HASTE |
+        SPELL_AURA_MOD_BASE_RESISTANCE_PCT |
+        SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE |
+        SPELL_AURA_SAFE_FALL |
+        SPELL_AURA_MOD_PET_TALENT_POINTS |
+        SPELL_AURA_ALLOW_TAME_PET_TYPE |
+        SPELL_AURA_MECHANIC_IMMUNITY_MASK |
+        SPELL_AURA_RETAIN_COMBO_POINTS |
+        SPELL_AURA_REDUCE_PUSHBACK |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT |
+        SPELL_AURA_TRACK_STEALTHED |
+        SPELL_AURA_MOD_DETECTED_RANGE |
+        SPELL_AURA_SPLIT_DAMAGE_FLAT |
+        SPELL_AURA_MOD_STEALTH_LEVEL |
+        SPELL_AURA_MOD_WATER_BREATHING |
+        SPELL_AURA_MOD_REPUTATION_GAIN |
+        SPELL_AURA_PET_DAMAGE_MULTI |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE |
+        SPELL_AURA_NO_PVP_CREDIT |
+        SPELL_AURA_MOD_AOE_AVOIDANCE |
+        SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT |
+        SPELL_AURA_POWER_BURN |
+        SPELL_AURA_MOD_CRIT_DAMAGE_BONUS |
+        SPELL_AURA_164 |
+        SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS |
+        SPELL_AURA_MOD_CRIT_PERCENT_VERSUS |
+        SPELL_AURA_DETECT_AMORE |
+        SPELL_AURA_MOD_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_MOUNTED_SPEED_NOT_STACK |
+        SPELL_AURA_173 |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT |
+        SPELL_AURA_SPIRIT_OF_REDEMPTION |
+        SPELL_AURA_AOE_CHARM |
+        SPELL_AURA_MOD_DEBUFF_RESISTANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS |
+        SPELL_AURA_181 |
+        SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_THREAT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE |
+        SPELL_AURA_MOD_RATING |
+        SPELL_AURA_MOD_FACTION_REPUTATION_GAIN |
+        SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED |
+        SPELL_AURA_MOD_MELEE_RANGED_HASTE |
+        SPELL_AURA_MELEE_SLOW |
+        SPELL_AURA_MOD_TARGET_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_TARGET_ABILITY_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_COOLDOWN |
+        SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE |
+        SPELL_AURA_198 |
+        SPELL_AURA_MOD_INCREASES_SPELL_PCT_TO_HIT |
+        SPELL_AURA_MOD_XP_PCT |
+        SPELL_AURA_FLY |
+        SPELL_AURA_IGNORE_COMBAT_RESULT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_DAMAGE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE |
+        SPELL_AURA_MOD_SCHOOL_CRIT_DMG_TAKEN |
+        SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS |
+        SPELL_AURA_MOD_VEHICLE_SPEED_ALWAYS |
+        SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT |
+        SPELL_AURA_214 |
+        SPELL_AURA_ARENA_PREPARATION |
+        SPELL_AURA_HASTE_SPELLS |
+        SPELL_AURA_MOD_MELEE_HASTE_2 |
+        SPELL_AURA_HASTE_RANGED |
+        SPELL_AURA_MOD_MANA_REGEN_FROM_STAT |
+        SPELL_AURA_MOD_RATING_FROM_STAT |
+        SPELL_AURA_MOD_DETAUNT |
+        SPELL_AURA_222 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE |
+        SPELL_AURA_224 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE |
+        SPELL_AURA_PERIODIC_DUMMY |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_DETECT_STEALTH |
+        SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_230 |
+        SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_MECHANIC_DURATION_MOD |
+        SPELL_AURA_CHANGE_MODEL_FOR_ALL_HUMANOIDS |
+        SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK |
+        SPELL_AURA_MOD_DISPEL_RESIST |
+        SPELL_AURA_CONTROL_VEHICLE |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SCALE_2 |
+        SPELL_AURA_MOD_EXPERTISE |
+        SPELL_AURA_FORCE_MOVE_FORWARD |
+        SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING |
+        SPELL_AURA_MOD_FACTION |
+        SPELL_AURA_COMPREHEND_LANGUAGE |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK |
+        SPELL_AURA_CLONE_CASTER |
+        SPELL_AURA_MOD_COMBAT_RESULT_CHANCE |
+        SPELL_AURA_CONVERT_RUNE |
+        SPELL_AURA_MOD_INCREASE_HEALTH_2 |
+        SPELL_AURA_MOD_ENEMY_DODGE |
+        SPELL_AURA_MOD_SPEED_SLOW_ALL |
+        SPELL_AURA_MOD_BLOCK_CRIT_CHANCE |
+        SPELL_AURA_MOD_DISARM_OFFHAND |
+        SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT |
+        SPELL_AURA_NO_REAGENT_USE |
+        SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS |
+        SPELL_AURA_258 |
+        SPELL_AURA_MOD_HOT_PCT |
+        SPELL_AURA_SCREEN_EFFECT |
+        SPELL_AURA_PHASE |
+        SPELL_AURA_ABILITY_IGNORE_AURASTATE |
+        SPELL_AURA_ALLOW_ONLY_ABILITY |
+        SPELL_AURA_264 |
+        SPELL_AURA_265 |
+        SPELL_AURA_266 |
+        SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_DAMAGE_FROM_CASTER |
+        SPELL_AURA_IGNORE_MELEE_RESET |
+        SPELL_AURA_X_RAY |
+        SPELL_AURA_ABILITY_CONSUME_NO_AMMO |
+        SPELL_AURA_MOD_IGNORE_SHAPESHIFT |
+        SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC |
+        SPELL_AURA_MOD_MAX_AFFECTED_TARGETS |
+        SPELL_AURA_MOD_DISARM_RANGED |
+        SPELL_AURA_INITIALIZE_IMAGES |
+        SPELL_AURA_MOD_ARMOR_PENETRATION_PCT |
+        SPELL_AURA_MOD_HONOR_GAIN_PCT |
+        SPELL_AURA_MOD_BASE_HEALTH_PCT |
+        SPELL_AURA_MOD_HEALING_RECEIVED |
+        SPELL_AURA_LINKED |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR |
+        SPELL_AURA_ABILITY_PERIODIC_CRIT |
+        SPELL_AURA_DEFLECT_SPELLS |
+        SPELL_AURA_IGNORE_HIT_DIRECTION |
+        SPELL_AURA_289 |
+        SPELL_AURA_MOD_CRIT_PCT |
+        SPELL_AURA_MOD_XP_QUEST_PCT |
+        SPELL_AURA_OPEN_STABLE |
+        SPELL_AURA_OVERRIDE_SPELLS |
+        SPELL_AURA_PREVENT_REGENERATE_POWER |
+        SPELL_AURA_295 |
+        SPELL_AURA_SET_VEHICLE_ID |
+        SPELL_AURA_BLOCK_SPELL_FAMILY |
+        SPELL_AURA_STRANGULATE |
+        SPELL_AURA_299 |
+        SPELL_AURA_SHARE_DAMAGE_PCT |
+        SPELL_AURA_SCHOOL_HEAL_ABSORB |
+        SPELL_AURA_302 |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE |
+        SPELL_AURA_MOD_FAKE_INEBRIATE |
+        SPELL_AURA_MOD_MINIMUM_SPEED |
+        SPELL_AURA_306 |
+        SPELL_AURA_HEAL_ABSORB_TEST |
+        SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER |
+        SPELL_AURA_309 |
+        SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_311 |
+        SPELL_AURA_312 |
+        SPELL_AURA_313 |
+        SPELL_AURA_PREVENT_RESURRECTION |
+        SPELL_AURA_UNDERWATER_WALKING |
+        SPELL_AURA_PERIODIC_HASTE
+    </system:String>
+    <system:String x:Key="spell_effect_names">
+        NULL |
+        INSTANT_KILL |
+        SCHOOL_DAMAGE |
+        DUMMY |
+        PORTAL_TELEPORT |
+        TELEPORT_UNITS |
+        APPLY_AURA |
+        ENVIRONMENTAL_DAMAGE |
+        POWER_DRAIN |
+        HEALTH_LEECH |
+        HEAL |
+        BIND |
+        PORTAL |
+        RITUAL_BASE |
+        RITUAL_SPECIALIZE |
+        RITUAL_ACTIVATE_PORTAL |
+        QUEST_COMPLETE |
+        WEAPON_DAMAGE_NOSCHOOL |
+        RESURRECT |
+        ADD_EXTRA_ATTACKS |
+        DODGE |
+        EVADE |
+        PARRY |
+        BLOCK |
+        CREATE_ITEM |
+        WEAPON |
+        DEFENSE |
+        PERSISTENT_AREA_AURA |
+        SUMMON |
+        LEAP |
+        ENERGIZE |
+        WEAPON_PERCENT_DAMAGE |
+        TRIGGER_MISSILE |
+        OPEN_LOCK |
+        TRANSFORM_ITEM |
+        APPLY_GROUP_AREA_AURA |
+        LEARN_SPELL |
+        SPELL_DEFENSE |
+        DISPEL |
+        LANGUAGE |
+        DUAL_WIELD |
+        LEAP_41 |
+        SUMMON_GUARDIAN |
+        TELEPORT_UNITS_FACE_CASTER |
+        SKILL_STEP |
+        UNDEFINED_45 |
+        SPAWN |
+        TRADE_SKILL |
+        STEALTH |
+        DETECT |
+        SUMMON_OBJECT |
+        FORCE_CRITICAL_HIT |
+        GUARANTEE_HIT |
+        ENCHANT_ITEM |
+        ENCHANT_ITEM_TEMPORARY |
+        TAMECREATURE |
+        SUMMON_PET |
+        LEARN_PET_SPELL |
+        WEAPON_DAMAGE |
+        OPEN_LOCK_ITEM |
+        PROFICIENCY |
+        SEND_EVENT |
+        POWER_BURN |
+        THREAT |
+        TRIGGER_SPELL |
+        APPLY_RAID_AREA_AURA |
+        POWER_FUNNEL |
+        HEAL_MAX_HEALTH |
+        INTERRUPT_CAST |
+        DISTRACT |
+        PULL |
+        PICKPOCKET |
+        ADD_FARSIGHT |
+        UNTRAIN_TALENTS |
+        USE_GLYPH |
+        HEAL_MECHANICAL |
+        SUMMON_OBJECT_WILD |
+        SCRIPT_EFFECT |
+        ATTACK |
+        SANCTUARY |
+        ADD_COMBO_POINTS |
+        CREATE_HOUSE |
+        BIND_SIGHT |
+        DUEL |
+        STUCK |
+        SUMMON_PLAYER |
+        ACTIVATE_OBJECT |
+        BUILDING_DAMAGE |
+        BUILDING_REPAIR |
+        BUILDING_SWITCH_STATE |
+        KILL_CREDIT_90 |
+        THREAT_ALL |
+        ENCHANT_HELD_ITEM |
+        SUMMON_PHANTASM |
+        SELF_RESURRECT |
+        SKINNING |
+        CHARGE |
+        SUMMON_MULTIPLE_TOTEMS |
+        KNOCK_BACK |
+        DISENCHANT |
+        INEBRIATE |
+        FEED_PET |
+        DISMISS_PET |
+        REPUTATION |
+        SUMMON_OBJECT_SLOT1 |
+        SUMMON_OBJECT_SLOT2 |
+        SUMMON_OBJECT_SLOT3 |
+        SUMMON_OBJECT_SLOT4 |
+        DISPEL_MECHANIC |
+        SUMMON_DEAD_PET |
+        DESTROY_ALL_TOTEMS |
+        DURABILITY_DAMAGE |
+        NONE_112 |
+        RESURRECT_FLAT |
+        ATTACK_ME |
+        DURABILITY_DAMAGE_PCT |
+        SKIN_PLAYER_CORPSE |
+        SPIRIT_HEAL |
+        SKILL |
+        APPLY_PET_AREA_AURA |
+        TELEPORT_GRAVEYARD |
+        DUMMYMELEE |
+        UNKNOWN1 |
+        START_TAXI |
+        PLAYER_PULL |
+        UNKNOWN4 |
+        UNKNOWN5 |
+        PROSPECTING |
+        APPLY_FRIEND_AREA_AURA |
+        APPLY_ENEMY_AREA_AURA |
+        UNKNOWN10 |
+        UNKNOWN11 |
+        PLAY_MUSIC |
+        FORGET_SPECIALIZATION |
+        KILL_CREDIT |
+        UNKNOWN15 |
+        UNKNOWN16 |
+        UNKNOWN17 |
+        UNKNOWN18 |
+        CLEAR_QUEST |
+        UNKNOWN20 |
+        UNKNOWN21 |
+        TRIGGER_SPELL_WITH_VALUE |
+        APPLY_OWNER_AREA_AURA |
+        UNKNOWN23 |
+        UNKNOWN24 |
+        ACTIVATE_RUNES |
+        UNKNOWN26 |
+        UNKNOWN27 |
+        QUEST_FAIL |
+        UNKNOWN28 |
+        UNKNOWN29 |
+        UNKNOWN30 |
+        SUMMON_TARGET |
+        SUMMON_REFER_A_FRIEND |
+        TAME_CREATURE |
+        ADD_SOCKET |
+        CREATE_ITEM2 |
+        MILLING |
+        UNKNOWN37 |
+        UNKNOWN38 |
+        LEARN_SPEC |
+        ACTIVATE_SPEC |
+        UNKNOWN
+    </system:String>
+    <system:String x:Key="mechanic_names">
+		Aucun |
+		Charmé |
+		Désorienté |
+		Désarmé |
+		Distrait |
+		En fuite |
+		Maladroit |
+		Enracinée |
+		Pacifié |
+		Silencieux |
+		Endormi |
+		Enserré |
+		Abasourdi |
+		Congelés |
+		Incapacipé |
+		Saignement |
+		Guérison |
+		Polymorphe |
+		Banni |
+		Blindé |
+		Enchaîné |
+		Monté |
+		Séduit |
+		Tourné |
+		Horrifié |
+		Invulnarable |
+		Interrompu |
+		Dazed |
+		Découverte |
+		Invulnérable |
+		Sapped |
+		Furieux
+    </system:String>
+    <system:String x:Key="interrupt_strings">
+        Aucun |
+        On Movement |
+        On Knockback |
+        On Interrupt Casting |
+        On Interrupt School |
+        On Damage Taken |
+        On Interrupt All
+    </system:String>
+    <system:String x:Key="aura_interrupt_strings">
+        Aucun |
+        On Hit By Spell |
+        On Take Damage |
+        On Casting |
+        On Moving |
+        On Turning |
+        On Jumping |
+        Not Mounted |
+        Not Above Water |
+        Not Underwater |
+        Not Sheathed |
+        On Talk |
+        On Use |
+        On Melee Attack |
+        On Spell Attack |
+        Unknown 14 |
+        On Transform |
+        Unknown 16 |
+        On Mount |
+        Not Seated |
+        On Change Map |
+        Immune or Lost Selection |
+        Unknown 21 |
+        On Teleport |
+        On Enter PvP Combat |
+        On Direct Damage |
+        Landing
+    </system:String>
+    <system:String x:Key="channel_interrupt_strings">
+        Aucun |
+        On 1 |
+        On 2 |
+        On 3 |
+        On 4 |
+        On 5 |
+        On 6 |
+        On 7 |
+        On 8 |
+        On 9 |
+        On 10 |
+        On 11 |
+        On 12 |
+        On 13 |
+        On 14 |
+        On 15 |
+        On 16 |
+        On 17 |
+        On 18
+    </system:String>
+    <!--modified proc_strings according to https://wowdev.wiki/DB/Spell : 3.3.5.12340 -> procFlags-->
+    <system:String x:Key="proc_strings">
+		Aucun |
+		À la mort |
+		Sur la cible tuée (rapportant XP ou honneur) |
+		Sur l'attaque de mêlée fait |
+		Sur l'attaque de mêlée reçue |
+		Dommages d'aptitude physique faits |
+		Sur l'aptitude physique Dommages pris |
+		Sur une attaque automatique à distance effectuée |
+		Sur une attaque automatique à distance prise |
+		Sur les dégâts de capacité à distance effectués |
+		Sur une capacité à distance Dégâts subis |
+		Sur soigner (SpellDamageType NONE) |
+		Sur soigner pris (SpellDamageType NONE) |
+		Dommages causés aux sorts (SpellDamageType NONE) |
+		Dommages sur les sorts reçus (SpellDamageType NONE) |
+		Sur soigner (SpellDamageType MAGIC) |
+		Sur la guérison prise (SpellDamageType MAGIC) |
+		Dommages causés aux sorts (SpellDamageType MAGIC) |
+		Dommages sur les sorts reçus (SpellDamageType MAGIC) |
+		Effet périodique fait (Dégâts / Soins) |
+		Effet périodique pris (dégâts / soins) |
+		Sur tout dommage pris |
+		Sur le déclencheur de piège |
+		Sur le coup d'attaque automatique mainhand |
+		Sur une frappe d’attaque automatique de la main gauche |
+		À la mort
+    </system:String>
+    <!--#endregion-->
+    <!--#endregion-->
+</ResourceDictionary>
