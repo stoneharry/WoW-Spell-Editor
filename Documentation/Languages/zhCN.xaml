@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <!--#region UI String-->
-    <system:String x:Key="mainTitle">魔兽世界技能编辑工具(3.3.5a - 12340)</system:String>
+    <system:String x:Key="mainTitle">魔兽世界技能编辑器(3.3.5a) [汉化 By ayase]</system:String>
     <system:String x:Key="tabSelectSpell">选择技能</system:String>
     <system:String x:Key="labSpellsLoaded">没有读取技能数据.</system:String>
     <system:String x:Key="labGoToSpell">跳转到技能:</system:String>
@@ -23,34 +23,34 @@
     <system:String x:Key="labSpellDescription">技能描述:</system:String>
     <system:String x:Key="labSpellIngameDescription">技能描述(在游戏中):</system:String>
     <system:String x:Key="Base">基本</system:String>
-    <system:String x:Key="Effects">Effects</system:String>
-    <system:String x:Key="Effects1">Effects 1</system:String>
-    <system:String x:Key="Effects2">Effects 2</system:String>
-    <system:String x:Key="SpellEffects1">Spell Effects 1</system:String>
-    <system:String x:Key="SpellEffects2">Spell Effects 2</system:String>
-    <system:String x:Key="SpellEffects3">Spell Effects 3</system:String>
-    <system:String x:Key="Items">Items</system:String>
-    <system:String x:Key="Flags">Flags</system:String>
-    <system:String x:Key="Icon">Icon</system:String>
-    <system:String x:Key="Interrupts">Interrupts</system:String>
-    <system:String x:Key="Attributes">Attributes</system:String>
-    <system:String x:Key="Attributes2">Attributes2</system:String>
-    <system:String x:Key="Misc">Misc</system:String>
-    <system:String x:Key="butResetSpellIconID">Reset Spell Icon ID</system:String>
-    <system:String x:Key="butResetActiveIconID">Reset Active Icon ID</system:String>
-    <system:String x:Key="labCategory">Category:</system:String>
-    <system:String x:Key="labDispelType">Dispel Type:</system:String>
-    <system:String x:Key="labMechanicType">Mechanic Type:</system:String>
-    <system:String x:Key="labCastTime">Cast Time:</system:String>
-    <system:String x:Key="labDuration">Duration:</system:String>
-    <system:String x:Key="labRange">Range:</system:String>
-    <system:String x:Key="labCasterAuraState">Caster Aura State:</system:String>
-    <system:String x:Key="labSpellLevel">Spell Level:</system:String>
-    <system:String x:Key="labBaseLevel">Base Level:</system:String>
-    <system:String x:Key="labMaxLevel">Max Level:</system:String>
-    <system:String x:Key="labSpellVisual1">Spell Visual 1:</system:String>
-    <system:String x:Key="labSpellVisual2">Spell Visual 2:</system:String>
-    <system:String x:Key="labSpeed">Speed:</system:String>
+    <system:String x:Key="Effects">效果</system:String>
+    <system:String x:Key="Effects1">效果[简略]</system:String>
+    <system:String x:Key="Effects2">效果[详细]</system:String>
+    <system:String x:Key="SpellEffects1">法术效果A</system:String>
+    <system:String x:Key="SpellEffects2">法术效果B</system:String>
+    <system:String x:Key="SpellEffects3">法术效果C</system:String>
+    <system:String x:Key="Items">物品</system:String>
+    <system:String x:Key="Flags">标识</system:String>
+    <system:String x:Key="Icon">图标</system:String>
+    <system:String x:Key="Interrupts">中断</system:String>
+    <system:String x:Key="Attributes">属性[第一部分]</system:String>
+    <system:String x:Key="Attributes2">属性[第二部分]</system:String>
+    <system:String x:Key="Misc">杂项</system:String>
+    <system:String x:Key="butResetSpellIconID">重设法术图标ID</system:String>
+    <system:String x:Key="butResetActiveIconID">重设法术激活时图标ID</system:String>
+    <system:String x:Key="labCategory">类别:</system:String>
+    <system:String x:Key="labDispelType">驱散类型:</system:String>
+    <system:String x:Key="labMechanicType">机制类型:</system:String>
+    <system:String x:Key="labCastTime">施法时间:</system:String>
+    <system:String x:Key="labDuration">持续时间:</system:String>
+    <system:String x:Key="labRange">施法距离:</system:String>
+    <system:String x:Key="labCasterAuraState">施法者光环状态:</system:String>
+    <system:String x:Key="labSpellLevel">法术等级:</system:String>
+    <system:String x:Key="labBaseLevel">基础等级:</system:String>
+    <system:String x:Key="labMaxLevel">最大等级:</system:String>
+    <system:String x:Key="labSpellVisual1">法术视觉效果A:</system:String>
+    <system:String x:Key="labSpellVisual2">法术视觉效果B:</system:String>
+    <system:String x:Key="labSpeed">光效飞行速度(?):</system:String>
     <system:String x:Key="labTargetAuraState">Target Aura State:</system:String>
     <system:String x:Key="labRecoveryTime">Recovery Time:</system:String>
     <system:String x:Key="labCategoryRecoveryTime">Category Recovery Time:</system:String>
@@ -169,25 +169,25 @@
     <!--#endregion-->
 
     <!--#region code string-->
-    <system:String x:Key="SpellEditor">Spell Editor</system:String>
-    <system:String x:Key="PleaseWait">Please wait</system:String>
-    <system:String x:Key="PleaseWait_2">Loading dbc files and populating UI elements...</system:String>
-    <system:String x:Key="Yes">YES</system:String>
-    <system:String x:Key="None">None</system:String>
-    <system:String x:Key="No">NO</system:String>
-    <system:String x:Key="ERROR">ERROR</system:String>
+    <system:String x:Key="SpellEditor">技能编辑器</system:String>
+    <system:String x:Key="PleaseWait">请等待</system:String>
+    <system:String x:Key="PleaseWait_2">加载dbc文件和填充UI元素中....</system:String>
+    <system:String x:Key="Yes">是</system:String>
+    <system:String x:Key="None">无</system:String>
+    <system:String x:Key="No">否</system:String>
+    <system:String x:Key="ERROR">错误</system:String>
     <system:String x:Key="Import/Export">Import/Export</system:String>
-    <system:String x:Key="ReloadingUI">Reloading UI...</system:String>
-    <system:String x:Key="Input_MySQL_Details">Input MySQL Details</system:String>
-    <system:String x:Key="Input_MySQL_Details_1">Input your MySQL host:</system:String>
-    <system:String x:Key="Input_MySQL_Details_2">Input your MySQL username:</system:String>
-    <system:String x:Key="Input_MySQL_Details_3">Input your MySQL password:</system:String>
-    <system:String x:Key="Input_MySQL_Details_4">Input your MySQL port:</system:String>
-    <system:String x:Key="Input_MySQL_Details_5">Input which MySQL database to create/use:</system:String>
+    <system:String x:Key="ReloadingUI">重新加载UI中.....</system:String>
+    <system:String x:Key="Input_MySQL_Details">请输入MYSQL的各项参数.</system:String>
+    <system:String x:Key="Input_MySQL_Details_1">请输入你的MYSQL主机地址:</system:String>
+    <system:String x:Key="Input_MySQL_Details_2">请输入你的MYSQL用户名:</system:String>
+    <system:String x:Key="Input_MySQL_Details_3">请输入你的MYSQL用户密码:</system:String>
+    <system:String x:Key="Input_MySQL_Details_4">请输入你的MYSQL的端口:</system:String>
+    <system:String x:Key="Input_MySQL_Details_5">请输入你的MYSQL所要使用/创建的数据库名称:</system:String>
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">An error occured setting up the database connection:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">The MySQL details input are not valid.</system:String>
-    <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor for version 3.3.5a (12340).&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
+    <system:String x:Key="Welcome" xml:space="preserve">欢迎使用魔兽世界技能编辑工具(3.3.5a - 12340)&#x0a;&#x0a;你希望使用编辑器的本地版本(SQLite)还是连接到服务器(MYSQL)?&#x0a;&#x0a;Mysql:数据储存在mysql服务器中.需要额外打开Mysql服务支持才可以启动.因为mysql支持多人联机同一个数据库.因此支持多人编辑同一个技能数据库.&#x0a;SQLite:使用本地的'SpellEditor.db'文件储存所有的数据.因此该模式中启动不再依赖Mysql服务.但因为数据储存在本地.所以仅用于单人编辑使用.</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
     <system:String x:Key="TruncateTable2" xml:space="preserve">Truncating the table will remove ALL data in the SQL tables.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBCs.</system:String>
