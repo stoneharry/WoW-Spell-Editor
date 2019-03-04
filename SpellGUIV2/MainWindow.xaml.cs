@@ -2921,8 +2921,6 @@ namespace SpellEditor
 
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (adapter == null)
-                return;
             string language = e.AddedItems[0].ToString();
             string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
@@ -2931,7 +2929,7 @@ namespace SpellEditor
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
-            string configLanguage = config == null ? "enUS" : config.GetConfigValue("language");
+            string configLanguage = config.GetConfigValue("language");
             configLanguage = configLanguage == "" ? "enUS" : configLanguage;
 
             MultilingualSwitch.Items.Add("enUS");
