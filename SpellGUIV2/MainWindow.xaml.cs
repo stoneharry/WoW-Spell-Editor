@@ -113,7 +113,7 @@ namespace SpellEditor
 
         #region MemberVariables
         private IDatabaseAdapter adapter;
-        private Config config;
+        private Config config = new Config();
         public uint selectedID = 0;
         public uint newIconID = 1;
         private bool updating;
@@ -652,7 +652,7 @@ namespace SpellEditor
         private async void loadAllData()
         {
             config = await GetConfig();
-            if (config == null)
+            if (!config.isInit)
             {
                 await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), TryFindResource("String2").ToString());
                 return;
@@ -720,12 +720,10 @@ namespace SpellEditor
 
         private async Task<Config> GetConfig()
         {
-            if (config != null)
-                return config;
-            string errorMsg = "";
-            try
+            if (!config.isInit)
             {
-                Config config = new Config();
+                config.Init();
+
                 var settings = new MetroDialogSettings()
                 {
                     AffirmativeButtonText = "SQLite",
@@ -738,35 +736,34 @@ namespace SpellEditor
                     TryFindResource("Welcome").ToString(),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
-                if (!File.Exists("config.xml") && !isSqlite)
-                {
-                    string host = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_1").ToString());
-                    string user = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_2").ToString());
-                    string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
-                    string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
-                    string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
 
-                    uint result = 0;
-                    if (host == null || user == null || pass == null || port == null || db == null ||
-                        host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
-                            !uint.TryParse(port, out result))
-                        throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
-
-                    config.WriteConfigFile(host, user, pass, port, db, config.Language);
-                }
-                if (File.Exists("config.xml"))
+                if (!isSqlite)
                 {
-                    config.ReadConfigFile();
+                    if (config.needInitMysql)
+                    {
+                        string host = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_1").ToString());
+                        string user = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_2").ToString());
+                        string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
+                        string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
+                        string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
+
+                        uint result = 0;
+                        if (host == null || user == null || pass == null || port == null || db == null ||
+                          host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
+                          !uint.TryParse(port, out result))
+                            throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
+
+                        config.UpdateConfigValue("Mysql/host", host);
+                        config.UpdateConfigValue("Mysql/username", user);
+                        config.UpdateConfigValue("Mysql/password", pass);
+                        config.UpdateConfigValue("Mysql/port", port);
+                        config.UpdateConfigValue("Mysql/database", db);
+                    }
                 }
                 config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
-                return config;
+                config.isInit = true;
             }
-            catch (Exception e)
-            {
-                errorMsg = e.Message;
-            }
-            await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}", TryFindResource("String3").ToString(), errorMsg));
-            return null;
+            return config;
         }
         #endregion
 
@@ -1674,7 +1671,7 @@ namespace SpellEditor
 
             _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                if (_worker.__adapter == null || _worker.__config == null)
+                if (_worker.__adapter == null || !_worker.__config.isInit)
                     return;
 
                 // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
@@ -2488,7 +2485,7 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating || adapter == null || config == null)
+            if (updating || adapter == null || !config.isInit)
                 return;
             var item = sender as TabControl;
 
