@@ -5,163 +5,163 @@
     <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
     <system:String x:Key="tabSelectSpell">Choisir un sort</system:String>
     <system:String x:Key="labSpellsLoaded">Aucun sort chargé.</system:String>
-    <system:String x:Key="labGoToSpell">Aller à épeler:</system:String>
-    <system:String x:Key="labFilterBtName">Filtrer par nom:</system:String>
+    <system:String x:Key="labGoToSpell">Aller au sort :</system:String>
+    <system:String x:Key="labFilterBtName">Filtrer par nom :</system:String>
     <system:String x:Key="tabEnglish">Anglais</system:String>
     <system:String x:Key="tabKorean">Coréen</system:String>
     <system:String x:Key="tabFrench">Français</system:String>
-    <system:String x:Key="tabDeutsch">Deutsch</system:String>
+    <system:String x:Key="tabDeutsch">Allemand</system:String>
     <system:String x:Key="tabChinese">Chinois</system:String>
     <system:String x:Key="tabTaiwanese">Taïwanais</system:String>
     <system:String x:Key="tabMexican">Mexicain</system:String>
     <system:String x:Key="tabPortuguese">Portugais</system:String>
-    <system:String x:Key="tabRussian">Russe</system:String>
-    <system:String x:Key="labSpellName">Nom spell:</system:String>
-    <system:String x:Key="labSpellRank">Rang spell:</system:String>
-    <system:String x:Key="labSpellTooltip">Info-bulle sur le sort:</system:String>
-    <system:String x:Key="labSpellIngameTooltip">Infobulle en jeu:</system:String>
-    <system:String x:Key="labSpellDescription">Description spell:</system:String>
-    <system:String x:Key="labSpellIngameDescription">Spell Ingame Description:</system:String>
+    <system:String x:Key="tabRussian">Russe</system :String>
+    <system:String x:Key="labSpellName">Nom du sort :</system:String>
+    <system:String x:Key="labSpellRank">Rang du sort :</system:String>
+    <system:String x:Key="labSpellTooltip">Infobulle du sort :</system:String>
+    <system:String x:Key="labSpellIngameTooltip">Infobulle en jeu :</system:String>
+    <system:String x:Key="labSpellDescription">Description du sort :</system:String>
+    <system:String x:Key="labSpellIngameDescription">Description en jeu :</system:String>
     <system:String x:Key="Base">Base</system:String>
     <system:String x:Key="Effects">Effets</system:String>
     <system:String x:Key="Effects1">Effets 1</system:String>
     <system:String x:Key="Effects2">Effets 2</system:String>
-    <system:String x:Key="SpellEffects1">Spell Effets 1</system:String>
-    <system:String x:Key="SpellEffects2">Spell Effets 2</system:String>
-    <system:String x:Key="SpellEffects3">Spell Effets 3</system:String>
-    <system:String x:Key="Items">Items</system:String>
-    <system:String x:Key="Flags">Flags</system:String>
+    <system:String x:Key="SpellEffects1">Effets du sort 1</system:String>
+    <system:String x:Key="SpellEffects2">Effets du sort 2</system:String>
+    <system:String x:Key="SpellEffects3">Effets du sort 3</system:String>
+    <system:String x:Key="Items">Objets</system:String>
+    <system:String x:Key="Flags">Marqueurs</system:String>
     <system:String x:Key="Icon">Icône</system:String>
     <system:String x:Key="Interrupts">Interruptions</system:String>
-    <system:String x:Key="Attributes">Attributes</system:String>
-    <system:String x:Key="Attributes2">Attributes2</system:String>
-    <system:String x:Key="Misc">Misc</system:String>
-    <system:String x:Key="butResetSpellIconID">Reset Spell Icon ID</system:String>
-    <system:String x:Key="butResetActiveIconID">Reset Active Icon ID</system:String>
-    <system:String x:Key="labCategory">Catégorie:</system:String>
-    <system:String x:Key="labDispelType">Dissipation Type:</system:String>
-    <system:String x:Key="labMechanicType">Mécanicien Type:</system:String>
-    <system:String x:Key="labCastTime">Cast Time:</system:String>
-    <system:String x:Key="labDuration">Durée:</system:String>
-    <system:String x:Key="labRange">Intervalle:</system:String>
-    <system:String x:Key="labCasterAuraState">État Aura du lanceur:</system:String>
-    <system:String x:Key="labSpellLevel">Spell Niveau:</system:String>
-    <system:String x:Key="labBaseLevel">Base Niveau:</system:String>
-    <system:String x:Key="labMaxLevel">Max Niveau:</system:String>
-    <system:String x:Key="labSpellVisual1">Spell Visual 1:</system:String>
-    <system:String x:Key="labSpellVisual2">Spell Visual 2:</system:String>
-    <system:String x:Key="labSpeed">La vitesse:</system:String>
-    <system:String x:Key="labTargetAuraState">État d'aura ciblé:</system:String>
-    <system:String x:Key="labRecoveryTime">Le temps de récupération:</system:String>
-    <system:String x:Key="labCategoryRecoveryTime">Temps de récupération de la catégorie:</system:String>
-    <system:String x:Key="labSpellMissileID">Spell Missile ID:</system:String>
-    <system:String x:Key="labStacks">Stacks:</system:String>
-    <system:String x:Key="labDifficulty">Difficulté:</system:String>
-    <system:String x:Key="labPowerType">Type d'alimentation:</system:String>
-    <system:String x:Key="labGlobalCooldownCategory">Catégorie de temps de recharge global:</system:String>
-    <system:String x:Key="labPowerCost">Coût d'énergie:</system:String>
-    <system:String x:Key="labManaCostPerLevel">Coût en mana par niveau:</system:String>
-    <system:String x:Key="labManaCostPerSecond">Coût en mana par seconde:</system:String>
-    <system:String x:Key="labPerSecondPerLevel">Par seconde par niveau:</system:String>
-    <system:String x:Key="labManaCost%">Mana Cost %:</system:String>
-    <system:String x:Key="labSpellFamilyName">Spell Family Name:</system:String>
-    <system:String x:Key="labSpellFamilyFlags">Spell Family Flags:</system:String>
-    <system:String x:Key="labSpellFamilyFlags1">Spell Family Flags1:</system:String>
-    <system:String x:Key="labSpellFamilyFlags2">Spell Family Flags2:</system:String>
-    <system:String x:Key="labGlobalCooldownTime">Temps de recharge global:</system:String>
-    <system:String x:Key="labMaxTargets">Cibles Max:</system:String>
-    <system:String x:Key="labMaxTargetsLevel">Niveau de cible maximum:</system:String>
-    <system:String x:Key="labTotemCategory1">Totem Catégorie 1:</system:String>
-    <system:String x:Key="labTotemCategory2">Totem Catégorie 2:</system:String>
-    <system:String x:Key="labAreaGroup">Area Group:</system:String>
-    <system:String x:Key="labPreventionType">Prévention Type:</system:String>
-    <system:String x:Key="labSpellDamageType">Spell Damage Type:</system:String>
-    <system:String x:Key="labRequiresSpellFocus">Requiert Spell Focus:</system:String>
+    <system:String x:Key="Attributes">Attributs</system:String>
+    <system:String x:Key="Attributes2">Attributs 2</system:String>
+    <system:String x:Key="Misc">Divers</system:String>
+    <system:String x:Key="butResetSpellIconID">Réinitialiser l'icône</system:String>
+    <system:String x:Key="butResetActiveIconID">Réinitialiser l'icône active</system:String>
+    <system:String x:Key="labCategory">Catégorie :</system:String>
+    <system:String x:Key="labDispelType">Type de dissipation :</system:String>
+    <system:String x:Key="labMechanicType">Type de mécanique :</system:String>
+    <system:String x:Key="labCastTime">Temps d'incantation :</system:String>
+    <system:String x:Key="labDuration">Durée :</system:String>
+    <system:String x:Key="labRange">Portée :</system:String>
+    <system:String x:Key="labCasterAuraState">Statut du lanceur :</system:String>
+    <system:String x:Key="labSpellLevel">Niveau du sort :</system:String>
+    <system:String x:Key="labBaseLevel">Niveau de base du sort :</system:String>
+    <system:String x:Key="labMaxLevel">Niveau Max :</system:String>
+    <system:String x:Key="labSpellVisual1">Visuel 1 :</system:String>
+    <system:String x:Key="labSpellVisual2">Visuel 2 :</system:String>
+    <system:String x:Key="labSpeed">Vélocité :</system:String>
+    <system:String x:Key="labTargetAuraState">Statut de la cible :</system:String>
+    <system:String x:Key="labRecoveryTime">Temps de recharge :</system:String>
+    <system:String x:Key="labCategoryRecoveryTime">Temps de recharge de la catégorie :</system:String>
+    <system:String x:Key="labSpellMissileID">ID du Missile:</system:String>
+    <system:String x:Key="labStacks">Cumuls :</system:String>
+    <system:String x:Key="labDifficulty">Difficulté :</system:String>
+    <system:String x:Key="labPowerType">Type de ressource :</system:String>
+    <system:String x:Key="labGlobalCooldownCategory">Catégorie du temps de recharge global :</system:String>
+    <system:String x:Key="labPowerCost">Coût de la ressource :</system:String>
+    <system:String x:Key="labManaCostPerLevel">Coût en mana par niveau :</system:String>
+    <system:String x:Key="labManaCostPerSecond">Coût en mana par seconde :</system:String>
+    <system:String x:Key="labPerSecondPerLevel">Par seconde et par niveau :</system:String>
+    <system:String x:Key="labManaCost%">% du coût en mana :</system:String>
+    <system:String x:Key="labSpellFamilyName">&quot;Family Name&quot; du sort :</system:String>
+    <system:String x:Key="labSpellFamilyFlags">&quot;Family Flags&quot; du sort :</system:String>
+    <system:String x:Key="labSpellFamilyFlags1">&quot;Family Flags1&quot; du sort :</system:String>
+    <system:String x:Key="labSpellFamilyFlags2">&quot;Family Flags2&quot; du sort :</system:String>
+    <system:String x:Key="labGlobalCooldownTime">Temps de recharge global :</system:String>
+    <system:String x:Key="labMaxTargets">Cibles Max :</system:String>
+    <system:String x:Key="labMaxTargetsLevel">Niveau maximum de la cible :</system:String>
+    <system:String x:Key="labTotemCategory1">Categorie de totem 1:</system:String>
+    <system:String x:Key="labTotemCategory2">Catégorie de totem 2:</system:String>
+    <system:String x:Key="labAreaGroup">&quot;Area Group&quot; :</system:String>
+    <system:String x:Key="labPreventionType">Type de prévention :</system:String>
+    <system:String x:Key="labSpellDamageType">Type de dégâts :</system:String>
+    <system:String x:Key="labRequiresSpellFocus">Requiert le Focus :</system:String>
     <system:String x:Key="labRuneCost">Coût runique:</system:String>
-    <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
-    <system:String x:Key="labSchool">École:</system:String>
+    <system:String x:Key="labSpellDescriptionVariables">Variables de la description :</system:String>
+    <system:String x:Key="labSchool">École :</system:String>
     <system:String x:Key="checkboxPhysical">Physique</system:String>
-    <system:String x:Key="checkboxHoly">Saint</system:String>
+    <system:String x:Key="checkboxHoly">Sacré</system:String>
     <system:String x:Key="checkboxFire">Feu</system:String>
-    <system:String x:Key="checkboxNature">La nature</system:String>
-    <system:String x:Key="checkboxFrost">Gel</system:String>
+    <system:String x:Key="checkboxNature">Nature</system:String>
+    <system:String x:Key="checkboxFrost">Givre</system:String>
     <system:String x:Key="checkboxShadow">Ombre</system:String>
-    <system:String x:Key="checkboxArcane">Ésotérique</system:String>
-    <system:String x:Key="checkboxFacingFront">FacingFront</system:String>
-    <system:String x:Key="labTargets">Cibles:</system:String>
-    <system:String x:Key="labProcs">Procs:</system:String>
-    <system:String x:Key="labProcCharges">Proc Charges:</system:String>
-    <system:String x:Key="labProcChance">Proc Chance:</system:String>
-    <system:String x:Key="labSpellEffect">Spell Effect:</system:String>
-    <system:String x:Key="labBasePoints">Base Points:</system:String>
-    <system:String x:Key="labDieSides">Die Sides:</system:String>
-    <system:String x:Key="labRealPointsPerLevel">Real Points Per Level:</system:String>
-    <system:String x:Key="labMechanic">Mécanicien:</system:String>
+    <system:String x:Key="checkboxArcane">Arcane</system:String>
+    <system:String x:Key="checkboxFacingFront">Doit faire face</system:String>
+    <system:String x:Key="labTargets">Cibles :</system:String>
+    <system:String x:Key="labProcs">"Procs" :</system:String>
+    <system:String x:Key="labProcCharges">Charges du &quot;Proc&quot; :</system:String>
+    <system:String x:Key="labProcChance">Chances du &quot;Proc&quot; :</system:String>
+    <system:String x:Key="labSpellEffect">Effet du sort :</system:String>
+    <system:String x:Key="labBasePoints">Valeur de base :</system:String>
+    <system:String x:Key="labDieSides">&quot;Die Sides&quot; :</system:String>
+    <system:String x:Key="labRealPointsPerLevel">Vrai points par niveau :</system:String>
+    <system:String x:Key="labMechanic">Mécanique :</system:String>
     <system:String x:Key="labTargetA">Cible A:</system:String>
     <system:String x:Key="labTargetB">Cible B:</system:String>
-    <system:String x:Key="labRadius">Rayon:</system:String>
-    <system:String x:Key="labApplyAuraName">Appliquer le nom Aura:</system:String>
-    <system:String x:Key="labAmplitude">Amplitude:</system:String>
-    <system:String x:Key="labMultipleValue">Valeur multiple:</system:String>
-    <system:String x:Key="labChainTarget">Cible de la chaîne:</system:String>
-    <system:String x:Key="labItemType">Type d'élément:</system:String>
-    <system:String x:Key="labTriggerSpell">Trigger Spell:</system:String>
-    <system:String x:Key="labPointsPerComboPoint">Points Per Combo Point:</system:String>
-    <system:String x:Key="labMiscValueA">Misc Value A:</system:String>
-    <system:String x:Key="labMiscValueB">Misc Value B:</system:String>
-    <system:String x:Key="labSpellClassMask1">Spell Class Mask 1:</system:String>
-    <system:String x:Key="labSpellClassMask2">Spell Class Mask 2:</system:String>
-    <system:String x:Key="labSpellClassMask3">Spell Class Mask 3:</system:String>
-    <system:String x:Key="labDamageMultiplier1">Multiplicateur de dégâts 1:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier1">EffectBonusMultiplier 1:</system:String>
-    <system:String x:Key="labDamageMultiplier2">Multiplicateur de dégâts 2:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
-    <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
-    <system:String x:Key="labItemTool1">Item Tool 1:</system:String>
-    <system:String x:Key="labItemTool2">Item Tool 2:</system:String>
-    <system:String x:Key="labReagent1">Réactif 1:</system:String>
-    <system:String x:Key="labReagent2">Réactif 2:</system:String>
-    <system:String x:Key="labReagent3">Réactif 3:</system:String>
-    <system:String x:Key="labReagent4">Réactif 4:</system:String>
-    <system:String x:Key="labReagent5">Réactif 5:</system:String>
-    <system:String x:Key="labReagent6">Réactif 6:</system:String>
-    <system:String x:Key="labReagent7">Réactif 7:</system:String>
-    <system:String x:Key="labReagent8">Reagent 8:</system:String>
-    <system:String x:Key="labReagentCount1">Nombre de réactifs 1:</system:String>
-    <system:String x:Key="labReagentCount2">Nombre de réactifs 2:</system:String>
-    <system:String x:Key="labReagentCount3">Nombre de réactifs 3:</system:String>
-    <system:String x:Key="labReagentCount4">Nombre de réactifs 4:</system:String>
-    <system:String x:Key="labReagentCount5">Nombre de réactifs 5:</system:String>
-    <system:String x:Key="labReagentCount6">Nombre de réactifs 6:</system:String>
-    <system:String x:Key="labReagentCount7">Nombre de réactifs 7:</system:String>
-    <system:String x:Key="labReagentCount8">Nombre de réactifs 8:</system:String>
-    <system:String x:Key="labEquippedItemClass">Classe d'objets équipée:</system:String>
-    <system:String x:Key="labEquippedItemInventoryType">Type d'inventaire de l'objet équipé:</system:String>
-    <system:String x:Key="labEquippedItemSubClass">Sous-classe d'élément équipé:</system:String>
-    <system:String x:Key="labInterruptFlags">Drapeaux d'interruption:</system:String>
-    <system:String x:Key="labAuraInterruptFlags">Drapeaux d'interruption d'aura:</system:String>
-    <system:String x:Key="labChannelInterruptFlags">Drapeaux d'interruption de canal:</system:String>
-    <system:String x:Key="labAttributes">Les attributs:</system:String>
-    <system:String x:Key="labAttributesEx">Attributes Ex:</system:String>
-    <system:String x:Key="labAttributesEx2">Attributes Ex2:</system:String>
-    <system:String x:Key="labAttributesEx3">Attributes Ex3:</system:String>
-    <system:String x:Key="labAttributesEx4">Attributes Ex4:</system:String>
-    <system:String x:Key="labAttributesEx5">Attributes Ex5:</system:String>
-    <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
-    <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
-    <system:String x:Key="labCreatureType">Type de créature:</system:String>
-    <system:String x:Key="labStances">Stances:</system:String>
-    <system:String x:Key="labCurrentIcon">Icône actuelle:</system:String>
-    <system:String x:Key="labNewIcon">Nouvelle icône:</system:String>
-    <system:String x:Key="labFiltericons">Icônes de filtre:</system:String>
+    <system:String x:Key="labRadius">Rayon :</system:String>
+    <system:String x:Key="labApplyAuraName">Applique l'aura :</system:String>
+    <system:String x:Key="labAmplitude">Amplitude :</system:String>
+    <system:String x:Key="labMultipleValue">Multiplicateur de valeur :</system:String>
+    <system:String x:Key="labChainTarget">Cible de la chaîne :</system:String>
+    <system:String x:Key="labItemType">Type d'objet :</system:String>
+    <system:String x:Key="labTriggerSpell">Déclenche le sort :</system:String>
+    <system:String x:Key="labPointsPerComboPoint">Points par point de combo:</system:String>
+    <system:String x:Key="labMiscValueA">Valeur diverse A:</system:String>
+    <system:String x:Key="labMiscValueB">Valeur diverse B:</system:String>
+    <system:String x:Key="labSpellClassMask1">&quot;Spell Class Mask 1&quot; :</system:String>
+    <system:String x:Key="labSpellClassMask2">&quot;Spell Class Mask 2&quot; :</system:String>
+    <system:String x:Key="labSpellClassMask3">&quot;Spell Class Mask 3&quot; :</system:String>
+    <system:String x:Key="labDamageMultiplier1">Multiplicateur de dégâts 1 :</system:String>
+    <system:String x:Key="labEffectBonusMultiplier1">Multiplicateur de l'effet 1 :</system:String>
+    <system:String x:Key="labDamageMultiplier2">Multiplicateur de dégâts 2 :</system:String>
+    <system:String x:Key="labEffectBonusMultiplier2">Multiplicateur de l'effet 2 :</system:String>
+    <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3 :</system:String>
+    <system:String x:Key="labEffectBonusMultiplier3">Multiplicateur de l'effet 3 :</system:String>
+    <system:String x:Key="labItemTool1">Outil requis 1 :</system:String>
+    <system:String x:Key="labItemTool2">Outil requis 2 :</system:String>
+    <system:String x:Key="labReagent1">Réactif 1 :</system:String>
+    <system:String x:Key="labReagent2">Réactif 2 :</system:String>
+    <system:String x:Key="labReagent3">Réactif 3 :</system:String>
+    <system:String x:Key="labReagent4">Réactif 4 :</system:String>
+    <system:String x:Key="labReagent5">Réactif 5 :</system:String>
+    <system:String x:Key="labReagent6">Réactif 6 :</system:String>
+    <system:String x:Key="labReagent7">Réactif 7 :</system:String>
+    <system:String x:Key="labReagent8">Reagent 8 :</system:String>
+    <system:String x:Key="labReagentCount1">Nombre de réactifs 1 :</system:String>
+    <system:String x:Key="labReagentCount2">Nombre de réactifs 2 :</system:String>
+    <system:String x:Key="labReagentCount3">Nombre de réactifs 3 :</system:String>
+    <system:String x:Key="labReagentCount4">Nombre de réactifs 4 :</system:String>
+    <system:String x:Key="labReagentCount5">Nombre de réactifs 5 :</system:String>
+    <system:String x:Key="labReagentCount6">Nombre de réactifs 6 :</system:String>
+    <system:String x:Key="labReagentCount7">Nombre de réactifs 7 :</system:String>
+    <system:String x:Key="labReagentCount8">Nombre de réactifs 8 :</system:String>
+    <system:String x:Key="labEquippedItemClass">&quot;Class&quot; de l'objet équipé :</system:String>
+    <system:String x:Key="labEquippedItemInventoryType">Type d'inventaire de l'objet équipé :</system:String>
+    <system:String x:Key="labEquippedItemSubClass">&quot;Subclass&quot; de l'objet équipé :</system:String>
+    <system:String x:Key="labInterruptFlags">Marqueurs d'interruption :</system:String>
+    <system:String x:Key="labAuraInterruptFlags">Marqueurs d'interruption d'aura :</system:String>
+    <system:String x:Key="labChannelInterruptFlags">Marqueurs d'interruption de canalisation :</system:String>
+    <system:String x:Key="labAttributes">Attributs :</system:String>
+    <system:String x:Key="labAttributesEx">Attributs Ex :</system:String>
+    <system:String x:Key="labAttributesEx2">Attributs Ex2 :</system:String>
+    <system:String x:Key="labAttributesEx3">Attributs Ex3 :</system:String>
+    <system:String x:Key="labAttributesEx4">Attributs Ex4 :</system:String>
+    <system:String x:Key="labAttributesEx5">Attributs Ex5 :</system:String>
+    <system:String x:Key="labAttributesEx6">Attributs Ex6 :</system:String>
+    <system:String x:Key="labAttributesEx7">Attributs Ex7 :</system:String>
+    <system:String x:Key="labCreatureType">Type de créature :</system:String>
+    <system:String x:Key="labStances">Postures :</system:String>
+    <system:String x:Key="labCurrentIcon">Icône actuelle :</system:String>
+    <system:String x:Key="labNewIcon">Nouvelle icône :</system:String>
+    <system:String x:Key="labFiltericons">Filtre d'icônes :</system:String>
     <system:String x:Key="butSaveIcon">Confirmer</system:String>
-    <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur de l’icône &amp; hauteur (pixels)</system:String>
-    <system:String x:Key="butImportExportDBC">Import/Export</system:String>
+    <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur &amp; la hauteur de l'icône (en pixels)</system:String>
+    <system:String x:Key="butImportExportDBC">Importer/Exporter</system:String>
     <system:String x:Key="butTruncateTable">Table tronquée</system:String>
-    <system:String x:Key="butInsertANewRecord">Nouveau spell</system:String>
-    <system:String x:Key="butDeleteARecord">Supprimer Spell</system:String>
-    <system:String x:Key="butSaveSpellChanges">Enregistrer les modifications spell</system:String>
+    <system:String x:Key="butInsertANewRecord">Nouveau sort</system:String>
+    <system:String x:Key="butDeleteARecord">Supprimer un sort</system:String>
+    <system:String x:Key="butSaveSpellChanges">Enregistrer les modifications du sort</system:String>
     <system:String x:Key="butImportExportWindowImport">Importation</system:String>
     <system:String x:Key="butImportExportWindowExport">Exportation</system:String>
     <system:String x:Key="ImportExportWindowTitle">Importer et exporter</system:String>
@@ -169,148 +169,148 @@
     <!--#endregion-->
 
     <!--#region code string-->
-    <system:String x:Key="SpellEditor">Éditeur Spell</system:String>
-    <system:String x:Key="PleaseWait">S'il vous plaît, attendez</system:String>
-    <system:String x:Key="PleaseWait_2">Chargement de fichiers dbc et remplissage d'éléments d'interface utilisateur...</system:String>
+    <system:String x:Key="SpellEditor">Éditeur de Sorts</system:String>
+    <system:String x:Key="PleaseWait">Patientez s'il vous plaît.</system:String>
+    <system:String x:Key="PleaseWait_2">Chargement des fichiers dbc et remplissage des éléments d'interface utilisateur...</system:String>
     <system:String x:Key="Yes">OUI</system:String>
     <system:String x:Key="None">Aucun</system:String>
     <system:String x:Key="No">NON</system:String>
     <system:String x:Key="ERROR">ERREUR</system:String>
-    <system:String x:Key="Import/Export">Import/Export</system:String>
+    <system:String x:Key="Import/Export">Importer/Exporter</system:String>
     <system:String x:Key="ReloadingUI">Rechargement de l'interface utilisateur...</system:String>
     <system:String x:Key="Input_MySQL_Details">Entrer les détails MySQL</system:String>
-    <system:String x:Key="Input_MySQL_Details_1">Entrez votre hôte MySQL:</system:String>
-    <system:String x:Key="Input_MySQL_Details_2">Entrez votre nom d'utilisateur MySQL:</system:String>
-    <system:String x:Key="Input_MySQL_Details_3">Entrez votre mot de passe MySQL:</system:String>
-    <system:String x:Key="Input_MySQL_Details_4">Entrez votre port MySQL:</system:String>
-    <system:String x:Key="Input_MySQL_Details_5">Entrez la base de données MySQL à créer / utiliser:</system:String>
-    <system:String x:Key="Input_MySQL_Details_6">Entrez la table MySQL à créer / utiliser:</system:String>
-    <system:String x:Key="Input_MySQL_Error">Une erreur est survenue lors de la configuration de la connexion à la base de données:</system:String>
+    <system:String x:Key="Input_MySQL_Details_1">Entrez votre hôte MySQL :</system:String>
+    <system:String x:Key="Input_MySQL_Details_2">Entrez votre nom d'utilisateur MySQL :</system:String>
+    <system:String x:Key="Input_MySQL_Details_3">Entrez votre mot de passe MySQL :</system:String>
+    <system:String x:Key="Input_MySQL_Details_4">Entrez votre port MySQL :</system:String>
+    <system:String x:Key="Input_MySQL_Details_5">Entrez la base de données MySQL à créer / utiliser :</system:String>
+    <system:String x:Key="Input_MySQL_Details_6">Entrez la table MySQL à créer / utiliser :</system:String>
+    <system:String x:Key="Input_MySQL_Error">Une erreur est survenue lors de la configuration de la connexion à la base de données :</system:String>
     <system:String x:Key="Input_MySQL_Error_2">Les détails de MySQL ne sont pas valides.</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">Bienvenue dans l’éditeur de sorts WoW pour la version 3.3.5a (12340).&#x0a;&#x0a;Souhaitez-vous utiliser la version locale de l’éditeur (SQLite) ou vous connecter à un serveur (MySQL)?</system:String>
-    <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout progrès sera perdu!</system:String>
-    <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR?</system:String>
-    <system:String x:Key="TruncateTable2" xml:space="preserve">Si vous tronquez la table, TOUTES les données des tables SQL seront supprimées.&#x0a;&#x0a;Cette fonctionnalité ne doit être utilisée que lorsque vous souhaitez réinitialiser les tables et importer de nouveaux DBC.</system:String>
-    <system:String x:Key="CopySpellRecord1">Copier un enregistrement existant?</system:String>
+    <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout votre progrès sera perdu !</system:String>
+    <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR ?</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">Si vous tronquez la table, TOUTES les données des tables SQL seront supprimées.&#x0a;&#x0a;Cette fonctionnalité ne doit être utilisée que lorsque vous souhaitez réinitialiser les tables et importer de nouvelles DBC.</system:String>
+    <system:String x:Key="CopySpellRecord1">Copier d'un sort existant ?</system:String>
     <system:String x:Key="CopySpellRecord2">Entrez l'identifiant du sort pour copier.</system:String>
-    <system:String x:Key="CopySpellRecord3">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
-    <system:String x:Key="CopySpellRecord4">Entrez le nouvel identifiant de sort.</system:String>
-    <system:String x:Key="CopySpellRecord5">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
+    <system:String x:Key="CopySpellRecord3">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
+    <system:String x:Key="CopySpellRecord4">Entrez le nouvel identifiant du sort.</system:String>
+    <system:String x:Key="CopySpellRecord5">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
     <system:String x:Key="CopySpellRecord6">ERREUR: cet identifiant est déjà pris.</system:String>
     <system:String x:Key="CopySpellRecord7">La création d'un nouveau sort à partir de rien n'est actuellement pas implémentée. Veuillez copier un sort existant.</system:String>
-    <system:String x:Key="CopySpellRecord8">Nouvel enregistrement créé avec l’ID {0} avec succès.</system:String>
+    <system:String x:Key="CopySpellRecord8">Nouveau sort créé avec succès sous l’ID {0}.</system:String>
     <system:String x:Key="DeleteSpellRecord1">Entrez l'identifiant du sort à supprimer.</system:String>
-    <system:String x:Key="DeleteSpellRecord2">ERREUR: L'identifiant de l'orthographe saisi n'était pas un entier.</system:String>
-    <system:String x:Key="DeleteSpellRecord3">Enregistrement supprimé avec succès.</system:String>
-    <system:String x:Key="SaveIcon">Oui pour l’ID d’orthographe.\nPas d’identité pour l’ID d’icône actif.</system:String>
+    <system:String x:Key="DeleteSpellRecord2">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
+    <system:String x:Key="DeleteSpellRecord3">Sort supprimé avec succès.</system:String>
+    <system:String x:Key="SaveIcon">Oui pour l'icône simple.\nNon pour l'icône active.</system:String>
     <system:String x:Key="no_spells_loaded">Aucun sort chargé</system:String>
-    <system:String x:Key="Highest_Spell_ID">ID d'orthographe le plus élevé chargé: {0}</system:String>
-    <system:String x:Key="SpellIconID">Épeler l'ID de l'icône</system:String>
-    <system:String x:Key="ActiveIconID">ID d'icône actif</system:String>
-    <system:String x:Key="UpdateMainWindow1">S'il vous plaît, attendez...</system:String>
-    <system:String x:Key="UpdateMainWindow2">Chargement du sort: {0}.\n\nLe premier sort à charger prendra toujours un certain temps, mais il devrait ensuite être assez rapide.</system:String>
+    <system:String x:Key="Highest_Spell_ID">ID la plus élevé parmis les sorts chargés : {0}</system:String>
+    <system:String x:Key="SpellIconID">ID de l'icône</system:String>
+    <system:String x:Key="ActiveIconID">ID de l'icône active</system:String>
+    <system:String x:Key="UpdateMainWindow1">Patientez s'il vous plaît...</system:String>
+    <system:String x:Key="UpdateMainWindow2">Chargement du sort : {0}.\n\nLe premier sort à charger prendra toujours un certain temps, mais il devrait ensuite être assez rapide.</system:String>
     <system:String x:Key="String1">En pause lors de la configuration des paramètres d'importation / exportation ...</system:String>
     <system:String x:Key="String2">La configuration n'a pas pu être chargée / créée, erreur fatale.</system:String>
     <system:String x:Key="String3">Une exception a été levée lors de la création du fichier de configuration.</system:String>
-    <system:String x:Key="String4">Indiquez si vous souhaitez modifier l'ID d'icône de l'orthographe ou l'ID de l'icône active.</system:String>
+    <system:String x:Key="String4">Indiquez si vous souhaitez modifier l'ID de l'icône simple ou l'ID de l'icône active.</system:String>
     <system:String x:Key="String5">Un seul sort peut être sélectionné à la fois.</system:String>
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
 		Inconnu 0 |
-        Au prochain rangé |
-        Au prochain coup (Joueur) |
-        Est le réapprovisionnement |
+        Au prochain tir |
+        Sur la prochaine attaque (Joueur) |
+        Is Replenishment |
         Capacité |
-        Sort de commerce |
+        Sort de métier |
         Sort passif |
         Caché côté client |
         Masquer dans le journal de combat |
-        Cible Main-Main Item |
-        Sur la prochaine balançoire (NPC) |
+        Cible l'objet en main principale |
+        Sur la prochaine attaque (NPC) |
         Inconnu 11 |
         Jour seulement |
         Nuit seulement |
         Seulement à l'intérieur |
         Extérieur seulement |
         Pas de changement de forme |
-        Requiert Stealth |
-        N'affecte pas l'état de la gaine |
-        Les dégâts des sorts dépendent du niveau de lanceur |
-        Arrête l'attaque automatique |
-        Impossible d'esquiver, de parer ou de bloquer |
-        Suivre la cible lors du casting |
-        Castable Bien Morte |
-        Castable Bien Monté |
+        Requiert Camouflage |
+        N'affecte pas le dégainement |
+        Les dégâts des sorts dépendent du niveau du lanceur |
+		Interrompt l'attaque automatique |
+        Impossible à esquiver, parer ou bloquer |
+        Suivre la cible lors de l'incantation |
+        Lançable lorsque mort |
+        Lançable lorsque monté |
         Début du temps de recharge après la disparition de l'aura |
-        Négatif |
-        Castable en position assise |
+        Effet Négatif |
+        Lançable en position assise |
         Ne peut pas être utilisé en combat |
         Insensible à l'invulnérabilité |
-        Cassable par dommages |
+        Interruptible par les dégâts |
         Aura ne peut pas être annulé
     </system:String>
     <system:String x:Key="attFlagsEx_strings">
-		Rejeter un animal de compagnie |
+		Renvoi le familier |
 		Draine tout le pouvoir |
 		Canalisé 1 |
 		Ne peut pas être redirigé |
 		Inconnu 4 |
 		Ne brise pas la furtivité |
 		Canalisé 2 |
-		Ne peut pas être reflété |
+		Ne peut pas être renvoyé |
 		Ne peut pas cibler en combat |
-		Début de combat en mêlée |
+		Débute l'attaque automatique |
 		Ne génère aucune menace |
 		Inconnu 11 |
 		Pickpocket |
 		Vue lointaine |
 		Suivre la cible pendant la canalisation |
-		Supprimer les auras sur l'immunité |
-		Insensible à l'école immunitaire |
-		Unautoscalable par Pet |
-		Stun, Polymorph, Daze, Hex |
-		Ne peut pas se cibler |
+		Supprimer les auras lors de l'immunité |
+		Insensible aux immunités des écoles |
+		Impossible à mettre à l'échelle par le familier |
+		Etourdissement, Métamorphose, Hébéter, Maléfice |
+		Ne peut pas s'auto-cibler |
 		Nécessite des points de combo sur la cible 1 |
 		Inconnu 21 |
-		Points combinés requis sur la cible 2 |
+		Nécessite des points de combo sur la cible 2 |
 		Inconnu 23 |
 		Pêche |
 		Inconnu 25 |
 		Focus Macro de ciblage |
 		Inconnu 27 |
-		Caché dans Aura Bar |
-		Nom d'affichage de la chaîne |
-		Activer le sort une fois esquivé |
+		Non affiché dans la barre des auras |
+		La canalisation affiche le nom |
+		Activer le sort après une esquive |
 		Inconnu 31
     </system:String>
     <system:String x:Key="attFlagsEx1_strings">
-		Peut cibler une unité ou un cadavre mort |
-		Vanish, Shadowform, Ghost |
-		Peut cibler pas en ligne de vue |
+		Peut cibler une unité morte ou un cadavre |
+		Disparition, Forme d'ombre, Fantôme |
+		Peut cibler lorsqu'hors du champs de vision |
 		Inconnu 3 |
-		Display in Stance Bar |
-		Drapeau de répétition automatique |
-		Requiert une cible inexploitée |
+		Affiché dans la barre des postures |
+		Marqueur de répétition automatique |
+		Requiert une cible non-engagée |
 		Inconnu 7 |
 		Inconnu 8 |
 		Inconnu 9 |
-		Inconnu 10 (apprivoisé) |
-		Entonnoir de santé |
-		Cleave, Heart Strike, Maul, Sunder Armor, Swipe |
-		Preserve Enchant in Arena |
+		Inconnu 10 (apprivoisement) |
+		Captation de vie |
+		Enchaînement, Frappe au coeur, Mutiler, Fracasser l'armure, Balayage |
+		Conserve l'enchantement en arène |
 		Inconnu 14 |
 		Inconnu 15 |
-		Apprivoiser la bête |
-		Ne pas réinitialiser les actions automatiques |
-		Requiert l'animal mort |
-		Pas besoin de changement de forme |
+		Apprivoise une bête |
+		Ne réinitialise pas les actions automatiques |
+		Requiert familier mort |
+		Pas besoin de changeforme |
 		Inconnu 20 |
 		Dégâts réduits Bouclier |
-		Embuscade, Coup de poignard, Coup bas, Prise de mort, Garrot, Jugements, Mutilate, Pounce, Ravage, Shiv, Shred |
-		Concentration arcanique |
+		Embuscade, Attaque sournoise, Coup bas, Poigne de la mort, Garrot, Jugements, Mutilation, Traquenard, Ravage, Kriss, Lambeau |
+		Concentration des arcanes |
 		Inconnu 24 |
 		Inconnu 25 |
-		Insensible à l'immunité scolaire |
+		Insensible aux immunités des écoles |
 		Nécessite une canne à pêche |
 		Inconnu 28 |
 		Ne peut pas critique |
@@ -322,62 +322,62 @@
 		Inconnu 1 |
 		Inconnu 2 |
 		Sort bloquable |
-		Ignorer le minuteur de résurrection |
+		Ignore le temps de résurrection |
 		Inconnu 5 |
 		Inconnu 6 |
-		Pile pour différentes roulettes |
-		Seuls les joueurs ciblés |
+		Peut se cumuler depuis plusieurs lanceurs |
+		Seuls les joueurs peuvent être ciblés |
 		Triggered can Trigger Proc 2 |
-		Requiert Main-Main |
+		Nécessite une main droite |
 		Champ de bataille seulement |
 		Ne cible que les fantômes |
-		Masquer la barre des chaînes |
+		Masquer la barre de canalisation |
 		Cible sans honneur |
-		Prise de vue automatique |
+		Tir automatique |
 		Ne peut pas déclencher Proc |
-		Aucune agression initiale |
-		Ne peut pas manquer |
+		Aucune menace initiale |
+		Ne peut pas rater |
 		Désactiver Procs |
-		Mort persistante |
+		Persiste après la mort |
 		Inconnu 21 |
-		Nécessite des baguettes
+		Nécessite une baguette |
 		Inconnu 23 |
 		Nécessite une main gauche |
-		Can Proc avec Triggered |
-		Drain Soul |
+		Can Proc with Triggered |
+		Drain d'âme |
 		Inconnu 28 |
-		Bonus No Done |
-		Ne pas afficher la plage |
+		Ignore les bonus |
+		Ne pas afficher la portée |
 		Inconnu 31
     </system:String>
     <system:String x:Key="attFlagsEx3_strings">
 		Ignorer toutes les résistances |
 		Proc seulement sur le lanceur |
-		Continuer à cocher en mode hors connexion |
+		Le décompte continue lorsque déconnecté |
 		Inconnu 3 |
 		Inconnu 4 |
 		Inconnu 5 |
 		Non volable |
 		Déclenché |
 		Dommages fixes |
-		Activer depuis l'événement |
+		Activé grâce à un événement |
 		Sort vs coût prolongé |
 		Inconnu 11 |
 		Inconnu 12 |
 		Inconnu 13 |
 		Les dégâts ne brisent pas les auras |
 		Inconnu 15 |
-		Non utilisable dans Arena |
-		Utilisable en Arena |
-		Zone cible de la chaîne |
+		Non utilisable en arène |
+		Utilisable en arène |
+		Cible un par un |
 		Inconnu 19 |
-		Ne pas vérifier la puissance Selfcast |
+		Ne pas vérifier si déjà existant |
 		Inconnu 21 |
 		Inconnu 22 |
 		Inconnu 23 |
 		Inconnu 24 |
-		Mise à l'échelle d'animaux |
-		Ne peut être moulé qu'en Outreterre |
+		Mise à l'échelle du familier |
+		Ne peut être utilisé qu'en Outreterre |
 		Inconnu 27 |
 		Visée |
 		Inconnu 29 |
@@ -386,25 +386,25 @@
     </system:String>
     <system:String x:Key="attFlagsEx4_strings">
 		Inconnu 0 |
-		Pas de réactif pendant la préparation |
+		Pas de réactif si préparation |
 		Inconnu 2 |
-		Utilisable en état d'étourdissement |
+		Utilisable quand Etourdi |
 		Inconnu 4 |
 		Sort à cible unique |
 		Inconnu 6 |
 		Inconnu 7 |
 		Inconnu 8 |
-		Commencer le périodique chez Aura Apply |
+		Commencer le périodique lors de l'application |
 		Masquer la durée |
 		Autoriser la cible de la cible comme cible |
-		Cliver
-		Haste Affect Duration |
+		Balayage |
+		Hâte affecte la durée |
 		Inconnu 14 |
-		Inflire sur plusieurs cibles |
-		Contrôle de classe d'élément spécial |
-		Utilisable tant que craint |
-		Utilisable craint confus |
-		Ne pas tourner pendant le casting |
+		Inflige sur plusieurs cibles |
+		Special Item Class Check |
+		Utilisable quand Peur |
+		Utilisable quand Confus |
+		Ne doit pas tourner pendant l'incantation |
 		Inconnu 20 |
 		Inconnu 21 |
 		Inconnu 22 |
@@ -420,60 +420,60 @@
     </system:String>
     <system:String x:Key="attFlagsEx5_strings">
 		Ne pas afficher le temps de recharge |
-		Seulement dans Arena |
+		Seulement en arène |
 		Ignorer les auras du lanceur |
 		Assist Ignore Immune Flag |
 		Inconnu 4 |
 		Inconnu 5 |
 		Spell Cast Event |
 		Inconnu 7 |
-		Ne peut pas cibler contrôlé par la foule |
+		Ne peut pas cibler affecté par contrôle de foule |
 		Inconnu 9 |
 		Peut cibler les amis possédés |
 		Pas en instance de raid |
-		Castable en véhicule |
+		Lançable en véhicule |
 		Peut cibler invisible |
 		Inconnu 14 |
 		Inconnu 15 |
 		Inconnu 16 |
-		Mount |
-		Cast par charmeur |
+		Monture |
+		Lançable par charmeur |
 		Inconnu 19 |
-		Visible uniquement à la roulette |
-		Effets cibles de l'interface utilisateur du client |
+		Visible uniquement par le lanceur |
+		Client UI Target Effects |
 		Inconnu 22 |
 		Inconnu 23 |
-		Peut cibler Untargetable |
-		Exorcisme, éclair de lumière |
+		Peut toucher Inciblables |
+		Exorcisme, Eclair lumineux |
 		Inconnu 26 |
 		Inconnu 27 |
-		Death Grip |
-		Pas fait Pourcentage de dégâts Mods |
+		Poigne de la mort |
+		Not Done Percent Damage Mods |
 		Inconnu 30 |
-		Ignorer les Mods de Recharge de la catégorie
+		Ignore Category Cooldown Mods
     </system:String>
     <system:String x:Key="attFlagsEx6_strings">
 		Feign Death |
 		Inconnu 1 |
 		Réactiver à la résurrection |
-		Triche sort |
-		Résurrection de la pierre d'âme |
+		Sort de triche |
+		Résurrection de pierre d'âme |
 		Totem |
-		Pas de refoulement sur les dégâts |
+		Pas de rallonge sur les dégâts |
 		Inconnu 7 |
 		Horde seulement |
 		Alliance seulement |
-		Dissiper les frais |
+		Dissipe les charges |
 		Interrompre uniquement les non-joueurs |
 		Inconnu 12 |
 		Inconnu 13 |
-		Raise Dead |
+		Réanimer les morts |
 		Inconnu 15 |
-		Restaurer l'alimentation secondaire |
+		Restaurer la ressource secondaire |
 		Inconnu 17 |
 		Charge |
-		Téléport de zone |
-		Blink, bouclier divin, bloc de glace |
+		Téléportation de zone |
+		Transfert, bouclier divin, bloc de glace |
 		Inconnu 21 |
 		Inconnu 22 |
 		Inconnu 23 |
@@ -488,91 +488,91 @@
     </system:String>
     <system:String x:Key="stances_strings">
 		Aucun |
-		Chat |
-		Arbre |
-		Voyage |
-		Aqua |
-		Ours |
+		Forme de félin |
+		Arbre de vie |
+		Forme de voyage |
+		Forme aquatique |
+		Forme d'ours |
 		Ambiant |
 		Goule |
-		Ours terrible |
+		Forme d'ours redoutable |
 		Steves Ghoul |
 		Squelette de Tharonja |
 		Test de force |
 		Lecteur BLB |
-		Danse des ombres |
+		Danse de l'ombre |
 		Créature Ours |
-		Chat de créature |
+		Créature Félin |
 		Loup fantôme |
-		Position de bataille |
-		Position défensive |
-		Position de Berserker |
+		Posture de combat |
+		Posture défensive |
+		Posture Berserker |
 		Test |
 		Zombie |
 		Métamorphose |
 		Morts-vivants |
 		Maître pêcheur |
 		Vol (épique) |
-		Shadow |
+		Ombre |
 		Vol (normal) |
-		Furtif |
-		Moonkin |
+		Camouflage |
+		Sélénien |
 		Esprit de rédemption
     </system:String>
     <system:String x:Key="creature_type_strings">
 		Aucun |
-		La bête |
-		Dragonkin |
+		Bête |
+		Dragon |
 		Démon |
 		Élémentaire |
 		Géant |
 		Morts-vivants |
 		Humanoïde |
-		Critter |
+		Bestiole |
 		Mécanique |
 		Non spécifié |
 		Totem |
-		Animal de compagnie non combattant |
+		Familier non combattant |
 		Nuage de gaz
     </system:String>
     <system:String x:Key="caster_aura_state_strings">
 		Aucun |
 		Défense |
-		Healthless 20% |
-		Berserking |
+		Santé en dessous de 20% |
+		Berserk |
 		Jugement |
-		Hunter Parry |
-		Victoire Rush |
+		Parade du chasseur |
+		Ivresse de la victoire |
 		Inconnu 1 |
-		Healthless 35% |
+		Santé en dessous de 35% |
 		Enrager |
 		Inconnu 2 |
 		Santé supérieure à 75%
     </system:String>
     <system:String x:Key="target_aura_state_strings">
 		Aucun |
-		Healthless 20% |
+		Santé en dessous de 20% |
 		Berserking |
-		Healthless 35% |
-		Conflagrate |
-		Swiftmend |
+		Santé en dessous de 35% |
+		Conflagration |
+		Prompte guérison |
 		Poison mortel |
 		Saignement
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
 		Non-équipé |
-		La tête |
+		Tête |
 		Collier |
 		Épaules |
-		Corps |
-		Coffre |
+		Chemise |
+		Torse |
 		Taille |
-		Les jambes |
-		Les pieds |
+		Jambes |
+		Pieds |
 		Poignets |
-		Les mains |
-		Doigt |
-		Bibelot |
+		Mains |
+		Doigts |
+		Bijou |
 		Arme |
 		Bouclier |
 		À distance |
@@ -581,11 +581,11 @@
 		Sac |
 		Tabard |
 		Robe |
-		Main-Main |
-		Hors main |
-		Holdable |
+		Main droite |
+		Main gauche |
+		Tenue en main gauche |
 		Munitions |
-		Jeté |
+		Lancé |
 		Ranged Right |
 		Carquois |
 		Relique
@@ -593,17 +593,17 @@
     <system:String x:Key="school_strings">
 		Mana |
 		Rage |
-		Focus |
+		Focalisation |
 		Énergie |
-		Le bonheur |
+		Satisfaction |
 		Runes |
 		Puissance runique |
 		Vapeur |
 		Pyrite |
 		Chaleur |
 		Limon |
-		Le sang |
-		La colère |
+		Sang |
+		Colère |
 		Santé
     </system:String>
     <system:String x:Key="damage_prevention_types">
@@ -620,7 +620,7 @@
 		Inutilisé 1 |
 		Unité |
 		Unité en raid |
-		Unité en fête |
+		Unité en groupe |
 		Item Enchantment |
 		Emplacement source AoE vide |
 		Lieu de destination zone cible |
@@ -629,11 +629,11 @@
 		Cadavre d'un ennemi |
 		Unité morte |
 		Gameobject |
-		Article de commerce |
+		Objet de métier |
 		String |
-		Objet Gameobject |
+		Objet de Gameobject |
 		Cadavre d'un allié |
-		Mini animal de compagnie |
+		Mini pet |
 		Glyphe |
 		Cible de destination |
 		Inutilisé 20 |
@@ -1136,13 +1136,13 @@
 		Pacifié |
 		Silencieux |
 		Endormi |
-		Enserré |
-		Abasourdi |
+		Ralenti |
+		Etourdi |
 		Congelés |
-		Incapacipé |
+		Incapacité |
 		Saignement |
 		Guérison |
-		Polymorphe |
+		Métamorphosé |
 		Banni |
 		Blindé |
 		Enchaîné |
@@ -1150,51 +1150,51 @@
 		Séduit |
 		Tourné |
 		Horrifié |
-		Invulnarable |
+		Invulnérable |
 		Interrompu |
-		Dazed |
+		Hébété |
 		Découverte |
 		Invulnérable |
-		Sapped |
-		Furieux
+		Assommé |
+		Enragé
     </system:String>
     <system:String x:Key="interrupt_strings">
         Aucun |
-        On Movement |
-        On Knockback |
-        On Interrupt Casting |
-        On Interrupt School |
-        On Damage Taken |
-        On Interrupt All
+        Lorsque mouvement |
+        Lorsque repoussement |
+        Lorsque interruption |
+        Lorsque interruption de l'école |
+        Lorsque dégâts reçus |
+        Lorsque une des conditions du dessus
     </system:String>
     <system:String x:Key="aura_interrupt_strings">
         Aucun |
-        On Hit By Spell |
-        On Take Damage |
-        On Casting |
-        On Moving |
-        On Turning |
-        On Jumping |
-        Not Mounted |
-        Not Above Water |
-        Not Underwater |
-        Not Sheathed |
-        On Talk |
-        On Use |
-        On Melee Attack |
-        On Spell Attack |
-        Unknown 14 |
-        On Transform |
-        Unknown 16 |
-        On Mount |
-        Not Seated |
-        On Change Map |
-        Immune or Lost Selection |
-        Unknown 21 |
-        On Teleport |
-        On Enter PvP Combat |
-        On Direct Damage |
-        Landing
+        Lorsque touché par un sort |
+        Lorsque dégâts reçus |
+        Lorsque incantation |
+        Lorsque mouvement |
+        Lorsque rotation |
+        Lorsque saut |
+        Si pas monté |
+        Si pas au dessus de l'eau |
+        Si pas sous l'eau |
+        Si pas dégainé |
+        Lorsque discussion |
+        Lorsque utilisation |
+        Lorsque attaque de mêlée |
+        Lorsque attaque via sort |
+        Inconnu 14 |
+        Lorsque transformation |
+        Inconnu 16 |
+        Lorsque monté |
+        Si pas assis |
+        Lorsque changement de map |
+        Lorsque immunisé ou perte de la cible |
+        Inconnu 21 |
+        Lorsque téléportation |
+        Lorsque entrée en combat JCJ |
+        Lorsque dégâts directs |
+        Lorsque atterrissage
     </system:String>
     <system:String x:Key="channel_interrupt_strings">
         Aucun |
@@ -1221,30 +1221,30 @@
     <system:String x:Key="proc_strings">
 		Aucun |
 		À la mort |
-		Sur la cible tuée (rapportant XP ou honneur) |
-		Sur l'attaque de mêlée fait |
-		Sur l'attaque de mêlée reçue |
-		Dommages d'aptitude physique faits |
-		Sur l'aptitude physique Dommages pris |
-		Sur une attaque automatique à distance effectuée |
-		Sur une attaque automatique à distance prise |
-		Sur les dégâts de capacité à distance effectués |
-		Sur une capacité à distance Dégâts subis |
-		Sur soigner (SpellDamageType NONE) |
-		Sur soigner pris (SpellDamageType NONE) |
-		Dommages causés aux sorts (SpellDamageType NONE) |
-		Dommages sur les sorts reçus (SpellDamageType NONE) |
-		Sur soigner (SpellDamageType MAGIC) |
-		Sur la guérison prise (SpellDamageType MAGIC) |
-		Dommages causés aux sorts (SpellDamageType MAGIC) |
-		Dommages sur les sorts reçus (SpellDamageType MAGIC) |
-		Effet périodique fait (Dégâts / Soins) |
-		Effet périodique pris (dégâts / soins) |
-		Sur tout dommage pris |
-		Sur le déclencheur de piège |
-		Sur le coup d'attaque automatique mainhand |
-		Sur une frappe d’attaque automatique de la main gauche |
-		À la mort
+		Lorsqu'une cible est tuée (rapportant XP ou honneur) |
+		Lorsqu'une attaque EN MELÉE automatique est infligée |
+		Lorsqu'une attaque EN MELÉE automatique est reçue |
+		Lorsqu'une capacité EN MELÉE est infligée |
+		Lorsqu'une capacité EN MELÉE est reçue |
+		Lorsqu'une attaque A DISTANCE automatique est infligée |
+		Lorsqu'une attaque A DISTANCE automatique est reçue |
+		Lorsqu'une capacité A DISTANCE est infligée |
+		Lorsqu'une capacité A DISTANCE est reçue |
+		Lorsqu'un sort POSITIF est prodigué (SpellDamageType NONE) |
+		Lorsqu'un sort POSITIF est reçu (SpellDamageType NONE) |
+		Lorsqu'un sort NÉGATIF est infligé (SpellDamageType NONE) |
+		Lorsqu'un sort NÉGATIF est reçu (SpellDamageType NONE) |
+		Lorsqu'un sort POSITIF est prodigué (SpellDamageType MAGIC) |
+		Lorsqu'un sort POSITIF est reçu (SpellDamageType MAGIC) |
+		Lorsqu'un sort NÉGATIF est infligé (SpellDamageType MAGIC) |
+		Lorsqu'un sort NÉGATIF est reçu (SpellDamageType MAGIC) |
+		Lorsqu'un Effet périodique produit (Dégâts / Soins) |
+		Lorsqu'un Effet périodique retire (Dégâts / Soins) |
+		Lorsqu'un dégâts quelconque est subi |
+		Lorsqu'un piège se déclenche |
+		Lorsqu'une attaque EN MELÉE via MAIN DROITE touche (Capacités / AA) |
+		Lorsqu'une attaque EN MELÉE via MAIN GAUCHE touche (Capacités / AA)  |
+		Lors de la mort
     </system:String>
     <!--#endregion-->
     <!--#endregion-->
