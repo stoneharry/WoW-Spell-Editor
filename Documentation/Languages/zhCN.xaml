@@ -92,32 +92,32 @@
     <system:String x:Key="labProcs">触发:</system:String>
     <system:String x:Key="labProcCharges">触发次数:</system:String>
     <system:String x:Key="labProcChance">触发几率:</system:String>
-    <system:String x:Key="labSpellEffect">法术效果:</system:String>
-    <system:String x:Key="labBasePoints">基础值:</system:String>
-    <system:String x:Key="labDieSides">浮动值:</system:String>
-    <system:String x:Key="labRealPointsPerLevel">每次提升数值:</system:String>
-    <system:String x:Key="labMechanic">机制:</system:String>
-    <system:String x:Key="labTargetA">目标 A:</system:String>
-    <system:String x:Key="labTargetB">目标 B:</system:String>
-    <system:String x:Key="labRadius">生效范围:</system:String>
-    <system:String x:Key="labApplyAuraName">光环效果:</system:String>
-    <system:String x:Key="labAmplitude">效果周期:</system:String>
-    <system:String x:Key="labMultipleValue">倍数:</system:String>
-    <system:String x:Key="labChainTarget">链接目标:</system:String>
-    <system:String x:Key="labItemType">物品ID:</system:String>
-    <system:String x:Key="labTriggerSpell">触发法术:</system:String>
-    <system:String x:Key="labPointsPerComboPoint">每级连击点增加:</system:String>
-    <system:String x:Key="labMiscValueA">光环参数A:</system:String>
-    <system:String x:Key="labMiscValueB">光环参数B:</system:String>
-    <system:String x:Key="labSpellClassMask1">法术小类掩码1:</system:String>
-    <system:String x:Key="labSpellClassMask2">法术小类掩码2:</system:String>
-    <system:String x:Key="labSpellClassMask3">法术小类掩码3:</system:String>
-    <system:String x:Key="labDamageMultiplier1">伤害乘数:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier1">效果奖励乘数(?):</system:String>
-    <system:String x:Key="labDamageMultiplier2">伤害乘数:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier2">效果奖励乘数(?):</system:String>
-    <system:String x:Key="labDamageMultiplier3">伤害乘数:</system:String>
-    <system:String x:Key="labEffectBonusMultiplier3">效果奖励乘数(?):</system:String>
+    <system:String x:Key="labSpellEffect" xml:space="preserve"> 法术效果:</system:String>
+    <system:String x:Key="labBasePoints" xml:space="preserve">     基础值:</system:String>
+    <system:String x:Key="labDieSides" xml:space="preserve">  浮动值:</system:String>
+    <system:String x:Key="labRealPointsPerLevel" xml:space="preserve">         每次提升数值:</system:String>
+    <system:String x:Key="labMechanic" xml:space="preserve">      机制:</system:String>
+    <system:String x:Key="labTargetA" xml:space="preserve"> 目标 A:</system:String>
+    <system:String x:Key="labTargetB" xml:space="preserve"> 目标 B:</system:String>
+    <system:String x:Key="labRadius" xml:space="preserve"> 范围:</system:String>
+    <system:String x:Key="labApplyAuraName" xml:space="preserve">          光环效果:</system:String>
+    <system:String x:Key="labAmplitude" xml:space="preserve">效果周期:</system:String>
+    <system:String x:Key="labMultipleValue" xml:space="preserve">             倍数:</system:String>
+    <system:String x:Key="labChainTarget" xml:space="preserve">    链接目标:</system:String>
+    <system:String x:Key="labItemType" xml:space="preserve">   物品ID:</system:String>
+    <system:String x:Key="labTriggerSpell" xml:space="preserve">    触发法术:</system:String>
+    <system:String x:Key="labPointsPerComboPoint" xml:space="preserve">          每级连击点增加:</system:String>
+    <system:String x:Key="labMiscValueA" xml:space="preserve">  光环参数A:</system:String>
+    <system:String x:Key="labMiscValueB" xml:space="preserve">  光环参数B:</system:String>
+    <system:String x:Key="labSpellClassMask1" xml:space="preserve">   法术小类掩码1:</system:String>
+    <system:String x:Key="labSpellClassMask2" xml:space="preserve">   法术小类掩码2:</system:String>
+    <system:String x:Key="labSpellClassMask3" xml:space="preserve">   法术小类掩码3:</system:String>
+    <system:String x:Key="labDamageMultiplier1" xml:space="preserve">              伤害乘数:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier1" xml:space="preserve">        效果奖励乘数(?):</system:String>
+    <system:String x:Key="labDamageMultiplier2" xml:space="preserve">              伤害乘数:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier2" xml:space="preserve">        效果奖励乘数(?):</system:String>
+    <system:String x:Key="labDamageMultiplier3" xml:space="preserve">              伤害乘数:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier3" xml:space="preserve">        效果奖励乘数(?):</system:String>
     <system:String x:Key="labItemTool1">需要物品1:</system:String>
     <system:String x:Key="labItemTool2">需要物品2:</system:String>
     <system:String x:Key="labReagent1">消耗物品 1:</system:String>
