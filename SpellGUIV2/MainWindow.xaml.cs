@@ -758,6 +758,11 @@ namespace SpellEditor
                         config.UpdateConfigValue("Mysql/password", pass);
                         config.UpdateConfigValue("Mysql/port", port);
                         config.UpdateConfigValue("Mysql/database", db);
+                        config.Host = host;
+                        config.User = user;
+                        config.Pass = pass;
+                        config.Port = port;
+                        config.Database = db;
                     }
                 }
                 config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;

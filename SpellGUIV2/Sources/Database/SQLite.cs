@@ -22,7 +22,7 @@ namespace SpellEditor.Sources.Database
         {
             _config = config;
 
-            var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{config.Database}.db";
+            var connectionString = $"Data Source ={Environment.CurrentDirectory}\\SpellEditor.db";
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();

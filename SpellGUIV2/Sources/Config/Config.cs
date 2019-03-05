@@ -22,6 +22,7 @@ namespace SpellEditor.Sources.Config
         public string Pass = "12345";
         public string Port = "3306";
         public string Database = "SpellEditor";
+
         public string Language = "enUS";
 
         public ConnectionType connectionType = ConnectionType.SQLite;
@@ -62,12 +63,16 @@ namespace SpellEditor.Sources.Config
 
         public void ReadConfigFile()
         {
-            if (GetConfigValue("Mysql/host") == "" || GetConfigValue("Mysql/username") == "" || 
-                GetConfigValue("Mysql/password") == "" || GetConfigValue("Mysql/port") == "" || 
-                GetConfigValue("Mysql/database") == "")
-                needInitMysql = true;
+            Host = GetConfigValue("Mysql/host");
+            User = GetConfigValue("Mysql/username");
+            Pass = GetConfigValue("Mysql/password");
+            Port = GetConfigValue("Mysql/port");
+            Database = GetConfigValue("Mysql/database");
 
             Language = GetConfigValue("language");
+
+            if (Host == "" || User == "" || Pass == "" || Port == "" || Database == "")
+                needInitMysql = true;
         }
 
         public void UpdateConfigValue(string key, string value)
