@@ -27,7 +27,6 @@ using SpellEditor.Sources.Binding;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
-using System.Xml;
 
 namespace SpellEditor
 {
@@ -1666,7 +1665,7 @@ namespace SpellEditor
         {
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
-            SelectSpell.Items.Clear();
+            ClearAllItems(SelectSpell);
             SpellsLoadedLabel.Content = TryFindResource("no_spells_loaded").ToString();
             var _worker = new SpellListQueryWorker(adapter, config, selectSpellWatch);
             _worker.WorkerReportsProgress = true;
@@ -1738,6 +1737,9 @@ namespace SpellEditor
                 if (iconId > 0)
                 {
                     image.ToolTip = iconId.ToString();
+                    image.Width = 32;
+                    image.Height = 32;
+                    image.Margin = new Thickness(1, 1, 1, 1);
                     image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
                     var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
                     stackPanel.Children.Add(image);
@@ -1745,18 +1747,31 @@ namespace SpellEditor
                     newElements.Add(stackPanel);
                 }
             }
+            // Replace the item source directly, adding each item will raise a high amount of events
             SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), collection[collection.Count - 1][0]);
+            var src = SelectSpell.ItemsSource;
+            var newSrc = new List<object>();
+            if (src != null)
+            {
+                foreach (var element in src)
+                    newSrc.Add(element);
+            }
             foreach (var element in newElements)
-                SelectSpell.Items.Add(element);
+                newSrc.Add(element);
+            SelectSpell.ItemsSource = newSrc;
             watch.Stop();
             Console.WriteLine($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
-            if (!(bool)args.NewValue)
-                return;
+
             var image = o as Image;
+            if (!(bool)args.NewValue)
+            {
+                image.Source = null;
+                return;
+            }
             var iconId = uint.Parse(image.ToolTip.ToString());
             var filePath = loadIcons.GetIconPath(iconId) + ".blp";
             try
@@ -1767,13 +1782,9 @@ namespace SpellEditor
                     {
                         using (var bit = blpImage.getBitmap(0))
                         {
-                            image.Width = 32;
-                            image.Height = 32;
-                            image.Margin = new Thickness(1, 1, 1, 1);
                             image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                                 bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
                                 BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                            //image.UpdateLayout();
                         }
                     }
                 }
@@ -2521,17 +2532,13 @@ namespace SpellEditor
                             string name = block.Text;
                             selectedID = UInt32.Parse(name.Substring(1, name.IndexOf(' ', 1)));
                             UpdateMainWindow();
-                            enumerator.Dispose();
                             return;
                         }
                     }
-                    enumerator.Dispose();
                 }
             }
         }
-
-        private static object Lock = new object();
-
+        
         // TODO(Harry): Remove unrequired hook
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -2952,6 +2959,17 @@ namespace SpellEditor
                     index = MultilingualSwitch.Items.Count - 1;
             }
             MultilingualSwitch.SelectedIndex = index;
+        }
+
+        // Using instead of Clear() at the suggestion of:
+        // https://social.msdn.microsoft.com/Forums/vstudio/en-US/2c0ded35-a661-4023-920b-f78922080de9/memory-leak-in-listbox-when-using-listboxitemsclear
+        public static void ClearAllItems(ListBox listBox)
+        {
+            int count = listBox.Items.Count;
+            for (int i = count - 1; i >= 0; i--)
+            {
+                listBox.Items.RemoveAt(i);
+            }
         }
     };
 };
