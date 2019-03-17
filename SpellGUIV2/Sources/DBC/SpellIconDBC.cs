@@ -108,11 +108,18 @@ namespace SpellEditor.Sources.DBC
                         temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
                         temp.VerticalAlignment = VerticalAlignment.Top;
                         temp.HorizontalAlignment = HorizontalAlignment.Left;
-                        temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                            bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, 
-                            BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                        var handle = bit.GetHbitmap();
+                        try
+                        {
+                            temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                                handle, IntPtr.Zero, Int32Rect.Empty,
+                                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                        }
+                        finally
+                        {
+                            MainWindow.DeleteObject(handle);
+                        }
                         temp.Name = "CurrentSpellIcon";
-
                         // Code smells here on hacky positioning and updating the icon
                         temp.Margin = new Thickness(103, 38, 0, 0);
                         main.CurrentIconGrid.Children.Clear();
@@ -170,11 +177,19 @@ namespace SpellEditor.Sources.DBC
                 temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
                 temp.VerticalAlignment = VerticalAlignment.Top;
                 temp.HorizontalAlignment = HorizontalAlignment.Left;
-                temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                var handle = bit.GetHbitmap();
+                try
+                {
+                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                        handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                }
+                finally
+                {
+                    MainWindow.DeleteObject(handle);
+                }
                 temp.Name = "Index_" + entry.Offset;
                 temp.ToolTip = path;
                 temp.MouseDown += ImageDown;
-
                 main.IconGrid.Children.Add(temp);
                 bit.Dispose();
             }
