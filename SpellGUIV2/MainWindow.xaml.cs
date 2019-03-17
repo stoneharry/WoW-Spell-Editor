@@ -27,11 +27,17 @@ using SpellEditor.Sources.Binding;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace SpellEditor
 {
     partial class MainWindow
     {
+        // For GC collection of Bitmap handles
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteObject(IntPtr hObject);
+
         #region DBCDefinitions
 
         // Begin DBCs
@@ -1713,11 +1719,12 @@ namespace SpellEditor
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => FilterSpellNames.IsEnabled = true));
             };
             _worker.RunWorkerAsync();
-            _worker.RunWorkerCompleted += (sender, args) => {
+            _worker.RunWorkerCompleted += (sender, args) =>
+            {
                 var worker = sender as SpellListQueryWorker;
                 worker.__watch.Stop();
                 Console.WriteLine($"Loaded spell selection list contents in {worker.__watch.ElapsedMilliseconds}ms");
-            };       
+            };
         }
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -1765,11 +1772,14 @@ namespace SpellEditor
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
-
             var image = o as Image;
             if (!(bool)args.NewValue)
             {
                 image.Source = null;
+                return;
+            }
+            if (image.Source != null)
+            {
                 return;
             }
             var iconId = uint.Parse(image.ToolTip.ToString());
@@ -1782,9 +1792,17 @@ namespace SpellEditor
                     {
                         using (var bit = blpImage.getBitmap(0))
                         {
-                            image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                                bit.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
+                            var handle = bit.GetHbitmap();
+                            try
+                            {
+                                image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                                handle, IntPtr.Zero, Int32Rect.Empty,
                                 BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
+                            }
+                            finally
+                            {
+                                DeleteObject(handle);
+                            }
                         }
                     }
                 }
