@@ -1666,12 +1666,16 @@ namespace SpellEditor
         }
         #endregion
 
+        private int SelectSpellContentsCount;
+        private int SelectSpellContentsIndex;
+
         #region PopulateSelectSpell
         private void PopulateSelectSpell()
         {
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
-            ClearAllItems(SelectSpell);
+            SelectSpellContentsIndex = 0;
+            SelectSpellContentsCount = SelectSpell.Items.Count;
             SpellsLoadedLabel.Content = TryFindResource("no_spells_loaded").ToString();
             var _worker = new SpellListQueryWorker(adapter, config, selectSpellWatch);
             _worker.WorkerReportsProgress = true;
@@ -1729,13 +1733,40 @@ namespace SpellEditor
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            // Ignores spells with a iconId <= 0
             var watch = new Stopwatch();
             watch.Start();
             DataRowCollection collection = (DataRowCollection)e.UserState;
             int locale = GetLocale();
-            var newElements = new List<UIElement>();
-            foreach (DataRow row in collection)
+            int rowIndex = 0;
+            // Reuse existing UI elements if they exist
+            if (SelectSpellContentsIndex < SelectSpellContentsCount)
             {
+                foreach (DataRow row in collection)
+                {
+                    ++rowIndex;
+                    if (SelectSpellContentsIndex == SelectSpellContentsCount)
+                    {
+                        break;
+                    }
+                    var stackPanel = SelectSpell.Items[SelectSpellContentsIndex] as StackPanel;
+                    var image = stackPanel.Children[0] as Image;
+                    var textBlock = stackPanel.Children[1] as TextBlock;
+                    var spellName = row[1].ToString();
+                    textBlock.Text = string.Format(" {0} - {1}", row[0], spellName);
+                    var iconId = uint.Parse(row[2].ToString());
+                    if (iconId > 0)
+                    {
+                        image.ToolTip = iconId.ToString();
+                        ++SelectSpellContentsIndex;
+                    }
+                }
+            }
+            // Spawn any new UI elements required
+            var newElements = new List<UIElement>();
+            for (int i = rowIndex; i < collection.Count; ++i)
+            {
+                var row = collection[i];
                 var spellName = row[1].ToString();
                 var textBlock = new TextBlock();
                 textBlock.Text = string.Format(" {0} - {1}", row[0], spellName);
@@ -2977,17 +3008,6 @@ namespace SpellEditor
                     index = MultilingualSwitch.Items.Count - 1;
             }
             MultilingualSwitch.SelectedIndex = index;
-        }
-
-        // Using instead of Clear() at the suggestion of:
-        // https://social.msdn.microsoft.com/Forums/vstudio/en-US/2c0ded35-a661-4023-920b-f78922080de9/memory-leak-in-listbox-when-using-listboxitemsclear
-        public static void ClearAllItems(ListBox listBox)
-        {
-            int count = listBox.Items.Count;
-            for (int i = count - 1; i >= 0; i--)
-            {
-                listBox.Items.RemoveAt(i);
-            }
         }
     };
 };
