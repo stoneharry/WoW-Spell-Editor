@@ -996,7 +996,7 @@ namespace SpellEditor
 
                 PopulateSelectSpell();
 
-                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), string.Format(TryFindResource("CopySpellRecord8").ToString(), inputNewRecord));
+                ShowFlyoutMessage(string.Format(TryFindResource("CopySpellRecord8").ToString(), inputNewRecord));
             }
 
             if (sender == DeleteARecord)
@@ -1018,7 +1018,7 @@ namespace SpellEditor
 
                 PopulateSelectSpell();
 
-                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("DeleteSpellRecord3").ToString());
+                ShowFlyoutMessage(TryFindResource("DeleteSpellRecord3").ToString());
             }
 
             if (sender == SaveSpellChanges)
