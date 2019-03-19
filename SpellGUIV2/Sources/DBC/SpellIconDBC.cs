@@ -1,4 +1,5 @@
 ﻿using SereniaBLPLib;
+using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
@@ -93,40 +94,19 @@ namespace SpellEditor.Sources.DBC
             DataRow res = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0];
             uint iconInt = uint.Parse(res[0].ToString());
             uint iconActiveInt = uint.Parse(res[1].ToString());
-
             // Update currently selected icon, we don't currently use ActiveIconID
-            using (FileStream fileStream = new FileStream(GetIconPath(iconInt) + ".blp", FileMode.Open))
-            {
-                using (BlpFile image = new BlpFile(fileStream))
-                {
-                    using (var bit = image.getBitmap(0))
-                    {
-                        System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
-
-                        temp.Width = iconSize == null ? 32 : iconSize.Value;
-                        temp.Height = iconSize == null ? 32 : iconSize.Value;
-                        temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
-                        temp.VerticalAlignment = VerticalAlignment.Top;
-                        temp.HorizontalAlignment = HorizontalAlignment.Left;
-                        var handle = bit.GetHbitmap();
-                        try
-                        {
-                            temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                                handle, IntPtr.Zero, Int32Rect.Empty,
-                                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                        }
-                        finally
-                        {
-                            MainWindow.DeleteObject(handle);
-                        }
-                        temp.Name = "CurrentSpellIcon";
-                        // Code smells here on hacky positioning and updating the icon
-                        temp.Margin = new Thickness(103, 38, 0, 0);
-                        main.CurrentIconGrid.Children.Clear();
-                        main.CurrentIconGrid.Children.Add(temp);
-                    }
-                }
-            }
+            System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+            temp.Width = iconSize == null ? 32 : iconSize.Value;
+            temp.Height = iconSize == null ? 32 : iconSize.Value;
+            temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
+            temp.VerticalAlignment = VerticalAlignment.Top;
+            temp.HorizontalAlignment = HorizontalAlignment.Left;
+            temp.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(GetIconPath(iconInt) + ".blp");
+            temp.Name = "CurrentSpellIcon";
+            // Code smells here on hacky positioning and updating the icon
+            temp.Margin = new Thickness(103, 38, 0, 0);
+            main.CurrentIconGrid.Children.Clear();
+            main.CurrentIconGrid.Children.Add(temp);
             
             // Load all icons available if have not already
             if (!loadedAllIcons)
@@ -143,55 +123,26 @@ namespace SpellEditor.Sources.DBC
         {
             loadedAllIcons = true;
             List<Icon_DBC_Lookup> lookups = Lookups.ToList();
+            var blpManager = BlpManager.GetInstance();
             foreach (var entry in lookups)
             {
                 var path = entry.Name;
-                if (!File.Exists(path + ".blp"))
+                var source = blpManager.GetImageSourceFromBlpPath(path + ".blp");
+                if (source == null)
                 {
-                    Console.WriteLine("Warning: Icon not found: " + path + ".blp");
                     continue;
                 }
-                bool loaded = false;
-                Bitmap bit = null;
-                try
-                {
-                    using (FileStream fileStream = new FileStream(path + ".blp", FileMode.Open))
-                    {
-                        using (BlpFile image = new BlpFile(fileStream))
-                        {
-                            bit = image.getBitmap(0);
-                            loaded = true;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error loading image, unsupported BLP format: {path}.blp\n{e.Message}\n{e}");
-                }
-                if (!loaded)
-                    continue;
-
                 System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
                 temp.Width = iconSize == null ? 32 : iconSize.Value;
                 temp.Height = iconSize == null ? 32 : iconSize.Value;
                 temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
                 temp.VerticalAlignment = VerticalAlignment.Top;
                 temp.HorizontalAlignment = HorizontalAlignment.Left;
-                var handle = bit.GetHbitmap();
-                try
-                {
-                    temp.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                }
-                finally
-                {
-                    MainWindow.DeleteObject(handle);
-                }
+                temp.Source = source;
                 temp.Name = "Index_" + entry.Offset;
                 temp.ToolTip = path;
                 temp.MouseDown += ImageDown;
                 main.IconGrid.Children.Add(temp);
-                bit.Dispose();
             }
         }
 

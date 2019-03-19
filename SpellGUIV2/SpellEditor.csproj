@@ -133,6 +133,7 @@
     <Compile Include="Sources\Binding\BindingType.cs" />
     <Compile Include="Sources\Binding\BindingEntry.cs" />
     <Compile Include="Sources\Binding\BindingManager.cs" />
+    <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Database\IDatabaseAdapter.cs" />
     <Compile Include="Sources\Constants\Locale.cs" />

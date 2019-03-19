@@ -27,17 +27,12 @@ using SpellEditor.Sources.Binding;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
-using System.Runtime.InteropServices;
+using SpellEditor.Sources.BLP;
 
 namespace SpellEditor
 {
     partial class MainWindow
     {
-        // For GC collection of Bitmap handles
-        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeleteObject(IntPtr hObject);
-
         #region DBCDefinitions
 
         // Begin DBCs
@@ -1815,33 +1810,7 @@ namespace SpellEditor
             }
             var iconId = uint.Parse(image.ToolTip.ToString());
             var filePath = loadIcons.GetIconPath(iconId) + ".blp";
-            try
-            {
-                using (var fileStream = new FileStream(filePath, FileMode.Open))
-                {
-                    using (var blpImage = new SereniaBLPLib.BlpFile(fileStream))
-                    {
-                        using (var bit = blpImage.getBitmap(0))
-                        {
-                            var handle = bit.GetHbitmap();
-                            try
-                            {
-                                image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                                handle, IntPtr.Zero, Int32Rect.Empty,
-                                BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                            }
-                            finally
-                            {
-                                DeleteObject(handle);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine($"[SpellSelectList] WARNING Unable to load image: {filePath}");
-            }
+            image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
         }
 
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
