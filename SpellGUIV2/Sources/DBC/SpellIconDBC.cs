@@ -1,16 +1,14 @@
-﻿using SereniaBLPLib;
-using SpellEditor.Sources.BLP;
+﻿using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -19,7 +17,6 @@ namespace SpellEditor.Sources.DBC
         private MainWindow main;
         private IDatabaseAdapter adapter;
 
-        private static bool loadedAllIcons = false;
         private double? iconSize = null;
         private Thickness? iconMargin = null;
 
@@ -109,7 +106,7 @@ namespace SpellEditor.Sources.DBC
             main.CurrentIconGrid.Children.Add(temp);
             
             // Load all icons available if have not already
-            if (!loadedAllIcons)
+            if (main.IconGrid.Children.Count == 0)
             {
                 var watch = new Stopwatch();
                 watch.Start();
@@ -121,35 +118,56 @@ namespace SpellEditor.Sources.DBC
 
         public void LoadAllIcons(double margin)
         {
-            loadedAllIcons = true;
             List<Icon_DBC_Lookup> lookups = Lookups.ToList();
-            var blpManager = BlpManager.GetInstance();
+            var pathsToAdd = new List<Icon_DBC_Lookup>();
+            var imagesPool = new List<Image>();
             foreach (var entry in lookups)
             {
-                var path = entry.Name;
-                var source = blpManager.GetImageSourceFromBlpPath(path + ".blp");
-                if (source == null)
+                var path = entry.Name + ".blp";
+                if (File.Exists(path))
                 {
-                    continue;
+                    pathsToAdd.Add(entry);
+                    imagesPool.Add(new Image());
                 }
-                System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
-                temp.Width = iconSize == null ? 32 : iconSize.Value;
-                temp.Height = iconSize == null ? 32 : iconSize.Value;
-                temp.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
-                temp.VerticalAlignment = VerticalAlignment.Top;
-                temp.HorizontalAlignment = HorizontalAlignment.Left;
-                temp.Source = source;
-                temp.Name = "Index_" + entry.Offset;
-                temp.ToolTip = path;
-                temp.MouseDown += ImageDown;
-                main.IconGrid.Children.Add(temp);
+            }
+            for (int i = 0; i < pathsToAdd.Count; ++i)
+            {
+                var entry = pathsToAdd[i];
+                var image = imagesPool[i];
+                image.Width = iconSize == null ? 32 : iconSize.Value;
+                image.Height = iconSize == null ? 32 : iconSize.Value;
+                image.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
+                image.VerticalAlignment = VerticalAlignment.Top;
+                image.HorizontalAlignment = HorizontalAlignment.Left;
+                image.Name = "Index_" + entry.Offset;
+                image.ToolTip = entry.Name + ".blp";
+                image.IsVisibleChanged += IsImageVisibleChanged;
+                image.MouseDown += ImageDown;
+            }
+            foreach (var image in imagesPool)
+            {
+                main.IconGrid.Children.Add(image);
+            }
+        }
+
+        private void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var image = sender as Image;
+            if ((bool)e.NewValue)
+            {
+                var source = BlpManager.GetInstance().GetImageSourceFromBlpPath(image.ToolTip.ToString());
+                image.Source = source;
+            }
+            else
+            {
+                image.Source = null;
             }
         }
 
         public void ImageDown(object sender, EventArgs e)
         {
-            var image = (System.Windows.Controls.Image)sender;
-            System.Windows.Controls.Image temp = new System.Windows.Controls.Image();
+            var image = (Image)sender;
+            var temp = new Image();
 
             temp.Width = iconSize == null ? 32 : iconSize.Value;
             temp.Height = iconSize == null ? 32 : iconSize.Value;

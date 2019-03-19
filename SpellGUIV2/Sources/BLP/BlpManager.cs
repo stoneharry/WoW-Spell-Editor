@@ -65,6 +65,8 @@ namespace SpellEditor.Sources.BLP
             {
                 // Logging full exception is quite costly here
                 Console.WriteLine($"[BlpManager] WARNING Unable to load image: {filePath} - {e.Message}");
+                // Making the choice here to not try to load the resource again until the program is restarted
+                _ImageMap.Add(filePath, null);
             }
             return null;
         }
