@@ -71,9 +71,4 @@ namespace SpellEditor.Sources.BLP
             return null;
         }
     }
-
-    class BlpReference
-    {
-        public ImageSource Source;
-    }
 }
