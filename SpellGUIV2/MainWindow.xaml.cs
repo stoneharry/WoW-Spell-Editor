@@ -150,14 +150,6 @@ namespace SpellEditor
             Console.WriteLine("######################################################");
             InitializeComponent();
         }
-        // Ensure redirected console output is flushed
-        ~MainWindow()
-        {
-            Console.WriteLine("######################################################");
-            Console.WriteLine($"Stopped WoW Spell Editor - {DateTime.Now.ToString()}");
-            Console.WriteLine("######################################################");
-            Console.Out.Flush();
-        }
 
         public async void HandleErrorMessage(string msg)
         {

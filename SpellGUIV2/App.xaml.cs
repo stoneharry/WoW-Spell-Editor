@@ -8,5 +8,14 @@ using System.Windows;
 
 namespace SpellEditor
 {
-    public partial class App : Application { }
+    public partial class App : Application
+    {
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            Console.WriteLine("######################################################");
+            Console.WriteLine($"Stopped WoW Spell Editor - {DateTime.Now.ToString()}");
+            Console.WriteLine("######################################################");
+            Console.Out.Flush();
+        }
+    }
 }
