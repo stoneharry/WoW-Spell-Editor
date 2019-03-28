@@ -90,6 +90,14 @@ namespace SpellEditor
             return bindingToDbcMap.ContainsKey(bindingName) ? bindingToDbcMap[bindingName] : null;
         }
 
+        public void ClearDbcBindings(string bindingName)
+        {
+            if (bindingToDbcMap != null)
+            {
+                bindingToDbcMap.Remove(bindingName);
+            }
+        }
+
         #region Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
         private List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
@@ -614,6 +622,7 @@ namespace SpellEditor
             foreach (var bindingName in bindingList)
             {
                 controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
+                ClearDbcBindings(bindingName);
                 var abstractDbc = FindDbcForBinding(bindingName);
                 if (abstractDbc == null)
                 {
@@ -1678,10 +1687,10 @@ namespace SpellEditor
                 // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
                 DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                     "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
-                if (res == null || res.Count == 0)
+                if (res == null)
                     return;
                 int locale = 0;
-                if (res[0] != null)
+                if (res.Count > 0 && res[0] != null)
                 {
                     for (int i = 0; i < 9; ++i)
                     {
@@ -1700,6 +1709,11 @@ namespace SpellEditor
                 UInt32 targetSize = pageSize;
                 DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
                 lowerBounds += 100;
+                // Edge case of empty table after truncating, need to send a event to the handler
+                if (results != null && results.Count == 0)
+                {
+                    _worker.ReportProgress(0, results);
+                }
                 while (results != null && results.Count != 0)
                 {
                     _worker.ReportProgress(0, results);
@@ -1751,9 +1765,9 @@ namespace SpellEditor
             }
             // Spawn any new UI elements required
             var newElements = new List<UIElement>();
-            for (int i = rowIndex; i < collection.Count; ++i)
+            for (; rowIndex < collection.Count; ++rowIndex)
             {
-                var row = collection[i];
+                var row = collection[rowIndex];
                 var spellName = row[1].ToString();
                 var textBlock = new TextBlock();
                 textBlock.Text = string.Format(" {0} - {1}", row[0], spellName);
@@ -1770,16 +1784,24 @@ namespace SpellEditor
                     stackPanel.Children.Add(image);
                     stackPanel.Children.Add(textBlock);
                     newElements.Add(stackPanel);
+                    ++SelectSpellContentsIndex;
                 }
             }
+            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), 
+                collection.Count > 0 ? collection[collection.Count - 1][0] : "n/a");
             // Replace the item source directly, adding each item will raise a high amount of events
-            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), collection[collection.Count - 1][0]);
             var src = SelectSpell.ItemsSource;
             var newSrc = new List<object>();
             if (src != null)
             {
-                foreach (var element in src)
-                    newSrc.Add(element);
+                // Don't keep more UI elements than we need
+                var enumerator = src.GetEnumerator();
+                for (int i = 0; i < SelectSpellContentsIndex; ++i)
+                {
+                    if (!enumerator.MoveNext())
+                        break;
+                    newSrc.Add(enumerator.Current);
+                }
             }
             foreach (var element in newElements)
                 newSrc.Add(element);
