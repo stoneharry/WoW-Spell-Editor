@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,7 +17,7 @@ namespace SpellEditor.Sources.BLP
         public static extern bool DeleteObject(IntPtr hObject);
 
         private static BlpManager _Instance = new BlpManager();
-        private Dictionary<string, ImageSource> _ImageMap = new Dictionary<string, ImageSource>();
+        private ConcurrentDictionary<string, ImageSource> _ImageMap = new ConcurrentDictionary<string, ImageSource>();
 
         private BlpManager()
         {
@@ -32,9 +30,11 @@ namespace SpellEditor.Sources.BLP
 
         public ImageSource GetImageSourceFromBlpPath(string filePath)
         {
-            if (_ImageMap.ContainsKey(filePath))
+            ImageSource source;
+            var exists = _ImageMap.TryGetValue(filePath, out source);
+            if (exists)
             {
-                return _ImageMap[filePath];
+                return source;
             }
             try
             {
@@ -47,10 +47,12 @@ namespace SpellEditor.Sources.BLP
                             var handle = bit.GetHbitmap();
                             try
                             {
-                                var source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                                source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
                                     handle, IntPtr.Zero, Int32Rect.Empty,
                                     BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                                _ImageMap.Add(filePath, source);
+                                // Freeze so that it can be accessed on any thread
+                                source.Freeze();
+                                _ImageMap.TryAdd(filePath, source);
                                 return source;
                             }
                             finally
@@ -66,7 +68,7 @@ namespace SpellEditor.Sources.BLP
                 // Logging full exception is quite costly here
                 Console.WriteLine($"[BlpManager] WARNING Unable to load image: {filePath} - {e.Message}");
                 // Making the choice here to not try to load the resource again until the program is restarted
-                _ImageMap.Add(filePath, null);
+                _ImageMap.TryAdd(filePath, null);
             }
             return null;
         }

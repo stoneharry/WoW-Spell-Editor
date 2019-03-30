@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -150,18 +151,23 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        private void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var image = sender as Image;
+            var source = image.Source;
             if ((bool)e.NewValue)
             {
-                var source = BlpManager.GetInstance().GetImageSourceFromBlpPath(image.ToolTip.ToString());
-                image.Source = source;
+                var path = image.ToolTip.ToString();
+                await Task.Factory.StartNew(() =>
+                {
+                    source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path);
+                });
             }
             else
             {
-                image.Source = null;
+                source = null;
             }
+            image.Source = source;
         }
 
         public void ImageDown(object sender, EventArgs e)
