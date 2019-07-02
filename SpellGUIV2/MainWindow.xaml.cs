@@ -1745,7 +1745,8 @@ namespace SpellEditor
                 foreach (DataRow row in collection)
                 {
                     ++rowIndex;
-                    if (SelectSpellContentsIndex == SelectSpellContentsCount)
+                    if (SelectSpellContentsIndex == SelectSpellContentsCount ||
+                        SelectSpellContentsIndex >= SelectSpell.Items.Count)
                     {
                         break;
                     }
