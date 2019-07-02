@@ -959,170 +959,171 @@
         SPELL_AURA_PERIODIC_HASTE
     </system:String>
     <system:String x:Key="spell_effect_names">
-        NULL |
-        INSTANT_KILL |
-        SCHOOL_DAMAGE |
-        DUMMY |
-        PORTAL_TELEPORT |
-        TELEPORT_UNITS |
-        APPLY_AURA |
-        ENVIRONMENTAL_DAMAGE |
-        POWER_DRAIN |
-        HEALTH_LEECH |
-        HEAL |
-        BIND |
-        PORTAL |
-        RITUAL_BASE |
-        RITUAL_SPECIALIZE |
-        RITUAL_ACTIVATE_PORTAL |
-        QUEST_COMPLETE |
-        WEAPON_DAMAGE_NOSCHOOL |
-        RESURRECT |
-        ADD_EXTRA_ATTACKS |
-        DODGE |
-        EVADE |
-        PARRY |
-        BLOCK |
-        CREATE_ITEM |
-        WEAPON |
-        DEFENSE |
-        PERSISTENT_AREA_AURA |
-        SUMMON |
-        LEAP |
-        ENERGIZE |
-        WEAPON_PERCENT_DAMAGE |
-        TRIGGER_MISSILE |
-        OPEN_LOCK |
-        TRANSFORM_ITEM |
-        APPLY_GROUP_AREA_AURA |
-        LEARN_SPELL |
-        SPELL_DEFENSE |
-        DISPEL |
-        LANGUAGE |
-        DUAL_WIELD |
-        LEAP_41 |
-        SUMMON_GUARDIAN |
-        TELEPORT_UNITS_FACE_CASTER |
-        SKILL_STEP |
-        UNDEFINED_45 |
-        SPAWN |
-        TRADE_SKILL |
-        STEALTH |
-        DETECT |
-        SUMMON_OBJECT |
-        FORCE_CRITICAL_HIT |
-        GUARANTEE_HIT |
-        ENCHANT_ITEM |
-        ENCHANT_ITEM_TEMPORARY |
-        TAMECREATURE |
-        SUMMON_PET |
-        LEARN_PET_SPELL |
-        WEAPON_DAMAGE |
-        OPEN_LOCK_ITEM |
-        PROFICIENCY |
-        SEND_EVENT |
-        POWER_BURN |
-        THREAT |
-        TRIGGER_SPELL |
-        APPLY_RAID_AREA_AURA |
-        POWER_FUNNEL |
-        HEAL_MAX_HEALTH |
-        INTERRUPT_CAST |
-        DISTRACT |
-        PULL |
-        PICKPOCKET |
-        ADD_FARSIGHT |
-        UNTRAIN_TALENTS |
-        USE_GLYPH |
-        HEAL_MECHANICAL |
-        SUMMON_OBJECT_WILD |
-        SCRIPT_EFFECT |
-        ATTACK |
-        SANCTUARY |
-        ADD_COMBO_POINTS |
-        CREATE_HOUSE |
-        BIND_SIGHT |
-        DUEL |
-        STUCK |
-        SUMMON_PLAYER |
-        ACTIVATE_OBJECT |
-        BUILDING_DAMAGE |
-        BUILDING_REPAIR |
-        BUILDING_SWITCH_STATE |
-        KILL_CREDIT_90 |
-        THREAT_ALL |
-        ENCHANT_HELD_ITEM |
-        SUMMON_PHANTASM |
-        SELF_RESURRECT |
-        SKINNING |
-        CHARGE |
-        SUMMON_MULTIPLE_TOTEMS |
-        KNOCK_BACK |
-        DISENCHANT |
-        INEBRIATE |
-        FEED_PET |
-        DISMISS_PET |
-        REPUTATION |
-        SUMMON_OBJECT_SLOT1 |
-        SUMMON_OBJECT_SLOT2 |
-        SUMMON_OBJECT_SLOT3 |
-        SUMMON_OBJECT_SLOT4 |
-        DISPEL_MECHANIC |
-        SUMMON_DEAD_PET |
-        DESTROY_ALL_TOTEMS |
-        DURABILITY_DAMAGE |
-        NONE_112 |
-        RESURRECT_FLAT |
-        ATTACK_ME |
-        DURABILITY_DAMAGE_PCT |
-        SKIN_PLAYER_CORPSE |
-        SPIRIT_HEAL |
-        SKILL |
-        APPLY_PET_AREA_AURA |
-        TELEPORT_GRAVEYARD |
-        DUMMYMELEE |
-        UNKNOWN1 |
-        START_TAXI |
-        PLAYER_PULL |
-        UNKNOWN4 |
-        UNKNOWN5 |
-        PROSPECTING |
-        APPLY_FRIEND_AREA_AURA |
-        APPLY_ENEMY_AREA_AURA |
-        UNKNOWN10 |
-        UNKNOWN11 |
-        PLAY_MUSIC |
-        FORGET_SPECIALIZATION |
-        KILL_CREDIT |
-        UNKNOWN15 |
-        UNKNOWN16 |
-        UNKNOWN17 |
-        UNKNOWN18 |
-        CLEAR_QUEST |
-        UNKNOWN20 |
-        UNKNOWN21 |
-        TRIGGER_SPELL_WITH_VALUE |
-        APPLY_OWNER_AREA_AURA |
-        UNKNOWN23 |
-        UNKNOWN24 |
-        ACTIVATE_RUNES |
-        UNKNOWN26 |
-        UNKNOWN27 |
-        QUEST_FAIL |
-        UNKNOWN28 |
-        UNKNOWN29 |
-        UNKNOWN30 |
-        SUMMON_TARGET |
-        SUMMON_REFER_A_FRIEND |
-        TAME_CREATURE |
-        ADD_SOCKET |
-        CREATE_ITEM2 |
-        MILLING |
-        UNKNOWN37 |
-        UNKNOWN38 |
-        LEARN_SPEC |
-        ACTIVATE_SPEC |
-        UNKNOWN
+		NONE |
+		INSTAKILL |
+		SCHOOL_DAMAGE |
+		DUMMY |
+		PORTAL_TELEPORT unused |
+		TELEPORT_UNITS |
+		APPLY_AURA |
+		ENVIRONMENTAL_DAMAGE |
+		POWER_DRAIN |
+		HEALTH_LEECH |
+		HEAL |
+		BIND |
+		PORTAL |
+		RITUAL_BASE unused |
+		RITUAL_SPECIALIZE unused |
+		RITUAL_ACTIVATE_PORTAL unused |
+		QUEST_COMPLETE |
+		WEAPON_DAMAGE_NOSCHOOL |
+		RESURRECT |
+		ADD_EXTRA_ATTACKS |
+		DODGE one spell: Dodge |
+		EVADE one spell: Evade (DND) |
+		PARRY |
+		BLOCK one spell: Block |
+		CREATE_ITEM |
+		WEAPON |
+		DEFENSE one spell: Defense |
+		PERSISTENT_AREA_AURA |
+		SUMMON |
+		LEAP |
+		ENERGIZE |
+		WEAPON_PERCENT_DAMAGE |
+		TRIGGER_MISSILE |
+		OPEN_LOCK |
+		SUMMON_CHANGE_ITEM |
+		APPLY_AREA_AURA_PARTY |
+		LEARN_SPELL |
+		SPELL_DEFENSE one spell: SPELLDEFENSE (DND) |
+		DISPEL |
+		LANGUAGE |
+		DUAL_WIELD |
+		JUMP |
+		JUMP_DEST |
+		TELEPORT_UNITS_FACE_CASTER |
+		SKILL_STEP |
+		ADD_HONOR honor/pvp related |
+		SPAWN clientside, unit appears as if it was just spawned |
+		TRADE_SKILL |
+		STEALTH one spell: Base Stealth |
+		DETECT one spell: Detect |
+		TRANS_DOOR |
+		FORCE_CRITICAL_HIT unused |
+		GUARANTEE_HIT one spell: zzOLDCritical Shot |
+		ENCHANT_ITEM |
+		ENCHANT_ITEM_TEMPORARY |
+		TAMECREATURE |
+		SUMMON_PET |
+		LEARN_PET_SPELL |
+		WEAPON_DAMAGE |
+		CREATE_RANDOM_ITEM create item base at spell specific loot |
+		PROFICIENCY |
+		SEND_EVENT |
+		POWER_BURN |
+		THREAT |
+		TRIGGER_SPELL |
+		APPLY_AREA_AURA_RAID |
+		CREATE_MANA_GEM (possibly recharge it, misc - is item ID) |
+		HEAL_MAX_HEALTH |
+		INTERRUPT_CAST |
+		DISTRACT |
+		PULL one spell: Distract Move |
+		PICKPOCKET |
+		ADD_FARSIGHT |
+		UNTRAIN_TALENTS |
+		APPLY_GLYPH |
+		HEAL_MECHANICAL one spell: Mechanical Patch Kit |
+		SUMMON_OBJECT_WILD |
+		SCRIPT_EFFECT |
+		ATTACK |
+		SANCTUARY |
+		ADD_COMBO_POINTS |
+		CREATE_HOUSE one spell: Create House (TEST) |
+		BIND_SIGHT |
+		DUEL |
+		STUCK |
+		SUMMON_PLAYER |
+		ACTIVATE_OBJECT |
+		GAMEOBJECT_DAMAGE |
+		GAMEOBJECT_REPAIR |
+		GAMEOBJECT_SET_DESTRUCTION_STATE |
+		KILL_CREDIT Kill credit but only for single person |
+		THREAT_ALL one spell: zzOLDBrainwash |
+		ENCHANT_HELD_ITEM |
+		FORCE_DESELECT |
+		SELF_RESURRECT |
+		SKINNING |
+		CHARGE |
+		CAST_BUTTON (totem bar since 3.2.2a) |
+		KNOCK_BACK |
+		DISENCHANT |
+		INEBRIATE |
+		FEED_PET |
+		DISMISS_PET |
+		REPUTATION |
+		SUMMON_OBJECT_SLOT1 |
+		SUMMON_OBJECT_SLOT2 |
+		SUMMON_OBJECT_SLOT3 |
+		SUMMON_OBJECT_SLOT4 |
+		DISPEL_MECHANIC |
+		SUMMON_DEAD_PET |
+		DESTROY_ALL_TOTEMS |
+		DURABILITY_DAMAGE |
+		112 unused |
+		RESURRECT_NEW |
+		ATTACK_ME |
+		DURABILITY_DAMAGE_PCT |
+		SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags... |
+		SPIRIT_HEAL one spell: Spirit Heal |
+		SKILL professions and more |
+		APPLY_AREA_AURA_PET |
+		TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test |
+		NORMALIZED_WEAPON_DMG |
+		122 unused |
+		SEND_TAXI taxi/flight related (misc value is taxi path id) |
+		PULL_TOWARDS |
+		MODIFY_THREAT_PERCENT |
+		STEAL_BENEFICIAL_BUFF spell steal effect? |
+		PROSPECTING Prospecting spell |
+		APPLY_AREA_AURA_FRIEND |
+		APPLY_AREA_AURA_ENEMY |
+		REDIRECT_THREAT |
+		PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc) |
+		PLAY_MUSIC sound id in misc value (SoundEntries.dbc) |
+		UNLEARN_SPECIALIZATION unlearn profession specialization |
+		KILL_CREDIT misc value is creature entry |
+		CALL_PET |
+		HEAL_PCT |
+		ENERGIZE_PCT |
+		LEAP_BACK Leap back |
+		CLEAR_QUEST Reset quest status (miscValue - quest ID) |
+		FORCE_CAST |
+		FORCE_CAST_WITH_VALUE |
+		TRIGGER_SPELL_WITH_VALUE |
+		APPLY_AREA_AURA_OWNER |
+		KNOCK_BACK_DEST |
+		PULL_TOWARDS_DEST Black Hole Effect |
+		ACTIVATE_RUNE |
+		QUEST_FAIL quest fail |
+		TRIGGER_MISSILE_SPELL_WITH_VALUE |
+		CHARGE_DEST |
+		QUEST_START |
+		TRIGGER_SPELL_2 |
+		SUMMON_RAF_FRIEND summon Refer-a-Friend |
+		CREATE_TAMED_PET misc value is creature entry |
+		DISCOVER_TAXI |
+		TITAN_GRIP Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal. |
+		ENCHANT_ITEM_PRISMATIC |
+		CREATE_ITEM_2 create item or create item template and replace by some randon spell loot item |
+		MILLING milling |
+		ALLOW_RENAME_PET allow rename pet once again |
+		1 spell example - 45534 |
+		TALENT_SPEC_COUNT second talent spec (learn/revert) |
+		TALENT_SPEC_SELECT activate primary/secondary spec |
+		unused |
+		REMOVE_AURA
     </system:String>
     <system:String x:Key="mechanic_names">
         None |
