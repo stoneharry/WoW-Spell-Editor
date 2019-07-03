@@ -17,7 +17,7 @@ Enjoy.
 
 ## Brief Guide
 
-The spell.dbc exists client side inside the MPQ files. DBFilesClient/Spell.dbc. You extract this file and use it server side too. The client uses it to display spell strings, and other client side requirements. The server side uses it to calculate damage, healing, spell effects, etc, and validating that the requests the clients are sending are valid.
+The `spell.dbc` exists client side inside the MPQ files: `DBFilesClient/Spell.dbc`. You extract this file and use it server side too. The client uses it to display spell strings, and other client side requirements. The server side uses it to calculate damage, healing, spell effects, etc, and validating that the requests the clients are sending are valid.
 
 This means that if you wish to modify spells it is usually necessary to update both the client and the server. You can deploy a custom MPQ and if neccessary a custom wow.exe binary. There are plenty of guides for this out there, e.g: http://www.modcraft.io/index.php?board=78.0 / https://wowdev.wiki/Main_Page
 
@@ -27,9 +27,9 @@ When you first open the spell editor program it will ask which database type you
 
 **A) MySQL:**
 
-When you run a WoW server you usually have a MySQL database running that handles the emulator data. You can create a new database or use one of the existing ones created for WoW emulators. When the spell editor program asks which table to use, you should choose a name that does not already exist. The spell table distributed with TrinityCore world databases does not contain all the data contained within a spell record and is not compatible with the spell editor program. The spell editor program will create the table for you with the correct structure.
+When you run a WoW server you usually have a MySQL database running that handles the emulator data. You should create a new database and use this when the spell editor asks which database to use. The spell editor program will create all the tables for you with the correct structure when you import DBC files.
 
-A MySQL table can have multiple people editing the data simultaneously. Anyone working on it can export the data to a new Spell.dbc at any point. You can also have multiple spell tables by changing the table name in the config. You can setup different MySQL accounts so that different users have different permissions and anyone accessing the spell database cannot access the emulator databases.
+A MySQL table can have multiple people editing the data simultaneously. Anyone working on it can export the data to a new Spell.dbc at any point. You can also have multiple spell databases by changing which one the program is configured to use. You can setup different MySQL accounts so that different users have different permissions and anyone accessing the spell database cannot access the emulator databases.
 
 MySQL also has many IDE's (SQLyog, Navicat, HediSQL, etc) that will allow you to query and perform operations on the spell tables with ease. This allows bulk operations, such as finding all spells that cost mana and changing it to energy.
 
