@@ -17,6 +17,101 @@ namespace SpellEditor.Sources.SpellStringTools
             public Func<string, Spell_DBC_Record, MainWindow, string> tokenFunc;
         }
 
+        private static TOKEN_TO_PARSER rangeParser = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$r",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                if (str.Contains(rangeParser.TOKEN))
+                {
+                    var dbc = mainWindow.FindDbcForBinding("SpellRange");
+                    if (dbc == null)
+                    {
+                        Console.WriteLine("Unable to handle $r spell string token, SpellRange.dbc not loaded");
+                        return str;
+                    }
+                    var rangeDbc = (SpellRange)dbc;
+                    foreach (var entry in rangeDbc.Lookups)
+                    {
+                        if (entry.ID == record.RangeIndex)
+                        {
+                            return str.Replace(rangeParser.TOKEN, entry.RangeString);
+                        }
+                    }
+                }
+                return str;
+            }
+        };
+
+        private static TOKEN_TO_PARSER radiusParser = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$a1|$a2|$a3|$a",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                foreach (var token in radiusParser.TOKEN.Split('|'))
+                {
+                    if (str.Contains(token))
+                    {
+                        uint index = 0;
+                        if (token.Length == 2)
+                        {
+                            index = 4;
+                        }
+                        else
+                        {
+                            index = uint.Parse(token[2].ToString());
+                        }
+                        uint radiusVal = 0;
+                        if (index == 1)
+                        {
+                            radiusVal = record.EffectRadiusIndex1;  
+                        }
+                        else if (index == 2)
+                        {
+                            radiusVal = record.EffectRadiusIndex2;
+                        }
+                        else if (index == 3)
+                        {
+                            radiusVal = record.EffectRadiusIndex3;
+                        }
+                        else if (index == 4)
+                        {
+                            Console.WriteLine("Unable to handle $a token in spell string");
+                            return str;
+                        }
+                        var dbc = mainWindow.FindDbcForBinding("SpellRadius");
+                        if (dbc == null)
+                        {
+                            Console.WriteLine("Unable to handle $a token in spell string, SpellRadius dbc not loaded");
+                            return str;
+                        }
+                        var radiusDbc = (SpellRadius)dbc;
+                        for (int i = 0; i < radiusDbc.Lookups.Count; ++i)
+                        {
+                            if (radiusVal == radiusDbc.Lookups[i].ID)
+                            {
+                                string item = "";
+                                if (index == 1)
+                                {
+                                    item = mainWindow.RadiusIndex1.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                }
+                                else if (index == 2)
+                                {
+                                    item = mainWindow.RadiusIndex2.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                }
+                                else if (index == 3)
+                                {
+                                    item = mainWindow.RadiusIndex3.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                }
+                                str = str.Replace(token, item.Contains(" ") ? item.Substring(0, item.IndexOf(" ")) : item);
+                            }
+                        }
+                    }
+                }
+                return str;
+            }
+        };
+
         private static TOKEN_TO_PARSER procChanceParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$h",
@@ -428,30 +523,34 @@ namespace SpellEditor.Sources.SpellStringTools
                 return str;
             }
         };
-
+        
         // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
-
-        private static TOKEN_TO_PARSER[] TOKEN_PARSERS = {
+        private static readonly TOKEN_TO_PARSER[] TOKEN_PARSERS = {
             procChanceParser,
-            spellEffectParser, durationParser, stacksParser,
-            periodicTriggerParser, summaryDamage, targetsParser,
-            maxTargetLevelParser, hearthstoneLocationParser
+            spellEffectParser,
+            durationParser,
+            stacksParser,
+            periodicTriggerParser,
+            summaryDamage,
+            targetsParser,
+            maxTargetLevelParser,
+            hearthstoneLocationParser,
+            radiusParser,
+            rangeParser
         };
 
         public static string GetParsedForm(string rawString, Spell_DBC_Record record, MainWindow mainWindow)
         {
             // If a token starts with $ and a number, it references that as a spell id
-            Spell_DBC_Record otherRecord;
             var match = Regex.Match(rawString, "\\$\\d+");
             if (match.Success)
             {
-                uint otherId;
-                if (!uint.TryParse(match.Value.Substring(1), out otherId))
+                if (!uint.TryParse(match.Value.Substring(1), out uint otherId))
                 {
                     Console.WriteLine("Failed to parse other spell id: " + rawString);
                     return rawString;
                 }
-                otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
+                var otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
                 int offset = match.Index + match.Value.Length;
                 bool hasPrefix = rawString.StartsWith("$");
                 rawString = rawString.Substring(match.Index + match.Value.Length);

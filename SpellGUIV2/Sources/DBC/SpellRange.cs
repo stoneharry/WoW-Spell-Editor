@@ -38,6 +38,7 @@ namespace SpellEditor.Sources.DBC
                     SpellRangeLookup temp;
                     temp.ID = (uint)record["ID"];
                     temp.comboBoxIndex = boxIndex;
+                    temp.RangeString = MaximumRangeHostile > MaximumRangeFriend ? MaximumRangeHostile.ToString() : MaximumRangeFriend.ToString();
                     Lookups.Add(temp);
 
                     main.Range.Items.Add($"{ name }\nHostile: { MinimumRangeHostile } - { MaximumRangeHostile }\t Friend: { MinimumRangeFriend } - { MaximumRangeFriend }");
@@ -75,6 +76,7 @@ namespace SpellEditor.Sources.DBC
         {
             public uint ID;
             public int comboBoxIndex;
+            public string RangeString;
         };
     };
 }
