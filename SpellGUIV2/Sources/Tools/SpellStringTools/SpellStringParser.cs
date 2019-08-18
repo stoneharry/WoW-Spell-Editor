@@ -8,7 +8,7 @@ namespace SpellEditor.Sources.SpellStringTools
 {
     public class SpellStringParser
     {
-        public static readonly string MODIFY_FORMULA_REGEX = "\\$(\\/|\\*|\\-|)+\\d+\\;\\d+\\w+";    // $/10;17057s1
+        public static readonly string MODIFY_FORMULA_REGEX = "\\$(\\/|\\*|\\-|)\\d+\\;\\d*\\w+";    // $/10;17057s1 | $/10;s1
         public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*";                         // ${1 + $s1} | $s1
         public static readonly string ALL_FORMULA_REGEX = $"{MODIFY_FORMULA_REGEX}|{FORMULA_REGEX}";
         public static readonly string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";                           // 12 | 12.26
