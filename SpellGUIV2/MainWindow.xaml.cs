@@ -186,6 +186,333 @@ namespace SpellEditor
             return loadAreaTable.Lookups.ContainsKey(id) ? loadAreaTable.Lookups[id].AreaName : "";
         }
 
+        #region LanguageSwitch
+        private void RefreshAllUIElements()
+        {
+            Attributes1.Children.Clear();
+            attributes0.Clear();
+            string[] attFlags = TryFindResource("attFlags_strings").ToString().Split('|');
+            for (var i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes1.Children.Add(box);
+                attributes0.Add(box);
+            }
+
+            Attributes2.Children.Clear();
+            attributes1.Clear();
+            attFlags = TryFindResource("attFlagsEx_strings").ToString().Split('|');
+            for (var i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes2.Children.Add(box);
+                attributes1.Add(box);
+            }
+
+            Attributes3.Children.Clear();
+            attributes2.Clear();
+            attFlags = TryFindResource("attFlagsEx1_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes3.Children.Add(box);
+                attributes2.Add(box);
+            }
+
+            Attributes4.Children.Clear();
+            attributes3.Clear();
+            attFlags = TryFindResource("attFlagsEx2_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes4.Children.Add(box);
+                attributes3.Add(box);
+            }
+
+            Attributes5.Children.Clear();
+            attributes4.Clear();
+            attFlags = TryFindResource("attFlagsEx3_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes5.Children.Add(box);
+                attributes4.Add(box);
+            }
+
+            Attributes6.Children.Clear();
+            attributes5.Clear();
+            attFlags = TryFindResource("attFlagsEx4_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes6.Children.Add(box);
+                attributes5.Add(box);
+            }
+
+            Attributes7.Children.Clear();
+            attributes6.Clear();
+            attFlags = TryFindResource("attFlagsEx5_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes7.Children.Add(box);
+                attributes6.Add(box);
+            }
+
+            Attributes8.Children.Clear();
+            attributes7.Clear();
+            attFlags = TryFindResource("attFlagsEx6_strings").ToString().Split('|');
+            for (int i = 0; i < attFlags.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                box.Content = attFlags[i];
+                box.ToolTip = attFlags[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                Attributes8.Children.Add(box);
+                attributes7.Add(box);
+            }
+
+            StancesGrid.Children.Clear();
+            stancesBoxes.Clear();
+            string[] stances_strings = TryFindResource("stances_strings").ToString().Split('|');
+            for (int i = 0; i < stances_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = stances_strings[i];
+                box.ToolTip = stances_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                StancesGrid.Children.Add(box);
+                stancesBoxes.Add(box);
+            }
+
+            TargetCreatureType.Children.Clear();
+            targetCreatureTypeBoxes.Clear();
+            string[] creature_type_strings = TryFindResource("creature_type_strings").ToString().Split('|');
+            for (int i = 0; i < creature_type_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = creature_type_strings[i];
+                box.ToolTip = creature_type_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                TargetCreatureType.Children.Add(box);
+                targetCreatureTypeBoxes.Add(box);
+            }
+
+            CasterAuraState.Items.Clear();
+            string[] caster_aura_state_strings = TryFindResource("caster_aura_state_strings").ToString().Split('|');
+            for (int i = 0; i < caster_aura_state_strings.Length; ++i) { CasterAuraState.Items.Add(caster_aura_state_strings[i]); }
+
+            TargetAuraState.Items.Clear();
+            string[] target_aura_state_strings = TryFindResource("target_aura_state_strings").ToString().Split('|');
+            for (int i = 0; i < target_aura_state_strings.Length; ++i) { TargetAuraState.Items.Add(target_aura_state_strings[i]); }
+
+            EquippedItemInventoryTypeGrid.Children.Clear();
+            equippedItemInventoryTypeMaskBoxes.Clear();
+            string[] equipped_item_inventory_type_mask_strings = TryFindResource("equipped_item_inventory_type_mask_strings").ToString().Split('|');
+            for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = equipped_item_inventory_type_mask_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                EquippedItemInventoryTypeGrid.Children.Add(box);
+                equippedItemInventoryTypeMaskBoxes.Add(box);
+            }
+
+            EquippedItemSubClassGrid.Children.Clear();
+            equippedItemSubClassMaskBoxes.Clear();
+            for (int i = 0; i < 29; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = TryFindResource("None").ToString();
+                box.Margin = new Thickness(0, 5, 0, 0);
+                box.Visibility = Visibility.Hidden;
+                EquippedItemSubClassGrid.Children.Add(box);
+                equippedItemSubClassMaskBoxes.Add(box);
+            }
+
+            PowerType.Items.Clear();
+            string[] school_strings = TryFindResource("school_strings").ToString().Split('|');
+            for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
+
+            SpellDamageType.Items.Clear();
+            PreventionType.Items.Clear();
+            string[] damage_prevention_types = TryFindResource("damage_prevention_types").ToString().Split('|');
+            for (int i = 0; i < damage_prevention_types.Length; ++i)
+            {
+                if (i < 4)
+                {
+                    SpellDamageType.Items.Add(damage_prevention_types[i]);
+                }
+                else
+                {
+                    PreventionType.Items.Add(damage_prevention_types[i]);
+                }
+            }
+
+            TargetEditorGrid.Children.Clear();
+            targetBoxes.Clear();
+            string[] target_strings = TryFindResource("target_strings").ToString().Split('|');
+            for (int i = 0; i < target_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = target_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                TargetEditorGrid.Children.Add(box);
+                targetBoxes.Add(box);
+            }
+
+            ProcEditorGrid.Children.Clear();
+            procBoxes.Clear();
+            string[] proc_strings = TryFindResource("proc_strings").ToString().Split('|');
+            for (int i = 0; i < proc_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = proc_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+
+                ProcEditorGrid.Children.Add(box);
+                procBoxes.Add(box);
+            }
+
+            ApplyAuraName1.Items.Clear();
+            ApplyAuraName2.Items.Clear();
+            ApplyAuraName3.Items.Clear();
+            string[] spell_aura_effect_names = TryFindResource("spell_aura_effect_names").ToString().Split('|');
+            for (int i = 0; i < spell_aura_effect_names.Length; ++i)
+            {
+                ApplyAuraName1.Items.Add(i + "- " + spell_aura_effect_names[i]);
+                ApplyAuraName2.Items.Add(i + "- " + spell_aura_effect_names[i]);
+                ApplyAuraName3.Items.Add(i + "- " + spell_aura_effect_names[i]);
+            }
+
+            SpellEffect1.Items.Clear();
+            SpellEffect2.Items.Clear();
+            SpellEffect3.Items.Clear();
+            string[] spell_effect_names = TryFindResource("spell_effect_names").ToString().Split('|');
+            for (int i = 0; i < spell_effect_names.Length; ++i)
+            {
+                SpellEffect1.Items.Add(i + "- " + spell_effect_names[i]);
+                SpellEffect2.Items.Add(i + "- " + spell_effect_names[i]);
+                SpellEffect3.Items.Add(i + "- " + spell_effect_names[i]);
+            }
+
+            Mechanic1.Items.Clear();
+            Mechanic2.Items.Clear();
+            Mechanic3.Items.Clear();
+            string[] mechanic_names = TryFindResource("mechanic_names").ToString().Split('|');
+            for (int i = 0; i < mechanic_names.Length; ++i)
+            {
+                Mechanic1.Items.Add(mechanic_names[i]);
+                Mechanic2.Items.Add(mechanic_names[i]);
+                Mechanic3.Items.Add(mechanic_names[i]);
+            }
+
+            if (TargetA1.Items.Count == 0)
+            {
+                int number = 0;
+                foreach (Targets t in Enum.GetValues(typeof(Targets)))
+                {
+                    string toDisplay = number + " - " + t;
+                    TargetA1.Items.Add(toDisplay);
+                    TargetB1.Items.Add(toDisplay);
+                    TargetA2.Items.Add(toDisplay);
+                    TargetB2.Items.Add(toDisplay);
+                    TargetA3.Items.Add(toDisplay);
+                    TargetB3.Items.Add(toDisplay);
+
+                    //ChainTarget1.Items.Add(toDisplay);
+                    //ChainTarget2.Items.Add(toDisplay);
+                    //ChainTarget3.Items.Add(toDisplay);
+                    ++number;
+                }
+            }
+
+            InterruptFlagsGrid.Children.Clear();
+            interrupts1.Clear();
+            string[] interrupt_strings = TryFindResource("interrupt_strings").ToString().Split('|');
+            for (int i = 0; i < interrupt_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = interrupt_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+
+                InterruptFlagsGrid.Children.Add(box);
+                interrupts1.Add(box);
+            }
+
+            AuraInterruptFlagsGrid.Children.Clear();
+            interrupts2.Clear();
+            string[] aura_interrupt_strings = TryFindResource("aura_interrupt_strings").ToString().Split('|');
+            for (int i = 0; i < aura_interrupt_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = aura_interrupt_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+                AuraInterruptFlagsGrid.Children.Add(box);
+                interrupts2.Add(box);
+            }
+
+            ChannelInterruptFlagsGrid.Children.Clear();
+            interrupts3.Clear();
+            string[] channel_interrupt_strings = TryFindResource("channel_interrupt_strings").ToString().Split('|');
+            for (int i = 0; i < channel_interrupt_strings.Length; ++i)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+
+                box.Content = channel_interrupt_strings[i];
+                box.Margin = new Thickness(0, 5, 0, 0);
+
+
+                ChannelInterruptFlagsGrid.Children.Add(box);
+                interrupts3.Add(box);
+            }
+        }
+        #endregion
+
         #region Loaded
         private void _Loaded(object sender, RoutedEventArgs e)
         {
@@ -249,273 +576,9 @@ namespace SpellEditor
                 spellTooltipGenFields.Add(SpellTooltipGen7);
                 spellTooltipGenFields.Add(SpellTooltipGen8);
 
-                string[] attFlags = TryFindResource("attFlags_strings").ToString().Split('|');
-                for (var i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
+                RefreshAllUIElements();
 
-                    Attributes1.Children.Add(box);
-                    attributes0.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx_strings").ToString().Split('|');
-                for (var i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes2.Children.Add(box);
-                    attributes1.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx1_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes3.Children.Add(box);
-                    attributes2.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx2_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes4.Children.Add(box);
-                    attributes3.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx3_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes5.Children.Add(box);
-                    attributes4.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx4_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes6.Children.Add(box);
-                    attributes5.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx5_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes7.Children.Add(box);
-                    attributes6.Add(box);
-                }
-
-                attFlags = TryFindResource("attFlagsEx6_strings").ToString().Split('|');
-                for (int i = 0; i < attFlags.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                    box.Content = attFlags[i];
-                    box.ToolTip = attFlags[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    Attributes8.Children.Add(box);
-                    attributes7.Add(box);
-                }
-
-                string[] stances_strings = TryFindResource("stances_strings").ToString().Split('|');
-                for (int i = 0; i < stances_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = stances_strings[i];
-                    box.ToolTip = stances_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    StancesGrid.Children.Add(box);
-                    stancesBoxes.Add(box);
-                }
-
-                string[] creature_type_strings = TryFindResource("creature_type_strings").ToString().Split('|');
-                for (int i = 0; i < creature_type_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = creature_type_strings[i];
-                    box.ToolTip = creature_type_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    TargetCreatureType.Children.Add(box);
-                    targetCreatureTypeBoxes.Add(box);
-                }
-
-                string[] caster_aura_state_strings = TryFindResource("caster_aura_state_strings").ToString().Split('|');
-                for (int i = 0; i < caster_aura_state_strings.Length; ++i) { CasterAuraState.Items.Add(caster_aura_state_strings[i]); }
-
-                string[] target_aura_state_strings = TryFindResource("target_aura_state_strings").ToString().Split('|');
-                for (int i = 0; i < target_aura_state_strings.Length; ++i) { TargetAuraState.Items.Add(target_aura_state_strings[i]); }
-
-                string[] equipped_item_inventory_type_mask_strings = TryFindResource("equipped_item_inventory_type_mask_strings").ToString().Split('|');
-                for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = equipped_item_inventory_type_mask_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    EquippedItemInventoryTypeGrid.Children.Add(box);
-                    equippedItemInventoryTypeMaskBoxes.Add(box);
-                }
-                
-                for (int i = 0; i < 29; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = TryFindResource("None").ToString();
-                    box.Margin = new Thickness(0, 5, 0, 0);
-                    box.Visibility = System.Windows.Visibility.Hidden;
-                    EquippedItemSubClassGrid.Children.Add(box);
-                    equippedItemSubClassMaskBoxes.Add(box);
-                }
-
-
-                string[] school_strings = TryFindResource("school_strings").ToString().Split('|');
-                for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
-
-                string[] damage_prevention_types = TryFindResource("damage_prevention_types").ToString().Split('|');
-                for (int i = 0; i < damage_prevention_types.Length; ++i)
-                {
-                    if (i < 4) { SpellDamageType.Items.Add(damage_prevention_types[i]); }
-                    else { PreventionType.Items.Add(damage_prevention_types[i]); }
-                }
-
-                string[] target_strings = TryFindResource("target_strings").ToString().Split('|');
-                for (int i = 0; i < target_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = target_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-                    TargetEditorGrid.Children.Add(box);
-                    targetBoxes.Add(box);
-                }
-
-                string[] proc_strings = TryFindResource("proc_strings").ToString().Split('|');
-                for (int i = 0; i < proc_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = proc_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-
-                    ProcEditorGrid.Children.Add(box);
-                    procBoxes.Add(box);
-                }
-
-                string[] spell_aura_effect_names = TryFindResource("spell_aura_effect_names").ToString().Split('|');
-                for (int i = 0; i < spell_aura_effect_names.Length; ++i)
-                {
-                    ApplyAuraName1.Items.Add(i + "- " + spell_aura_effect_names[i]);
-                    ApplyAuraName2.Items.Add(i + "- " + spell_aura_effect_names[i]);
-                    ApplyAuraName3.Items.Add(i + "- " + spell_aura_effect_names[i]);
-                }
-
-                string[] spell_effect_names = TryFindResource("spell_effect_names").ToString().Split('|');
-                for (int i = 0; i < spell_effect_names.Length; ++i)
-                {
-                    SpellEffect1.Items.Add(i + "- " + spell_effect_names[i]);
-                    SpellEffect2.Items.Add(i + "- " + spell_effect_names[i]);
-                    SpellEffect3.Items.Add(i + "- " + spell_effect_names[i]);
-                }
-
-                string[] mechanic_names = TryFindResource("mechanic_names").ToString().Split('|');
-                for (int i = 0; i < mechanic_names.Length; ++i)
-                {
-                    Mechanic1.Items.Add(mechanic_names[i]);
-                    Mechanic2.Items.Add(mechanic_names[i]);
-                    Mechanic3.Items.Add(mechanic_names[i]);
-                }
-
-                int number = 0;
-                foreach (Targets t in Enum.GetValues(typeof(Targets)))
-                {
-                    string toDisplay = number + " - " + t;
-                    TargetA1.Items.Add(toDisplay);
-                    TargetB1.Items.Add(toDisplay);
-                    TargetA2.Items.Add(toDisplay);
-                    TargetB2.Items.Add(toDisplay);
-                    TargetA3.Items.Add(toDisplay);
-                    TargetB3.Items.Add(toDisplay);
-
-                    //ChainTarget1.Items.Add(toDisplay);
-                    //ChainTarget2.Items.Add(toDisplay);
-                    //ChainTarget3.Items.Add(toDisplay);
-                    ++number;
-                }
-
-                string[] interrupt_strings = TryFindResource("interrupt_strings").ToString().Split('|');
-                for (int i = 0; i < interrupt_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = interrupt_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-
-                    InterruptFlagsGrid.Children.Add(box);
-                    interrupts1.Add(box);
-                }
-
-                string[] aura_interrupt_strings = TryFindResource("aura_interrupt_strings").ToString().Split('|');
-                for (int i = 0; i < aura_interrupt_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = aura_interrupt_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-                    
-                    AuraInterruptFlagsGrid.Children.Add(box);
-                    interrupts2.Add(box);
-                }
-
-                string[] channel_interrupt_strings = TryFindResource("channel_interrupt_strings").ToString().Split('|');
-                for (int i = 0; i < channel_interrupt_strings.Length; ++i)
-                {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-
-                    box.Content = channel_interrupt_strings[i];
-                    box.Margin = new Thickness(0, 5, 0, 0);
-
-
-                    ChannelInterruptFlagsGrid.Children.Add(box);
-                    interrupts3.Add(box);
-                }
-
-                 for (int i = 0; i < 32; ++i)
+                for (int i = 0; i < 32; ++i)
                 {
                     uint mask = (uint)Math.Pow(2, i);
 
@@ -2969,6 +3032,7 @@ namespace SpellEditor
             string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
             config.UpdateConfigValue("language", language);
+            RefreshAllUIElements();
         }
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
