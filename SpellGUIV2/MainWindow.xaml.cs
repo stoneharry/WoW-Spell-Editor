@@ -169,8 +169,8 @@ namespace SpellEditor
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Console.WriteLine("ERROR: " + e.Exception.Message);
-            File.WriteAllText("error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
-            HandleErrorMessage(e.Exception.Message);
+            File.WriteAllText("error.txt", e.Exception.Message + "\n" + e.Exception.StackTrace, UTF8Encoding.GetEncoding(0));
+            HandleErrorMessage(e.Exception.GetType().ToString() + ": " + e.Exception.Message);
             e.Handled = true;
             Console.Out.Flush();
         }
@@ -1953,13 +1953,34 @@ namespace SpellEditor
         }
         #endregion
 
+        #region SpellStringParsing
+        /**
+         * Very slow debug method for parsing all spell descriptions and tooltips in enUS/enGB locale and
+         * writing the ones that failed to parse.
+         */
+        private void DebugFuncWriteAllUnparsedStrings()
+        {
+            DataRowCollection rowResult = adapter.Query(string.Format("SELECT SpellDescription0 || SpellTooltip0 FROM `spell`", selectedID)).Rows;
+            if (rowResult == null || rowResult.Count == 0)
+                throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
+            var unparsedStrings = new List<string>();
+            foreach (DataRow row in rowResult)
+            {
+                var str = row[0].ToString();
+                var parsedStr = SpellStringParser.ParseString(str, row, this);
+                if (parsedStr.Contains("$"))
+                {
+                    unparsedStrings.Add(str + " | " + parsedStr);
+                }
+            }
+            File.WriteAllLines("debug_unparsed_strings.txt", unparsedStrings);
+        }
 
         private void SpellDescriptionGen_TextChanged(object sender, TextChangedEventArgs e) => SpellGenRefresh(sender as ThreadSafeTextBox, 0);
         private void SpellTooltipGen_TextChanged(object sender, TextChangedEventArgs e) => SpellGenRefresh(sender as ThreadSafeTextBox, 1);
         private void SpellGenRefresh(ThreadSafeTextBox sender, int type)
         {
-            int locale;
-            if (!int.TryParse(sender.Name[sender.Name.Length - 1].ToString(), out locale))
+            if (!int.TryParse(sender.Name[sender.Name.Length - 1].ToString(), out int locale))
                 return;
             var spell = GetSpellRowById(selectedID);
             var text = SpellStringParser.ParseString(sender.Text, spell, this);
@@ -1968,6 +1989,7 @@ namespace SpellEditor
             else if (type == 1)
                 spellTooltipGenFields[locale].threadSafeText = text;
         }
+        #endregion
 
         #region LoadSpell (load spell god-function)
         private void loadSpell(UpdateTextFunc updateProgress)

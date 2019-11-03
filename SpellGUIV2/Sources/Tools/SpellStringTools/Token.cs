@@ -37,6 +37,24 @@ namespace SpellEditor.Sources.Tools.SpellStringTools
                 Type = TokenType.MULTIPLY;
         }
 
+        /**
+         * This is a bit of hack to get around the a string like ${$2085d/6}.
+         * 
+         * This references spell ID 2085's duration which will be returned like "10 seconds".
+         * 
+         * It then attempts to divide this by 6 but the seconds string causes a format exception to be raised.
+         * 
+         * Instead we can hack it by returning only the first part of the string if it contains a space.
+         */
+        public object FriendlyResolvedValue()
+        {
+            if (ResolvedValue != null && ResolvedValue.ToString().Contains(" "))
+            {
+                return ResolvedValue.ToString().Split(' ')[0];
+            }
+            return ResolvedValue;
+        }
+
         public override string ToString()
         {
             return $"Token[{ Value }, { Type }, { ResolvedValue }]";
