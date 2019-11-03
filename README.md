@@ -48,3 +48,13 @@ Once you are ready to test your spell changes in game, you must export the data 
 This new spell.dbc file will need to be updated both client side and server side, as explained at the start of this little guide.
 
 I hope this helps.
+
+----
+
+## Spell Visual Map
+
+I wrote a utility tool for creating a map of creatures that show the spell visuals for every spell in the game. This was useful when trying to find which spell visual I wanted to use when creating custom spells.
+
+My generated files are distributed with the releases of this program in `\WoW Spell Editor\SpellVisualMapBuilder\Export`. The program is hardcoded to use those entries and map 13. You can see this in action in the following video:
+
+[![Spell Visual Map video](https://img.youtube.com/vi/lU4Nn_mRS9U/maxresdefault.jpg)](https://www.youtube.com/watch?v=lU4Nn_mRS9U)
