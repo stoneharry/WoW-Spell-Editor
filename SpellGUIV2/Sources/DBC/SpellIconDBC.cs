@@ -28,36 +28,28 @@ namespace SpellEditor.Sources.DBC
             main = window;
             this.adapter = adapter;
 
-            try
+            ReadDBCFile("DBC/SpellIcon.dbc");
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellIcon.dbc");
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-                    uint offset = (uint)record["Name"];
-                    if (offset == 0)
-                        continue;
-                    string name = Reader.LookupStringOffset(offset);
-                    uint id = (uint)record["ID"];
+                var record = Body.RecordMaps[i];
+                uint offset = (uint)record["Name"];
+                if (offset == 0)
+                    continue;
+                string name = Reader.LookupStringOffset(offset);
+                uint id = (uint)record["ID"];
 
-                    Icon_DBC_Lookup lookup;
-                    lookup.ID = id;
-                    lookup.Offset = offset;
-                    lookup.Name = name;
-                    Lookups.Add(lookup);
-                }
-                Reader.CleanStringsMap();
-                // In this DBC we don't actually need to keep the DBC data now that
-                // we have extracted the lookup tables. Nulling it out may help with
-                // memory consumption.
-                Reader = null;
-                Body = null;
+                Icon_DBC_Lookup lookup;
+                lookup.ID = id;
+                lookup.Offset = offset;
+                lookup.Name = name;
+                Lookups.Add(lookup);
             }
-            catch (Exception ex)
-            {
-                main.HandleErrorMessage(ex.Message);
-                return;
-            }
+            Reader.CleanStringsMap();
+            // In this DBC we don't actually need to keep the DBC data now that
+            // we have extracted the lookup tables. Nulling it out may help with
+            // memory consumption.
+            Reader = null;
+            Body = null;
         }
 
         public void LoadImages(double margin)

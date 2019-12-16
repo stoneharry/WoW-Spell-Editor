@@ -1,83 +1,54 @@
-﻿using SpellEditor.Sources.Database;
-using System;
+﻿using SpellEditor.Sources.Controls;
 using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellDispelType : AbstractDBC
+    class SpellDispelType : AbstractDBC, IBoxContentProvider
     {
-        private MainWindow main;
-        private IDatabaseAdapter adapter;
+        public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public List<SpellDispel_DBC_Lookup> Lookups = new List<SpellDispel_DBC_Lookup>();
-
-        public SpellDispelType(MainWindow window, IDatabaseAdapter adapter)
+        public SpellDispelType()
         {
-            main = window;
-            this.adapter = adapter;
+            ReadDBCFile("DBC/SpellDispelType.dbc");
 
-            try
+            int boxIndex = 0;
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellDispelType.dbc");
+                var record = Body.RecordMaps[i];
+                var description = GetAllLocaleStringsForField("Name", record);
+                var id = (uint)record["ID"];
 
-                int boxIndex = 0;
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
-                    if (offset == 0)
-                        continue;
-                    var description = Reader.LookupStringOffset(offset);
+                Lookups.Add(new DBCBoxContainer(id, description, boxIndex));
 
-                    SpellDispel_DBC_Lookup temp;
-                    temp.ID = (uint)record["ID"];
-                    temp.offset = offset;
-                    temp.stringHash = description.GetHashCode();
-                    temp.comboBoxIndex = boxIndex;
-                    Lookups.Add(temp);
-
-                    main.DispelType.Items.Add(description);
-
-                    ++boxIndex;
-                }
-                Reader.CleanStringsMap();
-                // In this DBC we don't actually need to keep the DBC data now that
-                // we have extracted the lookup tables. Nulling it out may help with
-                // memory consumption.
-                Reader = null;
-                Body = null;
+                ++boxIndex;
             }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return;
-            }
+            Reader.CleanStringsMap();
+            // In this DBC we don't actually need to keep the DBC data now that
+            // we have extracted the lookup tables. Nulling it out may help with
+            // memory consumption.
+            Reader = null;
+            Body = null;
         }
 
-        public void UpdateDispelSelection()
+        public List<DBCBoxContainer> GetAllBoxes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
+            return Lookups;
+        }
+
+        public int UpdateDispelSelection(uint ID)
+        {
             if (ID == 0)
             {
-                main.DispelType.threadSafeIndex = 0;
-                return;
+                return 0;
             }
             for (int i = 0; i < Header.RecordCount; ++i)
             {
                 if (ID == Lookups[i].ID)
                 {
-                    main.DispelType.threadSafeIndex = Lookups[i].comboBoxIndex;
-                    break;
+                    return Lookups[i].ComboBoxIndex;
                 }
             }
+            return 0;
         }
-
-        public struct SpellDispel_DBC_Lookup
-        {
-            public uint ID;
-            public uint offset;
-            public int stringHash;
-            public int comboBoxIndex;
-        };
     };
 }

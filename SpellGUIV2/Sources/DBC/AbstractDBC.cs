@@ -242,6 +242,29 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
+        protected string GetAllLocaleStringsForField(string fieldName, Dictionary<string, object> record, int numLocales = 16)
+        {
+            string name = "";
+            bool notFirstItem = false;
+            for (int i = 1; i <= numLocales; ++i)
+            {
+                uint strOffset = (uint)record[fieldName + i];
+                if (strOffset > 0)
+                {
+                    string areaName = Reader.LookupStringOffset(strOffset);
+                    if (areaName.Length > 0)
+                    {
+                        name += areaName;
+                        if (notFirstItem && i != numLocales)
+                            name += ", ";
+                        else
+                            notFirstItem = true;
+                    }
+                }
+            }
+            return name;
+        }
+
         public bool HasData()
         {
             return Body != null && Body.RecordMaps != null && Body.RecordMaps.Count() > 0;

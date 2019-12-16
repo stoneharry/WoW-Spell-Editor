@@ -30,9 +30,7 @@ namespace SpellEditor.Sources.BLP
 
         public ImageSource GetImageSourceFromBlpPath(string filePath)
         {
-            ImageSource source;
-            var exists = _ImageMap.TryGetValue(filePath, out source);
-            if (exists)
+            if (_ImageMap.TryGetValue(filePath, out ImageSource source))
             {
                 return source;
             }

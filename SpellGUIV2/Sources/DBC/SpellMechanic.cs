@@ -1,92 +1,56 @@
-﻿using SpellEditor.Sources.Database;
-using System;
+﻿using SpellEditor.Sources.Controls;
 using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellMechanic : AbstractDBC
+    class SpellMechanic : AbstractDBC, IBoxContentProvider
     {
-        private MainWindow main;
-        private IDatabaseAdapter adapter;
+        public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public List<MechanicLookup> Lookups = new List<MechanicLookup>();
-
-        public SpellMechanic(MainWindow window, IDatabaseAdapter adapter)
+        public SpellMechanic()
         {
-            main = window;
-            this.adapter = adapter;
+            ReadDBCFile("DBC/SpellMechanic.dbc");
 
-            try
+            Lookups.Add(new DBCBoxContainer(0, "None", 0));
+
+            int boxIndex = 1;
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellMechanic.dbc");
+                var record = Body.RecordMaps[i];
+                var name = GetAllLocaleStringsForField("Name", record);
+                var id = (uint) record["ID"];
 
-                int boxIndex = 1;
-                main.MechanicType.Items.Add("None");
-                MechanicLookup t;
-                t.ID = 0;
-                t.offset = 0;
-                t.stringHash = "None".GetHashCode();
-                t.comboBoxIndex = 0;
-                Lookups.Add(t);
+                Lookups.Add(new DBCBoxContainer(id, name, boxIndex));
 
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-
-                    uint offset = (uint)record["Name" + (window.GetLanguage() + 1)];
-                    if (offset == 0)
-                        continue;
-                    string name = Reader.LookupStringOffset(offset);
-
-                    MechanicLookup temp;
-                    temp.ID = (uint) record["ID"];
-                    temp.offset = offset;
-                    temp.stringHash = name.GetHashCode();
-                    temp.comboBoxIndex = boxIndex;
-                    Lookups.Add(temp);
-
-                    main.MechanicType.Items.Add(name);
-
-                    ++boxIndex;
-                }
-                Reader.CleanStringsMap();
-                // In this DBC we don't actually need to keep the DBC data now that
-                // we have extracted the lookup tables. Nulling it out may help with
-                // memory consumption.
-                Reader = null;
-                Body = null;
+                ++boxIndex;
             }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return;
-            }
+            Reader.CleanStringsMap();
+            // In this DBC we don't actually need to keep the DBC data now that
+            // we have extracted the lookup tables. Nulling it out may help with
+            // memory consumption.
+            Reader = null;
+            Body = null;
         }
 
-        public void UpdateMechanicSelection()
+        public List<DBCBoxContainer> GetAllBoxes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
+            return Lookups;
+        }
+
+        public int UpdateMechanicSelection(uint ID)
+        {
             if (ID == 0)
             {
-                main.MechanicType.threadSafeIndex = 0;
-                return;
+                return 0;
             }
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
                 {
-                    main.MechanicType.threadSafeIndex = Lookups[i].comboBoxIndex;
-                    break;
+                    return Lookups[i].ComboBoxIndex;
                 }
             }
+            return 0;
         }
-
-        public struct MechanicLookup
-        {
-            public uint ID;
-            public uint offset;
-            public int stringHash;
-            public int comboBoxIndex;
-        };
     };
 }

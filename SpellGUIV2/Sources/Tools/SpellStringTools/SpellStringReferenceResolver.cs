@@ -24,7 +24,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(rangeParser.TOKEN))
                 {
-                    var dbc = mainWindow.FindDbcForBinding("SpellRange");
+                    var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                     if (dbc == null)
                     {
                         Console.WriteLine("Unable to handle $r spell string token, SpellRange.dbc not loaded");
@@ -33,9 +33,10 @@ namespace SpellEditor.Sources.SpellStringTools
                     var rangeDbc = (SpellRange)dbc;
                     foreach (var entry in rangeDbc.Lookups)
                     {
-                        if (entry.ID == record.RangeIndex)
+                        if (entry.ID == record.RangeIndex && entry is SpellRange.SpellRangeBoxContainer)
                         {
-                            return str.Replace(rangeParser.TOKEN, entry.RangeString);
+                            var container = entry as SpellRange.SpellRangeBoxContainer;
+                            return str.Replace(rangeParser.TOKEN, container.RangeString);
                         }
                     }
                 }
@@ -79,7 +80,7 @@ namespace SpellEditor.Sources.SpellStringTools
                             Console.WriteLine("Unable to handle $a token in spell string");
                             return str;
                         }
-                        var dbc = mainWindow.FindDbcForBinding("SpellRadius");
+                        var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
                         if (dbc == null)
                         {
                             Console.WriteLine("Unable to handle $a token in spell string, SpellRadius dbc not loaded");
@@ -93,15 +94,15 @@ namespace SpellEditor.Sources.SpellStringTools
                                 string item = "";
                                 if (index == 1)
                                 {
-                                    item = mainWindow.RadiusIndex1.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                    item = mainWindow.RadiusIndex1.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
                                 }
                                 else if (index == 2)
                                 {
-                                    item = mainWindow.RadiusIndex2.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                    item = mainWindow.RadiusIndex2.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
                                 }
                                 else if (index == 3)
                                 {
-                                    item = mainWindow.RadiusIndex3.Items[radiusDbc.Lookups[i].comboBoxIndex].ToString();
+                                    item = mainWindow.RadiusIndex3.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
                                 }
                                 str = str.Replace(token, item.Contains(" ") ? item.Substring(0, item.IndexOf(" ")) : item);
                             }
@@ -268,7 +269,7 @@ namespace SpellEditor.Sources.SpellStringTools
                                         record.EffectAmplitude2 +
                                         record.EffectAmplitude3) / 1000;
                         }
-                        var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
+                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(record.DurationIndex);
                         if (entry != null)
                         {
                             string newStr;
@@ -398,7 +399,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(durationParser.TOKEN))
                 {
-                    var entry = mainWindow.loadDurations.LookupRecord(record.DurationIndex);
+                    var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(record.DurationIndex);
                     if (entry != null)
                     {
                         string newStr;
@@ -426,7 +427,7 @@ namespace SpellEditor.Sources.SpellStringTools
 
                     if (_linkRecord.ID != 0)
                     {
-                        var entry = mainWindow.loadDurations.LookupRecord(_linkRecord.DurationIndex);
+                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(_linkRecord.DurationIndex);
                         if (entry != null)
                         {
                             string newStr;
