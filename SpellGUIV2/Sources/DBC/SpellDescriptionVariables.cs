@@ -1,89 +1,53 @@
-﻿using SpellEditor.Sources.Database;
+﻿using SpellEditor.Sources.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellDescriptionVariables : AbstractDBC
+    class SpellDescriptionVariables : AbstractDBC, IBoxContentProvider
     {
-        private MainWindow main;
-        private IDatabaseAdapter adapter;
+        public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public List<SpellDescriptionVariablesLookup> Lookups = new List<SpellDescriptionVariablesLookup>();
-
-        public SpellDescriptionVariables(MainWindow window, IDatabaseAdapter adapter)
+        public SpellDescriptionVariables()
         {
-            main = window;
-            this.adapter = adapter;
+            ReadDBCFile("DBC/SpellDescriptionVariables.dbc");
 
-            try
+            Lookups.Add(new DBCBoxContainer(0, "0", 0));
+
+            int boxIndex = 1;
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellDescriptionVariables.dbc");
+                var record = Body.RecordMaps[i];
+                uint id = (uint) record["ID"];
+                uint offset = (uint) record["Formula"];
+                string description = offset == 0 ? "" : Reader.LookupStringOffset(offset);
 
-                int boxIndex = 1;
-                main.SpellDescriptionVariables.Items.Add(0);
-                SpellDescriptionVariablesLookup t;
-                t.ID = 0;
-                t.comboBoxIndex = 0;
-                Lookups.Add(t);
+                Label label = new Label();
+                label.Content = id + ": " + (description.Length <= 30 ? description : (description.Substring(0, 29) + "..."));
+                label.ToolTip = id + ": " + description;
 
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-                    uint id = (uint) record["ID"];
-                    uint offset = (uint) record["Formula"];
-                    string description = offset == 0 ? "" : Reader.LookupStringOffset(offset);
+                Lookups.Add(new DBCBoxContainer(id, label, boxIndex));
 
-                    SpellDescriptionVariablesLookup temp;
-                    temp.ID = id;
-                    temp.comboBoxIndex = boxIndex;
-                    Lookups.Add(temp);
-                    Label label = new Label();
-                    label.Content = id + ": " + (description.Length <= 30 ? description : (description.Substring(0, 29) + "..."));
-                    label.ToolTip = id + ": " + description;
-                    main.SpellDescriptionVariables.Items.Add(label);
-
-                    boxIndex++;
-                }
-                Reader.CleanStringsMap();
-                // In this DBC we don't actually need to keep the DBC data now that
-                // we have extracted the lookup tables. Nulling it out may help with
-                // memory consumption.
-                Reader = null;
-                Body = null;
+                boxIndex++;
             }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return;
-            }
+            Reader.CleanStringsMap();
+            // In this DBC we don't actually need to keep the DBC data now that
+            // we have extracted the lookup tables. Nulling it out may help with
+            // memory consumption.
+            Reader = null;
+            Body = null;
         }
 
-        public void UpdateSpellDescriptionVariablesSelection()
+        public List<DBCBoxContainer> GetAllBoxes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
-
-            if (ID == 0)
-            {
-                main.SpellDescriptionVariables.threadSafeIndex = 0;
-                return;
-            }
-
-            for (int i = 0; i < Lookups.Count; ++i)
-            {
-                if (ID == Lookups[i].ID)
-                {
-                    main.SpellDescriptionVariables.threadSafeIndex = Lookups[i].comboBoxIndex;
-                    break;
-                }
-            }
+            return Lookups;
         }
 
-        public struct SpellDescriptionVariablesLookup
+        public int UpdateSpellDescriptionVariablesSelection(uint ID)
         {
-            public uint ID;
-            public int comboBoxIndex;
-        };
+            var match = Lookups.Find((entry) => entry.ID == ID);
+            return match != null ? match.ComboBoxIndex : 0;
+        }
     };
 }

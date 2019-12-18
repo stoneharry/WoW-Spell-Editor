@@ -1,85 +1,58 @@
-﻿using SpellEditor.Sources.Database;
-using System;
+﻿using SpellEditor.Sources.Controls;
 using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
 
-    class SpellCategory : AbstractDBC
+    class SpellCategory : AbstractDBC, IBoxContentProvider
     {
-        private MainWindow main;
-        private IDatabaseAdapter adapter;
+        public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public List<SpellCategoryLookup> Lookups = new List<SpellCategoryLookup>();
-
-        public SpellCategory(MainWindow window, IDatabaseAdapter adapter)
+        public SpellCategory()
         {
-            main = window;
-            this.adapter = adapter;
 
-            try
+            ReadDBCFile("DBC/SpellCategory.dbc");
+
+            int boxIndex = 1;
+            Lookups.Add(new DBCBoxContainer(0, "0", 0));
+
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellCategory.dbc");
+                var record = Body.RecordMaps[i];
+                uint id = (uint) record["ID"];
 
-                int boxIndex = 1;
-                main.Category.Items.Add(0);
-                SpellCategoryLookup t;
-                t.ID = 0;
-                t.comboBoxIndex = 0;
-                Lookups.Add(t);
+                Lookups.Add(new DBCBoxContainer(id, id.ToString(), boxIndex));
 
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-                    uint id = (uint) record["ID"];
-
-                    SpellCategoryLookup temp;
-                    temp.ID = id;
-                    temp.comboBoxIndex = boxIndex;
-                    Lookups.Add(temp);
-                    main.Category.Items.Add(id);
-
-                    boxIndex++;
-                }
-                Reader.CleanStringsMap();
-                // In this DBC we don't actually need to keep the DBC data now that
-                // we have extracted the lookup tables. Nulling it out may help with
-                // memory consumption.
-                Reader = null;
-                Body = null;
+                boxIndex++;
             }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return;
-            }
+            Reader.CleanStringsMap();
+            // In this DBC we don't actually need to keep the DBC data now that
+            // we have extracted the lookup tables. Nulling it out may help with
+            // memory consumption.
+            Reader = null;
+            Body = null;
         }
 
-        public void UpdateCategorySelection()
+        public List<DBCBoxContainer> GetAllBoxes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
+            return Lookups;
+        }
 
+        public int UpdateCategorySelection(uint ID)
+        {
             if (ID == 0)
             {
-                main.Category.threadSafeIndex = 0;
-
-                return;
+                return 0;
             }
 
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
                 {
-                    main.Category.threadSafeIndex = Lookups[i].comboBoxIndex;
-                    break;
+                    return Lookups[i].ComboBoxIndex;
                 }
             }
+            return 0;
         }
-    }
-
-    public struct SpellCategoryLookup
-    {
-        public uint ID;
-        public int comboBoxIndex;
     }
 }

@@ -135,6 +135,8 @@
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
+    <Compile Include="Sources\Controls\IBoxContentProvider.cs" />
+    <Compile Include="Sources\Controls\DBCBoxContainer.cs" />
     <Compile Include="Sources\Database\IDatabaseAdapter.cs" />
     <Compile Include="Sources\Constants\Locale.cs" />
     <Compile Include="Sources\Constants\Targets.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="Sources\Controls\ThreadSafeComboBox.cs" />
     <Compile Include="Sources\Controls\ThreadSafeTextBox.cs" />
     <Compile Include="Sources\DBC\AreaGroup.cs" />
+    <Compile Include="Sources\DBC\DBCManager.cs" />
     <Compile Include="Sources\DBC\GenericDbc.cs" />
     <Compile Include="Sources\DBC\AreaTable.cs" />
     <Compile Include="Sources\DBC\DBCReader.cs" />

@@ -1,79 +1,54 @@
-﻿using SpellEditor.Sources.Database;
+﻿using SpellEditor.Sources.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
-    public class SpellDuration : AbstractDBC
+    class SpellDuration : AbstractDBC, IBoxContentProvider
     {
-        private MainWindow main;
-        private IDatabaseAdapter adapter;
+        public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public List<SpellDurationLookup> Lookups = new List<SpellDurationLookup>();
-
-        public SpellDuration(MainWindow window, IDatabaseAdapter adapter)
+        public SpellDuration()
         {
-            main = window;
-            this.adapter = adapter;
+            ReadDBCFile("DBC/SpellDuration.dbc");
 
-            try
+            Lookups.Add(new DBCBoxContainer(0, "0", 0));
+
+            int boxIndex = 1;
+            for (uint i = 0; i < Header.RecordCount; ++i)
             {
-                ReadDBCFile("DBC/SpellDuration.dbc");
+                var record = Body.RecordMaps[i];
+                var id = (uint) record["ID"];
 
-                int boxIndex = 1;
-                main.Duration.Items.Add(0);
-                SpellDurationLookup t;
-                t.ID = 0;
-                t.comboBoxIndex = 0;
-                Lookups.Add(t);
+                Label label = new Label();
+                label.Content = $"{ record["BaseDuration"] }ms BaseDuration, { record["PerLevel"] } BaseDuration, { record["MaximumDuration"] }ms MaximumDuration, { id } ID";
 
-                for (uint i = 0; i < Header.RecordCount; ++i)
-                {
-                    var record = Body.RecordMaps[i];
-
-                    SpellDurationLookup temp;
-                    temp.ID = (uint) record["ID"];
-                    temp.comboBoxIndex = boxIndex;
-                    Lookups.Add(temp);
-
-                    Label label = new Label();
-                    label.Content = $"{ record["BaseDuration"] }ms BaseDuration, { record["PerLevel"] } BaseDuration, { record["MaximumDuration"] }ms MaximumDuration, { temp.ID } ID";
-                    main.Duration.Items.Add(label);
-
-                    ++boxIndex;
-                }
-                Reader.CleanStringsMap();
+                Lookups.Add(new DBCBoxContainer(id, label, boxIndex));
+                ++boxIndex;
             }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return;
-            }      
+            Reader.CleanStringsMap();
         }
 
-        public void UpdateDurationIndexes()
+        public List<DBCBoxContainer> GetAllBoxes()
         {
-            uint ID = uint.Parse(adapter.Query(string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0][0].ToString());
+            return Lookups;
+        }
+
+        public int UpdateDurationIndexes(uint ID)
+        {
             if (ID == 0)
             {
-                main.Duration.threadSafeIndex = 0;
-                return;
+                return 0;
             }
             for (int i = 0; i < Lookups.Count; ++i)
             {
                 if (ID == Lookups[i].ID)
                 {
-                    main.Duration.threadSafeIndex = Lookups[i].comboBoxIndex;
-                    break;
+                    return Lookups[i].ComboBoxIndex;
                 }
             }
+            return 0;
         }
-
-        public struct SpellDurationLookup
-        {
-            public uint ID;
-            public int comboBoxIndex;
-        };
     };
 }

@@ -32,71 +32,6 @@ namespace SpellEditor
 {
     partial class MainWindow
     {
-        #region DBCDefinitions
-
-        // Begin DBCs
-        private AreaTable loadAreaTable = null;
-        private SpellCategory loadCategories = null;
-        private SpellDispelType loadDispels = null;
-        private SpellMechanic loadMechanics = null;
-        private SpellFocusObject loadFocusObjects = null;
-        private AreaGroup loadAreaGroups = null;
-        private SpellCastTimes loadCastTimes = null;
-        public SpellDuration loadDurations = null;
-        private SpellDifficulty loadDifficulties = null;
-        private SpellIconDBC loadIcons = null;
-        private SpellRange loadRanges = null;
-        private SpellRadius loadRadiuses = null;
-        private ItemClass loadItemClasses = null;
-        private ItemSubClass loadItemSubClasses = null;
-        private TotemCategory loadTotemCategories = null;
-        private SpellRuneCost loadRuneCosts = null;
-        private SpellDescriptionVariables loadDescriptionVariables = null;
-        #endregion
-        private Dictionary<string, AbstractDBC> bindingToDbcMap;
-
-        // FIXME: Hardcoded map for now
-        public AbstractDBC FindDbcForBinding(string bindingName)
-        {
-            if (bindingToDbcMap == null)
-            {
-                bindingToDbcMap = new Dictionary<string, AbstractDBC>();
-                bindingToDbcMap.Add("AreaGroup", loadAreaGroups);
-                bindingToDbcMap.Add("AreaTable", loadAreaTable);
-                bindingToDbcMap.Add("SpellCategory", loadCategories);
-                bindingToDbcMap.Add("SpellDispelType", loadDispels);
-                bindingToDbcMap.Add("SpellMechanic", loadMechanics);
-                bindingToDbcMap.Add("SpellFocusObject", loadFocusObjects);
-                bindingToDbcMap.Add("SpellCastTimes", loadCastTimes);
-                bindingToDbcMap.Add("SpellDuration", loadDurations);
-                bindingToDbcMap.Add("SpellDifficulty", loadDifficulties);
-                bindingToDbcMap.Add("SpellIcon", loadIcons);
-                bindingToDbcMap.Add("SpellRange", loadRanges);
-                bindingToDbcMap.Add("SpellRadius", loadRadiuses);
-                bindingToDbcMap.Add("ItemClass", loadItemClasses);
-                bindingToDbcMap.Add("ItemSubClass", loadItemSubClasses);
-                bindingToDbcMap.Add("TotemCategory", loadTotemCategories);
-                bindingToDbcMap.Add("SpellRuneCost", loadRuneCosts);
-                bindingToDbcMap.Add("SpellDescriptionVariables", loadDescriptionVariables);
-            }
-            // Lazily load hardcoded spell.dbc
-            if (bindingName.Equals("Spell") && !bindingToDbcMap.ContainsKey("Spell"))
-            {
-                var dbc = new SpellDBC();
-                dbc.LoadDBCFile(this);
-                bindingToDbcMap.Add("Spell", dbc);
-            }
-            return bindingToDbcMap.ContainsKey(bindingName) ? bindingToDbcMap[bindingName] : null;
-        }
-
-        public void ClearDbcBindings(string bindingName)
-        {
-            if (bindingToDbcMap != null)
-            {
-                bindingToDbcMap.Remove(bindingName);
-            }
-        }
-
         #region Boxes
         private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
         private List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
@@ -138,6 +73,7 @@ namespace SpellEditor
         {
             return adapter;
         }
+
         public MainWindow()
         {
             // If no debugger is attached then output console text to a file
@@ -179,11 +115,6 @@ namespace SpellEditor
             // Disabled returning Locale_langauge until it can at least support multiple client types
             return GetLocale() == -1 ? 0 : GetLocale();
             //return (int)Locale_language;
-        }
-
-        public string GetAreaTableName(uint id)
-        {
-            return loadAreaTable.Lookups.ContainsKey(id) ? loadAreaTable.Lookups[id].AreaName : "";
         }
 
         #region LanguageSwitch
@@ -681,11 +612,12 @@ namespace SpellEditor
                 window.Close();
             var isImport = window.BindingImportList.Count > 0;
             var bindingList = isImport ? window.BindingImportList : window.BindingExportList;
+            var manager = DBCManager.GetInstance();
             foreach (var bindingName in bindingList)
             {
                 controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
-                ClearDbcBindings(bindingName);
-                var abstractDbc = FindDbcForBinding(bindingName);
+                manager.ClearDbcBinding(bindingName);
+                var abstractDbc = manager.FindDbcForBinding(bindingName);
                 if (abstractDbc == null)
                 {
                     try
@@ -748,38 +680,62 @@ namespace SpellEditor
             await Task.Delay(500);
             using (var d = Dispatcher.DisableProcessing())
             {
-                spellTable.Columns.Add("id", typeof(System.UInt32));
-                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(System.String));
-                spellTable.Columns.Add("Icon", typeof(System.UInt32));
+                spellTable.Columns.Add("id", typeof(uint));
+                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
+                spellTable.Columns.Add("Icon", typeof(uint));
 
                 PopulateSelectSpell();
 
                 spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
 
-                // Load other DBC's
-                loadAreaTable = new AreaTable(this);
-                loadCategories = new SpellCategory(this, adapter);
-                loadDispels = new SpellDispelType(this, adapter);
-                loadMechanics = new SpellMechanic(this, adapter);
-                loadFocusObjects = new SpellFocusObject(this, adapter);
-                loadAreaGroups = new AreaGroup(this, adapter);
-                loadDifficulties = new SpellDifficulty(this, adapter);
-                loadCastTimes = new SpellCastTimes(this, adapter);
-                loadDurations = new SpellDuration(this, adapter);
-                loadRanges = new SpellRange(this, adapter);
-                loadRadiuses = new SpellRadius(this, adapter);
-                loadItemClasses = new ItemClass(this, adapter);
-                loadItemSubClasses = new ItemSubClass(this, adapter);
-                loadTotemCategories = new TotemCategory(this, adapter);
-                loadRuneCosts = new SpellRuneCost(this, adapter);
-                loadIcons = new SpellIconDBC(this, adapter);
-                loadDescriptionVariables = new SpellDescriptionVariables(this, adapter);
+                // Load required DBC's. First the ones with dependencies and inject them into the manager
+                var manager = DBCManager.GetInstance();
+                manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+                manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                manager.ForceLoadDbc("SpellIcon", new SpellIconDBC(this, adapter));
+
+                // Populate UI based on DBC data
+                Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
+                MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
+                RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
+                AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
+                    DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
+                Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
+                CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
+                Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDuration")).GetAllBoxes());
+                Range.ItemsSource = ConvertBoxListToLabels(((SpellRange)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
+                var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
+                RadiusIndex1.ItemsSource = radiusLabels;
+                RadiusIndex2.ItemsSource = radiusLabels;
+                RadiusIndex3.ItemsSource = radiusLabels;
+                EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
+                    DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
+                var totemLabels = ConvertBoxListToLabels(((TotemCategory)
+                    DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                TotemCategory1.ItemsSource = totemLabels;
+                TotemCategory2.ItemsSource = totemLabels;
+                RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
+                SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
 
                 PrepareIconEditor();
             }
 
             await controller.CloseAsync();
         }
+
+        private List<Label> ConvertBoxListToLabels(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabel()).ToList();
 
         private async Task<Config> GetConfig()
         {
@@ -1679,6 +1635,7 @@ namespace SpellEditor
 
         private void PrepareIconEditor()
         {
+            var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
             loadIcons.LoadImages(64);
             loadIcons.updateIconSize(64, new Thickness(16, 0, 0, 0));
         }
@@ -1885,6 +1842,7 @@ namespace SpellEditor
             {
                 return;
             }
+            var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
             var iconId = uint.Parse(image.ToolTip.ToString());
             var filePath = loadIcons.GetIconPath(iconId) + ".blp";
             image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
@@ -2035,9 +1993,17 @@ namespace SpellEditor
             }
 
             updateProgress("Updating category & dispel & mechanic...");
-            loadCategories.UpdateCategorySelection();
-            loadDispels.UpdateDispelSelection();
-            loadMechanics.UpdateMechanicSelection();
+            var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
+            Category.threadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(
+                adapter.Query(string.Format("SELECT `Category` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+
+            var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
+            DispelType.threadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(
+                adapter.Query(string.Format("SELECT `Dispel` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+
+            var loadMechanics = (SpellMechanic)DBCManager.GetInstance().FindDbcForBinding("SpellMechanic");
+            MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(
+                adapter.Query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             updateProgress("Updating attributes...");
             UInt32 mask = UInt32.Parse(row["Attributes"].ToString());
@@ -2165,7 +2131,9 @@ namespace SpellEditor
                 }
             }
             updateProgress("Updating spell focus object selection...");
-            loadFocusObjects.UpdateSpellFocusObjectSelection();
+            var loadFocusObjects = (SpellFocusObject)DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject");
+            RequiresSpellFocus.threadSafeIndex = loadFocusObjects.UpdateSpellFocusObjectSelection(uint.Parse(
+                adapter.Query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             mask = UInt32.Parse(row["FacingCasterFlags"].ToString());
 
@@ -2320,7 +2288,9 @@ namespace SpellEditor
                 default: { break; }
             }
             updateProgress("Updating cast time selection...");
-            loadCastTimes.UpdateCastTimeSelection();
+            var loadCastTimes = (SpellCastTimes)DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes");
+            CastTime.threadSafeIndex = loadCastTimes.UpdateCastTimeSelection(uint.Parse(adapter.Query(
+                string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
             updateProgress("Updating other stuff...");
             RecoveryTime.threadSafeText = UInt32.Parse(row["RecoveryTime"].ToString());
             CategoryRecoveryTime.threadSafeText = UInt32.Parse(row["CategoryRecoveryTime"].ToString());
@@ -2400,7 +2370,9 @@ namespace SpellEditor
             BaseLevel.threadSafeText = UInt32.Parse(row["BaseLevel"].ToString());
             SpellLevel.threadSafeText = UInt32.Parse(row["SpellLevel"].ToString());
 
-            loadDurations.UpdateDurationIndexes();
+            var loadDurations = (SpellDuration)DBCManager.GetInstance().FindDbcForBinding("SpellDuration");
+            Duration.threadSafeIndex = loadDurations.UpdateDurationIndexes(uint.Parse(adapter.Query(
+                string.Format("SELECT `DurationIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             uint powerType = uint.Parse(row["PowerType"].ToString());
             // Manually handle 'Health' power type
@@ -2412,7 +2384,9 @@ namespace SpellEditor
             ManaCostPerSecond.threadSafeText = UInt32.Parse(row["ManaPerSecond"].ToString());
             PerSecondPerLevel.threadSafeText = UInt32.Parse(row["ManaPerSecondPerLevel"].ToString());
             updateProgress("Updating spell range selection...");
-            loadRanges.UpdateSpellRangeSelection();
+            var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
+            Range.threadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(adapter.Query(
+                string.Format("SELECT `RangeIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             updateProgress("Updating speed, stacks, totems, reagents...");
             Speed.threadSafeText = row["Speed"].ToString();
@@ -2437,7 +2411,30 @@ namespace SpellEditor
             ReagentCount8.threadSafeText = row["ReagentCount8"].ToString();
 
             updateProgress("Updating item class selection...");
-            loadItemClasses.UpdateItemClassSelection();
+            int ID = int.Parse(adapter.Query(
+                string.Format("SELECT `EquippedItemClass` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString());
+            if (ID == -1)
+            {
+                EquippedItemClass.threadSafeIndex = 0;
+                //foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes)
+                //  box.threadSafeChecked = false;
+                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                    => EquippedItemInventoryTypeGrid.IsEnabled = false));
+            }
+            else if (ID == 2 || ID == 4)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                    => EquippedItemInventoryTypeGrid.IsEnabled = true));
+            }
+            else
+            {
+                foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
+                    box.threadSafeChecked = false;
+                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                    => EquippedItemInventoryTypeGrid.IsEnabled = false));
+            }
+            var loadItemClasses = (ItemClass)DBCManager.GetInstance().FindDbcForBinding("ItemClass");
+            EquippedItemClass.threadSafeIndex = loadItemClasses.UpdateItemClassSelection(ID);
 
             UpdateItemSubClass(int.Parse(row["EquippedItemClass"].ToString()));
 
@@ -2500,7 +2497,13 @@ namespace SpellEditor
             TargetB3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB3"].ToString());
 
             updateProgress("Updating radius index...");
-            loadRadiuses.UpdateRadiusIndexes();
+            var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
+            var result = adapter.Query(string.Format(
+                "SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0];
+            uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
+            RadiusIndex1.threadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[0]);
+            RadiusIndex2.threadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[1]);
+            RadiusIndex3.threadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[2]);
 
             updateProgress("Updating effect 1-3 data...");
             ApplyAuraName1.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName1"].ToString());
@@ -2572,8 +2575,16 @@ namespace SpellEditor
             EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
 
             updateProgress("Updating totem categories & load area groups...");
-            loadTotemCategories.UpdateTotemCategoriesSelection();
-            loadAreaGroups.UpdateAreaGroupSelection();
+            var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
+            var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
+            result = adapter.Query(string.Format(
+                "SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0];
+            IDs = new uint[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
+            TotemCategory1.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[0]);
+            TotemCategory2.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[1]);
+
+            AreaGroup.threadSafeIndex = loadAreaGroups.UpdateAreaGroupSelection(uint.Parse(adapter.Query(
+                string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             updateProgress("Updating school mask...");
             mask = UInt32.Parse(row["SchoolMask"].ToString());
@@ -2586,7 +2597,9 @@ namespace SpellEditor
             S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
 
             updateProgress("Updating rune costs...");
-            loadRuneCosts.UpdateSpellRuneCostSelection();
+            var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
+            RuneCost.threadSafeIndex = loadRuneCosts.UpdateSpellRuneCostSelection(uint.Parse(adapter.Query(
+                string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             updateProgress("Updating spell missile & effect bonus multiplier...");
             SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
@@ -2595,8 +2608,15 @@ namespace SpellEditor
             EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
 
             updateProgress("Updating spell description variables & difficulty selection...");
-            loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection();
-            loadDifficulties.UpdateDifficultySelection();
+            var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
+            var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
+            SpellDescriptionVariables.threadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
+                uint.Parse(adapter.Query(
+                    string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", "spell",
+                        selectedID)).Rows[0][0].ToString()));
+
+            Difficulty.threadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(adapter.Query(
+                string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
             adapter.Updating = false;
         }
 
@@ -2667,9 +2687,10 @@ namespace SpellEditor
                 return;
             if (sender == RequiresSpellFocus)
             {
+                var loadFocusObjects = (SpellFocusObject)DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject");
                 for (int i = 0; i < loadFocusObjects.Lookups.Count; ++i)
                 {
-                    if (loadFocusObjects.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadFocusObjects.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "RequiresSpellFocus", loadFocusObjects.Lookups[i].ID, selectedID));
@@ -2680,9 +2701,10 @@ namespace SpellEditor
 
             if (sender == AreaGroup)
             {
+                var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
                 for (int i = 0; i < loadAreaGroups.Lookups.Count; ++i)
                 {
-                    if (loadAreaGroups.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadAreaGroups.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "AreaGroupID", loadAreaGroups.Lookups[i].ID, selectedID));
@@ -2693,9 +2715,10 @@ namespace SpellEditor
 
             if (sender == Category)
             {
+                var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
                 for (int i = 0; i < loadCategories.Lookups.Count; ++i)
                 {
-                    if (loadCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadCategories.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "Category", loadCategories.Lookups[i].ID, selectedID));
@@ -2706,9 +2729,10 @@ namespace SpellEditor
 
             if (sender == DispelType)
             {
+                var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
                 for (int i = 0; i < loadDispels.Lookups.Count; ++i)
                 {
-                    if (loadDispels.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDispels.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "Dispel", loadDispels.Lookups[i].ID, selectedID));
@@ -2719,9 +2743,10 @@ namespace SpellEditor
 
             if (sender == MechanicType)
             {
+                var loadMechanics = (SpellMechanic)DBCManager.GetInstance().FindDbcForBinding("SpellMechanic");
                 for (int i = 0; i < loadMechanics.Lookups.Count; ++i)
                 {
-                    if (loadMechanics.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadMechanics.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "Mechanic", loadMechanics.Lookups[i].ID, selectedID));
@@ -2732,9 +2757,10 @@ namespace SpellEditor
 
             if (sender == CastTime)
             {
+                var loadCastTimes = (SpellCastTimes)DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes");
                 for (int i = 0; i < loadCastTimes.Lookups.Count; ++i)
                 {
-                    if (loadCastTimes.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadCastTimes.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "CastingTimeIndex", loadCastTimes.Lookups[i].ID, selectedID));
@@ -2745,9 +2771,10 @@ namespace SpellEditor
 
             if (sender == Duration)
             {
+                var loadDurations = (SpellDuration)DBCManager.GetInstance().FindDbcForBinding("SpellDuration");
                 for (int i = 0; i < loadDurations.Lookups.Count; ++i)
                 {
-                    if (loadDurations.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDurations.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "DurationIndex", loadDurations.Lookups[i].ID, selectedID));
@@ -2758,9 +2785,10 @@ namespace SpellEditor
 
             if (sender == Difficulty)
             {
+                var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
                 for (int i = 0; i < loadDifficulties.Lookups.Count; ++i)
                 {
-                    if (loadDifficulties.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDifficulties.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "SpellDifficultyID", loadDifficulties.Lookups[i].ID, selectedID));
@@ -2771,9 +2799,10 @@ namespace SpellEditor
 
             if (sender == Range)
             {
+                var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                 for (int i = 0; i < loadRanges.Lookups.Count; ++i)
                 {
-                    if (loadRanges.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRanges.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "RangeIndex", loadRanges.Lookups[i].ID, selectedID));
@@ -2784,9 +2813,10 @@ namespace SpellEditor
 
             if (sender == RadiusIndex1)
             {
+                var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
                 for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "EffectRadiusIndex1", loadRadiuses.Lookups[i].ID, selectedID));
@@ -2797,9 +2827,10 @@ namespace SpellEditor
 
             if (sender == RadiusIndex2)
             {
+                var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
                 for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "EffectRadiusIndex2", loadRadiuses.Lookups[i].ID, selectedID));
@@ -2810,9 +2841,10 @@ namespace SpellEditor
 
             if (sender == RadiusIndex3)
             {
+                var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
                 for (int i = 0; i < loadRadiuses.Lookups.Count; ++i)
                 {
-                    if (loadRadiuses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRadiuses.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "EffectRadiusIndex3", loadRadiuses.Lookups[i].ID, selectedID));
@@ -2823,7 +2855,8 @@ namespace SpellEditor
 
             if (sender == EquippedItemClass)
             {
-                int itemSubClass = loadItemClasses.Lookups[EquippedItemClass.SelectedIndex].ID;
+                var loadItemClasses = (ItemClass)DBCManager.GetInstance().FindDbcForBinding("ItemClass");
+                long itemSubClass = loadItemClasses.Lookups[EquippedItemClass.SelectedIndex].ID;
                 UpdateItemSubClass(itemSubClass);
                 for (int i = 0; i < loadItemClasses.Lookups.Count; ++i)
                 {
@@ -2836,7 +2869,7 @@ namespace SpellEditor
                         EquippedItemInventoryTypeGrid.IsEnabled = false;
                     }
 
-                    if (loadItemClasses.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadItemClasses.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "EquippedItemClass", loadItemClasses.Lookups[i].ID, selectedID));
@@ -2847,9 +2880,10 @@ namespace SpellEditor
 
             if (sender == TotemCategory1)
             {
+                var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
                 for (int i = 0; i < loadTotemCategories.Lookups.Count; ++i)
                 {
-                    if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadTotemCategories.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "TotemCategory1", loadTotemCategories.Lookups[i].ID, selectedID));
@@ -2860,9 +2894,10 @@ namespace SpellEditor
 
             if (sender == TotemCategory2)
             {
+                var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
                 for (int i = 0; i < loadTotemCategories.Lookups.Count; ++i)
                 {
-                    if (loadTotemCategories.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadTotemCategories.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "TotemCategory2", loadTotemCategories.Lookups[i].ID, selectedID));
@@ -2873,9 +2908,10 @@ namespace SpellEditor
 
             if (sender == RuneCost)
             {
+                var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
                 for (int i = 0; i < loadRuneCosts.Lookups.Count; ++i)
                 {
-                    if (loadRuneCosts.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadRuneCosts.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "RuneCostID", loadRuneCosts.Lookups[i].ID, selectedID));
@@ -2886,9 +2922,10 @@ namespace SpellEditor
 
             if (sender == SpellDescriptionVariables)
             {
+                var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
                 for (int i = 0; i < loadDescriptionVariables.Lookups.Count; ++i)
                 {
-                    if (loadDescriptionVariables.Lookups[i].comboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                    if (loadDescriptionVariables.Lookups[i].ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
                     {
                         adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'",
                             "spell", "SpellDescriptionVariableID", loadDescriptionVariables.Lookups[i].ID, selectedID));
@@ -2898,7 +2935,7 @@ namespace SpellEditor
             }
         }
 
-        public void UpdateItemSubClass(int classId)
+        public void UpdateItemSubClass(long classId)
         {
             if (classId == -1)
             {
@@ -2919,6 +2956,7 @@ namespace SpellEditor
                     => EquippedItemSubClassGrid.IsEnabled = true));
             }
             uint num = 0;
+            var loadItemSubClasses = (ItemSubClass)DBCManager.GetInstance().FindDbcForBinding("ItemSubClass");
             foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
             {
                 ItemSubClass.ItemSubClassLookup itemLookup = (ItemSubClass.ItemSubClassLookup) loadItemSubClasses.Lookups.GetValue(classId, num);
@@ -2956,7 +2994,7 @@ namespace SpellEditor
             }
             double newSize = e.NewValue / 4;
             var margin = new Thickness(newSize, 0, 0, 0);
-            loadIcons?.updateIconSize(newSize, margin);
+            ((SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon"))?.updateIconSize(newSize, margin);
             foreach (Image image in IconGrid.Children)
             {
                 image.Margin = margin;
