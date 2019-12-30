@@ -14,7 +14,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private struct TOKEN_TO_PARSER
         {
             public string TOKEN;
-            public Func<string, Spell_DBC_Record, MainWindow, string> tokenFunc;
+            public Func<string, DataRow, MainWindow, string> tokenFunc;
         }
 
         private static TOKEN_TO_PARSER rangeParser = new TOKEN_TO_PARSER()
@@ -33,7 +33,8 @@ namespace SpellEditor.Sources.SpellStringTools
                     var rangeDbc = (SpellRange)dbc;
                     foreach (var entry in rangeDbc.Lookups)
                     {
-                        if (entry.ID == record.RangeIndex && entry is SpellRange.SpellRangeBoxContainer)
+                        var rangeIndex = (uint)record["RangeIndex"];
+                        if (entry.ID == rangeIndex && entry is SpellRange.SpellRangeBoxContainer)
                         {
                             var container = entry as SpellRange.SpellRangeBoxContainer;
                             return str.Replace(rangeParser.TOKEN, container.RangeString);
@@ -65,15 +66,15 @@ namespace SpellEditor.Sources.SpellStringTools
                         uint radiusVal = 0;
                         if (index == 1)
                         {
-                            radiusVal = record.EffectRadiusIndex1;  
+                            radiusVal = (uint)record["EffectRadiusIndex1"];  
                         }
                         else if (index == 2)
                         {
-                            radiusVal = record.EffectRadiusIndex2;
+                            radiusVal = (uint)record["EffectRadiusIndex2"];
                         }
                         else if (index == 3)
                         {
-                            radiusVal = record.EffectRadiusIndex3;
+                            radiusVal = (uint)record["EffectRadiusIndex3"];
                         }
                         else if (index == 4)
                         {
@@ -120,7 +121,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(procChanceParser.TOKEN))
                 {
-                    str = str.Replace(procChanceParser.TOKEN, record.ProcChance.ToString());
+                    str = str.Replace(procChanceParser.TOKEN, record["ProcChance"].ToString());
                 }
                 return str;
             }
@@ -146,7 +147,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(maxTargetLevelParser.TOKEN))
                 {
-                    str = str.Replace(maxTargetLevelParser.TOKEN, record.MaximumTargetLevel.ToString());
+                    str = str.Replace(maxTargetLevelParser.TOKEN, record["MaximumTargetLevel"].ToString());
                 }
                 return str;
             }
@@ -173,21 +174,21 @@ namespace SpellEditor.Sources.SpellStringTools
                         uint targetCount = 0;
                         if (index == 1)
                         {
-                            targetCount = record.EffectChainTarget1;
+                            targetCount = (uint)record["EffectChainTarget1"];
                         }
                         else if (index == 2)
                         {
-                            targetCount = record.EffectChainTarget2;
+                            targetCount = (uint)record["EffectChainTarget2"];
                         }
                         else if (index == 3)
                         {
-                            targetCount = record.EffectChainTarget3;
+                            targetCount = (uint)record["EffectChainTarget3"];
                         }
                         else if (index == 4)
                         {
-                            targetCount = record.EffectChainTarget1
-                                    + record.EffectChainTarget2
-                                    + record.EffectChainTarget3;
+                            targetCount = (uint)record["EffectChainTarget1"]
+                                    + (uint)record["EffectChainTarget2"]
+                                    + (uint)record["EffectChainTarget3"];
                         }
                         str = str.Replace(token, targetCount.ToString());
                     }
@@ -197,25 +198,25 @@ namespace SpellEditor.Sources.SpellStringTools
 
                 foreach (Match _str in _matches)
                 {
-                    UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-                    UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+                    uint _linkId = UInt32.Parse(_str.Groups[1].Value);
+                    uint _index = UInt32.Parse(_str.Groups[2].Value);
 
-                    Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+                    DataRow _linkRecord = GetRecordById(_linkId, mainWindos);
 
-                    if (_linkRecord.ID != 0)
+                    if ((uint)_linkRecord["ID"] != 0)
                     {
                         uint newVal = 0;
                         if (_index == 1)
                         {
-                            newVal = _linkRecord.EffectChainTarget1;
+                            newVal = (uint)_linkRecord["EffectChainTarget1"];
                         }
                         else if (_index == 2)
                         {
-                            newVal = _linkRecord.EffectChainTarget2;
+                            newVal = (uint)_linkRecord["EffectChainTarget2"];
                         }
                         else if (_index == 3)
                         {
-                            newVal = _linkRecord.EffectChainTarget3;
+                            newVal = (uint)_linkRecord["EffectChainTarget3"];
                         }
                         str = str.Replace(_str.ToString(), newVal.ToString());
                     }
@@ -247,29 +248,29 @@ namespace SpellEditor.Sources.SpellStringTools
                         int damage = 0;
                         if (index == 1)
                         {
-                            damage = record.EffectDieSides1 + record.EffectBasePoints1;
-                            cooldown = record.EffectAmplitude1 / 1000;
+                            damage = (int)record["EffectDieSides1"] + (int)record["EffectBasePoints1"];
+                            cooldown = (uint)record["EffectAmplitude1"] / 1000;
                         }
                         else if (index == 2)
                         {
-                            damage = record.EffectDieSides2 + record.EffectBasePoints2;
-                            cooldown = record.EffectAmplitude2 / 1000;
+                            damage = (int)record["EffectDieSides2"] + (int)record["EffectBasePoints2"];
+                            cooldown = (uint)record["EffectAmplitude2"] / 1000;
                         }
                         else if (index == 3)
                         {
-                            damage = record.EffectDieSides3 + record.EffectBasePoints3;
-                            cooldown = record.EffectAmplitude3 / 1000;
+                            damage = (int)record["EffectDieSides3"] + (int)record["EffectBasePoints3"];
+                            cooldown = (uint)record["EffectAmplitude3"] / 1000;
                         }
                         else if (index == 4)
                         {
-                            damage = (record.EffectDieSides1 + record.EffectBasePoints1) + 
-                                    (record.EffectDieSides2 + record.EffectBasePoints2) +
-                                    (record.EffectDieSides3 + record.EffectBasePoints3);
-                            cooldown = (record.EffectAmplitude1 +
-                                        record.EffectAmplitude2 +
-                                        record.EffectAmplitude3) / 1000;
+                            damage = (int)record["EffectDieSides1"] + (int)record["EffectBasePoints1"] +
+                                    (int)record["EffectDieSides2"] + (int)record["EffectBasePoints2"] +
+                                    (int)record["EffectDieSides3"] + (int)record["EffectBasePoints3"];
+                            cooldown = ((uint)record["EffectAmplitude1"] +
+                                        (uint)record["EffectAmplitude2"] +
+                                        (uint)record["EffectAmplitude3)"]) / 1000;
                         }
-                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(record.DurationIndex);
+                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord((uint)record["DurationIndex"]);
                         if (entry != null)
                         {
                             string newStr;
@@ -298,20 +299,19 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(stacksParser.TOKEN))
                 {
-                    str = str.Replace(stacksParser.TOKEN, record.ProcCharges.ToString());
+                    str = str.Replace(stacksParser.TOKEN, record["ProcCharges"].ToString());
                 }
 
                 MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)n");
 
                 foreach (Match _str in _matches)
                 {
-                    UInt32 _LinkId = UInt32.Parse(_str.Groups[1].Value);
+                    uint _LinkId = uint.Parse(_str.Groups[1].Value);
+                    DataRow _linkRecord = GetRecordById(_LinkId, mainWindos);
 
-                    Spell_DBC_Record _linkRecord = GetRecordById(_LinkId, mainWindos);
-
-                    if (_linkRecord.ID != 0)
+                    if ((uint)_linkRecord["ID"] != 0)
                     {
-                        str = str.Replace(_str.ToString(), _linkRecord.ProcCharges.ToString());
+                        str = str.Replace(_str.ToString(), _linkRecord["ProcCharges"].ToString());
                     }
                 }
 
@@ -322,7 +322,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER periodicTriggerParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$t1|$t2|$t3|$t",
-            tokenFunc = (str, record,mainWindos) =>
+            tokenFunc = (str, record,mainWindow) =>
             {
                 var tokens = periodicTriggerParser.TOKEN.Split('|');
                 foreach (var token in tokens)
@@ -341,19 +341,21 @@ namespace SpellEditor.Sources.SpellStringTools
                         uint newVal = 0;
                         if (index == 1)
                         {
-                            newVal = record.EffectAmplitude1;
+                            newVal = (uint)record["EffectAmplitude1"];
                         }
                         else if (index == 2)
                         {
-                            newVal = record.EffectAmplitude2;
+                            newVal = (uint)record["EffectAmplitude2"];
                         }
                         else if (index == 3)
                         {
-                            newVal = record.EffectAmplitude3;
+                            newVal = (uint)record["EffectAmplitude3"];
                         }
                         else if (index == 4)
                         {
-                            newVal = record.EffectAmplitude1 + record.EffectAmplitude2 + record.EffectAmplitude3;
+                            newVal = (uint)record["EffectAmplitude1"] + 
+                                    (uint)record["EffectAmplitude2"] + 
+                                    (uint)record["EffectAmplitude3"];
                         }
                         var singleVal = Single.Parse(newVal.ToString());
                         str = str.Replace(token, (singleVal / 1000).ToString());
@@ -364,27 +366,26 @@ namespace SpellEditor.Sources.SpellStringTools
 
                 foreach (Match _str in _matches)
                 {
-                    UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-                    UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+                    uint _linkId = uint.Parse(_str.Groups[1].Value);
+                    uint _index = uint.Parse(_str.Groups[2].Value);
+                    DataRow _linkRecord = GetRecordById(_linkId, mainWindow);
 
-                    Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
-
-                    if (_linkRecord.ID != 0)
+                    if ((uint)_linkRecord["ID"] != 0)
                     {
                         uint newVal = 0;
                         if (_index == 1)
                         {
-                            newVal = _linkRecord.EffectAmplitude1;
+                            newVal = (uint)_linkRecord["EffectAmplitude1"];
                         }
                         else if (_index == 2)
                         {
-                            newVal = _linkRecord.EffectAmplitude2;
+                            newVal = (uint)_linkRecord["EffectAmplitude2"];
                         }
                         else if (_index == 3)
                         {
-                            newVal = _linkRecord.EffectAmplitude3 ;
+                            newVal = (uint)_linkRecord["EffectAmplitude3"];
                         }
-                        var singleVal = Single.Parse(newVal.ToString());
+                        var singleVal = float.Parse(newVal.ToString());
                         str = str.Replace(_str.ToString(), (singleVal / 1000).ToString());
                     }
                 }
@@ -399,7 +400,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (str.Contains(durationParser.TOKEN))
                 {
-                    var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(record.DurationIndex);
+                    var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord((uint)record["DurationIndex"]);
                     if (entry != null)
                     {
                         string newStr;
@@ -422,12 +423,10 @@ namespace SpellEditor.Sources.SpellStringTools
                 foreach (Match _str in _matches)
                 { 
                     uint _LinkId =  uint.Parse(_str.Groups[1].Value);
-
-                    Spell_DBC_Record _linkRecord = GetRecordById(_LinkId,mainWindow);
-
-                    if (_linkRecord.ID != 0)
+                    DataRow _linkRecord = GetRecordById(_LinkId, mainWindow);
+                    if ((uint)_linkRecord["ID"] != 0)
                     {
-                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord(_linkRecord.DurationIndex);
+                        var entry = DBCManager.GetInstance().FindDbcForBinding("SpellDuration").LookupRecord((uint)_linkRecord["DurationIndex"]);
                         if (entry != null)
                         {
                             string newStr;
@@ -466,26 +465,19 @@ namespace SpellEditor.Sources.SpellStringTools
                         }
                         else
                         {
-                            index = Int32.Parse(token[2].ToString());
+                            index = int.Parse(token[2].ToString());
                         }
                         int newVal = 0;
-                        if (index == 1)
+                        if (index >= 1 && index <= 3)
                         {
-                            newVal = record.EffectBasePoints1 + record.EffectDieSides1;
-                        }
-                        else if (index == 2)
-                        {
-                            newVal = record.EffectBasePoints2 + record.EffectDieSides2;
-                        }
-                        else if (index == 3)
-                        {
-                            newVal = record.EffectBasePoints3 + record.EffectDieSides3;
+                            newVal = (int)record["EffectBasePoints" + index] + (int)record["EffectDieSides" + index];
                         }
                         else if (index == 4)
                         {
-                            newVal = record.EffectBasePoints1 + record.EffectDieSides1
-                                    + record.EffectBasePoints2 + record.EffectDieSides2
-                                    + record.EffectBasePoints3 + record.EffectDieSides3;
+                            for (int i = 1; i <= 3; ++i)
+                            {
+                                newVal += (int)record["EffectBasePoints" + i] + (int)record["EffectDieSides" + i];
+                            }
                         }
                         if (newVal < 0)
                             newVal *= -1;
@@ -498,25 +490,17 @@ namespace SpellEditor.Sources.SpellStringTools
 
                 foreach (Match _str in _matches)
                 {
-                    UInt32 _linkId = UInt32.Parse(_str.Groups[1].Value);
-                    UInt32 _index = UInt32.Parse(_str.Groups[2].Value);
+                    uint _linkId = uint.Parse(_str.Groups[1].Value);
+                    uint _index = uint.Parse(_str.Groups[2].Value);
 
-                    Spell_DBC_Record _linkRecord = GetRecordById(_linkId, mainWindos);
+                    DataRow _linkRecord = GetRecordById(_linkId, mainWindos);
 
-                    if (_linkRecord.ID != 0)
+                    if ((uint)_linkRecord["ID"] != 0)
                     {
                         int newVal = 0;
-                        if (_index == 1)
+                        if (_index >= 1 && _index <= 3)
                         {
-                            newVal = _linkRecord.EffectBasePoints1 + _linkRecord.EffectDieSides1;
-                        }
-                        else if (_index == 2)
-                        {
-                            newVal = _linkRecord.EffectBasePoints2 + _linkRecord.EffectDieSides2;
-                        }
-                        else if (_index == 3)
-                        {
-                            newVal = _linkRecord.EffectBasePoints3 + _linkRecord.EffectDieSides3;
+                            newVal = (int)record["EffectBasePoints" + _index] + (int)record["EffectDieSides" + _index];
                         }
                         str = str.Replace(_str.ToString(), newVal.ToString());
                     }
@@ -540,7 +524,7 @@ namespace SpellEditor.Sources.SpellStringTools
             rangeParser
         };
 
-        public static string GetParsedForm(string rawString, Spell_DBC_Record record, MainWindow mainWindow)
+        public static string GetParsedForm(string rawString, DataRow record, MainWindow mainWindow)
         {
             // If a token starts with $ and a number, it references that as a spell id
             var match = Regex.Match(rawString, "\\$\\d+");
@@ -566,13 +550,7 @@ namespace SpellEditor.Sources.SpellStringTools
             return rawString;
         }
 
-        public static string GetParsedForm(string rawString, DataRow row, MainWindow mainWindow)
-        {
-            Spell_DBC_Record record = SpellDBC.GetRowToRecord(row);
-            return GetParsedForm(rawString, record, mainWindow);
-        }
-
-        public static Spell_DBC_Record GetRecordById(UInt32 spellId, MainWindow mainWindow)
+        public static DataRow GetRecordById(uint spellId, MainWindow mainWindow)
         {
             return SpellDBC.GetRecordById(spellId, mainWindow);
         }

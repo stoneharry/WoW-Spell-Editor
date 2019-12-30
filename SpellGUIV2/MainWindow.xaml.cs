@@ -701,6 +701,8 @@ namespace SpellEditor
                 // Populate UI based on DBC data
                 Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
                     DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
                 MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
                     DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
                 RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
@@ -720,8 +722,6 @@ namespace SpellEditor
                     DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
                 if (isWotlkOrGreater)
                 {
-                    DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
                     AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
                         DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
                     Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
@@ -735,7 +735,6 @@ namespace SpellEditor
                     SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
                         DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
                 }
-                DispelType.IsEnabled = isWotlkOrGreater;
                 AreaGroup.IsEnabled = isWotlkOrGreater;
                 Difficulty.IsEnabled = isWotlkOrGreater;
                 TotemCategory1.IsEnabled = isWotlkOrGreater;
@@ -1674,16 +1673,18 @@ namespace SpellEditor
                 return storedLocale;
 
             // Attempt localisation on Death Touch, HACKY
+            var aboveClassic = WoWVersionManager.GetInstance().SelectedVersion().Identity > 112;
+            var name8 = aboveClassic ? ",`SpellName8` " : "";
             DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
+                "`SpellName5`,`SpellName6`,`SpellName7`" + name8 + " FROM `spell` WHERE `ID` = '5'").Rows;
             if (res == null || res.Count == 0)
                 return -1;
             int locale = 0;
             if (res[0] != null)
             {
-                for (int i = 0; i < 9; ++i)
+                for (int i = 1; i < res[0].Table.Columns.Count; ++i)
                 {
-                    if (res[0][i + 1].ToString().Length > 3)
+                    if (res[0][i].ToString().Length > 3)
                     {
                         locale = i;
                         break;
@@ -1716,24 +1717,9 @@ namespace SpellEditor
             {
                 if (_worker.__adapter == null || !_worker.__config.isInit)
                     return;
-
-                // Attempt localisation on Death Touch, HACKY // FIME(HARRY)
-                DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                    "`SpellName5`,`SpellName6`,`SpellName7`,`SpellName8` FROM `spell` WHERE `ID` = '5'").Rows;
-                if (res == null)
-                    return;
-                int locale = 0;
-                if (res.Count > 0 && res[0] != null)
-                {
-                    for (int i = 0; i < 9; ++i)
-                    {
-                        if (res[0][i + 1].ToString().Length > 3)
-                        {
-                            locale = i;
-                            break;
-                        }
-                    }
-                }
+                int locale = GetLocale();
+                if (locale > 0)
+                    locale -= 1;
 
                 spellTable.Rows.Clear();
 
@@ -1771,7 +1757,6 @@ namespace SpellEditor
             var watch = new Stopwatch();
             watch.Start();
             DataRowCollection collection = (DataRowCollection)e.UserState;
-            int locale = GetLocale();
             int rowIndex = 0;
             // Reuse existing UI elements if they exist
             if (SelectSpellContentsIndex < SelectSpellContentsCount)
@@ -1807,8 +1792,8 @@ namespace SpellEditor
                 textBlock.Text = string.Format(" {0} - {1}", row[0], spellName);
                 var image = new Image();
                 var iconId = uint.Parse(row[2].ToString());
-                if (iconId > 0)
-                {
+                //if (iconId > 0)
+                //{
                     image.ToolTip = iconId.ToString();
                     image.Width = 32;
                     image.Height = 32;
@@ -1817,9 +1802,9 @@ namespace SpellEditor
                     var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
                     stackPanel.Children.Add(image);
                     stackPanel.Children.Add(textBlock);
-                    newElements.Add(stackPanel);
                     ++SelectSpellContentsIndex;
-                }
+                //}
+                newElements.Add(stackPanel);
             }
             SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), 
                 collection.Count > 0 ? collection[collection.Count - 1][0] : "n/a");

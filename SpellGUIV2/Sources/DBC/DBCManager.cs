@@ -25,6 +25,7 @@ namespace SpellEditor.Sources.DBC
         {
             TryLoadDbc<AreaTable>("AreaTable");
             TryLoadDbc<SpellCategory>("SpellCategory");
+            TryLoadDbc<SpellDispelType>("SpellDispelType");
             TryLoadDbc<SpellMechanic>("SpellMechanic");
             TryLoadDbc<SpellFocusObject>("SpellFocusObject");
             TryLoadDbc<SpellCastTimes>("SpellCastTimes");
@@ -36,7 +37,6 @@ namespace SpellEditor.Sources.DBC
             var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
             if (isWotlkOrGreater)
             {
-                TryLoadDbc<SpellDispelType>("SpellDispelType");
                 TryLoadDbc<TotemCategory>("TotemCategory");
                 TryLoadDbc<SpellRuneCost>("SpellRuneCost");
                 TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
