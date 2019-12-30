@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
     class ItemSubClass : AbstractDBC
     {
-        public ItemSubClassLookup[,] Lookups = new ItemSubClassLookup[29, 32];
+        public Dictionary<string, ItemSubClassLookup> Lookups = new Dictionary<string, ItemSubClassLookup>();
+
+        public ItemSubClassLookup LookupClassAndSubclass(long clazz, uint subclass)
+        {
+            return Lookups.TryGetValue(GetLookupKey(clazz, subclass), out var result) ? result : new ItemSubClassLookup();
+        }
 
         public ItemSubClass()
         {
@@ -16,7 +22,7 @@ namespace SpellEditor.Sources.DBC
                 ItemSubClassLookup temp;
                 temp.ID = (uint)record["subClass"];
                 temp.Name = GetAllLocaleStringsForField("displayName", record);
-                Lookups[(uint) record["Class"], temp.ID] = temp;
+                Lookups.Add($"{(uint)record["Class"]}-{temp.ID}", temp);
             }
             Reader.CleanStringsMap();
             // In this DBC we don't actually need to keep the DBC data now that
@@ -24,6 +30,11 @@ namespace SpellEditor.Sources.DBC
             // memory consumption.
             Reader = null;
             Body = null;
+        }
+
+        private string GetLookupKey(long clazz, uint subclass)
+        {
+            return $"{ clazz }-{ subclass }";
         }
 
         public struct ItemSubClassLookup

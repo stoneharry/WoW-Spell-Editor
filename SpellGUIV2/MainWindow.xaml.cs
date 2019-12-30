@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
 using SpellEditor.Sources.BLP;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor
 {
@@ -686,27 +687,24 @@ namespace SpellEditor
 
                 PopulateSelectSpell();
 
-                spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
-
                 // Load required DBC's. First the ones with dependencies and inject them into the manager
                 var manager = DBCManager.GetInstance();
-                manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
+                if (isWotlkOrGreater)
+                {
+                    spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+                    manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+                    manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                }
                 manager.ForceLoadDbc("SpellIcon", new SpellIconDBC(this, adapter));
 
                 // Populate UI based on DBC data
                 Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
                     DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
-                DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
                 MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
                     DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
                 RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
                     DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
-                AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
-                    DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
-                Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
                 CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
                     DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
                 Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
@@ -720,14 +718,30 @@ namespace SpellEditor
                 RadiusIndex3.ItemsSource = radiusLabels;
                 EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
                     DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
-                var totemLabels = ConvertBoxListToLabels(((TotemCategory)
-                    DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
-                TotemCategory1.ItemsSource = totemLabels;
-                TotemCategory2.ItemsSource = totemLabels;
-                RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
-                SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
+                if (isWotlkOrGreater)
+                {
+                    DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
+                    AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
+                        DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
+                    Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
+                    var totemLabels = ConvertBoxListToLabels(((TotemCategory)
+                        DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                    TotemCategory1.ItemsSource = totemLabels;
+                    TotemCategory2.ItemsSource = totemLabels;
+                    RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
+                    SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
+                }
+                DispelType.IsEnabled = isWotlkOrGreater;
+                AreaGroup.IsEnabled = isWotlkOrGreater;
+                Difficulty.IsEnabled = isWotlkOrGreater;
+                TotemCategory1.IsEnabled = isWotlkOrGreater;
+                TotemCategory2.IsEnabled = isWotlkOrGreater;
+                RuneCost.IsEnabled = isWotlkOrGreater;
+                SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
 
                 PrepareIconEditor();
             }
@@ -1958,6 +1972,7 @@ namespace SpellEditor
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
+            var version = WoWVersionManager.GetInstance().SelectedVersion().Identity;
             updateProgress("Updating text control's...");
             int i;
             for (i = 0; i < 9; ++i)
@@ -2436,7 +2451,7 @@ namespace SpellEditor
             var loadItemClasses = (ItemClass)DBCManager.GetInstance().FindDbcForBinding("ItemClass");
             EquippedItemClass.threadSafeIndex = loadItemClasses.UpdateItemClassSelection(ID);
 
-            UpdateItemSubClass(int.Parse(row["EquippedItemClass"].ToString()));
+            UpdateItemSubClass(long.Parse(row["EquippedItemClass"].ToString()));
 
             updateProgress("Updating item subclass mask...");
             mask = UInt32.Parse(row["EquippedItemSubClassMask"].ToString());
@@ -2543,30 +2558,39 @@ namespace SpellEditor
             SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
             SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
 
-            uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+            var isWotlkOrGreater = version >= 335;
+            if (isWotlkOrGreater)
+            {
+                uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+                SpellFamilyName.threadSafeText = familyName.ToString();
+                SpellFamilyFlags.threadSafeText = row["SpellFamilyFlags"].ToString();
+                SpellFamilyFlags1.threadSafeText = row["SpellFamilyFlags1"].ToString();
+                SpellFamilyFlags2.threadSafeText = row["SpellFamilyFlags2"].ToString();
 
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
-            UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
+                UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
 
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
-                    
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
+            }
+            SpellFamilyName.IsEnabled = isWotlkOrGreater;
+            SpellFamilyFlags.IsEnabled = isWotlkOrGreater;
+            SpellFamilyFlags1.IsEnabled = isWotlkOrGreater;
+            SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
+            ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
+
             SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
             SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
             ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
             StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
             StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
             MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
-            SpellFamilyName.threadSafeText = row["SpellFamilyName"].ToString();
-            SpellFamilyFlags.threadSafeText = row["SpellFamilyFlags"].ToString();
-            SpellFamilyFlags1.threadSafeText = row["SpellFamilyFlags1"].ToString();
-            SpellFamilyFlags2.threadSafeText = row["SpellFamilyFlags2"].ToString();
             MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
             SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
             PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
@@ -2574,17 +2598,23 @@ namespace SpellEditor
             EffectDamageMultiplier2.threadSafeText = row["EffectDamageMultiplier2"].ToString();
             EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
 
-            updateProgress("Updating totem categories & load area groups...");
-            var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
-            var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
-            result = adapter.Query(string.Format(
-                "SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0];
-            IDs = new uint[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
-            TotemCategory1.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[0]);
-            TotemCategory2.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[1]);
+            if (isWotlkOrGreater)
+            {
+                updateProgress("Updating totem categories & load area groups...");
+                var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
+                var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
+                result = adapter.Query(string.Format(
+                    "SELECT `TotemCategory1`, `TotemCategory2` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0];
+                IDs = new uint[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
+                TotemCategory1.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[0]);
+                TotemCategory2.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[1]);
 
-            AreaGroup.threadSafeIndex = loadAreaGroups.UpdateAreaGroupSelection(uint.Parse(adapter.Query(
-                string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+                AreaGroup.threadSafeIndex = loadAreaGroups.UpdateAreaGroupSelection(uint.Parse(adapter.Query(
+                    string.Format("SELECT `AreaGroupID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+            }
+            TotemCategory1.IsEnabled = isWotlkOrGreater;
+            TotemCategory2.IsEnabled = isWotlkOrGreater;
+            AreaGroup.IsEnabled = isWotlkOrGreater;
 
             updateProgress("Updating school mask...");
             mask = UInt32.Parse(row["SchoolMask"].ToString());
@@ -2596,10 +2626,14 @@ namespace SpellEditor
             S6.threadSafeChecked = ((mask & 0x20) != 0) ? true : false;
             S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
 
-            updateProgress("Updating rune costs...");
-            var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
-            RuneCost.threadSafeIndex = loadRuneCosts.UpdateSpellRuneCostSelection(uint.Parse(adapter.Query(
-                string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+            if (isWotlkOrGreater)
+            {
+                updateProgress("Updating rune costs...");
+                var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
+                RuneCost.threadSafeIndex = loadRuneCosts.UpdateSpellRuneCostSelection(uint.Parse(adapter.Query(
+                    string.Format("SELECT `RuneCostID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+            }
+            RuneCost.IsEnabled = isWotlkOrGreater;
 
             updateProgress("Updating spell missile & effect bonus multiplier...");
             SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
@@ -2632,6 +2666,19 @@ namespace SpellEditor
                 if ((Mask & _mask) != 0)
                     safeCheckBox.threadSafeChecked = true;
             }
+        }
+
+        private void ToggleAllSpellMaskCheckBoxes(bool enabled)
+        {
+            SpellMask11.IsEnabled = enabled;
+            SpellMask21.IsEnabled = enabled;
+            SpellMask31.IsEnabled = enabled;
+            SpellMask12.IsEnabled = enabled;
+            SpellMask22.IsEnabled = enabled;
+            SpellMask32.IsEnabled = enabled;
+            SpellMask13.IsEnabled = enabled;
+            SpellMask23.IsEnabled = enabled;
+            SpellMask33.IsEnabled = enabled;
         }
         #endregion
 
@@ -2937,6 +2984,8 @@ namespace SpellEditor
 
         public void UpdateItemSubClass(long classId)
         {
+            if (selectedID == 0)
+                return;
             if (classId == -1)
             {
                 Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() 
@@ -2959,7 +3008,7 @@ namespace SpellEditor
             var loadItemSubClasses = (ItemSubClass)DBCManager.GetInstance().FindDbcForBinding("ItemSubClass");
             foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
             {
-                ItemSubClass.ItemSubClassLookup itemLookup = (ItemSubClass.ItemSubClassLookup) loadItemSubClasses.Lookups.GetValue(classId, num);
+                ItemSubClass.ItemSubClassLookup itemLookup = (ItemSubClass.ItemSubClassLookup) loadItemSubClasses.LookupClassAndSubclass(classId, num);
                 if (itemLookup.Name != null)
                 {
                     box.threadSafeContent = itemLookup.Name;

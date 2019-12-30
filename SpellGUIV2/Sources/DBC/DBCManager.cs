@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections.Concurrent;
 
 namespace SpellEditor.Sources.DBC
@@ -24,7 +25,6 @@ namespace SpellEditor.Sources.DBC
         {
             TryLoadDbc<AreaTable>("AreaTable");
             TryLoadDbc<SpellCategory>("SpellCategory");
-            TryLoadDbc<SpellDispelType>("SpellDispelType");
             TryLoadDbc<SpellMechanic>("SpellMechanic");
             TryLoadDbc<SpellFocusObject>("SpellFocusObject");
             TryLoadDbc<SpellCastTimes>("SpellCastTimes");
@@ -33,9 +33,14 @@ namespace SpellEditor.Sources.DBC
             TryLoadDbc<SpellRadius>("SpellRadius");
             TryLoadDbc<ItemClass>("ItemClass");
             TryLoadDbc<ItemSubClass>("ItemSubClass");
-            TryLoadDbc<TotemCategory>("TotemCategory");
-            TryLoadDbc<SpellRuneCost>("SpellRuneCost");
-            TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+            var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
+            if (isWotlkOrGreater)
+            {
+                TryLoadDbc<SpellDispelType>("SpellDispelType");
+                TryLoadDbc<TotemCategory>("TotemCategory");
+                TryLoadDbc<SpellRuneCost>("SpellRuneCost");
+                TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+            }
         }
 
         /**
