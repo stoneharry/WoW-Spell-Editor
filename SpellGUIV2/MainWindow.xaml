@@ -599,7 +599,7 @@
                     <Label Content="{DynamicResource labFiltericons}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
                     <c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
                     <Button Name="SaveIcon" Content="{DynamicResource butSaveIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
-                    <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Value="32" Maximum="128" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" Focusable="False" Grid.Column="2"/>
+                    <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" Focusable="False" Grid.Column="2"/>
                 </Grid>
             </TabItem>
         </TabControl>

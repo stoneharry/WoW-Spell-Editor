@@ -147,17 +147,10 @@ namespace SpellEditor.Sources.DBC
         {
             var image = sender as Image;
             var source = image.Source;
-            if ((bool)e.NewValue)
+            if (source == null && (bool)e.NewValue)
             {
                 var path = image.ToolTip.ToString();
-                await Task.Factory.StartNew(() =>
-                {
-                    source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path);
-                });
-            }
-            else
-            {
-                source = null;
+                await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
             }
             image.Source = source;
         }

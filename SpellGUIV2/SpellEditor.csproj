@@ -135,6 +135,7 @@
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
+    <Compile Include="Sources\VersionControl\WoWVersion.cs" />
     <Compile Include="Sources\Controls\IBoxContentProvider.cs" />
     <Compile Include="Sources\Controls\DBCBoxContainer.cs" />
     <Compile Include="Sources\Database\IDatabaseAdapter.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
     <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
+    <Compile Include="Sources\VersionControl\WoWVersionManager.cs" />
     <Page Include="ImportExportWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
