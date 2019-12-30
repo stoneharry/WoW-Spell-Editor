@@ -1,0 +1,23 @@
+# SpellRange.dbc structure for 1.12.1
+uint ID
+float MinimumRange
+float MaximumRange
+uint flags
+uint Name1 string
+uint Name2 string
+uint Name3 string
+uint Name4 string
+uint Name5 string
+uint Name6 string
+uint Name7 string
+uint Name8 string
+uint NameFlags
+uint ShortName1 string
+uint ShortName2 string
+uint ShortName3 string
+uint ShortName4 string
+uint ShortName5 string
+uint ShortName6 string
+uint ShortName7 string
+uint ShortName8 string
+uint ShortNameFlags

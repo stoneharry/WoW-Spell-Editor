@@ -1,0 +1,12 @@
+# SpellDifficulty.dbc structure for 3.3.5a 12340
+#  Id seems to point to other spells, for example:
+#     Id: 6
+#     Normal10Men: 50864 = Omar's Seal of Approval, You have Omar's 10 Man Normal Seal of Approval!
+#     Normal25Men: 69848 = Omar's Seal of Approval, You have Omar's 25 Man Normal Seal of Approval!
+#     Heroic10Men: 69849 = Omar's Seal of Approval, You have Omar's 10 Man Heroic Seal of Approval!
+#     Heroic25Men: 69850 = Omar's Seal of Approval, You have Omar's 25 Man Heroic Seal of Approval!
+uint ID
+uint Difficulties1
+uint Difficulties2
+uint Difficulties3
+uint Difficulties4
