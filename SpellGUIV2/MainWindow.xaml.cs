@@ -857,9 +857,9 @@ namespace SpellEditor
                 {
                     TextBox box = (TextBox)sender;
 
-                    int ID = Int32.Parse(box.Text);
+                    int ID = int.Parse(box.Text);
 
-                    Int32 count = 0;
+                    int count = 0;
                     foreach (StackPanel obj in SelectSpell.Items)
                     {
                         foreach (var item in obj.Children)
@@ -867,7 +867,7 @@ namespace SpellEditor
                             {
                                 TextBlock tb = (TextBlock)item;
 
-                                if (Int32.Parse(tb.Text.Split(' ')[1]) == ID)
+                                if (int.Parse(tb.Text.Split(' ')[1]) == ID)
                                 {
                                     SelectSpell.SelectedIndex = count;
                                     SelectSpell.ScrollIntoView(obj);
@@ -970,16 +970,16 @@ namespace SpellEditor
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult copySpell = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord1").ToString(), style, settings);
 
-                UInt32 oldIDIndex = UInt32.MaxValue;
+                uint oldIDIndex = uint.MaxValue;
 
                 if (copySpell == MessageDialogResult.Affirmative)
                 {
-                    UInt32 oldID = 0;
+                    uint oldID = 0;
 
                     string inputCopySpell = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord2").ToString());
                     if (inputCopySpell == null) { return; }
 
-                    if (!UInt32.TryParse(inputCopySpell, out oldID))
+                    if (!uint.TryParse(inputCopySpell, out oldID))
                     {
                         HandleErrorMessage(TryFindResource("CopySpellRecord3").ToString());
                         return;
@@ -990,20 +990,20 @@ namespace SpellEditor
                 string inputNewRecord = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord4").ToString());
                 if (inputNewRecord == null) { return; }
 
-                UInt32 newID = 0;
-                if (!UInt32.TryParse(inputNewRecord, out newID))
+                uint newID = 0;
+                if (!uint.TryParse(inputNewRecord, out newID))
                 {
                     HandleErrorMessage(TryFindResource("CopySpellRecord5").ToString());
                     return;
                 }
 
-                if (UInt32.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `spell` WHERE `ID` = '{0}'", newID)).Rows[0][0].ToString()) > 0)
+                if (uint.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `spell` WHERE `ID` = '{0}'", newID)).Rows[0][0].ToString()) > 0)
                 {
                     HandleErrorMessage(TryFindResource("CopySpellRecord6").ToString());
                     return;
                 }
 
-                if (oldIDIndex != UInt32.MaxValue)
+                if (oldIDIndex != uint.MaxValue)
                 {
                     // Copy old spell to new spell
                     var row = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}' LIMIT 1", oldIDIndex)).Rows[0];
@@ -1032,8 +1032,8 @@ namespace SpellEditor
 
                 if (input == null) { return; }
 
-                UInt32 spellID = 0;
-                if (!UInt32.TryParse(input, out spellID))
+                uint spellID = 0;
+                if (!uint.TryParse(input, out spellID))
                 {
                     HandleErrorMessage(TryFindResource("DeleteSpellRecord2").ToString());
                     return;
@@ -1059,8 +1059,8 @@ namespace SpellEditor
                 try
                 {
 
-                    UInt32 maskk = 0;
-                    UInt32 flagg = 1;
+                    uint maskk = 0;
+                    uint flagg = 1;
 
                     for (int f = 0; f < attributes0.Count; ++f)
                     {
@@ -1155,8 +1155,8 @@ namespace SpellEditor
                     if (stancesBoxes[0].IsChecked.Value == true) { row["Stances"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < stancesBoxes.Count; ++f)
                         {
@@ -1171,8 +1171,8 @@ namespace SpellEditor
                     if (targetBoxes[0].IsChecked.Value == true) { row["Targets"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < targetBoxes.Count; ++f)
                         {
@@ -1187,8 +1187,8 @@ namespace SpellEditor
                     if (targetCreatureTypeBoxes[0].IsChecked.Value == true) { row["TargetCreatureType"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                         {
@@ -1199,7 +1199,7 @@ namespace SpellEditor
                         row["TargetCreatureType"] = mask;
                     }
 
-                    row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (UInt32)0x1 : (UInt32)0x0;
+                    row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (uint)0x1 : (uint)0x0;
                     
                     switch (CasterAuraState.SelectedIndex)
                     {
@@ -1357,14 +1357,14 @@ namespace SpellEditor
                         }
                     }
 
-                    row["RecoveryTime"] = UInt32.Parse(RecoveryTime.Text);
-                    row["CategoryRecoveryTime"] = UInt32.Parse(CategoryRecoveryTime.Text);
+                    row["RecoveryTime"] = uint.Parse(RecoveryTime.Text);
+                    row["CategoryRecoveryTime"] = uint.Parse(CategoryRecoveryTime.Text);
 
                     if (interrupts1[0].IsChecked.Value == true) { row["InterruptFlags"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < interrupts1.Count; ++f)
                         {
@@ -1379,8 +1379,8 @@ namespace SpellEditor
                     if (interrupts2[0].IsChecked.Value == true) { row["AuraInterruptFlags"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < interrupts2.Count; ++f)
                         {
@@ -1395,8 +1395,8 @@ namespace SpellEditor
                     if (interrupts3[0].IsChecked.Value == true) { row["ChannelInterruptFlags"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < interrupts3.Count; ++f)
                         {
@@ -1411,8 +1411,8 @@ namespace SpellEditor
                     if (procBoxes[0].IsChecked.Value == true) { row["ProcFlags"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 1; f < procBoxes.Count; ++f)
                         {
@@ -1424,43 +1424,43 @@ namespace SpellEditor
                         row["ProcFlags"] = mask;
                     }
 
-                    row["ProcChance"] = UInt32.Parse(ProcChance.Text);
-                    row["ProcCharges"] = UInt32.Parse(ProcCharges.Text);
-                    row["MaximumLevel"] = UInt32.Parse(MaximumLevel.Text);
-                    row["BaseLevel"] = UInt32.Parse(BaseLevel.Text);
-                    row["SpellLevel"] = UInt32.Parse(SpellLevel.Text);
+                    row["ProcChance"] = uint.Parse(ProcChance.Text);
+                    row["ProcCharges"] = uint.Parse(ProcCharges.Text);
+                    row["MaximumLevel"] = uint.Parse(MaximumLevel.Text);
+                    row["BaseLevel"] = uint.Parse(BaseLevel.Text);
+                    row["SpellLevel"] = uint.Parse(SpellLevel.Text);
                     // Handle 'Health' power type manually
                     row["PowerType"] = PowerType.SelectedIndex == 13 ? (uint.MaxValue - 1) : (uint)PowerType.SelectedIndex;
-                    row["ManaCost"] = UInt32.Parse(PowerCost.Text);
-                    row["ManaCostPerLevel"] = UInt32.Parse(ManaCostPerLevel.Text);
-                    row["ManaPerSecond"] = UInt32.Parse(ManaCostPerSecond.Text);
-                    row["ManaPerSecondPerLevel"] = UInt32.Parse(PerSecondPerLevel.Text);
+                    row["ManaCost"] = uint.Parse(PowerCost.Text);
+                    row["ManaCostPerLevel"] = uint.Parse(ManaCostPerLevel.Text);
+                    row["ManaPerSecond"] = uint.Parse(ManaCostPerSecond.Text);
+                    row["ManaPerSecondPerLevel"] = uint.Parse(PerSecondPerLevel.Text);
                     row["Speed"] = float.Parse(Speed.Text);
-                    row["StackAmount"] = UInt32.Parse(Stacks.Text);
-                    row["Totem1"] = UInt32.Parse(Totem1.Text);
-                    row["Totem2"] = UInt32.Parse(Totem2.Text);
-                    row["Reagent1"] = Int32.Parse(Reagent1.Text);
-                    row["Reagent2"] = Int32.Parse(Reagent2.Text);
-                    row["Reagent3"] = Int32.Parse(Reagent3.Text);
-                    row["Reagent4"] = Int32.Parse(Reagent4.Text);
-                    row["Reagent5"] = Int32.Parse(Reagent5.Text);
-                    row["Reagent6"] = Int32.Parse(Reagent6.Text);
-                    row["Reagent7"] = Int32.Parse(Reagent7.Text);
-                    row["Reagent8"] = Int32.Parse(Reagent8.Text);
-                    row["ReagentCount1"] = UInt32.Parse(ReagentCount1.Text);
-                    row["ReagentCount2"] = UInt32.Parse(ReagentCount2.Text);
-                    row["ReagentCount3"] = UInt32.Parse(ReagentCount3.Text);
-                    row["ReagentCount4"] = UInt32.Parse(ReagentCount4.Text);
-                    row["ReagentCount5"] = UInt32.Parse(ReagentCount5.Text);
-                    row["ReagentCount6"] = UInt32.Parse(ReagentCount6.Text);
-                    row["ReagentCount7"] = UInt32.Parse(ReagentCount7.Text);
-                    row["ReagentCount8"] = UInt32.Parse(ReagentCount8.Text);
+                    row["StackAmount"] = uint.Parse(Stacks.Text);
+                    row["Totem1"] = uint.Parse(Totem1.Text);
+                    row["Totem2"] = uint.Parse(Totem2.Text);
+                    row["Reagent1"] = int.Parse(Reagent1.Text);
+                    row["Reagent2"] = int.Parse(Reagent2.Text);
+                    row["Reagent3"] = int.Parse(Reagent3.Text);
+                    row["Reagent4"] = int.Parse(Reagent4.Text);
+                    row["Reagent5"] = int.Parse(Reagent5.Text);
+                    row["Reagent6"] = int.Parse(Reagent6.Text);
+                    row["Reagent7"] = int.Parse(Reagent7.Text);
+                    row["Reagent8"] = int.Parse(Reagent8.Text);
+                    row["ReagentCount1"] = uint.Parse(ReagentCount1.Text);
+                    row["ReagentCount2"] = uint.Parse(ReagentCount2.Text);
+                    row["ReagentCount3"] = uint.Parse(ReagentCount3.Text);
+                    row["ReagentCount4"] = uint.Parse(ReagentCount4.Text);
+                    row["ReagentCount5"] = uint.Parse(ReagentCount5.Text);
+                    row["ReagentCount6"] = uint.Parse(ReagentCount6.Text);
+                    row["ReagentCount7"] = uint.Parse(ReagentCount7.Text);
+                    row["ReagentCount8"] = uint.Parse(ReagentCount8.Text);
 
                     if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemInventoryTypeMask"] = 0; }
                     else
                     {
-                        UInt32 mask = 0;
-                        UInt32 flag = 1;
+                        uint mask = 0;
+                        uint flag = 1;
 
                         for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
                         {
@@ -1469,7 +1469,7 @@ namespace SpellEditor
                             flag = flag + flag;
                         }
 
-                        row["EquippedItemInventoryTypeMask"] = (Int32)mask;
+                        row["EquippedItemInventoryTypeMask"] = (int)mask;
                     }
 
                     if (EquippedItemClass.Text == TryFindResource("None").ToString())
@@ -1486,81 +1486,81 @@ namespace SpellEditor
                         row["EquippedItemSubClassMask"] = Mask;
                     }
 
-                    row["Effect1"] = (UInt32)SpellEffect1.SelectedIndex;
-                    row["Effect2"] = (UInt32)SpellEffect2.SelectedIndex;
-                    row["Effect3"] = (UInt32)SpellEffect3.SelectedIndex;
-                    row["EffectDieSides1"] = Int32.Parse(DieSides1.Text);
-                    row["EffectDieSides2"] = Int32.Parse(DieSides2.Text);
-                    row["EffectDieSides3"] = Int32.Parse(DieSides3.Text);
+                    row["Effect1"] = (uint)SpellEffect1.SelectedIndex;
+                    row["Effect2"] = (uint)SpellEffect2.SelectedIndex;
+                    row["Effect3"] = (uint)SpellEffect3.SelectedIndex;
+                    row["EffectDieSides1"] = int.Parse(DieSides1.Text);
+                    row["EffectDieSides2"] = int.Parse(DieSides2.Text);
+                    row["EffectDieSides3"] = int.Parse(DieSides3.Text);
                     row["EffectRealPointsPerLevel1"] = float.Parse(BasePointsPerLevel1.Text);
                     row["EffectRealPointsPerLevel2"] = float.Parse(BasePointsPerLevel2.Text);
                     row["EffectRealPointsPerLevel3"] = float.Parse(BasePointsPerLevel3.Text);
-                    row["EffectBasePoints1"] = Int32.Parse(BasePoints1.Text);
-                    row["EffectBasePoints2"] = Int32.Parse(BasePoints2.Text);
-                    row["EffectBasePoints3"] = Int32.Parse(BasePoints3.Text);
-                    row["EffectMechanic1"] = (UInt32)Mechanic1.SelectedIndex;
-                    row["EffectMechanic2"] = (UInt32)Mechanic2.SelectedIndex;
-                    row["EffectMechanic3"] = (UInt32)Mechanic3.SelectedIndex;
-                    row["EffectImplicitTargetA1"] = (UInt32)TargetA1.SelectedIndex;
-                    row["EffectImplicitTargetA2"] = (UInt32)TargetA2.SelectedIndex;
-                    row["EffectImplicitTargetA3"] = (UInt32)TargetA3.SelectedIndex;
-                    row["EffectImplicitTargetB1"] = (UInt32)TargetB1.SelectedIndex;
-                    row["EffectImplicitTargetB2"] = (UInt32)TargetB2.SelectedIndex;
-                    row["EffectImplicitTargetB3"] = (UInt32)TargetB3.SelectedIndex;
-                    row["EffectApplyAuraName1"] = (UInt32)ApplyAuraName1.SelectedIndex;
-                    row["EffectApplyAuraName2"] = (UInt32)ApplyAuraName2.SelectedIndex;
-                    row["EffectApplyAuraName3"] = (UInt32)ApplyAuraName3.SelectedIndex;
-                    row["EffectAmplitude1"] = UInt32.Parse(Amplitude1.Text);
-                    row["EffectAmplitude2"] = UInt32.Parse(Amplitude2.Text);
-                    row["EffectAmplitude3"] = UInt32.Parse(Amplitude3.Text);
+                    row["EffectBasePoints1"] = int.Parse(BasePoints1.Text);
+                    row["EffectBasePoints2"] = int.Parse(BasePoints2.Text);
+                    row["EffectBasePoints3"] = int.Parse(BasePoints3.Text);
+                    row["EffectMechanic1"] = (uint)Mechanic1.SelectedIndex;
+                    row["EffectMechanic2"] = (uint)Mechanic2.SelectedIndex;
+                    row["EffectMechanic3"] = (uint)Mechanic3.SelectedIndex;
+                    row["EffectImplicitTargetA1"] = (uint)TargetA1.SelectedIndex;
+                    row["EffectImplicitTargetA2"] = (uint)TargetA2.SelectedIndex;
+                    row["EffectImplicitTargetA3"] = (uint)TargetA3.SelectedIndex;
+                    row["EffectImplicitTargetB1"] = (uint)TargetB1.SelectedIndex;
+                    row["EffectImplicitTargetB2"] = (uint)TargetB2.SelectedIndex;
+                    row["EffectImplicitTargetB3"] = (uint)TargetB3.SelectedIndex;
+                    row["EffectApplyAuraName1"] = (uint)ApplyAuraName1.SelectedIndex;
+                    row["EffectApplyAuraName2"] = (uint)ApplyAuraName2.SelectedIndex;
+                    row["EffectApplyAuraName3"] = (uint)ApplyAuraName3.SelectedIndex;
+                    row["EffectAmplitude1"] = uint.Parse(Amplitude1.Text);
+                    row["EffectAmplitude2"] = uint.Parse(Amplitude2.Text);
+                    row["EffectAmplitude3"] = uint.Parse(Amplitude3.Text);
                     row["EffectMultipleValue1"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue2"] = float.Parse(MultipleValue1.Text);
                     row["EffectMultipleValue3"] = float.Parse(MultipleValue1.Text);
-                    row["EffectChainTarget1"] = UInt32.Parse(ChainTarget1.Text);
-                    row["EffectChainTarget2"] = UInt32.Parse(ChainTarget2.Text);
-                    row["EffectChainTarget3"] = UInt32.Parse(ChainTarget3.Text);
-                    row["EffectItemType1"] = UInt32.Parse(ItemType1.Text);
-                    row["EffectItemType2"] = UInt32.Parse(ItemType2.Text);
-                    row["EffectItemType3"] = UInt32.Parse(ItemType3.Text);
-                    row["EffectMiscValue1"] = Int32.Parse(MiscValueA1.Text);
-                    row["EffectMiscValue2"] = Int32.Parse(MiscValueA2.Text);
-                    row["EffectMiscValue3"] = Int32.Parse(MiscValueA3.Text);
-                    row["EffectMiscValueB1"] = Int32.Parse(MiscValueB1.Text);
-                    row["EffectMiscValueB2"] = Int32.Parse(MiscValueB2.Text);
-                    row["EffectMiscValueB3"] = Int32.Parse(MiscValueB3.Text);
-                    row["EffectTriggerSpell1"] = UInt32.Parse(TriggerSpell1.Text);
-                    row["EffectTriggerSpell2"] = UInt32.Parse(TriggerSpell2.Text);
-                    row["EffectTriggerSpell3"] = UInt32.Parse(TriggerSpell3.Text);
+                    row["EffectChainTarget1"] = uint.Parse(ChainTarget1.Text);
+                    row["EffectChainTarget2"] = uint.Parse(ChainTarget2.Text);
+                    row["EffectChainTarget3"] = uint.Parse(ChainTarget3.Text);
+                    row["EffectItemType1"] = uint.Parse(ItemType1.Text);
+                    row["EffectItemType2"] = uint.Parse(ItemType2.Text);
+                    row["EffectItemType3"] = uint.Parse(ItemType3.Text);
+                    row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+                    row["EffectMiscValue2"] = int.Parse(MiscValueA2.Text);
+                    row["EffectMiscValue3"] = int.Parse(MiscValueA3.Text);
+                    row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
+                    row["EffectMiscValueB2"] = int.Parse(MiscValueB2.Text);
+                    row["EffectMiscValueB3"] = int.Parse(MiscValueB3.Text);
+                    row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
+                    row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
+                    row["EffectTriggerSpell3"] = uint.Parse(TriggerSpell3.Text);
                     row["EffectPointsPerComboPoint1"] = float.Parse(PointsPerComboPoint1.Text);
                     row["EffectPointsPerComboPoint2"] = float.Parse(PointsPerComboPoint2.Text);
                     row["EffectPointsPerComboPoint3"] = float.Parse(PointsPerComboPoint3.Text);
-                    row["EffectSpellClassMaskA1"] = UInt32.Parse(SpellMask11.Text);
-                    row["EffectSpellClassMaskA2"] = UInt32.Parse(SpellMask21.Text);
-                    row["EffectSpellClassMaskA3"] = UInt32.Parse(SpellMask31.Text);
-                    row["EffectSpellClassMaskB1"] = UInt32.Parse(SpellMask12.Text);
-                    row["EffectSpellClassMaskB2"] = UInt32.Parse(SpellMask22.Text);
-                    row["EffectSpellClassMaskB3"] = UInt32.Parse(SpellMask32.Text);
-                    row["EffectSpellClassMaskC1"] = UInt32.Parse(SpellMask13.Text);
-                    row["EffectSpellClassMaskC2"] = UInt32.Parse(SpellMask23.Text);
-                    row["EffectSpellClassMaskC3"] = UInt32.Parse(SpellMask33.Text);
-                    row["SpellVisual1"] = UInt32.Parse(SpellVisual1.Text);
-                    row["SpellVisual2"] = UInt32.Parse(SpellVisual2.Text);
-                    row["ManaCostPercentage"] = UInt32.Parse(ManaCostPercent.Text);
-                    row["StartRecoveryCategory"] = UInt32.Parse(StartRecoveryCategory.Text);
-                    row["StartRecoveryTime"] = UInt32.Parse(StartRecoveryTime.Text);
-                    row["MaximumTargetLevel"] = UInt32.Parse(MaxTargetsLevel.Text);
-                    row["SpellFamilyName"] = UInt32.Parse(SpellFamilyName.Text);
-                    row["SpellFamilyFlags"] = UInt32.Parse(SpellFamilyFlags.Text);
-                    row["SpellFamilyFlags1"] = UInt32.Parse(SpellFamilyFlags1.Text);
-                    row["SpellFamilyFlags2"] = UInt32.Parse(SpellFamilyFlags2.Text);
-                    row["MaximumAffectedTargets"] = UInt32.Parse(MaxTargets.Text);
-                    row["DamageClass"] = (UInt32)SpellDamageType.SelectedIndex;
-                    row["PreventionType"] = (UInt32)PreventionType.SelectedIndex;
+                    row["EffectSpellClassMaskA1"] = uint.Parse(SpellMask11.Text);
+                    row["EffectSpellClassMaskA2"] = uint.Parse(SpellMask21.Text);
+                    row["EffectSpellClassMaskA3"] = uint.Parse(SpellMask31.Text);
+                    row["EffectSpellClassMaskB1"] = uint.Parse(SpellMask12.Text);
+                    row["EffectSpellClassMaskB2"] = uint.Parse(SpellMask22.Text);
+                    row["EffectSpellClassMaskB3"] = uint.Parse(SpellMask32.Text);
+                    row["EffectSpellClassMaskC1"] = uint.Parse(SpellMask13.Text);
+                    row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
+                    row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
+                    row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
+                    row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
+                    row["ManaCostPercentage"] = uint.Parse(ManaCostPercent.Text);
+                    row["StartRecoveryCategory"] = uint.Parse(StartRecoveryCategory.Text);
+                    row["StartRecoveryTime"] = uint.Parse(StartRecoveryTime.Text);
+                    row["MaximumTargetLevel"] = uint.Parse(MaxTargetsLevel.Text);
+                    row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
+                    row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
+                    row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
+                    row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
+                    row["MaximumAffectedTargets"] = uint.Parse(MaxTargets.Text);
+                    row["DamageClass"] = (uint)SpellDamageType.SelectedIndex;
+                    row["PreventionType"] = (uint)PreventionType.SelectedIndex;
                     row["EffectDamageMultiplier1"] = float.Parse(EffectDamageMultiplier1.Text);
                     row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
                     row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
-                    row["SchoolMask"] = (S1.IsChecked.Value ? (UInt32)0x01 : (UInt32)0x00) + (S2.IsChecked.Value ? (UInt32)0x02 : (UInt32)0x00) + (S3.IsChecked.Value ? (UInt32)0x04 : (UInt32)0x00) + (S4.IsChecked.Value ? (UInt32)0x08 : (UInt32)0x00) + (S5.IsChecked.Value ? (UInt32)0x10 : (UInt32)0x00) + (S6.IsChecked.Value ? (UInt32)0x20 : (UInt32)0x00) + (S7.IsChecked.Value ? (UInt32)0x40 : (UInt32)0x00);
-                    row["SpellMissileID"] = UInt32.Parse(SpellMissileID.Text);
+                    row["SchoolMask"] = (S1.IsChecked.Value ? (uint)0x01 : (uint)0x00) + (S2.IsChecked.Value ? (uint)0x02 : (uint)0x00) + (S3.IsChecked.Value ? (uint)0x04 : (uint)0x00) + (S4.IsChecked.Value ? (uint)0x08 : (uint)0x00) + (S5.IsChecked.Value ? (uint)0x10 : (uint)0x00) + (S6.IsChecked.Value ? (uint)0x20 : (uint)0x00) + (S7.IsChecked.Value ? (uint)0x40 : (uint)0x00);
+                    row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
                     row["EffectBonusMultiplier1"] = float.Parse(EffectBonusMultiplier1.Text);
                     row["EffectBonusMultiplier2"] = float.Parse(EffectBonusMultiplier2.Text);
                     row["EffectBonusMultiplier3"] = float.Parse(EffectBonusMultiplier3.Text);
@@ -1723,9 +1723,9 @@ namespace SpellEditor
 
                 spellTable.Rows.Clear();
 
-                UInt32 lowerBounds = 0;
-                UInt32 pageSize = 5000;
-                UInt32 targetSize = pageSize;
+                uint lowerBounds = 0;
+                uint pageSize = 5000;
+                uint targetSize = pageSize;
                 DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
                 lowerBounds += 100;
                 // Edge case of empty table after truncating, need to send a event to the handler
@@ -1958,37 +1958,45 @@ namespace SpellEditor
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
             var row = rowResult[0];
             var version = WoWVersionManager.GetInstance().SelectedVersion().Identity;
+            var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
+            var isWotlkOrGreater = version >= 335;
+            // Legacy compatibility where we treat the struct in 3.3.5a as only having 9 locales (these are the only ones used)
+            if (version == 335)
+            {
+                numColumns = 9;
+            }
+
             updateProgress("Updating text control's...");
             int i;
-            for (i = 0; i < 9; ++i)
+            for (i = 0; i < numColumns; ++i)
             {
                 spellDescGenFields[i].threadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
                 spellTooltipGenFields[i].threadSafeText = SpellStringParser.ParseString(row["SpellTooltip" + i].ToString(), row, this);
             }
-            for (i = 0; i < 9; ++i)
+            for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
                 stringObjectMap.TryGetValue(i, out box);
                 box.threadSafeText = row[string.Format("SpellName{0}", i)];
             }
-            for (i = 0; i < 9; ++i)
+            for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + 9, out box);
+                stringObjectMap.TryGetValue(i + numColumns, out box);
                 box.threadSafeText = row[string.Format("SpellRank{0}", i)];
             }
 
-            for (i = 0; i < 9; ++i)
+            for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + 18, out box);
+                stringObjectMap.TryGetValue(i + (numColumns * 2), out box);
                 box.threadSafeText = row[string.Format("SpellTooltip{0}", i)];
             }
 
-            for (i = 0; i < 9; ++i)
+            for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + 27, out box);
+                stringObjectMap.TryGetValue(i + (numColumns * 3), out box);
                 box.threadSafeText = row[string.Format("SpellDescription{0}", i)];
             }
 
@@ -2006,8 +2014,8 @@ namespace SpellEditor
                 adapter.Query(string.Format("SELECT `Mechanic` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
             updateProgress("Updating attributes...");
-            UInt32 mask = UInt32.Parse(row["Attributes"].ToString());
-            UInt32 flagg = 1;
+            uint mask = uint.Parse(row["Attributes"].ToString());
+            uint flagg = 1;
 
             for (int f = 0; f < attributes0.Count; ++f)
             {
@@ -2015,7 +2023,7 @@ namespace SpellEditor
                 flagg = flagg + flagg;
             }
 
-            mask = UInt32.Parse(row["AttributesEx"].ToString());
+            mask = uint.Parse(row["AttributesEx"].ToString());
             flagg = 1;
 
             for (int f = 0; f < attributes1.Count; ++f)
@@ -2024,7 +2032,7 @@ namespace SpellEditor
                 flagg = flagg + flagg;
             }
 
-            mask = UInt32.Parse(row["AttributesEx2"].ToString());
+            mask = uint.Parse(row["AttributesEx2"].ToString());
             flagg = 1;
 
             for (int f = 0; f < attributes2.Count; ++f)
@@ -2033,7 +2041,7 @@ namespace SpellEditor
                 flagg = flagg + flagg;
             }
 
-            mask = UInt32.Parse(row["AttributesEx3"].ToString());
+            mask = uint.Parse(row["AttributesEx3"].ToString());
             flagg = 1;
 
             for (int f = 0; f < attributes3.Count; ++f)
@@ -2042,7 +2050,7 @@ namespace SpellEditor
                 flagg = flagg + flagg;
             }
 
-            mask = UInt32.Parse(row["AttributesEx4"].ToString());
+            mask = uint.Parse(row["AttributesEx4"].ToString());
             flagg = 1;
 
             for (int f = 0; f < attributes4.Count; ++f)
@@ -2051,52 +2059,60 @@ namespace SpellEditor
                 flagg = flagg + flagg;
             }
 
-            mask = UInt32.Parse(row["AttributesEx5"].ToString());
-            flagg = 1;
-
-            for (int f = 0; f < attributes5.Count; ++f)
+            if (isWotlkOrGreater)
             {
-                attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                flagg = flagg + flagg;
-            }
+                mask = uint.Parse(row["AttributesEx5"].ToString());
+                flagg = 1;
 
-            mask = UInt32.Parse(row["AttributesEx6"].ToString());
-            flagg = 1;
-
-            for (int f = 0; f < attributes6.Count; ++f)
-            {
-                attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                flagg = flagg + flagg;
-            }
-
-            mask = UInt32.Parse(row["AttributesEx7"].ToString());
-            flagg = 1;
-
-            for (int f = 0; f < attributes7.Count; ++f)
-            {
-                attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
-                flagg = flagg + flagg;
-            }
-            updateProgress("Updating stances...");
-            mask = UInt32.Parse(row["Stances"].ToString());
-            if (mask == 0)
-            {
-                stancesBoxes[0].threadSafeChecked = true;
-                for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
-            }
-            else
-            {
-                stancesBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
-                for (int f = 1; f < stancesBoxes.Count; ++f)
+                for (int f = 0; f < attributes5.Count; ++f)
                 {
-                    stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
-                    flag = flag + flag;
+                    attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    flagg = flagg + flagg;
+                }
+
+                mask = uint.Parse(row["AttributesEx6"].ToString());
+                flagg = 1;
+
+                for (int f = 0; f < attributes6.Count; ++f)
+                {
+                    attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    flagg = flagg + flagg;
+                }
+
+                mask = uint.Parse(row["AttributesEx7"].ToString());
+                flagg = 1;
+
+                for (int f = 0; f < attributes7.Count; ++f)
+                {
+                    attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    flagg = flagg + flagg;
+                }
+
+                updateProgress("Updating stances...");
+                mask = uint.Parse(row["Stances"].ToString());
+                if (mask == 0)
+                {
+                    stancesBoxes[0].threadSafeChecked = true;
+                    for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].threadSafeChecked = false; }
+                }
+                else
+                {
+                    stancesBoxes[0].threadSafeChecked = false;
+                    uint flag = 1;
+                    for (int f = 1; f < stancesBoxes.Count; ++f)
+                    {
+                        stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        flag = flag + flag;
+                    }
                 }
             }
+            attributes5.ForEach(box => box.IsEnabled = isWotlkOrGreater);
+            attributes6.ForEach(box => box.IsEnabled = isWotlkOrGreater);
+            attributes7.ForEach(box => box.IsEnabled = isWotlkOrGreater);
+            stancesBoxes.ForEach(box => box.IsEnabled = isWotlkOrGreater);
 
             updateProgress("Updating targets...");
-            mask = UInt32.Parse(row["Targets"].ToString());
+            mask = uint.Parse(row["Targets"].ToString());
             if (mask == 0)
             {
                 targetBoxes[0].threadSafeChecked = true;
@@ -2105,7 +2121,7 @@ namespace SpellEditor
             else
             {
                 targetBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 1; f < targetBoxes.Count; ++f)
                 {
                     targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -2113,7 +2129,7 @@ namespace SpellEditor
                 }
             }
 
-            mask = UInt32.Parse(row["TargetCreatureType"].ToString());
+            mask = uint.Parse(row["TargetCreatureType"].ToString());
 
             if (mask == 0)
             {
@@ -2123,7 +2139,7 @@ namespace SpellEditor
             else
             {
                 targetCreatureTypeBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                 {
                     targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -2135,11 +2151,15 @@ namespace SpellEditor
             RequiresSpellFocus.threadSafeIndex = loadFocusObjects.UpdateSpellFocusObjectSelection(uint.Parse(
                 adapter.Query(string.Format("SELECT `RequiresSpellFocus` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
 
-            mask = UInt32.Parse(row["FacingCasterFlags"].ToString());
+            if (isWotlkOrGreater)
+            {
+                mask = uint.Parse(row["FacingCasterFlags"].ToString());
+                FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
+            }
+            FacingFrontFlag.IsEnabled = isWotlkOrGreater;
 
-            FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
             updateProgress("Updating caster aura state...");
-            switch (UInt32.Parse(row["CasterAuraState"].ToString()))
+            switch (uint.Parse(row["CasterAuraState"].ToString()))
             {
                 case 0: // None
                     {
@@ -2227,7 +2247,7 @@ namespace SpellEditor
                 default: { break; }
             }
 
-            switch (UInt32.Parse(row["TargetAuraState"].ToString()))
+            switch (uint.Parse(row["TargetAuraState"].ToString()))
             {
                 case 0: // None
                     {
@@ -2292,28 +2312,32 @@ namespace SpellEditor
             CastTime.threadSafeIndex = loadCastTimes.UpdateCastTimeSelection(uint.Parse(adapter.Query(
                 string.Format("SELECT `CastingTimeIndex` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
             updateProgress("Updating other stuff...");
-            RecoveryTime.threadSafeText = UInt32.Parse(row["RecoveryTime"].ToString());
-            CategoryRecoveryTime.threadSafeText = UInt32.Parse(row["CategoryRecoveryTime"].ToString());
+            RecoveryTime.threadSafeText = uint.Parse(row["RecoveryTime"].ToString());
+            CategoryRecoveryTime.threadSafeText = uint.Parse(row["CategoryRecoveryTime"].ToString());
 
-            mask = UInt32.Parse(row["InterruptFlags"].ToString());
-            if (mask == 0)
+            if (isWotlkOrGreater)
             {
-                interrupts1[0].threadSafeChecked = true;
-                for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
-            }
-            else
-            {
-                interrupts1[0].threadSafeChecked = false;
-                UInt32 flag = 1;
-                for (int f = 1; f < interrupts1.Count; ++f)
+                mask = uint.Parse(row["InterruptFlags"].ToString());
+                if (mask == 0)
                 {
-                    interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    interrupts1[0].threadSafeChecked = true;
+                    for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
+                }
+                else
+                {
+                    interrupts1[0].threadSafeChecked = false;
+                    uint flag = 1;
+                    for (int f = 1; f < interrupts1.Count; ++f)
+                    {
+                        interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
 
-                    flag = flag + flag;
+                        flag = flag + flag;
+                    }
                 }
             }
+            interrupts1.ForEach(box => box.IsEnabled = isWotlkOrGreater);
 
-            mask = UInt32.Parse(row["AuraInterruptFlags"].ToString());
+            mask = uint.Parse(row["AuraInterruptFlags"].ToString());
             if (mask == 0)
             {
                 interrupts2[0].threadSafeChecked = true;
@@ -2322,7 +2346,7 @@ namespace SpellEditor
             else
             {
                 interrupts2[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 1; f < interrupts2.Count; ++f)
                 {
                     interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -2330,7 +2354,7 @@ namespace SpellEditor
                 }
             }
 
-            mask = UInt32.Parse(row["ChannelInterruptFlags"].ToString());
+            mask = uint.Parse(row["ChannelInterruptFlags"].ToString());
             if (mask == 0)
             {
                 interrupts3[0].threadSafeChecked = true;
@@ -2339,7 +2363,7 @@ namespace SpellEditor
             else
             {
                 interrupts3[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 1; f < interrupts3.Count; ++f)
                 {
                     interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -2347,7 +2371,7 @@ namespace SpellEditor
                 }
             }
 
-            mask = UInt32.Parse(row["ProcFlags"].ToString());
+            mask = uint.Parse(row["ProcFlags"].ToString());
             if (mask == 0)
             {
                 procBoxes[0].threadSafeChecked = true;
@@ -2356,7 +2380,7 @@ namespace SpellEditor
             else
             {
                 procBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 1; f < procBoxes.Count; ++f)
                 {
                     procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
@@ -2364,11 +2388,11 @@ namespace SpellEditor
                 }
             }
 
-            ProcChance.threadSafeText = UInt32.Parse(row["ProcChance"].ToString());
-            ProcCharges.threadSafeText = UInt32.Parse(row["ProcCharges"].ToString());
-            MaximumLevel.threadSafeText = UInt32.Parse(row["MaximumLevel"].ToString());
-            BaseLevel.threadSafeText = UInt32.Parse(row["BaseLevel"].ToString());
-            SpellLevel.threadSafeText = UInt32.Parse(row["SpellLevel"].ToString());
+            ProcChance.threadSafeText = uint.Parse(row["ProcChance"].ToString());
+            ProcCharges.threadSafeText = uint.Parse(row["ProcCharges"].ToString());
+            MaximumLevel.threadSafeText = uint.Parse(row["MaximumLevel"].ToString());
+            BaseLevel.threadSafeText = uint.Parse(row["BaseLevel"].ToString());
+            SpellLevel.threadSafeText = uint.Parse(row["SpellLevel"].ToString());
 
             var loadDurations = (SpellDuration)DBCManager.GetInstance().FindDbcForBinding("SpellDuration");
             Duration.threadSafeIndex = loadDurations.UpdateDurationIndexes(uint.Parse(adapter.Query(
@@ -2379,10 +2403,10 @@ namespace SpellEditor
             if (powerType == (uint.MaxValue - 1))
                 powerType = 13;
             PowerType.threadSafeIndex = powerType;
-            PowerCost.threadSafeText = UInt32.Parse(row["ManaCost"].ToString());
-            ManaCostPerLevel.threadSafeText = UInt32.Parse(row["ManaCostPerLevel"].ToString());
-            ManaCostPerSecond.threadSafeText = UInt32.Parse(row["ManaPerSecond"].ToString());
-            PerSecondPerLevel.threadSafeText = UInt32.Parse(row["ManaPerSecondPerLevel"].ToString());
+            PowerCost.threadSafeText = uint.Parse(row["ManaCost"].ToString());
+            ManaCostPerLevel.threadSafeText = uint.Parse(row["ManaCostPerLevel"].ToString());
+            ManaCostPerSecond.threadSafeText = uint.Parse(row["ManaPerSecond"].ToString());
+            PerSecondPerLevel.threadSafeText = uint.Parse(row["ManaPerSecondPerLevel"].ToString());
             updateProgress("Updating spell range selection...");
             var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
             Range.threadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(adapter.Query(
@@ -2439,8 +2463,8 @@ namespace SpellEditor
             UpdateItemSubClass(long.Parse(row["EquippedItemClass"].ToString()));
 
             updateProgress("Updating item subclass mask...");
-            mask = UInt32.Parse(row["EquippedItemSubClassMask"].ToString());
-            if (mask == 0)
+            int intMask = int.Parse(row["EquippedItemSubClassMask"].ToString());
+            if (intMask == 0 || intMask == -1)
             {
                 equippedItemSubClassMaskBoxes[0].threadSafeChecked = true;
                 for (int f = 1; f < equippedItemSubClassMaskBoxes.Count; ++f) { equippedItemSubClassMaskBoxes[f].threadSafeChecked = false; }
@@ -2448,17 +2472,17 @@ namespace SpellEditor
             else
             {
                 equippedItemSubClassMaskBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
                 {
-                    equippedItemSubClassMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    equippedItemSubClassMaskBoxes[f].threadSafeChecked = ((intMask & flag) != 0) ? true : false;
                     flag = flag + flag;
                 }
             }
 
             updateProgress("Updating inventory type...");
-            mask = UInt32.Parse(row["EquippedItemInventoryTypeMask"].ToString());
-            if (mask == 0)
+            intMask = int.Parse(row["EquippedItemInventoryTypeMask"].ToString());
+            if (intMask == 0 || intMask == -1)
             {
                 equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = true;
                 for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = false; }
@@ -2466,17 +2490,17 @@ namespace SpellEditor
             else
             {
                 equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
-                UInt32 flag = 1;
+                uint flag = 1;
                 for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
                 {
-                    equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((intMask & flag) != 0) ? true : false;
                     flag = flag + flag;
                 }
             }
             updateProgress("Updating effects 1-3...");
-            SpellEffect1.threadSafeIndex = Int32.Parse(row["Effect1"].ToString());
-            SpellEffect2.threadSafeIndex = Int32.Parse(row["Effect2"].ToString());
-            SpellEffect3.threadSafeIndex = Int32.Parse(row["Effect3"].ToString());
+            SpellEffect1.threadSafeIndex = int.Parse(row["Effect1"].ToString());
+            SpellEffect2.threadSafeIndex = int.Parse(row["Effect2"].ToString());
+            SpellEffect3.threadSafeIndex = int.Parse(row["Effect3"].ToString());
             DieSides1.threadSafeText = row["EffectDieSides1"].ToString();
             DieSides2.threadSafeText = row["EffectDieSides2"].ToString();
             DieSides3.threadSafeText = row["EffectDieSides3"].ToString();
@@ -2486,15 +2510,15 @@ namespace SpellEditor
             BasePoints1.threadSafeText = row["EffectBasePoints1"].ToString();
             BasePoints2.threadSafeText = row["EffectBasePoints2"].ToString();
             BasePoints3.threadSafeText = row["EffectBasePoints3"].ToString();
-            Mechanic1.threadSafeIndex = Int32.Parse(row["EffectMechanic1"].ToString());
-            Mechanic2.threadSafeIndex = Int32.Parse(row["EffectMechanic2"].ToString());
-            Mechanic3.threadSafeIndex = Int32.Parse(row["EffectMechanic3"].ToString());
-            TargetA1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA1"].ToString());
-            TargetA2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA2"].ToString());
-            TargetA3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetA3"].ToString());
-            TargetB1.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB1"].ToString());
-            TargetB2.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB2"].ToString());
-            TargetB3.threadSafeIndex = UInt32.Parse(row["EffectImplicitTargetB3"].ToString());
+            Mechanic1.threadSafeIndex = int.Parse(row["EffectMechanic1"].ToString());
+            Mechanic2.threadSafeIndex = int.Parse(row["EffectMechanic2"].ToString());
+            Mechanic3.threadSafeIndex = int.Parse(row["EffectMechanic3"].ToString());
+            TargetA1.threadSafeIndex = uint.Parse(row["EffectImplicitTargetA1"].ToString());
+            TargetA2.threadSafeIndex = uint.Parse(row["EffectImplicitTargetA2"].ToString());
+            TargetA3.threadSafeIndex = uint.Parse(row["EffectImplicitTargetA3"].ToString());
+            TargetB1.threadSafeIndex = uint.Parse(row["EffectImplicitTargetB1"].ToString());
+            TargetB2.threadSafeIndex = uint.Parse(row["EffectImplicitTargetB2"].ToString());
+            TargetB3.threadSafeIndex = uint.Parse(row["EffectImplicitTargetB3"].ToString());
 
             updateProgress("Updating radius index...");
             var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
@@ -2506,9 +2530,9 @@ namespace SpellEditor
             RadiusIndex3.threadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[2]);
 
             updateProgress("Updating effect 1-3 data...");
-            ApplyAuraName1.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName1"].ToString());
-            ApplyAuraName2.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName2"].ToString());
-            ApplyAuraName3.threadSafeIndex = Int32.Parse(row["EffectApplyAuraName3"].ToString());
+            ApplyAuraName1.threadSafeIndex = int.Parse(row["EffectApplyAuraName1"].ToString());
+            ApplyAuraName2.threadSafeIndex = int.Parse(row["EffectApplyAuraName2"].ToString());
+            ApplyAuraName3.threadSafeIndex = int.Parse(row["EffectApplyAuraName3"].ToString());
             Amplitude1.threadSafeText = row["EffectAmplitude1"].ToString();
             Amplitude2.threadSafeText = row["EffectAmplitude2"].ToString();
             Amplitude3.threadSafeText = row["EffectAmplitude3"].ToString();
@@ -2524,28 +2548,34 @@ namespace SpellEditor
             MiscValueA1.threadSafeText = row["EffectMiscValue1"].ToString();
             MiscValueA2.threadSafeText = row["EffectMiscValue2"].ToString();
             MiscValueA3.threadSafeText = row["EffectMiscValue3"].ToString();
-            MiscValueB1.threadSafeText = row["EffectMiscValueB1"].ToString();
-            MiscValueB2.threadSafeText = row["EffectMiscValueB2"].ToString();
-            MiscValueB3.threadSafeText = row["EffectMiscValueB3"].ToString();
+            if (isWotlkOrGreater)
+            {
+                MiscValueB1.threadSafeText = row["EffectMiscValueB1"].ToString();
+                MiscValueB2.threadSafeText = row["EffectMiscValueB2"].ToString();
+                MiscValueB3.threadSafeText = row["EffectMiscValueB3"].ToString();
+            }
+            MiscValueB1.IsEnabled = isWotlkOrGreater;
+            MiscValueB2.IsEnabled = isWotlkOrGreater;
+            MiscValueB3.IsEnabled = isWotlkOrGreater;
             TriggerSpell1.threadSafeText = row["EffectTriggerSpell1"].ToString();
             TriggerSpell2.threadSafeText = row["EffectTriggerSpell2"].ToString();
             TriggerSpell3.threadSafeText = row["EffectTriggerSpell3"].ToString();
             PointsPerComboPoint1.threadSafeText = row["EffectPointsPerComboPoint1"].ToString();
             PointsPerComboPoint2.threadSafeText = row["EffectPointsPerComboPoint2"].ToString();
             PointsPerComboPoint3.threadSafeText = row["EffectPointsPerComboPoint3"].ToString();
-            SpellMask11.threadSafeText = row["EffectSpellClassMaskA1"].ToString();
-            SpellMask21.threadSafeText = row["EffectSpellClassMaskA2"].ToString();
-            SpellMask31.threadSafeText = row["EffectSpellClassMaskA3"].ToString();
-            SpellMask12.threadSafeText = row["EffectSpellClassMaskB1"].ToString();
-            SpellMask22.threadSafeText = row["EffectSpellClassMaskB2"].ToString();
-            SpellMask32.threadSafeText = row["EffectSpellClassMaskB3"].ToString();
-            SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
-            SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
-            SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
 
-            var isWotlkOrGreater = version >= 335;
             if (isWotlkOrGreater)
             {
+                SpellMask11.threadSafeText = row["EffectSpellClassMaskA1"].ToString();
+                SpellMask21.threadSafeText = row["EffectSpellClassMaskA2"].ToString();
+                SpellMask31.threadSafeText = row["EffectSpellClassMaskA3"].ToString();
+                SpellMask12.threadSafeText = row["EffectSpellClassMaskB1"].ToString();
+                SpellMask22.threadSafeText = row["EffectSpellClassMaskB2"].ToString();
+                SpellMask32.threadSafeText = row["EffectSpellClassMaskB3"].ToString();
+                SpellMask13.threadSafeText = row["EffectSpellClassMaskC1"].ToString();
+                SpellMask23.threadSafeText = row["EffectSpellClassMaskC2"].ToString();
+                SpellMask33.threadSafeText = row["EffectSpellClassMaskC3"].ToString();
+
                 uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
                 SpellFamilyName.threadSafeText = familyName.ToString();
                 SpellFamilyFlags.threadSafeText = row["SpellFamilyFlags"].ToString();
@@ -2564,6 +2594,15 @@ namespace SpellEditor
 
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName)));
             }
+            SpellMask11.IsEnabled = isWotlkOrGreater;
+            SpellMask21.IsEnabled = isWotlkOrGreater;
+            SpellMask31.IsEnabled = isWotlkOrGreater;
+            SpellMask12.IsEnabled = isWotlkOrGreater;
+            SpellMask22.IsEnabled = isWotlkOrGreater;
+            SpellMask32.IsEnabled = isWotlkOrGreater;
+            SpellMask13.IsEnabled = isWotlkOrGreater;
+            SpellMask23.IsEnabled = isWotlkOrGreater;
+            SpellMask33.IsEnabled = isWotlkOrGreater;
             SpellFamilyName.IsEnabled = isWotlkOrGreater;
             SpellFamilyFlags.IsEnabled = isWotlkOrGreater;
             SpellFamilyFlags1.IsEnabled = isWotlkOrGreater;
@@ -2577,8 +2616,8 @@ namespace SpellEditor
             StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
             MaxTargetsLevel.threadSafeText = row["MaximumTargetLevel"].ToString();
             MaxTargets.threadSafeText = row["MaximumAffectedTargets"].ToString();
-            SpellDamageType.threadSafeIndex = Int32.Parse(row["DamageClass"].ToString());
-            PreventionType.threadSafeIndex = Int32.Parse(row["PreventionType"].ToString());
+            SpellDamageType.threadSafeIndex = int.Parse(row["DamageClass"].ToString());
+            PreventionType.threadSafeIndex = int.Parse(row["PreventionType"].ToString());
             EffectDamageMultiplier1.threadSafeText = row["EffectDamageMultiplier1"].ToString();
             EffectDamageMultiplier2.threadSafeText = row["EffectDamageMultiplier2"].ToString();
             EffectDamageMultiplier3.threadSafeText = row["EffectDamageMultiplier3"].ToString();
@@ -2602,7 +2641,7 @@ namespace SpellEditor
             AreaGroup.IsEnabled = isWotlkOrGreater;
 
             updateProgress("Updating school mask...");
-            mask = UInt32.Parse(row["SchoolMask"].ToString());
+            mask = uint.Parse(row["SchoolMask"].ToString());
             S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
             S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
             S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
@@ -2620,22 +2659,32 @@ namespace SpellEditor
             }
             RuneCost.IsEnabled = isWotlkOrGreater;
 
-            updateProgress("Updating spell missile & effect bonus multiplier...");
-            SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
-            EffectBonusMultiplier1.threadSafeText = row["EffectBonusMultiplier1"].ToString();
-            EffectBonusMultiplier2.threadSafeText = row["EffectBonusMultiplier2"].ToString();
-            EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
+            if (isWotlkOrGreater)
+            {
+                updateProgress("Updating spell missile & effect bonus multiplier...");
+                EffectBonusMultiplier1.threadSafeText = row["EffectBonusMultiplier1"].ToString();
+                EffectBonusMultiplier2.threadSafeText = row["EffectBonusMultiplier2"].ToString();
+                EffectBonusMultiplier3.threadSafeText = row["EffectBonusMultiplier3"].ToString();
+                SpellMissileID.threadSafeText = row["SpellMissileID"].ToString();
 
-            updateProgress("Updating spell description variables & difficulty selection...");
-            var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
-            var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
-            SpellDescriptionVariables.threadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
-                uint.Parse(adapter.Query(
-                    string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", "spell",
-                        selectedID)).Rows[0][0].ToString()));
+                updateProgress("Updating spell description variables & difficulty selection...");
+                var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
+                var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
+                SpellDescriptionVariables.threadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
+                    uint.Parse(adapter.Query(
+                        string.Format("SELECT `SpellDescriptionVariableID` FROM `{0}` WHERE `ID` = '{1}'", "spell",
+                            selectedID)).Rows[0][0].ToString()));
 
-            Difficulty.threadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(adapter.Query(
-                string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+                Difficulty.threadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(adapter.Query(
+                    string.Format("SELECT `SpellDifficultyID` FROM `{0}` WHERE `ID` = '{1}'", "spell", selectedID)).Rows[0][0].ToString()));
+            }
+            EffectBonusMultiplier1.IsEnabled = isWotlkOrGreater;
+            EffectBonusMultiplier2.IsEnabled = isWotlkOrGreater;
+            EffectBonusMultiplier3.IsEnabled = isWotlkOrGreater;
+            SpellMissileID.IsEnabled = isWotlkOrGreater;
+            SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+            Difficulty.IsEnabled = isWotlkOrGreater;
+
             adapter.Updating = false;
         }
 
@@ -2699,7 +2748,7 @@ namespace SpellEditor
                         {
                             TextBlock block = (TextBlock)enumerator.Current;
                             string name = block.Text;
-                            selectedID = UInt32.Parse(name.Substring(1, name.IndexOf(' ', 1)));
+                            selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
                             UpdateMainWindow();
                             return;
                         }
