@@ -1,4 +1,4 @@
-WoW Spell Editor (3.3.5a - 12340)
+WoW Spell Editor
 ===================
 
 This is a spell editor designed to be used for WoW version 3.3.5a (12340) or WoW version 1.12.1. It also supports importing and exporting of any patch version DBC to and from SQL with the use of text file bindings found in the `Bindings` directory.
