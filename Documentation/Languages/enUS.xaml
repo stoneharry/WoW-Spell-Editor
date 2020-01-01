@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <!--#region UI String-->
-    <system:String x:Key="mainTitle">WoW Spell Editor (3.3.5a - 12340)</system:String>
+    <system:String x:Key="mainTitle">WoW Spell Editor</system:String>
     <system:String x:Key="tabSelectSpell">Select Spell</system:String>
     <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
     <system:String x:Key="labGoToSpell">Go to spell:</system:String>
@@ -189,7 +189,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">An error occured setting up the database connection:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">The MySQL details input are not valid.</system:String>
-    <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor for version 3.3.5a (12340).&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
+    <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor.&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
     <system:String x:Key="TruncateTable2" xml:space="preserve">Truncating the table will remove ALL data in the SQL tables.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBCs.</system:String>

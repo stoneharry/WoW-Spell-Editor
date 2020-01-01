@@ -456,6 +456,8 @@ namespace SpellEditor
 
             try
             {
+                Title = $"{Title} ({WoWVersionManager.GetInstance().SelectedVersion().Version})";
+
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
                 stringObjectMap.Add(2, SpellName2);
