@@ -11,6 +11,7 @@ using System.Windows.Media;
 using SpellEditor.Sources.Config;
 using static System.Environment;
 using SpellEditor.Sources.VersionControl;
+using System.Diagnostics;
 
 namespace SpellEditor
 {
@@ -319,7 +320,12 @@ namespace SpellEditor
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 dialog.RootFolder = SpecialFolder.MyComputer;
-                dialog.SelectedPath = button.GetLabelText();
+                var text = button.GetLabelText();
+                if (text.StartsWith("\\"))
+                {
+                    text = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                }
+                dialog.SelectedPath = text;
                 System.Windows.Forms.DialogResult result = dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {

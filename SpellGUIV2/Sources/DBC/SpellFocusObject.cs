@@ -9,7 +9,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellFocusObject()
         {
-            ReadDBCFile("DBC/SpellFocusObject.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellFocusObject.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "None", 0));
 

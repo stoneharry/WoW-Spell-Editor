@@ -10,7 +10,7 @@ namespace SpellEditor.Sources.DBC
 
         public TotemCategory()
         {
-            ReadDBCFile("DBC/TotemCategory.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\TotemCategory.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "None", 0));
 

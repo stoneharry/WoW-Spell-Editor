@@ -9,7 +9,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellMechanic()
         {
-            ReadDBCFile("DBC/SpellMechanic.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellMechanic.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "None", 0));
 

@@ -15,8 +15,7 @@ namespace SpellEditor.Sources.Binding
         private BindingManager()
         {
             var bindingList = new List<Binding>();
-            var currentDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            foreach (string fileName in Directory.GetFiles(currentDir + "\\" + BindingsFolderName + "\\", "*.txt"))
+            foreach (string fileName in Directory.GetFiles(Config.Config.BindingsDirectory + "\\", "*.txt"))
             {
                 var bindingEntryList = new List<BindingEntry>();
                 foreach (string line in File.ReadAllLines(fileName))

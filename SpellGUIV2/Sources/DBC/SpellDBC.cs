@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
         {
             try
             {
-                ReadDBCFile("DBC/Spell.dbc");
+                ReadDBCFile(Config.Config.DbcDirectory + "\\Spell.dbc");
             }
             catch (Exception ex)
             {

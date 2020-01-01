@@ -443,6 +443,9 @@ namespace SpellEditor
                 ChannelInterruptFlagsGrid.Children.Add(box);
                 interrupts3.Add(box);
             }
+
+            // FIXME(Harry) Doesn't retain count after changing language
+            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), "");
         }
         #endregion
 
@@ -624,11 +627,11 @@ namespace SpellEditor
                 {
                     try
                     {
-                        abstractDbc = new GenericDbc($"DBC/{bindingName}.dbc");
+                        abstractDbc = new GenericDbc($"{ Config.DbcDirectory }\\{ bindingName }.dbc");
                     }
                     catch (Exception exception)
                     {
-                        Console.WriteLine($"ERROR: Failed to load DBC/{bindingName}.dbc: {exception.Message}\n{exception}");
+                        Console.WriteLine($"ERROR: Failed to load DBC/{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
                         continue;
                     }
                 }
@@ -3215,8 +3218,16 @@ namespace SpellEditor
                 if (fileName == ConfigLanguage)
                     index = MultilingualSwitch.Items.Count - 1;
             }
+            // We want the selection changed event to fire first if the index is > 0
+            if (index > 0)
+            {
+                MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
+            }
             MultilingualSwitch.SelectedIndex = index;
-            MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
+            if (index == 0)
+            {
+                MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
+            }
         }
     };
 };

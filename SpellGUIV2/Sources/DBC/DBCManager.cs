@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.DBC
             }
             if (tryLoad)
             {
-                var newDbc = new GenericDbc("DBC/" + bindingName + ".dbc");
+                var newDbc = new GenericDbc(Config.Config.DbcDirectory + "\\" + bindingName + ".dbc");
                 _DbcMap.TryAdd(bindingName, newDbc);
                 return newDbc;
             }

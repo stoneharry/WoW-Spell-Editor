@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellDuration()
         {
-            ReadDBCFile("DBC/SpellDuration.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDuration.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 

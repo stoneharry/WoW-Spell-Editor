@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellRange()
         {
-            ReadDBCFile("DBC/SpellRange.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRange.dbc");
 
             int boxIndex = 0;
             for (uint i = 0; i < Header.RecordCount; ++i)

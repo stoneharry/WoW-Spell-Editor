@@ -14,7 +14,7 @@ namespace SpellEditor.Sources.DBC
         // does not save a reference to the adapter
         public SpellDifficulty(IDatabaseAdapter adapter)
         {
-            ReadDBCFile("DBC/SpellDifficulty.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDifficulty.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 

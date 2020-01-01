@@ -28,7 +28,7 @@ namespace SpellEditor.Sources.DBC
             main = window;
             this.adapter = adapter;
 
-            ReadDBCFile("DBC/SpellIcon.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellIcon.dbc");
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];

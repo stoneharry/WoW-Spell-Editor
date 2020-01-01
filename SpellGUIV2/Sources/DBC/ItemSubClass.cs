@@ -14,7 +14,7 @@ namespace SpellEditor.Sources.DBC
 
         public ItemSubClass()
         {
-            ReadDBCFile("DBC/ItemSubClass.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\ItemSubClass.dbc");
 
             for (uint i = 0; i < Header.RecordCount; ++i)
             {

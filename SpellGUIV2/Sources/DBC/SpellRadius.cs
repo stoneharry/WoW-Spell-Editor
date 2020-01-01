@@ -10,7 +10,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellRadius()
         {
-            ReadDBCFile("DBC/SpellRadius.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRadius.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0 - 0\t(Radius - MaximumRadius)", 0));
 

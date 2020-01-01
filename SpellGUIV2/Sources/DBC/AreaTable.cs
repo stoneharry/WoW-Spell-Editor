@@ -8,7 +8,7 @@ namespace SpellEditor.Sources.DBC
 
         public AreaTable()
         {
-            ReadDBCFile("DBC/AreaTable.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\AreaTable.dbc");
 
             Lookups = new Dictionary<uint, AreaTableLookup>();
 
