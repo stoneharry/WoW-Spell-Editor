@@ -661,7 +661,7 @@ namespace SpellEditor
             var window = new ConfigWindow(adapter is MySQL ? 
                 ConfigWindow.DatabaseIdentifier.MySQL : ConfigWindow.DatabaseIdentifier.SQLite);
             window.Show();
-            window.Width = window.Width * 0.5;
+            window.Width = window.Width * 0.6;
             window.Height = window.Height * 0.7;
             ConfigWindowInstance = window;
         }
@@ -1072,6 +1072,7 @@ namespace SpellEditor
                 if (q.Rows.Count == 0)
                     return;
                 var row = q.Rows[0];
+                var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
                 row.BeginEdit();
                 try
                 {
@@ -1136,53 +1137,56 @@ namespace SpellEditor
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes5.Count; ++f)
+                    if (isWotlkOrGreater)
                     {
-                        if (attributes5[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
-                        flagg = flagg + flagg;
-                    }
-
-                    row["AttributesEx5"] = maskk;
-
-                    maskk = 0;
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes6.Count; ++f)
-                    {
-                        if (attributes6[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
-                        flagg = flagg + flagg;
-                    }
-
-                    row["AttributesEx6"] = maskk;
-
-                    maskk = 0;
-                    flagg = 1;
-
-                    for (int f = 0; f < attributes7.Count; ++f)
-                    {
-                        if (attributes7[f].IsChecked.Value == true) { maskk = maskk + flagg; }
-
-                        flagg = flagg + flagg;
-                    }
-
-                    row["AttributesEx7"] = maskk;
-
-                    if (stancesBoxes[0].IsChecked.Value == true) { row["Stances"] = 0; }
-                    else
-                    {
-                        uint mask = 0;
-                        uint flag = 1;
-
-                        for (int f = 1; f < stancesBoxes.Count; ++f)
+                        for (int f = 0; f < attributes5.Count; ++f)
                         {
-                            if (stancesBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (attributes5[f].IsChecked.Value == true) { maskk = maskk + flagg; }
 
-                            flag = flag + flag;
+                            flagg = flagg + flagg;
                         }
 
-                        row["Stances"] = mask;
+                        row["AttributesEx5"] = maskk;
+
+                        maskk = 0;
+                        flagg = 1;
+
+                        for (int f = 0; f < attributes6.Count; ++f)
+                        {
+                            if (attributes6[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+
+                            flagg = flagg + flagg;
+                        }
+
+                        row["AttributesEx6"] = maskk;
+
+                        maskk = 0;
+                        flagg = 1;
+
+                        for (int f = 0; f < attributes7.Count; ++f)
+                        {
+                            if (attributes7[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+
+                            flagg = flagg + flagg;
+                        }
+
+                        row["AttributesEx7"] = maskk;
+
+                        if (stancesBoxes[0].IsChecked.Value == true) { row["Stances"] = 0; }
+                        else
+                        {
+                            uint mask = 0;
+                            uint flag = 1;
+
+                            for (int f = 1; f < stancesBoxes.Count; ++f)
+                            {
+                                if (stancesBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+
+                                flag = flag + flag;
+                            }
+
+                            row["Stances"] = mask;
+                        }
                     }
 
                     if (targetBoxes[0].IsChecked.Value == true) { row["Targets"] = 0; }
@@ -1216,97 +1220,100 @@ namespace SpellEditor
                         row["TargetCreatureType"] = mask;
                     }
 
-                    row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (uint)0x1 : (uint)0x0;
-                    
-                    switch (CasterAuraState.SelectedIndex)
+                    if (isWotlkOrGreater)
                     {
-                        case 0: // None
+                        row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (uint)0x1 : (uint)0x0;
+
+                        switch (CasterAuraState.SelectedIndex)
                         {
-                            row["CasterAuraState"] = 0;
+                            case 0: // None
+                                {
+                                    row["CasterAuraState"] = 0;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 1: // Defense
-                        {
-                            row["CasterAuraState"] = 1;
+                            case 1: // Defense
+                                {
+                                    row["CasterAuraState"] = 1;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 2: // Healthless 20%
-                        {
-                            row["CasterAuraState"] = 2;
+                            case 2: // Healthless 20%
+                                {
+                                    row["CasterAuraState"] = 2;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 3: // Berserking
-                        {
-                            row["CasterAuraState"] = 3;
+                            case 3: // Berserking
+                                {
+                                    row["CasterAuraState"] = 3;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 4: // Judgement
-                        {
-                            row["CasterAuraState"] = 5;
+                            case 4: // Judgement
+                                {
+                                    row["CasterAuraState"] = 5;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 5: // Hunter Parry
-                        {
-                            row["CasterAuraState"] = 7;
+                            case 5: // Hunter Parry
+                                {
+                                    row["CasterAuraState"] = 7;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 6: // Victory Rush
-                        {
-                            row["CasterAuraState"] = 10;
+                            case 6: // Victory Rush
+                                {
+                                    row["CasterAuraState"] = 10;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 7: // Unknown 1
-                        {
-                            row["CasterAuraState"] = 11;
+                            case 7: // Unknown 1
+                                {
+                                    row["CasterAuraState"] = 11;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 8: // Healthless 35%
-                        {
-                            row["CasterAuraState"] = 13;
+                            case 8: // Healthless 35%
+                                {
+                                    row["CasterAuraState"] = 13;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 9: // Enrage
-                        {
-                            row["CasterAuraState"] = 17;
+                            case 9: // Enrage
+                                {
+                                    row["CasterAuraState"] = 17;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 10: // Unknown 2
-                        {
-                            row["CasterAuraState"] = 22;
+                            case 10: // Unknown 2
+                                {
+                                    row["CasterAuraState"] = 22;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        case 11: // Health Above 75%
-                        {
-                            row["CasterAuraState"] = 23;
+                            case 11: // Health Above 75%
+                                {
+                                    row["CasterAuraState"] = 23;
 
-                            break;
-                        }
+                                    break;
+                                }
 
-                        default:
-                        {
-                            break;
+                            default:
+                                {
+                                    break;
+                                }
                         }
                     }
 
@@ -1542,34 +1549,43 @@ namespace SpellEditor
                     row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
                     row["EffectMiscValue2"] = int.Parse(MiscValueA2.Text);
                     row["EffectMiscValue3"] = int.Parse(MiscValueA3.Text);
-                    row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
-                    row["EffectMiscValueB2"] = int.Parse(MiscValueB2.Text);
-                    row["EffectMiscValueB3"] = int.Parse(MiscValueB3.Text);
+                    if (isWotlkOrGreater)
+                    {
+                        row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
+                        row["EffectMiscValueB2"] = int.Parse(MiscValueB2.Text);
+                        row["EffectMiscValueB3"] = int.Parse(MiscValueB3.Text);
+                    }
                     row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
                     row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
                     row["EffectTriggerSpell3"] = uint.Parse(TriggerSpell3.Text);
                     row["EffectPointsPerComboPoint1"] = float.Parse(PointsPerComboPoint1.Text);
                     row["EffectPointsPerComboPoint2"] = float.Parse(PointsPerComboPoint2.Text);
                     row["EffectPointsPerComboPoint3"] = float.Parse(PointsPerComboPoint3.Text);
-                    row["EffectSpellClassMaskA1"] = uint.Parse(SpellMask11.Text);
-                    row["EffectSpellClassMaskA2"] = uint.Parse(SpellMask21.Text);
-                    row["EffectSpellClassMaskA3"] = uint.Parse(SpellMask31.Text);
-                    row["EffectSpellClassMaskB1"] = uint.Parse(SpellMask12.Text);
-                    row["EffectSpellClassMaskB2"] = uint.Parse(SpellMask22.Text);
-                    row["EffectSpellClassMaskB3"] = uint.Parse(SpellMask32.Text);
-                    row["EffectSpellClassMaskC1"] = uint.Parse(SpellMask13.Text);
-                    row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
-                    row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
+                    if (isWotlkOrGreater)
+                    {
+                        row["EffectSpellClassMaskA1"] = uint.Parse(SpellMask11.Text);
+                        row["EffectSpellClassMaskA2"] = uint.Parse(SpellMask21.Text);
+                        row["EffectSpellClassMaskA3"] = uint.Parse(SpellMask31.Text);
+                        row["EffectSpellClassMaskB1"] = uint.Parse(SpellMask12.Text);
+                        row["EffectSpellClassMaskB2"] = uint.Parse(SpellMask22.Text);
+                        row["EffectSpellClassMaskB3"] = uint.Parse(SpellMask32.Text);
+                        row["EffectSpellClassMaskC1"] = uint.Parse(SpellMask13.Text);
+                        row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
+                        row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
+                    }
                     row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
                     row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
                     row["ManaCostPercentage"] = uint.Parse(ManaCostPercent.Text);
                     row["StartRecoveryCategory"] = uint.Parse(StartRecoveryCategory.Text);
                     row["StartRecoveryTime"] = uint.Parse(StartRecoveryTime.Text);
                     row["MaximumTargetLevel"] = uint.Parse(MaxTargetsLevel.Text);
-                    row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
-                    row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
-                    row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
-                    row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
+                    if (isWotlkOrGreater)
+                    {
+                        row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
+                        row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
+                        row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
+                        row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
+                    }
                     row["MaximumAffectedTargets"] = uint.Parse(MaxTargets.Text);
                     row["DamageClass"] = (uint)SpellDamageType.SelectedIndex;
                     row["PreventionType"] = (uint)PreventionType.SelectedIndex;
@@ -1577,30 +1593,36 @@ namespace SpellEditor
                     row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
                     row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
                     row["SchoolMask"] = (S1.IsChecked.Value ? (uint)0x01 : (uint)0x00) + (S2.IsChecked.Value ? (uint)0x02 : (uint)0x00) + (S3.IsChecked.Value ? (uint)0x04 : (uint)0x00) + (S4.IsChecked.Value ? (uint)0x08 : (uint)0x00) + (S5.IsChecked.Value ? (uint)0x10 : (uint)0x00) + (S6.IsChecked.Value ? (uint)0x20 : (uint)0x00) + (S7.IsChecked.Value ? (uint)0x40 : (uint)0x00);
-                    row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
-                    row["EffectBonusMultiplier1"] = float.Parse(EffectBonusMultiplier1.Text);
-                    row["EffectBonusMultiplier2"] = float.Parse(EffectBonusMultiplier2.Text);
-                    row["EffectBonusMultiplier3"] = float.Parse(EffectBonusMultiplier3.Text);
+                    if (isWotlkOrGreater)
+                    {
+                        row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
+                        row["EffectBonusMultiplier1"] = float.Parse(EffectBonusMultiplier1.Text);
+                        row["EffectBonusMultiplier2"] = float.Parse(EffectBonusMultiplier2.Text);
+                        row["EffectBonusMultiplier3"] = float.Parse(EffectBonusMultiplier3.Text);
+                    }
 
+                    var numColumns = WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
                     TextBox[] boxes = stringObjectMap.Values.ToArray();
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i < numColumns; ++i)
                         row["SpellName" + i] = boxes[i].Text;
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i < numColumns; ++i)
                         row["SpellRank" + i] = boxes[i + 9].Text;
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i < numColumns; ++i)
                         row["SpellTooltip" + i] = boxes[i + 18].Text;
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i < numColumns; ++i)
                         row["SpellDescription" + i] = boxes[i + 27].Text;
-                    // This seems to mimic Blizzlike values correctly, though I don't understand it at all.
+                    // 3.3.5a: This seems to mimic Blizzlike values correctly, though I don't understand it at all.
                     // Discussed on modcraft IRC - these fields are not even read by the client.
                     // The structure used in this program is actually incorrect. All the string columns are
                     //   for different locales apart from the last one which is the flag column. So there are
                     //   not multiple flag columns, hence why we only write to the last one here. The current
                     //   released clients only use 9 locales hence the confusion with the other columns.
-                    row["SpellNameFlag7"] = (uint)(TextFlags.NOT_EMPTY);
-                    row["SpellRankFlags7"] = (uint)(TextFlags.NOT_EMPTY);
-                    row["SpellToolTipFlags7"] = (uint)(TextFlags.NOT_EMPTY);
-                    row["SpellDescriptionFlags7"] = (uint)(TextFlags.NOT_EMPTY);
+                    // Not sure on the correct behaviour in 1.12.1
+                    var suffix = isWotlkOrGreater ? "7" : "0";
+                    row["SpellNameFlag" + suffix] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellRankFlags" + suffix] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellToolTipFlags" + suffix] = (uint)(TextFlags.NOT_EMPTY);
+                    row["SpellDescriptionFlags" + suffix] = (uint)(TextFlags.NOT_EMPTY);
 
                     row.EndEdit();
                     adapter.CommitChanges(query, q.GetChanges());
@@ -1612,7 +1634,7 @@ namespace SpellEditor
                 catch (Exception ex)
                 {
                     row.CancelEdit();
-                    HandleErrorMessage(ex.Message);
+                    HandleErrorMessage(ex + "\n\n" + ex.InnerException);
                 }
                 return;
             }

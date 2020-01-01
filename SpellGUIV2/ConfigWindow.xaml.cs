@@ -253,7 +253,7 @@ namespace SpellEditor
             Config.Pass = button.Pass();
             Config.Port = button.Port();
             Config.Database = button.Database();
-            ShowFlyoutMessage("Saved config.xml");
+            ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
         public void ShowFlyoutMessage(string message)
