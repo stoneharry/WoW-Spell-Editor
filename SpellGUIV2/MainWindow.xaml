@@ -23,7 +23,7 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
-                <TextBlock Name="FlyoutText" Text="Placeholder." FontSize ="20" VerticalAlignment="Center"/>
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
@@ -636,7 +636,7 @@
                     <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <ComboBox Name="MultilingualSwitch" Foreground="White" SelectionChanged="MultilingualSwitch_SelectionChanged" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
+            <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>

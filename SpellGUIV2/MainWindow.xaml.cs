@@ -653,9 +653,11 @@ namespace SpellEditor
                 ConfigWindowInstance.Activate();
                 return;
             }
-            var window = new ConfigWindow();
+            var window = new ConfigWindow(adapter is MySQL ? 
+                ConfigWindow.DatabaseIdentifier.MySQL : ConfigWindow.DatabaseIdentifier.SQLite);
             window.Show();
-            window.Width = window.Width / 2;
+            window.Width = window.Width * 0.3;
+            window.Height = window.Height * 0.6;
             ConfigWindowInstance = window;
         }
         #endregion
@@ -792,18 +794,14 @@ namespace SpellEditor
                         string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
                         string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
                         string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
-
-                        uint result = 0;
+                        
                         if (host == null || user == null || pass == null || port == null || db == null ||
-                          host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
-                          !uint.TryParse(port, out result))
+                            host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
+                            !uint.TryParse(port, out var result))
+                        {
                             throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
+                        }
 
-                        Config.UpdateConfigValue("Mysql/host", host);
-                        Config.UpdateConfigValue("Mysql/username", user);
-                        Config.UpdateConfigValue("Mysql/password", pass);
-                        Config.UpdateConfigValue("Mysql/port", port);
-                        Config.UpdateConfigValue("Mysql/database", db);
                         Config.Host = host;
                         Config.User = user;
                         Config.Pass = pass;
@@ -3191,18 +3189,16 @@ namespace SpellEditor
 
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Config.GetConfigValue("language").Length == 0)
-                return;
             string language = e.AddedItems[0].ToString();
             string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
-            Config.UpdateConfigValue("language", language);
+            Config.Language = language;
             RefreshAllUIElements();
         }
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
-            string ConfigLanguage = Config.GetConfigValue("language");
+            string ConfigLanguage = Config.Language;
             ConfigLanguage = ConfigLanguage == "" ? "enUS" : ConfigLanguage;
 
             MultilingualSwitch.Items.Add("enUS");
@@ -3220,6 +3216,7 @@ namespace SpellEditor
                     index = MultilingualSwitch.Items.Count - 1;
             }
             MultilingualSwitch.SelectedIndex = index;
+            MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
         }
     };
 };

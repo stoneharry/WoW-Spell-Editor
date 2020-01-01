@@ -16,16 +16,79 @@ namespace SpellEditor.Sources.Config
         public static bool isInit = false;
         public static bool needInitMysql = false;
         private static XDocument xml = new XDocument();
-
-        public static string Host = "127.0.0.1";
-        public static string User = "root";
-        public static string Pass = "12345";
-        public static string Port = "3306";
-        public static string Database = "SpellEditor";
-        public static string BindingsDirectory = "\\Bindings";
-        public static string DbcDirectory = "\\DBC";
-
-        public static string Language = "enUS";
+        
+        public static string Host
+        {
+            get { return GetConfigValue("MySQL/Host"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Host", value);
+                Save();
+            }
+        }
+        public static string User
+        {
+            get { return GetConfigValue("MySQL/Username"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Username", value);
+                Save();
+            }
+        }
+        public static string Pass
+        {
+            get { return GetConfigValue("MySQL/Password"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Password", value);
+                Save();
+            }
+        }
+        public static string Port
+        {
+            get { return GetConfigValue("MySQL/Port"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Port", value);
+                Save();
+            }
+        }
+        public static string Database
+        {
+            get { return GetConfigValue("MySQL/Database"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Database", value);
+                Save();
+            }
+        }
+        public static string BindingsDirectory
+        {
+            get { return GetConfigValue("BindingsDirectory"); }
+            set
+            {
+                UpdateConfigValue("BindingsDirectory", value);
+                Save();
+            }
+        }
+        public static string DbcDirectory
+        {
+            get { return GetConfigValue("DbcDirectory"); }
+            set
+            {
+                UpdateConfigValue("DbcDirectory", value);
+                Save();
+            }
+        }
+        public static string Language
+        {
+            get { return GetConfigValue("Language"); }
+            set
+            {
+                UpdateConfigValue("Language", value);
+                Save();
+            }
+        }
 
         public static ConnectionType connectionType = ConnectionType.SQLite;
 
@@ -61,39 +124,25 @@ namespace SpellEditor.Sources.Config
 
         private static void ReadConfigFile()
         {
-            Host = GetConfigValue("Mysql/host");
-            User = GetConfigValue("Mysql/username");
-            Pass = GetConfigValue("Mysql/password");
-            Port = GetConfigValue("Mysql/port");
-            Database = GetConfigValue("Mysql/database");
-            if (Host == "" || User == "" || Pass == "" || Port == "" || Database == "")
+            // Password intentionally not checked for length, empty password is allowed
+            if (Host.Length == 0 || User.Length == 0 || Port.Length == 0 || Database.Length == 0)
+            {
                 needInitMysql = true;
-
-            var lang = GetConfigValue("language");
-            if (lang.Length == 0)
-            {
-                UpdateConfigValue("language", Language);
-            }
-            else
-            {
-                Language = lang;
             }
 
-            var bindingsDir = GetConfigValue("BindingsDirectory");
-            var dbcDir = GetConfigValue("DbcDirectory");
-            if (bindingsDir.Length == 0 || dbcDir.Length == 0)
+            if (Language.Length == 0)
             {
-                UpdateConfigValue("BindingsDirectory", BindingsDirectory);
-                UpdateConfigValue("DbcDirectory", DbcDirectory);
+                Language = "enUS";
             }
-            else
+
+            if (BindingsDirectory.Length == 0 || DbcDirectory.Length == 0)
             {
-                BindingsDirectory = bindingsDir;
-                DbcDirectory = dbcDir;
+                BindingsDirectory = "\\Bindings";
+                DbcDirectory = "\\DBC";
             }
         }
 
-        public static void UpdateConfigValue(string key, string value)
+        private static void UpdateConfigValue(string key, string value)
         {
             var node = GetXmlNode(key);
             if (node != null)
@@ -143,18 +192,18 @@ namespace SpellEditor.Sources.Config
             Save();
         }
 
-        public static bool HasKey(string key)
+        private static bool HasKey(string key)
         {
             return GetXmlNode(key) == null ? false : true;
         }
 
-        public static string GetConfigValue(string key)
+        private static string GetConfigValue(string key)
         {
             var node = GetXmlNode(key);
             return node == null ? "" : node.Value;
         }
 
-        public static void Save()
+        private static void Save()
         {
             xml.Save("config.xml");
         }

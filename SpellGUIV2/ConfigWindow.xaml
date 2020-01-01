@@ -3,49 +3,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
         Title="{DynamicResource ConfigWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
         Loaded="_Loaded">
-    <controls:MetroWindow.Resources>
-        <ResourceDictionary>
-            <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
-            <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
-            <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
-        </ResourceDictionary>
-    </controls:MetroWindow.Resources>
-    <Grid Name="ConfigGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width = "Auto"/>
-            <ColumnDefinition Width = "Auto"/>
-            <ColumnDefinition Width = "Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height = "Auto"/>
-            <RowDefinition Height = "Auto"/>
-            <RowDefinition Height = "Auto"/>
-            <RowDefinition Height = "*"/>
-        </Grid.RowDefinitions>
-
-        <!--<Grid Name="SQLiteConfigGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width = "Auto"/>
-                <ColumnDefinition Width = "Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height = "Auto"/>
-            </Grid.RowDefinitions>
-        </Grid>-->
-
-        <!--<Grid Name="MySQLConfigGrid" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width = "Auto"/>
-                <ColumnDefinition Width = "Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height = "Auto"/>
-            </Grid.RowDefinitions>
-        </Grid>-->
-    </Grid>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+    <Grid Name="ConfigGrid"/>
 </controls:MetroWindow>
