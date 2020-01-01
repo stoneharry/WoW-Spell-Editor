@@ -115,8 +115,9 @@ namespace SpellEditor
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
+            ++currentRow;
             BuildSQLiteConfigUI(currentRow);
-            BuildMySQLConfigUI(++currentRow);
+            BuildMySQLConfigUI(currentRow);
 
             var selectedConfigType = TypeContainer.LookupDatabaseTypeName(databaseButton.SelectedItem.ToString());
             ToggleGridVisibility(selectedConfigType.Identity);
@@ -151,6 +152,38 @@ namespace SpellEditor
             Grid.SetRow(grid, row);
             Grid.SetColumn(grid, 0);
             Grid.SetColumnSpan(grid, 3);
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+            row = 0;
+
+            var dbFileNameLabel = new Label() { Content = "SQLite Database File Name: " };
+            var dbFileNameText = new TextBox() { Text = Config.SQLiteFilename, MinWidth = 200 };
+            var confirmBtn = new SQLiteConfirmButton(dbFileNameText)
+            {
+                Content = "Save Changes",
+                Foreground = Brushes.Black
+            };
+            confirmBtn.Click += SaveSQLiteConfirmBtn_Click;
+
+            dbFileNameText.Margin =  new Thickness(10, 5, 10, 5);
+            dbFileNameText.Margin = new Thickness(10, 5, 10, 5);
+            confirmBtn.Margin = new Thickness(3, 10, 3, 2);
+            confirmBtn.MinHeight = 40;
+
+            Grid.SetRow(dbFileNameLabel, row);
+            Grid.SetColumn(dbFileNameLabel, 0);
+            Grid.SetRow(dbFileNameText, row++);
+            Grid.SetColumn(dbFileNameText, 1);
+            Grid.SetRow(confirmBtn, row++);
+            Grid.SetColumn(confirmBtn, 1);
+
+            grid.Children.Add(dbFileNameLabel);
+            grid.Children.Add(dbFileNameText);
+            grid.Children.Add(confirmBtn);
 
             ConfigGrid.Children.Add(grid); 
             SQLiteConfigGrid = grid;
@@ -253,6 +286,13 @@ namespace SpellEditor
             Config.Pass = button.Pass();
             Config.Port = button.Port();
             Config.Database = button.Database();
+            ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
+        }
+
+        private void SaveSQLiteConfirmBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as SQLiteConfirmButton;
+            Config.SQLiteFilename = button.SQLiteFilename();
             ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
@@ -420,6 +460,18 @@ namespace SpellEditor
             public string Port() => _Port.Text;
 
             public string Database() => _Database.Text;
+        }
+
+        private class SQLiteConfirmButton : Button
+        {
+            private readonly TextBox _SQLiteFilenameText;
+
+            public SQLiteConfirmButton(TextBox sqliteFileNameText)
+            {
+                _SQLiteFilenameText = sqliteFileNameText;
+            }
+
+            public string SQLiteFilename() => _SQLiteFilenameText.Text;
         }
     };
 };

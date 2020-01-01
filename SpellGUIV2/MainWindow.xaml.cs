@@ -2003,11 +2003,6 @@ namespace SpellEditor
             var version = WoWVersionManager.GetInstance().SelectedVersion().Identity;
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = version >= 335;
-            // Legacy compatibility where we treat the struct in 3.3.5a as only having 9 locales (these are the only ones used)
-            if (version == 335)
-            {
-                numColumns = 9;
-            }
 
             updateProgress("Updating text control's...");
             int i;

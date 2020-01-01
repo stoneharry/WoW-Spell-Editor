@@ -99,6 +99,15 @@ namespace SpellEditor.Sources.Config
                 Save();
             }
         }
+        public static string SQLiteFilename
+        {
+            get { return GetConfigValue("SQLite/DatabaseFileName"); }
+            set
+            {
+                UpdateConfigValue("SQLite/DatabaseFileName", value);
+                Save();
+            }
+        }
 
         public static ConnectionType connectionType = ConnectionType.SQLite;
 
@@ -138,6 +147,11 @@ namespace SpellEditor.Sources.Config
             if (Host.Length == 0 || User.Length == 0 || Port.Length == 0 || Database.Length == 0)
             {
                 needInitMysql = true;
+            }
+
+            if (SQLiteFilename.Length == 0)
+            {
+                SQLiteFilename = "SpellEditor";
             }
 
             if (Language.Length == 0)

@@ -17,7 +17,8 @@ namespace SpellEditor.Sources.VersionControl
         private WoWVersionManager()
         {
             _VersionList.Add(new WoWVersion() { Identity = 112, Name = "WoW 1.12.1", Version = "1.12.1", NumLocales = 8 });
-            _VersionList.Add(new WoWVersion() { Identity = 335, Name = "WoW 3.3.5a 12340", Version = DefaultVersionString, NumLocales = 16 });
+            // 3.3.5a actually has 16 locales and 1 flag but we load it like this for legacy backwards compatibility
+            _VersionList.Add(new WoWVersion() { Identity = 335, Name = "WoW 3.3.5a 12340", Version = DefaultVersionString, NumLocales = 9 });
         }
         
         public static WoWVersionManager GetInstance() => _Instance;

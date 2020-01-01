@@ -19,7 +19,7 @@ namespace SpellEditor.Sources.Database
 
         public SQLite()
         {
-            var connectionString = $"Data Source ={Environment.CurrentDirectory}\\SpellEditor.db";
+            var connectionString = $"Data Source ={Environment.CurrentDirectory}\\{Config.Config.SQLiteFilename}.db";
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
