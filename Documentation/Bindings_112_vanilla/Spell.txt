@@ -20,6 +20,7 @@ uint TargetAuraState
 uint CastingTimeIndex
 uint RecoveryTime
 uint CategoryRecoveryTime
+uint InterruptFlags
 uint AuraInterruptFlags
 uint ChannelInterruptFlags
 uint ProcFlags
@@ -113,7 +114,6 @@ uint EffectTriggerSpell3
 float EffectPointsPerComboPoint1
 float EffectPointsPerComboPoint2
 float EffectPointsPerComboPoint3
-int UnknownFlag
 uint SpellVisual1
 uint SpellVisual2
 uint SpellIconID

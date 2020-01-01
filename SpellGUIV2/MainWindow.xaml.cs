@@ -2003,21 +2003,21 @@ namespace SpellEditor
             for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + numColumns, out box);
+                stringObjectMap.TryGetValue(i + 9, out box);
                 box.threadSafeText = row[string.Format("SpellRank{0}", i)];
             }
 
             for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + (numColumns * 2), out box);
+                stringObjectMap.TryGetValue(i + 18, out box);
                 box.threadSafeText = row[string.Format("SpellTooltip{0}", i)];
             }
 
             for (i = 0; i < numColumns; ++i)
             {
                 ThreadSafeTextBox box;
-                stringObjectMap.TryGetValue(i + (numColumns * 3), out box);
+                stringObjectMap.TryGetValue(i + 27, out box);
                 box.threadSafeText = row[string.Format("SpellDescription{0}", i)];
             }
 
@@ -2336,27 +2336,23 @@ namespace SpellEditor
             RecoveryTime.threadSafeText = uint.Parse(row["RecoveryTime"].ToString());
             CategoryRecoveryTime.threadSafeText = uint.Parse(row["CategoryRecoveryTime"].ToString());
 
-            if (isWotlkOrGreater)
+            mask = uint.Parse(row["InterruptFlags"].ToString());
+            if (mask == 0)
             {
-                mask = uint.Parse(row["InterruptFlags"].ToString());
-                if (mask == 0)
+                interrupts1[0].threadSafeChecked = true;
+                for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
+            }
+            else
+            {
+                interrupts1[0].threadSafeChecked = false;
+                uint flag = 1;
+                for (int f = 1; f < interrupts1.Count; ++f)
                 {
-                    interrupts1[0].threadSafeChecked = true;
-                    for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].threadSafeChecked = false; }
-                }
-                else
-                {
-                    interrupts1[0].threadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < interrupts1.Count; ++f)
-                    {
-                        interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                    interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
 
-                        flag = flag + flag;
-                    }
+                    flag = flag + flag;
                 }
             }
-            interrupts1.ForEach(box => box.IsEnabled = isWotlkOrGreater);
 
             mask = uint.Parse(row["AuraInterruptFlags"].ToString());
             if (mask == 0)
