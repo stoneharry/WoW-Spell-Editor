@@ -1,17 +1,17 @@
 WoW Spell Editor (3.3.5a - 12340)
 ===================
 
-This is a spell editor designed to be used for WoW version 3.3.5a (12340). It also supports importing and exporting of any patch version DBC to and from SQL with the use of text file bindings found in the `Bindings` directory.
+This is a spell editor designed to be used for WoW version 3.3.5a (12340) or WoW version 1.12.1. It also supports importing and exporting of any patch version DBC to and from SQL with the use of text file bindings found in the `Bindings` directory.
 
 ![Spell Editor Image](https://i.imgur.com/j7f8Fhb.png)
-
-You could update it the program to be used with other patch versions relatively easily, but there is no easy way for me to make it support many versions at once with the current implementation.
 
 Downloads can be found in the releases section, please report any issues you find and I will look at them when I get a chance.
 
 The program currently supports SQLite and MySQL connection types.
 
 The editing process is to import your `spell.dbc` into MySQL or SQLite, and then you can edit the spells with the program or with queries. When you are ready to test the modifications you have made you can export it back into a new `spell.dbc` file.
+
+Config changes require a program restart to take effect.
 
 Enjoy.
 
