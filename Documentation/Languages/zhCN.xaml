@@ -177,6 +177,8 @@
     <system:String x:Key="No">否</system:String>
     <system:String x:Key="ERROR">错误</system:String>
     <system:String x:Key="Import/Export">Import/Export</system:String>
+	<system:String x:Key="butConfig">Config</system:String>
+	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="ReloadingUI">重新加载UI中.....</system:String>
     <system:String x:Key="Input_MySQL_Details">请输入MYSQL的各项参数.</system:String>
     <system:String x:Key="Input_MySQL_Details_1">请输入你的MYSQL主机地址:</system:String>

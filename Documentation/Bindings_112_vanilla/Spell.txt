@@ -3,7 +3,7 @@ uint ID
 uint SchoolMask
 uint Category
 int castUI
-uint dispelType
+uint Dispel
 uint Mechanic
 uint Attributes
 uint AttributesEx
@@ -163,7 +163,7 @@ uint SpellClassSet
 uint SpellClassMask1
 uint SpellClassMask2
 uint MaximumAffectedTargets
-uint DefenseType
+uint DamageClass
 uint PreventionType
 uint StanceBarOrder
 float EffectDamageMultiplier1

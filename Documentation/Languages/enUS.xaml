@@ -165,6 +165,8 @@
     <system:String x:Key="butImportExportWindowImport">Import</system:String>
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
+	<system:String x:Key="butConfig">Config</system:String>
+	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
     <!--#endregion-->
 

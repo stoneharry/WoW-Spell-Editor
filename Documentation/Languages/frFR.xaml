@@ -15,7 +15,7 @@
     <system:String x:Key="tabTaiwanese">Taïwanais</system:String>
     <system:String x:Key="tabMexican">Mexicain</system:String>
     <system:String x:Key="tabPortuguese">Portugais</system:String>
-    <system:String x:Key="tabRussian">Russe</system :String>
+    <system:String x:Key="tabRussian">Russe</system:String>
     <system:String x:Key="labSpellName">Nom du sort :</system:String>
     <system:String x:Key="labSpellRank">Rang du sort :</system:String>
     <system:String x:Key="labSpellTooltip">Infobulle du sort :</system:String>
@@ -177,6 +177,8 @@
     <system:String x:Key="No">NON</system:String>
     <system:String x:Key="ERROR">ERREUR</system:String>
     <system:String x:Key="Import/Export">Importer/Exporter</system:String>
+	<system:String x:Key="butConfig">Config</system:String>
+	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="ReloadingUI">Rechargement de l'interface utilisateur...</system:String>
     <system:String x:Key="Input_MySQL_Details">Entrer les détails MySQL</system:String>
     <system:String x:Key="Input_MySQL_Details_1">Entrez votre hôte MySQL :</system:String>
