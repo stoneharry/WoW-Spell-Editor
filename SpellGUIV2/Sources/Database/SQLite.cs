@@ -10,7 +10,6 @@ namespace SpellEditor.Sources.Database
     class SQLite : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
-        private Config.Config _config;
         private SQLiteConnection _connection = null;
         public bool Updating
         {
@@ -18,10 +17,8 @@ namespace SpellEditor.Sources.Database
             set;
         }
 
-        public SQLite(Config.Config config)
+        public SQLite()
         {
-            _config = config;
-
             var connectionString = $"Data Source ={Environment.CurrentDirectory}\\SpellEditor.db";
 
             _connection = new SQLiteConnection(connectionString);

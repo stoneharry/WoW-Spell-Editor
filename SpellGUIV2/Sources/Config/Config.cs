@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SpellEditor.Sources.VersionControl;
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace SpellEditor.Sources.Config
 {
-    public class Config
+    public static class Config
     {
         public enum ConnectionType
         {
@@ -13,21 +14,95 @@ namespace SpellEditor.Sources.Config
             MySQL
         }
 
-        public bool isInit = false;
-        public bool needInitMysql = false;
-        XDocument xml = new XDocument();
+        public static bool isInit = false;
+        public static bool needInitMysql = false;
+        private static XDocument xml = new XDocument();
+        
+        public static string Host
+        {
+            get { return GetConfigValue("MySQL/Host"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Host", value);
+                Save();
+            }
+        }
+        public static string User
+        {
+            get { return GetConfigValue("MySQL/Username"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Username", value);
+                Save();
+            }
+        }
+        public static string Pass
+        {
+            get { return GetConfigValue("MySQL/Password"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Password", value);
+                Save();
+            }
+        }
+        public static string Port
+        {
+            get { return GetConfigValue("MySQL/Port"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Port", value);
+                Save();
+            }
+        }
+        public static string Database
+        {
+            get { return GetConfigValue("MySQL/Database"); }
+            set
+            {
+                UpdateConfigValue("MySQL/Database", value);
+                Save();
+            }
+        }
+        public static string BindingsDirectory
+        {
+            get { return GetConfigValue("BindingsDirectory"); }
+            set
+            {
+                UpdateConfigValue("BindingsDirectory", value);
+                Save();
+            }
+        }
+        public static string DbcDirectory
+        {
+            get { return GetConfigValue("DbcDirectory"); }
+            set
+            {
+                UpdateConfigValue("DbcDirectory", value);
+                Save();
+            }
+        }
+        public static string Language
+        {
+            get { return GetConfigValue("Language"); }
+            set
+            {
+                UpdateConfigValue("Language", value);
+                Save();
+            }
+        }
+        public static string WoWVersion
+        {
+            get { return GetConfigValue("WoWVersion"); }
+            set
+            {
+                UpdateConfigValue("WoWVersion", value);
+                Save();
+            }
+        }
 
-        public string Host = "127.0.0.1";
-        public string User = "root";
-        public string Pass = "12345";
-        public string Port = "3306";
-        public string Database = "SpellEditor";
+        public static ConnectionType connectionType = ConnectionType.SQLite;
 
-        public string Language = "enUS";
-
-        public ConnectionType connectionType = ConnectionType.SQLite;
-
-        public void CreateXmlFile()
+        private static void CreateXmlFile()
         {
             XmlDocument xmlDoc = new XmlDocument();
             XmlNode node = xmlDoc.CreateXmlDeclaration("1.0", "utf-8", "");
@@ -45,37 +120,44 @@ namespace SpellEditor.Sources.Config
             }
         }
 
-        public Config()
+        public static void Init()
         {
             if (!File.Exists("config.xml"))
                 CreateXmlFile();
 
             xml = XDocument.Load("config.xml");
-        }
-
-        public void Init()
-        {
-            if (!File.Exists("config.xml"))
+            if (xml == null || xml.Root == null)
                 CreateXmlFile();
 
             ReadConfigFile();
         }
 
-        public void ReadConfigFile()
+        private static void ReadConfigFile()
         {
-            Host = GetConfigValue("Mysql/host");
-            User = GetConfigValue("Mysql/username");
-            Pass = GetConfigValue("Mysql/password");
-            Port = GetConfigValue("Mysql/port");
-            Database = GetConfigValue("Mysql/database");
-
-            Language = GetConfigValue("language");
-
-            if (Host == "" || User == "" || Pass == "" || Port == "" || Database == "")
+            // Password intentionally not checked for length, empty password is allowed
+            if (Host.Length == 0 || User.Length == 0 || Port.Length == 0 || Database.Length == 0)
+            {
                 needInitMysql = true;
+            }
+
+            if (Language.Length == 0)
+            {
+                Language = "enUS";
+            }
+
+            if (BindingsDirectory.Length == 0 || DbcDirectory.Length == 0)
+            {
+                BindingsDirectory = "\\Bindings";
+                DbcDirectory = "\\DBC";
+            }
+
+            if (WoWVersion.Length == 0)
+            {
+                WoWVersion = WoWVersionManager.GetInstance().LookupVersion(WoWVersionManager.DefaultVersionString).ToString();
+            }
         }
 
-        public void UpdateConfigValue(string key, string value)
+        private static void UpdateConfigValue(string key, string value)
         {
             var node = GetXmlNode(key);
             if (node != null)
@@ -85,11 +167,9 @@ namespace SpellEditor.Sources.Config
             }
             else
                 CreateConfigValue(key, value);
-
-            ReadConfigFile();
         }
 
-        public XElement GetXmlNode(string key)
+        private static XElement GetXmlNode(string key)
         {
             string[] nodes = key.Split('/');
             XElement xElement = xml.Root;
@@ -104,7 +184,7 @@ namespace SpellEditor.Sources.Config
             return xElement;
         }
 
-        public void CreateConfigValue(string key, string value)
+        private static void CreateConfigValue(string key, string value)
         {
             string[] nodes = key.Split('/');
 
@@ -127,18 +207,18 @@ namespace SpellEditor.Sources.Config
             Save();
         }
 
-        public bool HasKey(string key)
+        private static bool HasKey(string key)
         {
             return GetXmlNode(key) == null ? false : true;
         }
 
-        public string GetConfigValue(string key)
+        private static string GetConfigValue(string key)
         {
             var node = GetXmlNode(key);
             return node == null ? "" : node.Value;
         }
 
-        public void Save()
+        private static void Save()
         {
             xml.Save("config.xml");
         }

@@ -1,5 +1,6 @@
 ﻿using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.VersionControl;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -242,12 +243,17 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        protected string GetAllLocaleStringsForField(string fieldName, Dictionary<string, object> record, int numLocales = 16)
+        protected string GetAllLocaleStringsForField(string fieldName, Dictionary<string, object> record)
         {
+            uint numLocales = WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             string name = "";
             bool notFirstItem = false;
             for (int i = 1; i <= numLocales; ++i)
             {
+                if (!record.ContainsKey(fieldName + i))
+                {
+                    continue;
+                }
                 uint strOffset = (uint)record[fieldName + i];
                 if (strOffset > 0)
                 {

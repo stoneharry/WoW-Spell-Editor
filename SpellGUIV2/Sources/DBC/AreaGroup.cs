@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.DBC
 
         public AreaGroup(Dictionary<uint, AreaTable.AreaTableLookup> areaTableLookups)
         {
-            ReadDBCFile("DBC/AreaGroup.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\AreaGroup.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 

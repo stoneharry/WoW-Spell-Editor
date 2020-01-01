@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.Config;
 
 namespace SpellEditor
 {
@@ -66,7 +67,7 @@ namespace SpellEditor
                 contents.Add(new CheckBox()
                 {
                     Name = binding.Name + "ImportCheckBox",
-                    Content = $"Import DBC\\{binding.Name}.dbc{(numRows > 0 ? $" - {numRows} rows" : "")}",
+                    Content = $"Import {Config.DbcDirectory}\\{binding.Name}.dbc{(numRows > 0 ? $" - {numRows} rows" : "")}",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     IsEnabled = numRows == 0,

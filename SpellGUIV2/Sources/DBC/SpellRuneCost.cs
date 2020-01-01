@@ -10,7 +10,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellRuneCost()
         {
-            ReadDBCFile("DBC/SpellRuneCost.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRuneCost.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 

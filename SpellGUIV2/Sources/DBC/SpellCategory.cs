@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
         public SpellCategory()
         {
 
-            ReadDBCFile("DBC/SpellCategory.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellCategory.dbc");
 
             int boxIndex = 1;
             Lookups.Add(new DBCBoxContainer(0, "0", 0));

@@ -10,7 +10,6 @@ namespace SpellEditor.Sources.Database
     class MySQL : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
-        private Config.Config _config;
         private MySqlConnection _connection;
         public bool Updating
         {
@@ -18,13 +17,14 @@ namespace SpellEditor.Sources.Database
             set;
         }
 
-        public MySQL(Config.Config config)
+        public MySQL()
         {
-            _config = config;
-
-            string connectionString = "server={0};port={1};uid={2};pwd={3};Charset=utf8;";
-                connectionString = string.Format(connectionString,
-                config.Host, config.Port, config.User, config.Pass);
+            string connectionString = string.Format(
+                "server={0};port={1};uid={2};pwd={3};Charset=utf8;",
+                Config.Config.Host,
+                Config.Config.Port,
+                Config.Config.User,
+                Config.Config.Pass);
 
             _connection = new MySqlConnection();
             _connection.ConnectionString = connectionString;
@@ -32,7 +32,7 @@ namespace SpellEditor.Sources.Database
             // Create DB if not exists and use
             using (var cmd = _connection.CreateCommand())
             {
-                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", config.Database);
+                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
                 cmd.ExecuteNonQuery();
             }
             // Create binding tables

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections.Concurrent;
 
 namespace SpellEditor.Sources.DBC
@@ -22,20 +23,41 @@ namespace SpellEditor.Sources.DBC
          */
         private void LoadRequiredDbcs()
         {
-            _DbcMap.TryAdd("AreaTable", new AreaTable());
-            _DbcMap.TryAdd("SpellCategory", new SpellCategory());
-            _DbcMap.TryAdd("SpellDispelType", new SpellDispelType());
-            _DbcMap.TryAdd("SpellMechanic", new SpellMechanic());
-            _DbcMap.TryAdd("SpellFocusObject", new SpellFocusObject());
-            _DbcMap.TryAdd("SpellCastTimes", new SpellCastTimes());
-            _DbcMap.TryAdd("SpellDuration", new SpellDuration());
-            _DbcMap.TryAdd("SpellRange", new SpellRange());
-            _DbcMap.TryAdd("SpellRadius", new SpellRadius());
-            _DbcMap.TryAdd("ItemClass", new ItemClass());
-            _DbcMap.TryAdd("ItemSubClass", new ItemSubClass());
-            _DbcMap.TryAdd("TotemCategory", new TotemCategory());
-            _DbcMap.TryAdd("SpellRuneCost", new SpellRuneCost());
-            _DbcMap.TryAdd("SpellDescriptionVariables", new SpellDescriptionVariables());
+            TryLoadDbc<AreaTable>("AreaTable");
+            TryLoadDbc<SpellCategory>("SpellCategory");
+            TryLoadDbc<SpellDispelType>("SpellDispelType");
+            TryLoadDbc<SpellMechanic>("SpellMechanic");
+            TryLoadDbc<SpellFocusObject>("SpellFocusObject");
+            TryLoadDbc<SpellCastTimes>("SpellCastTimes");
+            TryLoadDbc<SpellDuration>("SpellDuration");
+            TryLoadDbc<SpellRange>("SpellRange");
+            TryLoadDbc<SpellRadius>("SpellRadius");
+            TryLoadDbc<ItemClass>("ItemClass");
+            TryLoadDbc<ItemSubClass>("ItemSubClass");
+            var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
+            if (isWotlkOrGreater)
+            {
+                TryLoadDbc<TotemCategory>("TotemCategory");
+                TryLoadDbc<SpellRuneCost>("SpellRuneCost");
+                TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+            }
+        }
+
+        /**
+         * Loads the DBC file supressing any exception raised in order to not throw a hard error
+         * because of a bad binding or dbc file.
+         */
+        private bool TryLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new()
+        {
+            try
+            {
+                return _DbcMap.TryAdd(name, new DBCType());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR: Failed to load DBC: [" + name + "] " + e.Message + "\n" + e.StackTrace);
+            }
+            return false;
         }
 
         public bool ForceLoadDbc(string name, AbstractDBC dbc) => _DbcMap.TryAdd(name, dbc);
@@ -48,7 +70,7 @@ namespace SpellEditor.Sources.DBC
             }
             if (tryLoad)
             {
-                var newDbc = new GenericDbc("DBC/" + bindingName + ".dbc");
+                var newDbc = new GenericDbc(Config.Config.DbcDirectory + "\\" + bindingName + ".dbc");
                 _DbcMap.TryAdd(bindingName, newDbc);
                 return newDbc;
             }

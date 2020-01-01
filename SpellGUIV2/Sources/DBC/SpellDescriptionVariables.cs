@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
 
         public SpellDescriptionVariables()
         {
-            ReadDBCFile("DBC/SpellDescriptionVariables.dbc");
+            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDescriptionVariables.dbc");
 
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 
