@@ -56,7 +56,6 @@ namespace SpellEditor
 
         #region MemberVariables
         private IDatabaseAdapter adapter;
-        private Config config = new Config();
         public uint selectedID = 0;
         public uint newIconID = 1;
         private bool updating;
@@ -644,35 +643,50 @@ namespace SpellEditor
         }
         #endregion
 
+        #region ConfigButton
+        private ConfigWindow ConfigWindowInstance = null;
+
+        private void ConfigButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (ConfigWindowInstance != null && ConfigWindowInstance.IsLoaded)
+            {
+                ConfigWindowInstance.Activate();
+                return;
+            }
+            var window = new ConfigWindow();
+            window.Show();
+            window.Width = window.Width / 2;
+            ConfigWindowInstance = window;
+        }
+        #endregion
+
         #region InitialiseMemberVariables
         private async void loadAllData()
         {
-            config = await GetConfig();
-            if (!config.isInit)
+            await GetConfig();
+            if (!Config.isInit)
             {
                 await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), TryFindResource("String2").ToString());
                 return;
             }
-            string errorMsg = "";
             try
             {
-                switch (config.connectionType)
+                switch (Config.connectionType)
                 {
                     case Config.ConnectionType.MySQL:
-                        adapter = new MySQL(config);
+                        adapter = new MySQL();
                         break;
                     case Config.ConnectionType.SQLite:
-                        adapter = new SQLite(config);
+                        adapter = new SQLite();
                         break;
+                    default:
+                        throw new Exception("Unknown connection type, valid types: MySQL, SQLite");
                 }
             }
             catch (Exception e)
             {
-                errorMsg = e.Message;
-            }
-            if (errorMsg.Length > 0)
-            {
-                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}", TryFindResource("Input_MySQL_Error").ToString(), errorMsg));
+                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}",
+                    TryFindResource("Input_MySQL_Error").ToString(), e.Message + "\n" + e.InnerException?.Message));
                 return;
             }
 
@@ -750,11 +764,11 @@ namespace SpellEditor
 
         private List<Label> ConvertBoxListToLabels(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabel()).ToList();
 
-        private async Task<Config> GetConfig()
+        private async Task GetConfig()
         {
-            if (!config.isInit)
+            if (!Config.isInit)
             {
-                config.Init();
+                Config.Init();
 
                 var settings = new MetroDialogSettings()
                 {
@@ -771,7 +785,7 @@ namespace SpellEditor
 
                 if (!isSqlite)
                 {
-                    if (config.needInitMysql)
+                    if (Config.needInitMysql)
                     {
                         string host = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_1").ToString());
                         string user = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_2").ToString());
@@ -785,22 +799,21 @@ namespace SpellEditor
                           !uint.TryParse(port, out result))
                             throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
 
-                        config.UpdateConfigValue("Mysql/host", host);
-                        config.UpdateConfigValue("Mysql/username", user);
-                        config.UpdateConfigValue("Mysql/password", pass);
-                        config.UpdateConfigValue("Mysql/port", port);
-                        config.UpdateConfigValue("Mysql/database", db);
-                        config.Host = host;
-                        config.User = user;
-                        config.Pass = pass;
-                        config.Port = port;
-                        config.Database = db;
+                        Config.UpdateConfigValue("Mysql/host", host);
+                        Config.UpdateConfigValue("Mysql/username", user);
+                        Config.UpdateConfigValue("Mysql/password", pass);
+                        Config.UpdateConfigValue("Mysql/port", port);
+                        Config.UpdateConfigValue("Mysql/database", db);
+                        Config.Host = host;
+                        Config.User = user;
+                        Config.Pass = pass;
+                        Config.Port = port;
+                        Config.Database = db;
                     }
                 }
-                config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
-                config.isInit = true;
+                Config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
+                Config.isInit = true;
             }
-            return config;
         }
         #endregion
 
@@ -958,6 +971,7 @@ namespace SpellEditor
                         adapter.Execute(string.Format("delete from `{0}`", binding.Name));
                     PopulateSelectSpell();
                 }
+                return;
             }
 
             if (sender == InsertANewRecord)
@@ -1024,6 +1038,7 @@ namespace SpellEditor
                 PopulateSelectSpell();
 
                 ShowFlyoutMessage(string.Format(TryFindResource("CopySpellRecord8").ToString(), inputNewRecord));
+                return;
             }
 
             if (sender == DeleteARecord)
@@ -1046,6 +1061,7 @@ namespace SpellEditor
                 PopulateSelectSpell();
 
                 ShowFlyoutMessage(TryFindResource("DeleteSpellRecord3").ToString());
+                return;
             }
 
             if (sender == SaveSpellChanges)
@@ -1592,13 +1608,12 @@ namespace SpellEditor
 
                     PopulateSelectSpell();
                 }
-
                 catch (Exception ex)
                 {
                     row.CancelEdit();
                     HandleErrorMessage(ex.Message);
-                    return;
                 }
+                return;
             }
 
             if (sender == SaveIcon)
@@ -1617,12 +1632,19 @@ namespace SpellEditor
                 else if (spellOrActive == MessageDialogResult.Negative)
                     column = "ActiveIconID";
                 adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", column, newIconID, selectedID));
+                return;
             }
 
             if (sender == ResetSpellIconID)
+            {
                 adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "SpellIconID", 1, selectedID));
+                return;
+            }
             if (sender == ResetActiveIconID)
-                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "ActiveIconID", 0, selectedID)); 
+            {
+                adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "ActiveIconID", 0, selectedID));
+                return;
+            }
         }
         #endregion
 
@@ -1656,13 +1678,11 @@ namespace SpellEditor
         private class SpellListQueryWorker : BackgroundWorker
         {
             public IDatabaseAdapter __adapter;
-            public Config __config;
             public Stopwatch __watch;
 
-            public SpellListQueryWorker(IDatabaseAdapter _adapter, Config _config, Stopwatch watch)
+            public SpellListQueryWorker(IDatabaseAdapter _adapter, Stopwatch watch)
             {
                 __adapter = _adapter;
-                __config = _config;
                 __watch = watch;
             }
         }
@@ -1707,7 +1727,7 @@ namespace SpellEditor
             SelectSpellContentsIndex = 0;
             SelectSpellContentsCount = SelectSpell.Items.Count;
             SpellsLoadedLabel.Content = TryFindResource("no_spells_loaded").ToString();
-            var _worker = new SpellListQueryWorker(adapter, config, selectSpellWatch);
+            var _worker = new SpellListQueryWorker(adapter, selectSpellWatch);
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
 
@@ -1715,7 +1735,7 @@ namespace SpellEditor
 
             _worker.DoWork += delegate(object s, DoWorkEventArgs args)
             {
-                if (_worker.__adapter == null || !_worker.__config.isInit)
+                if (_worker.__adapter == null || !Config.isInit)
                     return;
                 int locale = GetLocale();
                 if (locale > 0)
@@ -2719,7 +2739,7 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating || adapter == null || !config.isInit)
+            if (updating || adapter == null || !Config.isInit)
                 return;
             var item = sender as TabControl;
 
@@ -3171,17 +3191,19 @@ namespace SpellEditor
 
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (Config.GetConfigValue("language").Length == 0)
+                return;
             string language = e.AddedItems[0].ToString();
             string path = string.Format("pack://{0}:,,,/Languages/{1}.xaml", "SiteOfOrigin", language);
             Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
-            config.UpdateConfigValue("language", language);
+            Config.UpdateConfigValue("language", language);
             RefreshAllUIElements();
         }
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
-            string configLanguage = config.GetConfigValue("language");
-            configLanguage = configLanguage == "" ? "enUS" : configLanguage;
+            string ConfigLanguage = Config.GetConfigValue("language");
+            ConfigLanguage = ConfigLanguage == "" ? "enUS" : ConfigLanguage;
 
             MultilingualSwitch.Items.Add("enUS");
             int index = 0;
@@ -3194,7 +3216,7 @@ namespace SpellEditor
                 if (fileName != "enUS")
                     MultilingualSwitch.Items.Add(fileName);
 
-                if (fileName == configLanguage)
+                if (fileName == ConfigLanguage)
                     index = MultilingualSwitch.Items.Count - 1;
             }
             MultilingualSwitch.SelectedIndex = index;

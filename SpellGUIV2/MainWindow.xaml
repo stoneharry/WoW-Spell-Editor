@@ -606,6 +606,11 @@
     </Grid>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
+            <Button Name="ConfigButton" Click="ConfigButtonClick">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{DynamicResource butConfig}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
