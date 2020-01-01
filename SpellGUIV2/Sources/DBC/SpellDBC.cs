@@ -7,8 +7,6 @@ namespace SpellEditor.Sources.DBC
 {
     class SpellDBC : AbstractDBC
     {
-        private MainWindow main;
-
         public bool LoadDBCFile(MainWindow window)
         {
             try
@@ -17,7 +15,7 @@ namespace SpellEditor.Sources.DBC
             }
             catch (Exception ex)
             {
-                main.HandleErrorMessage(ex.Message);
+                window.HandleErrorMessage(ex.Message);
                 return false;
             }
             return true;

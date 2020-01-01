@@ -10,6 +10,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Media;
 using SpellEditor.Sources.Config;
 using static System.Environment;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor
 {
@@ -45,6 +46,8 @@ namespace SpellEditor
             ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            // WoW Version row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             // Database type row
             ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             // Bindings and directory settings, 2 rows
@@ -53,8 +56,10 @@ namespace SpellEditor
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
 
-            var splitLabel = new Label() { Content = "Database type:" };
-            var splitButton = new SplitButton();
+            var databaseLabel = new Label() { Content = "Database type:" };
+            var databaseButton = new SplitButton();
+            var versionLabel = new Label() { Content = "WoW version: " };
+            var versionButton = new SplitButton();
 
             var sqlite = new DatabaseType() { Index = 0, Name = "SQLite", Identity = DatabaseIdentifier.SQLite };
             var mysql = new DatabaseType() { Index = 1, Name = "MySQL", Identity = DatabaseIdentifier.MySQL };
@@ -62,36 +67,69 @@ namespace SpellEditor
             TypeContainer.AddDatabaseType(sqlite);
             TypeContainer.AddDatabaseType(mysql);
 
-            splitButton.Items.Add(sqlite.Name);
-            splitButton.Items.Add(mysql.Name);
+            databaseButton.Items.Add(sqlite.Name);
+            databaseButton.Items.Add(mysql.Name);
+            var index = 0;
+            var i = 0;
+            foreach (var version in WoWVersionManager.GetInstance().AllVersions())
+            {
+                versionButton.Items.Add(version.Version);
+                if (version.Version.Equals(Config.WoWVersion, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    index = i;
+                }
+                ++i;
+            }
+            versionButton.SelectedIndex = index;
+            
+            databaseButton.SelectedIndex = TypeContainer.GetDatabaseTypeForId(defaultConfigType).Index;
+            databaseButton.MinWidth = 150;
+            versionButton.MinWidth = 150;
 
-            splitButton.SelectedIndex = TypeContainer.GetDatabaseTypeForId(defaultConfigType).Index;
-            splitButton.MinWidth = 150;
+            databaseButton.SelectionChanged += DatabaseButton_SelectionChanged;
+            versionButton.SelectionChanged += VersionButton_SelectionChanged;
 
-            splitButton.SelectionChanged += SplitButton_SelectionChanged;
+            databaseLabel.Margin = new Thickness(10);
+            databaseButton.Margin = new Thickness(10);
+            versionLabel.Margin = new Thickness(10);
+            versionButton.Margin = new Thickness(10);
 
-            splitLabel.Margin = new Thickness(10);
-            splitButton.Margin = new Thickness(25, 10, 25, 15);
+            int currentRow = 0;
 
-            Grid.SetRow(splitLabel, 0);
-            Grid.SetColumn(splitLabel, 0);
-            Grid.SetRow(splitButton, 0);
-            Grid.SetColumn(splitButton, 1);
-            Grid.SetColumnSpan(splitButton, 2);
+            Grid.SetRow(databaseLabel, currentRow);
+            Grid.SetColumn(databaseLabel, 0);
+            Grid.SetRow(databaseButton, currentRow++);
+            Grid.SetColumn(databaseButton, 1);
+            Grid.SetColumnSpan(databaseButton, 2);
+            Grid.SetRow(versionLabel, 1);
+            Grid.SetColumn(versionLabel, 0);
+            Grid.SetRow(versionButton, currentRow++);
+            Grid.SetColumn(versionButton, 1);
+            Grid.SetColumnSpan(versionButton, 2);
 
-            ConfigGrid.Children.Add(splitLabel);
-            ConfigGrid.Children.Add(splitButton);
+            ConfigGrid.Children.Add(databaseLabel);
+            ConfigGrid.Children.Add(databaseButton);
+            ConfigGrid.Children.Add(versionLabel);
+            ConfigGrid.Children.Add(versionButton);
 
-            int currentRow = BuildBindingsAndDbcUI(ConfigGrid, 1);
+            currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
             BuildSQLiteConfigUI(currentRow);
             BuildMySQLConfigUI(++currentRow);
 
-            var selectedConfigType = TypeContainer.LookupDatabaseTypeName(splitButton.SelectedItem.ToString());
+            var selectedConfigType = TypeContainer.LookupDatabaseTypeName(databaseButton.SelectedItem.ToString());
             ToggleGridVisibility(selectedConfigType.Identity);
         }
 
-        private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void VersionButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = e.AddedItems[0].ToString();
+            //var selectedType = WoWVersionManager.GetInstance().LookupVersion(selectedItem);
+
+            Config.WoWVersion = selectedItem;
+        }
+
+        private void DatabaseButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = e.AddedItems[0].ToString();
             var selectedType = TypeContainer.LookupDatabaseTypeName(selectedItem);

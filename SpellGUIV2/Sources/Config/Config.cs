@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.VersionControl;
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -89,6 +90,15 @@ namespace SpellEditor.Sources.Config
                 Save();
             }
         }
+        public static string WoWVersion
+        {
+            get { return GetConfigValue("WoWVersion"); }
+            set
+            {
+                UpdateConfigValue("WoWVersion", value);
+                Save();
+            }
+        }
 
         public static ConnectionType connectionType = ConnectionType.SQLite;
 
@@ -139,6 +149,11 @@ namespace SpellEditor.Sources.Config
             {
                 BindingsDirectory = "\\Bindings";
                 DbcDirectory = "\\DBC";
+            }
+
+            if (WoWVersion.Length == 0)
+            {
+                WoWVersion = WoWVersionManager.GetInstance().LookupVersion(WoWVersionManager.DefaultVersionString).ToString();
             }
         }
 

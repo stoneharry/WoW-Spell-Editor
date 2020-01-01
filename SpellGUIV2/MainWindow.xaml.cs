@@ -91,6 +91,8 @@ namespace SpellEditor
             Console.WriteLine("######################################################");
             Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
             Console.WriteLine("######################################################");
+            // Config must be initialised fast
+            Config.Init();
             InitializeComponent();
         }
 
@@ -656,8 +658,8 @@ namespace SpellEditor
             var window = new ConfigWindow(adapter is MySQL ? 
                 ConfigWindow.DatabaseIdentifier.MySQL : ConfigWindow.DatabaseIdentifier.SQLite);
             window.Show();
-            window.Width = window.Width * 0.3;
-            window.Height = window.Height * 0.6;
+            window.Width = window.Width * 0.5;
+            window.Height = window.Height * 0.7;
             ConfigWindowInstance = window;
         }
         #endregion
@@ -770,8 +772,6 @@ namespace SpellEditor
         {
             if (!Config.isInit)
             {
-                Config.Init();
-
                 var settings = new MetroDialogSettings()
                 {
                     AffirmativeButtonText = "SQLite",
