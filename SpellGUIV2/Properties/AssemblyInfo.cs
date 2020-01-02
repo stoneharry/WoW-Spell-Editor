@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SpellEditor")]
-[assembly: AssemblyDescription("A spell editor for WoW 3.3.5a (12340).")]
+[assembly: AssemblyDescription("WoW Spell Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("stoneharry")]
 [assembly: AssemblyProduct("SpellEditor")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.8.8.0")]
-[assembly: AssemblyFileVersion("1.8.8.0")]
+[assembly: AssemblyVersion("1.9.0.0")]
+[assembly: AssemblyFileVersion("1.9.0.0")]
