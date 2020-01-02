@@ -161,13 +161,13 @@ namespace SpellEditor.Sources.Config
 
             if (BindingsDirectory.Length == 0 || DbcDirectory.Length == 0)
             {
-                BindingsDirectory = "\\Bindings";
-                DbcDirectory = "\\DBC";
+                BindingsDirectory = Environment.CurrentDirectory + "\\Bindings_335_wotlk";
+                DbcDirectory = Environment.CurrentDirectory + "\\DBC_335_wotlk";
             }
 
             if (WoWVersion.Length == 0)
             {
-                WoWVersion = WoWVersionManager.GetInstance().LookupVersion(WoWVersionManager.DefaultVersionString).ToString();
+                WoWVersion = WoWVersionManager.GetInstance().LookupVersion(WoWVersionManager.DefaultVersionString).Version;
             }
         }
 

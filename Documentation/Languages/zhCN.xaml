@@ -189,6 +189,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">设置数据库连接时出错:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">MySQL详细信息输入无效.</system:String>
+	<system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">欢迎使用魔兽世界技能编辑工具&#x0a;                               汉化 by Ayase   [部分标注(?)的表示不确定,仅是个人理解.]&#x0a;&#x0a;你希望使用编辑器的本地版本(SQLite)还是连接到服务器(MYSQL)?&#x0a;&#x0a;Mysql:数据储存在mysql服务器中.需要额外打开Mysql服务支持才可以启动.因为mysql支持多人联机同一个数据库.因此支持多人编辑同一个技能数据库.&#x0a;&#x0a;SQLite:使用本地的'SpellEditor.db'文件储存所有的数据.因此该模式中启动不再依赖Mysql服务.但因为数据储存在本地.所以仅用于单人编辑使用.</system:String>
     <system:String x:Key="Exit" xml:space="preserve">您确定要退出吗?&#x0a;&#x0a;请确保在执行此操作之前已保存，否则将丢失所有进度!</system:String>
     <system:String x:Key="TruncateTable1">您确定要清空表格吗?</system:String>

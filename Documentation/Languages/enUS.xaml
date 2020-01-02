@@ -189,6 +189,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">An error occured setting up the database connection:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">The MySQL details input are not valid.</system:String>
+	<system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor.&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>

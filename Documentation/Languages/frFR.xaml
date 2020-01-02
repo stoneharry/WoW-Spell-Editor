@@ -189,6 +189,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Entrez la table MySQL à créer / utiliser :</system:String>
     <system:String x:Key="Input_MySQL_Error">Une erreur est survenue lors de la configuration de la connexion à la base de données :</system:String>
     <system:String x:Key="Input_MySQL_Error_2">Les détails de MySQL ne sont pas valides.</system:String>
+	<system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">Bienvenue dans l’éditeur de sorts WoW.&#x0a;&#x0a;Souhaitez-vous utiliser la version locale de l’éditeur (SQLite) ou vous connecter à un serveur (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout votre progrès sera perdu !</system:String>
     <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR ?</system:String>

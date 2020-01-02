@@ -149,9 +149,10 @@ namespace SpellEditor.Sources.DBC
                 var orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
                 var rows = adapter.Query(string.Format($"SELECT * FROM `{bindingName}`{orderClause}")).Rows;
                 uint numRows = uint.Parse(rows.Count.ToString());
-                // Hardcode for 3.3.5a 12340
+
                 Header = new DBCHeader();
                 Header.FieldCount = (uint)binding.Fields.Count();
+                // Magic is always 'WDBC' https://wowdev.wiki/DBC
                 Header.Magic = 1128416343;
                 Header.RecordCount = numRows;
                 Header.RecordSize = (uint)binding.CalcRecordSize();

@@ -633,7 +633,7 @@ namespace SpellEditor
                     }
                     catch (Exception exception)
                     {
-                        Console.WriteLine($"ERROR: Failed to load DBC/{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                        Console.WriteLine($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
                         continue;
                     }
                 }
@@ -702,70 +702,81 @@ namespace SpellEditor
             var controller = await this.ShowProgressAsync(TryFindResource("PleaseWait").ToString(), TryFindResource("PleaseWait_2").ToString());
             controller.SetCancelable(false);
             await Task.Delay(500);
-            using (var d = Dispatcher.DisableProcessing())
+            try
             {
-                spellTable.Columns.Add("id", typeof(uint));
-                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
-                spellTable.Columns.Add("Icon", typeof(uint));
-
-                PopulateSelectSpell();
-
-                // Load required DBC's. First the ones with dependencies and inject them into the manager
-                var manager = DBCManager.GetInstance();
-                var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
-                if (isWotlkOrGreater)
+                using (var d = Dispatcher.DisableProcessing())
                 {
-                    spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
-                    manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                    manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
-                }
-                manager.ForceLoadDbc("SpellIcon", new SpellIconDBC(this, adapter));
+                    spellTable.Columns.Add("id", typeof(uint));
+                    spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
+                    spellTable.Columns.Add("Icon", typeof(uint));
 
-                // Populate UI based on DBC data
-                Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
-                DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
-                MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
-                RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
-                CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
-                Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellDuration")).GetAllBoxes());
-                Range.ItemsSource = ConvertBoxListToLabels(((SpellRange)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
-                var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
-                RadiusIndex1.ItemsSource = radiusLabels;
-                RadiusIndex2.ItemsSource = radiusLabels;
-                RadiusIndex3.ItemsSource = radiusLabels;
-                EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
-                    DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
-                if (isWotlkOrGreater)
-                {
-                    AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
-                        DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
-                    Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
-                    var totemLabels = ConvertBoxListToLabels(((TotemCategory)
-                        DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
-                    TotemCategory1.ItemsSource = totemLabels;
-                    TotemCategory2.ItemsSource = totemLabels;
-                    RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
-                    SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
-                }
-                AreaGroup.IsEnabled = isWotlkOrGreater;
-                Difficulty.IsEnabled = isWotlkOrGreater;
-                TotemCategory1.IsEnabled = isWotlkOrGreater;
-                TotemCategory2.IsEnabled = isWotlkOrGreater;
-                RuneCost.IsEnabled = isWotlkOrGreater;
-                SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+                    PopulateSelectSpell();
 
-                PrepareIconEditor();
+                    // Load required DBC's. First the ones with dependencies and inject them into the manager
+                    var manager = DBCManager.GetInstance();
+                    var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
+                    if (isWotlkOrGreater)
+                    {
+                        spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+                        manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+                        manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                    }
+                    manager.ForceLoadDbc("SpellIcon", new SpellIconDBC(this, adapter));
+
+                    // Populate UI based on DBC data
+                    Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                    DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
+                    MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
+                    RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
+                    CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
+                    Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDuration")).GetAllBoxes());
+                    Range.ItemsSource = ConvertBoxListToLabels(((SpellRange)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
+                    var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
+                    RadiusIndex1.ItemsSource = radiusLabels;
+                    RadiusIndex2.ItemsSource = radiusLabels;
+                    RadiusIndex3.ItemsSource = radiusLabels;
+                    EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
+                        DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
+                    if (isWotlkOrGreater)
+                    {
+                        AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
+                            DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
+                        Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
+                            DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
+                        var totemLabels = ConvertBoxListToLabels(((TotemCategory)
+                            DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                        TotemCategory1.ItemsSource = totemLabels;
+                        TotemCategory2.ItemsSource = totemLabels;
+                        RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
+                            DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
+                        SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
+                            DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
+                    }
+                    AreaGroup.IsEnabled = isWotlkOrGreater;
+                    Difficulty.IsEnabled = isWotlkOrGreater;
+                    TotemCategory1.IsEnabled = isWotlkOrGreater;
+                    TotemCategory2.IsEnabled = isWotlkOrGreater;
+                    RuneCost.IsEnabled = isWotlkOrGreater;
+                    SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+
+                    PrepareIconEditor();
+                }
+            }
+            catch (Exception e)
+            {
+                await controller.CloseAsync();
+                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n\n{1}\n{2}",
+                    TryFindResource("LoadDBCFromBinding_Error_1").ToString(),
+                    e, e.InnerException));
+                return;
             }
 
             await controller.CloseAsync();

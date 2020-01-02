@@ -88,9 +88,9 @@ namespace SpellEditor.Sources.DBC
             if (binding == null)
                 throw new Exception($"Binding not found: {bindingName}.txt");
             if (_header.RecordSize != binding.CalcRecordSize())
-                throw new Exception($"Binding [{_filePath}] fields size does not match the DBC header record size; expected record size [{_header.RecordSize}] got [{binding.CalcRecordSize()}].");
+                throw new Exception($"Binding [{_filePath}] fields size does not match the DBC header record size; expected record size [{binding.CalcRecordSize()}] got [{_header.RecordSize}].");
             if (_header.FieldCount != binding.CalcFieldCount())
-                throw new Exception($"Binding [{_filePath}] field count does not match the DBC field count; expected [{_header.FieldCount}] got [{binding.CalcFieldCount()}].");
+                throw new Exception($"Binding [{_filePath}] field count does not match the DBC field count; expected [{binding.CalcFieldCount()}] got [{_header.FieldCount}].");
 
             body.RecordMaps = new Dictionary<string, object>[_header.RecordCount];
             for (int i = 0; i < _header.RecordCount; ++i)
