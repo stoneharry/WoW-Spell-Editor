@@ -1,0 +1,5 @@
+# SpellRadius.dbc structure for 2.4.3
+uint ID
+float Radius
+float RadiusPerLevel
+float MaximumRadius

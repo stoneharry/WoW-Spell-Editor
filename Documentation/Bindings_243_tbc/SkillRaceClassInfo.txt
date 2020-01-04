@@ -1,0 +1,9 @@
+# SkillRaceClassInfo.dbc structure for 2.4.3
+uint Id
+uint SkillLineDbcRecord
+uint RaceMask
+uint ClassMask
+uint Flags
+uint MinLevel
+uint SkillTierId
+uint SkillCostIndex
