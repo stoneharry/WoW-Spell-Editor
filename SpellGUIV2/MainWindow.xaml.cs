@@ -634,6 +634,7 @@ namespace SpellEditor
                     catch (Exception exception)
                     {
                         Console.WriteLine($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
                         continue;
                     }
                 }
@@ -698,6 +699,26 @@ namespace SpellEditor
                     TryFindResource("Input_MySQL_Error").ToString(), e.Message + "\n" + e.InnerException?.Message));
                 return;
             }
+            try
+            {
+                // Load required DBC's. First the ones with dependencies and inject them into the manager
+                var manager = DBCManager.GetInstance();
+                manager.LoadRequiredDbcs();
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
+                {
+                    spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+                    manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+                    manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                }
+                manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
+            }
+            catch (Exception e)
+            {
+                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n\n{1}\n{2}",
+                    TryFindResource("LoadDBCFromBinding_Error_1").ToString(),
+                    e, e.InnerException));
+                return;
+            }
 
             var controller = await this.ShowProgressAsync(TryFindResource("PleaseWait").ToString(), TryFindResource("PleaseWait_2").ToString());
             controller.SetCancelable(false);
@@ -711,17 +732,6 @@ namespace SpellEditor
                     spellTable.Columns.Add("Icon", typeof(uint));
 
                     PopulateSelectSpell();
-
-                    // Load required DBC's. First the ones with dependencies and inject them into the manager
-                    var manager = DBCManager.GetInstance();
-                    var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
-                    if (isWotlkOrGreater)
-                    {
-                        spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
-                        manager.ForceLoadDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                        manager.ForceLoadDbc("SpellDifficulty", new SpellDifficulty(adapter));
-                    }
-                    manager.ForceLoadDbc("SpellIcon", new SpellIconDBC(this, adapter));
 
                     // Populate UI based on DBC data
                     Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
@@ -745,16 +755,21 @@ namespace SpellEditor
                     RadiusIndex3.ItemsSource = radiusLabels;
                     EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
                         DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
+                    var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
+                    var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
+                    if (isTbcOrGreater)
+                    {
+                        var totemLabels = ConvertBoxListToLabels(((TotemCategory)
+                            DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                        TotemCategory1.ItemsSource = totemLabels;
+                        TotemCategory2.ItemsSource = totemLabels;
+                    }
                     if (isWotlkOrGreater)
                     {
                         AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
                             DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
                         Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
                             DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
-                        var totemLabels = ConvertBoxListToLabels(((TotemCategory)
-                            DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
-                        TotemCategory1.ItemsSource = totemLabels;
-                        TotemCategory2.ItemsSource = totemLabels;
                         RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
                             DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
                         SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
@@ -762,8 +777,8 @@ namespace SpellEditor
                     }
                     AreaGroup.IsEnabled = isWotlkOrGreater;
                     Difficulty.IsEnabled = isWotlkOrGreater;
-                    TotemCategory1.IsEnabled = isWotlkOrGreater;
-                    TotemCategory2.IsEnabled = isWotlkOrGreater;
+                    TotemCategory1.IsEnabled = isTbcOrGreater;
+                    TotemCategory2.IsEnabled = isTbcOrGreater;
                     RuneCost.IsEnabled = isWotlkOrGreater;
                     SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
 

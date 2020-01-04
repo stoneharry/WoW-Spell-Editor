@@ -12,7 +12,6 @@ namespace SpellEditor.Sources.DBC
 
         private DBCManager()
         {
-            LoadRequiredDbcs();
         }
 
         /**
@@ -21,7 +20,7 @@ namespace SpellEditor.Sources.DBC
          * There are some exemptions to this where dependencies were not easy to remove.
          * These are loaded by the ForceLoadDbc function.
          */
-        private void LoadRequiredDbcs()
+        public void LoadRequiredDbcs()
         {
             TryLoadDbc<AreaTable>("AreaTable");
             TryLoadDbc<SpellCategory>("SpellCategory");
@@ -34,33 +33,20 @@ namespace SpellEditor.Sources.DBC
             TryLoadDbc<SpellRadius>("SpellRadius");
             TryLoadDbc<ItemClass>("ItemClass");
             TryLoadDbc<ItemSubClass>("ItemSubClass");
-            var isWotlkOrGreater = WoWVersionManager.GetInstance().SelectedVersion().Identity >= 335;
-            if (isWotlkOrGreater)
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
                 TryLoadDbc<TotemCategory>("TotemCategory");
+            }
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
                 TryLoadDbc<SpellRuneCost>("SpellRuneCost");
                 TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
             }
         }
 
-        /**
-         * Loads the DBC file supressing any exception raised in order to not throw a hard error
-         * because of a bad binding or dbc file.
-         */
-        private bool TryLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new()
-        {
-            try
-            {
-                return _DbcMap.TryAdd(name, new DBCType());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR: Failed to load DBC: [" + name + "] " + e.Message + "\n" + e.StackTrace);
-            }
-            return false;
-        }
+        private bool TryLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new() => _DbcMap.TryAdd(name, new DBCType());
 
-        public bool ForceLoadDbc(string name, AbstractDBC dbc) => _DbcMap.TryAdd(name, dbc);
+        public bool InjectLoadedDbc(string name, AbstractDBC dbc) => _DbcMap.TryAdd(name, dbc);
 
         public AbstractDBC FindDbcForBinding(string bindingName, bool tryLoad = false)
         {
