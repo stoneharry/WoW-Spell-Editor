@@ -1054,7 +1054,7 @@ namespace SpellEditor
                     StringBuilder str = new StringBuilder();
                     str.Append(string.Format("INSERT INTO `spell` VALUES ('{0}'", newID));
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
-                        str.Append(string.Format(", \"{0}\"", MySqlHelper.EscapeString(row[i].ToString())));
+                        str.Append(string.Format(", \"{0}\"", row[i].ToString()));
                     str.Append(")");
                     adapter.Execute(str.ToString());
                 }
