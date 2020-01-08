@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -27,7 +26,7 @@ namespace SpellEditor.Sources.Controls
 
         public Label ItemLabel()
         {
-            return NameLabel ?? new Label() { Content = Name };
+            return NameLabel ?? new FriendlyLabel() { Content = Name };
         }
     }
 }

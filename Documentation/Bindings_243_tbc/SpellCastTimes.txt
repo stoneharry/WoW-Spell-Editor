@@ -1,0 +1,5 @@
+# SpellCastTimes.dbc structure for 2.4.3
+uint ID
+int CastingTime
+float CastingTimePerLevel
+int MinimumCastingTime

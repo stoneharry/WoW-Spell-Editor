@@ -1,0 +1,45 @@
+# ItemSubClass.dbc structure for 2.4.3
+uint Class
+uint subClass
+uint prerequisiteProficiency
+uint postrequisiteProficiency
+uint flags
+uint displayFlags
+uint weaponParrySeq
+uint weaponReadySeq
+uint weaponAttackSeq
+uint WeaponSwingSize
+uint displayName1 string
+uint displayName2 string
+uint displayName3 string
+uint displayName4 string
+uint displayName5 string
+uint displayName6 string
+uint displayName7 string
+uint displayName8 string
+uint displayName9 string
+uint displayName10 string
+uint displayName11 string
+uint displayName12 string
+uint displayName13 string
+uint displayName14 string
+uint displayName15 string
+uint displayName16 string
+uint displayNameFlag
+uint verboseName1 string
+uint verboseName2 string
+uint verboseName3 string
+uint verboseName4 string
+uint verboseName5 string
+uint verboseName6 string
+uint verboseName7 string
+uint verboseName8 string
+uint verboseName9 string
+uint verboseName10 string
+uint verboseName11 string
+uint verboseName12 string
+uint verboseName13 string
+uint verboseName14 string
+uint verboseName15 string
+uint verboseName16 string
+uint verboseNameFlag

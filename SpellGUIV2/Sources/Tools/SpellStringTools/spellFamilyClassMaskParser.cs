@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Data;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 {
@@ -10,20 +11,32 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
         public SpellFamilyClassMaskParser(MainWindow window)
         {
             SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
-                                                                    // by giving it some unique id for procces on our own spells
+                                                                   // by giving it some unique id for procces on our own spells
 
-            DataTable dt = window.GetDBAdapter().Query("SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell");
+            var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
+            var query = isWotlkOrGreater ?
+                "SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell" :
+                "SELECT id,SpellFamilyName,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell";
+            DataTable dt = window.GetDBAdapter().Query(query);
 
             foreach (DataRow dr in dt.Rows)
             {
                 uint id = uint.Parse(dr[0].ToString());
                 uint SpellFamilyName = uint.Parse(dr[1].ToString());
-                uint[] SpellFamilyFlag = { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()), uint.Parse(dr[4].ToString()) };
+                uint[] SpellFamilyFlag;
+                if (isWotlkOrGreater)
+                {
+                    SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()), uint.Parse(dr[4].ToString()) };
+                }
+                else
+                {
+                    SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()) };
+                }
 
                 if (SpellFamilyName == 0)
                     continue;
 
-                for (uint MaskIndex = 0; MaskIndex < 3; MaskIndex++)
+                for (uint MaskIndex = 0; MaskIndex < (isWotlkOrGreater ? 3 : 2); MaskIndex++)
                 {
                     if (SpellFamilyFlag[MaskIndex] != 0)
                     {
@@ -52,7 +65,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
         }
 
-        public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName)
+        public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName, bool isWotlkOrGreater)
         {
             _UpdateSpellFamilyClassMask(window, window.SpellMask11, familyName, 0);
             _UpdateSpellFamilyClassMask(window, window.SpellMask21, familyName, 1);
@@ -60,12 +73,15 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             _UpdateSpellFamilyClassMask(window, window.SpellMask12, familyName, 0);
             _UpdateSpellFamilyClassMask(window, window.SpellMask22, familyName, 1);
             _UpdateSpellFamilyClassMask(window, window.SpellMask32, familyName, 2);
-            _UpdateSpellFamilyClassMask(window, window.SpellMask13, familyName, 0);
-            _UpdateSpellFamilyClassMask(window, window.SpellMask23, familyName, 1);
-            _UpdateSpellFamilyClassMask(window, window.SpellMask33, familyName, 2);
+            if (isWotlkOrGreater)
+            {
+                _UpdateSpellFamilyClassMask(window, window.SpellMask13, familyName, 0);
+                _UpdateSpellFamilyClassMask(window, window.SpellMask23, familyName, 1);
+                _UpdateSpellFamilyClassMask(window, window.SpellMask33, familyName, 2);
+            }
         }
 
-        private void _UpdateSpellFamilyClassMask(MainWindow window, ThreadSafeComboBox SpellMaskComboBox,uint familyName,uint MaskSlot)
+        private void _UpdateSpellFamilyClassMask(MainWindow window, ThreadSafeComboBox SpellMaskComboBox,uint familyName, uint MaskSlot)
         {
             for (uint i = 0; i < 32; i++)
             {
