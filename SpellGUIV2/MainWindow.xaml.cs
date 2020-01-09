@@ -28,6 +28,7 @@ using System.Threading;
 using System.Globalization;
 using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.VersionControl;
+using System.Data.SQLite;
 
 namespace SpellEditor
 {
@@ -99,9 +100,9 @@ namespace SpellEditor
         public async void HandleErrorMessage(string msg)
         {
             if (Dispatcher.CheckAccess())
-                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), msg);
+                await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), msg);
             else
-                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), msg)));
+                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), msg)));
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -125,7 +126,7 @@ namespace SpellEditor
         {
             Attributes1.Children.Clear();
             attributes0.Clear();
-            string[] attFlags = TryFindResource("attFlags_strings").ToString().Split('|');
+            string[] attFlags = SafeTryFindResource("attFlags_strings").Split('|');
             for (var i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -139,7 +140,7 @@ namespace SpellEditor
 
             Attributes2.Children.Clear();
             attributes1.Clear();
-            attFlags = TryFindResource("attFlagsEx_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx_strings").Split('|');
             for (var i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -153,7 +154,7 @@ namespace SpellEditor
 
             Attributes3.Children.Clear();
             attributes2.Clear();
-            attFlags = TryFindResource("attFlagsEx1_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx1_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -167,7 +168,7 @@ namespace SpellEditor
 
             Attributes4.Children.Clear();
             attributes3.Clear();
-            attFlags = TryFindResource("attFlagsEx2_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx2_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -181,7 +182,7 @@ namespace SpellEditor
 
             Attributes5.Children.Clear();
             attributes4.Clear();
-            attFlags = TryFindResource("attFlagsEx3_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx3_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -195,7 +196,7 @@ namespace SpellEditor
 
             Attributes6.Children.Clear();
             attributes5.Clear();
-            attFlags = TryFindResource("attFlagsEx4_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx4_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -209,7 +210,7 @@ namespace SpellEditor
 
             Attributes7.Children.Clear();
             attributes6.Clear();
-            attFlags = TryFindResource("attFlagsEx5_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx5_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -223,7 +224,7 @@ namespace SpellEditor
 
             Attributes8.Children.Clear();
             attributes7.Clear();
-            attFlags = TryFindResource("attFlagsEx6_strings").ToString().Split('|');
+            attFlags = SafeTryFindResource("attFlagsEx6_strings").Split('|');
             for (int i = 0; i < attFlags.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -237,7 +238,7 @@ namespace SpellEditor
 
             StancesGrid.Children.Clear();
             stancesBoxes.Clear();
-            string[] stances_strings = TryFindResource("stances_strings").ToString().Split('|');
+            string[] stances_strings = SafeTryFindResource("stances_strings").Split('|');
             for (int i = 0; i < stances_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -252,7 +253,7 @@ namespace SpellEditor
 
             TargetCreatureType.Children.Clear();
             targetCreatureTypeBoxes.Clear();
-            string[] creature_type_strings = TryFindResource("creature_type_strings").ToString().Split('|');
+            string[] creature_type_strings = SafeTryFindResource("creature_type_strings").Split('|');
             for (int i = 0; i < creature_type_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -266,16 +267,16 @@ namespace SpellEditor
             }
 
             CasterAuraState.Items.Clear();
-            string[] caster_aura_state_strings = TryFindResource("caster_aura_state_strings").ToString().Split('|');
+            string[] caster_aura_state_strings = SafeTryFindResource("caster_aura_state_strings").Split('|');
             for (int i = 0; i < caster_aura_state_strings.Length; ++i) { CasterAuraState.Items.Add(caster_aura_state_strings[i]); }
 
             TargetAuraState.Items.Clear();
-            string[] target_aura_state_strings = TryFindResource("target_aura_state_strings").ToString().Split('|');
+            string[] target_aura_state_strings = SafeTryFindResource("target_aura_state_strings").Split('|');
             for (int i = 0; i < target_aura_state_strings.Length; ++i) { TargetAuraState.Items.Add(target_aura_state_strings[i]); }
 
             EquippedItemInventoryTypeGrid.Children.Clear();
             equippedItemInventoryTypeMaskBoxes.Clear();
-            string[] equipped_item_inventory_type_mask_strings = TryFindResource("equipped_item_inventory_type_mask_strings").ToString().Split('|');
+            string[] equipped_item_inventory_type_mask_strings = SafeTryFindResource("equipped_item_inventory_type_mask_strings").Split('|');
             for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -293,7 +294,7 @@ namespace SpellEditor
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = TryFindResource("None").ToString();
+                box.Content = SafeTryFindResource("None");
                 box.Margin = new Thickness(0, 5, 0, 0);
                 box.Visibility = Visibility.Hidden;
                 EquippedItemSubClassGrid.Children.Add(box);
@@ -301,12 +302,12 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
-            string[] school_strings = TryFindResource("school_strings").ToString().Split('|');
+            string[] school_strings = SafeTryFindResource("school_strings").Split('|');
             for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
-            string[] damage_prevention_types = TryFindResource("damage_prevention_types").ToString().Split('|');
+            string[] damage_prevention_types = SafeTryFindResource("damage_prevention_types").Split('|');
             for (int i = 0; i < damage_prevention_types.Length; ++i)
             {
                 if (i < 4)
@@ -321,7 +322,7 @@ namespace SpellEditor
 
             TargetEditorGrid.Children.Clear();
             targetBoxes.Clear();
-            string[] target_strings = TryFindResource("target_strings").ToString().Split('|');
+            string[] target_strings = SafeTryFindResource("target_strings").Split('|');
             for (int i = 0; i < target_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -335,7 +336,7 @@ namespace SpellEditor
 
             ProcEditorGrid.Children.Clear();
             procBoxes.Clear();
-            string[] proc_strings = TryFindResource("proc_strings").ToString().Split('|');
+            string[] proc_strings = SafeTryFindResource("proc_strings").Split('|');
             for (int i = 0; i < proc_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -351,7 +352,7 @@ namespace SpellEditor
             ApplyAuraName1.Items.Clear();
             ApplyAuraName2.Items.Clear();
             ApplyAuraName3.Items.Clear();
-            string[] spell_aura_effect_names = TryFindResource("spell_aura_effect_names").ToString().Split('|');
+            string[] spell_aura_effect_names = SafeTryFindResource("spell_aura_effect_names").Split('|');
             for (int i = 0; i < spell_aura_effect_names.Length; ++i)
             {
                 ApplyAuraName1.Items.Add(i + " - " + spell_aura_effect_names[i]);
@@ -362,7 +363,7 @@ namespace SpellEditor
             SpellEffect1.Items.Clear();
             SpellEffect2.Items.Clear();
             SpellEffect3.Items.Clear();
-            string[] spell_effect_names = TryFindResource("spell_effect_names").ToString().Split('|');
+            string[] spell_effect_names = SafeTryFindResource("spell_effect_names").Split('|');
             for (int i = 0; i < spell_effect_names.Length; ++i)
             {
                 SpellEffect1.Items.Add(i + " - " + spell_effect_names[i]);
@@ -373,7 +374,7 @@ namespace SpellEditor
             Mechanic1.Items.Clear();
             Mechanic2.Items.Clear();
             Mechanic3.Items.Clear();
-            string[] mechanic_names = TryFindResource("mechanic_names").ToString().Split('|');
+            string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
             for (int i = 0; i < mechanic_names.Length; ++i)
             {
                 Mechanic1.Items.Add(mechanic_names[i]);
@@ -403,7 +404,7 @@ namespace SpellEditor
 
             InterruptFlagsGrid.Children.Clear();
             interrupts1.Clear();
-            string[] interrupt_strings = TryFindResource("interrupt_strings").ToString().Split('|');
+            string[] interrupt_strings = SafeTryFindResource("interrupt_strings").Split('|');
             for (int i = 0; i < interrupt_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -418,7 +419,7 @@ namespace SpellEditor
 
             AuraInterruptFlagsGrid.Children.Clear();
             interrupts2.Clear();
-            string[] aura_interrupt_strings = TryFindResource("aura_interrupt_strings").ToString().Split('|');
+            string[] aura_interrupt_strings = SafeTryFindResource("aura_interrupt_strings").Split('|');
             for (int i = 0; i < aura_interrupt_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -432,7 +433,7 @@ namespace SpellEditor
 
             ChannelInterruptFlagsGrid.Children.Clear();
             interrupts3.Clear();
-            string[] channel_interrupt_strings = TryFindResource("channel_interrupt_strings").ToString().Split('|');
+            string[] channel_interrupt_strings = SafeTryFindResource("channel_interrupt_strings").Split('|');
             for (int i = 0; i < channel_interrupt_strings.Length; ++i)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
@@ -446,7 +447,7 @@ namespace SpellEditor
             }
 
             // FIXME(Harry) Doesn't retain count after changing language
-            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), "");
+            SpellsLoadedLabel.Content = string.Format(SafeTryFindResource("Highest_Spell_ID"), "");
         }
         #endregion
 
@@ -457,7 +458,7 @@ namespace SpellEditor
 
             try
             {
-                Title = $"{Title} ({WoWVersionManager.GetInstance().SelectedVersion().Version})";
+                Title = $"{Title} - {WoWVersionManager.GetInstance().SelectedVersion().Version}";
 
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
@@ -610,7 +611,7 @@ namespace SpellEditor
         private async void ImportExportSpellDbcButton(object sender, RoutedEventArgs e)
         {
             var window = new ImportExportWindow(adapter);
-            var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), TryFindResource("String1").ToString());
+            var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), SafeTryFindResource("String1"));
             controller.SetCancelable(false);
             window.Show();
             window.Width = window.Width / 2;
@@ -646,7 +647,7 @@ namespace SpellEditor
                 else
                     await abstractDbc.ExportToDbc(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
             }
-            controller.SetMessage(TryFindResource("ReloadingUI").ToString());
+            controller.SetMessage(SafeTryFindResource("ReloadingUI"));
             PopulateSelectSpell();
             await controller.CloseAsync();
         }
@@ -677,7 +678,7 @@ namespace SpellEditor
             await GetConfig();
             if (!Config.isInit)
             {
-                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), TryFindResource("String2").ToString());
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), SafeTryFindResource("String2"));
                 return;
             }
             try
@@ -693,11 +694,12 @@ namespace SpellEditor
                     default:
                         throw new Exception("Unknown connection type, valid types: MySQL, SQLite");
                 }
+                adapter.CreateAllTablesFromBindings();
             }
             catch (Exception e)
             {
-                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n{1}",
-                    TryFindResource("Input_MySQL_Error").ToString(), e.Message + "\n" + e.InnerException?.Message));
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), string.Format("{0}\n{1}",
+                    SafeTryFindResource("Input_MySQL_Error"), e.Message + "\n" + e.InnerException?.Message));
                 return;
             }
             try
@@ -713,15 +715,29 @@ namespace SpellEditor
                 manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
                 spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
             }
+            catch (MySqlException e)
+            {
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), string.Format("{0}: {1}\n\n{2}\n{3}",
+                    SafeTryFindResource("LoadDBCFromBinding_Error_1"), e.Message,
+                    e, e.InnerException));
+                return;
+            }
+            catch (SQLiteException e)
+            {
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), string.Format("{0}: {1}\n\n{2}\n{3}",
+                    SafeTryFindResource("LoadDBCFromBinding_Error_1"), e.Message,
+                    e, e.InnerException));
+                return;
+            }
             catch (Exception e)
             {
-                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n\n{1}\n{2}",
-                    TryFindResource("LoadDBCFromBinding_Error_1").ToString(),
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), string.Format("{0}: {1}\n\n{2}\n{3}",
+                    SafeTryFindResource("LoadDBCFromBinding_Error_1"), e.Message,
                     e, e.InnerException));
                 return;
             }
 
-            var controller = await this.ShowProgressAsync(TryFindResource("PleaseWait").ToString(), TryFindResource("PleaseWait_2").ToString());
+            var controller = await this.ShowProgressAsync(SafeTryFindResource("PleaseWait"), SafeTryFindResource("PleaseWait_2"));
             controller.SetCancelable(false);
             await Task.Delay(500);
             try
@@ -789,8 +805,8 @@ namespace SpellEditor
             catch (Exception e)
             {
                 await controller.CloseAsync();
-                await this.ShowMessageAsync(TryFindResource("ERROR").ToString(), string.Format("{0}\n\n{1}\n{2}",
-                    TryFindResource("LoadDBCFromBinding_Error_1").ToString(),
+                await this.ShowMessageAsync(SafeTryFindResource("ERROR"), string.Format("{0}\n\n{1}\n{2}",
+                    SafeTryFindResource("LoadDBCFromBinding_Error_1"),
                     e, e.InnerException));
                 return;
             }
@@ -812,8 +828,8 @@ namespace SpellEditor
                     AnimateShow = true,
                     ColorScheme = MetroDialogColorScheme.Accented,
                 };
-                MessageDialogResult exitCode = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(),
-                    TryFindResource("Welcome").ToString(),
+                MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
+                    SafeTryFindResource("Welcome"),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
 
@@ -821,17 +837,17 @@ namespace SpellEditor
                 {
                     if (Config.needInitMysql)
                     {
-                        string host = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_1").ToString());
-                        string user = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_2").ToString());
-                        string pass = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_3").ToString());
-                        string port = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_4").ToString());
-                        string db = await this.ShowInputAsync(TryFindResource("Input_MySQL_Details").ToString(), TryFindResource("Input_MySQL_Details_5").ToString());
+                        string host = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_1"));
+                        string user = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_2"));
+                        string pass = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_3"));
+                        string port = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_4"));
+                        string db = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_5"));
                         
                         if (host == null || user == null || pass == null || port == null || db == null ||
                             host.Length == 0 || user.Length == 0 || port.Length == 0 || db.Length == 0 ||
                             !uint.TryParse(port, out var result))
                         {
-                            throw new Exception(TryFindResource("Input_MySQL_Error_2").ToString());
+                            throw new Exception(SafeTryFindResource("Input_MySQL_Error_2"));
                         }
 
                         Config.Host = host;
@@ -870,11 +886,11 @@ namespace SpellEditor
                 {
                     MetroDialogSettings settings = new MetroDialogSettings();
 
-                    settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
-                    settings.NegativeButtonText = TryFindResource("No").ToString();
+                    settings.AffirmativeButtonText = SafeTryFindResource("Yes");
+                    settings.NegativeButtonText = SafeTryFindResource("No");
 
                     MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                    MessageDialogResult exitCode = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("Exit").ToString(), style, settings);
+                    MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("Exit"), style, settings);
 
                     if (exitCode == MessageDialogResult.Affirmative)
                     {
@@ -991,14 +1007,15 @@ namespace SpellEditor
             if (sender == TruncateTable)
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
-                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
-                settings.NegativeButtonText = TryFindResource("No").ToString();
+                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
+                settings.NegativeButtonText = SafeTryFindResource("No");
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                var res = await this.ShowMessageAsync(TryFindResource("TruncateTable1").ToString(), TryFindResource("TruncateTable2").ToString(), style, settings);
+                var res = await this.ShowMessageAsync(SafeTryFindResource("TruncateTable1"), SafeTryFindResource("TruncateTable2"), style, settings);
                 if (res == MessageDialogResult.Affirmative)
                 {
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
-                        adapter.Execute(string.Format("delete from `{0}`", binding.Name));
+                        adapter.Execute(string.Format("drop table `{0}`", binding.Name));
+                    adapter.CreateAllTablesFromBindings();
                     PopulateSelectSpell();
                 }
                 return;
@@ -1008,11 +1025,11 @@ namespace SpellEditor
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
 
-                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
-                settings.NegativeButtonText = TryFindResource("No").ToString();
+                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
+                settings.NegativeButtonText = SafeTryFindResource("No");
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult copySpell = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord1").ToString(), style, settings);
+                MessageDialogResult copySpell = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord1"), style, settings);
 
                 uint oldIDIndex = uint.MaxValue;
 
@@ -1020,30 +1037,30 @@ namespace SpellEditor
                 {
                     uint oldID = 0;
 
-                    string inputCopySpell = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord2").ToString());
+                    string inputCopySpell = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord2"));
                     if (inputCopySpell == null) { return; }
 
                     if (!uint.TryParse(inputCopySpell, out oldID))
                     {
-                        HandleErrorMessage(TryFindResource("CopySpellRecord3").ToString());
+                        HandleErrorMessage(SafeTryFindResource("CopySpellRecord3"));
                         return;
                     }
                     oldIDIndex = oldID;
                 }
 
-                string inputNewRecord = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("CopySpellRecord4").ToString());
+                string inputNewRecord = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord4"));
                 if (inputNewRecord == null) { return; }
 
                 uint newID = 0;
                 if (!uint.TryParse(inputNewRecord, out newID))
                 {
-                    HandleErrorMessage(TryFindResource("CopySpellRecord5").ToString());
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord5"));
                     return;
                 }
 
                 if (uint.Parse(adapter.Query(string.Format("SELECT COUNT(*) FROM `spell` WHERE `ID` = '{0}'", newID)).Rows[0][0].ToString()) > 0)
                 {
-                    HandleErrorMessage(TryFindResource("CopySpellRecord6").ToString());
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord6"));
                     return;
                 }
 
@@ -1061,26 +1078,26 @@ namespace SpellEditor
                 else
                 {
                     // Create new spell
-                    HandleErrorMessage(TryFindResource("CopySpellRecord7").ToString());
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord7"));
                     return;
                 }
 
                 PopulateSelectSpell();
 
-                ShowFlyoutMessage(string.Format(TryFindResource("CopySpellRecord8").ToString(), inputNewRecord));
+                ShowFlyoutMessage(string.Format(SafeTryFindResource("CopySpellRecord8"), inputNewRecord));
                 return;
             }
 
             if (sender == DeleteARecord)
             {
-                string input = await this.ShowInputAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("DeleteSpellRecord1").ToString());
+                string input = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("DeleteSpellRecord1"));
 
                 if (input == null) { return; }
 
                 uint spellID = 0;
                 if (!uint.TryParse(input, out spellID))
                 {
-                    HandleErrorMessage(TryFindResource("DeleteSpellRecord2").ToString());
+                    HandleErrorMessage(SafeTryFindResource("DeleteSpellRecord2"));
                     return;
                 }
 
@@ -1090,7 +1107,7 @@ namespace SpellEditor
 
                 PopulateSelectSpell();
 
-                ShowFlyoutMessage(TryFindResource("DeleteSpellRecord3").ToString());
+                ShowFlyoutMessage(SafeTryFindResource("DeleteSpellRecord3"));
                 return;
             }
 
@@ -1529,7 +1546,7 @@ namespace SpellEditor
                         row["EquippedItemInventoryTypeMask"] = (int)mask;
                     }
 
-                    if (EquippedItemClass.Text == TryFindResource("None").ToString())
+                    if (EquippedItemClass.Text == SafeTryFindResource("None"))
                     {
                         row["EquippedItemClass"] = -1;
                         row["EquippedItemSubClassMask"] = 0;
@@ -1678,7 +1695,7 @@ namespace SpellEditor
 
                     ShowFlyoutMessage($"Saved spell {selectedID}.");
 
-                    PopulateSelectSpell();
+                    ReloadSpellListForSpellId(row);
                 }
                 catch (Exception ex)
                 {
@@ -1692,11 +1709,11 @@ namespace SpellEditor
             {
                 MetroDialogSettings settings = new MetroDialogSettings();
 
-                settings.AffirmativeButtonText = TryFindResource("Yes").ToString();
-                settings.NegativeButtonText = TryFindResource("No").ToString();
+                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
+                settings.NegativeButtonText = SafeTryFindResource("No");
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult spellOrActive = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("SaveIcon").ToString(), style, settings);
+                MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("SaveIcon"), style, settings);
 
                 string column = null;
                 if (spellOrActive == MessageDialogResult.Affirmative)
@@ -1717,6 +1734,28 @@ namespace SpellEditor
                 adapter.Execute(string.Format("UPDATE `{0}` SET `{1}` = '{2}' WHERE `ID` = '{3}'", "spell", "ActiveIconID", 0, selectedID));
                 return;
             }
+        }
+
+        private bool ReloadSpellListForSpellId(DataRow row)
+        {
+            var changedId = uint.Parse(row[0].ToString());
+            foreach (var item in SelectSpell.Items)
+            {
+                var panel = item as StackPanel;
+                var text = panel.Children[1] as TextBlock;
+                // text block is formatted as: $" { id } - { spellName }"
+                if (uint.TryParse(text.Text.Substring(0, text.Text.IndexOf('-')).Trim(), out var id) &&
+                    changedId == id)
+                {
+                    text.Text = $" { id } - { row["SpellName" + (GetLocale() - 1)].ToString() }";
+                    var image = panel.Children[0] as Image;
+                    image.ToolTip = row["SpellIconID"].ToString();
+                    image.Visibility = Visibility.Hidden;
+                    image.Visibility = Visibility.Visible;
+                    return true;
+                }
+            }
+            return false;
         }
         #endregion
 
@@ -1788,17 +1827,17 @@ namespace SpellEditor
         }
         #endregion
 
+        #region PopulateSelectSpell
         private int SelectSpellContentsCount;
         private int SelectSpellContentsIndex;
 
-        #region PopulateSelectSpell
         private void PopulateSelectSpell()
         {
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
             SelectSpellContentsIndex = 0;
             SelectSpellContentsCount = SelectSpell.Items.Count;
-            SpellsLoadedLabel.Content = TryFindResource("no_spells_loaded").ToString();
+            SpellsLoadedLabel.Content = SafeTryFindResource("no_spells_loaded");
             var _worker = new SpellListQueryWorker(adapter, selectSpellWatch);
             _worker.WorkerReportsProgress = true;
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
@@ -1898,7 +1937,7 @@ namespace SpellEditor
                 //}
                 newElements.Add(stackPanel);
             }
-            SpellsLoadedLabel.Content = string.Format(TryFindResource("Highest_Spell_ID").ToString(), 
+            SpellsLoadedLabel.Content = string.Format(SafeTryFindResource("Highest_Spell_ID"), 
                 collection.Count > 0 ? collection[collection.Count - 1][0] : "n/a");
             // Replace the item source directly, adding each item will raise a high amount of events
             var src = SelectSpell.ItemsSource;
@@ -1956,11 +1995,11 @@ namespace SpellEditor
             if (adapter == null) { return; }
 
             MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = TryFindResource("SpellIconID").ToString();
-            settings.NegativeButtonText = TryFindResource("ActiveIconID").ToString();
+            settings.AffirmativeButtonText = SafeTryFindResource("SpellIconID");
+            settings.NegativeButtonText = SafeTryFindResource("ActiveIconID");
 
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            MessageDialogResult spellOrActive = await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("String4").ToString(), style, settings);
+            MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String4"), style, settings);
 
             string column = null;
             if (spellOrActive == MessageDialogResult.Affirmative)
@@ -1977,7 +2016,7 @@ namespace SpellEditor
             {
                 updating = true;
 
-                controller = await this.ShowProgressAsync(TryFindResource("UpdateMainWindow1").ToString(), string.Format(TryFindResource("UpdateMainWindow2").ToString(), selectedID));
+                controller = await this.ShowProgressAsync(SafeTryFindResource("UpdateMainWindow1"), string.Format(SafeTryFindResource("UpdateMainWindow2"), selectedID));
                 controller.SetCancelable(false);
 
                /* Timeline.DesiredFrameRateProperty.OverrideMetadata(
@@ -2842,7 +2881,7 @@ namespace SpellEditor
             var added_items = e.AddedItems;
             if (added_items.Count > 1)
             {
-                await this.ShowMessageAsync(TryFindResource("SpellEditor").ToString(), TryFindResource("String5").ToString());
+                await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String5"));
                 ((ListBox)sender).UnselectAll();
                 return;
             }
@@ -3138,7 +3177,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
                 {
-                    box.threadSafeContent = TryFindResource("None").ToString();
+                    box.threadSafeContent = SafeTryFindResource("None");
                     box.threadSafeVisibility = Visibility.Hidden;
                     //box.threadSafeEnabled = false;
                 }
@@ -3162,7 +3201,7 @@ namespace SpellEditor
                 }
                 else
                 {
-                    box.threadSafeContent = TryFindResource("None").ToString(); ;
+                    box.threadSafeContent = SafeTryFindResource("None"); ;
                     box.threadSafeVisibility = Visibility.Hidden;
                     //box.threadSafeEnabled = false;
                 }
@@ -3318,6 +3357,12 @@ namespace SpellEditor
             {
                 MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
             }
+        }
+
+        private string SafeTryFindResource(object key)
+        {
+            var resource = TryFindResource(key);
+            return resource != null ? resource.ToString() : $"Language files out of date, missing key: {key}";
         }
     };
 };

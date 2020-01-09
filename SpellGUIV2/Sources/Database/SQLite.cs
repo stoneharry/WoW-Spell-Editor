@@ -23,7 +23,12 @@ namespace SpellEditor.Sources.Database
 
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
-            // Create binding tables
+        }
+        
+        // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
+
+        public void CreateAllTablesFromBindings()
+        {
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
                 using (var cmd = _connection.CreateCommand())

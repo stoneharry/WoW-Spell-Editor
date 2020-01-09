@@ -35,7 +35,16 @@ namespace SpellEditor.Sources.Database
                 cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
                 cmd.ExecuteNonQuery();
             }
-            // Create binding tables
+        }
+
+        ~MySQL()
+        {
+            if (_connection != null && _connection.State != ConnectionState.Closed)
+                _connection.Close();
+        }
+
+        public void CreateAllTablesFromBindings()
+        {
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
                 using (var cmd = _connection.CreateCommand())
@@ -44,12 +53,6 @@ namespace SpellEditor.Sources.Database
                     cmd.ExecuteNonQuery();
                 }
             }
-        }
-
-        ~MySQL()
-        {
-            if (_connection != null && _connection.State != ConnectionState.Closed)
-                _connection.Close();
         }
 
         public DataTable Query(string query)

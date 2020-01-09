@@ -158,7 +158,7 @@
     <system:String x:Key="butSaveIcon">Confirm</system:String>
     <system:String x:Key="sliderChangeIconSizeTooltip">Controls icon width &amp; height (pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Import/Export</system:String>
-    <system:String x:Key="butTruncateTable">Truncate Table</system:String>
+    <system:String x:Key="butTruncateTable">Drop Tables</system:String>
     <system:String x:Key="butInsertANewRecord">New Spell</system:String>
     <system:String x:Key="butDeleteARecord">Delete Spell</system:String>
     <system:String x:Key="butSaveSpellChanges">Save Spell Changes</system:String>
@@ -193,7 +193,7 @@
     <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor.&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
-    <system:String x:Key="TruncateTable2" xml:space="preserve">Truncating the table will remove ALL data in the SQL tables.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBCs.</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables used by this program and create them again allowing you to start over.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBC files.</system:String>
     <system:String x:Key="CopySpellRecord1">Copy an existing record?</system:String>
     <system:String x:Key="CopySpellRecord2">Input the spell ID to copy from.</system:String>
     <system:String x:Key="CopySpellRecord3">ERROR: Input spell ID was not an integer.</system:String>
