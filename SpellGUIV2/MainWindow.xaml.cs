@@ -127,11 +127,11 @@ namespace SpellEditor
             Attributes1.Children.Clear();
             attributes0.Clear();
             string[] attFlags = SafeTryFindResource("attFlags_strings").Split('|');
-            for (var i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes1.Children.Add(box);
@@ -141,11 +141,11 @@ namespace SpellEditor
             Attributes2.Children.Clear();
             attributes1.Clear();
             attFlags = SafeTryFindResource("attFlagsEx_strings").Split('|');
-            for (var i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes2.Children.Add(box);
@@ -155,11 +155,11 @@ namespace SpellEditor
             Attributes3.Children.Clear();
             attributes2.Clear();
             attFlags = SafeTryFindResource("attFlagsEx1_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes3.Children.Add(box);
@@ -169,11 +169,11 @@ namespace SpellEditor
             Attributes4.Children.Clear();
             attributes3.Clear();
             attFlags = SafeTryFindResource("attFlagsEx2_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes4.Children.Add(box);
@@ -183,11 +183,11 @@ namespace SpellEditor
             Attributes5.Children.Clear();
             attributes4.Clear();
             attFlags = SafeTryFindResource("attFlagsEx3_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes5.Children.Add(box);
@@ -197,11 +197,11 @@ namespace SpellEditor
             Attributes6.Children.Clear();
             attributes5.Clear();
             attFlags = SafeTryFindResource("attFlagsEx4_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes6.Children.Add(box);
@@ -211,11 +211,11 @@ namespace SpellEditor
             Attributes7.Children.Clear();
             attributes6.Clear();
             attFlags = SafeTryFindResource("attFlagsEx5_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes7.Children.Add(box);
@@ -225,11 +225,11 @@ namespace SpellEditor
             Attributes8.Children.Clear();
             attributes7.Clear();
             attFlags = SafeTryFindResource("attFlagsEx6_strings").Split('|');
-            for (int i = 0; i < attFlags.Length; ++i)
+            foreach (string attFlag in attFlags)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlags[i];
-                box.ToolTip = attFlags[i];
+                box.Content = attFlag;
+                box.ToolTip = attFlag;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 Attributes8.Children.Add(box);
@@ -239,12 +239,12 @@ namespace SpellEditor
             StancesGrid.Children.Clear();
             stancesBoxes.Clear();
             string[] stances_strings = SafeTryFindResource("stances_strings").Split('|');
-            for (int i = 0; i < stances_strings.Length; ++i)
+            foreach (string stance in stances_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = stances_strings[i];
-                box.ToolTip = stances_strings[i];
+                box.Content = stance;
+                box.ToolTip = stance;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 StancesGrid.Children.Add(box);
@@ -254,12 +254,12 @@ namespace SpellEditor
             TargetCreatureType.Children.Clear();
             targetCreatureTypeBoxes.Clear();
             string[] creature_type_strings = SafeTryFindResource("creature_type_strings").Split('|');
-            for (int i = 0; i < creature_type_strings.Length; ++i)
+            foreach (string creatureType in creature_type_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = creature_type_strings[i];
-                box.ToolTip = creature_type_strings[i];
+                box.Content = creatureType;
+                box.ToolTip = creatureType;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 TargetCreatureType.Children.Add(box);
@@ -268,20 +268,20 @@ namespace SpellEditor
 
             CasterAuraState.Items.Clear();
             string[] caster_aura_state_strings = SafeTryFindResource("caster_aura_state_strings").Split('|');
-            for (int i = 0; i < caster_aura_state_strings.Length; ++i) { CasterAuraState.Items.Add(caster_aura_state_strings[i]); }
+            foreach (string casterAuraState in caster_aura_state_strings) { CasterAuraState.Items.Add(casterAuraState); }
 
             TargetAuraState.Items.Clear();
             string[] target_aura_state_strings = SafeTryFindResource("target_aura_state_strings").Split('|');
-            for (int i = 0; i < target_aura_state_strings.Length; ++i) { TargetAuraState.Items.Add(target_aura_state_strings[i]); }
+            foreach (string targetAuraState in target_aura_state_strings) { TargetAuraState.Items.Add(targetAuraState); }
 
             EquippedItemInventoryTypeGrid.Children.Clear();
             equippedItemInventoryTypeMaskBoxes.Clear();
             string[] equipped_item_inventory_type_mask_strings = SafeTryFindResource("equipped_item_inventory_type_mask_strings").Split('|');
-            for (int i = 0; i < equipped_item_inventory_type_mask_strings.Length; ++i)
+            foreach (string equippedItemInventoryTypeMask in equipped_item_inventory_type_mask_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = equipped_item_inventory_type_mask_strings[i];
+                box.Content = equippedItemInventoryTypeMask;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 EquippedItemInventoryTypeGrid.Children.Add(box);
@@ -303,7 +303,7 @@ namespace SpellEditor
 
             PowerType.Items.Clear();
             string[] school_strings = SafeTryFindResource("school_strings").Split('|');
-            for (int i = 0; i < school_strings.Length; ++i) { PowerType.Items.Add(school_strings[i]); }
+            foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
@@ -323,11 +323,11 @@ namespace SpellEditor
             TargetEditorGrid.Children.Clear();
             targetBoxes.Clear();
             string[] target_strings = SafeTryFindResource("target_strings").Split('|');
-            for (int i = 0; i < target_strings.Length; ++i)
+            foreach (string targetString in target_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = target_strings[i];
+                box.Content = targetString;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 TargetEditorGrid.Children.Add(box);
@@ -337,11 +337,11 @@ namespace SpellEditor
             ProcEditorGrid.Children.Clear();
             procBoxes.Clear();
             string[] proc_strings = SafeTryFindResource("proc_strings").Split('|');
-            for (int i = 0; i < proc_strings.Length; ++i)
+            foreach (string procString in proc_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = proc_strings[i];
+                box.Content = procString;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
 
@@ -375,11 +375,11 @@ namespace SpellEditor
             Mechanic2.Items.Clear();
             Mechanic3.Items.Clear();
             string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
-            for (int i = 0; i < mechanic_names.Length; ++i)
+            foreach (string mechanicName in mechanic_names)
             {
-                Mechanic1.Items.Add(mechanic_names[i]);
-                Mechanic2.Items.Add(mechanic_names[i]);
-                Mechanic3.Items.Add(mechanic_names[i]);
+                Mechanic1.Items.Add(mechanicName);
+                Mechanic2.Items.Add(mechanicName);
+                Mechanic3.Items.Add(mechanicName);
             }
 
             if (TargetA1.Items.Count == 0)
@@ -405,11 +405,11 @@ namespace SpellEditor
             InterruptFlagsGrid.Children.Clear();
             interrupts1.Clear();
             string[] interrupt_strings = SafeTryFindResource("interrupt_strings").Split('|');
-            for (int i = 0; i < interrupt_strings.Length; ++i)
+            foreach (string interruptString in interrupt_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = interrupt_strings[i];
+                box.Content = interruptString;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
 
@@ -420,11 +420,11 @@ namespace SpellEditor
             AuraInterruptFlagsGrid.Children.Clear();
             interrupts2.Clear();
             string[] aura_interrupt_strings = SafeTryFindResource("aura_interrupt_strings").Split('|');
-            for (int i = 0; i < aura_interrupt_strings.Length; ++i)
+            foreach (string auraInterruptString in aura_interrupt_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = aura_interrupt_strings[i];
+                box.Content = auraInterruptString;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
                 AuraInterruptFlagsGrid.Children.Add(box);
@@ -434,11 +434,11 @@ namespace SpellEditor
             ChannelInterruptFlagsGrid.Children.Clear();
             interrupts3.Clear();
             string[] channel_interrupt_strings = SafeTryFindResource("channel_interrupt_strings").Split('|');
-            for (int i = 0; i < channel_interrupt_strings.Length; ++i)
+            foreach (string channelInterruptString in channel_interrupt_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox();
 
-                box.Content = channel_interrupt_strings[i];
+                box.Content = channelInterruptString;
                 box.Margin = new Thickness(0, 5, 0, 0);
 
 
@@ -1127,9 +1127,9 @@ namespace SpellEditor
                     uint maskk = 0;
                     uint flagg = 1;
 
-                    for (int f = 0; f < attributes0.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute0 in attributes0)
                     {
-                        if (attributes0[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute0.IsChecked.Value == true) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1138,20 +1138,20 @@ namespace SpellEditor
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes1.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute1 in attributes1)
                     {
-                        if (attributes1[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute1.IsChecked.Value == true) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
-                   row["AttributesEx"] = maskk;
+                    row["AttributesEx"] = maskk;
 
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes2.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute2 in attributes2)
                     {
-                        if (attributes2[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute2.IsChecked.Value == true) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1161,9 +1161,9 @@ namespace SpellEditor
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes3.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute3 in attributes3)
                     {
-                        if (attributes3[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute3.IsChecked.Value == true) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1172,9 +1172,9 @@ namespace SpellEditor
                     maskk = 0;
                     flagg = 1;
 
-                    for (int f = 0; f < attributes4.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute4 in attributes4)
                     {
-                        if (attributes4[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute4.IsChecked.Value == true) { maskk = maskk + flagg; }
 
                         flagg = flagg + flagg;
                     }
@@ -1186,9 +1186,9 @@ namespace SpellEditor
 
                     if (isTbcOrGreater)
                     {
-                        for (int f = 0; f < attributes5.Count; ++f)
+                        foreach (ThreadSafeCheckBox attribute5 in attributes5)
                         {
-                            if (attributes5[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute5.IsChecked.Value == true) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
@@ -1198,16 +1198,19 @@ namespace SpellEditor
                         maskk = 0;
                         flagg = 1;
 
-                        for (int f = 0; f < attributes6.Count; ++f)
+                        foreach (ThreadSafeCheckBox attribute6 in attributes6)
                         {
-                            if (attributes6[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute6.IsChecked.Value == true) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
 
                         row["AttributesEx6"] = maskk;
 
-                        if (stancesBoxes[0].IsChecked.Value == true) { row["Stances"] = 0; }
+                        if (stancesBoxes[0].IsChecked.Value == true)
+                        {
+                            row["Stances"] = 0;
+                        }
                         else
                         {
                             uint mask = 0;
@@ -1229,9 +1232,9 @@ namespace SpellEditor
                         maskk = 0;
                         flagg = 1;
 
-                        for (int f = 0; f < attributes7.Count; ++f)
+                        foreach (ThreadSafeCheckBox attribute7 in attributes7)
                         {
-                            if (attributes7[f].IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute7.IsChecked.Value == true) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
@@ -1239,7 +1242,10 @@ namespace SpellEditor
                         row["AttributesEx7"] = maskk;
                     }
 
-                    if (targetBoxes[0].IsChecked.Value == true) { row["Targets"] = 0; }
+                    if (targetBoxes[0].IsChecked.Value == true)
+                    {
+                        row["Targets"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1255,7 +1261,10 @@ namespace SpellEditor
                         row["Targets"] = mask;
                     }
 
-                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true) { row["TargetCreatureType"] = 0; }
+                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true)
+                    {
+                        row["TargetCreatureType"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1277,164 +1286,83 @@ namespace SpellEditor
                         switch (CasterAuraState.SelectedIndex)
                         {
                             case 0: // None
-                                {
-                                    row["CasterAuraState"] = 0;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 0;
+                                break;
                             case 1: // Defense
-                                {
-                                    row["CasterAuraState"] = 1;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 1;
+                                break;
                             case 2: // Healthless 20%
-                                {
-                                    row["CasterAuraState"] = 2;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 2;
+                                break;
                             case 3: // Berserking
-                                {
-                                    row["CasterAuraState"] = 3;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 3;
+                                break;
                             case 4: // Judgement
-                                {
-                                    row["CasterAuraState"] = 5;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 5;
+                                break;
                             case 5: // Hunter Parry
-                                {
-                                    row["CasterAuraState"] = 7;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 7;
+                                break;
                             case 6: // Victory Rush
-                                {
-                                    row["CasterAuraState"] = 10;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 10;
+                                break;
                             case 7: // Unknown 1
-                                {
-                                    row["CasterAuraState"] = 11;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 11;
+                                break;
                             case 8: // Healthless 35%
-                                {
-                                    row["CasterAuraState"] = 13;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 13;
+                                break;
                             case 9: // Enrage
-                                {
-                                    row["CasterAuraState"] = 17;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 17;
+                                break;
                             case 10: // Unknown 2
-                                {
-                                    row["CasterAuraState"] = 22;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 22;
+                                break;
                             case 11: // Health Above 75%
-                                {
-                                    row["CasterAuraState"] = 23;
-
-                                    break;
-                                }
-
+                                row["CasterAuraState"] = 23;
+                                break;
                             default:
-                                {
-                                    break;
-                                }
+                                break;
                         }
                     }
 
                     switch (TargetAuraState.SelectedIndex)
                     {
                         case 0: // None
-                        {
                             row["TargetAuraState"] = 0;
-
                             break;
-                        }
-
                         case 1: // Healthless 20%
-                        {
                             row["TargetAuraState"] = 2;
-
                             break;
-                        }
-
                         case 2: // Berserking
-                        {
                             row["TargetAuraState"] = 3;
-
                             break;
-                        }
-
                         case 3: // Healthless 35%
-                        {
                             row["TargetAuraState"] = 13;
-
                             break;
-                        }
-
                         case 4: // Conflagrate
-                        {
                             row["TargetAuraState"] = 14;
-
                             break;
-                        }
-
                         case 5: // Swiftmend
-                        {
                             row["TargetAuraState"] = 15;
-
                             break;
-                        }
-
                         case 6: // Deadly Poison
-                        {
                             row["TargetAuraState"] = 16;
-
                             break;
-                        }
-
                         case 7: // Bleeding
-                        {
                             row["TargetAuraState"] = 18;
-
                             break;
-                        }
-
                         default:
-                        {
                             break;
-                        }
                     }
 
                     row["RecoveryTime"] = uint.Parse(RecoveryTime.Text);
                     row["CategoryRecoveryTime"] = uint.Parse(CategoryRecoveryTime.Text);
 
-                    if (interrupts1[0].IsChecked.Value == true) { row["InterruptFlags"] = 0; }
+                    if (interrupts1[0].IsChecked.Value == true)
+                    {
+                        row["InterruptFlags"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1450,7 +1378,10 @@ namespace SpellEditor
                         row["InterruptFlags"] = mask;
                     }
 
-                    if (interrupts2[0].IsChecked.Value == true) { row["AuraInterruptFlags"] = 0; }
+                    if (interrupts2[0].IsChecked.Value == true)
+                    {
+                        row["AuraInterruptFlags"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1466,7 +1397,10 @@ namespace SpellEditor
                         row["AuraInterruptFlags"] = mask;
                     }
 
-                    if (interrupts3[0].IsChecked.Value == true) { row["ChannelInterruptFlags"] = 0; }
+                    if (interrupts3[0].IsChecked.Value == true)
+                    {
+                        row["ChannelInterruptFlags"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1482,7 +1416,10 @@ namespace SpellEditor
                         row["ChannelInterruptFlags"] = mask;
                     }
 
-                    if (procBoxes[0].IsChecked.Value == true) { row["ProcFlags"] = 0; }
+                    if (procBoxes[0].IsChecked.Value == true)
+                    {
+                        row["ProcFlags"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -1530,7 +1467,10 @@ namespace SpellEditor
                     row["ReagentCount7"] = uint.Parse(ReagentCount7.Text);
                     row["ReagentCount8"] = uint.Parse(ReagentCount8.Text);
 
-                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true) { row["EquippedItemInventoryTypeMask"] = 0; }
+                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true)
+                    {
+                        row["EquippedItemInventoryTypeMask"] = 0;
+                    }
                     else
                     {
                         uint mask = 0;
@@ -2145,45 +2085,45 @@ namespace SpellEditor
                 uint mask = uint.Parse(row["Attributes"].ToString());
                 uint flagg = 1;
 
-                for (int f = 0; f < attributes0.Count; ++f)
+                foreach (ThreadSafeCheckBox attribute0 in attributes0)
                 {
-                    attributes0[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute0.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                     flagg = flagg + flagg;
                 }
 
                 mask = uint.Parse(row["AttributesEx"].ToString());
                 flagg = 1;
 
-                for (int f = 0; f < attributes1.Count; ++f)
+                foreach (ThreadSafeCheckBox attribute1 in attributes1)
                 {
-                    attributes1[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute1.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                     flagg = flagg + flagg;
                 }
 
                 mask = uint.Parse(row["AttributesEx2"].ToString());
                 flagg = 1;
 
-                for (int f = 0; f < attributes2.Count; ++f)
+                foreach (ThreadSafeCheckBox attribute2 in attributes2)
                 {
-                    attributes2[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute2.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                     flagg = flagg + flagg;
                 }
 
                 mask = uint.Parse(row["AttributesEx3"].ToString());
                 flagg = 1;
 
-                for (int f = 0; f < attributes3.Count; ++f)
+                foreach (ThreadSafeCheckBox attribute3 in attributes3)
                 {
-                    attributes3[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute3.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                     flagg = flagg + flagg;
                 }
 
                 mask = uint.Parse(row["AttributesEx4"].ToString());
                 flagg = 1;
 
-                for (int f = 0; f < attributes4.Count; ++f)
+                foreach (ThreadSafeCheckBox attribute4 in attributes4)
                 {
-                    attributes4[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute4.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                     flagg = flagg + flagg;
                 }
 
@@ -2192,18 +2132,18 @@ namespace SpellEditor
                     mask = uint.Parse(row["AttributesEx5"].ToString());
                     flagg = 1;
 
-                    for (int f = 0; f < attributes5.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute5 in attributes5)
                     {
-                        attributes5[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute5.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                         flagg = flagg + flagg;
                     }
 
                     mask = uint.Parse(row["AttributesEx6"].ToString());
                     flagg = 1;
 
-                    for (int f = 0; f < attributes6.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute6 in attributes6)
                     {
-                        attributes6[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute6.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                         flagg = flagg + flagg;
                     }
 
@@ -2230,9 +2170,9 @@ namespace SpellEditor
                     mask = uint.Parse(row["AttributesEx7"].ToString());
                     flagg = 1;
 
-                    for (int f = 0; f < attributes7.Count; ++f)
+                    foreach (ThreadSafeCheckBox attribute7 in attributes7)
                     {
-                        attributes7[f].threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute7.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
                         flagg = flagg + flagg;
                     }
                 }
@@ -2292,150 +2232,73 @@ namespace SpellEditor
                 switch (uint.Parse(row["CasterAuraState"].ToString()))
                 {
                     case 0: // None
-                        {
-                            CasterAuraState.threadSafeIndex = 0;
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 0;
+                        break;
                     case 1: // Defense
-                        {
-                            CasterAuraState.threadSafeIndex = 1;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 1;
+                        break;
                     case 2: // Healthless 20%
-                        {
-                            CasterAuraState.threadSafeIndex = 2;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 2;
+                        break;
                     case 3: // Berserking
-                        {
-                            CasterAuraState.threadSafeIndex = 3;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 3;
+                        break;
                     case 5: // Judgement
-                        {
-                            CasterAuraState.threadSafeIndex = 4;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 4;
+                        break;
                     case 7: // Hunter Parry
-                        {
-                            CasterAuraState.threadSafeIndex = 5;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 5;
+                        break;
                     case 10: // Victory Rush
-                        {
-                            CasterAuraState.threadSafeIndex = 6;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 6;
+                        break;
                     case 11: // Unknown 1
-                        {
-                            CasterAuraState.threadSafeIndex = 7;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 7;
+                        break;
                     case 13: // Healthless 35%
-                        {
-                            CasterAuraState.threadSafeIndex = 8;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 8;
+                        break;
                     case 17: // Enrage
-                        {
-                            CasterAuraState.threadSafeIndex = 9;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 9;
+                        break;
                     case 22: // Unknown 2
-                        {
-                            CasterAuraState.threadSafeIndex = 10;
-
-                            break;
-                        }
-
+                        CasterAuraState.threadSafeIndex = 10;
+                        break;
                     case 23: // Health Above 75%
-                        {
-                            CasterAuraState.threadSafeIndex = 11;
-
-                            break;
-                        }
-
-                    default: { break; }
+                        CasterAuraState.threadSafeIndex = 11;
+                        break;
+                    default:
+                        break;
                 }
 
                 switch (uint.Parse(row["TargetAuraState"].ToString()))
                 {
                     case 0: // None
-                        {
-                            TargetAuraState.threadSafeIndex = 0;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 0;
+                        break;
                     case 2: // Healthless 20%
-                        {
-                            TargetAuraState.threadSafeIndex = 1;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 1;
+                        break;
                     case 3: // Berserking
-                        {
-                            TargetAuraState.threadSafeIndex = 2;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 2;
+                        break;
                     case 13: // Healthless 35%
-                        {
-                            TargetAuraState.threadSafeIndex = 3;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 3;
+                        break;
                     case 14: // Conflagrate
-                        {
-                            TargetAuraState.threadSafeIndex = 4;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 4;
+                        break;
                     case 15: // Swiftmend
-                        {
-                            TargetAuraState.threadSafeIndex = 5;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 5;
+                        break;
                     case 16: // Deadly Poison
-                        {
-                            TargetAuraState.threadSafeIndex = 6;
-
-                            break;
-                        }
-
+                        TargetAuraState.threadSafeIndex = 6;
+                        break;
                     case 18: // Bleeding
-                        {
-                            TargetAuraState.threadSafeIndex = 17;
-
-                            break;
-                        }
-
-                    default: { break; }
+                        TargetAuraState.threadSafeIndex = 17;
+                        break;
+                    default:
+                        break;
                 }
                 updateProgress("Updating cast time selection...");
                 var loadCastTimes = (SpellCastTimes)DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes");
@@ -2599,9 +2462,9 @@ namespace SpellEditor
                 {
                     equippedItemSubClassMaskBoxes[0].threadSafeChecked = false;
                     uint flag = 1;
-                    for (int f = 0; f < equippedItemSubClassMaskBoxes.Count; ++f)
+                    foreach (ThreadSafeCheckBox equippedItemSubClassMaskBox in equippedItemSubClassMaskBoxes)
                     {
-                        equippedItemSubClassMaskBoxes[f].threadSafeChecked = ((intMask & flag) != 0) ? true : false;
+                        equippedItemSubClassMaskBox.threadSafeChecked = ((intMask & flag) != 0) ? true : false;
                         flag = flag + flag;
                     }
                 }
@@ -2617,9 +2480,9 @@ namespace SpellEditor
                 {
                     equippedItemInventoryTypeMaskBoxes[0].threadSafeChecked = false;
                     uint flag = 1;
-                    for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
+                    foreach (ThreadSafeCheckBox equippedItemInventoryTypeMaskBox in equippedItemInventoryTypeMaskBoxes)
                     {
-                        equippedItemInventoryTypeMaskBoxes[f].threadSafeChecked = ((intMask & flag) != 0) ? true : false;
+                        equippedItemInventoryTypeMaskBox.threadSafeChecked = ((intMask & flag) != 0) ? true : false;
                         flag = flag + flag;
                     }
                 }
