@@ -61,12 +61,12 @@ namespace SpellEditor
         public uint newIconID = 1;
         private bool updating;
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        private DataTable spellTable = new DataTable();
+        private readonly DataTable spellTable = new DataTable();
         private int storedLocale = -1;
-        private SpellStringParser SpellStringParser = new SpellStringParser();
+        private readonly SpellStringParser SpellStringParser = new SpellStringParser();
 
-        private List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
-        private List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
+        private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
+        private readonly List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
         #endregion
 
@@ -108,7 +108,7 @@ namespace SpellEditor
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Console.WriteLine("ERROR: " + e.Exception + "\n" + e.Exception.InnerException);
-            File.WriteAllText("error.txt", e.Exception + "\n" + e.Exception.InnerException, UTF8Encoding.GetEncoding(0));
+            File.WriteAllText("error.txt", e.Exception + "\n" + e.Exception.InnerException, Encoding.GetEncoding(0));
             HandleErrorMessage(e.Exception + "\n\n" + e.Exception.InnerException);
             e.Handled = true;
             Console.Out.Flush();
@@ -417,8 +417,6 @@ namespace SpellEditor
                     Content = interruptString, Margin = new Thickness(0, 5, 0, 0)
                 };
 
-
-
                 InterruptFlagsGrid.Children.Add(box);
                 interrupts1.Add(box);
             }
@@ -433,7 +431,6 @@ namespace SpellEditor
                     Content = auraInterruptString, Margin = new Thickness(0, 5, 0, 0)
                 };
 
-
                 AuraInterruptFlagsGrid.Children.Add(box);
                 interrupts2.Add(box);
             }
@@ -447,8 +444,6 @@ namespace SpellEditor
                 {
                     Content = channelInterruptString, Margin = new Thickness(0, 5, 0, 0)
                 };
-
-
 
                 ChannelInterruptFlagsGrid.Children.Add(box);
                 interrupts3.Add(box);
@@ -804,7 +799,7 @@ namespace SpellEditor
                     RuneCost.IsEnabled = isWotlkOrGreater;
                     SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
 
-                    PrepareIconEditor();
+                    prepareIconEditor();
                 }
             }
             catch (Exception e)
@@ -868,7 +863,7 @@ namespace SpellEditor
         #endregion
 
         #region KeyHandlers
-        private volatile Boolean imageLoadEventRunning;
+        private volatile bool imageLoadEventRunning;
 
         private void _KeyUp(object sender, KeyEventArgs e)
         {
@@ -964,15 +959,15 @@ namespace SpellEditor
                     {
                         while (enumerator.MoveNext())
                         {
-                            if (enumerator.Current is TextBlock block)
+                            if (!(enumerator.Current is TextBlock block))
+                                continue;
+
+                            string name = block.Text;
+                            string spellName = name.Substring(name.IndexOf(' ', 4) + 1);
+                            if (spellName.ToLower().Contains(input))
                             {
-                                string name = block.Text;
-                                string spellName = name.Substring(name.IndexOf(' ', 4) + 1);
-                                if (spellName.ToLower().Contains(input))
-                                {
-                                    enumerator.Dispose();
-                                    return true;
-                                }
+                                enumerator.Dispose();
+                                return true;
                             }
                         }
                         enumerator.Dispose();
@@ -1005,9 +1000,12 @@ namespace SpellEditor
             
             if (sender == TruncateTable)
             {
-                MetroDialogSettings settings = new MetroDialogSettings();
-                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
-                settings.NegativeButtonText = SafeTryFindResource("No");
+                MetroDialogSettings settings = new MetroDialogSettings
+                {
+                    AffirmativeButtonText = SafeTryFindResource("Yes"),
+                    NegativeButtonText = SafeTryFindResource("No")
+                };
+
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 var res = await this.ShowMessageAsync(SafeTryFindResource("TruncateTable1"), SafeTryFindResource("TruncateTable2"), style, settings);
                 if (res == MessageDialogResult.Affirmative)
@@ -1126,8 +1124,8 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute0 in attributes0)
                     {
-                        if (attribute0.IsChecked.Value) { maskk = maskk + flagg; }
-                        flagg = flagg + flagg;
+                        if (attribute0.IsChecked.Value) { maskk += flagg; }
+                        flagg += flagg;
                     }
 
                     row["Attributes"] = maskk;
@@ -1137,8 +1135,8 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute1 in attributes1)
                     {
-                        if (attribute1.IsChecked.Value) { maskk = maskk + flagg; }
-                        flagg = flagg + flagg;
+                        if (attribute1.IsChecked.Value) { maskk += flagg; }
+                        flagg += flagg;
                     }
 
                     row["AttributesEx"] = maskk;
@@ -1148,8 +1146,8 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute2 in attributes2)
                     {
-                        if (attribute2.IsChecked.Value) { maskk = maskk + flagg; }
-                        flagg = flagg + flagg;
+                        if (attribute2.IsChecked.Value) { maskk += flagg; }
+                        flagg += flagg;
                     }
 
                     row["AttributesEx2"] = maskk;
@@ -1160,8 +1158,8 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute3 in attributes3)
                     {
-                        if (attribute3.IsChecked.Value) { maskk = maskk + flagg; }
-                        flagg = flagg + flagg;
+                        if (attribute3.IsChecked.Value) { maskk += flagg; }
+                        flagg += flagg;
                     }
 
                     row["AttributesEx3"] = maskk;
@@ -1171,9 +1169,9 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute4 in attributes4)
                     {
-                        if (attribute4.IsChecked.Value) { maskk = maskk + flagg; }
+                        if (attribute4.IsChecked.Value) { maskk += flagg; }
 
-                        flagg = flagg + flagg;
+                        flagg += flagg;
                     }
 
                     row["AttributesEx4"] = maskk;
@@ -1185,9 +1183,9 @@ namespace SpellEditor
                     {
                         foreach (ThreadSafeCheckBox attribute5 in attributes5)
                         {
-                            if (attribute5.IsChecked.Value) { maskk = maskk + flagg; }
+                            if (attribute5.IsChecked.Value) { maskk += flagg; }
 
-                            flagg = flagg + flagg;
+                            flagg += flagg;
                         }
 
                         row["AttributesEx5"] = maskk;
@@ -1197,9 +1195,9 @@ namespace SpellEditor
 
                         foreach (ThreadSafeCheckBox attribute6 in attributes6)
                         {
-                            if (attribute6.IsChecked.Value) { maskk = maskk + flagg; }
+                            if (attribute6.IsChecked.Value) { maskk += flagg; }
 
-                            flagg = flagg + flagg;
+                            flagg += flagg;
                         }
 
                         row["AttributesEx6"] = maskk;
@@ -1215,9 +1213,9 @@ namespace SpellEditor
 
                             for (int f = 1; f < stancesBoxes.Count; ++f)
                             {
-                                if (stancesBoxes[f].IsChecked.Value) { mask = mask + flag; }
+                                if (stancesBoxes[f].IsChecked.Value) { mask += flag; }
 
-                                flag = flag + flag;
+                                flag += flag;
                             }
 
                             row["Stances"] = mask;
@@ -1231,9 +1229,9 @@ namespace SpellEditor
 
                         foreach (ThreadSafeCheckBox attribute7 in attributes7)
                         {
-                            if (attribute7.IsChecked.Value) { maskk = maskk + flagg; }
+                            if (attribute7.IsChecked.Value) { maskk += flagg; }
 
-                            flagg = flagg + flagg;
+                            flagg += flagg;
                         }
 
                         row["AttributesEx7"] = maskk;
@@ -1250,9 +1248,9 @@ namespace SpellEditor
 
                         for (int f = 1; f < targetBoxes.Count; ++f)
                         {
-                            if (targetBoxes[f].IsChecked.Value) { mask = mask + flag; }
+                            if (targetBoxes[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["Targets"] = mask;
@@ -1269,8 +1267,8 @@ namespace SpellEditor
 
                         for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                         {
-                            if (targetCreatureTypeBoxes[f].IsChecked.Value) { mask = mask + flag; }
-                            flag = flag + flag;
+                            if (targetCreatureTypeBoxes[f].IsChecked.Value) { mask += flag; }
+                            flag += flag;
                         }
 
                         row["TargetCreatureType"] = mask;
@@ -1363,9 +1361,9 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts1.Count; ++f)
                         {
-                            if (interrupts1[f].IsChecked.Value) { mask = mask + flag; }
+                            if (interrupts1[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["InterruptFlags"] = mask;
@@ -1382,9 +1380,9 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts2.Count; ++f)
                         {
-                            if (interrupts2[f].IsChecked.Value) { mask = mask + flag; }
+                            if (interrupts2[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["AuraInterruptFlags"] = mask;
@@ -1401,9 +1399,9 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts3.Count; ++f)
                         {
-                            if (interrupts3[f].IsChecked.Value) { mask = mask + flag; }
+                            if (interrupts3[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["ChannelInterruptFlags"] = mask;
@@ -1420,9 +1418,9 @@ namespace SpellEditor
 
                         for (int f = 1; f < procBoxes.Count; ++f)
                         {
-                            if (procBoxes[f].IsChecked.Value) { mask = mask + flag; }
+                            if (procBoxes[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["ProcFlags"] = mask;
@@ -1471,9 +1469,9 @@ namespace SpellEditor
 
                         for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
                         {
-                            if (equippedItemInventoryTypeMaskBoxes[f].IsChecked.Value) { mask = mask + flag; }
+                            if (equippedItemInventoryTypeMaskBoxes[f].IsChecked.Value) { mask += flag; }
 
-                            flag = flag + flag;
+                            flag += flag;
                         }
 
                         row["EquippedItemInventoryTypeMask"] = (int)mask;
@@ -1601,7 +1599,7 @@ namespace SpellEditor
                     }
 
                     var numColumns = WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
-                    TextBox[] boxes = stringObjectMap.Values.ToArray();
+                    ThreadSafeTextBox[] boxes = stringObjectMap.Values.ToArray();
                     for (int i = 0; i < (numColumns > 9 ? 9 : numColumns); ++i)
                         row["SpellName" + i] = boxes[i].Text;
                     for (int i = 0; i < (numColumns > 9 ? 9 : numColumns); ++i)
@@ -1700,7 +1698,7 @@ namespace SpellEditor
             FlyoutText.Text = message;
         }
 
-        static public T DeepCopy<T>(T obj)
+        public static T DeepCopy<T>(T obj)
         {
             BinaryFormatter s = new BinaryFormatter();
             using (MemoryStream ms = new MemoryStream())
@@ -1713,7 +1711,7 @@ namespace SpellEditor
             }
         }
 
-        private void PrepareIconEditor()
+        private void prepareIconEditor()
         {
             var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
             loadIcons.LoadImages(64);
@@ -1762,15 +1760,15 @@ namespace SpellEditor
         #endregion
 
         #region PopulateSelectSpell
-        private int SelectSpellContentsCount;
-        private int SelectSpellContentsIndex;
+        private int selectSpellContentsCount;
+        private int selectSpellContentsIndex;
 
         private void PopulateSelectSpell()
         {
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
-            SelectSpellContentsIndex = 0;
-            SelectSpellContentsCount = SelectSpell.Items.Count;
+            selectSpellContentsIndex = 0;
+            selectSpellContentsCount = SelectSpell.Items.Count;
             SpellsLoadedLabel.Content = SafeTryFindResource("no_spells_loaded");
             var worker = new SpellListQueryWorker(adapter, selectSpellWatch) {WorkerReportsProgress = true};
             worker.ProgressChanged += _worker_ProgressChanged;
@@ -1787,9 +1785,8 @@ namespace SpellEditor
 
                 spellTable.Rows.Clear();
 
+                const uint pageSize = 5000;
                 uint lowerBounds = 0;
-                uint pageSize = 5000;
-                uint targetSize = pageSize;
                 DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
                 lowerBounds += 100;
                 // Edge case of empty table after truncating, need to send a event to the handler
@@ -1809,11 +1806,11 @@ namespace SpellEditor
             worker.RunWorkerAsync();
             worker.RunWorkerCompleted += (sender, args) =>
             {
-                if (!(sender is SpellListQueryWorker spellListQueryWorkerworker))
+                if (!(sender is SpellListQueryWorker spellListQueryWorker))
                     return;
 
-                spellListQueryWorkerworker.Watch.Stop();
-                Console.WriteLine($"Loaded spell selection list contents in {spellListQueryWorkerworker.Watch.ElapsedMilliseconds}ms");
+                spellListQueryWorker.Watch.Stop();
+                Console.WriteLine($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
             };
         }
 
@@ -1825,18 +1822,18 @@ namespace SpellEditor
             DataRowCollection collection = (DataRowCollection)e.UserState;
             int rowIndex = 0;
             // Reuse existing UI elements if they exist
-            if (SelectSpellContentsIndex < SelectSpellContentsCount)
+            if (selectSpellContentsIndex < selectSpellContentsCount)
             {
                 foreach (DataRow row in collection)
                 {
                     ++rowIndex;
-                    if (SelectSpellContentsIndex == SelectSpellContentsCount ||
-                        SelectSpellContentsIndex >= SelectSpell.Items.Count)
+                    if (selectSpellContentsIndex == selectSpellContentsCount ||
+                        selectSpellContentsIndex >= SelectSpell.Items.Count)
                     {
                         break;
                     }
 
-                    if (!(SelectSpell.Items[SelectSpellContentsIndex] is StackPanel stackPanel))
+                    if (!(SelectSpell.Items[selectSpellContentsIndex] is StackPanel stackPanel))
                         continue;
 
                     var image = stackPanel.Children[0] as Image;
@@ -1848,7 +1845,7 @@ namespace SpellEditor
                         continue;
 
                     image.ToolTip = iconId.ToString();
-                    ++SelectSpellContentsIndex;
+                    ++selectSpellContentsIndex;
                 }
             }
             // Spawn any new UI elements required
@@ -1866,11 +1863,11 @@ namespace SpellEditor
                     image.Width = 32;
                     image.Height = 32;
                     image.Margin = new Thickness(1, 1, 1, 1);
-                    image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
+                    image.IsVisibleChanged += isSpellListEntryVisibileChanged;
                     var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
                     stackPanel.Children.Add(image);
                     stackPanel.Children.Add(textBlock);
-                    ++SelectSpellContentsIndex;
+                    ++selectSpellContentsIndex;
                 //}
                 newElements.Add(stackPanel);
             }
@@ -1883,21 +1880,21 @@ namespace SpellEditor
             {
                 // Don't keep more UI elements than we need
                 var enumerator = src.GetEnumerator();
-                for (int i = 0; i < SelectSpellContentsIndex; ++i)
+                for (int i = 0; i < selectSpellContentsIndex; ++i)
                 {
                     if (!enumerator.MoveNext())
                         break;
                     newSrc.Add(enumerator.Current);
                 }
             }
-            foreach (var element in newElements)
-                newSrc.Add(element);
+
+            newSrc.AddRange(newElements);
             SelectSpell.ItemsSource = newSrc;
             watch.Stop();
             Console.WriteLine($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
 
-        private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
+        private void isSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
             var image = o as Image;
             if (!(bool)args.NewValue)
@@ -1937,7 +1934,7 @@ namespace SpellEditor
                 NegativeButtonText = SafeTryFindResource("ActiveIconID")
             };
 
-            MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
+            const MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String4"), style, settings);
 
             string column = null;
@@ -2042,28 +2039,24 @@ namespace SpellEditor
                 }
                 for (i = 0; i < maxColumns; ++i)
                 {
-                    ThreadSafeTextBox box;
-                    stringObjectMap.TryGetValue(i, out box);
+                    stringObjectMap.TryGetValue(i, out var box);
                     box.threadSafeText = row[$"SpellName{i}"];
                 }
                 for (i = 0; i < maxColumns; ++i)
                 {
-                    ThreadSafeTextBox box;
-                    stringObjectMap.TryGetValue(i + 9, out box);
+                    stringObjectMap.TryGetValue(i + 9, out var box);
                     box.threadSafeText = row[$"SpellRank{i}"];
                 }
 
                 for (i = 0; i < maxColumns; ++i)
                 {
-                    ThreadSafeTextBox box;
-                    stringObjectMap.TryGetValue(i + 18, out box);
+                    stringObjectMap.TryGetValue(i + 18, out var box);
                     box.threadSafeText = row[$"SpellTooltip{i}"];
                 }
 
                 for (i = 0; i < maxColumns; ++i)
                 {
-                    ThreadSafeTextBox box;
-                    stringObjectMap.TryGetValue(i + 27, out box);
+                    stringObjectMap.TryGetValue(i + 27, out var box);
                     box.threadSafeText = row[$"SpellDescription{i}"];
                 }
 
@@ -2726,7 +2719,7 @@ namespace SpellEditor
             if (updating || adapter == null || !Config.isInit)
                 return;
 
-            if (sender is TabControl item && item.SelectedIndex == item.Items.Count - 1) { PrepareIconEditor(); }
+            if (sender is TabControl item && item.SelectedIndex == item.Items.Count - 1) { prepareIconEditor(); }
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2738,22 +2731,23 @@ namespace SpellEditor
                 ((ListBox)sender).UnselectAll();
                 return;
             }
-            if (added_items.Count == 1)
-            {
-                ListBox box = (ListBox)sender;
 
-                StackPanel panel = (StackPanel) box.SelectedItem;
-                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+            if (added_items.Count != 1) 
+                return;
+
+            ListBox box = (ListBox)sender;
+
+            StackPanel panel = (StackPanel) box.SelectedItem;
+            using (var enumerator = panel.GetChildObjects().GetEnumerator())
+            {
+                while (enumerator.MoveNext())
                 {
-                    while (enumerator.MoveNext())
+                    if (enumerator.Current is TextBlock block)
                     {
-                        if (enumerator.Current is TextBlock block)
-                        {
-                            string name = block.Text;
-                            selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
-                            UpdateMainWindow();
-                            return;
-                        }
+                        string name = block.Text;
+                        selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
+                        UpdateMainWindow();
+                        return;
                     }
                 }
             }
@@ -3147,8 +3141,8 @@ namespace SpellEditor
 
         private void MultilingualSwitch_Initialized(object sender, EventArgs e)
         {
-            string ConfigLanguage = Config.Language;
-            ConfigLanguage = ConfigLanguage == "" ? "enUS" : ConfigLanguage;
+            string configLanguage = Config.Language;
+            configLanguage = configLanguage == "" ? "enUS" : configLanguage;
 
             MultilingualSwitch.Items.Add("enUS");
             int index = 0;
@@ -3161,7 +3155,7 @@ namespace SpellEditor
                 if (fileName != "enUS")
                     MultilingualSwitch.Items.Add(fileName);
 
-                if (fileName == ConfigLanguage)
+                if (fileName == configLanguage)
                     index = MultilingualSwitch.Items.Count - 1;
             }
             // We want the selection changed event to fire first if the index is > 0
