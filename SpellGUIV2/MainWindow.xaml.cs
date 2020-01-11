@@ -3072,15 +3072,6 @@ namespace SpellEditor
                 num++;
             }
         }
-        private class ItemDetail
-        {
-            private DataRow userState;
-
-            public ItemDetail(DataRow userState)
-            {
-                this.userState = userState;
-            }
-        }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
