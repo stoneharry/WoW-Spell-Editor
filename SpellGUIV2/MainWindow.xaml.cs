@@ -617,7 +617,7 @@ namespace SpellEditor
             var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), SafeTryFindResource("String1"));
             controller.SetCancelable(false);
             window.Show();
-            window.Width = window.Width / 2;
+            window.Width /= 2;
             while (window.IsVisible && !window.IsDataSelected())
                 await Task.Delay(100);
             if (window.IsVisible)
@@ -669,8 +669,8 @@ namespace SpellEditor
             var window = new ConfigWindow(adapter is MySQL ? 
                 ConfigWindow.DatabaseIdentifier.MySQL : ConfigWindow.DatabaseIdentifier.SQLite);
             window.Show();
-            window.Width = window.Width * 0.6;
-            window.Height = window.Height * 0.7;
+            window.Width *= 0.6;
+            window.Height *= 0.7;
             ConfigWindowInstance = window;
         }
         #endregion
