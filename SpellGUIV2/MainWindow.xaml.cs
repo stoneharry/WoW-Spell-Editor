@@ -129,10 +129,10 @@ namespace SpellEditor
             string[] attFlags = SafeTryFindResource("attFlags_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes1.Children.Add(box);
                 attributes0.Add(box);
@@ -143,10 +143,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes2.Children.Add(box);
                 attributes1.Add(box);
@@ -157,10 +157,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx1_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes3.Children.Add(box);
                 attributes2.Add(box);
@@ -171,10 +171,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx2_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes4.Children.Add(box);
                 attributes3.Add(box);
@@ -185,10 +185,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx3_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes5.Children.Add(box);
                 attributes4.Add(box);
@@ -199,10 +199,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx4_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes6.Children.Add(box);
                 attributes5.Add(box);
@@ -213,10 +213,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx5_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes7.Children.Add(box);
                 attributes6.Add(box);
@@ -227,10 +227,10 @@ namespace SpellEditor
             attFlags = SafeTryFindResource("attFlagsEx6_strings").Split('|');
             foreach (string attFlag in attFlags)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
-                box.Content = attFlag;
-                box.ToolTip = attFlag;
-                box.Margin = new Thickness(0, 5, 0, 0);
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = attFlag, ToolTip = attFlag, Margin = new Thickness(0, 5, 0, 0)
+                };
 
                 Attributes8.Children.Add(box);
                 attributes7.Add(box);
@@ -241,11 +241,11 @@ namespace SpellEditor
             string[] stances_strings = SafeTryFindResource("stances_strings").Split('|');
             foreach (string stance in stances_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = stance, ToolTip = stance, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = stance;
-                box.ToolTip = stance;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
                 StancesGrid.Children.Add(box);
                 stancesBoxes.Add(box);
@@ -256,11 +256,11 @@ namespace SpellEditor
             string[] creature_type_strings = SafeTryFindResource("creature_type_strings").Split('|');
             foreach (string creatureType in creature_type_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = creatureType, ToolTip = creatureType, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = creatureType;
-                box.ToolTip = creatureType;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
                 TargetCreatureType.Children.Add(box);
                 targetCreatureTypeBoxes.Add(box);
@@ -279,10 +279,11 @@ namespace SpellEditor
             string[] equipped_item_inventory_type_mask_strings = SafeTryFindResource("equipped_item_inventory_type_mask_strings").Split('|');
             foreach (string equippedItemInventoryTypeMask in equipped_item_inventory_type_mask_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = equippedItemInventoryTypeMask, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = equippedItemInventoryTypeMask;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
                 EquippedItemInventoryTypeGrid.Children.Add(box);
                 equippedItemInventoryTypeMaskBoxes.Add(box);
@@ -292,11 +293,13 @@ namespace SpellEditor
             equippedItemSubClassMaskBoxes.Clear();
             for (int i = 0; i < 29; ++i)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = SafeTryFindResource("None"),
+                    Margin = new Thickness(0, 5, 0, 0),
+                    Visibility = Visibility.Hidden
+                };
 
-                box.Content = SafeTryFindResource("None");
-                box.Margin = new Thickness(0, 5, 0, 0);
-                box.Visibility = Visibility.Hidden;
                 EquippedItemSubClassGrid.Children.Add(box);
                 equippedItemSubClassMaskBoxes.Add(box);
             }
@@ -325,10 +328,11 @@ namespace SpellEditor
             string[] target_strings = SafeTryFindResource("target_strings").Split('|');
             foreach (string targetString in target_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = targetString, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = targetString;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
                 TargetEditorGrid.Children.Add(box);
                 targetBoxes.Add(box);
@@ -339,10 +343,11 @@ namespace SpellEditor
             string[] proc_strings = SafeTryFindResource("proc_strings").Split('|');
             foreach (string procString in proc_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = procString, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = procString;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
 
                 ProcEditorGrid.Children.Add(box);
@@ -407,10 +412,11 @@ namespace SpellEditor
             string[] interrupt_strings = SafeTryFindResource("interrupt_strings").Split('|');
             foreach (string interruptString in interrupt_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = interruptString, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = interruptString;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
 
                 InterruptFlagsGrid.Children.Add(box);
@@ -422,10 +428,11 @@ namespace SpellEditor
             string[] aura_interrupt_strings = SafeTryFindResource("aura_interrupt_strings").Split('|');
             foreach (string auraInterruptString in aura_interrupt_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = auraInterruptString, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = auraInterruptString;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
                 AuraInterruptFlagsGrid.Children.Add(box);
                 interrupts2.Add(box);
@@ -436,10 +443,11 @@ namespace SpellEditor
             string[] channel_interrupt_strings = SafeTryFindResource("channel_interrupt_strings").Split('|');
             foreach (string channelInterruptString in channel_interrupt_strings)
             {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox();
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = channelInterruptString, Margin = new Thickness(0, 5, 0, 0)
+                };
 
-                box.Content = channelInterruptString;
-                box.Margin = new Thickness(0, 5, 0, 0);
 
 
                 ChannelInterruptFlagsGrid.Children.Add(box);
@@ -884,10 +892,12 @@ namespace SpellEditor
             {
                 if (e.Key == Key.Escape)
                 {
-                    MetroDialogSettings settings = new MetroDialogSettings();
+                    MetroDialogSettings settings = new MetroDialogSettings
+                    {
+                        AffirmativeButtonText = SafeTryFindResource("Yes"),
+                        NegativeButtonText = SafeTryFindResource("No")
+                    };
 
-                    settings.AffirmativeButtonText = SafeTryFindResource("Yes");
-                    settings.NegativeButtonText = SafeTryFindResource("No");
 
                     MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                     MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("Exit"), style, settings);
@@ -1023,10 +1033,12 @@ namespace SpellEditor
 
             if (sender == InsertANewRecord)
             {
-                MetroDialogSettings settings = new MetroDialogSettings();
+                MetroDialogSettings settings = new MetroDialogSettings
+                {
+                    AffirmativeButtonText = SafeTryFindResource("Yes"),
+                    NegativeButtonText = SafeTryFindResource("No")
+                };
 
-                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
-                settings.NegativeButtonText = SafeTryFindResource("No");
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult copySpell = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord1"), style, settings);
@@ -1647,10 +1659,12 @@ namespace SpellEditor
 
             if (sender == SaveIcon)
             {
-                MetroDialogSettings settings = new MetroDialogSettings();
+                MetroDialogSettings settings = new MetroDialogSettings
+                {
+                    AffirmativeButtonText = SafeTryFindResource("Yes"),
+                    NegativeButtonText = SafeTryFindResource("No")
+                };
 
-                settings.AffirmativeButtonText = SafeTryFindResource("Yes");
-                settings.NegativeButtonText = SafeTryFindResource("No");
 
                 MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
                 MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("SaveIcon"), style, settings);
@@ -1778,8 +1792,7 @@ namespace SpellEditor
             SelectSpellContentsIndex = 0;
             SelectSpellContentsCount = SelectSpell.Items.Count;
             SpellsLoadedLabel.Content = SafeTryFindResource("no_spells_loaded");
-            var _worker = new SpellListQueryWorker(adapter, selectSpellWatch);
-            _worker.WorkerReportsProgress = true;
+            var _worker = new SpellListQueryWorker(adapter, selectSpellWatch) {WorkerReportsProgress = true};
             _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
 
             FilterSpellNames.IsEnabled = false;
@@ -1859,8 +1872,7 @@ namespace SpellEditor
             {
                 var row = collection[rowIndex];
                 var spellName = row[1].ToString();
-                var textBlock = new TextBlock();
-                textBlock.Text = string.Format(" {0} - {1}", row[0], spellName);
+                var textBlock = new TextBlock {Text = string.Format(" {0} - {1}", row[0], spellName)};
                 var image = new Image();
                 var iconId = uint.Parse(row[2].ToString());
                 //if (iconId > 0)
@@ -1934,9 +1946,11 @@ namespace SpellEditor
         {
             if (adapter == null) { return; }
 
-            MetroDialogSettings settings = new MetroDialogSettings();
-            settings.AffirmativeButtonText = SafeTryFindResource("SpellIconID");
-            settings.NegativeButtonText = SafeTryFindResource("ActiveIconID");
+            MetroDialogSettings settings = new MetroDialogSettings
+            {
+                AffirmativeButtonText = SafeTryFindResource("SpellIconID"),
+                NegativeButtonText = SafeTryFindResource("ActiveIconID")
+            };
 
             MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
             MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String4"), style, settings);
