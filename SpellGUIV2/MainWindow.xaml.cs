@@ -99,10 +99,10 @@ namespace SpellEditor
 
         public async void HandleErrorMessage(string msg)
         {
-            if (Dispatcher.CheckAccess())
+            if (Dispatcher != null && Dispatcher.CheckAccess())
                 await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), msg);
             else
-                Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), msg)));
+                Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), msg)));
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -928,10 +928,8 @@ namespace SpellEditor
                     foreach (StackPanel obj in SelectSpell.Items)
                     {
                         foreach (var item in obj.Children)
-                            if (item is TextBlock)
+                            if (item is TextBlock tb)
                             {
-                                TextBlock tb = (TextBlock)item;
-
                                 if (int.Parse(tb.Text.Split(' ')[1]) == ID)
                                 {
                                     SelectSpell.SelectedIndex = count;
@@ -970,9 +968,8 @@ namespace SpellEditor
                     {
                         while (enumerator.MoveNext())
                         {
-                            if (enumerator.Current is TextBlock)
+                            if (enumerator.Current is TextBlock block)
                             {
-                                TextBlock block = (TextBlock)enumerator.Current;
                                 string name = block.Text;
                                 string spellName = name.Substring(name.IndexOf(' ', 4) + 1);
                                 if (spellName.ToLower().Contains(input))
@@ -1043,12 +1040,10 @@ namespace SpellEditor
 
                 if (copySpell == MessageDialogResult.Affirmative)
                 {
-                    uint oldID = 0;
-
                     string inputCopySpell = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord2"));
                     if (inputCopySpell == null) { return; }
 
-                    if (!uint.TryParse(inputCopySpell, out oldID))
+                    if (!uint.TryParse(inputCopySpell, out var oldID))
                     {
                         HandleErrorMessage(SafeTryFindResource("CopySpellRecord3"));
                         return;
@@ -1059,8 +1054,7 @@ namespace SpellEditor
                 string inputNewRecord = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord4"));
                 if (inputNewRecord == null) { return; }
 
-                uint newID = 0;
-                if (!uint.TryParse(inputNewRecord, out newID))
+                if (!uint.TryParse(inputNewRecord, out var newID))
                 {
                     HandleErrorMessage(SafeTryFindResource("CopySpellRecord5"));
                     return;
@@ -1102,8 +1096,7 @@ namespace SpellEditor
 
                 if (input == null) { return; }
 
-                uint spellID = 0;
-                if (!uint.TryParse(input, out spellID))
+                if (!uint.TryParse(input, out var spellID))
                 {
                     HandleErrorMessage(SafeTryFindResource("DeleteSpellRecord2"));
                     return;
@@ -1758,7 +1751,7 @@ namespace SpellEditor
             var name8 = aboveClassic ? ",`SpellName8` " : "";
             DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
                 "`SpellName5`,`SpellName6`,`SpellName7`" + name8 + " FROM `spell` WHERE `ID` = '5'").Rows;
-            if (res == null || res.Count == 0)
+            if (res.Count == 0)
                 return -1;
             int locale = 0;
             if (res[0] != null)
@@ -1825,7 +1818,9 @@ namespace SpellEditor
             _worker.RunWorkerAsync();
             _worker.RunWorkerCompleted += (sender, args) =>
             {
-                var worker = sender as SpellListQueryWorker;
+                if (!(sender is SpellListQueryWorker worker))
+                    return;
+
                 worker.__watch.Stop();
                 Console.WriteLine($"Loaded spell selection list contents in {worker.__watch.ElapsedMilliseconds}ms");
             };
@@ -1849,17 +1844,20 @@ namespace SpellEditor
                     {
                         break;
                     }
-                    var stackPanel = SelectSpell.Items[SelectSpellContentsIndex] as StackPanel;
+
+                    if (!(SelectSpell.Items[SelectSpellContentsIndex] is StackPanel stackPanel))
+                        continue;
+
                     var image = stackPanel.Children[0] as Image;
                     var textBlock = stackPanel.Children[1] as TextBlock;
                     var spellName = row[1].ToString();
                     textBlock.Text = $" {row[0]} - {spellName}";
                     var iconId = uint.Parse(row[2].ToString());
-                    if (iconId > 0)
-                    {
-                        image.ToolTip = iconId.ToString();
-                        ++SelectSpellContentsIndex;
-                    }
+                    if (iconId <= 0)
+                        continue;
+
+                    image.ToolTip = iconId.ToString();
+                    ++SelectSpellContentsIndex;
                 }
             }
             // Spawn any new UI elements required
@@ -2740,9 +2738,8 @@ namespace SpellEditor
         {
             if (updating || adapter == null || !Config.isInit)
                 return;
-            var item = sender as TabControl;
 
-            if (item.SelectedIndex == item.Items.Count - 1) { PrepareIconEditor(); }
+            if (sender is TabControl item && item.SelectedIndex == item.Items.Count - 1) { PrepareIconEditor(); }
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2763,9 +2760,8 @@ namespace SpellEditor
                 {
                     while (enumerator.MoveNext())
                     {
-                        if (enumerator.Current is TextBlock)
+                        if (enumerator.Current is TextBlock block)
                         {
-                            TextBlock block = (TextBlock)enumerator.Current;
                             string name = block.Text;
                             selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
                             UpdateMainWindow();
