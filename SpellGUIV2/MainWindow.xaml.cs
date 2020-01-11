@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SQLite;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using SpellEditor.Sources.Constants;
-using SpellEditor.Sources.DBC;
-using SpellEditor.Sources.Controls;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Windows.Threading;
-using SpellEditor.Sources.Config;
-using System.Data;
 using MySql.Data.MySqlClient;
-using System.ComponentModel;
-using SpellEditor.Sources.SpellStringTools;
-using SpellEditor.Sources.Database;
-using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Binding;
-using System.Diagnostics;
-using System.Threading;
-using System.Globalization;
 using SpellEditor.Sources.BLP;
+using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Constants;
+using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Database;
+using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.SpellStringTools;
+using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.VersionControl;
-using System.Data.SQLite;
 
 namespace SpellEditor
 {
@@ -57,7 +57,7 @@ namespace SpellEditor
 
         #region MemberVariables
         private IDatabaseAdapter adapter;
-        public uint selectedID = 0;
+        public uint selectedID;
         public uint newIconID = 1;
         private bool updating;
         public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -462,7 +462,7 @@ namespace SpellEditor
         #region Loaded
         private void _Loaded(object sender, RoutedEventArgs e)
         {
-            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             try
             {
@@ -530,15 +530,15 @@ namespace SpellEditor
                 {
                     uint mask = (uint)Math.Pow(2, i);
 
-                    SpellMask11.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask12.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask13.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask21.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask22.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask23.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask31.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask32.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
-                    SpellMask33.Items.Add(new ThreadSafeCheckBox() { Content = "0x" + mask.ToString("x8") });
+                    SpellMask11.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask12.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask13.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask21.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask22.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask23.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask31.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask32.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask33.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
                 }
 
                 foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
@@ -651,9 +651,9 @@ namespace SpellEditor
                 if (isImport && !abstractDbc.HasData())
                     abstractDbc.ReloadContents();
                 if (isImport)
-                    await abstractDbc.ImportToSql(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
+                    await abstractDbc.ImportToSql(adapter, controller.SetProgress, "ID", bindingName);
                 else
-                    await abstractDbc.ExportToDbc(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
+                    await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
             }
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
             PopulateSelectSpell();
@@ -662,7 +662,7 @@ namespace SpellEditor
         #endregion
 
         #region ConfigButton
-        private ConfigWindow ConfigWindowInstance = null;
+        private ConfigWindow ConfigWindowInstance;
 
         private void ConfigButtonClick(object sender, RoutedEventArgs e)
         {
@@ -824,13 +824,13 @@ namespace SpellEditor
         {
             if (!Config.isInit)
             {
-                var settings = new MetroDialogSettings()
+                var settings = new MetroDialogSettings
                 {
                     AffirmativeButtonText = "SQLite",
                     NegativeButtonText = "MySQL",
                     AnimateHide = true,
                     AnimateShow = true,
-                    ColorScheme = MetroDialogColorScheme.Accented,
+                    ColorScheme = MetroDialogColorScheme.Accented
                 };
                 MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
                     SafeTryFindResource("Welcome"),
@@ -868,7 +868,7 @@ namespace SpellEditor
         #endregion
 
         #region KeyHandlers
-        private volatile Boolean imageLoadEventRunning = false;
+        private volatile Boolean imageLoadEventRunning;
 
         private void _KeyUp(object sender, KeyEventArgs e)
         {
@@ -901,10 +901,6 @@ namespace SpellEditor
                     if (exitCode == MessageDialogResult.Affirmative)
                     {
                         Environment.Exit(0x1);
-                    }
-                    else if (exitCode == MessageDialogResult.Negative)
-                    {
-                        return;
                     }
                 }
                 else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
@@ -961,7 +957,7 @@ namespace SpellEditor
                 }
 
                 ICollectionView view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
-                view.Filter = (o) =>
+                view.Filter = o =>
                 {
                     StackPanel panel = (StackPanel) o;
                     using (var enumerator = panel.GetChildObjects().GetEnumerator())
@@ -1073,7 +1069,7 @@ namespace SpellEditor
                     StringBuilder str = new StringBuilder();
                     str.Append($"INSERT INTO `spell` VALUES ('{newID}'");
                     for (int i = 1; i < row.Table.Columns.Count; ++i)
-                        str.Append($", \"{row[i].ToString()}\"");
+                        str.Append($", \"{row[i]}\"");
                     str.Append(")");
                     adapter.Execute(str.ToString());
                 }
@@ -1322,8 +1318,6 @@ namespace SpellEditor
                             case 11: // Health Above 75%
                                 row["CasterAuraState"] = 23;
                                 break;
-                            default:
-                                break;
                         }
                     }
 
@@ -1352,8 +1346,6 @@ namespace SpellEditor
                             break;
                         case 7: // Bleeding
                             row["TargetAuraState"] = 18;
-                            break;
-                        default:
                             break;
                     }
 
@@ -1599,7 +1591,7 @@ namespace SpellEditor
                     row["EffectDamageMultiplier1"] = float.Parse(EffectDamageMultiplier1.Text);
                     row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
                     row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
-                    row["SchoolMask"] = (S1.IsChecked.Value ? (uint)0x01 : (uint)0x00) + (S2.IsChecked.Value ? (uint)0x02 : (uint)0x00) + (S3.IsChecked.Value ? (uint)0x04 : (uint)0x00) + (S4.IsChecked.Value ? (uint)0x08 : (uint)0x00) + (S5.IsChecked.Value ? (uint)0x10 : (uint)0x00) + (S6.IsChecked.Value ? (uint)0x20 : (uint)0x00) + (S7.IsChecked.Value ? (uint)0x40 : (uint)0x00);
+                    row["SchoolMask"] = (S1.IsChecked.Value ? 0x01 : (uint)0x00) + (S2.IsChecked.Value ? 0x02 : (uint)0x00) + (S3.IsChecked.Value ? 0x04 : (uint)0x00) + (S4.IsChecked.Value ? 0x08 : (uint)0x00) + (S5.IsChecked.Value ? 0x10 : (uint)0x00) + (S6.IsChecked.Value ? 0x20 : (uint)0x00) + (S7.IsChecked.Value ? 0x40 : (uint)0x00);
                     if (isWotlkOrGreater)
                     {
                         row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
@@ -1675,7 +1667,6 @@ namespace SpellEditor
             if (sender == ResetActiveIconID)
             {
                 adapter.Execute($"UPDATE `{"spell"}` SET `{"ActiveIconID"}` = '{0}' WHERE `ID` = '{selectedID}'");
-                return;
             }
         }
 
@@ -1690,7 +1681,7 @@ namespace SpellEditor
                 if (uint.TryParse(text.Text.Substring(0, text.Text.IndexOf('-')).Trim(), out var id) &&
                     changedId == id)
                 {
-                    text.Text = $" { id } - { row["SpellName" + (GetLocale() - 1)].ToString() }";
+                    text.Text = $" { id } - { row["SpellName" + (GetLocale() - 1)] }";
                     var image = panel.Children[0] as Image;
                     image.ToolTip = row["SpellIconID"].ToString();
                     image.Visibility = Visibility.Hidden;
@@ -1782,11 +1773,11 @@ namespace SpellEditor
             SelectSpellContentsCount = SelectSpell.Items.Count;
             SpellsLoadedLabel.Content = SafeTryFindResource("no_spells_loaded");
             var _worker = new SpellListQueryWorker(adapter, selectSpellWatch) {WorkerReportsProgress = true};
-            _worker.ProgressChanged += new ProgressChangedEventHandler(_worker_ProgressChanged);
+            _worker.ProgressChanged += _worker_ProgressChanged;
 
             FilterSpellNames.IsEnabled = false;
 
-            _worker.DoWork += delegate(object s, DoWorkEventArgs args)
+            _worker.DoWork += delegate
             {
                 if (_worker.__adapter == null || !Config.isInit)
                     return;
@@ -1876,7 +1867,7 @@ namespace SpellEditor
                     image.Height = 32;
                     image.Margin = new Thickness(1, 1, 1, 1);
                     image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
-                    var stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+                    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
                     stackPanel.Children.Add(image);
                     stackPanel.Children.Add(textBlock);
                     ++SelectSpellContentsIndex;
@@ -1972,7 +1963,7 @@ namespace SpellEditor
                     new FrameworkPropertyMetadata { DefaultValue = 30 }
                 );*/
 
-                loadSpell(new UpdateTextFunc(controller.SetMessage));
+                loadSpell(controller.SetMessage);
 
                 await controller.CloseAsync();
 
@@ -1998,7 +1989,7 @@ namespace SpellEditor
         {
             DataRowCollection rowResult = adapter.Query(string.Format("SELECT SpellDescription0 || SpellTooltip0 FROM `spell`", selectedID)).Rows;
             if (rowResult == null || rowResult.Count == 0)
-                throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
+                throw new Exception("An error occurred trying to select spell ID: " + selectedID);
             var unparsedStrings = new List<string>();
             foreach (DataRow row in rowResult)
             {
@@ -2034,7 +2025,7 @@ namespace SpellEditor
             updateProgress("Querying MySQL data...");
             DataRowCollection rowResult = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'").Rows;
             if (rowResult == null || rowResult.Count != 1)
-                throw new Exception("An error occurred trying to select spell ID: " + selectedID.ToString());
+                throw new Exception("An error occurred trying to select spell ID: " + selectedID);
             var row = rowResult[0];
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
@@ -2275,8 +2266,6 @@ namespace SpellEditor
                     case 23: // Health Above 75%
                         CasterAuraState.threadSafeIndex = 11;
                         break;
-                    default:
-                        break;
                 }
 
                 switch (uint.Parse(row["TargetAuraState"].ToString()))
@@ -2304,8 +2293,6 @@ namespace SpellEditor
                         break;
                     case 18: // Bleeding
                         TargetAuraState.threadSafeIndex = 17;
-                        break;
-                    default:
                         break;
                 }
                 updateProgress("Updating cast time selection...");
@@ -2644,7 +2631,7 @@ namespace SpellEditor
                     updateProgress("Updating totem categories & load area groups...");
                     var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
                     result = adapter.Query($"SELECT `TotemCategory1`, `TotemCategory2` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0];
-                    IDs = new uint[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
+                    IDs = new[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
                     TotemCategory1.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[0]);
                     TotemCategory2.threadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[1]);
                 }
@@ -3031,16 +3018,14 @@ namespace SpellEditor
                 }
                 return;
             }
-            else
-            {
-                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() 
-                    => EquippedItemSubClassGrid.IsEnabled = true));
-            }
+
+            Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(() 
+                => EquippedItemSubClassGrid.IsEnabled = true));
             uint num = 0;
             var loadItemSubClasses = (ItemSubClass)DBCManager.GetInstance().FindDbcForBinding("ItemSubClass");
             foreach (ThreadSafeCheckBox box in equippedItemSubClassMaskBoxes)
             {
-                ItemSubClass.ItemSubClassLookup itemLookup = (ItemSubClass.ItemSubClassLookup) loadItemSubClasses.LookupClassAndSubclass(classId, num);
+                ItemSubClass.ItemSubClassLookup itemLookup = loadItemSubClasses.LookupClassAndSubclass(classId, num);
                 if (itemLookup.Name != null)
                 {
                     box.threadSafeContent = itemLookup.Name;
@@ -3203,5 +3188,5 @@ namespace SpellEditor
             var resource = TryFindResource(key);
             return resource != null ? resource.ToString() : $"Language files out of date, missing key: {key}";
         }
-    };
-};
+    }
+}
