@@ -1722,13 +1722,13 @@ namespace SpellEditor
 
         private class SpellListQueryWorker : BackgroundWorker
         {
-            public IDatabaseAdapter __adapter;
-            public Stopwatch __watch;
+            public readonly IDatabaseAdapter Adapter;
+            public readonly Stopwatch Watch;
 
-            public SpellListQueryWorker(IDatabaseAdapter _adapter, Stopwatch watch)
+            public SpellListQueryWorker(IDatabaseAdapter adapter, Stopwatch watch)
             {
-                __adapter = _adapter;
-                __watch = watch;
+                Adapter = adapter;
+                Watch = watch;
             }
         }
 
@@ -1779,7 +1779,7 @@ namespace SpellEditor
 
             _worker.DoWork += delegate
             {
-                if (_worker.__adapter == null || !Config.isInit)
+                if (_worker.Adapter == null || !Config.isInit)
                     return;
                 int locale = GetLocale();
                 if (locale > 0)
@@ -1812,8 +1812,8 @@ namespace SpellEditor
                 if (!(sender is SpellListQueryWorker worker))
                     return;
 
-                worker.__watch.Stop();
-                Console.WriteLine($"Loaded spell selection list contents in {worker.__watch.ElapsedMilliseconds}ms");
+                worker.Watch.Stop();
+                Console.WriteLine($"Loaded spell selection list contents in {worker.Watch.ElapsedMilliseconds}ms");
             };
         }
 
