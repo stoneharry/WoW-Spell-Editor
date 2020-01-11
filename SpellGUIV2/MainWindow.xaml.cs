@@ -679,7 +679,7 @@ namespace SpellEditor
         private async void loadAllData()
         {
             await GetConfig();
-            if (!Config.isInit)
+            if (!Config.IsInit)
             {
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"), SafeTryFindResource("String2"));
                 return;
@@ -817,7 +817,7 @@ namespace SpellEditor
 
         private async Task GetConfig()
         {
-            if (!Config.isInit)
+            if (!Config.IsInit)
             {
                 var settings = new MetroDialogSettings
                 {
@@ -834,7 +834,7 @@ namespace SpellEditor
 
                 if (!isSqlite)
                 {
-                    if (Config.needInitMysql)
+                    if (Config.NeedInitMysql)
                     {
                         string host = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_1"));
                         string user = await this.ShowInputAsync(SafeTryFindResource("Input_MySQL_Details"), SafeTryFindResource("Input_MySQL_Details_2"));
@@ -857,7 +857,7 @@ namespace SpellEditor
                     }
                 }
                 Config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
-                Config.isInit = true;
+                Config.IsInit = true;
             }
         }
         #endregion
@@ -1777,7 +1777,7 @@ namespace SpellEditor
 
             worker.DoWork += delegate
             {
-                if (worker.Adapter == null || !Config.isInit)
+                if (worker.Adapter == null || !Config.IsInit)
                     return;
                 int locale = GetLocale();
                 if (locale > 0)
@@ -2716,7 +2716,7 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating || adapter == null || !Config.isInit)
+            if (updating || adapter == null || !Config.IsInit)
                 return;
 
             if (sender is TabControl item && item.SelectedIndex == item.Items.Count - 1) { prepareIconEditor(); }
