@@ -2097,7 +2097,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox attribute0 in attributes0)
                 {
-                    attribute0.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute0.threadSafeChecked = ((mask & flagg) != 0);
                     flagg = flagg + flagg;
                 }
 
@@ -2106,7 +2106,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox attribute1 in attributes1)
                 {
-                    attribute1.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute1.threadSafeChecked = ((mask & flagg) != 0);
                     flagg = flagg + flagg;
                 }
 
@@ -2115,7 +2115,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox attribute2 in attributes2)
                 {
-                    attribute2.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute2.threadSafeChecked = ((mask & flagg) != 0);
                     flagg = flagg + flagg;
                 }
 
@@ -2124,7 +2124,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox attribute3 in attributes3)
                 {
-                    attribute3.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute3.threadSafeChecked = ((mask & flagg) != 0);
                     flagg = flagg + flagg;
                 }
 
@@ -2133,7 +2133,7 @@ namespace SpellEditor
 
                 foreach (ThreadSafeCheckBox attribute4 in attributes4)
                 {
-                    attribute4.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                    attribute4.threadSafeChecked = ((mask & flagg) != 0);
                     flagg = flagg + flagg;
                 }
 
@@ -2144,7 +2144,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute5 in attributes5)
                     {
-                        attribute5.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute5.threadSafeChecked = ((mask & flagg) != 0);
                         flagg = flagg + flagg;
                     }
 
@@ -2153,7 +2153,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute6 in attributes6)
                     {
-                        attribute6.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute6.threadSafeChecked = ((mask & flagg) != 0);
                         flagg = flagg + flagg;
                     }
 
@@ -2170,7 +2170,7 @@ namespace SpellEditor
                         uint flag = 1;
                         for (int f = 1; f < stancesBoxes.Count; ++f)
                         {
-                            stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                            stancesBoxes[f].threadSafeChecked = ((mask & flag) != 0);
                             flag = flag + flag;
                         }
                     }
@@ -2182,7 +2182,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute7 in attributes7)
                     {
-                        attribute7.threadSafeChecked = ((mask & flagg) != 0) ? true : false;
+                        attribute7.threadSafeChecked = ((mask & flagg) != 0);
                         flagg = flagg + flagg;
                     }
                 }
@@ -2204,7 +2204,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < targetBoxes.Count; ++f)
                     {
-                        targetBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        targetBoxes[f].threadSafeChecked = ((mask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2222,7 +2222,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                     {
-                        targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        targetCreatureTypeBoxes[f].threadSafeChecked = ((mask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2234,7 +2234,7 @@ namespace SpellEditor
                 if (isTbcOrGreater)
                 {
                     mask = uint.Parse(row["FacingCasterFlags"].ToString());
-                    FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0) ? true : false;
+                    FacingFrontFlag.threadSafeChecked = ((mask & 0x1) != 0);
                 }
                 FacingFrontFlag.IsEnabled = isTbcOrGreater;
 
@@ -2330,7 +2330,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < interrupts1.Count; ++f)
                     {
-                        interrupts1[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts1[f].threadSafeChecked = ((mask & flag) != 0);
 
                         flag = flag + flag;
                     }
@@ -2348,7 +2348,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < interrupts2.Count; ++f)
                     {
-                        interrupts2[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts2[f].threadSafeChecked = ((mask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2365,7 +2365,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < interrupts3.Count; ++f)
                     {
-                        interrupts3[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        interrupts3[f].threadSafeChecked = ((mask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2382,7 +2382,7 @@ namespace SpellEditor
                     uint flag = 1;
                     for (int f = 1; f < procBoxes.Count; ++f)
                     {
-                        procBoxes[f].threadSafeChecked = ((mask & flag) != 0) ? true : false;
+                        procBoxes[f].threadSafeChecked = ((mask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2474,7 +2474,7 @@ namespace SpellEditor
                     uint flag = 1;
                     foreach (ThreadSafeCheckBox equippedItemSubClassMaskBox in equippedItemSubClassMaskBoxes)
                     {
-                        equippedItemSubClassMaskBox.threadSafeChecked = ((intMask & flag) != 0) ? true : false;
+                        equippedItemSubClassMaskBox.threadSafeChecked = ((intMask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2492,7 +2492,7 @@ namespace SpellEditor
                     uint flag = 1;
                     foreach (ThreadSafeCheckBox equippedItemInventoryTypeMaskBox in equippedItemInventoryTypeMaskBoxes)
                     {
-                        equippedItemInventoryTypeMaskBox.threadSafeChecked = ((intMask & flag) != 0) ? true : false;
+                        equippedItemInventoryTypeMaskBox.threadSafeChecked = ((intMask & flag) != 0);
                         flag = flag + flag;
                     }
                 }
@@ -2662,13 +2662,13 @@ namespace SpellEditor
 
                 updateProgress("Updating school mask...");
                 mask = uint.Parse(row["SchoolMask"].ToString());
-                S1.threadSafeChecked = ((mask & 0x01) != 0) ? true : false;
-                S2.threadSafeChecked = ((mask & 0x02) != 0) ? true : false;
-                S3.threadSafeChecked = ((mask & 0x04) != 0) ? true : false;
-                S4.threadSafeChecked = ((mask & 0x08) != 0) ? true : false;
-                S5.threadSafeChecked = ((mask & 0x10) != 0) ? true : false;
-                S6.threadSafeChecked = ((mask & 0x20) != 0) ? true : false;
-                S7.threadSafeChecked = ((mask & 0x40) != 0) ? true : false;
+                S1.threadSafeChecked = ((mask & 0x01) != 0);
+                S2.threadSafeChecked = ((mask & 0x02) != 0);
+                S3.threadSafeChecked = ((mask & 0x04) != 0);
+                S4.threadSafeChecked = ((mask & 0x08) != 0);
+                S5.threadSafeChecked = ((mask & 0x10) != 0);
+                S6.threadSafeChecked = ((mask & 0x20) != 0);
+                S7.threadSafeChecked = ((mask & 0x40) != 0);
 
                 if (isWotlkOrGreater)
                 {
