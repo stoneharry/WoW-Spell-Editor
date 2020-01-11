@@ -8,24 +8,24 @@ using System.Windows.Threading;
 
 namespace SpellEditor.Sources.Controls
 {
-    class ThreadSafeTextBox : TextBox
+    public class ThreadSafeTextBox : TextBox
     {
-        public object threadSafeText
+        public object ThreadSafeText
         {
             get
             {
-                if (!Dispatcher.CheckAccess())
+                if (Dispatcher != null && !Dispatcher.CheckAccess())
                     return Text;
-                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Text));
+                return Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Text));
             }
             set
             {
-                if (Dispatcher.CheckAccess())
+                if (Dispatcher != null && Dispatcher.CheckAccess())
                 {
                     Text = value.ToString();
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Text = value.ToString()));
+                Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => Text = value.ToString()));
             }
         }
     }
