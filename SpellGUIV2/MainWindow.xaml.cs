@@ -1130,7 +1130,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute0 in attributes0)
                     {
-                        if (attribute0.IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute0.IsChecked.Value) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1141,7 +1141,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute1 in attributes1)
                     {
-                        if (attribute1.IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute1.IsChecked.Value) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1152,7 +1152,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute2 in attributes2)
                     {
-                        if (attribute2.IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute2.IsChecked.Value) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1164,7 +1164,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute3 in attributes3)
                     {
-                        if (attribute3.IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute3.IsChecked.Value) { maskk = maskk + flagg; }
                         flagg = flagg + flagg;
                     }
 
@@ -1175,7 +1175,7 @@ namespace SpellEditor
 
                     foreach (ThreadSafeCheckBox attribute4 in attributes4)
                     {
-                        if (attribute4.IsChecked.Value == true) { maskk = maskk + flagg; }
+                        if (attribute4.IsChecked.Value) { maskk = maskk + flagg; }
 
                         flagg = flagg + flagg;
                     }
@@ -1189,7 +1189,7 @@ namespace SpellEditor
                     {
                         foreach (ThreadSafeCheckBox attribute5 in attributes5)
                         {
-                            if (attribute5.IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute5.IsChecked.Value) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
@@ -1201,14 +1201,14 @@ namespace SpellEditor
 
                         foreach (ThreadSafeCheckBox attribute6 in attributes6)
                         {
-                            if (attribute6.IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute6.IsChecked.Value) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
 
                         row["AttributesEx6"] = maskk;
 
-                        if (stancesBoxes[0].IsChecked.Value == true)
+                        if (stancesBoxes[0].IsChecked.Value)
                         {
                             row["Stances"] = 0;
                         }
@@ -1219,7 +1219,7 @@ namespace SpellEditor
 
                             for (int f = 1; f < stancesBoxes.Count; ++f)
                             {
-                                if (stancesBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                                if (stancesBoxes[f].IsChecked.Value) { mask = mask + flag; }
 
                                 flag = flag + flag;
                             }
@@ -1235,7 +1235,7 @@ namespace SpellEditor
 
                         foreach (ThreadSafeCheckBox attribute7 in attributes7)
                         {
-                            if (attribute7.IsChecked.Value == true) { maskk = maskk + flagg; }
+                            if (attribute7.IsChecked.Value) { maskk = maskk + flagg; }
 
                             flagg = flagg + flagg;
                         }
@@ -1243,7 +1243,7 @@ namespace SpellEditor
                         row["AttributesEx7"] = maskk;
                     }
 
-                    if (targetBoxes[0].IsChecked.Value == true)
+                    if (targetBoxes[0].IsChecked.Value)
                     {
                         row["Targets"] = 0;
                     }
@@ -1254,7 +1254,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < targetBoxes.Count; ++f)
                         {
-                            if (targetBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (targetBoxes[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
@@ -1262,7 +1262,7 @@ namespace SpellEditor
                         row["Targets"] = mask;
                     }
 
-                    if (targetCreatureTypeBoxes[0].IsChecked.Value == true)
+                    if (targetCreatureTypeBoxes[0].IsChecked.Value)
                     {
                         row["TargetCreatureType"] = 0;
                     }
@@ -1273,7 +1273,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
                         {
-                            if (targetCreatureTypeBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (targetCreatureTypeBoxes[f].IsChecked.Value) { mask = mask + flag; }
                             flag = flag + flag;
                         }
 
@@ -1360,7 +1360,7 @@ namespace SpellEditor
                     row["RecoveryTime"] = uint.Parse(RecoveryTime.Text);
                     row["CategoryRecoveryTime"] = uint.Parse(CategoryRecoveryTime.Text);
 
-                    if (interrupts1[0].IsChecked.Value == true)
+                    if (interrupts1[0].IsChecked.Value)
                     {
                         row["InterruptFlags"] = 0;
                     }
@@ -1371,7 +1371,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts1.Count; ++f)
                         {
-                            if (interrupts1[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (interrupts1[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
@@ -1379,7 +1379,7 @@ namespace SpellEditor
                         row["InterruptFlags"] = mask;
                     }
 
-                    if (interrupts2[0].IsChecked.Value == true)
+                    if (interrupts2[0].IsChecked.Value)
                     {
                         row["AuraInterruptFlags"] = 0;
                     }
@@ -1390,7 +1390,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts2.Count; ++f)
                         {
-                            if (interrupts2[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (interrupts2[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
@@ -1398,7 +1398,7 @@ namespace SpellEditor
                         row["AuraInterruptFlags"] = mask;
                     }
 
-                    if (interrupts3[0].IsChecked.Value == true)
+                    if (interrupts3[0].IsChecked.Value)
                     {
                         row["ChannelInterruptFlags"] = 0;
                     }
@@ -1409,7 +1409,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < interrupts3.Count; ++f)
                         {
-                            if (interrupts3[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (interrupts3[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
@@ -1417,7 +1417,7 @@ namespace SpellEditor
                         row["ChannelInterruptFlags"] = mask;
                     }
 
-                    if (procBoxes[0].IsChecked.Value == true)
+                    if (procBoxes[0].IsChecked.Value)
                     {
                         row["ProcFlags"] = 0;
                     }
@@ -1428,7 +1428,7 @@ namespace SpellEditor
 
                         for (int f = 1; f < procBoxes.Count; ++f)
                         {
-                            if (procBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (procBoxes[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
@@ -1468,7 +1468,7 @@ namespace SpellEditor
                     row["ReagentCount7"] = uint.Parse(ReagentCount7.Text);
                     row["ReagentCount8"] = uint.Parse(ReagentCount8.Text);
 
-                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value == true)
+                    if (equippedItemInventoryTypeMaskBoxes[0].IsChecked.Value)
                     {
                         row["EquippedItemInventoryTypeMask"] = 0;
                     }
@@ -1479,7 +1479,7 @@ namespace SpellEditor
 
                         for (int f = 0; f < equippedItemInventoryTypeMaskBoxes.Count; ++f)
                         {
-                            if (equippedItemInventoryTypeMaskBoxes[f].IsChecked.Value == true) { mask = mask + flag; }
+                            if (equippedItemInventoryTypeMaskBoxes[f].IsChecked.Value) { mask = mask + flag; }
 
                             flag = flag + flag;
                         }
