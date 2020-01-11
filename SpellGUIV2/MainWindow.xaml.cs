@@ -35,24 +35,24 @@ namespace SpellEditor
     partial class MainWindow
     {
         #region Boxes
-        private Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
-        private List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes1 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes2 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes3 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes4 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes5 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes6 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> attributes7 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> stancesBoxes = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> targetCreatureTypeBoxes = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> targetBoxes = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> procBoxes = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> interrupts1 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> interrupts2 = new List<ThreadSafeCheckBox>();
-        private List<ThreadSafeCheckBox> interrupts3 = new List<ThreadSafeCheckBox>();
-        public List<ThreadSafeCheckBox> equippedItemInventoryTypeMaskBoxes = new List<ThreadSafeCheckBox>();
-        public List<ThreadSafeCheckBox> equippedItemSubClassMaskBoxes = new List<ThreadSafeCheckBox>();
+        private readonly Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
+        private readonly List<ThreadSafeCheckBox> attributes0 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes1 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes2 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes3 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes4 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes5 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes6 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> attributes7 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> stancesBoxes = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> targetCreatureTypeBoxes = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> targetBoxes = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> procBoxes = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> interrupts1 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> interrupts2 = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> interrupts3 = new List<ThreadSafeCheckBox>();
+        public readonly List<ThreadSafeCheckBox> equippedItemInventoryTypeMaskBoxes = new List<ThreadSafeCheckBox>();
+        public readonly List<ThreadSafeCheckBox> equippedItemSubClassMaskBoxes = new List<ThreadSafeCheckBox>();
         #endregion
 
         #region MemberVariables
