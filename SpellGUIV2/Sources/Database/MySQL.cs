@@ -10,12 +10,8 @@ namespace SpellEditor.Sources.Database
     class MySQL : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
-        private MySqlConnection _connection;
-        public bool Updating
-        {
-            get;
-            set;
-        }
+        private readonly MySqlConnection _connection;
+        public bool Updating { get; set; }
 
         public MySQL()
         {
@@ -106,30 +102,23 @@ namespace SpellEditor.Sources.Database
                 switch (field.Type)
                 {
                     case BindingType.UINT:
-                        {
-                            str.Append($@"`{field.Name}` int(10) unsigned NOT NULL DEFAULT '0', ");
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` int(10) unsigned NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.INT:
-                        {
-                            str.Append($@"`{field.Name}` int(11) NOT NULL DEFAULT '0', ");
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` int(11) NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.FLOAT:
-                        {
-                            str.Append($@"`{field.Name}` FLOAT NOT NULL DEFAULT '0', ");
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` FLOAT NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.STRING_OFFSET:
-                        {
-                            str.Append($@"`{field.Name}` TEXT CHARACTER SET utf8, ");
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` TEXT CHARACTER SET utf8, ");
+                        break;
                     default:
                         throw new Exception($"ERROR: Unhandled type: {field.Type} on field: {field.Name} on binding: {binding.Name}");
 
                 }
             }
+
             var idField = binding.Fields.FirstOrDefault(record => record.Name.ToLower().Equals("id"));
             if (idField != null)
                 str.Append($"PRIMARY KEY (`{idField.Name}`)) ");

@@ -10,12 +10,9 @@ namespace SpellEditor.Sources.Database
     class SQLite : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
-        private SQLiteConnection _connection = null;
-        public bool Updating
-        {
-            get;
-            set;
-        }
+        private readonly SQLiteConnection _connection;
+
+        public bool Updating { get; set; }
 
         public SQLite()
         {
@@ -31,10 +28,13 @@ namespace SpellEditor.Sources.Database
         {
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
-                using (var cmd = _connection.CreateCommand())
+                lock (_syncLock)
                 {
-                    cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
-                    cmd.ExecuteNonQuery();
+                    using (var cmd = _connection.CreateCommand())
+                    {
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
@@ -60,6 +60,7 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+
             lock (_syncLock)
             {
                 using (var adapter = new SQLiteDataAdapter())
@@ -79,10 +80,14 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
-            using (var cmd = _connection.CreateCommand())
+
+            lock (_syncLock)
             {
-                cmd.CommandText = p;
-                cmd.ExecuteNonQuery();
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = p;
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
@@ -95,31 +100,23 @@ namespace SpellEditor.Sources.Database
                 switch (field.Type)
                 {
                     case BindingType.UINT:
-                        {
-                            str.Append(string.Format(@"`{0}` INTEGER(10) NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` INTEGER(10) NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.INT:
-                        {
-                            str.Append(string.Format(@"`{0}` INTEGER(11) NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` INTEGER(11) NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.FLOAT:
-                        {
-                            str.Append(string.Format(@"`{0}` REAL NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` REAL NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.STRING_OFFSET:
-                        {
-                            str.Append(string.Format(@"`{0}` TEXT, ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` TEXT, ");
+                        break;
                     default:
                         throw new Exception($"ERROR: Unhandled type: {field.Type} on field: {field.Name} on binding: {binding.Name}");
 
                 }
             }
-            var idField = binding.Fields.Where(record => record.Name.ToLower().Equals("id")).FirstOrDefault();
+            var idField = binding.Fields.FirstOrDefault(record => record.Name.ToLower().Equals("id"));
             if (idField != null)
                 str.Append($"PRIMARY KEY (`{idField.Name}`)");
             else
