@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
-using System.Windows.Media;
 using SpellEditor.Sources.Config;
-using static System.Environment;
 using SpellEditor.Sources.VersionControl;
-using System.Diagnostics;
+using static System.Environment;
+using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
+using Label = System.Windows.Controls.Label;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace SpellEditor
 {
     partial class ConfigWindow
     {
         private DatabaseTypeContainer TypeContainer = new DatabaseTypeContainer();
-        private Grid MySQLConfigGrid = null;
-        private Grid SQLiteConfigGrid = null;
+        private Grid MySQLConfigGrid;
+        private Grid SQLiteConfigGrid;
         private DatabaseIdentifier defaultConfigType;
 
         public ConfigWindow(DatabaseIdentifier defaultConfigToShow)
@@ -37,33 +41,33 @@ namespace SpellEditor
 
         private void _Loaded(object sender, RoutedEventArgs e)
         {
-            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             ConfigGrid.Children.Clear();
             BuildConfigWindow();
         }
 
         private void BuildConfigWindow()
         {
-            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            ConfigGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             // WoW Version row
-            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type row
-            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Bindings and directory settings, 2 rows
-            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
-            ConfigGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-            var databaseLabel = new Label() { Content = "Database type:" };
+            var databaseLabel = new Label { Content = "Database type:" };
             var databaseButton = new SplitButton();
-            var versionLabel = new Label() { Content = "WoW version: " };
+            var versionLabel = new Label { Content = "WoW version: " };
             var versionButton = new SplitButton();
 
-            var sqlite = new DatabaseType() { Index = 0, Name = "SQLite", Identity = DatabaseIdentifier.SQLite };
-            var mysql = new DatabaseType() { Index = 1, Name = "MySQL", Identity = DatabaseIdentifier.MySQL };
+            var sqlite = new DatabaseType { Index = 0, Name = "SQLite", Identity = DatabaseIdentifier.SQLite };
+            var mysql = new DatabaseType { Index = 1, Name = "MySQL", Identity = DatabaseIdentifier.MySQL };
 
             TypeContainer.AddDatabaseType(sqlite);
             TypeContainer.AddDatabaseType(mysql);
@@ -153,15 +157,15 @@ namespace SpellEditor
             Grid.SetColumn(grid, 0);
             Grid.SetColumnSpan(grid, 3);
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             row = 0;
 
-            var dbFileNameLabel = new Label() { Content = "SQLite Database File Name: " };
-            var dbFileNameText = new TextBox() { Text = Config.SQLiteFilename, MinWidth = 200 };
+            var dbFileNameLabel = new Label { Content = "SQLite Database File Name: " };
+            var dbFileNameText = new TextBox { Text = Config.SQLiteFilename, MinWidth = 200 };
             var confirmBtn = new SQLiteConfirmButton(dbFileNameText)
             {
                 Content = "Save Changes",
@@ -197,27 +201,27 @@ namespace SpellEditor
             Grid.SetColumn(grid, 0);
             Grid.SetColumnSpan(grid, 3);
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             row = 0;
 
-            var hostLabel = new Label() { Content = "Hostname: " };
-            var hostText = new TextBox() { Text = Config.Host, MinWidth = 200 };
-            var userLabel = new Label() { Content = "Username: " };
-            var userText = new TextBox() { Text = Config.User, MinWidth = 200 };
-            var passLabel = new Label() { Content = "Password: " };
-            var passText = new TextBox() { Text = Config.Pass, MinWidth = 200 };
-            var portLabel = new Label() { Content = "Port: " };
-            var portText = new TextBox() { Text = Config.Port, MinWidth = 200 };
-            var databaseLabel = new Label() { Content = "Database: " };
-            var databaseText = new TextBox() { Text = Config.Database, MinWidth = 200 };
+            var hostLabel = new Label { Content = "Hostname: " };
+            var hostText = new TextBox { Text = Config.Host, MinWidth = 200 };
+            var userLabel = new Label { Content = "Username: " };
+            var userText = new TextBox { Text = Config.User, MinWidth = 200 };
+            var passLabel = new Label { Content = "Password: " };
+            var passText = new TextBox { Text = Config.Pass, MinWidth = 200 };
+            var portLabel = new Label { Content = "Port: " };
+            var portText = new TextBox { Text = Config.Port, MinWidth = 200 };
+            var databaseLabel = new Label { Content = "Database: " };
+            var databaseText = new TextBox { Text = Config.Database, MinWidth = 200 };
             var confirmBtn = new MySQLConfirmButton(hostText, userText, passText, portText, databaseText)
             {
                 Content = "Save Changes",
@@ -304,10 +308,10 @@ namespace SpellEditor
 
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)
         {
-            var bindingsLabel = new Label() { Content = "Bindings Directory:" };
-            var dbcLabel = new Label() { Content = "DBC Directory:" };
-            var bindingsDirLabel = new Label() { Content = Config.BindingsDirectory };
-            var dbcDirLabel = new Label() { Content = Config.DbcDirectory };
+            var bindingsLabel = new Label { Content = "Bindings Directory:" };
+            var dbcLabel = new Label { Content = "DBC Directory:" };
+            var bindingsDirLabel = new Label { Content = Config.BindingsDirectory };
+            var dbcDirLabel = new Label { Content = Config.DbcDirectory };
             var changeBindingsButton = new ButtonWithLabelRef(bindingsDirLabel, ButtonWithLabelRef.DirButtonType.Bindings)
             {
                 Content = "Change Directory",
@@ -357,16 +361,16 @@ namespace SpellEditor
         private void OpenDirButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as ButtonWithLabelRef;
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            using (var dialog = new FolderBrowserDialog())
             {
                 dialog.RootFolder = SpecialFolder.MyComputer;
                 var text = button.GetLabelText();
                 if (text.StartsWith("\\"))
                 {
-                    text = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                    text = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName);
                 }
                 dialog.SelectedPath = text;
-                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                DialogResult result = dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     var path = dialog.SelectedPath;
@@ -473,5 +477,5 @@ namespace SpellEditor
 
             public string SQLiteFilename() => _SQLiteFilenameText.Text;
         }
-    };
-};
+    }
+}
