@@ -648,8 +648,8 @@ namespace SpellEditor
                     await abstractDbc.ExportToDbc(adapter, new UpdateProgressFunc(controller.SetProgress), "ID", bindingName);
             }
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
-            PopulateSelectSpell();
             await controller.CloseAsync();
+            PopulateSelectSpell();
         }
         #endregion
 
@@ -742,65 +742,60 @@ namespace SpellEditor
             await Task.Delay(500);
             try
             {
-                using (var d = Dispatcher.DisableProcessing())
+                spellTable.Columns.Add("id", typeof(uint));
+                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
+                spellTable.Columns.Add("Icon", typeof(uint));
+
+                // Populate UI based on DBC data
+                Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
+                MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
+                RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
+                CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
+                Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDuration")).GetAllBoxes());
+                Range.ItemsSource = ConvertBoxListToLabels(((SpellRange)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
+                var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
+                RadiusIndex1.ItemsSource = radiusLabels;
+                RadiusIndex2.ItemsSource = radiusLabels;
+                RadiusIndex3.ItemsSource = radiusLabels;
+                EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
+                    DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
+                var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
+                var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
+                if (isTbcOrGreater)
                 {
-                    spellTable.Columns.Add("id", typeof(uint));
-                    spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
-                    spellTable.Columns.Add("Icon", typeof(uint));
-
-                    PopulateSelectSpell();
-
-                    // Populate UI based on DBC data
-                    Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
-                    DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
-                    MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
-                    RequiresSpellFocus.ItemsSource = ConvertBoxListToLabels(((SpellFocusObject)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject")).GetAllBoxes());
-                    CastTime.ItemsSource = ConvertBoxListToLabels(((SpellCastTimes)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes")).GetAllBoxes());
-                    Duration.ItemsSource = ConvertBoxListToLabels(((SpellDuration)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellDuration")).GetAllBoxes());
-                    Range.ItemsSource = ConvertBoxListToLabels(((SpellRange)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
-                    var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
-                        DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
-                    RadiusIndex1.ItemsSource = radiusLabels;
-                    RadiusIndex2.ItemsSource = radiusLabels;
-                    RadiusIndex3.ItemsSource = radiusLabels;
-                    EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
-                        DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
-                    var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
-                    var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
-                    if (isTbcOrGreater)
-                    {
-                        var totemLabels = ConvertBoxListToLabels(((TotemCategory)
-                            DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
-                        TotemCategory1.ItemsSource = totemLabels;
-                        TotemCategory2.ItemsSource = totemLabels;
-                    }
-                    if (isWotlkOrGreater)
-                    {
-                        AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
-                            DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
-                        Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
-                            DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
-                        RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
-                            DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
-                        SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
-                            DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
-                    }
-                    AreaGroup.IsEnabled = isWotlkOrGreater;
-                    Difficulty.IsEnabled = isWotlkOrGreater;
-                    TotemCategory1.IsEnabled = isTbcOrGreater;
-                    TotemCategory2.IsEnabled = isTbcOrGreater;
-                    RuneCost.IsEnabled = isWotlkOrGreater;
-                    SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
-
-                    PrepareIconEditor();
+                    var totemLabels = ConvertBoxListToLabels(((TotemCategory)
+                        DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                    TotemCategory1.ItemsSource = totemLabels;
+                    TotemCategory2.ItemsSource = totemLabels;
                 }
+                if (isWotlkOrGreater)
+                {
+                    AreaGroup.ItemsSource = ConvertBoxListToLabels(((AreaGroup)
+                        DBCManager.GetInstance().FindDbcForBinding("AreaGroup")).GetAllBoxes());
+                    Difficulty.ItemsSource = ConvertBoxListToLabels(((SpellDifficulty)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty")).GetAllBoxes());
+                    RuneCost.ItemsSource = ConvertBoxListToLabels(((SpellRuneCost)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost")).GetAllBoxes());
+                    SpellDescriptionVariables.ItemsSource = ConvertBoxListToLabels(((SpellDescriptionVariables)
+                        DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables")).GetAllBoxes());
+                }
+                AreaGroup.IsEnabled = isWotlkOrGreater;
+                Difficulty.IsEnabled = isWotlkOrGreater;
+                TotemCategory1.IsEnabled = isTbcOrGreater;
+                TotemCategory2.IsEnabled = isTbcOrGreater;
+                RuneCost.IsEnabled = isWotlkOrGreater;
+                SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+
+                PrepareIconEditor();
             }
             catch (Exception e)
             {
@@ -812,6 +807,7 @@ namespace SpellEditor
             }
 
             await controller.CloseAsync();
+            PopulateSelectSpell();
         }
 
         private List<Label> ConvertBoxListToLabels(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabel()).ToList();

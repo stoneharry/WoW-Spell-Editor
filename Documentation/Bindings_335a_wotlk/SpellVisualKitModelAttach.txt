@@ -1,0 +1,16 @@
+# SpellVisualKitAreaModel.dbc structure for 3.3.5a 12340
+uint ID
+# points to a parent SpellVisualKit record
+uint ParentSpellVisualKitId
+# Points to SpellVisualEffectName
+uint SpellVisualEffectNameId
+# the parent model's attachment, -1 for model's base position
+uint AttachmentId
+# relative to the attachment
+float OffsetX
+float OffsetY
+float OffsetZ
+# seem to be in radians
+float Yaw
+float Pitch
+float Roll
