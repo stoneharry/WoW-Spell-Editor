@@ -606,14 +606,42 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Selected Visual Path" Grid.Column="0" Margin="10,5,10,5"/>
-                    <c:ThreadSafeTextBox x:Name="SelectedVisualPath" Grid.Column="1" MinWidth="200" Margin="10,5,10,5"/>
+                    <Label Content="Selected Visual ID" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="SelectedVisualPath" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Head Effect" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="HeadEffectPath" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Chest Effect" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="ChestEffectPath" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Base Effect" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="BaseEffectPath" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Left Hand Effect" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="LeftHandEffectPath" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Right Hand Effect" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="RightHandEffectPath" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Breath Effect" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="BreathEffectPath" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Left Weapon Effect" Grid.Row="8" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="LeftWeaponEffectPath" Grid.Row="8" Grid.Column="1" Margin="10,5,10,5"/>
+                    <Label Content="Right Weapon Effect" Grid.Row="9" Grid.Column="0" Margin="10,5,10,5"/>
+                    <Label Name="RightWeaponEffectPath" Grid.Row="9" Grid.Column="1" Margin="10,5,10,5"/>
                 </Grid>
             </TabItem>
         </TabControl>

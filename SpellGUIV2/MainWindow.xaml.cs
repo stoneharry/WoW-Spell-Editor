@@ -29,6 +29,7 @@ using System.Globalization;
 using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.VersionControl;
 using System.Data.SQLite;
+using SpellEditor.Sources.Tools.VisualTools;
 
 namespace SpellEditor
 {
@@ -2754,6 +2755,7 @@ namespace SpellEditor
 
                 SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
+                UpdateSpellVisualTab(row["SpellVisual1"].ToString());
                 ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
                 StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
                 StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
@@ -2838,6 +2840,27 @@ namespace SpellEditor
                 HandleErrorMessage(string.Format("{0}\n\n{1}", "", e, e.InnerException));
             }
             adapter.Updating = false;
+        }
+
+        private void UpdateSpellVisualTab(string selectedId)
+        {
+            SelectedVisualPath.Content = selectedId;
+
+            var effectList = new List<string>();
+            var success = uint.TryParse(selectedId, out var id);
+            if (!success || id == 0)
+            {
+                return;
+            }
+            var controller = new VisualController(id);
+            HeadEffectPath.Content = controller.HeadEffectPath();
+            ChestEffectPath.Content = controller.ChestEffectPath();
+            BaseEffectPath.Content = controller.BaseEffectPath();
+            LeftHandEffectPath.Content = controller.LeftHandEffectPath();
+            RightHandEffectPath.Content = controller.RightHandEffectPath();
+            BreathEffectPath.Content = controller.BreathEffectPath();
+            LeftWeaponEffectPath.Content = controller.LeftWeaponEffectPath();
+            RightWeaponEffectPath.Content = controller.RightWeaponEffectPath();
         }
 
         private void UpdateSpellMaskCheckBox(uint Mask, ThreadSafeComboBox ComBox)

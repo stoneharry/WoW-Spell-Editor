@@ -146,6 +146,7 @@
     <Compile Include="Sources\DBC\SpellVisualEffectName.cs" />
     <Compile Include="Sources\DBC\SpellVisual.cs" />
     <Compile Include="Sources\DBC\SpellVisualKit.cs" />
+    <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
     <Compile Include="Sources\VersionControl\WoWVersion.cs" />
     <Compile Include="Sources\Controls\IBoxContentProvider.cs" />
     <Compile Include="Sources\Controls\DBCBoxContainer.cs" />

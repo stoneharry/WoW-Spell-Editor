@@ -12,5 +12,7 @@ namespace SpellEditor.Sources.DBC
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellVisualEffectName.dbc");
         }
+
+        public string LookupStringOffset(uint offset) => Reader.LookupStringOffset(offset);
     }
 }
