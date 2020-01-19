@@ -140,6 +140,7 @@
     <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Controls\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\KitListEntry.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
     <Compile Include="Sources\DBC\SpellVisualPrecastTransitions.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitAreaModel.cs" />

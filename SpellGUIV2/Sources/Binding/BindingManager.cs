@@ -8,7 +8,6 @@ namespace SpellEditor.Sources.Binding
 {
     public class BindingManager
     {
-        private string BindingsFolderName = "Bindings";
         private static BindingManager _instance = new BindingManager();
         private List<Binding> _bindings;
         

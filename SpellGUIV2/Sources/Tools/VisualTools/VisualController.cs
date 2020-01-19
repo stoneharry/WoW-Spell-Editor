@@ -2,49 +2,56 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using SpellEditor.Sources.Controls;
 
 namespace SpellEditor.Sources.Tools.VisualTools
 {
-    class VisualController
+    public class VisualController
     {
         private readonly Dictionary<string, object> _DerivedValueStore = new Dictionary<string, object>();
+        public static string[] KitColumnKeys = new string[]
+        {
+            "PrecastKit",
+            "CastKit",
+            "ImpactKit",
+            "StateKit",
+            "StateDoneKit",
+            "ChannelKit",
+            "InstantAreaKit",
+            "ImpactAreaKit"
+        };
+        public static string[] EffectColumnKeys = new string[]
+        {
+            "HeadEffect",
+            "ChestEffect",
+            "BaseEffect",
+            "LeftHandEffect",
+            "RightHandEffect",
+            "BreathEffect",
+            "LeftWeaponEffect",
+            "RightWeaponEffect"
+        };
+
+        private readonly uint _SelectedVisualId;
 
         public VisualController(uint id)
         {
-            var effectList = new List<string>();
+            _SelectedVisualId = id;
+        }
+
+        public List<KitListEntry> GetAllKitListEntries()
+        {
+            var kitList = new List<KitListEntry>();
             var visualDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisual");
-            var visualRecord = visualDbc.LookupRecord(id);
+            var visualRecord = visualDbc.LookupRecord(_SelectedVisualId);
             if (visualRecord == null)
             {
-                return;
+                return kitList;
             }
-            var recordsToLookup = new string[]
-            {
-                "PrecastKit",
-                "CastKit",
-                "ImpactKit",
-                "StateKit",
-                "StateDoneKit",
-                "ChannelKit",
-                "InstantAreaKit",
-                "ImpactAreaKit"
-            };
-            var effectsToLookup = new string[]
-            {
-                "HeadEffect",
-                "ChestEffect",
-                "BaseEffect",
-                "LeftHandEffect",
-                "RightHandEffect",
-                "BreathEffect",
-                "LeftWeaponEffect",
-                "RightWeaponEffect"
-            };
             var visualKitDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKit");
-            var visualEffectDbc = (SpellVisualEffectName)DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName");
-            foreach (var key in recordsToLookup)
+            //var visualEffectDbc = (SpellVisualEffectName)DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName");
+            foreach (var key in KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();
                 var success = uint.TryParse(kitIdStr, out var kitId);
@@ -57,7 +64,8 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 {
                     continue;
                 }
-                foreach (var kitKey in effectsToLookup)
+                kitList.Add(new KitListEntry(key, kitRecord));
+                /*foreach (var kitKey in _EffectColumnKeys)
                 {
                     var effectIdStr = kitRecord[kitKey].ToString();
                     success = uint.TryParse(effectIdStr, out var effectId);
@@ -79,19 +87,10 @@ namespace SpellEditor.Sources.Tools.VisualTools
                     {
                         _DerivedValueStore.Add(kitKey, effectPath);
                     }
-                    effectList.Add(effectPath);
-                }
+                    kitList.Add(new KitListEntry());
+                }*/
             }
-            Console.WriteLine("Matched effects:\n" + string.Join("\n", effectList));
+            return kitList;
         }
-
-        public string HeadEffectPath() => _DerivedValueStore.ContainsKey("HeadEffect") ? _DerivedValueStore["HeadEffect"].ToString() : "(none)";
-        public string ChestEffectPath() => _DerivedValueStore.ContainsKey("ChestEffect") ? _DerivedValueStore["ChestEffect"].ToString() : "(none)";
-        public string BaseEffectPath() => _DerivedValueStore.ContainsKey("BaseEffect") ? _DerivedValueStore["BaseEffect"].ToString() : "(none)";
-        public string LeftHandEffectPath() => _DerivedValueStore.ContainsKey("LeftHandEffect") ? _DerivedValueStore["LeftHandEffect"].ToString() : "(none)";
-        public string RightHandEffectPath() => _DerivedValueStore.ContainsKey("RightHandEffect") ? _DerivedValueStore["RightHandEffect"].ToString() : "(none)";
-        public string BreathEffectPath() => _DerivedValueStore.ContainsKey("BreathEffect") ? _DerivedValueStore["BreathEffect"].ToString() : "(none)";
-        public string LeftWeaponEffectPath() => _DerivedValueStore.ContainsKey("LeftWeaponEffect") ? _DerivedValueStore["LeftWeaponEffect"].ToString() : "(none)";
-        public string RightWeaponEffectPath() => _DerivedValueStore.ContainsKey("RightWeaponEffect") ? _DerivedValueStore["RightWeaponEffect"].ToString() : "(none)";
     }
 }

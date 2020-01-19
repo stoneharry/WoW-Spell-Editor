@@ -2853,14 +2853,55 @@ namespace SpellEditor
                 return;
             }
             var controller = new VisualController(id);
-            HeadEffectPath.Content = controller.HeadEffectPath();
-            ChestEffectPath.Content = controller.ChestEffectPath();
-            BaseEffectPath.Content = controller.BaseEffectPath();
-            LeftHandEffectPath.Content = controller.LeftHandEffectPath();
-            RightHandEffectPath.Content = controller.RightHandEffectPath();
-            BreathEffectPath.Content = controller.BreathEffectPath();
-            LeftWeaponEffectPath.Content = controller.LeftWeaponEffectPath();
-            RightWeaponEffectPath.Content = controller.RightWeaponEffectPath();
+            UpdateSpellVisualKitList(controller);
+        }
+
+        private void UpdateSpellVisualKitList(VisualController controller)
+        {
+            var elements = controller.GetAllKitListEntries();
+            if (elements.Count == 0)
+            {
+                VisualSettingsGrid.Children.Clear();
+            }
+            else
+            {
+                // Reuse the existing ListBox if it already exists
+                ListBox scrollList;
+                var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+                if (exists)
+                {
+                    scrollList = VisualSettingsGrid.Children[0] as ListBox;
+                }
+                else
+                {
+                    scrollList = new ListBox()
+                    {
+                        Margin = new Thickness(5)
+                    };
+                }
+                elements.ForEach((kitPanel) => kitPanel.MouseLeftButtonDown += UpdateSpellVisualEditor);
+                scrollList.ItemsSource = elements;
+                if (!exists)
+                {
+                    VisualSettingsGrid.Children.Add(scrollList);
+                }
+            }
+        }
+
+        private void UpdateSpellVisualEditor(object self, RoutedEventArgs args)
+        {
+            var entry = self as KitListEntry;
+            var record = entry.KitRecord;
+
+            StartAnimIdTxt.Text = record["StartAnimId"].ToString();
+            AnimationIdTxt.Text = record["AnimationId"].ToString();
+            SpecialEffect1Txt.Text = record["SpecialEffect1"].ToString();
+            SpecialEffect2Txt.Text = record["SpecialEffect2"].ToString();
+            SpecialEffect3Txt.Text = record["SpecialEffect3"].ToString();
+            WorldEffectTxt.Text = record["WorldEffect"].ToString();
+            SoundIdTxt.Text = record["SoundID"].ToString();
+            ShakeIdTxt.Text = record["ShakeID"].ToString();
+            VisualFlagsTxt.Text = record["Flags"].ToString();
         }
 
         private void UpdateSpellMaskCheckBox(uint Mask, ThreadSafeComboBox ComBox)
