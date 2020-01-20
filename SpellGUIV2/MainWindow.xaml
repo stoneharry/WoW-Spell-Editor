@@ -18,6 +18,7 @@
             <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
             <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
             <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+            <Style TargetType="c:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
@@ -625,24 +626,8 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Selected Visual ID" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="SelectedVisualPath" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5"/>
-                    <!--<Label Content="Head Effect" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="HeadEffectPath" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Chest Effect" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="ChestEffectPath" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Base Effect" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="BaseEffectPath" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Left Hand Effect" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="LeftHandEffectPath" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Right Hand Effect" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="RightHandEffectPath" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Breath Effect" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="BreathEffectPath" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Left Weapon Effect" Grid.Row="8" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="LeftWeaponEffectPath" Grid.Row="8" Grid.Column="1" Margin="10,5,10,5"/>
-                    <Label Content="Right Weapon Effect" Grid.Row="9" Grid.Column="0" Margin="10,5,10,5"/>
-                    <Label Name="RightWeaponEffectPath" Grid.Row="9" Grid.Column="1" Margin="10,5,10,5"/>-->
+                    <Label Content="Selected Visual ID" Grid.Row="1" Grid.Column="0" Margin="5,5,0,0" FontSize="18"/>
+                    <Label Name="SelectedVisualPath" Grid.Row="1" Grid.Column="1" Margin="0,5,0,5" FontSize="18"/>
                     <Grid Name="VisualSettingsGrid" Grid.Row="2" Grid.RowSpan="12" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350"/>
                     <Grid Name="VisualSettingsEditorGrid" Grid.Row="1" Grid.RowSpan="13" Grid.Column="2" Grid.ColumnSpan="2" MinWidth="500">
                         <Grid.RowDefinitions>
@@ -666,23 +651,31 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Start Animation Id" Grid.Row="1" Grid.Column="0" Margin="10,30,10,5"/>
-                        <TextBox Name="StartAnimIdTxt" Grid.Row="1" Grid.Column="1" Margin="10,30,10,5"/>
+                        <c:FilteredComboBox x:Name="StartAnimIdCombo" Grid.Row="1" Grid.Column="1" Margin="10,30,10,5" MinHeight="50" MinWidth="250"
+                            IsEditable="True" 
+                            IsTextSearchEnabled="True"
+                            StaysOpenOnEdit="True"
+                            c:OnlyValuesInList="True"/>
                         <Label Content="Animation Id" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="AnimationIdTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5"/>
+                        <c:FilteredComboBox x:Name="AnimationIdCombo" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinHeight="50" MinWidth="250"
+                            IsEditable="True" 
+                            IsTextSearchEnabled="True"
+                            StaysOpenOnEdit="True"
+                            c:OnlyValuesInList="True"/>
                         <Label Content="Special Effect 1" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect1Txt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect1Txt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="50"/>
                         <Label Content="Special Effect 2" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect2Txt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect2Txt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="50"/>
                         <Label Content="Special Effect 3" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect3Txt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect3Txt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="50"/>
                         <Label Content="World Effect" Grid.Row="1" Grid.Column="2" Margin="10,30,10,5"/>
-                        <TextBox Name="WorldEffectTxt" Grid.Row="1" Grid.Column="3" Margin="10,30,10,5"/>
+                        <TextBox Name="WorldEffectTxt" Grid.Row="1" Grid.Column="3" Margin="10,30,10,5" MinWidth="50"/>
                         <Label Content="Sound Id" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="SoundIdTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5"/>
+                        <TextBox Name="SoundIdTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="50"/>
                         <Label Content="Shake Id" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="ShakeIdTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5"/>
+                        <TextBox Name="ShakeIdTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="50"/>
                         <Label Content="Flags" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualFlagsTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualFlagsTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="50"/>
                     </Grid>
                 </Grid>
             </TabItem>

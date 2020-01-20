@@ -2755,7 +2755,11 @@ namespace SpellEditor
 
                 SpellVisual1.threadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.threadSafeText = row["SpellVisual2"].ToString();
-                UpdateSpellVisualTab(row["SpellVisual1"].ToString());
+                if (isWotlkOrGreater)
+                {
+                    // FIXME(Harry): Should support older versions too
+                    UpdateSpellVisualTab(row["SpellVisual1"].ToString());
+                }
                 ManaCostPercent.threadSafeText = row["ManaCostPercentage"].ToString();
                 StartRecoveryCategory.threadSafeText = row["StartRecoveryCategory"].ToString();
                 StartRecoveryTime.threadSafeText = row["StartRecoveryTime"].ToString();
@@ -2842,6 +2846,7 @@ namespace SpellEditor
             adapter.Updating = false;
         }
 
+        #region VisualTab
         private void UpdateSpellVisualTab(string selectedId)
         {
             SelectedVisualPath.Content = selectedId;
@@ -2854,6 +2859,7 @@ namespace SpellEditor
             }
             var controller = new VisualController(id);
             UpdateSpellVisualKitList(controller);
+            ClearStaticSpellVisualElements();
         }
 
         private void UpdateSpellVisualKitList(VisualController controller)
@@ -2878,8 +2884,11 @@ namespace SpellEditor
                     {
                         Margin = new Thickness(5)
                     };
+                    scrollList.SelectionChanged += VisualKitScrollList_SelectionChanged;
+                    var animationDbc = DBCManager.GetInstance().FindDbcForBinding("AnimationData") as AnimationData;
+                    StartAnimIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
+                    AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
                 }
-                elements.ForEach((kitPanel) => kitPanel.MouseLeftButtonDown += UpdateSpellVisualEditor);
                 scrollList.ItemsSource = elements;
                 if (!exists)
                 {
@@ -2888,13 +2897,42 @@ namespace SpellEditor
             }
         }
 
-        private void UpdateSpellVisualEditor(object self, RoutedEventArgs args)
+        private void VisualKitScrollList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var entry = self as KitListEntry;
+            var added_items = e.AddedItems;
+            var listBox = sender as ListBox;
+            if (added_items.Count == 1)
+            {
+                var entry = listBox.SelectedItem as KitListEntry;
+                UpdateSpellVisualEditor(entry);
+            }
+            else
+            {
+                listBox.UnselectAll();
+            }
+        }
+
+        private void UpdateSpellVisualEditor(KitListEntry entry)
+        {
+            var animationDbc = DBCManager.GetInstance().FindDbcForBinding("AnimationData") as AnimationData;
             var record = entry.KitRecord;
 
-            StartAnimIdTxt.Text = record["StartAnimId"].ToString();
-            AnimationIdTxt.Text = record["AnimationId"].ToString();
+            var id = uint.Parse(record["StartAnimId"].ToString());
+            var matchRecord = animationDbc.Lookups.SingleOrDefault((container) => container.ID == id);
+            int index = 0;
+            if (matchRecord != null)
+            {
+                index = matchRecord.ComboBoxIndex;
+            }
+            StartAnimIdCombo.SelectedIndex = index;
+            id = uint.Parse(record["AnimationId"].ToString());
+            matchRecord = animationDbc.Lookups.SingleOrDefault((container) => container.ID == id);
+            index = 0;
+            if (matchRecord != null)
+            {
+                index = matchRecord.ComboBoxIndex;
+            }
+            AnimationIdCombo.SelectedIndex = index;
             SpecialEffect1Txt.Text = record["SpecialEffect1"].ToString();
             SpecialEffect2Txt.Text = record["SpecialEffect2"].ToString();
             SpecialEffect3Txt.Text = record["SpecialEffect3"].ToString();
@@ -2903,6 +2941,20 @@ namespace SpellEditor
             ShakeIdTxt.Text = record["ShakeID"].ToString();
             VisualFlagsTxt.Text = record["Flags"].ToString();
         }
+
+        private void ClearStaticSpellVisualElements()
+        {
+            StartAnimIdCombo.SelectedIndex = 0;
+            AnimationIdCombo.SelectedIndex = 0;
+            SpecialEffect1Txt.Text = string.Empty;
+            SpecialEffect2Txt.Text = string.Empty;
+            SpecialEffect3Txt.Text = string.Empty;
+            WorldEffectTxt.Text = string.Empty;
+            SoundIdTxt.Text = string.Empty;
+            ShakeIdTxt.Text = string.Empty;
+            VisualFlagsTxt.Text = string.Empty;
+        }
+        #endregion
 
         private void UpdateSpellMaskCheckBox(uint Mask, ThreadSafeComboBox ComBox)
         {
