@@ -2977,7 +2977,17 @@ namespace SpellEditor
 
         private void UpdateSpellEffectEditor(VisualEffectListEntry entry)
         {
-            
+            var record = entry.EffectRecord;
+            var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
+
+            var name = dbc.LookupStringOffset(uint.Parse(record["Name"].ToString()));
+            var filePath = dbc.LookupStringOffset(uint.Parse(record["FilePath"].ToString()));
+            VisualEffectNameTxt.Text = name;
+            VisualEffectFilePathTxt.Text = filePath;
+            VisualEffectAreaEffectSizeTxt.Text = record["AreaEffectSize"].ToString();
+            VisualEffectScaleTxt.Text = record["Scale"].ToString();
+            VisualEffectMinAllowedScaleTxt.Text = record["MinAllowedScale"].ToString();
+            VisualEffectMaxAllowedScaleTxt.Text = record["MaxAllowedScale"].ToString();
         }
 
         private void ClearStaticSpellVisualElements()

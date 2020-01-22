@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using SpellEditor.Sources.DBC;
-using SpellEditor.Sources.Tools.VisualTools;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -30,17 +28,18 @@ namespace SpellEditor.Sources.Controls
                 Margin = new Thickness(5),
                 MinWidth = 275.00
             };
-            var deleteBtn = new Button()
-            {
-                Content = "Delete",
-                Margin = new Thickness(5),
-                MaxWidth = 175.00,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom
-            };
-            // FIXME(Harry): Handle delete button click
             Children.Add(label);
-            Children.Add(deleteBtn);
+
+            ContextMenu = new ContextMenu();
+            ContextMenu.Items.Add(new MenuItem()
+            {
+                Header = "Copy to new kit"
+            });
+            ContextMenu.Items.Add(new Separator());
+            ContextMenu.Items.Add(new MenuItem()
+            {
+                Header = "Delete"
+            });
         }
     }
 }
