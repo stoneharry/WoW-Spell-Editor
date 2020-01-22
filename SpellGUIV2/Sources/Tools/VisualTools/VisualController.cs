@@ -9,7 +9,6 @@ namespace SpellEditor.Sources.Tools.VisualTools
 {
     public class VisualController
     {
-        private readonly Dictionary<string, object> _DerivedValueStore = new Dictionary<string, object>();
         public static string[] KitColumnKeys = new string[]
         {
             "PrecastKit",
@@ -40,17 +39,16 @@ namespace SpellEditor.Sources.Tools.VisualTools
             _SelectedVisualId = id;
         }
 
-        public List<KitListEntry> GetAllKitListEntries()
+        public List<VisualKitListEntry> GetAllKitEntries()
         {
-            var kitList = new List<KitListEntry>();
-            var visualDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisual");
+            var kitList = new List<VisualKitListEntry>();
+            var visualDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisual") as SpellVisual;
             var visualRecord = visualDbc.LookupRecord(_SelectedVisualId);
             if (visualRecord == null)
             {
                 return kitList;
             }
-            var visualKitDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKit");
-            //var visualEffectDbc = (SpellVisualEffectName)DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName");
+            var visualKitDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKit") as SpellVisualKit;
             foreach (var key in KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();
@@ -64,31 +62,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 {
                     continue;
                 }
-                kitList.Add(new KitListEntry(key, kitRecord));
-                /*foreach (var kitKey in _EffectColumnKeys)
-                {
-                    var effectIdStr = kitRecord[kitKey].ToString();
-                    success = uint.TryParse(effectIdStr, out var effectId);
-                    if (!success || effectId == 0)
-                    {
-                        continue;
-                    }
-                    var effectRecord = visualEffectDbc.LookupRecord(effectId);
-                    if (effectRecord == null)
-                    {
-                        continue;
-                    }
-                    var effectPath = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
-                    if (_DerivedValueStore.ContainsKey(kitKey))
-                    {
-                        _DerivedValueStore[kitKey] = _DerivedValueStore[kitKey] + ", " + effectPath;
-                    }
-                    else
-                    {
-                        _DerivedValueStore.Add(kitKey, effectPath);
-                    }
-                    kitList.Add(new KitListEntry());
-                }*/
+                kitList.Add(new VisualKitListEntry(key, kitRecord));
             }
             return kitList;
         }

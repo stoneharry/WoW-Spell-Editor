@@ -2853,58 +2853,79 @@ namespace SpellEditor
 
             var effectList = new List<string>();
             var success = uint.TryParse(selectedId, out var id);
-            if (!success || id == 0)
-            {
-                return;
-            }
-            var controller = new VisualController(id);
-            UpdateSpellVisualKitList(controller);
+            var controller = success && id > 0 ? new VisualController(id) : null;
+            UpdateSpellVisualKitList(controller?.GetAllKitEntries());
+            UpdateSpellVisualEffectList();
             ClearStaticSpellVisualElements();
         }
 
-        private void UpdateSpellVisualKitList(VisualController controller)
+        private void UpdateSpellVisualKitList(List<VisualKitListEntry> kitEntries)
         {
-            var elements = controller.GetAllKitListEntries();
-            if (elements.Count == 0)
+            // Reuse the existing ListBox if it already exists
+            ListBox scrollList;
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (exists)
             {
-                VisualSettingsGrid.Children.Clear();
+                scrollList = VisualSettingsGrid.Children[0] as ListBox;
             }
             else
             {
-                // Reuse the existing ListBox if it already exists
-                ListBox scrollList;
-                var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
-                if (exists)
+                scrollList = new ListBox()
                 {
-                    scrollList = VisualSettingsGrid.Children[0] as ListBox;
-                }
-                else
-                {
-                    scrollList = new ListBox()
-                    {
-                        Margin = new Thickness(5)
-                    };
-                    scrollList.SelectionChanged += VisualKitScrollList_SelectionChanged;
-                    var animationDbc = DBCManager.GetInstance().FindDbcForBinding("AnimationData") as AnimationData;
-                    StartAnimIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
-                    AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
-                }
-                scrollList.ItemsSource = elements;
-                if (!exists)
-                {
-                    VisualSettingsGrid.Children.Add(scrollList);
-                }
+                    Margin = new Thickness(5)
+                };
+                scrollList.SelectionChanged += VisualScrollList_SelectionChanged;
+                var animationDbc = DBCManager.GetInstance().FindDbcForBinding("AnimationData") as AnimationData;
+                StartAnimIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
+                AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
+            }
+            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+            scrollList.ItemsSource = kitEntries;
+            if (!exists)
+            {
+                VisualSettingsGrid.Children.Add(scrollList);
             }
         }
 
-        private void VisualKitScrollList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void UpdateSpellVisualEffectList()
         {
-            var added_items = e.AddedItems;
+            // Get scroll list if it exists
+            ListBox scrollList = null;
+            var exists = VisualEffectsListGrid.Children.Count == 1 && VisualEffectsListGrid.Children[0] is ListBox;
+            if (exists)
+            {
+                scrollList = VisualEffectsListGrid.Children[0] as ListBox;
+            }
+            // Reset UI if a new spell is selected
+            if (scrollList != null)
+            {
+                scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+                scrollList.ItemsSource = null;
+                return;
+            }
+            // Build ScrollList
+            scrollList = new ListBox()
+            {
+                Margin = new Thickness(5)
+            };
+            scrollList.SelectionChanged += VisualScrollList_SelectionChanged;
+            VisualEffectsListGrid.Children.Add(scrollList);
+        }
+
+        private void VisualScrollList_SelectionChanged(object sender, SelectionChangedEventArgs args)
+        {
+            var added_items = args.AddedItems;
             var listBox = sender as ListBox;
             if (added_items.Count == 1)
             {
-                var entry = listBox.SelectedItem as KitListEntry;
-                UpdateSpellVisualEditor(entry);
+                if (listBox.SelectedItem is VisualKitListEntry)
+                {
+                    UpdateSpellVisualEditor(listBox.SelectedItem as VisualKitListEntry);
+                }
+                else if (listBox.SelectedItem is VisualEffectListEntry)
+                {
+                    UpdateSpellEffectEditor(listBox.SelectedItem as VisualEffectListEntry);
+                }
             }
             else
             {
@@ -2912,7 +2933,7 @@ namespace SpellEditor
             }
         }
 
-        private void UpdateSpellVisualEditor(KitListEntry entry)
+        private void UpdateSpellVisualEditor(VisualKitListEntry entry)
         {
             var animationDbc = DBCManager.GetInstance().FindDbcForBinding("AnimationData") as AnimationData;
             var record = entry.KitRecord;
@@ -2940,6 +2961,23 @@ namespace SpellEditor
             SoundIdTxt.Text = record["SoundID"].ToString();
             ShakeIdTxt.Text = record["ShakeID"].ToString();
             VisualFlagsTxt.Text = record["Flags"].ToString();
+
+            if (VisualEffectsListGrid.Children.Count != 1)
+            {
+                return;
+            }
+            var listBox = VisualEffectsListGrid.Children[0] as ListBox;
+            if (listBox == null)
+            {
+                return;
+            }
+            listBox.ClearValue(ItemsControl.ItemsSourceProperty);
+            listBox.ItemsSource = entry.GetAllEffectEntries();
+        }
+
+        private void UpdateSpellEffectEditor(VisualEffectListEntry entry)
+        {
+            
         }
 
         private void ClearStaticSpellVisualElements()

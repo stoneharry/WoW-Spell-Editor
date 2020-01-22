@@ -8,12 +8,12 @@ using SpellEditor.Sources.Tools.VisualTools;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class KitListEntry : StackPanel
+    public class VisualKitListEntry : StackPanel
     {
         public readonly string KitName;
         public readonly Dictionary<string, object> KitRecord;
 
-        public KitListEntry(string key, Dictionary<string, object> kitRecord)
+        public VisualKitListEntry(string key, Dictionary<string, object> kitRecord)
         {
             Orientation = Orientation.Horizontal;
             KitName = key;
@@ -65,6 +65,31 @@ namespace SpellEditor.Sources.Controls
                 effectsFound.Add(" " + effectPath);
             }
             return string.Join("\n", effectsFound);
+        }
+
+        public List<VisualEffectListEntry> GetAllEffectEntries()
+        {
+            var visualEffectDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
+            var effectList = new List<VisualEffectListEntry>();
+            foreach (var key in VisualController.EffectColumnKeys)
+            {
+                var effectIdStr = KitRecord[key].ToString();
+                var success = uint.TryParse(effectIdStr, out var effectId);
+                if (!success || effectId == 0)
+                {
+                    continue;
+                }
+                var effectRecord = visualEffectDbc.LookupRecord(effectId);
+                if (effectRecord == null)
+                {
+                    continue;
+                }
+                var name = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["Name"].ToString()));
+                var effectPath = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
+                var label = $"{ name }\n { effectPath }";
+                effectList.Add(new VisualEffectListEntry(label, effectRecord));
+            }
+            return effectList;
         }
     }
 }
