@@ -2911,9 +2911,10 @@ namespace SpellEditor
             scrollList.SelectionChanged += VisualScrollList_SelectionChanged;
             VisualEffectsListGrid.Children.Add(scrollList);
             // Populate animation combo box
-            var names = Enum.GetNames(typeof(SpellVisualKitModelAttach.AttachmentPoint)).ToList();
+            var names = Enum.GetValues(typeof(SpellVisualKitModelAttach.AttachmentPoint))
+                .Cast<SpellVisualKitModelAttach.AttachmentPoint>().ToList();
             var animComboSource = new List<Label>(names.Count);
-            names.ForEach((name) => animComboSource.Add(new Label() { Content = name }));
+            names.ForEach((name) => animComboSource.Add(new Label() { Content = $"{ (int)name } - { name.ToString() }" }));
             VisualAttachmentIdCombo.ItemsSource = animComboSource;
         }
 

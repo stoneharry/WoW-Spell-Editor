@@ -30,7 +30,7 @@ namespace SpellEditor.Sources.DBC
                     var otherName = GetNameForRecordId(precedingAnimId);
                     name += "\n Preceding: " + otherName;
                 }
-                var container = new DBCBoxContainer(id, name, index++);
+                var container = new DBCBoxContainer(id, id + " - " + name, index++);
                 Lookups.Add(container);
             }
         }
