@@ -10,6 +10,7 @@ namespace SpellEditor.Sources.Controls
     {
         public readonly string EffectName;
         public readonly Dictionary<string, object> EffectRecord;
+        public readonly Dictionary<string, object> AttachRecord;
 
         public VisualEffectListEntry(string key, Dictionary<string, object> effectRecord)
         {
@@ -20,11 +21,16 @@ namespace SpellEditor.Sources.Controls
             BuildSelf();
         }
 
+        public VisualEffectListEntry(string key, Dictionary<string, object> effectRecord, Dictionary<string, object> attachRecord) : this(key, effectRecord)
+        {
+            AttachRecord = attachRecord;
+        }
+
         private void BuildSelf()
         {
-            var label = new Label()
+            var label = new TextBlock()
             {
-                Content = $"{ EffectRecord["ID"] } - { EffectName }",
+                Text = $"{ EffectRecord["ID"] } - { EffectName }",
                 Margin = new Thickness(5),
                 MinWidth = 275.00
             };

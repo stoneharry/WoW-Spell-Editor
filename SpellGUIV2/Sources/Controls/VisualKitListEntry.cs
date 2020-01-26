@@ -12,6 +12,7 @@ namespace SpellEditor.Sources.Controls
     {
         public readonly string KitName;
         public readonly Dictionary<string, object> KitRecord;
+        private List<VisualEffectListEntry> _Attachments;
 
         public VisualKitListEntry(string key, Dictionary<string, object> kitRecord)
         {
@@ -24,9 +25,9 @@ namespace SpellEditor.Sources.Controls
 
         private void BuildSelf()
         {
-            var label = new Label()
+            var label = new TextBlock()
             {
-                Content = $"{ KitRecord["ID"] } - { KitName }\n{ GetAllEffects() }",
+                Text = $"{ KitRecord["ID"] } - { KitName }\n{ GetAllEffects() }",
                 Margin = new Thickness(5),
                 MinWidth = 275.00
             };
@@ -42,6 +43,28 @@ namespace SpellEditor.Sources.Controls
             {
                 Header = "Delete"
             });
+
+            // Find attachments
+            _Attachments = new List<VisualEffectListEntry>();
+            var attachDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKitModelAttach") as SpellVisualKitModelAttach;
+            var attachments = attachDbc.LookupRecords(uint.Parse(KitRecord["ID"].ToString()));
+            if (attachments.Count > 0)
+            {
+                var effectDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
+                foreach (var attachRecord in attachments)
+                {
+                    var effectRecord = effectDbc.LookupRecord(uint.Parse(attachRecord["SpellVisualEffectNameId"].ToString()));
+                    if (effectRecord == null)
+                    {
+                        continue;
+                    }
+                    var name = effectDbc.LookupStringOffset(uint.Parse(effectRecord["Name"].ToString()));
+                    var effectPath = effectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
+                    var attachmentName = attachDbc.LookupAttachmentIndex(int.Parse(attachRecord["AttachmentId"].ToString()));
+                    var key = $"{ attachmentName } Attachment - { name }\n { effectPath }";
+                    _Attachments.Add(new VisualEffectListEntry(key, effectRecord, attachRecord));
+                }
+            }
         }
 
         private string GetAllEffects()
@@ -72,6 +95,7 @@ namespace SpellEditor.Sources.Controls
         {
             var visualEffectDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
             var effectList = new List<VisualEffectListEntry>();
+            // Handle effects
             foreach (var key in VisualController.EffectColumnKeys)
             {
                 var effectIdStr = KitRecord[key].ToString();
@@ -87,8 +111,13 @@ namespace SpellEditor.Sources.Controls
                 }
                 var name = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["Name"].ToString()));
                 var effectPath = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
-                var label = $"{ name }\n { effectPath }";
+                var label = $"{ key } - { name }\n { effectPath }";
                 effectList.Add(new VisualEffectListEntry(label, effectRecord));
+            }
+            // Handle attachments
+            foreach (var attachment in _Attachments)
+            {
+                effectList.Add(attachment);
             }
             return effectList;
         }

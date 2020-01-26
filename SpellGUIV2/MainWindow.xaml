@@ -619,18 +619,18 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Selected Visual ID" Grid.Row="0" Grid.Column="0" Margin="5,5,0,0" FontSize="16"/>
-                    <Label Name="SelectedVisualPath" Grid.Row="0" Grid.Column="1" Margin="0,5,0,5" FontSize="16"/>
-                    <Label Content="Visual Kits (right click a row for operations)" Grid.Row="1" Grid.Column="0" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Label Name="SelectedVisualPath" Grid.Row="0" Grid.Column="1" Margin="0,5,0,0" FontSize="16"/>
+                    <!-- Spell Visual Lists -->
+                    <Label Content="Visual Kits (right click a row for operations)" Grid.Row="1" Grid.Column="0" Margin="5,0,5,5" HorizontalAlignment="Left"/>
                     <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
                         <Grid Name="VisualSettingsGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350"/>
                     </Border>
-                    <Label Content="Visual Kit Effects (right click a row for operations)" Grid.Row="3" Grid.Column="0" Margin="5,5,5,5" HorizontalAlignment="Left"/>
+                    <Label Content="Visual Kit Effects &amp; Attachments (right click a row for operations)" Grid.Row="3" Grid.Column="0" Margin="5,5,5,5" HorizontalAlignment="Left"/>
                     <Border Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
                         <Grid Name="VisualEffectsListGrid" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350"/>
                     </Border>
-                    <Grid Name="VisualSettingsEditorGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" MinWidth="500" Margin="10,10,10,10">
+                    <Grid Name="VisualSettingsEditorGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" MinWidth="500" Margin="10,0,10,10">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -649,32 +649,33 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Start Animation Id" Grid.Row="1" Grid.Column="0" Margin="10,30,10,5"/>
-                        <c:FilteredComboBox x:Name="StartAnimIdCombo" Grid.Row="1" Grid.Column="1" Margin="10,30,10,5" MinHeight="50" MinWidth="250"
+                        <!-- Spell Visual Kit -->
+                        <Label Content="Start Animation Id" Grid.Row="0" Grid.Column="0" Margin="10,30,10,5"/>
+                        <c:FilteredComboBox x:Name="StartAnimIdCombo" Grid.Row="0" Grid.Column="1" Margin="10,30,10,5" MinHeight="50" MinWidth="250"
                             IsEditable="True" 
                             IsTextSearchEnabled="True"
                             StaysOpenOnEdit="True"
                             c:OnlyValuesInList="True"/>
-                        <Label Content="Animation Id" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
-                        <c:FilteredComboBox x:Name="AnimationIdCombo" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinHeight="50" MinWidth="250"
+                        <Label Content="Animation Id" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                        <c:FilteredComboBox x:Name="AnimationIdCombo" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinHeight="50" MinWidth="250"
                             IsEditable="True" 
                             IsTextSearchEnabled="True"
                             StaysOpenOnEdit="True"
                             c:OnlyValuesInList="True"/>
-                        <Label Content="Special Effect 1" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect1Txt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Special Effect 2" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect2Txt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Special Effect 3" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="SpecialEffect3Txt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="World Effect" Grid.Row="1" Grid.Column="2" Margin="10,30,10,5"/>
-                        <TextBox Name="WorldEffectTxt" Grid.Row="1" Grid.Column="3" Margin="10,30,10,5" MinWidth="150"/>
-                        <Label Content="Sound Id" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="SoundIdTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Shake Id" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="ShakeIdTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Flags" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualFlagsTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Special Effect 1" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect1Txt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Special Effect 2" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect2Txt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Special Effect 3" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="SpecialEffect3Txt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="World Effect" Grid.Row="0" Grid.Column="2" Margin="10,30,10,5"/>
+                        <TextBox Name="WorldEffectTxt" Grid.Row="0" Grid.Column="3" Margin="10,30,10,5" MinWidth="150"/>
+                        <Label Content="Sound Id" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="SoundIdTxt" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Shake Id" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="ShakeIdTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Flags" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualFlagsTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
                     </Grid>
                     <Grid Name="VisualKitEffectEditorGrid" Grid.Row="3" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" MinWidth="500" Margin="10,10,10,10">
                         <Grid.RowDefinitions>
@@ -684,15 +685,19 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+                        <!-- EffectName -->
                         <Label Content="Name" Grid.Row="0" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectNameTxt" Grid.Row="0" Grid.Column="1" Margin="10,5,10,5" MinWidth="350"/>
+                        <TextBox Name="VisualEffectNameTxt" Grid.Row="0" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
                         <Label Content="File Path" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectFilePathTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="350"/>
+                        <TextBox Name="VisualEffectFilePathTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
                         <Label Content="Area Efect Size" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
                         <TextBox Name="VisualEffectAreaEffectSizeTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
                         <Label Content="Scale" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
@@ -701,6 +706,21 @@
                         <TextBox Name="VisualEffectMinAllowedScaleTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
                         <Label Content="Maximum Allowed Scale" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
                         <TextBox Name="VisualEffectMaxAllowedScaleTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <!-- Attachments -->
+                        <Label Content="AttachmentId" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
+                        <ComboBox Name="VisualAttachmentIdCombo" Grid.Row="0" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset X" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetXTxt" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Y" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetYTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Z" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetZTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Yaw" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetYawTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Pitch" Grid.Row="5" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetPitchTxt" Grid.Row="5" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Roll" Grid.Row="6" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetRollTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
                     </Grid>
                 </Grid>
             </TabItem>

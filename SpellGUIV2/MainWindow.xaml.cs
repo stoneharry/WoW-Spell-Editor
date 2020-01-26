@@ -2910,6 +2910,11 @@ namespace SpellEditor
             };
             scrollList.SelectionChanged += VisualScrollList_SelectionChanged;
             VisualEffectsListGrid.Children.Add(scrollList);
+            // Populate animation combo box
+            var names = Enum.GetNames(typeof(SpellVisualKitModelAttach.AttachmentPoint)).ToList();
+            var animComboSource = new List<Label>(names.Count);
+            names.ForEach((name) => animComboSource.Add(new Label() { Content = name }));
+            VisualAttachmentIdCombo.ItemsSource = animComboSource;
         }
 
         private void VisualScrollList_SelectionChanged(object sender, SelectionChangedEventArgs args)
@@ -2994,12 +2999,38 @@ namespace SpellEditor
             VisualEffectScaleTxt.Text = entry != null ? record["Scale"].ToString() : string.Empty;
             VisualEffectMinAllowedScaleTxt.Text = entry != null ? record["MinAllowedScale"].ToString() : string.Empty;
             VisualEffectMaxAllowedScaleTxt.Text = entry != null ? record["MaxAllowedScale"].ToString() : string.Empty;
+
+            var attachRecord = entry?.AttachRecord;
+            ToggleVisualAttachments(attachRecord != null);
+            if (attachRecord != null)
+            {
+                VisualAttachmentIdCombo.SelectedIndex = int.Parse(attachRecord["AttachmentId"].ToString());
+                VisualAttachmentOffsetXTxt.Text = attachRecord["OffsetX"].ToString();
+                VisualAttachmentOffsetYTxt.Text = attachRecord["OffsetY"].ToString();
+                VisualAttachmentOffsetZTxt.Text = attachRecord["OffsetZ"].ToString();
+                VisualAttachmentOffsetYawTxt.Text = attachRecord["Yaw"].ToString();
+                VisualAttachmentOffsetPitchTxt.Text = attachRecord["Pitch"].ToString();
+                VisualAttachmentOffsetRollTxt.Text = attachRecord["Roll"].ToString();
+            }
+        }
+
+        private void ToggleVisualAttachments(bool enabled)
+        {
+            VisualAttachmentIdCombo.IsEnabled = enabled;
+            VisualAttachmentOffsetXTxt.IsEnabled = enabled;
+            VisualAttachmentOffsetYTxt.IsEnabled = enabled;
+            VisualAttachmentOffsetZTxt.IsEnabled = enabled;
+            VisualAttachmentOffsetYawTxt.IsEnabled = enabled;
+            VisualAttachmentOffsetPitchTxt.IsEnabled = enabled;
+            VisualAttachmentOffsetRollTxt.IsEnabled = enabled;
+            if (!enabled)
+            {
+                ClearStaticSpellVisualAttachElements();
+            }
         }
 
         private void ClearStaticSpellVisualElements()
         {
-            StartAnimIdCombo.SelectedIndex = 0;
-            AnimationIdCombo.SelectedIndex = 0;
             SpecialEffect1Txt.Text = string.Empty;
             SpecialEffect2Txt.Text = string.Empty;
             SpecialEffect3Txt.Text = string.Empty;
@@ -3013,6 +3044,17 @@ namespace SpellEditor
             VisualEffectScaleTxt.Text = string.Empty;
             VisualEffectMinAllowedScaleTxt.Text = string.Empty;
             VisualEffectMaxAllowedScaleTxt.Text = string.Empty;
+            ClearStaticSpellVisualAttachElements();
+        }
+
+        private void ClearStaticSpellVisualAttachElements()
+        {
+            VisualAttachmentOffsetXTxt.Text = string.Empty;
+            VisualAttachmentOffsetYTxt.Text = string.Empty;
+            VisualAttachmentOffsetZTxt.Text = string.Empty;
+            VisualAttachmentOffsetYawTxt.Text = string.Empty;
+            VisualAttachmentOffsetPitchTxt.Text = string.Empty;
+            VisualAttachmentOffsetRollTxt.Text = string.Empty;
         }
         #endregion
 
