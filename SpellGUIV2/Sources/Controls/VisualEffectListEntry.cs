@@ -33,7 +33,7 @@ namespace SpellEditor.Sources.Controls
             ContextMenu = new ContextMenu();
             ContextMenu.Items.Add(new MenuItem()
             {
-                Header = "Copy to new kit"
+                Header = "Copy to new effect"
             });
             ContextMenu.Items.Add(new Separator());
             ContextMenu.Items.Add(new MenuItem()

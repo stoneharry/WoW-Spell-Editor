@@ -2973,21 +2973,27 @@ namespace SpellEditor
             }
             listBox.ClearValue(ItemsControl.ItemsSourceProperty);
             listBox.ItemsSource = entry.GetAllEffectEntries();
+            if (listBox.Items.Count > 0)
+            {
+                listBox.SelectedIndex = 0;
+            }
+            else
+            {
+                UpdateSpellEffectEditor(null);
+            }
         }
 
         private void UpdateSpellEffectEditor(VisualEffectListEntry entry)
         {
-            var record = entry.EffectRecord;
-            var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
+            var record = entry?.EffectRecord;
+            var dbc = entry != null ? DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName : null;
 
-            var name = dbc.LookupStringOffset(uint.Parse(record["Name"].ToString()));
-            var filePath = dbc.LookupStringOffset(uint.Parse(record["FilePath"].ToString()));
-            VisualEffectNameTxt.Text = name;
-            VisualEffectFilePathTxt.Text = filePath;
-            VisualEffectAreaEffectSizeTxt.Text = record["AreaEffectSize"].ToString();
-            VisualEffectScaleTxt.Text = record["Scale"].ToString();
-            VisualEffectMinAllowedScaleTxt.Text = record["MinAllowedScale"].ToString();
-            VisualEffectMaxAllowedScaleTxt.Text = record["MaxAllowedScale"].ToString();
+            VisualEffectNameTxt.Text = entry != null ? dbc.LookupStringOffset(uint.Parse(record["Name"].ToString())) : string.Empty;
+            VisualEffectFilePathTxt.Text = entry != null ? dbc.LookupStringOffset(uint.Parse(record["FilePath"].ToString())) : string.Empty;
+            VisualEffectAreaEffectSizeTxt.Text = entry != null ? record["AreaEffectSize"].ToString() : string.Empty;
+            VisualEffectScaleTxt.Text = entry != null ? record["Scale"].ToString() : string.Empty;
+            VisualEffectMinAllowedScaleTxt.Text = entry != null ? record["MinAllowedScale"].ToString() : string.Empty;
+            VisualEffectMaxAllowedScaleTxt.Text = entry != null ? record["MaxAllowedScale"].ToString() : string.Empty;
         }
 
         private void ClearStaticSpellVisualElements()
@@ -3001,6 +3007,12 @@ namespace SpellEditor
             SoundIdTxt.Text = string.Empty;
             ShakeIdTxt.Text = string.Empty;
             VisualFlagsTxt.Text = string.Empty;
+            VisualEffectNameTxt.Text = string.Empty;
+            VisualEffectFilePathTxt.Text = string.Empty;
+            VisualEffectAreaEffectSizeTxt.Text = string.Empty;
+            VisualEffectScaleTxt.Text = string.Empty;
+            VisualEffectMinAllowedScaleTxt.Text = string.Empty;
+            VisualEffectMaxAllowedScaleTxt.Text = string.Empty;
         }
         #endregion
 
