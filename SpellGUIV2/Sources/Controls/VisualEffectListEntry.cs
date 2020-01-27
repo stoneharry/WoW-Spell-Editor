@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,10 +10,10 @@ namespace SpellEditor.Sources.Controls
     public class VisualEffectListEntry : StackPanel
     {
         public readonly string EffectName;
-        public readonly Dictionary<string, object> EffectRecord;
-        public readonly Dictionary<string, object> AttachRecord;
+        public readonly DataRow EffectRecord;
+        public readonly DataRow AttachRecord;
 
-        public VisualEffectListEntry(string key, Dictionary<string, object> effectRecord)
+        public VisualEffectListEntry(string key, DataRow effectRecord)
         {
             Orientation = Orientation.Horizontal;
             EffectName = key;
@@ -21,7 +22,7 @@ namespace SpellEditor.Sources.Controls
             BuildSelf();
         }
 
-        public VisualEffectListEntry(string key, Dictionary<string, object> effectRecord, Dictionary<string, object> attachRecord) : this(key, effectRecord)
+        public VisualEffectListEntry(string key, DataRow effectRecord, DataRow attachRecord) : this(key, effectRecord)
         {
             AttachRecord = attachRecord;
         }

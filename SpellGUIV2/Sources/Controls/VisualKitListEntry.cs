@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
 
@@ -11,14 +13,16 @@ namespace SpellEditor.Sources.Controls
     public class VisualKitListEntry : StackPanel
     {
         public readonly string KitName;
-        public readonly Dictionary<string, object> KitRecord;
+        public readonly DataRow KitRecord;
         private List<VisualEffectListEntry> _Attachments;
+        private readonly IDatabaseAdapter _Adapter;
 
-        public VisualKitListEntry(string key, Dictionary<string, object> kitRecord)
+        public VisualKitListEntry(string key, DataRow kitRecord, IDatabaseAdapter adapter)
         {
             Orientation = Orientation.Horizontal;
             KitName = key;
             KitRecord = kitRecord;
+            _Adapter = adapter;
 
             BuildSelf();
         }
@@ -46,31 +50,30 @@ namespace SpellEditor.Sources.Controls
 
             // Find attachments
             _Attachments = new List<VisualEffectListEntry>();
-            var attachDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKitModelAttach") as SpellVisualKitModelAttach;
-            var attachments = attachDbc.LookupRecords(uint.Parse(KitRecord["ID"].ToString()));
-            if (attachments.Count > 0)
+            var attachResults = _Adapter.Query("SELECT * FROM spellvisualkitmodelattach WHERE ParentSpellVisualKitId = " + KitRecord["ID"]);
+            if (attachResults == null || attachResults.Rows.Count == 0)
             {
-                var effectDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
-                foreach (var attachRecord in attachments)
+                return;
+            }
+            foreach (DataRow attachRecord in attachResults.Rows)
+            {
+                var effectResults = _Adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " + attachRecord["SpellVisualEffectNameId"]);
+                if (effectResults == null || effectResults.Rows.Count == 0)
                 {
-                    var effectRecord = effectDbc.LookupRecord(uint.Parse(attachRecord["SpellVisualEffectNameId"].ToString()));
-                    if (effectRecord == null)
-                    {
-                        continue;
-                    }
-                    var name = effectDbc.LookupStringOffset(uint.Parse(effectRecord["Name"].ToString()));
-                    var effectPath = effectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
-                    var attachmentName = attachDbc.LookupAttachmentIndex(int.Parse(attachRecord["AttachmentId"].ToString()));
-                    var key = $"{ attachmentName } Attachment - { name }\n { effectPath }";
-                    _Attachments.Add(new VisualEffectListEntry(key, effectRecord, attachRecord));
+                    continue;
                 }
+                var effectRecord = effectResults.Rows[0];
+                var name = effectRecord["Name"].ToString();
+                var effectPath = effectRecord["FilePath"].ToString();
+                var attachmentName = SpellVisualKitModelAttach.LookupAttachmentIndex(int.Parse(attachRecord["AttachmentId"].ToString()));
+                var key = $"{ attachmentName } Attachment - { name }\n { effectPath }";
+                _Attachments.Add(new VisualEffectListEntry(key, effectRecord, attachRecord));
             }
         }
 
         private string GetAllEffects()
         {
             List<string> effectsFound = new List<string>();
-            var visualEffectDbc = (SpellVisualEffectName)DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName");
             foreach (var kitKey in VisualController.EffectColumnKeys)
             {
                 var effectIdStr = KitRecord[kitKey].ToString();
@@ -79,12 +82,13 @@ namespace SpellEditor.Sources.Controls
                 {
                     continue;
                 }
-                var effectRecord = visualEffectDbc.LookupRecord(effectId);
-                if (effectRecord == null)
+                var effectResults = _Adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " + effectId);
+                if (effectResults == null || effectResults.Rows.Count == 0)
                 {
                     continue;
                 }
-                var effectPath = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
+                var effectRecord = effectResults.Rows[0];
+                var effectPath = effectRecord["FilePath"].ToString();
                 effectPath = effectPath.Length > 70 ? effectPath.Substring(0, 67) + "..." : effectPath;
                 effectsFound.Add(" " + effectPath);
             }
@@ -93,7 +97,6 @@ namespace SpellEditor.Sources.Controls
 
         public List<VisualEffectListEntry> GetAllEffectEntries()
         {
-            var visualEffectDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName;
             var effectList = new List<VisualEffectListEntry>();
             // Handle effects
             foreach (var key in VisualController.EffectColumnKeys)
@@ -104,13 +107,14 @@ namespace SpellEditor.Sources.Controls
                 {
                     continue;
                 }
-                var effectRecord = visualEffectDbc.LookupRecord(effectId);
-                if (effectRecord == null)
+                var effectResults = _Adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " +effectId);
+                if (effectResults == null || effectResults.Rows.Count == 0)
                 {
                     continue;
                 }
-                var name = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["Name"].ToString()));
-                var effectPath = visualEffectDbc.LookupStringOffset(uint.Parse(effectRecord["FilePath"].ToString()));
+                var effectRecord = effectResults.Rows[0];
+                var name = effectRecord["Name"].ToString();
+                var effectPath = effectRecord["FilePath"].ToString();
                 var label = $"{ key } - { name }\n { effectPath }";
                 effectList.Add(new VisualEffectListEntry(label, effectRecord));
             }

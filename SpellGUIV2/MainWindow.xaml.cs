@@ -615,6 +615,7 @@ namespace SpellEditor
             var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), SafeTryFindResource("String1"));
             controller.SetCancelable(false);
             window.Show();
+            window.Height = window.Height + 40;
             window.Width = window.Width / 2;
             while (window.IsVisible && !window.IsDataSelected())
                 await Task.Delay(100);
@@ -2853,7 +2854,7 @@ namespace SpellEditor
 
             var effectList = new List<string>();
             var success = uint.TryParse(selectedId, out var id);
-            var controller = success && id > 0 ? new VisualController(id) : null;
+            var controller = success && id > 0 ? new VisualController(id, adapter) : null;
             UpdateSpellVisualKitList(controller?.GetAllKitEntries());
             UpdateSpellVisualEffectList();
             ClearStaticSpellVisualElements();
@@ -2992,10 +2993,9 @@ namespace SpellEditor
         private void UpdateSpellEffectEditor(VisualEffectListEntry entry)
         {
             var record = entry?.EffectRecord;
-            var dbc = entry != null ? DBCManager.GetInstance().FindDbcForBinding("SpellVisualEffectName") as SpellVisualEffectName : null;
 
-            VisualEffectNameTxt.Text = entry != null ? dbc.LookupStringOffset(uint.Parse(record["Name"].ToString())) : string.Empty;
-            VisualEffectFilePathTxt.Text = entry != null ? dbc.LookupStringOffset(uint.Parse(record["FilePath"].ToString())) : string.Empty;
+            VisualEffectNameTxt.Text = entry != null ? record["Name"].ToString() : string.Empty;
+            VisualEffectFilePathTxt.Text = entry != null ? record["FilePath"].ToString() : string.Empty;
             VisualEffectAreaEffectSizeTxt.Text = entry != null ? record["AreaEffectSize"].ToString() : string.Empty;
             VisualEffectScaleTxt.Text = entry != null ? record["Scale"].ToString() : string.Empty;
             VisualEffectMinAllowedScaleTxt.Text = entry != null ? record["MinAllowedScale"].ToString() : string.Empty;

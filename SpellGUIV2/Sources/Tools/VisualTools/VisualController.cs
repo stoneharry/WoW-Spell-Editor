@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Database;
 
 namespace SpellEditor.Sources.Tools.VisualTools
 {
@@ -32,23 +33,24 @@ namespace SpellEditor.Sources.Tools.VisualTools
             "RightWeaponEffect"
         };
 
+        private readonly IDatabaseAdapter _Adapter;
         private readonly uint _SelectedVisualId;
 
-        public VisualController(uint id)
+        public VisualController(uint id, IDatabaseAdapter adapter)
         {
+            _Adapter = adapter;
             _SelectedVisualId = id;
         }
 
         public List<VisualKitListEntry> GetAllKitEntries()
         {
             var kitList = new List<VisualKitListEntry>();
-            var visualDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisual") as SpellVisual;
-            var visualRecord = visualDbc.LookupRecord(_SelectedVisualId);
-            if (visualRecord == null)
+            var visualResults = _Adapter.Query("SELECT * FROM spellvisual WHERE ID = " + _SelectedVisualId);
+            if (visualResults == null || visualResults.Rows.Count == 0)
             {
                 return kitList;
             }
-            var visualKitDbc = DBCManager.GetInstance().FindDbcForBinding("SpellVisualKit") as SpellVisualKit;
+            var visualRecord = visualResults.Rows[0];
             foreach (var key in KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();
@@ -57,12 +59,13 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 {
                     continue;
                 }
-                var kitRecord = visualKitDbc.LookupRecord(kitId);
-                if (kitRecord == null)
+                var kitResults = _Adapter.Query("SELECT * FROM spellvisualkit WHERE ID = " + kitId);
+                if (kitResults == null || kitResults.Rows.Count == 0)
                 {
                     continue;
                 }
-                kitList.Add(new VisualKitListEntry(key, kitRecord));
+                var kitRecord = kitResults.Rows[0];
+                kitList.Add(new VisualKitListEntry(key, kitRecord, _Adapter));
             }
             return kitList;
         }

@@ -41,14 +41,8 @@ namespace SpellEditor.Sources.DBC
             {
                 TryLoadDbc<SpellRuneCost>("SpellRuneCost");
                 TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
-                // FIXME(Harry): Most of these are available in earlier versions, but for now only support 3.3.5
+                // FIXME(Harry): Available in earlier patch versions
                 TryLoadDbc<AnimationData>("AnimationData");
-                TryLoadDbc<SpellVisual>("SpellVisual");
-                TryLoadDbc<SpellVisualEffectName>("SpellVisualEffectName");
-                TryLoadDbc<SpellVisualKit>("SpellVisualKit");
-                TryLoadDbc<SpellVisualKitAreaModel>("SpellVisualKitAreaModel");
-                TryLoadDbc<SpellVisualKitModelAttach>("SpellVisualKitModelAttach");
-                TryLoadDbc<SpellVisualPrecastTransitions>("SpellVisualPrecastTransitions");
             }
         }
 

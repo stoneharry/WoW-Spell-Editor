@@ -6,28 +6,12 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
-    class SpellVisualKitModelAttach : AbstractDBC
+    /**
+     * Not loaded from memory, accessed via SQL only
+     */
+    class SpellVisualKitModelAttach
     {
-        public SpellVisualKitModelAttach()
-        {
-            ReadDBCFile(Config.Config.DbcDirectory + "\\SpellVisualKitModelAttach.dbc");
-        }
-
-        public List<Dictionary<string, object>> LookupRecords(uint parentKitId)
-        {
-            var matches = new List<Dictionary<string, object>>();
-            foreach (var record in Body.RecordMaps)
-            {
-                var parentId = uint.Parse(record["ParentSpellVisualKitId"].ToString());
-                if (parentId == parentKitId)
-                {
-                    matches.Add(record);
-                }
-            }
-            return matches;
-        }
-
-        public string LookupAttachmentIndex(int index) => Enum.GetName(typeof(AttachmentPoint), index);
+        public static string LookupAttachmentIndex(int index) => Enum.GetName(typeof(AttachmentPoint), index);
 
         public enum AttachmentPoint
         {

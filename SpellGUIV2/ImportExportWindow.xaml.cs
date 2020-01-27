@@ -57,7 +57,7 @@ namespace SpellEditor
             var importBtn = new Button()
             {
                 Content = "Import Checked DBC Files",
-                Padding = new Thickness(4, 5, 4, 5)
+                Padding = new Thickness(2, 2, 2, 2)
             };
             importBtn.Click += ImportClick;
             contents.Add(importBtn);
@@ -71,7 +71,9 @@ namespace SpellEditor
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     IsEnabled = numRows == 0,
-                    IsChecked = numRows == 0 && binding.Name.Equals("Spell")
+                    IsChecked = numRows == 0 && 
+                        (binding.Name.Equals("Spell") || 
+                        binding.Name.Contains("SpellVisual"))
                 });
             }
         }
