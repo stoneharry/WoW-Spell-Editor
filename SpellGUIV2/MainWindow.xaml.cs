@@ -2881,10 +2881,33 @@ namespace SpellEditor
                 AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
             }
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+            kitEntries?.ForEach((entry) => entry.SetDeleteAction(DeleteVisualKitEntry));
             scrollList.ItemsSource = kitEntries;
             if (!exists)
             {
                 VisualSettingsGrid.Children.Add(scrollList);
+            }
+        }
+
+        private void DeleteVisualKitEntry(VisualKitListEntry entry)
+        {
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (!exists)
+            {
+                return;
+            }
+            var scrollList = VisualSettingsGrid.Children[0] as ListBox;
+            var entries = scrollList.ItemsSource as List<VisualKitListEntry>;
+            entries.Remove(entry);
+            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+            scrollList.ItemsSource = entries;
+            if (entries.Count > 0)
+            {
+                scrollList.SelectedIndex = 0;
+            }
+            else
+            {
+                ClearStaticSpellVisualElements();
             }
         }
 

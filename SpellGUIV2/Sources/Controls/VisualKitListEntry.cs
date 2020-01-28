@@ -14,12 +14,15 @@ namespace SpellEditor.Sources.Controls
     {
         public readonly string KitName;
         public readonly DataRow KitRecord;
-        private List<VisualEffectListEntry> _Attachments;
+        public readonly uint ParentVisualId;
         private readonly IDatabaseAdapter _Adapter;
+        private List<VisualEffectListEntry> _Attachments;
+        private Action<VisualKitListEntry> _DeleteAction;
 
-        public VisualKitListEntry(string key, DataRow kitRecord, IDatabaseAdapter adapter)
+        public VisualKitListEntry(string key, uint visualId, DataRow kitRecord, IDatabaseAdapter adapter)
         {
             Orientation = Orientation.Horizontal;
+            ParentVisualId = visualId;
             KitName = key;
             KitRecord = kitRecord;
             _Adapter = adapter;
@@ -29,24 +32,29 @@ namespace SpellEditor.Sources.Controls
 
         private void BuildSelf()
         {
+            var id = uint.Parse(KitRecord["ID"].ToString());
             var label = new TextBlock()
             {
-                Text = $"{ KitRecord["ID"] } - { KitName }\n{ GetAllEffects() }",
+                Text = $"{ id } - { KitName }\n{ GetAllEffects() }",
                 Margin = new Thickness(5),
                 MinWidth = 275.00
             };
             Children.Add(label);
 
             ContextMenu = new ContextMenu();
-            ContextMenu.Items.Add(new MenuItem()
+            var copyItem = new MenuItem()
             {
                 Header = "Copy to new kit"
-            });
+            };
+            copyItem.Click += CopyItem_Click;
+            ContextMenu.Items.Add(copyItem);
             ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(new MenuItem()
+            var deleteItem = new MenuItem()
             {
                 Header = "Delete"
-            });
+            };
+            deleteItem.Click += DeleteItem_Click;
+            ContextMenu.Items.Add(deleteItem);
 
             // Find attachments
             _Attachments = new List<VisualEffectListEntry>();
@@ -66,9 +74,55 @@ namespace SpellEditor.Sources.Controls
                 var name = effectRecord["Name"].ToString();
                 var effectPath = effectRecord["FilePath"].ToString();
                 var attachmentName = SpellVisualKitModelAttach.LookupAttachmentIndex(int.Parse(attachRecord["AttachmentId"].ToString()));
-                var key = $"{ attachmentName } Attachment - { name }\n { effectPath }";
+                var key = $"{ attachRecord["ID"] } - { attachmentName } Attachment - { name }\n { effectPath }";
                 _Attachments.Add(new VisualEffectListEntry(key, effectRecord, attachRecord));
             }
+        }
+
+        private void CopyItem_Click(object sender, RoutedEventArgs args)
+        {
+            
+        }
+
+        private void DeleteItem_Click(object sender, RoutedEventArgs args)
+        {
+            var panel = new StackPanel();
+            panel.Orientation = Orientation.Horizontal;
+            var confirmDeleteButton = new Button()
+            {
+                Content = "CONFIRM DELETE:\nThis change is\nsaved immediately",
+                Margin = new Thickness(5),
+                MinWidth = 100
+            };
+            confirmDeleteButton.Click += (_sender, _args) => {
+                if (_DeleteAction == null)
+                {
+                    return;
+                }
+                DeleteKitFromVisual();
+                Children.Clear();
+                _DeleteAction.Invoke(this);
+                _DeleteAction = null;
+            };
+            var cancelButton = new Button()
+            {
+                Content = "Cancel",
+                Margin = new Thickness(5),
+                MinWidth = 100
+            };
+            cancelButton.Click += (_sender, _args) =>
+            {
+                panel.Children.Clear();
+                Children.Remove(panel);
+            };
+            panel.Children.Add(confirmDeleteButton);
+            panel.Children.Add(cancelButton);
+            Children.Add(panel);
+        }
+
+        private void DeleteKitFromVisual()
+        {
+            _Adapter.Execute($"UPDATE spellvisual SET { KitName } = 0 WHERE ID = { ParentVisualId }");
         }
 
         private string GetAllEffects()
@@ -124,6 +178,11 @@ namespace SpellEditor.Sources.Controls
                 effectList.Add(attachment);
             }
             return effectList;
+        }
+
+        internal void SetDeleteAction(Action<VisualKitListEntry> deleteEntryAction)
+        {
+            _DeleteAction = deleteEntryAction;
         }
     }
 }

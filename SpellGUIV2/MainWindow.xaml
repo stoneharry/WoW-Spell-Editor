@@ -618,8 +618,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Selected Visual ID" Grid.Row="0" Grid.Column="0" Margin="5,5,0,0" FontSize="16"/>
-                    <Label Name="SelectedVisualPath" Grid.Row="0" Grid.Column="1" Margin="0,5,0,0" FontSize="16"/>
+                    <Label Content="Selected Visual ID" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Margin="5,5,0,0" FontSize="16"/>
+                    <Label Name="SelectedVisualPath" Grid.Row="0" Grid.Column="0" MinWidth="50" Margin="180,5,50,5" FontSize="16"/>
+                    <Label Content="The spell visual DBC files must be imported to see and edit these values. Any changes made must be exported to use them." Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,5,0,0" FontSize="14"/>
                     <!-- Spell Visual Lists -->
                     <Label Content="Visual Kits (right click a row for operations)" Grid.Row="1" Grid.Column="0" Margin="5,0,5,5" HorizontalAlignment="Left"/>
                     <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">

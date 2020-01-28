@@ -65,7 +65,8 @@ namespace SpellEditor.Sources.Tools.VisualTools
                     continue;
                 }
                 var kitRecord = kitResults.Rows[0];
-                kitList.Add(new VisualKitListEntry(key, kitRecord, _Adapter));
+                var visualId = uint.Parse(visualRecord["ID"].ToString());
+                kitList.Add(new VisualKitListEntry(key, visualId, kitRecord, _Adapter));
             }
             return kitList;
         }
