@@ -2908,6 +2908,7 @@ namespace SpellEditor
             else
             {
                 ClearStaticSpellVisualElements();
+                UpdateSpellVisualEffectList();
             }
         }
 

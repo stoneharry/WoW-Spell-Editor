@@ -1,0 +1,12 @@
+# AnimationData.dbc structure for 3.3.5a 12340
+uint ID
+uint Name string
+uint WeaponFlags
+uint BodyFlags
+uint Flags
+# The animation preceding this one
+uint FallbackAnimationID
+# Same as ID for normal animations (wotlk)
+uint BehaviourID
+# 0 for normal, 3 for fly (wotlk)
+uint BehaviourTier

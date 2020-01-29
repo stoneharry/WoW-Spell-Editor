@@ -2,10 +2,7 @@
 uint ID
 uint Name string
 uint FilePath string
-uint SpecialFlag
-# if < 0xC UNITEFFECTATTACHPPOINT else ??? UnitEffectOneShot
-uint SpecialAttachPoint
-# if the model's bounding sphere radius <= 0.001, scales the model CGDynamicObject_C::UpdateModelLoadStatus
 float AreaEffectSize
-# &1: ONESHOTSTANDALONEEFFECTNODE::ReleaseDeathHolds, &4: after anim seq ends OneShotEndHandler, &8: spawns a world object UnitEffectIsAuraWorldObject
-uint VisualEffectNameFlags
+float Scale
+float MinAllowedScale
+float MaxAllowedScale

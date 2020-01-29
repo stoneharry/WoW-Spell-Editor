@@ -1,5 +1,6 @@
 # SpellVisualKit.dbc structure for 3.3.5a 12340
 uint ID
+# Animation fields reference AnimationData record
 uint StartAnimId
 uint AnimationId
 # All effects point to a SpellVisualEffectName record
