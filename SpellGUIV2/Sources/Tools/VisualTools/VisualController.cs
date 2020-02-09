@@ -1,8 +1,6 @@
-﻿using SpellEditor.Sources.DBC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Database;
 
