@@ -127,7 +127,7 @@ namespace SpellEditor.Sources.Database
                 str = str.Remove(str.Length - 2, 2);
                 str = str.Append(") ");
             } 
-            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;");   
+            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");   
             return str.ToString();
         }
 
