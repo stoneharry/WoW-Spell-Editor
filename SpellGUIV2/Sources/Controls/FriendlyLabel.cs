@@ -2,7 +2,7 @@
 
 namespace SpellEditor.Sources.Controls
 {
-    class FriendlyLabel : Label
+    public class FriendlyLabel : Label
     {
         public override string ToString()
         {

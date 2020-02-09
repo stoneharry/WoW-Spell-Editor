@@ -10,24 +10,14 @@ namespace SpellEditor.Sources.Database
     class MySQL : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
-        private MySqlConnection _connection;
-        public bool Updating
-        {
-            get;
-            set;
-        }
+        private readonly MySqlConnection _connection;
+        public bool Updating { get; set; }
 
         public MySQL()
         {
-            string connectionString = string.Format(
-                "server={0};port={1};uid={2};pwd={3};Charset=utf8;",
-                Config.Config.Host,
-                Config.Config.Port,
-                Config.Config.User,
-                Config.Config.Pass);
+            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8;";
 
-            _connection = new MySqlConnection();
-            _connection.ConnectionString = connectionString;
+            _connection = new MySqlConnection {ConnectionString = connectionString};
             _connection.Open();
             // Create DB if not exists and use
             using (var cmd = _connection.CreateCommand())
@@ -75,6 +65,7 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter())
@@ -94,6 +85,7 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+
             using (var cmd = _connection.CreateCommand())
             {
                 cmd.CommandText = p;
@@ -110,31 +102,24 @@ namespace SpellEditor.Sources.Database
                 switch (field.Type)
                 {
                     case BindingType.UINT:
-                        {
-                            str.Append(string.Format(@"`{0}` int(10) unsigned NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` int(10) unsigned NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.INT:
-                        {
-                            str.Append(string.Format(@"`{0}` int(11) NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` int(11) NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.FLOAT:
-                        {
-                            str.Append(string.Format(@"`{0}` FLOAT NOT NULL DEFAULT '0', ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` FLOAT NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.STRING_OFFSET:
-                        {
-                            str.Append(string.Format(@"`{0}` TEXT CHARACTER SET utf8, ", field.Name));
-                            break;
-                        }
+                        str.Append($@"`{field.Name}` TEXT CHARACTER SET utf8, ");
+                        break;
                     default:
                         throw new Exception($"ERROR: Unhandled type: {field.Type} on field: {field.Name} on binding: {binding.Name}");
 
                 }
             }
-            var idField = binding.Fields.Where(record => record.Name.ToLower().Equals("id")).FirstOrDefault();
+
+            var idField = binding.Fields.FirstOrDefault(record => record.Name.ToLower().Equals("id"));
             if (idField != null)
                 str.Append($"PRIMARY KEY (`{idField.Name}`)) ");
             else

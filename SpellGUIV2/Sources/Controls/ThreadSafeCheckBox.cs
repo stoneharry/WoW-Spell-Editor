@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -11,79 +7,79 @@ namespace SpellEditor.Sources.Controls
 {
     public class ThreadSafeCheckBox : CheckBox
     {
-        public object threadSafeChecked
+        public object ThreadSafeChecked
         {
             get
             {
-                if (!Dispatcher.CheckAccess())
+                if (Dispatcher != null && !Dispatcher.CheckAccess())
                     return IsChecked;
-                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsChecked));
+                return Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsChecked));
             }
             set
             {
-                if (Dispatcher.CheckAccess())
+                if (Dispatcher != null && Dispatcher.CheckAccess())
                 {
-                    IsChecked = (Boolean)value;
+                    IsChecked = (bool)value;
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => IsChecked = (Boolean)value));
+                Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => IsChecked = (bool)value));
             }
         }
 
-        public object threadSafeEnabled
+        public object ThreadSafeEnabled
         {
             get
             {
-                if (!Dispatcher.CheckAccess())
+                if (Dispatcher != null && !Dispatcher.CheckAccess())
                     return IsEnabled;
-                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsEnabled));
+                return Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => IsEnabled));
             }
             set
             {
-                if (Dispatcher.CheckAccess())
+                if (Dispatcher != null && Dispatcher.CheckAccess())
                 {
-                    IsEnabled = (Boolean)value;
+                    IsEnabled = (bool)value;
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => IsEnabled = (Boolean)value));
+                Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => IsEnabled = (bool)value));
             }
         }
 
-        public object threadSafeVisibility
+        public object ThreadSafeVisibility
         {
             get
             {
-                if (!Dispatcher.CheckAccess())
+                if (Dispatcher != null && !Dispatcher.CheckAccess())
                     return Visibility;
-                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Visibility));
+                return Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Visibility));
             }
             set
             {
-                if (Dispatcher.CheckAccess())
+                if (Dispatcher != null && Dispatcher.CheckAccess())
                 {
                     Visibility = (Visibility)value;
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Visibility = (Visibility)value));
+                Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => Visibility = (Visibility)value));
             }
         }
 
-        public object threadSafeContent
+        public object ThreadSafeContent
         {
             get
             {
-                if (!Dispatcher.CheckAccess())
+                if (Dispatcher != null && !Dispatcher.CheckAccess())
                     return Content;
-                return Dispatcher.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Content));
+                return Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Func<object>(() => Content));
             }
             set
             {
-                if (Dispatcher.CheckAccess())
+                if (Dispatcher != null && Dispatcher.CheckAccess())
                 {
                     Content = value;
                     return;
                 }
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Content = value));
+                Dispatcher?.BeginInvoke(DispatcherPriority.Background, new Action(() => Content = value));
             }
         }
     }

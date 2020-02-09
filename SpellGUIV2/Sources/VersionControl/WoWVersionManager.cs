@@ -1,8 +1,5 @@
-﻿using SpellEditor.Sources.Constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SpellEditor.Sources.VersionControl
 {
@@ -12,7 +9,7 @@ namespace SpellEditor.Sources.VersionControl
 
         private static readonly WoWVersionManager _Instance = new WoWVersionManager();
 
-        private List<WoWVersion> _VersionList = new List<WoWVersion>();
+        private readonly List<WoWVersion> _VersionList = new List<WoWVersion>();
 
         private WoWVersionManager()
         {
@@ -30,20 +27,8 @@ namespace SpellEditor.Sources.VersionControl
 
         public List<WoWVersion> AllVersions() => _VersionList;
 
-        public static bool IsWotlkOrGreaterSelected
-        {
-            get
-            {
-                return GetInstance().SelectedVersion().Identity >= 335;
-            }
-        }
+        public static bool IsWotlkOrGreaterSelected => GetInstance().SelectedVersion().Identity >= 335;
 
-        public static bool IsTbcOrGreaterSelected
-        {
-            get
-            {
-                return GetInstance().SelectedVersion().Identity >= 243;
-            }
-        }
+        public static bool IsTbcOrGreaterSelected => GetInstance().SelectedVersion().Identity >= 243;
     }
 }
