@@ -4,13 +4,14 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualKitListEntry : StackPanel
+    public class VisualKitListEntry : StackPanel, IVisualListEntry
     {
         public readonly string KitName;
         public readonly DataRow KitRecord;
@@ -18,7 +19,9 @@ namespace SpellEditor.Sources.Controls
         private readonly IDatabaseAdapter _Adapter;
         private List<VisualEffectListEntry> _Attachments;
         private List<VisualEffectListEntry> _Effects;
-        private Action<VisualKitListEntry> _DeleteAction;
+        private Action<IVisualListEntry> _DeleteClickAction;
+        private Action<IVisualListEntry> _CopyClickAction;
+        private Action<IVisualListEntry> _PasteClickAction;
         private StackPanel _ConfirmDeletePanel;
 
         public VisualKitListEntry(string key, uint visualId, DataRow kitRecord, IDatabaseAdapter adapter)
@@ -45,29 +48,7 @@ namespace SpellEditor.Sources.Controls
             };
             Children.Add(label);
 
-            ContextMenu = new ContextMenu();
-            var copyItem = new MenuItem
-            {
-                Header = "Copy"
-            };
-            copyItem.Click += CopyItem_Click;
-            var pasteItem = new MenuItem
-            {
-                Header = "Paste",
-                IsEnabled = false
-            };
-            pasteItem.Click += PasteItem_Click;
-            var deleteItem = new MenuItem
-            {
-                Header = "Delete"
-            };
-            deleteItem.Click += BuildConfirmDeletePanel;
-
-            ContextMenu.Items.Add(copyItem);
-            ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(pasteItem);
-            ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(deleteItem);
+            ContextMenu = new VisualContextMenu(this);
         }
 
         private List<VisualEffectListEntry> findAllEffects(IDatabaseAdapter adapter)
@@ -120,17 +101,18 @@ namespace SpellEditor.Sources.Controls
             return attachments;
         }
 
-        private void CopyItem_Click(object sender, RoutedEventArgs args)
+        public void PasteItemClick(object sender, RoutedEventArgs args)
         {
-            
+            _PasteClickAction.Invoke(this);
         }
 
-        private void PasteItem_Click(object sender, RoutedEventArgs e)
+        public void CopyItemClick(object sender, RoutedEventArgs args)
         {
-
+            VisualController.SetCopiedKitEntry(this);
+            _CopyClickAction.Invoke(this);
         }
 
-        private void BuildConfirmDeletePanel(object sender, RoutedEventArgs args)
+        public void DeleteItemClick(object sender, RoutedEventArgs args)
         {
             if (_ConfirmDeletePanel != null)
             {
@@ -145,7 +127,7 @@ namespace SpellEditor.Sources.Controls
                 MinWidth = 100
             };
             confirmDeleteButton.Click += (_sender, _args) => {
-                if (_DeleteAction == null)
+                if (_DeleteClickAction == null)
                 {
                     return;
                 }
@@ -153,8 +135,8 @@ namespace SpellEditor.Sources.Controls
                 _ConfirmDeletePanel = null;
                 DeleteKitFromVisual();
                 Children.Clear();
-                _DeleteAction.Invoke(this);
-                _DeleteAction = null;
+                _DeleteClickAction.Invoke(this);
+                _DeleteClickAction = null;
             };
             var cancelButton = new Button
             {
@@ -213,9 +195,19 @@ namespace SpellEditor.Sources.Controls
             return listEntries;
         }
 
-        internal void SetDeleteAction(Action<VisualKitListEntry> deleteEntryAction)
+        public void SetDeleteClickAction(Action<IVisualListEntry> deleteEntryAction)
         {
-            _DeleteAction = deleteEntryAction;
+            _DeleteClickAction = deleteEntryAction;
+        }
+
+        public void SetCopyClickAction(Action<IVisualListEntry> copyClickAction)
+        {
+            _CopyClickAction = copyClickAction;
+        }
+
+        public void SetPasteClickAction(Action<IVisualListEntry> pasteClickAction)
+        {
+            _PasteClickAction = pasteClickAction;
         }
     }
 }

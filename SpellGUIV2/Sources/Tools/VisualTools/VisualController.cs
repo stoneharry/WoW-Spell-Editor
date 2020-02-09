@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 
 namespace SpellEditor.Sources.Tools.VisualTools
@@ -30,9 +31,8 @@ namespace SpellEditor.Sources.Tools.VisualTools
             "LeftWeaponEffect",
             "RightWeaponEffect"
         };
-
-        public readonly List<VisualKitListEntry> VisualKits;
-
+        private static VisualKitListEntry _CopiedKitEntry;
+        public readonly List<IVisualListEntry> VisualKits;
         private readonly uint _SelectedVisualId;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
@@ -41,9 +41,9 @@ namespace SpellEditor.Sources.Tools.VisualTools
             VisualKits = GetAllKitEntries(adapter);
         }
 
-        private List<VisualKitListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
+        private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
         {
-            var kitList = new List<VisualKitListEntry>();
+            var kitList = new List<IVisualListEntry>();
             var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + _SelectedVisualId);
             if (visualResults == null || visualResults.Rows.Count == 0)
             {
@@ -68,6 +68,27 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 kitList.Add(new VisualKitListEntry(key, visualId, kitRecord, adapter));
             }
             return kitList;
+        }
+
+        public static void SetCopiedKitEntry(VisualKitListEntry entry) => _CopiedKitEntry = entry;
+
+        public static VisualKitListEntry GetCopiedKitEntry() => _CopiedKitEntry;
+
+        public List<string> GetAvailableFields(IVisualListEntry item)
+        {
+            if (item is VisualKitListEntry entry)
+            {
+                var availableKeys = KitColumnKeys.ToList();
+                var usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
+                    .Select(kitEntry => kitEntry.KitName).ToList();
+                availableKeys.RemoveAll(key => usedKeys.Contains(key));
+                return availableKeys;
+            }
+            else if (item is VisualEffectListEntry)
+            {
+
+            }
+            return new List<string>();
         }
     }
 }

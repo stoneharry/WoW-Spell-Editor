@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Controls.Visual;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualEffectListEntry : StackPanel
+    public class VisualEffectListEntry : StackPanel, IVisualListEntry
     {
         public readonly string EffectName;
         public readonly DataRow EffectRecord;
@@ -37,29 +38,37 @@ namespace SpellEditor.Sources.Controls
             };
             Children.Add(label);
 
-            ContextMenu = new ContextMenu();
-            var copyItem = new MenuItem
-            {
-                Header = "Copy"
-            };
-            //copyItem.Click += CopyItem_Click;
-            var pasteItem = new MenuItem
-            {
-                Header = "Paste",
-                IsEnabled = false
-            };
-            //pasteItem.Click += PasteItem_Click;
-            var deleteItem = new MenuItem
-            {
-                Header = "Delete"
-            };
-            //deleteItem.Click += DeleteItem_Click;
+            ContextMenu = new VisualContextMenu(this);
+        }
 
-            ContextMenu.Items.Add(copyItem);
-            ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(pasteItem);
-            ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(deleteItem);
+        public void DeleteItemClick(object sender, RoutedEventArgs args)
+        {
+
+        }
+
+        public void PasteItemClick(object sender, RoutedEventArgs args)
+        {
+
+        }
+
+        public void CopyItemClick(object sender, RoutedEventArgs args)
+        {
+
+        }
+
+        public void SetDeleteClickAction(Action<IVisualListEntry> deleteEntryAction)
+        {
+
+        }
+
+        public void SetCopyClickAction(Action<IVisualListEntry> copyClickAction)
+        {
+
+        }
+
+        public void SetPasteClickAction(Action<IVisualListEntry> pasteClickAction)
+        {
+
         }
     }
 }

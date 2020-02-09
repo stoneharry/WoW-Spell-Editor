@@ -24,6 +24,7 @@ using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.SpellStringTools;
@@ -61,7 +62,6 @@ namespace SpellEditor
         public uint selectedID;
         public uint newIconID = 1;
         private bool updating;
-        public TaskScheduler UIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         private readonly DataTable spellTable = new DataTable();
         private int storedLocale = -1;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
@@ -69,6 +69,7 @@ namespace SpellEditor
         private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
         private readonly List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
+        private VisualController _currentVisualController;
         #endregion
 
         public IDatabaseAdapter GetDBAdapter()
@@ -796,6 +797,9 @@ namespace SpellEditor
                 TotemCategory2.IsEnabled = isTbcOrGreater;
                 RuneCost.IsEnabled = isWotlkOrGreater;
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+
+                VisualSettingsGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualKitAction());
+                //VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction(item as IVisualListEntry));
 
                 prepareIconEditor();
             }
@@ -2705,9 +2709,10 @@ namespace SpellEditor
             UpdateSpellVisualKitList(controller?.VisualKits);
             UpdateSpellVisualEffectList();
             ClearStaticSpellVisualElements();
+            _currentVisualController = controller;
         }
 
-        private void UpdateSpellVisualKitList(List<VisualKitListEntry> kitEntries)
+        private void UpdateSpellVisualKitList(List<IVisualListEntry> kitEntries)
         {
             // Reuse the existing ListBox if it already exists
             ListBox scrollList;
@@ -2728,7 +2733,9 @@ namespace SpellEditor
                 AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
             }
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
-            kitEntries?.ForEach((entry) => entry.SetDeleteAction(DeleteVisualKitEntry));
+            kitEntries?.ForEach(entry => entry.SetDeleteClickAction(DeleteVisualKitAction));
+            kitEntries?.ForEach(entry => entry.SetCopyClickAction(CopyVisualKitAction));
+            kitEntries?.ForEach(entry => entry.SetPasteClickAction(PasteVisualKitAction));
             scrollList.ItemsSource = kitEntries;
             if (!exists)
             {
@@ -2736,7 +2743,7 @@ namespace SpellEditor
             }
         }
 
-        private void DeleteVisualKitEntry(VisualKitListEntry entry)
+        private void CopyVisualKitAction(IVisualListEntry selectedEntry)
         {
             var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists)
@@ -2744,7 +2751,100 @@ namespace SpellEditor
                 return;
             }
             var scrollList = VisualSettingsGrid.Children[0] as ListBox;
-            var entries = scrollList.ItemsSource as List<VisualKitListEntry>;
+            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            entries.Select(entry => entry as StackPanel)
+                .Select(entry => entry?.ContextMenu as VisualContextMenu).ToList()
+                .ForEach(entry => entry?.EnablePaste());
+            if (VisualSettingsGrid.ContextMenu is VisualContextMenu menu)
+            {
+                menu.EnablePaste();
+            }
+        }
+
+        private void PasteVisualKitAction()
+        {
+            PasteVisualKitAction(VisualController.GetCopiedKitEntry());
+        }
+
+        private void PasteVisualKitAction(IVisualListEntry selectedEntry)
+        {
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (!exists || selectedEntry == null)
+            {
+                return;
+            }
+            var scrollList = VisualSettingsGrid.Children[0] as ListBox;
+            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+
+            var itemToPaste = VisualController.GetCopiedKitEntry();
+            var pasteEntry = new VisualPasteListEntry(itemToPaste, 
+                _currentVisualController?.GetAvailableFields(itemToPaste) ?? VisualController.KitColumnKeys.ToList());
+            pasteEntry.SetDeleteClickAction(entry =>
+            {
+                entries = scrollList.ItemsSource as List<IVisualListEntry>;
+                entries.Remove(pasteEntry);
+                scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+                scrollList.ItemsSource = entries;
+            });
+            pasteEntry.SetPasteClickAction(entry =>
+            {
+                var key = pasteEntry.SelectedKey();
+                if (itemToPaste is VisualKitListEntry visualKit)
+                {
+                    var idToCopy = visualKit.KitRecord["ID"].ToString();
+                    var visualId = uint.Parse(SpellVisual1.ThreadSafeText.ToString());
+                    var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + SpellVisual1.ThreadSafeText.ToString() : null;
+                    var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
+                    var kitResults = adapter.Query("SELECT * FROM spellvisualkit WHERE id = " + idToCopy);
+                    var newKitId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualkit").Rows[0][0].ToString()) + 1;
+                    if (kitResults.Rows.Count == 0 || (visualResults != null && visualResults.Rows.Count == 0))
+                    {
+                        return;
+                    }
+                    var copyRow = kitResults.Rows[0];
+                    copyRow.BeginEdit();
+                    copyRow["id"] = newKitId.ToString();
+                    copyRow.EndEdit();
+
+                    // Add new spellvisualkit and update spellvisual to point to new id on the key
+                    adapter.Execute($"INSERT INTO spellvisualkit VALUES ({ string.Join(", ", copyRow.ItemArray) })");
+
+                    if (visualId > 0)
+                    {
+                        var updateRow = visualResults.Rows[0];
+                        updateRow.BeginEdit();
+                        updateRow[key] = newKitId;
+                        updateRow.EndEdit();
+
+                        adapter.CommitChanges(visualQuery, visualResults);
+                    }
+                    else
+                    {
+                        var newVisualId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisual").Rows[0][0].ToString()) + 1;
+                        adapter.Execute($"INSERT INTO spellvisual (id, { key }) VALUES ({ newVisualId }, { newKitId })");
+                    }
+                }
+                UpdateMainWindow();
+            });
+
+            if (entries == null)
+            {
+                entries = new List<IVisualListEntry>();
+            }
+            entries.Add(pasteEntry);
+            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+            scrollList.ItemsSource = entries;
+        }
+
+        private void DeleteVisualKitAction(IVisualListEntry entry)
+        {
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (!exists)
+            {
+                return;
+            }
+            var scrollList = VisualSettingsGrid.Children[0] as ListBox;
+            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
             entries.Remove(entry);
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             scrollList.ItemsSource = entries;

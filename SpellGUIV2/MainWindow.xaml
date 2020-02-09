@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
+        xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Visual"
     
         Title="{DynamicResource mainTitle}"
         Height="750"
@@ -19,6 +20,7 @@
             <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
             <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
             <Style TargetType="c:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c2:VisualContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
@@ -623,11 +625,11 @@
                     <Label Content="The spell visual DBC files must be imported to see and edit these values. Any changes made must be exported to use them." Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,5,0,0" FontSize="14"/>
                     <!-- Spell Visual Lists -->
                     <Label Content="Visual Kits (right click a row for operations)" Grid.Row="1" Grid.Column="0" Margin="5,0,5,5" HorizontalAlignment="Left"/>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
+                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="250" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
                         <Grid Name="VisualSettingsGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350"/>
                     </Border>
                     <Label Content="Visual Kit Effects &amp; Attachments (right click a row for operations)" Grid.Row="3" Grid.Column="0" Margin="5,5,5,5" HorizontalAlignment="Left"/>
-                    <Border Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
+                    <Border Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MaxHeight="250" MinWidth="350" Margin="10,30,10,10" BorderBrush="LightCyan" BorderThickness="2">
                         <Grid Name="VisualEffectsListGrid" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="350"/>
                     </Border>
                     <Grid Name="VisualSettingsEditorGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" MinWidth="500" Margin="10,0,10,10">
