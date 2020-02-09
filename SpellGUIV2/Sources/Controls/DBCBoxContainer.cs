@@ -2,26 +2,26 @@
 
 namespace SpellEditor.Sources.Controls
 {
-    class DBCBoxContainer
+    public class DBCBoxContainer
     {
         // Store as a long to support uint32 max value and -1 value (equipped item subclass)
         public long ID;
         public string Name;
         public int ComboBoxIndex;
-        public Label NameLabel = null;
+        public Label NameLabel;
 
-        public DBCBoxContainer(long ID, string Name, int ComboBoxIndex)
+        public DBCBoxContainer(long id, string name, int comboBoxIndex)
         {
-            this.ID = ID;
-            this.Name = Name;
-            this.ComboBoxIndex = ComboBoxIndex;
+            ID = id;
+            Name = name;
+            ComboBoxIndex = comboBoxIndex;
         }
 
-        public DBCBoxContainer(long ID, Label NameLabel, int ComboBoxIndex)
+        public DBCBoxContainer(long id, Label nameLabel, int comboBoxIndex)
         {
-            this.ID = ID;
-            this.NameLabel = NameLabel;
-            this.ComboBoxIndex = ComboBoxIndex;
+            ID = id;
+            NameLabel = nameLabel;
+            ComboBoxIndex = comboBoxIndex;
         }
 
         public Label ItemLabel()

@@ -2,7 +2,7 @@
 
 namespace SpellEditor.Sources.Controls
 {
-    interface IBoxContentProvider
+    public interface IBoxContentProvider
     {
         List<DBCBoxContainer> GetAllBoxes();
     }

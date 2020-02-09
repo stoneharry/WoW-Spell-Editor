@@ -14,8 +14,8 @@ namespace SpellEditor.Sources.Config
             MySQL
         }
 
-        public static bool isInit = false;
-        public static bool needInitMysql = false;
+        public static bool IsInit = false;
+        public static bool NeedInitMysql = false;
         private static XDocument xml = new XDocument();
         
         public static string Host
@@ -135,7 +135,7 @@ namespace SpellEditor.Sources.Config
                 CreateXmlFile();
 
             xml = XDocument.Load("config.xml");
-            if (xml == null || xml.Root == null)
+            if (xml?.Root == null)
                 CreateXmlFile();
 
             ReadConfigFile();
@@ -146,7 +146,7 @@ namespace SpellEditor.Sources.Config
             // Password intentionally not checked for length, empty password is allowed
             if (Host.Length == 0 || User.Length == 0 || Port.Length == 0 || Database.Length == 0)
             {
-                needInitMysql = true;
+                NeedInitMysql = true;
             }
 
             if (SQLiteFilename.Length == 0)
@@ -187,12 +187,12 @@ namespace SpellEditor.Sources.Config
         {
             string[] nodes = key.Split('/');
             XElement xElement = xml.Root;
-            for (int i = 0; i < nodes.Length; i++)
+            foreach (var node in nodes)
             {
                 if (xElement == null)
                     return null;
 
-                xElement = xElement.Element(nodes[i]);
+                xElement = xElement.Element(node);
             }
 
             return xElement;
@@ -223,7 +223,7 @@ namespace SpellEditor.Sources.Config
 
         private static bool HasKey(string key)
         {
-            return GetXmlNode(key) == null ? false : true;
+            return GetXmlNode(key) != null;
         }
 
         private static string GetConfigValue(string key)
