@@ -29,7 +29,7 @@ namespace SpellEditor.Sources.Controls
 
         private void BuildSelf()
         {
-            var label = new TextBlock()
+            var label = new TextBlock
             {
                 Text = $"{ EffectRecord["ID"] } - { EffectName }",
                 Margin = new Thickness(5),
@@ -38,15 +38,28 @@ namespace SpellEditor.Sources.Controls
             Children.Add(label);
 
             ContextMenu = new ContextMenu();
-            ContextMenu.Items.Add(new MenuItem()
+            var copyItem = new MenuItem
             {
-                Header = "Copy to new effect"
-            });
-            ContextMenu.Items.Add(new Separator());
-            ContextMenu.Items.Add(new MenuItem()
+                Header = "Copy"
+            };
+            //copyItem.Click += CopyItem_Click;
+            var pasteItem = new MenuItem
+            {
+                Header = "Paste",
+                IsEnabled = false
+            };
+            //pasteItem.Click += PasteItem_Click;
+            var deleteItem = new MenuItem
             {
                 Header = "Delete"
-            });
+            };
+            //deleteItem.Click += DeleteItem_Click;
+
+            ContextMenu.Items.Add(copyItem);
+            ContextMenu.Items.Add(new Separator());
+            ContextMenu.Items.Add(pasteItem);
+            ContextMenu.Items.Add(new Separator());
+            ContextMenu.Items.Add(deleteItem);
         }
     }
 }

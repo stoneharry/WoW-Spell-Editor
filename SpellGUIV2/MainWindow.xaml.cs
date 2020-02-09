@@ -2702,7 +2702,7 @@ namespace SpellEditor
             var effectList = new List<string>();
             var success = uint.TryParse(selectedId, out var id);
             var controller = success && id > 0 ? new VisualController(id, adapter) : null;
-            UpdateSpellVisualKitList(controller?.GetAllKitEntries());
+            UpdateSpellVisualKitList(controller?.VisualKits);
             UpdateSpellVisualEffectList();
             ClearStaticSpellVisualElements();
         }
@@ -2850,7 +2850,7 @@ namespace SpellEditor
                 return;
             }
             listBox.ClearValue(ItemsControl.ItemsSourceProperty);
-            listBox.ItemsSource = entry.GetAllEffectEntries();
+            listBox.ItemsSource = entry.GetAllEffectsAndAttachmentsEntries();
             if (listBox.Items.Count > 0)
             {
                 listBox.SelectedIndex = 0;

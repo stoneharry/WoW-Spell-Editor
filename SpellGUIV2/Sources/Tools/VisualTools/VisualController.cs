@@ -31,19 +31,20 @@ namespace SpellEditor.Sources.Tools.VisualTools
             "RightWeaponEffect"
         };
 
-        private readonly IDatabaseAdapter _Adapter;
+        public readonly List<VisualKitListEntry> VisualKits;
+
         private readonly uint _SelectedVisualId;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
-            _Adapter = adapter;
             _SelectedVisualId = id;
+            VisualKits = GetAllKitEntries(adapter);
         }
 
-        public List<VisualKitListEntry> GetAllKitEntries()
+        private List<VisualKitListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
         {
             var kitList = new List<VisualKitListEntry>();
-            var visualResults = _Adapter.Query("SELECT * FROM spellvisual WHERE ID = " + _SelectedVisualId);
+            var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + _SelectedVisualId);
             if (visualResults == null || visualResults.Rows.Count == 0)
             {
                 return kitList;
@@ -57,14 +58,14 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 {
                     continue;
                 }
-                var kitResults = _Adapter.Query("SELECT * FROM spellvisualkit WHERE ID = " + kitId);
+                var kitResults = adapter.Query("SELECT * FROM spellvisualkit WHERE ID = " + kitId);
                 if (kitResults == null || kitResults.Rows.Count == 0)
                 {
                     continue;
                 }
                 var kitRecord = kitResults.Rows[0];
                 var visualId = uint.Parse(visualRecord["ID"].ToString());
-                kitList.Add(new VisualKitListEntry(key, visualId, kitRecord, _Adapter));
+                kitList.Add(new VisualKitListEntry(key, visualId, kitRecord, adapter));
             }
             return kitList;
         }
