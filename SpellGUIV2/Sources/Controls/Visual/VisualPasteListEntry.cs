@@ -1,20 +1,16 @@
 ﻿using SpellEditor.Sources.Controls.Visual;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualPasteListEntry : StackPanel, IVisualListEntry
+    public class VisualPasteListEntry : AbstractVisualListEntry, IVisualListEntry
     {
         public readonly IVisualListEntry CopyEntry;
         private readonly ComboBox _keyComboBox;
-        private Action<IVisualListEntry> _cancelAction;
-        private Action<IVisualListEntry> _pasteAction;
 
         public VisualPasteListEntry(IVisualListEntry copyEntry, List<string> availableKeys)
         {
@@ -42,15 +38,14 @@ namespace SpellEditor.Sources.Controls
                 Margin = new Thickness(5),
                 MinWidth = 100.00
             };
-            confirmBtn.Click += ConfirmBtn_Click;
+            confirmBtn.Click += (sender, e) => InvokePasteAction();
             var cancelBtn = new Button
             {
                 Content = "Cancel",
                 Margin = new Thickness(5),
                 MinWidth = 100.00
             };
-
-            cancelBtn.Click += CancelBtn_Click;
+            cancelBtn.Click += (sender, e) => InvokeDeleteAction();
 
             Children.Add(_keyComboBox);
             Children.Add(confirmBtn);
@@ -58,44 +53,5 @@ namespace SpellEditor.Sources.Controls
         }
 
         public string SelectedKey() => _keyComboBox.SelectedItem.ToString();
-
-        private void ConfirmBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Children.Clear();
-            Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Action(() => _pasteAction.Invoke(this)));
-        }
-
-        private void CancelBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Children.Clear();
-            Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Action(() => _cancelAction.Invoke(this)));
-        }
-
-        public void DeleteItemClick(object sender, RoutedEventArgs args)
-        {
-        }
-
-        public void PasteItemClick(object sender, RoutedEventArgs args)
-        {
-        }
-
-        public void CopyItemClick(object sender, RoutedEventArgs args)
-        {
-        }
-
-        // Used as cancel
-        public void SetDeleteClickAction(Action<IVisualListEntry> deleteEntryAction)
-        {
-            _cancelAction = deleteEntryAction;
-        }
-
-        public void SetPasteClickAction(Action<IVisualListEntry> pasteClickAction)
-        {
-            _pasteAction = pasteClickAction;
-        }
-
-        public void SetCopyClickAction(Action<IVisualListEntry> copyClickAction)
-        {
-        }
     }
 }

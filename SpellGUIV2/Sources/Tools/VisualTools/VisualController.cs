@@ -32,6 +32,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
             "RightWeaponEffect"
         };
         private static VisualKitListEntry _CopiedKitEntry;
+        private static VisualEffectListEntry _CopiedEffectEntry;
         public readonly List<IVisualListEntry> VisualKits;
         private readonly uint _SelectedVisualId;
 
@@ -72,7 +73,11 @@ namespace SpellEditor.Sources.Tools.VisualTools
 
         public static void SetCopiedKitEntry(VisualKitListEntry entry) => _CopiedKitEntry = entry;
 
+        public static void SetCopiedEffectEntry(VisualEffectListEntry entry) => _CopiedEffectEntry = entry;
+
         public static VisualKitListEntry GetCopiedKitEntry() => _CopiedKitEntry;
+
+        public static VisualEffectListEntry GetCopiedEffectEntry() => _CopiedEffectEntry;
 
         public List<string> GetAvailableFields(IVisualListEntry item)
         {

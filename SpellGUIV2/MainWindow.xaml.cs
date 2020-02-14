@@ -799,7 +799,7 @@ namespace SpellEditor
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
 
                 VisualSettingsGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualKitAction());
-                //VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction(item as IVisualListEntry));
+                VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction());
 
                 prepareIconEditor();
             }
@@ -2732,11 +2732,15 @@ namespace SpellEditor
                 StartAnimIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
                 AnimationIdCombo.ItemsSource = ConvertBoxListToLabels(animationDbc.GetAllBoxes());
             }
-            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             kitEntries?.ForEach(entry => entry.SetDeleteClickAction(DeleteVisualKitAction));
             kitEntries?.ForEach(entry => entry.SetCopyClickAction(CopyVisualKitAction));
             kitEntries?.ForEach(entry => entry.SetPasteClickAction(PasteVisualKitAction));
+            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             scrollList.ItemsSource = kitEntries;
+            if (kitEntries != null && kitEntries.Count > 0)
+            {
+                scrollList.SelectedIndex = 0;
+            }
             if (!exists)
             {
                 VisualSettingsGrid.Children.Add(scrollList);
@@ -2761,10 +2765,8 @@ namespace SpellEditor
             }
         }
 
-        private void PasteVisualKitAction()
-        {
-            PasteVisualKitAction(VisualController.GetCopiedKitEntry());
-        }
+        private void PasteVisualKitAction() => PasteVisualKitAction(VisualController.GetCopiedKitEntry());
+        private void PasteVisualEffectAction() => PasteVisualEffectAction(VisualController.GetCopiedEffectEntry());
 
         private void PasteVisualKitAction(IVisualListEntry selectedEntry)
         {
@@ -2849,6 +2851,11 @@ namespace SpellEditor
             scrollList.ItemsSource = entries;
         }
 
+        private void PasteVisualEffectAction(IVisualListEntry selectedEntry)
+        {
+
+        }
+
         private void DeleteVisualKitAction(IVisualListEntry entry)
         {
             var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
@@ -2896,11 +2903,14 @@ namespace SpellEditor
             scrollList.SelectionChanged += VisualScrollList_SelectionChanged;
             VisualEffectsListGrid.Children.Add(scrollList);
             // Populate animation combo box
-            var names = Enum.GetValues(typeof(SpellVisualKitModelAttach.AttachmentPoint))
-                .Cast<SpellVisualKitModelAttach.AttachmentPoint>().ToList();
-            var animComboSource = new List<Label>(names.Count);
-            names.ForEach((name) => animComboSource.Add(new Label() { Content = $"{ (int)name } - { name.ToString() }" }));
-            VisualAttachmentIdCombo.ItemsSource = animComboSource;
+            if (VisualAttachmentIdCombo.Items.Count == 0)
+            {
+                var names = Enum.GetValues(typeof(SpellVisualKitModelAttach.AttachmentPoint))
+                    .Cast<SpellVisualKitModelAttach.AttachmentPoint>().ToList();
+                var animComboSource = new List<Label>(names.Count);
+                names.ForEach((name) => animComboSource.Add(new Label() { Content = $"{ (int)name } - { name.ToString() }" }));
+                VisualAttachmentIdCombo.ItemsSource = animComboSource;
+            }
         }
 
         private void VisualScrollList_SelectionChanged(object sender, SelectionChangedEventArgs args)
@@ -2962,8 +2972,12 @@ namespace SpellEditor
             {
                 return;
             }
+            var effects = entry.GetAllEffectsAndAttachmentsEntries();
+            effects?.ForEach((effect) => effect.SetCopyClickAction(CopyVisualEffectAction));
+            effects?.ForEach((effect) => effect.SetDeleteClickAction(DeleteVisualEffectAction));
+            effects?.ForEach((effect) => effect.SetPasteClickAction(PasteVisualEffectAction));
             listBox.ClearValue(ItemsControl.ItemsSourceProperty);
-            listBox.ItemsSource = entry.GetAllEffectsAndAttachmentsEntries();
+            listBox.ItemsSource = effects;
             if (listBox.Items.Count > 0)
             {
                 listBox.SelectedIndex = 0;
@@ -2972,6 +2986,53 @@ namespace SpellEditor
             {
                 UpdateSpellEffectEditor(null);
             }
+        }
+
+        private void CopyVisualEffectAction(IVisualListEntry copiedEntry)
+        {
+            var exists = VisualEffectsListGrid.Children.Count == 1 && VisualEffectsListGrid.Children[0] is ListBox;
+            if (!exists)
+            {
+                return;
+            }
+            var scrollList = VisualEffectsListGrid.Children[0] as ListBox;
+            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            entries.Select(entry => entry as StackPanel)
+                .Select(entry => entry?.ContextMenu as VisualContextMenu).ToList()
+                .ForEach(entry => entry?.EnablePaste());
+            if (VisualEffectsListGrid.ContextMenu is VisualContextMenu menu)
+            {
+                menu.EnablePaste();
+            }
+        }
+
+        private void DeleteVisualEffectAction(IVisualListEntry entry)
+        {
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (!exists)
+            {
+                return;
+            }
+            var scrollList = VisualSettingsGrid.Children[0] as ListBox;
+            var success = uint.TryParse(SpellVisual1.ThreadSafeText.ToString(), out var id);
+            var controller = selectedID > 0 ? new VisualController(selectedID, adapter) : null;
+            UpdateSpellVisualKitList(controller?.VisualKits);
+            var index = scrollList.SelectedIndex;
+            if (index >= 0)
+                UpdateSpellVisualEditor(scrollList.Items[index] as VisualKitListEntry);
+            _currentVisualController = controller;
+            /*var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            entries.Remove(entry);
+            scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+            scrollList.ItemsSource = entries;
+            if (entries.Count > 0)
+            {
+                scrollList.SelectedIndex = 0;
+            }
+            else
+            {
+                ClearStaticSpellVisualAttachElements();
+            }*/
         }
 
         private void UpdateSpellEffectEditor(VisualEffectListEntry entry)

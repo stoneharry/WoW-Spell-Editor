@@ -11,7 +11,7 @@ using SpellEditor.Sources.Tools.VisualTools;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualKitListEntry : StackPanel, IVisualListEntry
+    public class VisualKitListEntry : AbstractVisualListEntry, IVisualListEntry
     {
         public readonly string KitName;
         public readonly DataRow KitRecord;
@@ -19,9 +19,6 @@ namespace SpellEditor.Sources.Controls
         private readonly IDatabaseAdapter _Adapter;
         private List<VisualEffectListEntry> _Attachments;
         private List<VisualEffectListEntry> _Effects;
-        private Action<IVisualListEntry> _DeleteClickAction;
-        private Action<IVisualListEntry> _CopyClickAction;
-        private Action<IVisualListEntry> _PasteClickAction;
         private StackPanel _ConfirmDeletePanel;
 
         public VisualKitListEntry(string key, uint visualId, DataRow kitRecord, IDatabaseAdapter adapter)
@@ -68,10 +65,8 @@ namespace SpellEditor.Sources.Controls
                     continue;
                 }
                 var effectRecord = effectResults.Rows[0];
-                var name = effectRecord["Name"].ToString();
-                var effectPath = effectRecord["FilePath"].ToString();
-                var label = $"{ key } - { name }\n { effectPath }";
-                effectList.Add(new VisualEffectListEntry(label, effectRecord));
+                var parentId = uint.Parse(KitRecord[0].ToString());
+                effectList.Add(new VisualEffectListEntry(key, parentId, effectRecord, adapter));
             }
             return effectList;
         }
@@ -92,27 +87,19 @@ namespace SpellEditor.Sources.Controls
                     continue;
                 }
                 var effectRecord = effectResults.Rows[0];
-                var name = effectRecord["Name"].ToString();
-                var effectPath = effectRecord["FilePath"].ToString();
-                var attachmentName = SpellVisualKitModelAttach.LookupAttachmentIndex(int.Parse(attachRecord["AttachmentId"].ToString()));
-                var key = $"{ attachRecord["ID"] } - { attachmentName } Attachment - { name }\n { effectPath }";
-                attachments.Add(new VisualEffectListEntry(key, effectRecord, attachRecord));
+                var parentId = uint.Parse(KitRecord[0].ToString());
+                attachments.Add(new VisualEffectListEntry(parentId, effectRecord, attachRecord, adapter));
             }
             return attachments;
         }
 
-        public void PasteItemClick(object sender, RoutedEventArgs args)
-        {
-            _PasteClickAction.Invoke(this);
-        }
-
-        public void CopyItemClick(object sender, RoutedEventArgs args)
+        public override void CopyItemClick(object sender, RoutedEventArgs args)
         {
             VisualController.SetCopiedKitEntry(this);
-            _CopyClickAction.Invoke(this);
+            InvokeCopyAction();
         }
 
-        public void DeleteItemClick(object sender, RoutedEventArgs args)
+        public override void DeleteItemClick(object sender, RoutedEventArgs args)
         {
             if (_ConfirmDeletePanel != null)
             {
@@ -127,16 +114,11 @@ namespace SpellEditor.Sources.Controls
                 MinWidth = 100
             };
             confirmDeleteButton.Click += (_sender, _args) => {
-                if (_DeleteClickAction == null)
-                {
-                    return;
-                }
                 // Stop and delete everything in this instance
                 _ConfirmDeletePanel = null;
                 DeleteKitFromVisual();
                 Children.Clear();
-                _DeleteClickAction.Invoke(this);
-                _DeleteClickAction = null;
+                InvokeDeleteAction();
             };
             var cancelButton = new Button
             {
@@ -185,29 +167,14 @@ namespace SpellEditor.Sources.Controls
             return string.Join("\n", effectsFound);
         }
 
-        public List<VisualEffectListEntry> GetAllEffectsAndAttachmentsEntries()
+        public List<IVisualListEntry> GetAllEffectsAndAttachmentsEntries()
         {
-            var listEntries = new List<VisualEffectListEntry>();
+            var listEntries = new List<IVisualListEntry>();
 
             _Effects.ForEach(listEntries.Add);
             _Attachments.ForEach(listEntries.Add);
 
             return listEntries;
-        }
-
-        public void SetDeleteClickAction(Action<IVisualListEntry> deleteEntryAction)
-        {
-            _DeleteClickAction = deleteEntryAction;
-        }
-
-        public void SetCopyClickAction(Action<IVisualListEntry> copyClickAction)
-        {
-            _CopyClickAction = copyClickAction;
-        }
-
-        public void SetPasteClickAction(Action<IVisualListEntry> pasteClickAction)
-        {
-            _PasteClickAction = pasteClickAction;
         }
     }
 }

@@ -141,6 +141,7 @@
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\Visual\AbstractVisualListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\IVisualListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualContextMenu.cs" />
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
