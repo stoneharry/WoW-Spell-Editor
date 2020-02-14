@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -61,13 +62,13 @@ namespace SpellEditor.Sources.Controls
         private void ConfirmBtn_Click(object sender, RoutedEventArgs e)
         {
             Children.Clear();
-            _pasteAction.Invoke(this);
+            Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Action(() => _pasteAction.Invoke(this)));
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             Children.Clear();
-            _cancelAction.Invoke(this);
+            Dispatcher?.Invoke(DispatcherPriority.Normal, TimeSpan.Zero, new Action(() => _cancelAction.Invoke(this)));
         }
 
         public void DeleteItemClick(object sender, RoutedEventArgs args)
