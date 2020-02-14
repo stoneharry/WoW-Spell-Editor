@@ -80,7 +80,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
             {
                 var availableKeys = KitColumnKeys.ToList();
                 var usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
-                    .Select(kitEntry => kitEntry.KitName).ToList();
+                    .Select(kitEntry => kitEntry?.KitName).ToList();
                 availableKeys.RemoveAll(key => usedKeys.Contains(key));
                 return availableKeys;
             }

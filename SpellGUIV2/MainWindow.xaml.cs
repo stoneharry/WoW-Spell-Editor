@@ -2793,7 +2793,7 @@ namespace SpellEditor
                 {
                     var idToCopy = visualKit.KitRecord["ID"].ToString();
                     var visualId = uint.Parse(SpellVisual1.ThreadSafeText.ToString());
-                    var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + SpellVisual1.ThreadSafeText.ToString() : null;
+                    var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + visualId : null;
                     var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
                     var kitResults = adapter.Query("SELECT * FROM spellvisualkit WHERE id = " + idToCopy);
                     var newKitId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualkit").Rows[0][0].ToString()) + 1;
@@ -2801,14 +2801,12 @@ namespace SpellEditor
                     {
                         return;
                     }
+                    // Add new spellvisualkit
                     var copyRow = kitResults.Rows[0];
-                    copyRow.BeginEdit();
-                    copyRow["id"] = newKitId.ToString();
-                    copyRow.EndEdit();
-
-                    // Add new spellvisualkit and update spellvisual to point to new id on the key
+                    copyRow[0] = newKitId.ToString();
                     adapter.Execute($"INSERT INTO spellvisualkit VALUES ({ string.Join(", ", copyRow.ItemArray) })");
 
+                    // Update existing spell visual to point to new kit
                     if (visualId > 0)
                     {
                         var updateRow = visualResults.Rows[0];
@@ -2818,10 +2816,25 @@ namespace SpellEditor
 
                         adapter.CommitChanges(visualQuery, visualResults);
                     }
+                    // Create new spell visual and update kit reference and spell record
                     else
                     {
+                        var parentResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + visualKit.ParentVisualId);
+                        if (parentResults == null || parentResults.Rows.Count == 0)
+                        {
+                            return;
+                        }
                         var newVisualId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisual").Rows[0][0].ToString()) + 1;
-                        adapter.Execute($"INSERT INTO spellvisual (id, { key }) VALUES ({ newVisualId }, { newKitId })");
+                        var copyParent = parentResults.Rows[0];
+                        copyParent[0] = newVisualId;
+                        foreach (var _key in VisualController.KitColumnKeys)
+                        {
+                            copyParent[_key] = 0;
+                        }
+                        copyParent[key] = newKitId;
+                        adapter.Execute($"INSERT INTO spellvisual VALUES ({ string.Join(", ", copyParent.ItemArray) })");
+                        SpellVisual1.ThreadSafeText = newVisualId.ToString();
+                        Button_Click(SaveSpellChanges, null);
                     }
                 }
                 UpdateMainWindow();
