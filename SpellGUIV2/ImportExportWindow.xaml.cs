@@ -103,7 +103,9 @@ namespace SpellEditor
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     IsEnabled = numRows > 0,
-                    IsChecked = numRows > 0 && binding.Name.Equals("Spell")
+                    IsChecked = numRows > 0 && 
+                        (binding.Name.Equals("Spell") ||
+                        binding.Name.Contains("SpellVisual"))
                 });
             }
         }
