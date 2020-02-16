@@ -2692,8 +2692,6 @@ namespace SpellEditor
         }
 
         #region VisualTab
-        private void UpdateSpellVisualTab(string selectedId, uint selectedKit = 0) => UpdateSpellVisualTab(uint.Parse(selectedId), selectedKit);
-
         private void UpdateSpellVisualTab(uint selectedId, uint selectedKit = 0)
         {
             SelectedVisualPath.Content = selectedId.ToString();
@@ -2702,8 +2700,27 @@ namespace SpellEditor
                 return;
             }
             var controller = selectedId > 0 ? new VisualController(selectedId, adapter) : null;
-            UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
             _currentVisualController = controller;
+            UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
+            UpdatePasteability(controller != null);
+        }
+
+        private void UpdatePasteability(bool enablePaste)
+        {
+            if (VisualSettingsGrid.Children.Count > 0)
+            {
+                var kitList = VisualSettingsGrid.Children[0] as ListBox;
+                UpdateVisualListPasteEnabled(VisualController.GetCopiedKitEntry() != null, 
+                    kitList, 
+                    VisualSettingsGrid);
+                if (VisualEffectsListGrid.Children.Count > 0)
+                {
+                    var effectList = VisualEffectsListGrid.Children[0] as ListBox;
+                    UpdateVisualListPasteEnabled(enablePaste && VisualController.GetCopiedEffectEntry() != null && kitList.Items.Count > 0,
+                        effectList,
+                        VisualEffectsListGrid);
+                }
+            }
         }
 
         private void UpdateSpellVisualKitList(List<IVisualListEntry> kitEntries, uint selectedKit = 0)
@@ -2735,8 +2752,12 @@ namespace SpellEditor
             {
                 VisualKitListEntry kitEntry = selectedKit > 0 ?
                     kitEntry = kitEntries.Select(kit => kit as VisualKitListEntry)
-                        .First(kit => uint.Parse(kit.KitRecord[0].ToString()) == selectedKit) :
+                        .FirstOrDefault(kit => uint.Parse(kit.KitRecord[0].ToString()) == selectedKit) :
                     kitEntries[0] as VisualKitListEntry;
+                if (kitEntry == null)
+                {
+                    kitEntry = kitEntries[0] as VisualKitListEntry;
+                }
                 UpdateSpellVisualEditor(kitEntry);
                 scrollList.SelectedItem = kitEntry;
             }
@@ -2759,14 +2780,7 @@ namespace SpellEditor
                 return;
             }
             var scrollList = VisualSettingsGrid.Children[0] as ListBox;
-            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
-            entries.Select(entry => entry as StackPanel)
-                .Select(entry => entry?.ContextMenu as VisualContextMenu).ToList()
-                .ForEach(entry => entry?.EnablePaste());
-            if (VisualSettingsGrid.ContextMenu is VisualContextMenu menu)
-            {
-                menu.EnablePaste();
-            }
+            UpdateVisualListPasteEnabled(true, scrollList, VisualSettingsGrid);
         }
 
         private void PasteVisualKitAction() => PasteVisualKitAction(VisualController.GetCopiedKitEntry());
@@ -2782,6 +2796,11 @@ namespace SpellEditor
             var scrollList = VisualSettingsGrid.Children[0] as ListBox;
             var entries = scrollList.ItemsSource as List<IVisualListEntry>;
 
+            var visualIdStr = SpellVisual1.ThreadSafeText?.ToString();
+            if (visualIdStr == null || !uint.TryParse(visualIdStr, out uint visualId))
+            {
+                return;
+            }
             var itemToPaste = VisualController.GetCopiedKitEntry();
             var pasteEntry = new VisualPasteListEntry(itemToPaste, 
                 _currentVisualController?.GetAvailableFields(itemToPaste) ?? VisualController.KitColumnKeys.ToList());
@@ -2800,7 +2819,6 @@ namespace SpellEditor
                     return;
                 }
                 var idToCopy = itemToPaste.KitRecord[0].ToString();
-                var visualId = itemToPaste.ParentVisualId;
                 var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + visualId : null;
                 var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
                 var kitResults = adapter.Query("SELECT * FROM spellvisualkit WHERE id = " + idToCopy);
@@ -2842,6 +2860,7 @@ namespace SpellEditor
                     copyParent[key] = newKitId;
                     adapter.Execute($"INSERT INTO spellvisual VALUES ({ string.Join(", ", copyParent.ItemArray) })");
                     SpellVisual1.ThreadSafeText = newVisualId.ToString();
+                    visualId = newVisualId;
                     Button_Click(SaveSpellChanges, null);
                 }
                 _currentVisualController = null;
@@ -2860,12 +2879,27 @@ namespace SpellEditor
 
         private void PasteVisualEffectAction(IVisualListEntry selectedEntry)
         {
+            if (!uint.TryParse(SpellVisual1.ThreadSafeText?.ToString(), out var visualId))
+            {
+                return;
+            }
             var exists = VisualEffectsListGrid.Children.Count == 1 && VisualEffectsListGrid.Children[0] is ListBox;
+            exists = exists && VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists || selectedEntry == null)
             {
                 return;
             }
             var scrollList = VisualEffectsListGrid.Children[0] as ListBox;
+            var kitList = VisualSettingsGrid.Children[0] as ListBox;
+            uint parentKitId;
+            if (kitList.SelectedItem == null)
+            {
+                parentKitId = uint.Parse((kitList.Items[0] as VisualKitListEntry).KitRecord[0].ToString());
+            }
+            else
+            {
+                parentKitId = uint.Parse((kitList.SelectedItem as VisualKitListEntry).KitRecord[0].ToString());
+            }
             var entries = scrollList.ItemsSource as List<IVisualListEntry>;
 
             var effectEntry = VisualController.GetCopiedEffectEntry();
@@ -2888,35 +2922,41 @@ namespace SpellEditor
                 var idToCopy = effectEntry.IsAttachment ? 
                                 effectEntry.AttachRecord[0].ToString() :
                                 effectEntry.EffectRecord[0].ToString();
-                var visualId = effectEntry.ParentVisualId;
 
-                //var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + visualId : null;
-                //var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
-                
+                var effectId = idToCopy;
+                DataRow copyAttachRow = null;
+                // Create new attachment if exists on current effect
                 if (effectEntry.IsAttachment)
                 {
                     // Create new attachment
                     var attachResults = adapter.Query("SELECT * FROM spellvisualkitmodelattach WHERE id = " + idToCopy);
                     var newAttachId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualkitmodelattach").Rows[0][0].ToString()) + 1;
-                    var copyRow = attachResults.Rows[0];
-                    copyRow[0] = newAttachId.ToString();
-                    var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
-                    adapter.Execute($"INSERT INTO spellvisualkitmodelattach VALUES ({ string.Join(", ", escapedItems) })");
-                    // Probably also need to duplicate effect
+                    copyAttachRow = attachResults.Rows[0];
+
+                    effectId = copyAttachRow["SpellVisualEffectNameId"].ToString();
+
+                    copyAttachRow[0] = newAttachId.ToString();
                 }
-                else
+                // Create and persist new effect
+                var effectResults = adapter.Query("SELECT * FROM spellvisualeffectname WHERE id = " + effectId);
+                var newEffectId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualeffectname").Rows[0][0].ToString()) + 1;
+                var copyRow = effectResults.Rows[0];
+                copyRow[0] = newEffectId.ToString();
+                var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
+                adapter.Execute($"INSERT INTO spellvisualeffectname VALUES ({ string.Join(", ", escapedItems) })");
+                // Update kit to point to new effect if no attachment
+                if (!effectEntry.IsAttachment)
                 {
-                    // Create new effect
-                    var effectResults = adapter.Query("SELECT * FROM spellvisualeffectname WHERE id = " + idToCopy);
-                    var newEffectId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualeffectname").Rows[0][0].ToString()) + 1;
-                    var copyRow = effectResults.Rows[0];
-                    copyRow[0] = newEffectId.ToString();
-                    var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
-                    adapter.Execute($"INSERT INTO spellvisualeffectname VALUES ({ string.Join(", ", escapedItems) })");
-                    // Update kit to point to new effect
                     adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { effectEntry.ParentKitId }");
                 }
-
+                // If attachment update effect with new id and persist
+                else
+                {
+                    copyAttachRow["ParentSpellVisualKitId"] = parentKitId;
+                    copyAttachRow["SpellVisualEffectNameId"] = newEffectId;
+                    escapedItems = copyAttachRow.ItemArray.Select(item => "\"" + item + "\"");
+                    adapter.Execute($"INSERT INTO spellvisualkitmodelattach VALUES ({ string.Join(", ", escapedItems) })");
+                }
                 _currentVisualController = null;
                 UpdateSpellVisualTab(visualId, effectEntry.ParentKitId);
             });
@@ -3078,13 +3118,19 @@ namespace SpellEditor
                 return;
             }
             var scrollList = VisualEffectsListGrid.Children[0] as ListBox;
+            UpdateVisualListPasteEnabled(true, scrollList, VisualEffectsListGrid);
+        }
+
+        private void UpdateVisualListPasteEnabled(bool enablePaste, ListBox scrollList, Grid parentGrid)
+        {
             var entries = scrollList.ItemsSource as List<IVisualListEntry>;
-            entries.Select(entry => entry as StackPanel)
-                .Select(entry => entry?.ContextMenu as VisualContextMenu).ToList()
-                .ForEach(entry => entry?.EnablePaste());
-            if (VisualEffectsListGrid.ContextMenu is VisualContextMenu menu)
+            entries?.Select(entry => entry as StackPanel)
+                ?.Select(entry => entry?.ContextMenu as VisualContextMenu)
+                ?.ToList()
+                ?.ForEach(entry => entry?.SetCanPaste(enablePaste));
+            if (parentGrid.ContextMenu is VisualContextMenu menu)
             {
-                menu.EnablePaste();
+                menu.SetCanPaste(enablePaste);
             }
         }
 
@@ -3199,10 +3245,15 @@ namespace SpellEditor
             }
             else if (tab == VisualTab)
             {
+                var idStr = SpellVisual1.Text;
+                if (idStr.Length == 0 || !uint.TryParse(idStr, out var id))
+                {
+                    return;
+                }
                 // FIXME(Harry): Should support older versions too
                 if (WoWVersionManager.IsWotlkOrGreaterSelected)
                 {
-                    UpdateSpellVisualTab(SpellVisual1.Text);
+                    UpdateSpellVisualTab(id);
                 }
             }
         }

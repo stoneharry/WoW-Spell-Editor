@@ -18,7 +18,7 @@ namespace SpellEditor.Sources.Controls
         public readonly uint ParentVisualId;
         public readonly DataRow EffectRecord;
         public readonly DataRow AttachRecord;
-        public bool IsAttachment => AttachRecord != null && EffectName == null;
+        public bool IsAttachment => AttachRecord != null;
         private readonly IDatabaseAdapter _Adapter;
         private StackPanel _ConfirmDeletePanel;
 
@@ -35,9 +35,15 @@ namespace SpellEditor.Sources.Controls
         }
 
         public VisualEffectListEntry(uint parentKitId, uint parentVisualId, DataRow effectRecord, DataRow attachRecord, IDatabaseAdapter adapter)
-            : this(null, parentKitId, parentVisualId, effectRecord, adapter)
         {
+            Orientation = Orientation.Horizontal;
+            ParentKitId = parentKitId;
+            ParentVisualId = parentVisualId;
+            EffectRecord = effectRecord;
+            _Adapter = adapter;
             AttachRecord = attachRecord;
+
+            BuildSelf();
         }
 
         private void BuildSelf()

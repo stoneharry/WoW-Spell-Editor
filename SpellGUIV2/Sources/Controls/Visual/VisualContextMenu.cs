@@ -18,12 +18,10 @@ namespace SpellEditor.Sources.Controls.Visual
                 Header = "Copy"
             };
             copyItem.Click += entry.CopyItemClick;
-            var isEnabled = (entry is VisualKitListEntry && VisualController.GetCopiedKitEntry() != null) ||
-                            (entry is VisualEffectListEntry && VisualController.GetCopiedEffectEntry() != null);
             _PasteItem = new MenuItem
             {
                 Header = "Paste",
-                IsEnabled = isEnabled
+                IsEnabled = false
             };
             _PasteItem.Click += entry.PasteItemClick;
             var deleteItem = new MenuItem
@@ -61,9 +59,9 @@ namespace SpellEditor.Sources.Controls.Visual
             Items.Add(cancelItem);
         }
 
-        public void EnablePaste()
+        public void SetCanPaste(bool canPaste)
         {
-            _PasteItem.IsEnabled = true;
+            _PasteItem.IsEnabled = canPaste;
         }
     }
 }
