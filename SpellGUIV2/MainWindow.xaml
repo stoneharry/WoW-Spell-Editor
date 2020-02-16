@@ -587,7 +587,7 @@
                     </TabControl>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Icon}">
+            <TabItem Name="IconTab" Header="{DynamicResource Icon}">
                 <Grid>
                     <Label Content="{DynamicResource labCurrentIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
                     <Grid Name="CurrentIconGrid"/>
@@ -605,7 +605,7 @@
                     <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" Focusable="False" Grid.Column="2"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Visual}">
+            <TabItem Name="VisualTab" Header="{DynamicResource Visual}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

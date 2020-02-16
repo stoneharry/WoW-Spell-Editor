@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.Tools.VisualTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -17,10 +18,12 @@ namespace SpellEditor.Sources.Controls.Visual
                 Header = "Copy"
             };
             copyItem.Click += entry.CopyItemClick;
+            var isEnabled = (entry is VisualKitListEntry && VisualController.GetCopiedKitEntry() != null) ||
+                            (entry is VisualEffectListEntry && VisualController.GetCopiedEffectEntry() != null);
             _PasteItem = new MenuItem
             {
                 Header = "Paste",
-                IsEnabled = false
+                IsEnabled = isEnabled
             };
             _PasteItem.Click += entry.PasteItemClick;
             var deleteItem = new MenuItem

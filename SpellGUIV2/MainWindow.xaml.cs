@@ -800,6 +800,7 @@ namespace SpellEditor
 
                 VisualSettingsGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualKitAction());
                 VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction());
+                InitialiseSpellVisualEffectList();
 
                 prepareIconEditor();
             }
@@ -1957,11 +1958,6 @@ namespace SpellEditor
                 controller = await this.ShowProgressAsync(SafeTryFindResource("UpdateMainWindow1"), string.Format(SafeTryFindResource("UpdateMainWindow2"), selectedID));
                 controller.SetCancelable(false);
 
-               /* Timeline.DesiredFrameRateProperty.OverrideMetadata(
-                    typeof(Timeline),
-                    new FrameworkPropertyMetadata { DefaultValue = 30 }
-                );*/
-
                 loadSpell(controller.SetMessage);
 
                 await controller.CloseAsync();
@@ -2020,6 +2016,7 @@ namespace SpellEditor
         #region LoadSpell (load spell god-function)
         private void loadSpell(UpdateTextFunc updateProgress)
         {
+            _currentVisualController = null;
             adapter.Updating = true;
             updateProgress("Querying MySQL data...");
             DataRowCollection rowResult = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'").Rows;
@@ -2610,11 +2607,7 @@ namespace SpellEditor
 
                 SpellVisual1.ThreadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
-                if (isWotlkOrGreater)
-                {
-                    // FIXME(Harry): Should support older versions too
-                    UpdateSpellVisualTab(row["SpellVisual1"].ToString());
-                }
+
                 ManaCostPercent.ThreadSafeText = row["ManaCostPercentage"].ToString();
                 StartRecoveryCategory.ThreadSafeText = row["StartRecoveryCategory"].ToString();
                 StartRecoveryTime.ThreadSafeText = row["StartRecoveryTime"].ToString();
@@ -2699,16 +2692,17 @@ namespace SpellEditor
         }
 
         #region VisualTab
-        private void UpdateSpellVisualTab(string selectedId)
-        {
-            SelectedVisualPath.Content = selectedId;
+        private void UpdateSpellVisualTab(string selectedId) => UpdateSpellVisualTab(uint.Parse(selectedId));
 
-            var effectList = new List<string>();
-            var success = uint.TryParse(selectedId, out var id);
-            var controller = success && id > 0 ? new VisualController(id, adapter) : null;
+        private void UpdateSpellVisualTab(uint selectedId)
+        {
+            SelectedVisualPath.Content = selectedId.ToString();
+            if (_currentVisualController?.VisualId == selectedId)
+            {
+                return;
+            }
+            var controller = selectedId > 0 ? new VisualController(selectedId, adapter) : null;
             UpdateSpellVisualKitList(controller?.VisualKits);
-            UpdateSpellVisualEffectList();
-            ClearStaticSpellVisualElements();
             _currentVisualController = controller;
         }
 
@@ -2739,7 +2733,13 @@ namespace SpellEditor
             scrollList.ItemsSource = kitEntries;
             if (kitEntries != null && kitEntries.Count > 0)
             {
-                scrollList.SelectedIndex = 0;
+                UpdateSpellVisualEditor(kitEntries[0] as VisualKitListEntry);
+                scrollList.SelectedItem = kitEntries[0];
+            }
+            else
+            {
+                ClearSpellVisualEfectList();
+                ClearStaticSpellVisualElements();
             }
             if (!exists)
             {
@@ -2838,6 +2838,8 @@ namespace SpellEditor
                         SpellVisual1.ThreadSafeText = newVisualId.ToString();
                         Button_Click(SaveSpellChanges, null);
                     }
+                    _currentVisualController = null;
+                    UpdateSpellVisualTab(visualId);
                 }
                 UpdateMainWindow();
             });
@@ -2870,16 +2872,25 @@ namespace SpellEditor
             scrollList.ItemsSource = entries;
             if (entries.Count > 0)
             {
-                scrollList.SelectedIndex = 0;
+                scrollList.SelectedItem = entries[0];
             }
             else
             {
                 ClearStaticSpellVisualElements();
-                UpdateSpellVisualEffectList();
+                ClearSpellVisualEfectList();
             }
         }
 
-        private void UpdateSpellVisualEffectList()
+        private void ClearSpellVisualEfectList()
+        {
+            if (VisualEffectsListGrid.Children.Count == 1 && VisualEffectsListGrid.Children[0] is ListBox scrollList)
+            {
+                scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
+                scrollList.ItemsSource = null;
+            }
+        }
+
+        private void InitialiseSpellVisualEffectList()
         {
             // Get scroll list if it exists
             ListBox scrollList = null;
@@ -2888,11 +2899,8 @@ namespace SpellEditor
             {
                 scrollList = VisualEffectsListGrid.Children[0] as ListBox;
             }
-            // Reset UI if a new spell is selected
             if (scrollList != null)
             {
-                scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
-                scrollList.ItemsSource = null;
                 return;
             }
             // Build ScrollList
@@ -2980,7 +2988,9 @@ namespace SpellEditor
             listBox.ItemsSource = effects;
             if (listBox.Items.Count > 0)
             {
-                listBox.SelectedIndex = 0;
+                var effect = effects[0] as VisualEffectListEntry;
+                UpdateSpellEffectEditor(effect);
+                listBox.SelectedItem = effects[0];
             }
             else
             {
@@ -3008,7 +3018,9 @@ namespace SpellEditor
 
         private void DeleteVisualEffectAction(IVisualListEntry entry)
         {
-            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            _currentVisualController = null;
+            UpdateSpellVisualTab(SpellVisual1.ThreadSafeText.ToString());
+            /*var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists)
             {
                 return;
@@ -3020,7 +3032,7 @@ namespace SpellEditor
             var index = scrollList.SelectedIndex;
             if (index >= 0)
                 UpdateSpellVisualEditor(scrollList.Items[index] as VisualKitListEntry);
-            _currentVisualController = controller;
+            _currentVisualController = controller;*/
             /*var entries = scrollList.ItemsSource as List<IVisualListEntry>;
             entries.Remove(entry);
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
@@ -3129,10 +3141,21 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (updating || adapter == null || !Config.IsInit)
+            if (updating || adapter == null || !Config.IsInit || e.OriginalSource != MainTabControl)
                 return;
-
-            if (sender is TabControl item && item.SelectedIndex == item.Items.Count - 1) { prepareIconEditor(); }
+            var tab = e.AddedItems[0];
+            if (tab == IconTab)
+            {
+                prepareIconEditor();
+            }
+            else if (tab == VisualTab)
+            {
+                // FIXME(Harry): Should support older versions too
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
+                {
+                    UpdateSpellVisualTab(SpellVisual1.Text);
+                }
+            }
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)

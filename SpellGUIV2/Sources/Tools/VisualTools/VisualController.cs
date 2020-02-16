@@ -34,18 +34,18 @@ namespace SpellEditor.Sources.Tools.VisualTools
         private static VisualKitListEntry _CopiedKitEntry;
         private static VisualEffectListEntry _CopiedEffectEntry;
         public readonly List<IVisualListEntry> VisualKits;
-        private readonly uint _SelectedVisualId;
+        public readonly uint VisualId;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
-            _SelectedVisualId = id;
+            VisualId = id;
             VisualKits = GetAllKitEntries(adapter);
         }
 
         private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
         {
             var kitList = new List<IVisualListEntry>();
-            var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + _SelectedVisualId);
+            var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + VisualId);
             if (visualResults == null || visualResults.Rows.Count == 0)
             {
                 return kitList;

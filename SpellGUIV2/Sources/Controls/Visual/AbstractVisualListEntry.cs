@@ -13,13 +13,13 @@ namespace SpellEditor.Sources.Controls.Visual
         private Action<IVisualListEntry> _DeleteClickAction;
 
         public void InvokeCopyAction() =>
-            Dispatcher?.Invoke(DispatcherPriority.Background, TimeSpan.Zero, new Action(() => _CopyClickAction?.Invoke(this)));
+            Dispatcher?.Invoke(new Action(() => _CopyClickAction?.Invoke(this)));
 
         public void InvokePasteAction() =>
-            Dispatcher?.Invoke(DispatcherPriority.Background, TimeSpan.Zero, new Action(() => _PasteClickAction?.Invoke(this)));
+            Dispatcher?.Invoke(new Action(() => _PasteClickAction?.Invoke(this)));
 
         public void InvokeDeleteAction() =>
-            Dispatcher?.Invoke(DispatcherPriority.Background, TimeSpan.Zero, new Action(() => _DeleteClickAction?.Invoke(this)));
+            Dispatcher?.Invoke(new Action(() => _DeleteClickAction?.Invoke(this)));
 
         public virtual void CopyItemClick(object sender, RoutedEventArgs args) => InvokeCopyAction();
 
