@@ -3165,6 +3165,8 @@ namespace SpellEditor
                 VisualAttachmentOffsetPitchTxt.Text = attachRecord["Pitch"].ToString();
                 VisualAttachmentOffsetRollTxt.Text = attachRecord["Roll"].ToString();
             }
+
+            NewVisualAttachBtn.IsEnabled = entry != null && !entry.IsAttachment;
         }
 
         private void ToggleVisualAttachments(bool enabled)
@@ -3208,6 +3210,28 @@ namespace SpellEditor
             VisualAttachmentOffsetYawTxt.Text = string.Empty;
             VisualAttachmentOffsetPitchTxt.Text = string.Empty;
             VisualAttachmentOffsetRollTxt.Text = string.Empty;
+        }
+        
+        private void NewVisualAttachBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (VisualEffectsListGrid.Children.Count == 0 || !(VisualEffectsListGrid.Children[0] is ListBox scrollList))
+            {
+                return;
+            }
+            var effectEntry = scrollList.SelectedItem as VisualEffectListEntry;
+            if (effectEntry == null)
+            {
+                return;
+            }
+            var key = effectEntry.EffectName;
+            var effectId = effectEntry.EffectRecord[0].ToString();
+            var kitId = effectEntry.ParentKitId;
+            var attachId = uint.Parse(adapter.Query("SELECT MAX(id) FROM spellvisualkitmodelattach").Rows[0][0].ToString()) + 1;
+            adapter.Execute($"UPDATE spellvisualkit SET { key } = 0 WHERE id = { kitId }");
+            adapter.Execute($"INSERT INTO spellvisualkitmodelattach (id, ParentSpellVisualKitId, SpellVisualEffectNameId) VALUES ({attachId}, {kitId}, {effectId})");
+
+            _currentVisualController = null;
+            UpdateSpellVisualTab(effectEntry.ParentVisualId, effectEntry.ParentKitId);
         }
         #endregion
 

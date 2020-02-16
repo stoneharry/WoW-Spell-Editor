@@ -5,7 +5,6 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
         xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Visual"
-    
         Title="{DynamicResource mainTitle}"
         Height="750"
         Width="1300"
@@ -689,6 +688,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -697,33 +697,35 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- EffectName -->
-                        <Label Content="Name" Grid.Row="0" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectNameTxt" Grid.Row="0" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
-                        <Label Content="File Path" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectFilePathTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
-                        <Label Content="Area Efect Size" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectAreaEffectSizeTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Scale" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectScaleTxt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Minimum Allowed Scale" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectMinAllowedScaleTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Maximum Allowed Scale" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualEffectMaxAllowedScaleTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Name" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectNameTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                        <Label Content="File Path" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectFilePathTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                        <Label Content="Area Efect Size" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectAreaEffectSizeTxt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Scale" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectScaleTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Minimum Allowed Scale" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectMinAllowedScaleTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Maximum Allowed Scale" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualEffectMaxAllowedScaleTxt" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
                         <!-- Attachments -->
-                        <Label Content="Attachment Id" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
-                        <ComboBox Name="VisualAttachmentIdCombo" Grid.Row="0" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset X" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetXTxt" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset Y" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetYTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset Z" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetZTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset Yaw" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetYawTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset Pitch" Grid.Row="5" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetPitchTxt" Grid.Row="5" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
-                        <Label Content="Attachment Offset Roll" Grid.Row="6" Grid.Column="2" Margin="10,5,10,5"/>
-                        <TextBox Name="VisualAttachmentOffsetRollTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Button Name="NewVisualAttachBtn" Content="Convert Effect to Attachment" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" 
+                                Margin="40,5,40,5" Click="NewVisualAttachBtn_Click" IsEnabled="False"/>
+                        <Label Content="Attachment Id" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
+                        <ComboBox Name="VisualAttachmentIdCombo" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset X" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetXTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Y" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetYTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Z" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetZTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Yaw" Grid.Row="5" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetYawTxt" Grid.Row="5" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Pitch" Grid.Row="6" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetPitchTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                        <Label Content="Attachment Offset Roll" Grid.Row="7" Grid.Column="2" Margin="10,5,10,5"/>
+                        <TextBox Name="VisualAttachmentOffsetRollTxt" Grid.Row="7" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
                     </Grid>
                 </Grid>
             </TabItem>
