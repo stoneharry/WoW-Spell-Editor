@@ -2800,7 +2800,7 @@ namespace SpellEditor
                     return;
                 }
                 var idToCopy = itemToPaste.KitRecord[0].ToString();
-                var visualId = uint.Parse(SpellVisual1.ThreadSafeText.ToString());
+                var visualId = itemToPaste.ParentVisualId;
                 var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + visualId : null;
                 var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
                 var kitResults = adapter.Query("SELECT * FROM spellvisualkit WHERE id = " + idToCopy);
@@ -2888,14 +2888,21 @@ namespace SpellEditor
                 var idToCopy = effectEntry.IsAttachment ? 
                                 effectEntry.AttachRecord[0].ToString() :
                                 effectEntry.EffectRecord[0].ToString();
-                var visualId = uint.Parse(SpellVisual1.ThreadSafeText.ToString());
+                var visualId = effectEntry.ParentVisualId;
 
                 //var visualQuery = visualId > 0 ? "SELECT * FROM spellvisual WHERE id = " + visualId : null;
                 //var visualResults = visualId > 0 ? adapter.Query(visualQuery) : null;
-
+                
                 if (effectEntry.IsAttachment)
                 {
                     // Create new attachment
+                    var attachResults = adapter.Query("SELECT * FROM spellvisualkitmodelattach WHERE id = " + idToCopy);
+                    var newAttachId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualkitmodelattach").Rows[0][0].ToString()) + 1;
+                    var copyRow = attachResults.Rows[0];
+                    copyRow[0] = newAttachId.ToString();
+                    var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
+                    adapter.Execute($"INSERT INTO spellvisualkitmodelattach VALUES ({ string.Join(", ", escapedItems) })");
+                    // Probably also need to duplicate effect
                 }
                 else
                 {
@@ -2907,11 +2914,11 @@ namespace SpellEditor
                     var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
                     adapter.Execute($"INSERT INTO spellvisualeffectname VALUES ({ string.Join(", ", escapedItems) })");
                     // Update kit to point to new effect
-                    adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { effectEntry.ParentId }");
+                    adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { effectEntry.ParentKitId }");
                 }
 
                 _currentVisualController = null;
-                UpdateSpellVisualTab(visualId, effectEntry.ParentId);
+                UpdateSpellVisualTab(visualId, effectEntry.ParentKitId);
             });
 
             if (entries == null)
@@ -3083,9 +3090,10 @@ namespace SpellEditor
 
         private void DeleteVisualEffectAction(IVisualListEntry entry)
         {
-            var selectedKit = (entry as VisualEffectListEntry).ParentId;
+            var selectedKit = (entry as VisualEffectListEntry).ParentKitId;
+            var parentVisual = (entry as VisualEffectListEntry).ParentVisualId;
             _currentVisualController = null;
-            UpdateSpellVisualTab(SpellVisual1.ThreadSafeText.ToString(), selectedKit);
+            UpdateSpellVisualTab(parentVisual, selectedKit);
         }
 
         private void UpdateSpellEffectEditor(VisualEffectListEntry entry)

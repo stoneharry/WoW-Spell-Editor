@@ -94,7 +94,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
             {
                 availableKeys = EffectColumnKeys.ToList();
                 usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
-                    .Where(kitEntry => uint.Parse(kitEntry.KitRecord[0].ToString()) == effectEntry.ParentId)
+                    .Where(kitEntry => uint.Parse(kitEntry.KitRecord[0].ToString()) == effectEntry.ParentKitId)
                     .Select(kitEntry => kitEntry?.GetAllEffectsAndAttachmentsEntries())
                     .SelectMany(list => list.Select(listEntry => listEntry as VisualEffectListEntry)
                         .Select(listEntry => listEntry.EffectName))

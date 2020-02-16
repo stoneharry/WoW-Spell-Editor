@@ -14,25 +14,28 @@ namespace SpellEditor.Sources.Controls
     public class VisualEffectListEntry : AbstractVisualListEntry, IVisualListEntry
     {
         public readonly string EffectName;
-        public readonly uint ParentId;
+        public readonly uint ParentKitId;
+        public readonly uint ParentVisualId;
         public readonly DataRow EffectRecord;
         public readonly DataRow AttachRecord;
         public bool IsAttachment => AttachRecord != null && EffectName == null;
         private readonly IDatabaseAdapter _Adapter;
         private StackPanel _ConfirmDeletePanel;
 
-        public VisualEffectListEntry(string key, uint parentId, DataRow effectRecord, IDatabaseAdapter adapter)
+        public VisualEffectListEntry(string key, uint parentKitId, uint parentVisualId, DataRow effectRecord, IDatabaseAdapter adapter)
         {
             Orientation = Orientation.Horizontal;
             EffectName = key;
-            ParentId = parentId;
+            ParentKitId = parentKitId;
+            ParentVisualId = parentVisualId;
             EffectRecord = effectRecord;
             _Adapter = adapter;
 
             BuildSelf();
         }
 
-        public VisualEffectListEntry(uint parentId, DataRow effectRecord, DataRow attachRecord, IDatabaseAdapter adapter) : this(null, parentId, effectRecord, adapter)
+        public VisualEffectListEntry(uint parentKitId, uint parentVisualId, DataRow effectRecord, DataRow attachRecord, IDatabaseAdapter adapter)
+            : this(null, parentKitId, parentVisualId, effectRecord, adapter)
         {
             AttachRecord = attachRecord;
         }
@@ -117,7 +120,7 @@ namespace SpellEditor.Sources.Controls
             }
             else
             {
-                _Adapter.Execute($"UPDATE spellvisualkit SET { EffectName } = 0 WHERE ID = { ParentId }");
+                _Adapter.Execute($"UPDATE spellvisualkit SET { EffectName } = 0 WHERE ID = { ParentKitId }");
             }
         }
     }

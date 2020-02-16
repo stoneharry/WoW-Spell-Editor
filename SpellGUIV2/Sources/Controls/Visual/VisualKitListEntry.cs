@@ -66,7 +66,7 @@ namespace SpellEditor.Sources.Controls
                 }
                 var effectRecord = effectResults.Rows[0];
                 var parentId = uint.Parse(KitRecord[0].ToString());
-                effectList.Add(new VisualEffectListEntry(key, parentId, effectRecord, adapter));
+                effectList.Add(new VisualEffectListEntry(key, parentId, ParentVisualId, effectRecord, adapter));
             }
             return effectList;
         }
@@ -88,7 +88,7 @@ namespace SpellEditor.Sources.Controls
                 }
                 var effectRecord = effectResults.Rows[0];
                 var parentId = uint.Parse(KitRecord[0].ToString());
-                attachments.Add(new VisualEffectListEntry(parentId, effectRecord, attachRecord, adapter));
+                attachments.Add(new VisualEffectListEntry(parentId, ParentVisualId, effectRecord, attachRecord, adapter));
             }
             return attachments;
         }
