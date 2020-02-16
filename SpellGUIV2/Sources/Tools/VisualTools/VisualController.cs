@@ -81,19 +81,31 @@ namespace SpellEditor.Sources.Tools.VisualTools
 
         public List<string> GetAvailableFields(IVisualListEntry item)
         {
-            if (item is VisualKitListEntry entry)
+            List<string> availableKeys;
+            List<string> usedKeys;
+            if (item is VisualKitListEntry)
             {
-                var availableKeys = KitColumnKeys.ToList();
-                var usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
-                    .Select(kitEntry => kitEntry?.KitName).ToList();
-                availableKeys.RemoveAll(key => usedKeys.Contains(key));
-                return availableKeys;
+                availableKeys = KitColumnKeys.ToList();
+                usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
+                    .Select(kitEntry => kitEntry?.KitName)
+                    .ToList();
             }
-            else if (item is VisualEffectListEntry)
+            else if (item is VisualEffectListEntry effectEntry)
             {
-
+                availableKeys = EffectColumnKeys.ToList();
+                usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
+                    .Where(kitEntry => uint.Parse(kitEntry.KitRecord[0].ToString()) == effectEntry.ParentId)
+                    .Select(kitEntry => kitEntry?.GetAllEffectsAndAttachmentsEntries())
+                    .SelectMany(list => list.Select(listEntry => listEntry as VisualEffectListEntry)
+                        .Select(listEntry => listEntry.EffectName))
+                    .ToList();
             }
-            return new List<string>();
+            else
+            {
+                throw new Exception($"Unknown IVisualListEntry type: { item.GetType() }\n{ item }");
+            }
+            availableKeys.RemoveAll(key => usedKeys.Contains(key));
+            return availableKeys;
         }
     }
 }

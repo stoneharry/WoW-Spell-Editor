@@ -52,6 +52,6 @@ namespace SpellEditor.Sources.Controls
             Children.Add(cancelBtn);
         }
 
-        public string SelectedKey() => _keyComboBox.SelectedItem.ToString();
+        public string SelectedKey() => _keyComboBox.SelectedItem?.ToString();
     }
 }
