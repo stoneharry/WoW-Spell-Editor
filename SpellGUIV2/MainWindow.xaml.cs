@@ -3233,6 +3233,95 @@ namespace SpellEditor
             _currentVisualController = null;
             UpdateSpellVisualTab(effectEntry.ParentVisualId, effectEntry.ParentKitId);
         }
+
+        private void SaveVisualChangesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Get selected kit
+            var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
+            if (!exists)
+            {
+                return;
+            }
+            var kitScrollList = VisualSettingsGrid.Children[0] as ListBox;
+            var selectedKitItem = kitScrollList.SelectedItem;
+            if (selectedKitItem == null)
+            {
+                return;
+            }
+            var selectedKit = selectedKitItem as VisualKitListEntry;
+            if (selectedKit == null)
+            {
+                return;
+            }
+            // Get selected effect/attachment
+            if (VisualEffectsListGrid.Children.Count == 0 || !(VisualEffectsListGrid.Children[0] is ListBox effectScrolList))
+            {
+                return;
+            }
+            var selectedEffect = effectScrolList.SelectedItem as VisualEffectListEntry;
+            // Save values to kit
+            var kitId = selectedKit.KitRecord[0].ToString();
+            var kitQuery = "SELECT * FROM spellvisualkit WHERE id = " + kitId;
+            var kitResults = adapter.Query(kitQuery);
+            var kitRecord = kitResults.Rows[0];
+            kitRecord.BeginEdit();
+            var selectedStartAnim = StartAnimIdCombo.SelectedItem.ToString();
+            kitRecord["StartAnimId"] = selectedStartAnim.Length > 0 ? selectedStartAnim.Substring(0, selectedStartAnim.IndexOf(' ')) : "0";
+            var selectedAnim = AnimationIdCombo.SelectedItem.ToString();
+            kitRecord["AnimationId"] = selectedAnim.Length > 0 ? selectedAnim.Substring(0, selectedAnim.IndexOf(' ')) : "0";
+            kitRecord["SpecialEffect1"] = SpecialEffect1Txt.Text;
+            kitRecord["SpecialEffect2"] = SpecialEffect2Txt.Text;
+            kitRecord["SpecialEffect3"] = SpecialEffect3Txt.Text;
+            kitRecord["WorldEffect"] = WorldEffectTxt.Text;
+            kitRecord["SoundID"] = SoundIdTxt.Text;
+            kitRecord["ShakeID"] = ShakeIdTxt.Text;
+            kitRecord["Flags"] = VisualFlagsTxt.Text;
+            kitRecord.EndEdit();
+            adapter.CommitChanges(kitQuery, kitResults);
+            var message = "Saved Kit " + kitId;
+            // Save values to effect
+            if (selectedEffect == null)
+            {
+                return;
+            }
+            var effectId = selectedEffect.IsAttachment ? selectedEffect.AttachRecord[0].ToString() : selectedEffect.EffectRecord[0].ToString();
+            if (selectedEffect.IsAttachment)
+            {
+                var attachQuery = "SELECT * FROM spellvisualkitmodelattach WHERE id = " + effectId;
+                var attachResults = adapter.Query(attachQuery);
+                var attachRecord = attachResults.Rows[0];
+                attachRecord.BeginEdit();
+                attachRecord["AttachmentId"] = VisualAttachmentIdCombo.SelectedIndex;
+                attachRecord["OffsetX"] = VisualAttachmentOffsetXTxt.Text;
+                attachRecord["OffsetY"] = VisualAttachmentOffsetYTxt.Text;
+                attachRecord["OffsetZ"] = VisualAttachmentOffsetZTxt.Text;
+                attachRecord["Yaw"] = VisualAttachmentOffsetYawTxt.Text;
+                attachRecord["Pitch"] = VisualAttachmentOffsetPitchTxt.Text;
+                attachRecord["Roll"] = VisualAttachmentOffsetRollTxt.Text;
+                attachRecord.EndEdit();
+                adapter.CommitChanges(attachQuery, attachResults);
+                message += ", saved attachment " + effectId;
+            }
+            else
+            {
+                var effectQuery = "SELECT * FROM spellvisualeffectname WHERE id = " + effectId;
+                var effectResults = adapter.Query(effectQuery);
+                var effectRecord = effectResults.Rows[0];
+                effectRecord.BeginEdit();
+                effectRecord["Name"] = VisualEffectNameTxt.Text;
+                effectRecord["FilePath"] = VisualEffectFilePathTxt.Text;
+                effectRecord["AreaEffectSize"] = VisualEffectAreaEffectSizeTxt.Text;
+                effectRecord["Scale"] = VisualEffectScaleTxt.Text;
+                effectRecord["MinAllowedScale"] = VisualEffectMinAllowedScaleTxt.Text;
+                effectRecord["MaxAllowedScale"] = VisualEffectMaxAllowedScaleTxt.Text;
+                effectRecord.EndEdit();
+                adapter.CommitChanges(effectQuery, effectResults);
+                message += ", saved effect " + effectId;
+            }
+            ShowFlyoutMessage(message);
+            _currentVisualController = null;
+            UpdateSpellVisualTab(selectedKit.ParentVisualId, uint.Parse(kitId));
+        }
         #endregion
 
         private void UpdateSpellMaskCheckBox(uint mask, ThreadSafeComboBox comBox)
