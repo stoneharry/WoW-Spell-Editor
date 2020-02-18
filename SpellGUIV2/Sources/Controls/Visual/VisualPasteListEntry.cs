@@ -47,7 +47,14 @@ namespace SpellEditor.Sources.Controls
             };
             cancelBtn.Click += (sender, e) => InvokeDeleteAction();
 
-            Children.Add(_keyComboBox);
+            if (CopyEntry is VisualEffectListEntry effectEntry && effectEntry.IsAttachment)
+            {
+                Children.Add(new Label() { Content = "Attachment " + effectEntry.AttachRecord[0].ToString() });
+            }
+            else
+            {
+                Children.Add(_keyComboBox);
+            }
             Children.Add(confirmBtn);
             Children.Add(cancelBtn);
         }

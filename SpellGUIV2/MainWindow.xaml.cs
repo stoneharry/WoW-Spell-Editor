@@ -2695,11 +2695,16 @@ namespace SpellEditor
         private void UpdateSpellVisualTab(uint selectedId, uint selectedKit = 0)
         {
             SelectedVisualPath.Content = selectedId.ToString();
-            if (_currentVisualController?.VisualId == selectedId)
+            if (_currentVisualController?.VisualId == selectedId && _currentVisualController?.NextLoadAttachmentId == 0)
             {
                 return;
             }
+            var attachId = _currentVisualController?.NextLoadAttachmentId;
             var controller = selectedId > 0 ? new VisualController(selectedId, adapter) : null;
+            if (attachId.HasValue)
+            {
+                controller.NextLoadAttachmentId = attachId.Value;
+            }
             _currentVisualController = controller;
             UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
             UpdatePasteability(controller != null);
@@ -3041,6 +3046,11 @@ namespace SpellEditor
             {
                 if (listBox.SelectedItem is VisualKitListEntry)
                 {
+                    if (_currentVisualController != null && _currentVisualController.CancelNextLoad)
+                    {
+                        _currentVisualController.CancelNextLoad = false;
+                        return;
+                    }
                     UpdateSpellVisualEditor(listBox.SelectedItem as VisualKitListEntry);
                 }
                 else if (listBox.SelectedItem is VisualEffectListEntry)
@@ -3100,9 +3110,29 @@ namespace SpellEditor
             listBox.ItemsSource = effects;
             if (listBox.Items.Count > 0)
             {
-                var effect = effects[0] as VisualEffectListEntry;
-                UpdateSpellEffectEditor(effect);
-                listBox.SelectedItem = effects[0];
+                var effectIndex = 0;
+                var effect = effects[effectIndex] as VisualEffectListEntry;
+                var attachmentId = _currentVisualController.NextLoadAttachmentId;
+                if (attachmentId > 0)
+                {
+                    //foreach (var possibleMatch in effects)
+                    for (int i = 0; i < effects.Count; ++i)
+                    {
+                        if (effects[i] is VisualEffectListEntry match && match.IsAttachment)
+                        {
+                            if (uint.Parse(match.AttachRecord[0].ToString()) == attachmentId)
+                            {
+                                effect = match;
+                                effectIndex = i;
+                                _currentVisualController.NextLoadAttachmentId = 0;
+                                _currentVisualController.CancelNextLoad = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //UpdateSpellEffectEditor(effect);
+                listBox.SelectedItem = effects[effectIndex];
             }
             else
             {
@@ -3229,8 +3259,8 @@ namespace SpellEditor
             var attachId = uint.Parse(adapter.Query("SELECT MAX(id) FROM spellvisualkitmodelattach").Rows[0][0].ToString()) + 1;
             adapter.Execute($"UPDATE spellvisualkit SET { key } = 0 WHERE id = { kitId }");
             adapter.Execute($"INSERT INTO spellvisualkitmodelattach (id, ParentSpellVisualKitId, SpellVisualEffectNameId) VALUES ({attachId}, {kitId}, {effectId})");
-
-            _currentVisualController = null;
+            
+            _currentVisualController.NextLoadAttachmentId = attachId;
             UpdateSpellVisualTab(effectEntry.ParentVisualId, effectEntry.ParentKitId);
         }
 

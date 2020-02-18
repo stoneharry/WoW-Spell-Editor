@@ -35,6 +35,8 @@ namespace SpellEditor.Sources.Tools.VisualTools
         private static VisualEffectListEntry _CopiedEffectEntry;
         public readonly List<IVisualListEntry> VisualKits;
         public readonly uint VisualId;
+        public uint NextLoadAttachmentId;
+        public bool CancelNextLoad = false;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
