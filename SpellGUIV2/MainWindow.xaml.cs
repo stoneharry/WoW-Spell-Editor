@@ -2947,7 +2947,7 @@ namespace SpellEditor
                 var newEffectId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisualeffectname").Rows[0][0].ToString()) + 1;
                 var copyRow = effectResults.Rows[0];
                 copyRow[0] = newEffectId.ToString();
-                var escapedItems = copyRow.ItemArray.Select(item => "\"" + item + "\"");
+                var escapedItems = copyRow.ItemArray.Select(item => "'" + adapter.EscapeString(item.ToString()) + "'");
                 adapter.Execute($"INSERT INTO spellvisualeffectname VALUES ({ string.Join(", ", escapedItems) })");
                 // Update kit to point to new effect if no attachment
                 if (!effectEntry.IsAttachment)
