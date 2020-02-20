@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -17,6 +18,8 @@ namespace SpellEditor.Sources.Controls
      */
     public class FilteredComboBox : ComboBox
     {
+        private static readonly TimeSpan RefreshFilterDelay = TimeSpan.FromMilliseconds(1000);
+
         /// <summary>
         /// If true, on lost focus or enter key pressed, checks the text in the combobox. If the text is not present
         /// in the list, it leaves it blank.
@@ -44,6 +47,7 @@ namespace SpellEditor.Sources.Controls
         private bool TextBoxFreezed;
         protected TextBox EditableTextBox => GetTemplateChild("PART_EditableTextBox") as TextBox;
         private UserChange<bool> IsDropDownOpenUC;
+        private DispatcherTimer DispatchTimer;
 
         /// <summary>
         /// Triggers on lost focus or enter key pressed, if the selected item changed since the last time focus was lost or enter was pressed.
@@ -136,10 +140,24 @@ namespace SpellEditor.Sources.Controls
                 CurrentFilter = tb.Text.Substring(0, tb.SelectionStart).ToLower();
             else
                 CurrentFilter = tb.Text.ToLower();
-            //if (CurrentFilter.Length == 0 || CurrentFilter.Length > 2)
-            //{
+            // Delay refreshing filter to prevent UI lag
+            if (DispatchTimer != null && DispatchTimer.IsEnabled)
+            {
+                return;
+            }
+            var dispatcherTimer = new DispatcherTimer { Interval = RefreshFilterDelay };
+            DispatchTimer = dispatcherTimer;
+            dispatcherTimer.Tick += (_sender, args) =>
+            {
+                var timer = _sender as DispatcherTimer;
+                if (timer != null)
+                {
+                    timer.Stop();
+                }
+                timer.IsEnabled = false;
                 RefreshFilter();
-            //}
+            };
+            dispatcherTimer.Start();
         }
 
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
