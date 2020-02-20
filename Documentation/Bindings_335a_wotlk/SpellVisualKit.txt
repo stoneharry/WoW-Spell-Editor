@@ -1,0 +1,43 @@
+# SpellVisualKit.dbc structure for 3.3.5a 12340
+uint ID
+# Animation fields reference AnimationData record
+uint StartAnimId
+uint AnimationId
+# All effects point to a SpellVisualEffectName record
+uint HeadEffect
+uint ChestEffect
+uint BaseEffect
+uint LeftHandEffect
+uint RightHandEffect
+uint BreathEffect
+uint LeftWeaponEffect
+uint RightWeaponEffect
+uint SpecialEffect1
+uint SpecialEffect2
+uint SpecialEffect3
+uint WorldEffect
+# Points to SoundEntries
+uint SoundID
+# Points to SpellEffectCameraShakes
+uint ShakeID
+uint CharProc1
+uint CharProc2
+uint CharProc3
+uint CharProc4
+float CharParamZero1
+float CharParamZero2
+float CharParamZero3
+float CharParamZero4
+float CharParamOne1
+float CharParamOne2
+float CharParamOne3
+float CharParamOne4
+float CharParamTwo1
+float CharParamTwo2
+float CharParamTwo3
+float CharParamTwo4
+float CharParamThree1
+float CharParamThree2
+float CharParamThree3
+float CharParamThree4
+uint Flags

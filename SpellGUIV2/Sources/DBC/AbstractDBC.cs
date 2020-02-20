@@ -115,7 +115,7 @@ namespace SpellEditor.Sources.DBC
                                 {
                                     var strOffset = (uint)recordMap[field.Name];
                                     var lookupResult = Reader.LookupStringOffset(strOffset);
-                                    q.Append(string.Format("\'{0}\', ", adapter.EscapeString(lookupResult)));
+                                    q.Append(string.Format("'{0}', ", adapter.EscapeString(lookupResult)));
                                     break;
                                 }
                             case BindingType.UNKNOWN:

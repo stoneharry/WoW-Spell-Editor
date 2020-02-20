@@ -81,7 +81,12 @@ namespace SpellEditor.Sources.DBC
             
             // Convert to background worker here
 
-            DataRow res = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID)).Rows[0];
+            var container = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID));
+            if (container == null || container.Rows.Count == 0)
+            {
+                return;
+            }
+            var res = container.Rows[0];
             uint iconInt = uint.Parse(res[0].ToString());
             uint iconActiveInt = uint.Parse(res[1].ToString());
             // Update currently selected icon, we don't currently use ActiveIconID

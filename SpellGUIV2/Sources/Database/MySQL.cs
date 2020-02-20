@@ -134,6 +134,7 @@ namespace SpellEditor.Sources.Database
         public string EscapeString(string keyWord)
         {
             keyWord = keyWord.Replace("'", "''");
+            keyWord = keyWord.Replace("\\", "\\\\");
             return keyWord;
         }
     }

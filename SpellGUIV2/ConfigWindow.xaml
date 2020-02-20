@@ -6,7 +6,9 @@
         Title="{DynamicResource ConfigWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
-        Loaded="_Loaded">
+        Loaded="_Loaded"
+        BorderBrush="#1585B5"
+        BorderThickness="2">
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Flyout" Position="Bottom" Height="65">

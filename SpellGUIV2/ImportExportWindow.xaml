@@ -7,7 +7,9 @@
         Title="{DynamicResource ImportExportWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
-        Loaded="_Loaded">
+        Loaded="_Loaded"
+        BorderBrush="#1585B5"
+        BorderThickness="2">
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>

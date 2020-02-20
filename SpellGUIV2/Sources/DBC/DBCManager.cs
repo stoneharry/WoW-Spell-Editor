@@ -41,6 +41,8 @@ namespace SpellEditor.Sources.DBC
             {
                 TryLoadDbc<SpellRuneCost>("SpellRuneCost");
                 TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+                // FIXME(Harry): Available in earlier patch versions
+                TryLoadDbc<AnimationData>("AnimationData");
             }
         }
 

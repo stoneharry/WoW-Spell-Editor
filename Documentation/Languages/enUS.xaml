@@ -32,6 +32,7 @@
     <system:String x:Key="Items">Items</system:String>
     <system:String x:Key="Flags">Flags</system:String>
     <system:String x:Key="Icon">Icon</system:String>
+	<system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">Interrupts</system:String>
     <system:String x:Key="Attributes">Attributes</system:String>
     <system:String x:Key="Attributes2">Attributes2</system:String>
@@ -217,6 +218,46 @@
     <system:String x:Key="String3">An exception was thrown creating the config file.</system:String>
     <system:String x:Key="String4">Select whether to change the Spell Icon ID or the Active Icon ID.</system:String>
     <system:String x:Key="String5">Only one spell can be selected at a time.</system:String>
+	
+	<!--#region visual tab -->
+	<system:String x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:\nThis change is\nsaved immediately</system:String>
+	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
+	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
+	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
+	<system:String x:Key="VisualCopyContextMenu">Copy</system:String>
+	<system:String x:Key="VisualPasteContextMenu">Paste</system:String>
+	<system:String x:Key="VisualDeleteContextMenu">Delete</system:String>
+	<system:String x:Key="VisualTabSelectedId">Selected Visual ID</system:String>
+	<system:String xml:space="preserve" x:Key="VisualTabInstructions">The spell visual DBC files must be imported to see and edit these values.&#10;Any changes made must be exported to use them.</system:String>
+	<system:String x:Key="VisualTabSaveChanges">Save Visual Modifications</system:String>
+	<system:String x:Key="VisualTabKitsHeader">Visual Kits (right click a row for operations)</system:String>
+	<system:String x:Key="VisualTabEffectsHeader">Visual Kit Effects &amp; Attachments (right click a row for operations)</system:String>
+	<system:String x:Key="VisualKitStartAnimId">Start Animation ID</system:String>
+	<system:String x:Key="VisualKitAnimationId">Animation ID</system:String>
+	<system:String x:Key="VisualKitSpecialEffects1">Special Effect 1</system:String>
+	<system:String x:Key="VisualKitSpecialEffects2">Special Effect 2</system:String>
+	<system:String x:Key="VisualKitSpecialEffects3">Special Effect 3</system:String>
+	<system:String x:Key="VisualKitWorldEffect">World Effect</system:String>
+	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
+	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
+	<system:String x:Key="VisualKitFlags">Flags</system:String>
+	<system:String x:Key="VisualEffectName">Effect Name</system:String>
+	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
+	<system:String x:Key="VisualEffectSize">Effect Size</system:String>
+	<system:String x:Key="VisualEffectAreaEffectSize">Area Effect Size</system:String>
+	<system:String x:Key="VisualEffectScale">Effect Scale</system:String>
+	<system:String x:Key="VisualEffectMinScale">Effect Minimum Allowed Scale</system:String>
+	<system:String x:Key="VisualEffectMaxScale">Effect Maximum Allowed Scale</system:String>
+	<system:String x:Key="VisualAttachAttachId">Attachment ID</system:String>
+	<system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
+	<system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
+	<system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
+	<system:String x:Key="VisualAttachYaw">Attachment Offset Yaw</system:String>
+	<system:String x:Key="VisualAttachPitch">Attachment Offset Pitch</system:String>
+	<system:String x:Key="VisualAttachRoll">Attachment Offset Roll</system:String>
+	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
+	<!--#endregion-->
+	
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
         Unknown 0 |
