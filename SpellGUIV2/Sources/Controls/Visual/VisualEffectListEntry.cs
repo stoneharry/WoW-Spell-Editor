@@ -3,7 +3,6 @@ using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows;
@@ -89,7 +88,7 @@ namespace SpellEditor.Sources.Controls
             panel.Orientation = Orientation.Horizontal;
             var confirmDeleteButton = new Button
             {
-                Content = "CONFIRM DELETE:\nThis change is\nsaved immediately",
+                Content = TryFindResource("VisualDeleteListEntryConfirm") ?? "CONFIRM DELETE:\nThis change is\nsaved immediately",
                 Margin = new Thickness(5),
                 MinWidth = 100
             };
@@ -102,7 +101,7 @@ namespace SpellEditor.Sources.Controls
             };
             var cancelButton = new Button
             {
-                Content = "Cancel",
+                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
                 Margin = new Thickness(5),
                 MinWidth = 100
             };

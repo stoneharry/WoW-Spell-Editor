@@ -1,6 +1,4 @@
-﻿using SpellEditor.Sources.Tools.VisualTools;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,23 +13,23 @@ namespace SpellEditor.Sources.Controls.Visual
         {
             var copyItem = new MenuItem
             {
-                Header = "Copy"
+                Header = TryFindResource("VisualCopyContextMenu") ?? "Copy"
             };
             copyItem.Click += entry.CopyItemClick;
             _PasteItem = new MenuItem
             {
-                Header = "Paste",
+                Header = TryFindResource("VisualPasteContextMenu") ?? "Paste",
                 IsEnabled = false
             };
             _PasteItem.Click += entry.PasteItemClick;
             var deleteItem = new MenuItem
             {
-                Header = "Delete"
+                Header = TryFindResource("VisualDeleteContextMenu") ?? "Delete"
             };
             deleteItem.Click += entry.DeleteItemClick;
             var cancelItem = new MenuItem
             {
-                Header = "Cancel"
+                Header = TryFindResource("VisualCancelContextMenu") ?? "Cancel"
             };
             Items.Add(copyItem);
             Items.Add(new Separator());
@@ -46,22 +44,19 @@ namespace SpellEditor.Sources.Controls.Visual
         {
             _PasteItem = new MenuItem
             {
-                Header = "Paste",
+                Header = TryFindResource("VisualPasteContextMenu") ?? "Paste",
                 IsEnabled = false
             };
             _PasteItem.Click += pasteAction;
             var cancelItem = new MenuItem
             {
-                Header = "Cancel"
+                Header = TryFindResource("VisualCancelContextMenu") ?? "Cancel"
             };
             Items.Add(_PasteItem);
             Items.Add(new Separator());
             Items.Add(cancelItem);
         }
 
-        public void SetCanPaste(bool canPaste)
-        {
-            _PasteItem.IsEnabled = canPaste;
-        }
+        public void SetCanPaste(bool canPaste) => _PasteItem.IsEnabled = canPaste;
     }
 }

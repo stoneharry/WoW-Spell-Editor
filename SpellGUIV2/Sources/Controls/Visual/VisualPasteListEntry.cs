@@ -34,14 +34,14 @@ namespace SpellEditor.Sources.Controls
             }
             var confirmBtn = new Button
             {
-                Content = "Confirm Paste",
+                Content = TryFindResource("VisualConfirmListEntry") ?? "Confirm Paste",
                 Margin = new Thickness(5),
                 MinWidth = 100.00
             };
             confirmBtn.Click += (sender, e) => InvokePasteAction();
             var cancelBtn = new Button
             {
-                Content = "Cancel",
+                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
                 Margin = new Thickness(5),
                 MinWidth = 100.00
             };

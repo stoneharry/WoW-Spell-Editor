@@ -36,7 +36,7 @@ namespace SpellEditor.Sources.Controls
 
         private void buildSelf()
         {
-            var id = uint.Parse(KitRecord["ID"].ToString());
+            var id = uint.Parse(KitRecord[0].ToString());
             var label = new TextBlock
             {
                 Text = $"{ id } - { KitName }\n{ GetAllEffects() }",
@@ -109,7 +109,7 @@ namespace SpellEditor.Sources.Controls
             panel.Orientation = Orientation.Horizontal;
             var confirmDeleteButton = new Button
             {
-                Content = "CONFIRM DELETE:\nThis change is\nsaved immediately",
+                Content = TryFindResource("VisualDeleteListEntryConfirm") ?? "CONFIRM DELETE:\nThis change is\nsaved immediately",
                 Margin = new Thickness(5),
                 MinWidth = 100
             };
@@ -122,7 +122,7 @@ namespace SpellEditor.Sources.Controls
             };
             var cancelButton = new Button
             {
-                Content = "Cancel",
+                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
                 Margin = new Thickness(5),
                 MinWidth = 100
             };
