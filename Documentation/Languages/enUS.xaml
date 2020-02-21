@@ -252,9 +252,9 @@
 	<system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
 	<system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
 	<system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
-	<system:String x:Key="VisualAttachYaw">Attachment Offset Yaw</system:String>
-	<system:String x:Key="VisualAttachPitch">Attachment Offset Pitch</system:String>
-	<system:String x:Key="VisualAttachRoll">Attachment Offset Roll</system:String>
+	<system:String x:Key="VisualAttachOffsetYaw">Attachment Offset Yaw</system:String>
+	<system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
+	<system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
 	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
 	<!--#endregion-->
 	
