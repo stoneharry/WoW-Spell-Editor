@@ -3112,8 +3112,8 @@ namespace SpellEditor
             {
                 var effectIndex = 0;
                 var effect = effects[effectIndex] as VisualEffectListEntry;
-                var attachmentId = _currentVisualController.NextLoadAttachmentId;
-                if (attachmentId > 0)
+                var attachmentId = _currentVisualController?.NextLoadAttachmentId;
+                if (attachmentId.HasValue && attachmentId.Value > 0)
                 {
                     //foreach (var possibleMatch in effects)
                     for (int i = 0; i < effects.Count; ++i)
