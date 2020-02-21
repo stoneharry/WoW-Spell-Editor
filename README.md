@@ -3,14 +3,13 @@ WoW Spell Editor
 
 This is a spell editor designed to be used for WoW versions 3.3.5, 2.4.3, or 1.12.1. It also supports importing and exporting of any patch version DBC to and from SQL with the use of text file bindings found in the `Bindings` directory.
 
-![Spell Editor Image 3.3.5a](https://i.imgur.com/j7f8Fhb.png)
-![Spell Editor Image 1.12.1](https://i.imgur.com/BtijZiA.png)
+![Spell Editor Image 3.3.5a](https://i.imgur.com/Vpv4WcO.png)
 
 Downloads can be found in the releases section, please report any issues you find and I will look at them when I get a chance.
 
-The program currently supports SQLite and MySQL connection types.
+The program currently supports SQLite and MySQL/MariaDB connection types.
 
-The editing process is to import your `spell.dbc` into MySQL or SQLite, and then you can edit the spells with the program or with queries. When you are ready to test the modifications you have made you can export it back into a new `spell.dbc` file.
+The editing process is to import your `spell.dbc` into SQL, and then you can edit the spells with the program or with queries. When you are ready to test the modifications you have made you can export it back into a new `spell.dbc` file.
 
 Config changes require a program restart to take effect.
 
@@ -51,6 +50,18 @@ This new spell.dbc file will need to be updated both client side and server side
 I hope this helps.
 
 ----
+
+## Spell Visual Editor
+
+![Spell Visual Tab Image](https://i.imgur.com/DZDIcLY.png)
+
+The spell visual tab will only be populated when you import the visual DBC files. These will be automatically selected when you open the import/export window.
+
+When a spell has no visual selected (value of 0) then a spell visual kit from another existing spell visual can be copied and pasted into the spell with no visual, resulting in the program copying the selected kit to the spell, creating a new spell visual and linking everything up.
+
+You can copy and paste kits and effects/attachments freely. Whenever you paste it creates a new copy of the item you are pasting rather than using the existing one. This prevents you accidentally modifying another spell.
+
+This feature is in its very early stages. Some values from the visual kit data are not handled in the UI. Other features can be added like displaying other spells using the same kit/effect/attachment or generally being able to search all existing objects.
 
 ## Spell Visual Map
 
