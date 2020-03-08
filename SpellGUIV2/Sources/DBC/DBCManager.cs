@@ -22,31 +22,38 @@ namespace SpellEditor.Sources.DBC
          */
         public void LoadRequiredDbcs()
         {
-            TryLoadDbc<AreaTable>("AreaTable");
-            TryLoadDbc<SpellCategory>("SpellCategory");
-            TryLoadDbc<SpellDispelType>("SpellDispelType");
-            TryLoadDbc<SpellMechanic>("SpellMechanic");
-            TryLoadDbc<SpellFocusObject>("SpellFocusObject");
-            TryLoadDbc<SpellCastTimes>("SpellCastTimes");
-            TryLoadDbc<SpellDuration>("SpellDuration");
-            TryLoadDbc<SpellRange>("SpellRange");
-            TryLoadDbc<SpellRadius>("SpellRadius");
-            TryLoadDbc<ItemClass>("ItemClass");
-            TryLoadDbc<ItemSubClass>("ItemSubClass");
+            ForceLoadDbc<AreaTable>("AreaTable");
+            ForceLoadDbc<SpellCategory>("SpellCategory");
+            ForceLoadDbc<SpellDispelType>("SpellDispelType");
+            ForceLoadDbc<SpellMechanic>("SpellMechanic");
+            ForceLoadDbc<SpellFocusObject>("SpellFocusObject");
+            ForceLoadDbc<SpellCastTimes>("SpellCastTimes");
+            ForceLoadDbc<SpellDuration>("SpellDuration");
+            ForceLoadDbc<SpellRange>("SpellRange");
+            ForceLoadDbc<SpellRadius>("SpellRadius");
+            ForceLoadDbc<ItemClass>("ItemClass");
+            ForceLoadDbc<ItemSubClass>("ItemSubClass");
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
-                TryLoadDbc<TotemCategory>("TotemCategory");
+                ForceLoadDbc<TotemCategory>("TotemCategory");
             }
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
-                TryLoadDbc<SpellRuneCost>("SpellRuneCost");
-                TryLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+                ForceLoadDbc<SpellRuneCost>("SpellRuneCost");
+                ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
                 // FIXME(Harry): Available in earlier patch versions
-                TryLoadDbc<AnimationData>("AnimationData");
+                ForceLoadDbc<AnimationData>("AnimationData");
             }
         }
-
-        private bool TryLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new() => _DbcMap.TryAdd(name, new DBCType());
+        
+        private bool ForceLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new()
+        {
+            if (_DbcMap.ContainsKey(name))
+            {
+                _DbcMap.TryRemove(name, out var oldDbc);
+            }
+            return _DbcMap.TryAdd(name, new DBCType());
+        }
 
         public bool InjectLoadedDbc(string name, AbstractDBC dbc) => _DbcMap.TryAdd(name, dbc);
 

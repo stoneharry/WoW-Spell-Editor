@@ -654,6 +654,7 @@ namespace SpellEditor
                     await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
             }
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
+            loadAllRequiredDbcs();
             await controller.CloseAsync();
             PopulateSelectSpell();
         }
@@ -679,6 +680,20 @@ namespace SpellEditor
         #endregion
 
         #region InitialiseMemberVariables
+        private void loadAllRequiredDbcs()
+        {
+            // Load required DBC's. First the ones with dependencies and inject them into the manager
+            var manager = DBCManager.GetInstance();
+            manager.LoadRequiredDbcs();
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter));
+            }
+            manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
+            spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+        }
+
         private async void loadAllData()
         {
             await GetConfig();
@@ -710,16 +725,7 @@ namespace SpellEditor
             }
             try
             {
-                // Load required DBC's. First the ones with dependencies and inject them into the manager
-                var manager = DBCManager.GetInstance();
-                manager.LoadRequiredDbcs();
-                if (WoWVersionManager.IsWotlkOrGreaterSelected)
-                {
-                    manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                    manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter));
-                }
-                manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
-                spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+                loadAllRequiredDbcs();
             }
             catch (MySqlException e)
             {
