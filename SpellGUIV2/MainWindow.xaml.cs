@@ -952,8 +952,8 @@ namespace SpellEditor
                     return;
                 imageLoadEventRunning = true;
                 var locale = GetLocale();
-                var input = FilterSpellNames.Text;
-                bool badInput = string.IsNullOrEmpty(input);
+                var input = FilterSpellNames.Text.ToLower();
+                var badInput = string.IsNullOrEmpty(input);
                 if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
                 {
                     imageLoadEventRunning = false;
@@ -963,7 +963,7 @@ namespace SpellEditor
                 ICollectionView view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
                 view.Filter = o =>
                 {
-                    StackPanel panel = (StackPanel) o;
+                    var panel = (StackPanel) o;
                     using (var enumerator = panel.GetChildObjects().GetEnumerator())
                     {
                         while (enumerator.MoveNext())
@@ -971,15 +971,10 @@ namespace SpellEditor
                             if (!(enumerator.Current is TextBlock block))
                                 continue;
 
-                            string name = block.Text;
-                            string spellName = name.Substring(name.IndexOf(' ', 4) + 1);
-                            if (spellName.ToLower().Contains(input))
-                            {
-                                enumerator.Dispose();
-                                return true;
-                            }
+                            var name = block.Text;
+                            var spellName = name.Substring(name.IndexOf(' ', 4) + 1);
+                            return spellName.ToLower().Contains(input);
                         }
-                        enumerator.Dispose();
                     }
                     return false;
                 };
