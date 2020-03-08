@@ -8,6 +8,7 @@ using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -28,8 +29,9 @@ namespace SpellEditor.Sources.Controls
             KitName = key;
             KitRecord = kitRecord;
             _Adapter = adapter;
-
-            _Attachments = findAttachments(adapter);
+            _Attachments = WoWVersionManager.IsWotlkOrGreaterSelected ?
+                findAttachments(adapter) :
+                new List<VisualEffectListEntry>();
             _Effects = findAllEffects(adapter);
             buildSelf();
         }

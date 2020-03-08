@@ -33,6 +33,7 @@ namespace SpellEditor.Sources.DBC
             ForceLoadDbc<SpellRadius>("SpellRadius");
             ForceLoadDbc<ItemClass>("ItemClass");
             ForceLoadDbc<ItemSubClass>("ItemSubClass");
+            ForceLoadDbc<AnimationData>("AnimationData");
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
                 ForceLoadDbc<TotemCategory>("TotemCategory");
@@ -41,8 +42,6 @@ namespace SpellEditor.Sources.DBC
             {
                 ForceLoadDbc<SpellRuneCost>("SpellRuneCost");
                 ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
-                // FIXME(Harry): Available in earlier patch versions
-                ForceLoadDbc<AnimationData>("AnimationData");
             }
         }
         

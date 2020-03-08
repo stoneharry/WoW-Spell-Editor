@@ -1,0 +1,6 @@
+# SpellVisualEffectName.dbc structure for 2.4.3
+uint ID
+uint Name string
+uint FilePath string
+float AreaEffectSize
+float Scale

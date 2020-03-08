@@ -630,28 +630,35 @@ namespace SpellEditor
             var manager = DBCManager.GetInstance();
             foreach (var bindingName in bindingList)
             {
-                controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
-                manager.ClearDbcBinding(bindingName);
-                var abstractDbc = manager.FindDbcForBinding(bindingName);
-                if (abstractDbc == null)
+                try
                 {
-                    try
+                    controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
+                    manager.ClearDbcBinding(bindingName);
+                    var abstractDbc = manager.FindDbcForBinding(bindingName);
+                    if (abstractDbc == null)
                     {
-                        abstractDbc = new GenericDbc($"{ Config.DbcDirectory }\\{ bindingName }.dbc");
+                        try
+                        {
+                            abstractDbc = new GenericDbc($"{ Config.DbcDirectory }\\{ bindingName }.dbc");
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.WriteLine($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                            ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                            continue;
+                        }
                     }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                        continue;
-                    }
+                    if (isImport && !abstractDbc.HasData())
+                        abstractDbc.ReloadContents();
+                    if (isImport)
+                        await abstractDbc.ImportToSql(adapter, controller.SetProgress, "ID", bindingName);
+                    else
+                        await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
                 }
-                if (isImport && !abstractDbc.HasData())
-                    abstractDbc.ReloadContents();
-                if (isImport)
-                    await abstractDbc.ImportToSql(adapter, controller.SetProgress, "ID", bindingName);
-                else
-                    await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
+                catch (Exception exception)
+                {
+                    HandleErrorMessage(exception.GetType() + ": " + exception.Message + "\n" + exception.InnerException + "\n" + exception.StackTrace);
+                }
             }
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
             loadAllRequiredDbcs();
@@ -3394,11 +3401,7 @@ namespace SpellEditor
                 {
                     return;
                 }
-                // FIXME(Harry): Should support older versions too
-                if (WoWVersionManager.IsWotlkOrGreaterSelected)
-                {
-                    UpdateSpellVisualTab(id);
-                }
+                UpdateSpellVisualTab(id);
             }
         }
 

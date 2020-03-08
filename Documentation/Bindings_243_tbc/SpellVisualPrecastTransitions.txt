@@ -1,0 +1,4 @@
+# SpellVisualPrecastTransitions.dbc structure for 2.4.3
+uint ID
+uint PrecastLoadAnimName string
+uint PrecastHoldAnimName string
