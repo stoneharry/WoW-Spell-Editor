@@ -32,6 +32,7 @@
     <system:String x:Key="Items">物品</system:String>
     <system:String x:Key="Flags">标识</system:String>
     <system:String x:Key="Icon">图标</system:String>
+	<system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">中断</system:String>
     <system:String x:Key="Attributes">属性[第一部分]</system:String>
     <system:String x:Key="Attributes2">属性[第二部分]</system:String>

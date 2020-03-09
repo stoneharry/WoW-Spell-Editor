@@ -32,6 +32,7 @@
     <system:String x:Key="Items">Objets</system:String>
     <system:String x:Key="Flags">Marqueurs</system:String>
     <system:String x:Key="Icon">Icône</system:String>
+	<system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">Interruptions</system:String>
     <system:String x:Key="Attributes">Attributs</system:String>
     <system:String x:Key="Attributes2">Attributs 2</system:String>
