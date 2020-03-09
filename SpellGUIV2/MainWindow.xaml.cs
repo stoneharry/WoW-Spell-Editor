@@ -2709,7 +2709,7 @@ namespace SpellEditor
             }
             var attachId = _currentVisualController?.NextLoadAttachmentId;
             var controller = selectedId > 0 ? new VisualController(selectedId, adapter) : null;
-            if (attachId.HasValue)
+            if (attachId.HasValue && attachId.Value > 0)
             {
                 controller.NextLoadAttachmentId = attachId.Value;
             }
@@ -2814,9 +2814,10 @@ namespace SpellEditor
             {
                 return;
             }
+            var keyResource = WoWVersionManager.GetInstance().LookupKeyResource();
             var itemToPaste = VisualController.GetCopiedKitEntry();
             var pasteEntry = new VisualPasteListEntry(itemToPaste, 
-                _currentVisualController?.GetAvailableFields(itemToPaste) ?? VisualController.KitColumnKeys.ToList());
+                _currentVisualController?.GetAvailableFields(itemToPaste) ?? keyResource.KitColumnKeys.ToList());
             pasteEntry.SetDeleteClickAction(entry =>
             {
                 entries = scrollList.ItemsSource as List<IVisualListEntry>;
@@ -2866,7 +2867,7 @@ namespace SpellEditor
                     var newVisualId = uint.Parse(adapter.Query("SELECT max(id) FROM spellvisual").Rows[0][0].ToString()) + 1;
                     var copyParent = parentResults.Rows[0];
                     copyParent[0] = newVisualId;
-                    foreach (var _key in VisualController.KitColumnKeys)
+                    foreach (var _key in keyResource.KitColumnKeys)
                     {
                         copyParent[_key] = 0;
                     }
@@ -2917,7 +2918,8 @@ namespace SpellEditor
 
             var effectEntry = VisualController.GetCopiedEffectEntry();
             var pasteEntry = new VisualPasteListEntry(effectEntry,
-                _currentVisualController?.GetAvailableFields(effectEntry) ?? VisualController.EffectColumnKeys.ToList());
+                _currentVisualController?.GetAvailableFields(effectEntry) ?? 
+                WoWVersionManager.GetInstance().LookupKeyResource().EffectColumnKeys.ToList());
             pasteEntry.SetDeleteClickAction(entry =>
             {
                 entries = scrollList.ItemsSource as List<IVisualListEntry>;
@@ -3188,8 +3190,18 @@ namespace SpellEditor
             VisualEffectFilePathTxt.Text = entry != null ? record["FilePath"].ToString() : string.Empty;
             VisualEffectAreaEffectSizeTxt.Text = entry != null ? record["AreaEffectSize"].ToString() : string.Empty;
             VisualEffectScaleTxt.Text = entry != null ? record["Scale"].ToString() : string.Empty;
-            VisualEffectMinAllowedScaleTxt.Text = entry != null ? record["MinAllowedScale"].ToString() : string.Empty;
-            VisualEffectMaxAllowedScaleTxt.Text = entry != null ? record["MaxAllowedScale"].ToString() : string.Empty;
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                VisualEffectMinAllowedScaleTxt.Text = entry != null ? record["MinAllowedScale"].ToString() : string.Empty;
+                VisualEffectMaxAllowedScaleTxt.Text = entry != null ? record["MaxAllowedScale"].ToString() : string.Empty;
+                VisualEffectMinAllowedScaleTxt.IsEnabled = true;
+                VisualEffectMaxAllowedScaleTxt.IsEnabled = true;
+            }
+            else
+            {
+                VisualEffectMinAllowedScaleTxt.IsEnabled = false;
+                VisualEffectMaxAllowedScaleTxt.IsEnabled = false;
+            }
 
             var attachRecord = entry?.AttachRecord;
             ToggleVisualAttachments(attachRecord != null);
@@ -3204,7 +3216,7 @@ namespace SpellEditor
                 VisualAttachmentOffsetRollTxt.Text = attachRecord["Roll"].ToString();
             }
 
-            NewVisualAttachBtn.IsEnabled = entry != null && !entry.IsAttachment;
+            NewVisualAttachBtn.IsEnabled = WoWVersionManager.IsWotlkOrGreaterSelected && entry != null && !entry.IsAttachment;
         }
 
         private void ToggleVisualAttachments(bool enabled)
@@ -3350,8 +3362,11 @@ namespace SpellEditor
                 effectRecord["FilePath"] = VisualEffectFilePathTxt.Text;
                 effectRecord["AreaEffectSize"] = VisualEffectAreaEffectSizeTxt.Text;
                 effectRecord["Scale"] = VisualEffectScaleTxt.Text;
-                effectRecord["MinAllowedScale"] = VisualEffectMinAllowedScaleTxt.Text;
-                effectRecord["MaxAllowedScale"] = VisualEffectMaxAllowedScaleTxt.Text;
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
+                {
+                    effectRecord["MinAllowedScale"] = VisualEffectMinAllowedScaleTxt.Text;
+                    effectRecord["MaxAllowedScale"] = VisualEffectMaxAllowedScaleTxt.Text;
+                }
                 effectRecord.EndEdit();
                 adapter.CommitChanges(effectQuery, effectResults);
                 message += ", saved effect " + effectId;

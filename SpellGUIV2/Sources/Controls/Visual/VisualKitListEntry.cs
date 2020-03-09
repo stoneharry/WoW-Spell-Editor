@@ -53,7 +53,7 @@ namespace SpellEditor.Sources.Controls
         private List<VisualEffectListEntry> findAllEffects(IDatabaseAdapter adapter)
         {
             var effectList = new List<VisualEffectListEntry>();
-            foreach (var key in VisualController.EffectColumnKeys)
+            foreach (var key in WoWVersionManager.GetInstance().LookupKeyResource().EffectColumnKeys)
             {
                 var effectIdStr = KitRecord[key].ToString();
                 var success = uint.TryParse(effectIdStr, out var effectId);
@@ -147,8 +147,8 @@ namespace SpellEditor.Sources.Controls
 
         private string GetAllEffects()
         {
-            List<string> effectsFound = new List<string>();
-            foreach (var kitKey in VisualController.EffectColumnKeys)
+            var effectsFound = new List<string>();
+            foreach (var kitKey in WoWVersionManager.GetInstance().LookupKeyResource().EffectColumnKeys)
             {
                 var effectIdStr = KitRecord[kitKey].ToString();
                 var success = uint.TryParse(effectIdStr, out var effectId);
