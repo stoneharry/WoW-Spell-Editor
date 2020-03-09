@@ -206,7 +206,7 @@
     <system:String x:Key="DeleteSpellRecord1">输入要删除的法术ID。</system:String>
     <system:String x:Key="DeleteSpellRecord2">错误:输入的法术ID不是整数。</system:String>
     <system:String x:Key="DeleteSpellRecord3">成功删除法术。</system:String>
-    <system:String x:Key="SaveIcon">选'是'表示法术图标ID.&#x0a;选'否'表示法术激活图标ID.</system:String>
+    <system:String xml:space="preserve" x:Key="SaveIcon">选'是'表示法术图标ID.&#10;选'否'表示法术激活图标ID.</system:String>
     <system:String x:Key="no_spells_loaded">没有加载法术数据</system:String>
     <system:String x:Key="Highest_Spell_ID">加载到的最大法术ID:为{0}</system:String>
     <system:String x:Key="SpellIconID">法术图标ID</system:String>
@@ -220,7 +220,7 @@
     <system:String x:Key="String5">一次只能选择一个法术。</system:String>
 	
 	<!--#region visual tab -->
-	<system:String x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:\nThis change is\nsaved immediately</system:String>
+	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
 	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
 	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
 	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>

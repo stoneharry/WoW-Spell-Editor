@@ -159,9 +159,9 @@ uint ManaCostPercentage
 uint StartRecoveryCategory
 uint StartRecoveryTime
 uint MaximumTargetLevel
-uint SpellClassSet
-uint SpellClassMask1
-uint SpellClassMask2
+uint SpellFamilyName
+uint SpellFamilyFlags1
+uint SpellFamilyFlags2
 uint MaximumAffectedTargets
 uint DamageClass
 uint PreventionType
