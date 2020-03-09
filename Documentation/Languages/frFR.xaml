@@ -32,7 +32,6 @@
     <system:String x:Key="Items">Objets</system:String>
     <system:String x:Key="Flags">Marqueurs</system:String>
     <system:String x:Key="Icon">Icône</system:String>
-	<system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">Interruptions</system:String>
     <system:String x:Key="Attributes">Attributs</system:String>
     <system:String x:Key="Attributes2">Attributs 2</system:String>
@@ -206,7 +205,7 @@
     <system:String x:Key="DeleteSpellRecord1">Entrez l'identifiant du sort à supprimer.</system:String>
     <system:String x:Key="DeleteSpellRecord2">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
     <system:String x:Key="DeleteSpellRecord3">Sort supprimé avec succès.</system:String>
-    <system:String x:Key="SaveIcon">Oui pour l'icône simple.\nNon pour l'icône active.</system:String>
+    <system:String xml:space="preserve" x:Key="SaveIcon">Oui pour l'icône simple.&#10;Non pour l'icône active.</system:String>
     <system:String x:Key="no_spells_loaded">Aucun sort chargé</system:String>
     <system:String x:Key="Highest_Spell_ID">ID la plus élevé parmis les sorts chargés : {0}</system:String>
     <system:String x:Key="SpellIconID">ID de l'icône</system:String>
@@ -220,7 +219,7 @@
     <system:String x:Key="String5">Un seul sort peut être sélectionné à la fois.</system:String>
 	
 	<!--#region visual tab -->
-	<system:String x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:\nThis change is\nsaved immediately</system:String>
+	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
 	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
 	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
 	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
