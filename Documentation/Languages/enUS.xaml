@@ -206,7 +206,7 @@
     <system:String x:Key="DeleteSpellRecord1">Input the spell ID to delete.</system:String>
     <system:String x:Key="DeleteSpellRecord2">ERROR: Input spell ID was not an integer.</system:String>
     <system:String x:Key="DeleteSpellRecord3">Deleted record successfully.</system:String>
-    <system:String x:Key="SaveIcon">Yes for Spell Icon ID.\nNo for Active Icon ID.</system:String>
+    <system:String xml:space="preserve" x:Key="SaveIcon">Yes for Spell Icon ID.&#10;No for Active Icon ID.</system:String>
     <system:String x:Key="no_spells_loaded">No spells loaded</system:String>
     <system:String x:Key="Highest_Spell_ID">Highest Spell ID Loaded: {0}</system:String>
     <system:String x:Key="SpellIconID">Spell Icon ID</system:String>
@@ -220,7 +220,7 @@
     <system:String x:Key="String5">Only one spell can be selected at a time.</system:String>
 	
 	<!--#region visual tab -->
-	<system:String x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:\nThis change is\nsaved immediately</system:String>
+	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
 	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
 	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
 	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>

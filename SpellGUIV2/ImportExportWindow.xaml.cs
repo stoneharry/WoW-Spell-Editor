@@ -66,7 +66,7 @@ namespace SpellEditor
                 contents.Add(new CheckBox
                 {
                     Name = binding.Name + "ImportCheckBox",
-                    Content = $"Import {Config.DbcDirectory}\\{binding.Name}.dbc{(numRows > 0 ? $" - {numRows} rows" : "")}",
+                    Content = $"Import {binding.Name}.dbc {(numRows > 0 ? $"- {numRows} rows" : "")}",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     IsEnabled = numRows == 0,

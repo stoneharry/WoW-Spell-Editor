@@ -4,33 +4,12 @@ using System.Linq;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Tools.VisualTools
 {
     public class VisualController
     {
-        public static string[] KitColumnKeys = new string[]
-        {
-            "PrecastKit",
-            "CastKit",
-            "ImpactKit",
-            "StateKit",
-            "StateDoneKit",
-            "ChannelKit",
-            "InstantAreaKit",
-            "ImpactAreaKit"
-        };
-        public static string[] EffectColumnKeys = new string[]
-        {
-            "HeadEffect",
-            "ChestEffect",
-            "BaseEffect",
-            "LeftHandEffect",
-            "RightHandEffect",
-            "BreathEffect",
-            "LeftWeaponEffect",
-            "RightWeaponEffect"
-        };
         private static VisualKitListEntry _CopiedKitEntry;
         private static VisualEffectListEntry _CopiedEffectEntry;
         public readonly List<IVisualListEntry> VisualKits;
@@ -53,7 +32,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
                 return kitList;
             }
             var visualRecord = visualResults.Rows[0];
-            foreach (var key in KitColumnKeys)
+            foreach (var key in WoWVersionManager.GetInstance().LookupKeyResource().KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();
                 var success = uint.TryParse(kitIdStr, out var kitId);
@@ -85,16 +64,17 @@ namespace SpellEditor.Sources.Tools.VisualTools
         {
             List<string> availableKeys;
             List<string> usedKeys;
+            var keyResource = WoWVersionManager.GetInstance().LookupKeyResource();
             if (item is VisualKitListEntry)
             {
-                availableKeys = KitColumnKeys.ToList();
+                availableKeys = keyResource.KitColumnKeys.ToList();
                 usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
                     .Select(kitEntry => kitEntry?.KitName)
                     .ToList();
             }
             else if (item is VisualEffectListEntry effectEntry)
             {
-                availableKeys = EffectColumnKeys.ToList();
+                availableKeys = keyResource.EffectColumnKeys.ToList();
                 usedKeys = VisualKits.Select(kitEntry => kitEntry as VisualKitListEntry)
                     .Where(kitEntry => uint.Parse(kitEntry.KitRecord[0].ToString()) == effectEntry.ParentKitId)
                     .Select(kitEntry => kitEntry?.GetAllEffectsAndAttachmentsEntries())

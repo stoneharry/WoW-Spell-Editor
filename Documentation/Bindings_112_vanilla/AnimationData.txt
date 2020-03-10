@@ -1,0 +1,10 @@
+# AnimationData.dbc structure for 1.12.1
+uint ID
+uint Name string
+uint WeaponFlags
+uint BodyFlags
+uint Flags
+# The animation preceding this one
+uint FallbackAnimationID
+# Previous animation id
+uint PreviousAnimationID
