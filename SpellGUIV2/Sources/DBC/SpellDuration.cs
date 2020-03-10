@@ -40,11 +40,13 @@ namespace SpellEditor.Sources.DBC
             {
                 return data.ToString();
             }
+            var trimMillisChars = new char[] { '0' };
             var time = TimeSpan.FromMilliseconds(floatDur);
             var days = time.Days > 0 ? $"{time.Days}day " : string.Empty;
             var hours = time.Hours > 0 ? $"{time.Hours}hour " : string.Empty;
             var minutes = time.Minutes > 0 ? $"{time.Minutes}min " : string.Empty;
-            var seconds = time.Seconds > 0 ? $"{time.Seconds}sec" : string.Empty;
+            var seconds = (time.Seconds > 0 || time.Milliseconds > 0) ? 
+                $"{(time.Milliseconds > 0 ? (time.Seconds + "." + time.Milliseconds.ToString().TrimEnd(trimMillisChars)) : time.Seconds.ToString())}sec" : string.Empty;
             return (days + hours + minutes + seconds).TrimEnd() + $" - {data}ms";
         }
 
