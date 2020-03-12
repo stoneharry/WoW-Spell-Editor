@@ -450,9 +450,6 @@ namespace SpellEditor
                 ChannelInterruptFlagsGrid.Children.Add(box);
                 interrupts3.Add(box);
             }
-
-            // FIXME(Harry) Doesn't retain count after changing language
-            SpellsLoadedLabel.Content = string.Format(SafeTryFindResource("Highest_Spell_ID"), "");
         }
         #endregion
 
@@ -1780,7 +1777,6 @@ namespace SpellEditor
             selectSpellWatch.Start();
             selectSpellContentsIndex = 0;
             selectSpellContentsCount = SelectSpell.Items.Count;
-            SpellsLoadedLabel.Content = SafeTryFindResource("no_spells_loaded");
             var worker = new SpellListQueryWorker(adapter, selectSpellWatch) {WorkerReportsProgress = true};
             worker.ProgressChanged += _worker_ProgressChanged;
 
@@ -1882,8 +1878,6 @@ namespace SpellEditor
                 //}
                 newElements.Add(stackPanel);
             }
-            SpellsLoadedLabel.Content = string.Format(SafeTryFindResource("Highest_Spell_ID"), 
-                collection.Count > 0 ? collection[collection.Count - 1][0] : "n/a");
             // Replace the item source directly, adding each item will raise a high amount of events
             var src = SelectSpell.ItemsSource;
             var newSrc = new List<object>();

@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.BLP
 {
     class BlpManager
     {
-        // For GC collection of Bitmap handles
+        // For garbage collection of Bitmap handles
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeleteObject(IntPtr hObject);
