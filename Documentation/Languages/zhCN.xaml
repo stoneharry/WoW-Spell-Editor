@@ -120,8 +120,8 @@
     <system:String x:Key="labEffectBonusMultiplier2" xml:space="preserve">        效果奖励乘数(?):</system:String>
     <system:String x:Key="labDamageMultiplier3" xml:space="preserve">              伤害乘数:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3" xml:space="preserve">        效果奖励乘数(?):</system:String>
-    <system:String x:Key="labItemTool1">需要物品1:</system:String>
-    <system:String x:Key="labItemTool2">需要物品2:</system:String>
+    <system:String x:Key="labItemTool1">Totem 1:</system:String>
+    <system:String x:Key="labItemTool2">Totem 2:</system:String>
     <system:String x:Key="labReagent1">消耗物品 1:</system:String>
     <system:String x:Key="labReagent2">消耗物品 2:</system:String>
     <system:String x:Key="labReagent3">消耗物品 3:</system:String>

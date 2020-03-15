@@ -120,8 +120,8 @@
     <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
     <system:String x:Key="labDamageMultiplier3">Damage Multiplier 3:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
-    <system:String x:Key="labItemTool1">Item Tool 1:</system:String>
-    <system:String x:Key="labItemTool2">Item Tool 2:</system:String>
+    <system:String x:Key="labItemTool1">Totem 1:</system:String>
+    <system:String x:Key="labItemTool2">Totem 2:</system:String>
     <system:String x:Key="labReagent1">Reagent 1:</system:String>
     <system:String x:Key="labReagent2">Reagent 2:</system:String>
     <system:String x:Key="labReagent3">Reagent 3:</system:String>

@@ -120,8 +120,8 @@
     <system:String x:Key="labEffectBonusMultiplier2">Multiplicateur de l'effet 2 :</system:String>
     <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3 :</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">Multiplicateur de l'effet 3 :</system:String>
-    <system:String x:Key="labItemTool1">Outil requis 1 :</system:String>
-    <system:String x:Key="labItemTool2">Outil requis 2 :</system:String>
+    <system:String x:Key="labItemTool1">Totem 1 :</system:String>
+    <system:String x:Key="labItemTool2">Totem 2 :</system:String>
     <system:String x:Key="labReagent1">Réactif 1 :</system:String>
     <system:String x:Key="labReagent2">Réactif 2 :</system:String>
     <system:String x:Key="labReagent3">Réactif 3 :</system:String>

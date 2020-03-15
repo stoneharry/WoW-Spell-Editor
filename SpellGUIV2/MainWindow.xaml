@@ -635,52 +635,75 @@
             </TabItem>
             <TabItem Header="{DynamicResource Items}">
                 <Grid>
-                    <Label Content="{DynamicResource labItemTool1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,35,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Totem1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,61,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labItemTool2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="90,97,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Totem2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="68,123,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="85,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="225,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="365,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent4}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="505,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent5}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="647,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent6}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="787,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent7}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="927,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagent8}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1067,371,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,397,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="67,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="58,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="207,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="198,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="347,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="338,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount4}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="487,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="478,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount5}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="629,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="620,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount6}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="769,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="760,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount7}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="909,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount7" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labReagentCount8}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1049,445,0,0"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1040,471,0,0" Width="120" TextWrapping="Wrap"/>
-                    <Label Content="{DynamicResource labEquippedItemClass}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,35,0,0"/>
-                    <c:ThreadSafeComboBox x:Name="EquippedItemClass" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="339,61,0,0" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
-                    <Label Content="{DynamicResource labEquippedItemInventoryType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="964,35,0,0"/>
-                    <ScrollViewer Margin="909,61,99,346">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="{DynamicResource labItemTool1}" Margin="5" Grid.Row="0" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Totem1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labItemTool2}" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Totem2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1"/>
+
+                    <Label Content="{DynamicResource labEquippedItemClass}" Margin="5" Grid.Row="0" Grid.Column="2"/>
+                    <c:ThreadSafeComboBox x:Name="EquippedItemClass" Margin="5" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="0" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labEquippedItemInventoryType}" HorizontalAlignment="Center" Margin="5,5,5,5" Grid.Row="0" Grid.Column="4"/>
+                    <ScrollViewer Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="10" Grid.Column="4" MinWidth="200">
                         <StackPanel Name="EquippedItemInventoryTypeGrid" IsEnabled="False"/>
                     </ScrollViewer>
-                    <ScrollViewer Margin="607,61,413,346">
+                    <Label Content="{DynamicResource labEquippedItemSubClass}" HorizontalAlignment="Center" Margin="5,5,5,5" Grid.Row="0" Grid.Column="5"/>
+                    <ScrollViewer Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="10" Grid.Column="5" MinWidth="200">
                         <StackPanel x:Name="EquippedItemSubClassGrid" IsEnabled="False"/>
                     </ScrollViewer>
-                    <Label Content="{DynamicResource labEquippedItemSubClass}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="666,35,0,0"/>
+
+                    <Label Content="{DynamicResource labReagent1}" Margin="5" Grid.Row="2" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent2}" Margin="5" Grid.Row="3" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent3}" Margin="5" Grid.Row="4" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent4}" Margin="5" Grid.Row="5" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent5}" Margin="5" Grid.Row="6" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent6}" Margin="5" Grid.Row="7" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent7}" Margin="5" Grid.Row="8" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagent8}" Margin="5" Grid.Row="9" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="Reagent8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labReagentCount1}" Margin="5" Grid.Row="2" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount2}" Margin="5" Grid.Row="3" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount3}" Margin="5" Grid.Row="4" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount4}" Margin="5" Grid.Row="5" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount5}" Margin="5" Grid.Row="6" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount6}" Margin="5" Grid.Row="7" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount7}" Margin="5" Grid.Row="8" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labReagentCount8}" Margin="5" Grid.Row="9" Grid.Column="2"/>
+                    <c:ThreadSafeTextBox x:Name="ReagentCount8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="3"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Flags}">
