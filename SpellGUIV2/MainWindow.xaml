@@ -759,20 +759,35 @@
             </TabItem>
             <TabItem Name="IconTab" Header="{DynamicResource Icon}">
                 <Grid>
-                    <Label Content="{DynamicResource labCurrentIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4,48,0,0" Grid.Column="1" Grid.ColumnSpan="2"/>
-                    <Grid Name="CurrentIconGrid"/>
-                    <Image Name="CurrentIcon" Margin="77.907,44,1114,614" Height="64" Width="64" Grid.Column="2"/>
-                    <Label Content="{DynamicResource labNewIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="197.907,48,0,0" Grid.Column="2"/>
-                    <Grid Name="NewIconGrid"/>
-                    <ScrollViewer Name="IconScrollViewer" Margin="4,113,89,57" Grid.Column="1" Grid.ColumnSpan="2" >
-                        <WrapPanel Name="IconGrid" Orientation="Horizontal" Width="1173"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="ResetSpellIconID" Content="{DynamicResource butResetSpellIconID}" Margin="10" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="0"/>
+                    <Button Name="ResetActiveIconID" Content="{DynamicResource butResetActiveIconID}" Margin="10" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="1"/>
+                    <Button Name="SaveIcon" Content="{DynamicResource butSaveIcon}" HorizontalAlignment="Right" Margin="5" Height="30" Width="100" Click="Button_Click" Grid.Row="0" Grid.Column="6"/>
+                    <Label Content="{DynamicResource labCurrentIcon}" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                    <Image Name="CurrentIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labNewIcon}" Margin="5" Grid.Row="1" Grid.Column="2"/>
+                    <Image Name="NewIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labFiltericons}" Margin="5" Grid.Row="1" Grid.Column="4"/>
+                    <c:ThreadSafeTextBox x:Name="FilterIcons" Margin="5" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <Slider x:Name="slider" Margin="20,10,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE"
+                            ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" 
+                            Focusable="False" Grid.Row="1" Grid.Column="6"/>
+                    <ScrollViewer Name="IconScrollViewer" Margin="10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" >
+                        <WrapPanel Name="IconGrid" Orientation="Horizontal"/>
                     </ScrollViewer>
-                    <Button Name="ResetSpellIconID" Content="{DynamicResource butResetSpellIconID}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.ColumnSpan="3"/>
-                    <Button Name="ResetActiveIconID" Content="{DynamicResource butResetActiveIconID}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="167.907,1,0,0" Height="30" Width="120" Click="Button_Click" Grid.Column="2"/>
-                    <Label Content="{DynamicResource labFiltericons}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="443,43,0,0" Height="30" Width="68" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="FilterIcons" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="516,43,0,0" Height="30" Width="145" Grid.Column="2" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                    <Button Name="SaveIcon" Content="{DynamicResource butSaveIcon}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="698.907,43,0,0" Height="30" Width="100" Click="Button_Click" Grid.Column="2"/>
-                    <Slider x:Name="slider" Margin="846,43,91,598" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE" ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" Focusable="False" Grid.Column="2"/>
                 </Grid>
             </TabItem>
             <TabItem Name="VisualTab" Header="{DynamicResource Visual}">
