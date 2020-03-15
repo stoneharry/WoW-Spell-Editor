@@ -685,71 +685,108 @@
             </TabItem>
             <TabItem Header="{DynamicResource Flags}">
                 <Grid>
-                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1264">
+                    <TabControl VerticalAlignment="Top" HorizontalAlignment="Left">
                         <TabItem Header="{DynamicResource Interrupts}">
                             <Grid>
-                                <Label Content="{DynamicResource labInterruptFlags}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="125,10,0,0"/>
-                                <ScrollViewer Margin="10,36,934,0" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{DynamicResource labInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="0">
                                     <StackPanel Name="InterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAuraInterruptFlags}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="495,10,0,0"/>
-                                <ScrollViewer Margin="395,36,549,0">
+                                <Label Content="{DynamicResource labAuraInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
                                     <StackPanel Name="AuraInterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labChannelInterruptFlags}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="892,10,0,0"/>
-                                <ScrollViewer Margin="799,36,145,100" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <Label Content="{DynamicResource labChannelInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
+                                <ScrollViewer Margin="30,10,10,10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="2">
                                     <StackPanel Name="ChannelInterruptFlagsGrid"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource Attributes}">
                             <Grid Name="AttributesTabGrid">
-                                <Label Content="{DynamicResource labAttributes}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="92,8,0,0"/>
-                                <ScrollViewer Margin="10,35,939,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{DynamicResource labAttributes}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="0">
                                     <StackPanel Name="Attributes1"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400,8,0,0"/>
-                                <ScrollViewer Margin="326,35,627,10">
+                                <Label Content="{DynamicResource labAttributesEx}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="1">
                                     <StackPanel Name="Attributes2"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,8,0,0"/>
-                                <ScrollViewer Margin="638,35,310,10">
+                                <Label Content="{DynamicResource labAttributesEx2}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
+                                <ScrollViewer Margin="10" MaxWidth="300" Grid.Row="1" Grid.Column="2">
                                     <StackPanel Name="Attributes3"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1027,9,0,0"/>
-                                <ScrollViewer Margin="955,35,10,10">
+                                <Label Content="{DynamicResource labAttributesEx3}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="3"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="3">
                                     <StackPanel Name="Attributes4"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource Attributes2}">
                             <Grid Name="Attributes2TabGrid">
-                                <Label Content="{DynamicResource labAttributesEx4}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="83,9,0,0"/>
-                                <ScrollViewer Margin="10,35,940,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{DynamicResource labAttributesEx4}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="0">
                                     <StackPanel x:Name="Attributes5"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx5}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="397,9,0,0"/>
-                                <ScrollViewer Margin="325,35,627,10">
+                                <Label Content="{DynamicResource labAttributesEx5}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="1">
                                     <StackPanel x:Name="Attributes6"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx6}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="708,9,0,0"/>
-                                <ScrollViewer Margin="638,35,310,10">
+                                <Label Content="{DynamicResource labAttributesEx6}"  HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="2">
                                     <StackPanel x:Name="Attributes7"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx7}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1025,9,0,0"/>
-                                <ScrollViewer Margin="955,35,10,10">
+                                <Label Content="{DynamicResource labAttributesEx7}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="3"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="3">
                                     <StackPanel x:Name="Attributes8"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource Misc}">
                             <Grid>
-                                <Label Content="{DynamicResource labCreatureType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="174.5,49,0,0"/>
-                                <ScrollViewer Margin="62,75,882,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{DynamicResource labCreatureType}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="0">
                                     <StackPanel Name="TargetCreatureType"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labStances}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="569.5,49,0,0"/>
-                                <ScrollViewer Margin="440,75,504,10">
+                                <Label Content="{DynamicResource labStances}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
                                     <StackPanel Name="StancesGrid"/>
                                 </ScrollViewer>
                             </Grid>
