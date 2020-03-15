@@ -370,12 +370,15 @@ namespace SpellEditor
             SpellEffect1.Items.Clear();
             SpellEffect2.Items.Clear();
             SpellEffect3.Items.Clear();
+            FilterSpellEffectCombo.Items.Clear();
             string[] spell_effect_names = SafeTryFindResource("spell_effect_names").Split('|');
             for (int i = 0; i < spell_effect_names.Length; ++i)
             {
-                SpellEffect1.Items.Add(i + " - " + spell_effect_names[i]);
-                SpellEffect2.Items.Add(i + " - " + spell_effect_names[i]);
-                SpellEffect3.Items.Add(i + " - " + spell_effect_names[i]);
+                var effectName = i + " - " + spell_effect_names[i];
+                SpellEffect1.Items.Add(effectName);
+                SpellEffect2.Items.Add(effectName);
+                SpellEffect3.Items.Add(effectName);
+                FilterSpellEffectCombo.Items.Add(effectName);
             }
 
             Mechanic1.Items.Clear();
@@ -3860,6 +3863,48 @@ namespace SpellEditor
             {
                 MultilingualSwitch.SelectionChanged += MultilingualSwitch_SelectionChanged;
             }
+        }
+
+        private void FilterSpellEffectCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterSpellEffectCombo)
+            {
+                return;
+            }
+            var box = sender as ComboBox;
+            var selected = box.SelectedItem?.ToString() ?? "0 ";
+            var id = int.Parse(selected.Substring(0, selected.IndexOf(' ')));
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the effect id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE Effect1 = {id} or Effect2 = {id} or Effect3 = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
         }
 
         private string SafeTryFindResource(object key)

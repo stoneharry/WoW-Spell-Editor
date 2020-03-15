@@ -52,8 +52,8 @@
                     <c:ThreadSafeTextBox x:Name="NavigateToSpell" HorizontalAlignment="Left" Margin="5" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Row="0"  Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="1" Grid.Column="2"/>
                     <c:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
-                    <Label Content="Filter by Spell Effect:" Margin="5" Grid.Row="2" Grid.Column="2"/>
-                    <c:FilteredComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labFilterByEffect}" Margin="5" Grid.Row="2" Grid.Column="2"/>
+                    <c:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
                     <ListBox Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
