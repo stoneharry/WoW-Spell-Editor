@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
+using StormLibSharp;
 
 namespace SpellEditor
 {
@@ -91,8 +92,15 @@ namespace SpellEditor
                 Content = "Export Checked DBC Files",
                 Padding = new Thickness(4, 5, 4, 5)
             };
+            var mpqBtn = new Button
+            {
+                Content = "Create MPQ from DBC files",
+                Padding = new Thickness(4, 5, 4, 5)
+            };
+            mpqBtn.Click += MpqClick;
             exportBtn.Click += ExportClick;
             contents.Add(exportBtn);
+            contents.Add(mpqBtn);
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
                 var numRows = binding.GetNumRowsInTable(_Adapter);
@@ -107,6 +115,26 @@ namespace SpellEditor
                         (binding.Name.Equals("Spell") ||
                         binding.Name.Contains("SpellVisual"))
                 });
+            }
+        }
+
+        private void MpqClick(object sender, RoutedEventArgs e)
+        {
+            // handle exceptions FIXME
+            var archivePath = "Export\\patch-4.mpq";
+            if (File.Exists(archivePath))
+            {
+                File.Delete(archivePath);
+            }
+            using (var archive = MpqArchive.CreateNew(archivePath, MpqArchiveVersion.Version1))
+            {
+                foreach (var dbcFile in Directory.EnumerateFiles("Export"))
+                {
+                    if (dbcFile.EndsWith(".dbc"))
+                    {
+                        archive.AddFileFromDisk(dbcFile, "DBFileClient\\" + dbcFile.Substring(dbcFile.IndexOf('\\') + 1));
+                    }
+                }
             }
         }
 
