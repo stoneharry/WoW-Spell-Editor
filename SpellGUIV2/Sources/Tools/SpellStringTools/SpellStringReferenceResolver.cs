@@ -538,6 +538,8 @@ namespace SpellEditor.Sources.SpellStringTools
                     return rawString;
                 }
                 var otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
+                if (otherRecord == null)
+                    return rawString;
                 int offset = match.Index + match.Value.Length;
                 bool hasPrefix = rawString.StartsWith("$");
                 rawString = rawString.Substring(match.Index + match.Value.Length);
