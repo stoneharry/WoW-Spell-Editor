@@ -665,7 +665,7 @@ namespace SpellEditor
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
             loadAllRequiredDbcs();
             await controller.CloseAsync();
-            if (archiveName.Length > 0)
+            if (!string.IsNullOrEmpty(archiveName))
             {
                 var exportList = new List<string>();
                 foreach (var dbcFile in Directory.EnumerateFiles("Export"))
