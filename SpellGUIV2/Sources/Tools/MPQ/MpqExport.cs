@@ -18,7 +18,7 @@ namespace SpellEditor.Sources.Tools.MPQ
             using (var archive = MpqArchive.CreateNew(archivePath, MpqArchiveVersion.Version1))
             {
                 exportList.ForEach((dbcFile) => archive.AddFileFromDisk(dbcFile, 
-                    "DBFileClient\\" + dbcFile.Substring(dbcFile.IndexOf('\\') + 1)));
+                    "DBFilesClient\\" + dbcFile.Substring(dbcFile.IndexOf('\\') + 1)));
             }
         }
     }
