@@ -668,13 +668,10 @@ namespace SpellEditor
             if (!string.IsNullOrEmpty(archiveName))
             {
                 var exportList = new List<string>();
-                foreach (var dbcFile in Directory.EnumerateFiles("Export"))
-                {
-                    if (dbcFile.EndsWith(".dbc"))
-                    {
-                        exportList.Add(dbcFile);
-                    }
-                }
+                Directory.EnumerateFiles("Export")
+                    .Where((dbcFile) => dbcFile.EndsWith(".dbc"))
+                    .ToList()
+                    .ForEach(exportList.Add);
                 var mpqExport = new MpqExport();
                 mpqExport.CreateMpqFromDbcFileList(archiveName, exportList);
             }
