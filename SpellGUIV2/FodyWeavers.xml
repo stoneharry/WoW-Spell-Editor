@@ -3,9 +3,11 @@
   <Costura>
     <Unmanaged32Assemblies>
       StormLib
+      SQLite.Interop
     </Unmanaged32Assemblies>
     <Unmanaged64Assemblies>
       StormLib
+      SQLite.Interop
     </Unmanaged64Assemblies>
   </Costura>
 </Weavers>
