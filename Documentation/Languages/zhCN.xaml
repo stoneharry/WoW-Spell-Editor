@@ -219,6 +219,10 @@
     <system:String x:Key="String3">创建配置文件时抛出异常。</system:String>
     <system:String x:Key="String4">选择是更改法术图标ID还是法术激活图标ID。</system:String>
     <system:String x:Key="String5">一次只能选择一个法术。</system:String>
+	<system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
+	<system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
+	<system:String x:Key="ExportMpqName">MPQ name:</system:String>
+	<system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
 	
 	<!--#region visual tab -->
 	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>

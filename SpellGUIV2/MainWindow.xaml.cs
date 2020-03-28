@@ -28,6 +28,7 @@ using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.SpellStringTools;
+using SpellEditor.Sources.Tools.MPQ;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
@@ -626,6 +627,7 @@ namespace SpellEditor
             if (window.IsVisible)
                 window.Close();
             var isImport = window.BindingImportList.Count > 0;
+            var archiveName = window.MpqArchiveName;
             var bindingList = isImport ? window.BindingImportList : window.BindingExportList;
             var manager = DBCManager.GetInstance();
             foreach (var bindingName in bindingList)
@@ -663,8 +665,19 @@ namespace SpellEditor
             controller.SetMessage(SafeTryFindResource("ReloadingUI"));
             loadAllRequiredDbcs();
             await controller.CloseAsync();
+            if (!string.IsNullOrEmpty(archiveName))
+            {
+                var exportList = new List<string>();
+                Directory.EnumerateFiles("Export")
+                    .Where((dbcFile) => dbcFile.EndsWith(".dbc"))
+                    .ToList()
+                    .ForEach(exportList.Add);
+                var mpqExport = new MpqExport();
+                mpqExport.CreateMpqFromDbcFileList(archiveName, exportList);
+            }
             PopulateSelectSpell();
         }
+
         #endregion
 
         #region ConfigButton

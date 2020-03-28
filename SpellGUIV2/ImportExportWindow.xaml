@@ -19,12 +19,30 @@
     </controls:MetroWindow.Resources>
     <Grid>
         <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
-      <TabItem Header="{DynamicResource butImportExportWindowImport}">
-        <UniformGrid Name="ImportGrid" Columns = "1"/>
-      </TabItem>
-      <TabItem Header="{DynamicResource butImportExportWindowExport}">
-        <UniformGrid Name="ExportGrid" Columns = "1"/>
-      </TabItem>
+        <TabItem Header="{DynamicResource butImportExportWindowImport}">
+            <UniformGrid Name="ImportGrid" Columns="1"/>
+        </TabItem>
+            <TabItem Header="{DynamicResource butImportExportWindowExport}">
+                <Grid Name="ExportGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="{DynamicResource ExportCheckedFiles}" Margin="10" Click="ExportClick" Grid.Row="0" Grid.Column="0"/>
+                    <Button Content="{DynamicResource ExportCheckedFilesMpq}" Margin="10" Click="MpqClick" Grid.Row="0" Grid.Column="1"/>
+                    <Label Content="{DynamicResource ExportMpqName}" HorizontalAlignment="Right" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Name="ExportMpqNameTxt" Text="patch-4.mpq" Margin="10,5,10,5" Grid.Row="1" Grid.Column="1"/>
+                    <Label Content="{DynamicResource TablesToExport}" Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
+                    <UniformGrid Name="ExportGridDbcs" Columns="1" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </controls:MetroWindow>

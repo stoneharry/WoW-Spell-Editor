@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
 
 namespace SpellEditor
@@ -14,6 +13,7 @@ namespace SpellEditor
     partial class ImportExportWindow
     {
         private readonly IDatabaseAdapter _Adapter;
+        public string MpqArchiveName;
         public List<string> BindingImportList = new List<string>();
         public List<string> BindingExportList = new List<string>();
 
@@ -79,20 +79,9 @@ namespace SpellEditor
 
         private void BuildExportTab()
         {
-            var contents = ExportGrid.Children;
+            var contents = ExportGridDbcs.Children;
             if (contents.Count > 0)
                 return;
-            contents.Add(new Label
-            {
-                Content = "Select which imported tables you wish to export to new DBC files."
-            });
-            var exportBtn = new Button
-            {
-                Content = "Export Checked DBC Files",
-                Padding = new Thickness(4, 5, 4, 5)
-            };
-            exportBtn.Click += ExportClick;
-            contents.Add(exportBtn);
             foreach (var binding in BindingManager.GetInstance().GetAllBindings())
             {
                 var numRows = binding.GetNumRowsInTable(_Adapter);
@@ -102,6 +91,7 @@ namespace SpellEditor
                     Content = $"Export {(numRows > 0 ? numRows.ToString() : "")} {binding.Name} {(numRows > 0 ? "rows " : "")}to Export\\{binding.Name}.dbc",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1),
                     IsEnabled = numRows > 0,
                     IsChecked = numRows > 0 && 
                         (binding.Name.Equals("Spell") ||
@@ -110,12 +100,20 @@ namespace SpellEditor
             }
         }
 
+        private void MpqClick(object sender, RoutedEventArgs e)
+        {
+            var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
+            archiveName = archiveName.EndsWith(".mpq") ? archiveName : archiveName + ".mpq";
+            MpqArchiveName = archiveName;
+            ClickHandler(false);
+        }
+
         private void ImportClick(object sender, RoutedEventArgs e) => ClickHandler(true);
         private void ExportClick(object sender, RoutedEventArgs e) => ClickHandler(false);
         private void ClickHandler(bool isImport)
         {
             var bindingNameList = new List<string>();
-            var children = isImport ? ImportGrid.Children : ExportGrid.Children;
+            var children = isImport ? ImportGrid.Children : ExportGridDbcs.Children;
             var prefix = isImport ? "Import" : "Export";
             foreach (var element in children)
             {

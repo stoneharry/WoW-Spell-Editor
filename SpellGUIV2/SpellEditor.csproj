@@ -149,6 +149,7 @@
     <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />
     <Compile Include="Sources\DBC\AnimationData.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
+    <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
     <Compile Include="Sources\VersionControl\WoWVersion.cs" />
     <Compile Include="Sources\Controls\DBC\IBoxContentProvider.cs" />
@@ -255,6 +256,20 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\stormlibsharp\src\StormLibSharp\StormLibSharp.csproj">
+      <Project>{D0139C61-6BA0-4F07-B1E8-551023CD2624}</Project>
+      <Name>StormLibSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Costura32\StormLib.dll" />
+    <EmbeddedResource Include="Costura64\StormLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Costura32\SQLite.Interop.dll" />
+    <EmbeddedResource Include="Costura64\SQLite.Interop.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />

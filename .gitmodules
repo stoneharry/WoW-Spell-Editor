@@ -1,0 +1,3 @@
+[submodule "stormlibsharp"]
+	path = stormlibsharp
+	url = https://github.com/stoneharry/stormlibsharp

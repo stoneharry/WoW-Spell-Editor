@@ -1,4 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers>
-  <Costura />
+  <Costura>
+    <Unmanaged32Assemblies>
+      StormLib
+      SQLite.Interop
+    </Unmanaged32Assemblies>
+    <Unmanaged64Assemblies>
+      StormLib
+      SQLite.Interop
+    </Unmanaged64Assemblies>
+  </Costura>
 </Weavers>

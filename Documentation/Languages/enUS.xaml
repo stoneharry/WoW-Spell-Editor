@@ -219,6 +219,10 @@
     <system:String x:Key="String3">An exception was thrown creating the config file.</system:String>
     <system:String x:Key="String4">Select whether to change the Spell Icon ID or the Active Icon ID.</system:String>
     <system:String x:Key="String5">Only one spell can be selected at a time.</system:String>
+	<system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
+	<system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
+	<system:String x:Key="ExportMpqName">MPQ name:</system:String>
+	<system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
 	
 	<!--#region visual tab -->
 	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
