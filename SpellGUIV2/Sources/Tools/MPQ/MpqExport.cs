@@ -17,8 +17,11 @@ namespace SpellEditor.Sources.Tools.MPQ
             }
             using (var archive = MpqArchive.CreateNew(archivePath, MpqArchiveVersion.Version1))
             {
-                exportList.ForEach((dbcFile) => archive.AddFileFromDisk(dbcFile, 
-                    "DBFilesClient\\" + dbcFile.Substring(dbcFile.IndexOf('\\') + 1)));
+                exportList.ForEach((dbcFile) =>
+                {
+                    var pathToAdd = "DBFilesClient\\" + dbcFile.Substring(dbcFile.IndexOf('\\') + 1);
+                    archive.AddFileFromDiskWithCompression(dbcFile, pathToAdd, MpqCompressionTypeFlags.MPQ_COMPRESSION_ZLIB);
+                });
             }
         }
     }
