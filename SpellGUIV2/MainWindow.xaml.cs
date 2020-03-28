@@ -19,6 +19,10 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MySql.Data.MySqlClient;
+using NLog;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Config;
@@ -59,6 +63,8 @@ namespace SpellEditor
         #endregion
 
         #region MemberVariables
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private IDatabaseAdapter adapter;
         public uint selectedID;
         public uint newIconID = 1;
@@ -80,21 +86,27 @@ namespace SpellEditor
 
         public MainWindow()
         {
-            // If no debugger is attached then output console text to a file
-            if (!Debugger.IsAttached)
-            {
-                var ostrm = new FileStream("debug_output.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                var writer = new StreamWriter(ostrm);
-                Console.SetOut(writer);
-            }
             // Ensure the decimal seperator used is always a full stop
             var customCulture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             Thread.CurrentThread.CurrentCulture = customCulture;
+
+            // Setup logging
+            var config = new LoggingConfiguration();
+            var logfile = new FileTarget("logfile") { FileName = "debug_output.txt" };
+            var logconsole = new ConsoleTarget("logconsole");
+            var layout = Layout.FromString("[${time}|${level:uppercase=true}|${logger}] ${message}");
+            logfile.Layout = layout;
+            logconsole.Layout = layout;
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logconsole);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+            LogManager.Configuration = config;
+
             // Banner
-            Console.WriteLine("######################################################");
-            Console.WriteLine($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
-            Console.WriteLine("######################################################");
+            Logger.Info("######################################################");
+            Logger.Info($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
+            Logger.Info("######################################################");
+            
             // Config must be initialised fast
             Config.Init();
             InitializeComponent();
@@ -110,7 +122,7 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Console.WriteLine("ERROR: " + e.Exception + "\n" + e.Exception.InnerException);
+            Logger.Info("ERROR: " + e.Exception + "\n" + e.Exception.InnerException);
             File.WriteAllText("error.txt", e.Exception + "\n" + e.Exception.InnerException, Encoding.GetEncoding(0));
             HandleErrorMessage(e.Exception + "\n\n" + e.Exception.InnerException);
             e.Handled = true;
@@ -645,7 +657,7 @@ namespace SpellEditor
                         }
                         catch (Exception exception)
                         {
-                            Console.WriteLine($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                            Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
                             ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
                             continue;
                         }
@@ -1833,7 +1845,7 @@ namespace SpellEditor
                     return;
 
                 spellListQueryWorker.Watch.Stop();
-                Console.WriteLine($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
+                Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
             };
         }
 
@@ -1912,7 +1924,7 @@ namespace SpellEditor
             newSrc.AddRange(newElements);
             SelectSpell.ItemsSource = newSrc;
             watch.Stop();
-            Console.WriteLine($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
+            Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
 
         private void isSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)

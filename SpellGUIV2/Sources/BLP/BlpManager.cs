@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace SpellEditor.Sources.BLP
 {
     class BlpManager
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // For garbage collection of Bitmap handles
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -64,7 +67,7 @@ namespace SpellEditor.Sources.BLP
             catch (Exception e)
             {
                 // Logging full exception is quite costly here
-                Console.WriteLine($"[BlpManager] WARNING Unable to load image: {filePath} - {e.Message}");
+                Logger.Info($"[BlpManager] WARNING Unable to load image: {filePath} - {e.Message}");
                 // Making the choice here to not try to load the resource again until the program is restarted
                 _ImageMap.TryAdd(filePath, null);
             }

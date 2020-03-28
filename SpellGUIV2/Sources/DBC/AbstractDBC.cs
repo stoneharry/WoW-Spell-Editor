@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Binding;
+﻿using NLog;
+using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
 using System;
@@ -15,6 +16,8 @@ namespace SpellEditor.Sources.DBC
 {
     public abstract class AbstractDBC
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private string _filePath;
         protected DBCHeader Header;
         protected DBCBody Body;
@@ -44,7 +47,7 @@ namespace SpellEditor.Sources.DBC
             Reader.ReadStringBlock();
             stringWatch.Stop();
             var totalElapsed = stringWatch.ElapsedMilliseconds + bodyWatch.ElapsedMilliseconds;
-            Console.WriteLine(
+            Logger.Info(
                 $"Loaded {name}.dbc into memory in {totalElapsed}ms. Records: {bodyWatch.ElapsedMilliseconds}ms, strings: {stringWatch.ElapsedMilliseconds}ms");
         }
 

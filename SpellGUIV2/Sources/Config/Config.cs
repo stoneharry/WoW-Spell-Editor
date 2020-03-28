@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.VersionControl;
+﻿using NLog;
+using SpellEditor.Sources.VersionControl;
 using System;
 using System.IO;
 using System.Xml;
@@ -8,6 +9,8 @@ namespace SpellEditor.Sources.Config
 {
     public static class Config
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public enum ConnectionType
         {
             SQLite,
@@ -125,7 +128,7 @@ namespace SpellEditor.Sources.Config
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.Info(e.Message);
             }
         }
 

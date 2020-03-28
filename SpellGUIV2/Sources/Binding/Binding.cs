@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Database;
+﻿using NLog;
+using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,8 @@ namespace SpellEditor.Sources.Binding
 {
     public class Binding
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public readonly BindingEntry[] Fields;
         public readonly string Name;
 
@@ -82,7 +85,7 @@ namespace SpellEditor.Sources.Binding
             }
             catch (Exception e)
             {
-                Console.WriteLine("WARNING: ImportExportWindow triggered: " + e.Message);
+                Logger.Info("WARNING: ImportExportWindow triggered: " + e.Message);
                 return -1;
             }
         }

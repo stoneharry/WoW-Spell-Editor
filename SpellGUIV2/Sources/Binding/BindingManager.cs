@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,8 @@ namespace SpellEditor.Sources.Binding
 {
     public class BindingManager
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private static BindingManager _instance = new BindingManager();
         private List<Binding> _bindings;
         
@@ -34,10 +37,10 @@ namespace SpellEditor.Sources.Binding
                     continue;
                 var binding = new Binding(fileName, bindingEntryList);
                 bindingList.Add(binding);
-                Console.WriteLine($"Loaded binding {fileName} with {bindingEntryList.Count} fields.");
+                Logger.Info($"Loaded binding {fileName} with {bindingEntryList.Count} fields.");
             }
             _bindings = bindingList;
-            Console.WriteLine($"Loaded {bindingList.Count} bindings.");
+            Logger.Info($"Loaded {bindingList.Count} bindings.");
         }
 
         public Binding[] GetAllBindings()

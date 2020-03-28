@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Binding;
+﻿using NLog;
+using SpellEditor.Sources.Binding;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,8 @@ namespace SpellEditor.Sources.DBC
 {
     public class DBCReader
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private string _filePath;
         private long _fileSize;
         private long _filePosition;
@@ -47,7 +50,7 @@ namespace SpellEditor.Sources.DBC
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Info(e);
                 throw new Exception(e.Message);
             }
             if (handle != null)

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
+using NLog;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.VersionControl;
 using static System.Environment;
@@ -21,6 +22,8 @@ namespace SpellEditor
 {
     partial class ConfigWindow
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private DatabaseTypeContainer TypeContainer = new DatabaseTypeContainer();
         private Grid MySQLConfigGrid;
         private Grid SQLiteConfigGrid;
@@ -34,7 +37,7 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Console.WriteLine("ERROR: " + e.Exception.Message);
+            Logger.Info("ERROR: " + e.Exception.Message);
             File.WriteAllText("error.txt", e.Exception.Message, UTF8Encoding.GetEncoding(0));
             e.Handled = true;
         }

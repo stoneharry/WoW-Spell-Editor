@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using NLog;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
 
@@ -12,6 +13,8 @@ namespace SpellEditor
 {
     partial class ImportExportWindow
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IDatabaseAdapter _Adapter;
         public string MpqArchiveName;
         public List<string> BindingImportList = new List<string>();
@@ -27,7 +30,7 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Console.WriteLine("ERROR: " + e.Exception.Message);
+            Logger.Info("ERROR: " + e.Exception.Message);
             File.WriteAllText("error.txt", e.Exception.Message, Encoding.GetEncoding(0));
             e.Handled = true;
         }
@@ -127,7 +130,7 @@ namespace SpellEditor
                 BindingImportList = bindingNameList;
             else
                 BindingExportList = bindingNameList;
-            Console.WriteLine($"Bindings selected to {prefix.ToLower()}: {String.Join(", ", bindingNameList)}");
+            Logger.Info($"Bindings selected to {prefix.ToLower()}: {String.Join(", ", bindingNameList)}");
         }
     }
 }

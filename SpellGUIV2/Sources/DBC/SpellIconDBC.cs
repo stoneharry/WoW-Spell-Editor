@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.BLP;
+﻿using NLog;
+using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace SpellEditor.Sources.DBC
 {
     class SpellIconDBC : AbstractDBC
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private MainWindow main;
         private IDatabaseAdapter adapter;
 
@@ -97,7 +100,7 @@ namespace SpellEditor.Sources.DBC
                 watch.Start();
                 LoadAllIcons(margin);
                 watch.Stop();
-                Console.WriteLine($"Loaded all icons as UI elements in {watch.ElapsedMilliseconds}ms");
+                Logger.Info($"Loaded all icons as UI elements in {watch.ElapsedMilliseconds}ms");
             }
         }
 
@@ -193,8 +196,8 @@ namespace SpellEditor.Sources.DBC
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                Logger.Info(ex.Message);
+                Logger.Info(ex.StackTrace);
             }
             return selectedRecord.Name;
         }

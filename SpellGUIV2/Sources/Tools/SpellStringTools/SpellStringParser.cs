@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.Tools.SpellStringTools;
+﻿using NLog;
+using SpellEditor.Sources.Tools.SpellStringTools;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,6 +9,8 @@ namespace SpellEditor.Sources.SpellStringTools
 {
     public class SpellStringParser
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public static readonly string MODIFY_FORMULA_REGEX = "\\$(\\/|\\*|\\-|)\\d+\\;\\d*\\w+";    // $/10;17057s1 | $/10;s1
         public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*";                         // ${1 + $s1} | $s1
         public static readonly string ALL_FORMULA_REGEX = $"{MODIFY_FORMULA_REGEX}|{FORMULA_REGEX}";
@@ -32,7 +35,7 @@ namespace SpellEditor.Sources.SpellStringTools
             var formulas = FindFormulas(str);
             foreach (var formula in formulas)
             {
-                Console.WriteLine(formula + "\t----\t" + "Processing");
+                Logger.Info(formula + "\t----\t" + "Processing");
                 str = str.Replace(formula, ParseFormula(formula, spell, mainWindow));
             }
             return str;
@@ -63,7 +66,7 @@ namespace SpellEditor.Sources.SpellStringTools
             // Replace tokens with derived token values in formula
             for (int index = 0; index < tokens.Count; ++index)
             {
-                Console.WriteLine($"> Token '{ tokens[index].Value }' derived value '{ tokens[index].ResolvedValue }'");
+                Logger.Info($"> Token '{ tokens[index].Value }' derived value '{ tokens[index].ResolvedValue }'");
                 if (tokens[index].ResolvedValue != null)
                 {
                     var regex = new Regex(Regex.Escape(tokens[index].Value));
@@ -98,9 +101,9 @@ namespace SpellEditor.Sources.SpellStringTools
                 nextToken.Type != TokenType.NUMBER)
             {
                 if (prevToken == null || nextToken == null)
-                    Console.WriteLine($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
+                    Logger.Info($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
                 else
-                    Console.WriteLine($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
+                    Logger.Info($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
                 return false;
             }
             return true;
@@ -116,7 +119,7 @@ namespace SpellEditor.Sources.SpellStringTools
                 int newIndex = index - tries;
                 if (newIndex < 0)
                 {
-                    Console.WriteLine("Unable to find previous resolved token for " + token);
+                    Logger.Info("Unable to find previous resolved token for " + token);
                     return prevToken;
                 }
                 prevToken = tokens[newIndex];
@@ -200,12 +203,12 @@ namespace SpellEditor.Sources.SpellStringTools
                         }
                     default:
                         {
-                            Console.WriteLine($"Unknown token: '{ token.Value }'");
+                            Logger.Info($"Unknown token: '{ token.Value }'");
                             break;
                         }
                 }
                 tokens.Add(token);
-                Console.WriteLine($"Token: [{ token.Value }, {token.Type.ToString() }, { token.ResolvedValue }]");
+                Logger.Info($"Token: [{ token.Value }, {token.Type.ToString() }, { token.ResolvedValue }]");
             }
             return tokens;
         }

@@ -1,4 +1,5 @@
-﻿using SpellEditor.Sources.DBC;
+﻿using NLog;
+using SpellEditor.Sources.DBC;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -7,6 +8,8 @@ namespace SpellEditor.Sources.SpellStringTools
 {
     internal class SpellStringReferenceResolver
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private static string STR_SECONDS = " seconds";
         private static string STR_INFINITE_DUR = "until cancelled";
         private static string STR_HEARTHSTONE_LOC = "(hearthstone location)";
@@ -27,7 +30,7 @@ namespace SpellEditor.Sources.SpellStringTools
                     var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                     if (dbc == null)
                     {
-                        Console.WriteLine("Unable to handle $r spell string token, SpellRange.dbc not loaded");
+                        Logger.Info("Unable to handle $r spell string token, SpellRange.dbc not loaded");
                         return str;
                     }
                     var rangeDbc = (SpellRange)dbc;
@@ -78,13 +81,13 @@ namespace SpellEditor.Sources.SpellStringTools
                         }
                         else if (index == 4)
                         {
-                            Console.WriteLine("Unable to handle $a token in spell string");
+                            Logger.Info("Unable to handle $a token in spell string");
                             return str;
                         }
                         var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
                         if (dbc == null)
                         {
-                            Console.WriteLine("Unable to handle $a token in spell string, SpellRadius dbc not loaded");
+                            Logger.Info("Unable to handle $a token in spell string, SpellRadius dbc not loaded");
                             return str;
                         }
                         var radiusDbc = (SpellRadius)dbc;
@@ -534,7 +537,7 @@ namespace SpellEditor.Sources.SpellStringTools
             {
                 if (!uint.TryParse(match.Value.Substring(1), out uint otherId))
                 {
-                    Console.WriteLine("Failed to parse other spell id: " + rawString);
+                    Logger.Info("Failed to parse other spell id: " + rawString);
                     return rawString;
                 }
                 var otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
