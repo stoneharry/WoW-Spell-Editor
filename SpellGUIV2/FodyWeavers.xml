@@ -1,4 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers>
-  <Costura />
+  <Costura>
+    <Unmanaged32Assemblies>
+      StormLib
+    </Unmanaged32Assemblies>
+    <Unmanaged64Assemblies>
+      StormLib
+    </Unmanaged64Assemblies>
+  </Costura>
 </Weavers>
