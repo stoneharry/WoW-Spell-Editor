@@ -191,7 +191,7 @@ namespace SpellEditor.Sources.DBC
                     // Write each record
                     for (int i = 0; i < Header.RecordCount; ++i)
                     {
-                        if (i % 250 == 0)
+                        if (updateProgress != null && i % 250 == 0)
                         {
                             // Visual studio says these casts are redundant but it does not work without them
                             double percent = (double)i / (double)Header.RecordCount;

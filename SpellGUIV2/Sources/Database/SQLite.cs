@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SpellEditor.Sources.Database
 {
-    class SQLite : IDatabaseAdapter
+    public class SQLite : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
         private readonly SQLiteConnection _connection;

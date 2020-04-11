@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SpellEditor.Sources.Database
 {
-    class MySQL : IDatabaseAdapter
+    public class MySQL : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
