@@ -121,6 +121,11 @@ namespace SpellEditor.Sources.DBC
                                         entry.Add(field.Name, reader.ReadUInt32());
                                         break;
                                     }
+                                case BindingType.UINT8:
+                                    {
+                                        entry.Add(field.Name, reader.ReadByte());
+                                        break;
+                                    }
                                 case BindingType.FLOAT:
                                     {
                                         entry.Add(field.Name, reader.ReadSingle());

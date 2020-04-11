@@ -40,6 +40,11 @@ namespace SpellEditor.Sources.Binding
                             size += sizeof(uint);
                             break;
                         }
+                    case BindingType.UINT8:
+                        {
+                            size += sizeof(byte);
+                            break;
+                        }
                     case BindingType.FLOAT:
                         {
                             size += sizeof(float);
