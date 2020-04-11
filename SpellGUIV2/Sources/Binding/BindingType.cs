@@ -4,6 +4,7 @@
     {
         INT,
         UINT,
+        UINT8,
         FLOAT,
         DOUBLE,
         UNKNOWN,

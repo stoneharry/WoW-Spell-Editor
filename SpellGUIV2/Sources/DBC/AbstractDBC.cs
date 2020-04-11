@@ -104,6 +104,7 @@ namespace SpellEditor.Sources.DBC
                         {
                             case BindingType.INT:
                             case BindingType.UINT:
+                            case BindingType.UINT8:
                                 {
                                     q.Append(string.Format("'{0}', ", recordMap[field.Name]));
                                     break;
@@ -215,6 +216,13 @@ namespace SpellEditor.Sources.DBC
                                     writer.Write(value);
                                 else
                                     writer.Write(0u);
+                            }
+                            else if (entry.Type == BindingType.UINT8)
+                            {
+                                if (byte.TryParse(data, out byte value))
+                                    writer.Write(value);
+                                else
+                                    writer.Write(byte.MinValue);
                             }
                             else if (entry.Type == BindingType.FLOAT)
                             {

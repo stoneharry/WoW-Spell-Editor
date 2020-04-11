@@ -107,6 +107,9 @@ namespace SpellEditor.Sources.Database
                     case BindingType.INT:
                         str.Append($@"`{field.Name}` int(11) NOT NULL DEFAULT '0', ");
                         break;
+                    case BindingType.UINT8:
+                        str.Append($@"`{field.Name}` tinyint unsigned NOT NULL DEFAULT '0', ");
+                        break;
                     case BindingType.FLOAT:
                         str.Append($@"`{field.Name}` FLOAT NOT NULL DEFAULT '0', ");
                         break;
