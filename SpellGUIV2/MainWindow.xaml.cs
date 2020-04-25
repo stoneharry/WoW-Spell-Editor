@@ -2060,7 +2060,7 @@ namespace SpellEditor
             {
                 updateProgress("Updating text control's...");
                 int i;
-                var maxColumns = numColumns >= spellDescGenFields.Count ? spellDescGenFields.Count - 1 : numColumns;
+                var maxColumns = numColumns > spellDescGenFields.Count ? spellDescGenFields.Count : numColumns;
                 for (i = 0; i < maxColumns; ++i)
                 {
                     spellDescGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
