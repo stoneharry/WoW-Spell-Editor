@@ -153,6 +153,8 @@ namespace SpellEditor.Sources.DBC
                 var orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
                 var rows = adapter.Query(string.Format($"SELECT * FROM `{bindingName}`{orderClause}")).Rows;
                 uint numRows = uint.Parse(rows.Count.ToString());
+                if (numRows == 0)
+                    throw new Exception("No rows to export");
 
                 Header = new DBCHeader();
                 Header.FieldCount = (uint)binding.Fields.Count();

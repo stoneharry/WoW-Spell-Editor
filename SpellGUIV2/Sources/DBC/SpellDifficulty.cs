@@ -40,6 +40,7 @@ namespace SpellEditor.Sources.DBC
                     var difficulty = record["Difficulties" + diffIndex].ToString();
                     content += difficulty + ", ";
                     tooltip += "[" + difficulty + "] ";
+                    // FIXME(Harry): This is VERY slow connecting to a remote server, could do with a refactor
                     var rows = adapter.Query(string.Format("SELECT * FROM `{0}` WHERE `ID` = '{1}' LIMIT 1", "spell", difficulty)).Rows;
                     if (rows.Count > 0)
                     {

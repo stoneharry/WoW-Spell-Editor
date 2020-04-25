@@ -24,6 +24,7 @@ namespace HeadlessExport
 
                 Console.WriteLine("Exporting all DBC files...");
                 var bindingManager = BindingManager.GetInstance();
+                Console.WriteLine($"Got { bindingManager.GetAllBindings().Count() } bindings to export");
                 foreach (var binding in bindingManager.GetAllBindings())
                 {
                     Console.WriteLine($"Exporting { binding.Name }...");
