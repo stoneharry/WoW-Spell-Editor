@@ -1,0 +1,20 @@
+# GameObjectDisplayInfo structure for 3.3.5a 12340
+uint ID
+uint ModelName string
+uint Sound1
+uint Sound2
+uint Sound3
+uint Sound4
+uint Sound5
+uint Sound6
+uint Sound7
+uint Sound8
+uint Sound9
+uint Sound10
+float GeoBoxMinX
+float GeoBoxMinY
+float GeoBoxMinZ
+float GeoBoxMaxX
+float GeoBoxMaxY
+float GeoBoxMaxZ
+uint ObjectEffectPackageID

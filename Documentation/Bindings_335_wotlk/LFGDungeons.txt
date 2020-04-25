@@ -1,0 +1,49 @@
+uint id
+uint name1 string
+uint name2 string
+uint name3 string
+uint name4 string
+uint name5 string
+uint name6 string
+uint name7 string
+uint name8 string
+uint name9 string
+uint name10 string
+uint name11 string
+uint name12 string
+uint name13 string
+uint name14 string
+uint name15 string
+uint name16 string
+uint nameFlags
+uint minLevel
+uint maxLevel
+uint targetLevel
+uint targetLevelMin
+uint targetLevelMax
+uint mapId
+uint difficulty
+uint flags
+uint typeId
+int faction
+uint texture string
+uint expansion
+uint orderId
+uint groupId
+uint tooltip1 string
+uint tooltip2 string
+uint tooltip3 string
+uint tooltip4 string
+uint tooltip5 string
+uint tooltip6 string
+uint tooltip7 string
+uint tooltip8 string
+uint tooltip9 string
+uint tooltip10 string
+uint tooltip11 string
+uint tooltip12 string
+uint tooltip13 string
+uint tooltip14 string
+uint tooltip15 string
+uint tooltip16 string
+uint tooltipFlags
