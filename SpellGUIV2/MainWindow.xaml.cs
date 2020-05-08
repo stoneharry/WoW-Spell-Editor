@@ -720,7 +720,7 @@ namespace SpellEditor
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
                 manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, GetLocale()));
             }
             manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
             spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
