@@ -55,13 +55,13 @@ namespace SpellEditor.Sources.DBC
                 watch.Start();
                 Logger.Debug("Loading SpellDifficulty tooltips lazily");
                 var column = "SpellName" + (locale - 1);
-                for (int i = 0; i < Lookups.Count; ++i)
+                for (int i = 1; i < Lookups.Count; ++i)
                 {
                     if (i % 25 == 0)
                     {
                         Logger.Debug($"Loaded {i} / {Lookups.Count} difficulty tooltips");
                     }
-                    var record = Body.RecordMaps[i];
+                    var record = Body.RecordMaps[i - 1];
                     var label = Lookups[i].ItemLabel();
                     var tooltip = "";
                     var content = ": ";
