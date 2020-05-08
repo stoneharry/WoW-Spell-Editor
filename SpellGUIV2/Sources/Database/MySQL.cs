@@ -61,6 +61,23 @@ namespace SpellEditor.Sources.Database
             }
         }
 
+        public object QuerySingleValue(string query)
+        {
+            lock (_syncLock)
+            {
+                using (var adapter = new MySqlDataAdapter(query, _connection))
+                {
+                    using (var dataSet = new DataSet())
+                    {
+                        adapter.SelectCommand.CommandTimeout = 0;
+                        adapter.Fill(dataSet);
+                        var table = dataSet.Tables[0];
+                        return table.Rows.Count > 0 ? table.Rows[0][0] : null;
+                    }
+                }
+            }
+        }
+
         public void CommitChanges(string query, DataTable dataTable)
         {
             if (Updating)
@@ -85,11 +102,13 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
-
-            using (var cmd = _connection.CreateCommand())
+            lock (_syncLock)
             {
-                cmd.CommandText = p;
-                cmd.ExecuteNonQuery();
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = p;
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 

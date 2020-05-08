@@ -70,10 +70,10 @@ namespace SpellEditor.Sources.DBC
                         var difficulty = record["Difficulties" + diffIndex].ToString();
                         content += difficulty + ", ";
                         tooltip += "[" + difficulty + "] ";
-                        var rows = adapter.Query(string.Format("SELECT {0} FROM `{1}` WHERE `ID` = '{2}' LIMIT 1", column, "spell", difficulty)).Rows;
-                        if (rows.Count > 0)
+                        var result = adapter.QuerySingleValue(string.Format("SELECT {0} FROM `{1}` WHERE `ID` = '{2}' LIMIT 1", column, "spell", difficulty));
+                        if (result != null)
                         {
-                            tooltip += rows[0][column].ToString();
+                            tooltip += result.ToString();
                         }
                         tooltip += "\n";
                     }
