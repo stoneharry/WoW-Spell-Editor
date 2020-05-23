@@ -128,7 +128,7 @@ namespace SpellEditor.Sources.DBC
                 image.VerticalAlignment = VerticalAlignment.Top;
                 image.HorizontalAlignment = HorizontalAlignment.Left;
                 image.Name = "Index_" + entry.Offset;
-                image.ToolTip = entry.Name + ".blp";
+                image.ToolTip = entry.ID + " - " + entry.Name + ".blp";
                 image.IsVisibleChanged += IsImageVisibleChanged;
                 image.MouseDown += ImageDown;
             }
@@ -144,7 +144,7 @@ namespace SpellEditor.Sources.DBC
             var source = image.Source;
             if (source == null && (bool)e.NewValue)
             {
-                var path = image.ToolTip.ToString();
+                var path = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
                 await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
             }
             image.Source = source;
