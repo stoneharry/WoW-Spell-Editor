@@ -1,0 +1,11 @@
+uint id
+uint pathId
+uint nodeIndex
+uint mapId
+float x
+float y
+float z
+uint flags
+uint delay
+uint arrivalEventId
+uint departureEventId

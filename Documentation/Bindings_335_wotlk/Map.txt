@@ -1,0 +1,67 @@
+# Map.dbc structure for 3.3.5a 12340
+uint ID
+uint DirectoryName string
+uint InstanceType
+uint Flags
+uint PVP
+uint MapName_Lang_enUS string
+uint MapName_Lang_enGB string
+uint MapName_Lang_koKR string
+uint MapName_Lang_frFR string
+uint MapName_Lang_deDE string
+uint MapName_Lang_enCN string
+uint MapName_Lang_zhCN string
+uint MapName_Lang_enTW string
+uint MapName_Lang_zhTW string
+uint MapName_Lang_esES string
+uint MapName_Lang_esMX string
+uint MapName_Lang_ruRU string
+uint MapName_Lang_ptPT string
+uint MapName_Lang_ptBR string
+uint MapName_Lang_itIT string
+uint MapName_Lang_Unk string
+uint MapName_Lang_Mask
+uint AreaTableID
+uint MapDescription0_Lang_enUS string
+uint MapDescription0_Lang_enGB string
+uint MapDescription0_Lang_koKR string
+uint MapDescription0_Lang_frFR string
+uint MapDescription0_Lang_deDE string
+uint MapDescription0_Lang_enCN string
+uint MapDescription0_Lang_zhCN string
+uint MapDescription0_Lang_enTW string
+uint MapDescription0_Lang_zhTW string
+uint MapDescription0_Lang_esES string
+uint MapDescription0_Lang_esMX string
+uint MapDescription0_Lang_ruRU string
+uint MapDescription0_Lang_ptPT string
+uint MapDescription0_Lang_ptBR string
+uint MapDescription0_Lang_itIT string
+uint MapDescription0_Lang_Unk string
+uint MapDescription0_Lang_Mask
+uint MapDescription1_Lang_enUS string
+uint MapDescription1_Lang_enGB string
+uint MapDescription1_Lang_koKR string
+uint MapDescription1_Lang_frFR string
+uint MapDescription1_Lang_deDE string
+uint MapDescription1_Lang_enCN string
+uint MapDescription1_Lang_zhCN string
+uint MapDescription1_Lang_enTW string
+uint MapDescription1_Lang_zhTW string
+uint MapDescription1_Lang_esES string
+uint MapDescription1_Lang_esMX string
+uint MapDescription1_Lang_ruRU string
+uint MapDescription1_Lang_ptPT string
+uint MapDescription1_Lang_ptBR string
+uint MapDescription1_Lang_itIT string
+uint MapDescription1_Lang_Unk string
+uint MapDescription1_Lang_Mask
+uint LoadingScreenID
+float MinimapIconScale
+int CorpseMapID
+float CorpseX
+float CorpseY
+int TimeOfDayOverride
+uint ExpansionID
+uint RaidOffset
+uint MaxPlayers
