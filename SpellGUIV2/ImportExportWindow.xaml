@@ -21,7 +21,22 @@
         <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
         <TabItem Header="{DynamicResource butImportExportWindowImport}">
             <ScrollViewer>
-                <UniformGrid Name="ImportGrid" Columns="1" Margin="5"/>
+                <Grid Name="ImportGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="The required DBCs are checked by default." Margin="10" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                    <Button Content="Import Checked DBC Files" Margin="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Click="ImportClick"/>
+                    <UniformGrid Name="ImportGridDbcs" Columns="1" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"/>
+                </Grid>
             </ScrollViewer>
         </TabItem>
             <TabItem Header="{DynamicResource butImportExportWindowExport}">
