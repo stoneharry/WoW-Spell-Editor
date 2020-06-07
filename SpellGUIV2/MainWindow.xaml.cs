@@ -1590,15 +1590,6 @@ namespace SpellEditor
                         row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
                         row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
                     }
-                    else
-                    {
-                        row["EffectImplicitTargetA1"] = uint.Parse(SpellMask11.Text);
-                        row["EffectImplicitTargetA2"] = uint.Parse(SpellMask21.Text);
-                        row["EffectImplicitTargetA3"] = uint.Parse(SpellMask31.Text);
-                        row["EffectImplicitTargetB1"] = uint.Parse(SpellMask12.Text);
-                        row["EffectImplicitTargetB2"] = uint.Parse(SpellMask22.Text);
-                        row["EffectImplicitTargetB3"] = uint.Parse(SpellMask32.Text);
-                    }
                     row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
                     row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
                     row["ManaCostPercentage"] = uint.Parse(ManaCostPercent.Text);
@@ -2571,32 +2562,10 @@ namespace SpellEditor
 
                 if (!isWotlkOrGreater)
                 {
-                    /*
-                    uint EffectImplicitTargetA1
-                    uint EffectImplicitTargetA2
-                    uint EffectImplicitTargetA3
-                    uint EffectImplicitTargetB1
-                    uint EffectImplicitTargetB2
-                    uint EffectImplicitTargetB3
-                    */
-                    SpellMask11.ThreadSafeText = row["EffectImplicitTargetA1"].ToString();
-                    SpellMask21.ThreadSafeText = row["EffectImplicitTargetA2"].ToString();
-                    SpellMask31.ThreadSafeText = row["EffectImplicitTargetA3"].ToString();
-                    SpellMask12.ThreadSafeText = row["EffectImplicitTargetB1"].ToString();
-                    SpellMask22.ThreadSafeText = row["EffectImplicitTargetB2"].ToString();
-                    SpellMask32.ThreadSafeText = row["EffectImplicitTargetB3"].ToString();
-
                     uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
                     SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
-
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA1"].ToString()), SpellMask11);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA2"].ToString()), SpellMask21);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA3"].ToString()), SpellMask31);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB1"].ToString()), SpellMask12);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB2"].ToString()), SpellMask22);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB3"].ToString()), SpellMask32);
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
                         spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
@@ -3415,8 +3384,14 @@ namespace SpellEditor
 
         private void ToggleAllSpellMaskCheckBoxes(bool enabled)
         {
+            SpellMask11.IsEnabled = enabled;
+            SpellMask12.IsEnabled = enabled;
             SpellMask13.IsEnabled = enabled;
+            SpellMask21.IsEnabled = enabled;
+            SpellMask22.IsEnabled = enabled;
             SpellMask23.IsEnabled = enabled;
+            SpellMask31.IsEnabled = enabled;
+            SpellMask32.IsEnabled = enabled;
             SpellMask33.IsEnabled = enabled;
         }
         #endregion
