@@ -466,6 +466,28 @@ namespace SpellEditor
                 ChannelInterruptFlagsGrid.Children.Add(box);
                 interrupts3.Add(box);
             }
+
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
+            {
+                S1.Content = SafeTryFindResource("checkboxPhysical");
+                S2.Content = SafeTryFindResource("checkboxHoly");
+                S3.Content = SafeTryFindResource("checkboxFire");
+                S4.Content = SafeTryFindResource("checkboxNature");
+                S5.Content = SafeTryFindResource("checkboxFrost");
+                S6.Content = SafeTryFindResource("checkboxShadow");
+                S7.Content = SafeTryFindResource("checkboxArcane");
+            }
+            else
+            {
+                S1.Content = SafeTryFindResource("checkboxHoly");
+                S2.Content = SafeTryFindResource("checkboxFire");
+                S3.Content = SafeTryFindResource("checkboxNature");
+                S4.Content = SafeTryFindResource("checkboxFrost");
+                S5.Content = SafeTryFindResource("checkboxShadow");
+                S6.Content = SafeTryFindResource("checkboxArcane");
+                S7.Content = "Unused";
+            }
+            S7.IsEnabled = WoWVersionManager.IsTbcOrGreaterSelected;
         }
         #endregion
 
@@ -1616,7 +1638,50 @@ namespace SpellEditor
                     row["EffectDamageMultiplier1"] = float.Parse(EffectDamageMultiplier1.Text);
                     row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
                     row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
-                    row["SchoolMask"] = (S1.IsChecked.Value ? 0x01 : (uint)0x00) + (S2.IsChecked.Value ? 0x02 : (uint)0x00) + (S3.IsChecked.Value ? 0x04 : (uint)0x00) + (S4.IsChecked.Value ? 0x08 : (uint)0x00) + (S5.IsChecked.Value ? 0x10 : (uint)0x00) + (S6.IsChecked.Value ? 0x20 : (uint)0x00) + (S7.IsChecked.Value ? 0x40 : (uint)0x00);
+
+                    uint schoolMask = 0;
+                    if (isTbcOrGreater)
+                    {
+                        schoolMask = (S1.IsChecked.Value ? 0x01 : (uint)0x00) +
+                            (S2.IsChecked.Value ? 0x02 : (uint)0x00) +
+                            (S3.IsChecked.Value ? 0x04 : (uint)0x00) +
+                            (S4.IsChecked.Value ? 0x08 : (uint)0x00) +
+                            (S5.IsChecked.Value ? 0x10 : (uint)0x00) +
+                            (S6.IsChecked.Value ? 0x20 : (uint)0x00) +
+                            (S7.IsChecked.Value ? 0x40 : (uint)0x00);
+                    }
+                    else
+                    {
+                        var schoolMaskBoxes = new List<CheckBox>();
+                        schoolMaskBoxes.Add(S1);
+                        schoolMaskBoxes.Add(S2);
+                        schoolMaskBoxes.Add(S3);
+                        schoolMaskBoxes.Add(S4);
+                        schoolMaskBoxes.Add(S5);
+                        schoolMaskBoxes.Add(S6);
+                        var checkedMaskCount = schoolMaskBoxes.Where((box) => box.IsChecked.HasValue && box.IsChecked.Value).Count();
+                        if (checkedMaskCount > 1)
+                        {
+                            throw new Exception($"A maximum of 1 damage school can be selected, you have selected { checkedMaskCount }.");
+                        }
+                        if (checkedMaskCount > 0)
+                        {
+                            if (S1.IsChecked.HasValue && S1.IsChecked.Value)
+                                schoolMask = 1;
+                            else if (S2.IsChecked.HasValue && S2.IsChecked.Value)
+                                schoolMask = 2;
+                            else if (S3.IsChecked.HasValue && S3.IsChecked.Value)
+                                schoolMask = 3;
+                            else if (S4.IsChecked.HasValue && S4.IsChecked.Value)
+                                schoolMask = 4;
+                            else if (S5.IsChecked.HasValue && S5.IsChecked.Value)
+                                schoolMask = 5;
+                            else if (S6.IsChecked.HasValue && S6.IsChecked.Value)
+                                schoolMask = 6;
+                        }
+                    }
+                    row["SchoolMask"] = schoolMask;
+
                     if (isWotlkOrGreater)
                     {
                         row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
@@ -2639,13 +2704,27 @@ namespace SpellEditor
 
                 updateProgress("Updating school mask...");
                 mask = uint.Parse(row["SchoolMask"].ToString());
-                S1.ThreadSafeChecked = ((mask & 0x01) != 0);
-                S2.ThreadSafeChecked = ((mask & 0x02) != 0);
-                S3.ThreadSafeChecked = ((mask & 0x04) != 0);
-                S4.ThreadSafeChecked = ((mask & 0x08) != 0);
-                S5.ThreadSafeChecked = ((mask & 0x10) != 0);
-                S6.ThreadSafeChecked = ((mask & 0x20) != 0);
-                S7.ThreadSafeChecked = ((mask & 0x40) != 0);
+                if (isTbcOrGreater)
+                {
+                    S1.ThreadSafeChecked = ((mask & 0x01) != 0);
+                    S2.ThreadSafeChecked = ((mask & 0x02) != 0);
+                    S3.ThreadSafeChecked = ((mask & 0x04) != 0);
+                    S4.ThreadSafeChecked = ((mask & 0x08) != 0);
+                    S5.ThreadSafeChecked = ((mask & 0x10) != 0);
+                    S6.ThreadSafeChecked = ((mask & 0x20) != 0);
+                    S7.ThreadSafeChecked = ((mask & 0x40) != 0);
+                }
+                else
+                {
+                    S1.ThreadSafeChecked = mask == 1;
+                    S2.ThreadSafeChecked = mask == 2;
+                    S3.ThreadSafeChecked = mask == 3;
+                    S4.ThreadSafeChecked = mask == 4;
+                    S5.ThreadSafeChecked = mask == 5;
+                    S6.ThreadSafeChecked = mask == 6;
+                    S7.ThreadSafeChecked = mask == 7;
+                }
+
 
                 if (isWotlkOrGreater)
                 {

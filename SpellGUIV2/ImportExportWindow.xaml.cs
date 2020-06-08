@@ -16,9 +16,9 @@ namespace SpellEditor
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDatabaseAdapter _Adapter;
-        public string MpqArchiveName;
-        public List<string> BindingImportList = new List<string>();
-        public List<string> BindingExportList = new List<string>();
+        public volatile string MpqArchiveName;
+        public volatile List<string> BindingImportList = new List<string>();
+        public volatile List<string> BindingExportList = new List<string>();
 
         public bool IsDataSelected() => BindingImportList.Count > 0 || BindingExportList.Count > 0;
 
@@ -106,7 +106,7 @@ namespace SpellEditor
         private void ClickHandler(bool isImport)
         {
             var bindingNameList = new List<string>();
-            var children = isImport ? ImportGrid.Children : ExportGridDbcs.Children;
+            var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
             var prefix = isImport ? "Import" : "Export";
             foreach (var element in children)
             {
