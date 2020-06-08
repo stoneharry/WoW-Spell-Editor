@@ -2041,12 +2041,7 @@ namespace SpellEditor
             {
                 updating = true;
 
-                controller = await this.ShowProgressAsync(SafeTryFindResource("UpdateMainWindow1"), string.Format(SafeTryFindResource("UpdateMainWindow2"), selectedID));
-                controller.SetCancelable(false);
-
-                loadSpell(controller.SetMessage);
-
-                await controller.CloseAsync();
+                loadSpell(LoadSpellReporter);
 
                 updating = false;
             }
@@ -2058,6 +2053,11 @@ namespace SpellEditor
                     await controller.CloseAsync();
                 HandleErrorMessage(ex.Message);
             }
+        }
+
+        public void LoadSpellReporter(string value)
+        {
+            Logger.Debug("[Spell Load] " + value);
         }
         #endregion
 
