@@ -1000,6 +1000,12 @@
                                 <RowDefinition Height="AUTO"/>
                                 <RowDefinition Height="AUTO"/>
                                 <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
+                                <RowDefinition Height="AUTO"/>
                             </Grid.RowDefinitions>
                             <Label Content="This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models." Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
                             <Label Content="Database Starting ID" Margin="5" Grid.Row="1" Grid.Column="0"/>
@@ -1016,7 +1022,22 @@
                             <TextBox Name="MapBuilderCoordZ" Text="-144" Margin="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"/>
                             <Label Content="Cell Size" Margin="5" Grid.Row="6" Grid.Column="0"/>
                             <TextBox Name="MapBuilderCellSize" Text="7" Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Button Content="Generate" Margin="40,5,40,5" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Click="ButtonClickVisualMapBuild"/>
+                            <Label Content="Creature.sql Query Template" Margin="5" Grid.Row="7" Grid.Column="0"/>
+                            <ScrollViewer Grid.Row="7" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
+                                <TextBox Name="MapBuilderCreatureTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
+                                         AcceptsReturn="True" Margin="5"/>
+                            </ScrollViewer>
+                            <Label Content="Creature_Model_Info.sql Query Template" Margin="5" Grid.Row="9" Grid.Column="0"/>
+                            <ScrollViewer Grid.Row="9" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
+                                <TextBox Name="MapBuilderCreatureModelInfoTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
+                                         AcceptsReturn="True" Margin="5"/>
+                            </ScrollViewer>
+                            <Label Content="Creature_Template.sql Query Template" Margin="5" Grid.Row="11" Grid.Column="0"/>
+                            <ScrollViewer Grid.Row="11" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
+                                <TextBox Name="MapBuilderCreatureTemplateTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
+                                         AcceptsReturn="True" Margin="5"/>
+                            </ScrollViewer>
+                            <Button Content="Generate" Margin="40,5,40,5" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Click="ButtonClickVisualMapBuild"/>
                         </Grid>
                     </TabItem>
                 </TabControl>

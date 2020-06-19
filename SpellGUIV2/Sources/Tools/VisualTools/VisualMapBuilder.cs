@@ -20,6 +20,9 @@ namespace SpellEditor.Sources.Tools.VisualTools
         public int BottomRightY;
         public int CoordZ;
         public int CellSize;
+        public string CreatureQuery;
+        public string CreatureDisplayInfoQuery;
+        public string CreatureTemplateQuery;
 
         public VisualMapBuilder()
         {
@@ -47,13 +50,15 @@ namespace SpellEditor.Sources.Tools.VisualTools
             Logger.Info("Creating Export\\CreatureDisplayInfo.dbc...");
             displayInfo.SaveToFile("CreatureDisplayInfo");
 
-            Logger.Info("Creating creature_template queries...");
-            //generateTemplateQueries();
-
-            Logger.Info("Creating creature queries...");
-            //generateSpawnQueries();
+            Logger.Info("Creating queries...");
+            SaveQueries(files);
 
             Logger.Info("Done.");
+        }
+
+        public void SaveQueries(List<string> files)
+        {
+
         }
 
         private void PopulateNewEntries(MutableGenericDbc modelData, MutableGenericDbc displayInfo, List<string> files)

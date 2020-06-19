@@ -2119,10 +2119,42 @@ namespace SpellEditor
                 BottomRightX = int.Parse(MapBuilderBottomRightCoordX.Text),
                 BottomRightY = int.Parse(MapBuilderBottomRightCoordY.Text),
                 CoordZ = int.Parse(MapBuilderCoordZ.Text),
-                CellSize = int.Parse(MapBuilderCellSize.Text)
+                CellSize = int.Parse(MapBuilderCellSize.Text),
+                CreatureQuery = GetQueryFromTemplateFile("VisualMapBuilder\\creature.sql_template.txt"),
+                CreatureDisplayInfoQuery = GetQueryFromTemplateFile("VisualMapBuilder\\creature_model_info.sql_template.txt"),
+                CreatureTemplateQuery = GetQueryFromTemplateFile("VisualMapBuilder\\creature_template.sql_template.txt")
             };
             mapBuilder.RunBuild();
             ShowFlyoutMessage("Created Map Builder files successfully in the Export folder.");
+        }
+
+        private string GetQueryFromTemplateFile(string path)
+        {
+            var queryLines = new List<string>();
+            foreach (var line in File.ReadAllLines(path))
+            {
+                if (!line.StartsWith("#"))
+                {
+                    queryLines.Add(line);
+                }
+            }
+            return string.Join(" ", queryLines);
+        }
+
+        private void MapBuilderTemplate_Initialized(object sender, EventArgs e)
+        {
+            if (sender == MapBuilderCreatureTemplate)
+            {
+                MapBuilderCreatureTemplate.Text = File.ReadAllText("VisualMapBuilder\\creature.sql_template.txt");
+            }
+            else if (sender == MapBuilderCreatureModelInfoTemplate)
+            {
+                MapBuilderCreatureModelInfoTemplate.Text = File.ReadAllText("VisualMapBuilder\\creature_model_info.sql_template.txt");
+            }
+            else if (sender == MapBuilderCreatureTemplateTemplate)
+            {
+                MapBuilderCreatureTemplateTemplate.Text = File.ReadAllText("VisualMapBuilder\\creature_template.sql_template.txt");
+            }
         }
         #endregion
 
