@@ -1,9 +1,11 @@
-﻿using NLog;
+﻿using MySql.Data.MySqlClient;
+using NLog;
 using SpellEditor.Sources.DBC;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace SpellEditor.Sources.Tools.VisualTools
 {
@@ -56,73 +58,114 @@ namespace SpellEditor.Sources.Tools.VisualTools
             Logger.Info("Done.");
         }
 
-        public void SaveQueries(List<string> files)
-        {
-
-        }
-
         private void PopulateNewEntries(MutableGenericDbc modelData, MutableGenericDbc displayInfo, List<string> files)
         {
             uint entry = DbStartingId;
             files.ForEach((file) =>
             {
                 // Hardcoded for wotlk 3.3.5
-                var entryData = new Dictionary<string, object>();
-                entryData.Add("id", entry++);
-                entryData.Add("flags", 0);
-                entryData.Add("modelPath", GetPathRelativeToSpellDir(file));
-                entryData.Add("alternateModel", 0);
-                entryData.Add("sizeClass", 1);
-                entryData.Add("modelScale", 1);
-                entryData.Add("bloodId", 0);
-                entryData.Add("footprint", 0);
-                entryData.Add("footprintTextureLength", 0);
-                entryData.Add("footprintTextureWidth", 0);
-                entryData.Add("footprintParticleScale", 0);
-                entryData.Add("foleyMaterialId", 0);
-                entryData.Add("footstepShakeSize", 0);
-                entryData.Add("deathThudShakeSize", 0);
-                entryData.Add("soundData", 0);
-                entryData.Add("collisionWidth", 0);
-                entryData.Add("collisionHeight", 0);
-                entryData.Add("mountHeight", 0);
-                entryData.Add("geoBoxMin1", 0);
-                entryData.Add("geoBoxMin2", 0);
-                entryData.Add("geoBoxMin3", 0);
-                entryData.Add("geoBoxMax1", 0);
-                entryData.Add("geoBoxMax2", 0);
-                entryData.Add("geoBoxMax3", 0);
-                entryData.Add("worldEffectScale", 1);
-                entryData.Add("attachedEffectScale", 0);
-                entryData.Add("unk5", 0);
-                entryData.Add("unk6", 0);
-                modelData.AddRecord(entryData);
+                modelData.AddRecord(new Dictionary<string, object>
+                {
+                    { "id", entry++ },
+                    { "flags", 0 },
+                    { "modelPath", GetPathRelativeToSpellDir(file) },
+                    { "alternateModel", 0 },
+                    { "sizeClass", 1 },
+                    { "modelScale", 1 },
+                    { "bloodId", 0 },
+                    { "footprint", 0 },
+                    { "footprintTextureLength", 0 },
+                    { "footprintTextureWidth", 0 },
+                    { "footprintParticleScale", 0 },
+                    { "foleyMaterialId", 0 },
+                    { "footstepShakeSize", 0 },
+                    { "deathThudShakeSize", 0 },
+                    { "soundData", 0 },
+                    { "collisionWidth", 0 },
+                    { "collisionHeight", 0 },
+                    { "mountHeight", 0 },
+                    { "geoBoxMin1", 0 },
+                    { "geoBoxMin2", 0 },
+                    { "geoBoxMin3", 0 },
+                    { "geoBoxMax1", 0 },
+                    { "geoBoxMax2", 0 },
+                    { "geoBoxMax3", 0 },
+                    { "worldEffectScale", 1 },
+                    { "attachedEffectScale", 0 },
+                    { "unk5", 0 },
+                    { "unk6", 0 }
+                });
             });
 
             entry = DbStartingId;
             files.ForEach((file) =>
             {
                 // Hardcoded for wotlk 3.3.5
-                var entryData = new Dictionary<string, object>();
-                entryData.Add("ID", entry);
-                entryData.Add("ModelID", entry);
-                entryData.Add("SoundID", 0);
-                entryData.Add("ExtendedDisplayInfoID", 0);
-                entryData.Add("CreatureModelScale", 1);
-                entryData.Add("CreatureModelAlpha", 255);
-                entryData.Add("TextureVariation_1", 0);
-                entryData.Add("TextureVariation_2", 0);
-                entryData.Add("TextureVariation_3", 0);
-                entryData.Add("PortraitTextureName", 0);
-                entryData.Add("BloodLevel", 0);
-                entryData.Add("BloodID", 0);
-                entryData.Add("NPCSoundID", 0);
-                entryData.Add("ParticleColorID", 0);
-                entryData.Add("CreatureGeosetData", 0);
-                entryData.Add("ObjectEffectPackageID", 0);
-                displayInfo.AddRecord(entryData);
+                displayInfo.AddRecord(new Dictionary<string, object>
+                {
+                    { "ID", entry },
+                    { "ModelID", entry },
+                    { "SoundID", 0 },
+                    { "ExtendedDisplayInfoID", 0 },
+                    { "CreatureModelScale", 1 },
+                    { "CreatureModelAlpha", 255 },
+                    { "TextureVariation_1", 0 },
+                    { "TextureVariation_2", 0 },
+                    { "TextureVariation_3", 0 },
+                    { "PortraitTextureName", 0 },
+                    { "BloodLevel", 0 },
+                    { "BloodID", 0 },
+                    { "NPCSoundID", 0 },
+                    { "ParticleColorID", 0 },
+                    { "CreatureGeosetData", 0 },
+                    { "ObjectEffectPackageID", 0 }
+                });
                 ++entry;
             });
+        }
+
+        private void SaveQueries(List<string> files)
+        {
+            SaveSpawnQueries(files);
+            SaveTemplateQueries(files);
+        }
+
+        private void SaveSpawnQueries(List<string> files)
+        {
+            var queries = new List<string>();
+            var entry = DbStartingId;
+            var currX = TopLeftX;
+            var currY = TopLeftY;
+            var limitX = BottomRightX;
+            var limitY = BottomRightY;
+            for (var i = 0; i < files.Count; ++i)
+            {
+                // id, map, zone, x, y, z, health
+                queries.Add(string.Format(CreatureQuery, entry++, MapId, 0, currX, currY, CoordZ, 100));
+                currX -= CellSize;
+                if (currX <= limitX)
+                {
+                    currX = TopLeftX;
+                    currY -= CellSize;
+                    if (currY <= limitY)
+                        throw new Exception("Spawned outside of defined grid.");
+                }
+            }
+            File.WriteAllLines("Export/Creature.sql", queries, UTF8Encoding.GetEncoding(0));
+        }
+
+        private void SaveTemplateQueries(List<string> files)
+        {
+            var queries = new List<string>();
+            var entry = DbStartingId;
+            for (var i = 0; i < files.Count; ++i)
+            {
+                var name = files[i].Substring(files[i].IndexOf("SPELL"));
+                queries.Add(string.Format(CreatureTemplateQuery, entry, entry, MySqlHelper.EscapeString(name)));
+                queries.Add(string.Format(CreatureDisplayInfoQuery, entry));
+                ++entry;
+            }
+            File.WriteAllLines("Export/CreatureTemplate.sql", queries, UTF8Encoding.GetEncoding(0));
         }
 
         private string GetPathRelativeToSpellDir(string path)

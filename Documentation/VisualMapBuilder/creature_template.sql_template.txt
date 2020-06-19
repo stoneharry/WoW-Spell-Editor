@@ -1,0 +1,4 @@
+# {0} = ID
+# {1} = DBC_ID
+# {2} = Spell model path (creature name)
+INSERT INTO `creature_template`(entry, modelid1, name, subname, IconName, faction) VALUES ('{0}', '{1}', "{2}", '', '', 35);
