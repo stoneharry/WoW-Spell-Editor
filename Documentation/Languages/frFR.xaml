@@ -264,6 +264,20 @@
 	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
 	<!--#endregion-->
 	
+	<!--#region MapBuilder-->
+	<system:String x:Key="MapBuilderDescription">This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models.</system:String>
+	<system:String x:Key="MapBuilderDbStartingId">Database Starting ID</system:String>
+	<system:String x:Key="MapBuilderMapId">Map ID</system:String>
+	<system:String x:Key="MapBuilderTopLeftCoord">Map Top Left Coordinate X, Y</system:String>
+	<system:String x:Key="MapBuilderBottomRightCoord">Map Bottom Right Coordinate X, Y</system:String>
+	<system:String x:Key="MapBuilderCoordZ">Map Coordinate Z</system:String>
+	<system:String x:Key="MapBuilderCellSize">Cell Size</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreature">Creature.sql Query Template</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql Query Template</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql Query Template</system:String>
+	<system:String x:Key="MapBuilderGenerateBtn">Generate</system:String>
+	<!--#endregion-->
+	
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
 		Inconnu 0 |

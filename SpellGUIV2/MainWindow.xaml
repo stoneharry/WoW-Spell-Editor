@@ -1007,37 +1007,37 @@
                                 <RowDefinition Height="AUTO"/>
                                 <RowDefinition Height="AUTO"/>
                             </Grid.RowDefinitions>
-                            <Label Content="This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models." Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
-                            <Label Content="Database Starting ID" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderDescription}" Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
+                            <Label Content="{DynamicResource MapBuilderDbStartingId}" Margin="5" Grid.Row="1" Grid.Column="0"/>
                             <TextBox Name="MapBuilderDbStartingId" Text="150000" Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Label Content="Map ID" Margin="5" Grid.Row="2" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderMapId}" Margin="5" Grid.Row="2" Grid.Column="0"/>
                             <TextBox Name="MapBuilderMapId" Text="13" Margin="5" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Label Content="Map Top Left Coordinate X, Y" Margin="5" Grid.Row="3" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderTopLeftCoord}" Margin="5" Grid.Row="3" Grid.Column="0"/>
                             <TextBox Name="MapBuilderTopLeftCoordX" Text="138" Margin="5" Grid.Row="3" Grid.Column="1"/>
                             <TextBox Name="MapBuilderTopLeftCoordY" Text="138" Margin="5" Grid.Row="3" Grid.Column="2"/>
-                            <Label Content="Map Bottom Right Coordinate X, Y" Margin="5" Grid.Row="4" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderBottomRightCoord}" Margin="5" Grid.Row="4" Grid.Column="0"/>
                             <TextBox Name="MapBuilderBottomRightCoordX" Text="-138" Margin="5" Grid.Row="4" Grid.Column="1"/>
                             <TextBox Name="MapBuilderBottomRightCoordY" Text="-138" Margin="5" Grid.Row="4" Grid.Column="2"/>
-                            <Label Content="Map Coordinate Z" Margin="5" Grid.Row="5" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderCoordZ}" Margin="5" Grid.Row="5" Grid.Column="0"/>
                             <TextBox Name="MapBuilderCoordZ" Text="-144" Margin="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Label Content="Cell Size" Margin="5" Grid.Row="6" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderCellSize}" Margin="5" Grid.Row="6" Grid.Column="0"/>
                             <TextBox Name="MapBuilderCellSize" Text="7" Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Label Content="Creature.sql Query Template" Margin="5" Grid.Row="7" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderDbQueryCreature}" Margin="5" Grid.Row="7" Grid.Column="0"/>
                             <ScrollViewer Grid.Row="7" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
                                 <TextBox Name="MapBuilderCreatureTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
                                          AcceptsReturn="True" Margin="5"/>
                             </ScrollViewer>
-                            <Label Content="Creature_Model_Info.sql Query Template" Margin="5" Grid.Row="9" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderDbQueryCreatureModelInfo}" Margin="5" Grid.Row="9" Grid.Column="0"/>
                             <ScrollViewer Grid.Row="9" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
                                 <TextBox Name="MapBuilderCreatureModelInfoTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
                                          AcceptsReturn="True" Margin="5"/>
                             </ScrollViewer>
-                            <Label Content="Creature_Template.sql Query Template" Margin="5" Grid.Row="11" Grid.Column="0"/>
+                            <Label Content="{DynamicResource MapBuilderDbQueryCreatureTemplate}" Margin="5" Grid.Row="11" Grid.Column="0"/>
                             <ScrollViewer Grid.Row="11" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="900" Margin="5" MaxHeight="150">
                                 <TextBox Name="MapBuilderCreatureTemplateTemplate" Initialized="MapBuilderTemplate_Initialized" TextWrapping="Wrap" 
                                          AcceptsReturn="True" Margin="5"/>
                             </ScrollViewer>
-                            <Button Content="Generate" Margin="40,5,40,5" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Click="ButtonClickVisualMapBuild"/>
+                            <Button Content="{DynamicResource MapBuilderGenerateBtn}" Margin="40,5,40,5" Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="3" Click="ButtonClickVisualMapBuild"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
