@@ -72,9 +72,9 @@ int EffectBaseDice3
 int EffectDicePerLevel1
 int EffectDicePerLevel2
 int EffectDicePerLevel3
-int EffectRealPointsPerLevel1
-int EffectRealPointsPerLevel2
-int EffectRealPointsPerLevel3
+float EffectRealPointsPerLevel1
+float EffectRealPointsPerLevel2
+float EffectRealPointsPerLevel3
 int EffectBasePoints1
 int EffectBasePoints2
 int EffectBasePoints3

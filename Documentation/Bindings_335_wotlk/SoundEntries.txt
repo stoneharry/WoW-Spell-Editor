@@ -1,0 +1,30 @@
+uint ID
+uint SoundType
+uint SoundName string
+uint Name1 string
+uint Name2 string
+uint Name3 string
+uint Name4 string
+uint Name5 string
+uint Name6 string
+uint Name7 string
+uint Name8 string
+uint Name9 string
+uint Name10 string
+uint Freq1
+uint Freq2
+uint Freq3
+uint Freq4
+uint Freq5
+uint Freq6
+uint Freq7
+uint Freq8
+uint Freq9
+uint Freq10
+uint FilePath string
+float Volume
+uint Flags
+float MinDistance
+float MaxDistance
+uint EAXDef
+uint SoundEntriesAdvancedID

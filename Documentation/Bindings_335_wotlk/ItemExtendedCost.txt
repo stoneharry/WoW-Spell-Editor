@@ -1,0 +1,16 @@
+uint id
+uint costHonour
+uint costArena
+uint unknown1
+uint requiredItem1
+uint requiredItem2
+uint requiredItem3
+uint requiredItem4
+uint requiredItem5
+uint requiredItemCount1
+uint requiredItemCount2
+uint requiredItemCount3
+uint requiredItemCount4
+uint requiredItemCount5
+uint personalRating
+uint purchaseGroup

@@ -1,0 +1,22 @@
+# CreatureDisplayInfoExtra.dbc structure for 3.3.5a 12340
+uint ID
+uint DisplayRaceID
+uint DisplaySexID
+uint SkinID
+uint FaceID
+uint HairStyleID
+uint HairColorID
+uint FacialHairID
+uint HeadDisplayID
+uint ShouldersDisplayID
+uint ShirtDisplayID
+uint ChestDisplayID
+uint BeltDisplayID
+uint LegsDisplayID
+uint BootsDisplayID
+uint BracersDisplayID
+uint GlovesDisplayID
+uint TabardDisplayID
+uint CapeDisplayID
+uint Flags
+uint BakedTextureIDblp string

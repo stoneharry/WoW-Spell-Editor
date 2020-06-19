@@ -1,0 +1,17 @@
+# CreatureDisplayInfo.dbc structure for 3.3.5a 12340
+uint ID
+uint ModelID
+uint SoundID
+uint ExtendedDisplayInfoID
+float CreatureModelScale
+uint CreatureModelAlpha
+uint TextureVariation_1 string
+uint TextureVariation_2 string
+uint TextureVariation_3 string
+uint PortraitTextureName string
+int BloodLevel
+uint BloodID
+uint NPCSoundID
+uint ParticleColorID
+uint CreatureGeosetData
+uint ObjectEffectPackageID

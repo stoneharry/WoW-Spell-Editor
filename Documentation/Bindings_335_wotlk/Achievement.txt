@@ -1,0 +1,62 @@
+uint ID
+int requiredFaction
+int mapId
+uint parentAchievement
+uint name1 string
+uint name2 string
+uint name3 string
+uint name4 string
+uint name5 string
+uint name6 string
+uint name7 string
+uint name8 string
+uint name9 string
+uint name10 string
+uint name11 string
+uint name12 string
+uint name13 string
+uint name14 string
+uint name15 string
+uint name16 string
+uint nameFlags
+uint description1 string
+uint description2 string
+uint description3 string
+uint description4 string
+uint description5 string
+uint description6 string
+uint description7 string
+uint description8 string
+uint description9 string
+uint description10 string
+uint description11 string
+uint description12 string
+uint description13 string
+uint description14 string
+uint description15 string
+uint description16 string
+uint descriptionFlags
+uint categoryId
+uint points
+uint orderInCategory
+uint flags
+uint icon
+uint titleReward1 string
+uint titleReward2 string
+uint titleReward3 string
+uint titleReward4 string
+uint titleReward5 string
+uint titleReward6 string
+uint titleReward7 string
+uint titleReward8 string
+uint titleReward9 string
+uint titleReward10 string
+uint titleReward11 string
+uint titleReward12 string
+uint titleReward13 string
+uint titleReward14 string
+uint titleReward15 string
+uint titleReward16 string
+uint titleRewardFlags
+uint count
+uint refAchievement

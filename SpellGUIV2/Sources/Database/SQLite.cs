@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SpellEditor.Sources.Database
 {
-    class SQLite : IDatabaseAdapter
+    public class SQLite : IDatabaseAdapter
     {
         private readonly object _syncLock = new object();
         private readonly SQLiteConnection _connection;
@@ -50,6 +50,24 @@ namespace SpellEditor.Sources.Database
                         adapter.SelectCommand.CommandTimeout = 0;
                         adapter.Fill(dataSet);
                         return dataSet.Tables[0];
+                    }
+
+                }
+            }
+        }
+
+        public object QuerySingleValue(string query)
+        {
+            lock (_syncLock)
+            {
+                using (var adapter = new SQLiteDataAdapter(query, _connection))
+                {
+                    using (var dataSet = new DataSet())
+                    {
+                        adapter.SelectCommand.CommandTimeout = 0;
+                        adapter.Fill(dataSet);
+                        var table = dataSet.Tables[0];
+                        return table.Rows.Count > 0 ? table.Rows[0][0] : null;
                     }
 
                 }

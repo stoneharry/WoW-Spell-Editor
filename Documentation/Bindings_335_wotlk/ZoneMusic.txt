@@ -1,0 +1,8 @@
+uint id
+uint name string
+uint silenceMinDay
+uint silenceMinNight
+uint silenceMaxDay
+uint silenceMaxNight
+uint dayMusic
+uint nightMusic

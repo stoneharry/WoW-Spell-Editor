@@ -6,7 +6,7 @@
         xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
         xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Visual"
         Title="{DynamicResource mainTitle}"
-        Height="750"
+        Height="800"
         Width="1300"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
@@ -36,6 +36,7 @@
                         <RowDefinition Height="AUTO"/>
                         <RowDefinition Height="AUTO"/>
                         <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
@@ -53,6 +54,8 @@
                     <c:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByEffect}" Margin="5" Grid.Row="2" Grid.Column="2"/>
                     <c:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
+                    <Label Content="{DynamicResource labFilterByAura}" Margin="5" Grid.Row="3" Grid.Column="2"/>
+                    <c:ThreadSafeComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3" SelectionChanged="FilterAuraCombo_SelectionChanged"/>
                     <ListBox Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
@@ -62,10 +65,10 @@
                              SelectionChanged="SelectSpell_SelectionChanged"
                              Focusable="False"
                              Grid.Row="0"
-                             Grid.RowSpan="5"
+                             Grid.RowSpan="6"
                              Grid.Column="0"
                              Grid.ColumnSpan="2"/>
-                    <TabControl Margin="5,5,5,5" Grid.Row="3" Grid.RowSpan="5" Grid.Column="2" Grid.ColumnSpan="4">
+                    <TabControl Margin="5,5,5,5" Grid.Row="4" Grid.RowSpan="5" Grid.Column="2" Grid.ColumnSpan="4">
                         <TabItem x:Name="TabItem_English" Header="{DynamicResource tabEnglish}">
                             <Grid>
                                 <Grid.RowDefinitions>

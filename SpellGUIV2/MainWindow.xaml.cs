@@ -372,12 +372,15 @@ namespace SpellEditor
             ApplyAuraName1.Items.Clear();
             ApplyAuraName2.Items.Clear();
             ApplyAuraName3.Items.Clear();
+            FilterAuraCombo.Items.Clear();
             string[] spell_aura_effect_names = SafeTryFindResource("spell_aura_effect_names").Split('|');
             for (int i = 0; i < spell_aura_effect_names.Length; ++i)
             {
-                ApplyAuraName1.Items.Add(i + " - " + spell_aura_effect_names[i]);
-                ApplyAuraName2.Items.Add(i + " - " + spell_aura_effect_names[i]);
-                ApplyAuraName3.Items.Add(i + " - " + spell_aura_effect_names[i]);
+                var auraName = i + " - " + spell_aura_effect_names[i];
+                ApplyAuraName1.Items.Add(auraName);
+                ApplyAuraName2.Items.Add(auraName);
+                ApplyAuraName3.Items.Add(auraName);
+                FilterAuraCombo.Items.Add(auraName);
             }
 
             SpellEffect1.Items.Clear();
@@ -466,6 +469,28 @@ namespace SpellEditor
                 ChannelInterruptFlagsGrid.Children.Add(box);
                 interrupts3.Add(box);
             }
+
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
+            {
+                S1.Content = SafeTryFindResource("checkboxPhysical");
+                S2.Content = SafeTryFindResource("checkboxHoly");
+                S3.Content = SafeTryFindResource("checkboxFire");
+                S4.Content = SafeTryFindResource("checkboxNature");
+                S5.Content = SafeTryFindResource("checkboxFrost");
+                S6.Content = SafeTryFindResource("checkboxShadow");
+                S7.Content = SafeTryFindResource("checkboxArcane");
+            }
+            else
+            {
+                S1.Content = SafeTryFindResource("checkboxHoly");
+                S2.Content = SafeTryFindResource("checkboxFire");
+                S3.Content = SafeTryFindResource("checkboxNature");
+                S4.Content = SafeTryFindResource("checkboxFrost");
+                S5.Content = SafeTryFindResource("checkboxShadow");
+                S6.Content = SafeTryFindResource("checkboxArcane");
+                S7.Content = "Unused";
+            }
+            S7.IsEnabled = WoWVersionManager.IsTbcOrGreaterSelected;
         }
         #endregion
 
@@ -720,7 +745,7 @@ namespace SpellEditor
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
                 manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter));
+                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, GetLocale()));
             }
             manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
             spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
@@ -1590,15 +1615,6 @@ namespace SpellEditor
                         row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
                         row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
                     }
-                    else
-                    {
-                        row["EffectImplicitTargetA1"] = uint.Parse(SpellMask11.Text);
-                        row["EffectImplicitTargetA2"] = uint.Parse(SpellMask21.Text);
-                        row["EffectImplicitTargetA3"] = uint.Parse(SpellMask31.Text);
-                        row["EffectImplicitTargetB1"] = uint.Parse(SpellMask12.Text);
-                        row["EffectImplicitTargetB2"] = uint.Parse(SpellMask22.Text);
-                        row["EffectImplicitTargetB3"] = uint.Parse(SpellMask32.Text);
-                    }
                     row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
                     row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
                     row["ManaCostPercentage"] = uint.Parse(ManaCostPercent.Text);
@@ -1625,7 +1641,50 @@ namespace SpellEditor
                     row["EffectDamageMultiplier1"] = float.Parse(EffectDamageMultiplier1.Text);
                     row["EffectDamageMultiplier2"] = float.Parse(EffectDamageMultiplier2.Text);
                     row["EffectDamageMultiplier3"] = float.Parse(EffectDamageMultiplier3.Text);
-                    row["SchoolMask"] = (S1.IsChecked.Value ? 0x01 : (uint)0x00) + (S2.IsChecked.Value ? 0x02 : (uint)0x00) + (S3.IsChecked.Value ? 0x04 : (uint)0x00) + (S4.IsChecked.Value ? 0x08 : (uint)0x00) + (S5.IsChecked.Value ? 0x10 : (uint)0x00) + (S6.IsChecked.Value ? 0x20 : (uint)0x00) + (S7.IsChecked.Value ? 0x40 : (uint)0x00);
+
+                    uint schoolMask = 0;
+                    if (isTbcOrGreater)
+                    {
+                        schoolMask = (S1.IsChecked.Value ? 0x01 : (uint)0x00) +
+                            (S2.IsChecked.Value ? 0x02 : (uint)0x00) +
+                            (S3.IsChecked.Value ? 0x04 : (uint)0x00) +
+                            (S4.IsChecked.Value ? 0x08 : (uint)0x00) +
+                            (S5.IsChecked.Value ? 0x10 : (uint)0x00) +
+                            (S6.IsChecked.Value ? 0x20 : (uint)0x00) +
+                            (S7.IsChecked.Value ? 0x40 : (uint)0x00);
+                    }
+                    else
+                    {
+                        var schoolMaskBoxes = new List<CheckBox>();
+                        schoolMaskBoxes.Add(S1);
+                        schoolMaskBoxes.Add(S2);
+                        schoolMaskBoxes.Add(S3);
+                        schoolMaskBoxes.Add(S4);
+                        schoolMaskBoxes.Add(S5);
+                        schoolMaskBoxes.Add(S6);
+                        var checkedMaskCount = schoolMaskBoxes.Where((box) => box.IsChecked.HasValue && box.IsChecked.Value).Count();
+                        if (checkedMaskCount > 1)
+                        {
+                            throw new Exception($"A maximum of 1 damage school can be selected, you have selected { checkedMaskCount }.");
+                        }
+                        if (checkedMaskCount > 0)
+                        {
+                            if (S1.IsChecked.HasValue && S1.IsChecked.Value)
+                                schoolMask = 1;
+                            else if (S2.IsChecked.HasValue && S2.IsChecked.Value)
+                                schoolMask = 2;
+                            else if (S3.IsChecked.HasValue && S3.IsChecked.Value)
+                                schoolMask = 3;
+                            else if (S4.IsChecked.HasValue && S4.IsChecked.Value)
+                                schoolMask = 4;
+                            else if (S5.IsChecked.HasValue && S5.IsChecked.Value)
+                                schoolMask = 5;
+                            else if (S6.IsChecked.HasValue && S6.IsChecked.Value)
+                                schoolMask = 6;
+                        }
+                    }
+                    row["SchoolMask"] = schoolMask;
+
                     if (isWotlkOrGreater)
                     {
                         row["SpellMissileID"] = uint.Parse(SpellMissileID.Text);
@@ -1985,12 +2044,7 @@ namespace SpellEditor
             {
                 updating = true;
 
-                controller = await this.ShowProgressAsync(SafeTryFindResource("UpdateMainWindow1"), string.Format(SafeTryFindResource("UpdateMainWindow2"), selectedID));
-                controller.SetCancelable(false);
-
-                loadSpell(controller.SetMessage);
-
-                await controller.CloseAsync();
+                loadSpell(LoadSpellReporter);
 
                 updating = false;
             }
@@ -2002,6 +2056,11 @@ namespace SpellEditor
                     await controller.CloseAsync();
                 HandleErrorMessage(ex.Message);
             }
+        }
+
+        public void LoadSpellReporter(string value)
+        {
+            Logger.Debug("[Spell Load] " + value);
         }
         #endregion
 
@@ -2060,7 +2119,7 @@ namespace SpellEditor
             {
                 updateProgress("Updating text control's...");
                 int i;
-                var maxColumns = numColumns >= spellDescGenFields.Count ? spellDescGenFields.Count - 1 : numColumns;
+                var maxColumns = numColumns > spellDescGenFields.Count ? spellDescGenFields.Count : numColumns;
                 for (i = 0; i < maxColumns; ++i)
                 {
                     spellDescGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
@@ -2571,32 +2630,10 @@ namespace SpellEditor
 
                 if (!isWotlkOrGreater)
                 {
-                    /*
-                    uint EffectImplicitTargetA1
-                    uint EffectImplicitTargetA2
-                    uint EffectImplicitTargetA3
-                    uint EffectImplicitTargetB1
-                    uint EffectImplicitTargetB2
-                    uint EffectImplicitTargetB3
-                    */
-                    SpellMask11.ThreadSafeText = row["EffectImplicitTargetA1"].ToString();
-                    SpellMask21.ThreadSafeText = row["EffectImplicitTargetA2"].ToString();
-                    SpellMask31.ThreadSafeText = row["EffectImplicitTargetA3"].ToString();
-                    SpellMask12.ThreadSafeText = row["EffectImplicitTargetB1"].ToString();
-                    SpellMask22.ThreadSafeText = row["EffectImplicitTargetB2"].ToString();
-                    SpellMask32.ThreadSafeText = row["EffectImplicitTargetB3"].ToString();
-
                     uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
                     SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
-
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA1"].ToString()), SpellMask11);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA2"].ToString()), SpellMask21);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetA3"].ToString()), SpellMask31);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB1"].ToString()), SpellMask12);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB2"].ToString()), SpellMask22);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectImplicitTargetB3"].ToString()), SpellMask32);
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
                         spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
@@ -2670,13 +2707,27 @@ namespace SpellEditor
 
                 updateProgress("Updating school mask...");
                 mask = uint.Parse(row["SchoolMask"].ToString());
-                S1.ThreadSafeChecked = ((mask & 0x01) != 0);
-                S2.ThreadSafeChecked = ((mask & 0x02) != 0);
-                S3.ThreadSafeChecked = ((mask & 0x04) != 0);
-                S4.ThreadSafeChecked = ((mask & 0x08) != 0);
-                S5.ThreadSafeChecked = ((mask & 0x10) != 0);
-                S6.ThreadSafeChecked = ((mask & 0x20) != 0);
-                S7.ThreadSafeChecked = ((mask & 0x40) != 0);
+                if (isTbcOrGreater)
+                {
+                    S1.ThreadSafeChecked = ((mask & 0x01) != 0);
+                    S2.ThreadSafeChecked = ((mask & 0x02) != 0);
+                    S3.ThreadSafeChecked = ((mask & 0x04) != 0);
+                    S4.ThreadSafeChecked = ((mask & 0x08) != 0);
+                    S5.ThreadSafeChecked = ((mask & 0x10) != 0);
+                    S6.ThreadSafeChecked = ((mask & 0x20) != 0);
+                    S7.ThreadSafeChecked = ((mask & 0x40) != 0);
+                }
+                else
+                {
+                    S1.ThreadSafeChecked = mask == 1;
+                    S2.ThreadSafeChecked = mask == 2;
+                    S3.ThreadSafeChecked = mask == 3;
+                    S4.ThreadSafeChecked = mask == 4;
+                    S5.ThreadSafeChecked = mask == 5;
+                    S6.ThreadSafeChecked = mask == 6;
+                    S7.ThreadSafeChecked = mask == 7;
+                }
+
 
                 if (isWotlkOrGreater)
                 {
@@ -3415,8 +3466,14 @@ namespace SpellEditor
 
         private void ToggleAllSpellMaskCheckBoxes(bool enabled)
         {
+            SpellMask11.IsEnabled = enabled;
+            SpellMask12.IsEnabled = enabled;
             SpellMask13.IsEnabled = enabled;
+            SpellMask21.IsEnabled = enabled;
+            SpellMask22.IsEnabled = enabled;
             SpellMask23.IsEnabled = enabled;
+            SpellMask31.IsEnabled = enabled;
+            SpellMask32.IsEnabled = enabled;
             SpellMask33.IsEnabled = enabled;
         }
         #endregion
@@ -3777,7 +3834,6 @@ namespace SpellEditor
             return dr.Length == 1 ? dr[0]["SpellName" + (GetLocale() - 1)].ToString() : "";
         }
         #endregion
-
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string language = e.AddedItems[0].ToString();
@@ -3836,6 +3892,48 @@ namespace SpellEditor
             }
             // Collect all spell ID's with the effect id
             var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE Effect1 = {id} or Effect2 = {id} or Effect3 = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
+        }
+
+        private void FilterAuraCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterAuraCombo)
+            {
+                return;
+            }
+            var box = sender as ComboBox;
+            var selected = box.SelectedItem?.ToString() ?? "0 ";
+            var id = int.Parse(selected.Substring(0, selected.IndexOf(' ')));
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the effect id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE EffectApplyAuraName1 = {id} or EffectApplyAuraName2 = {id} or EffectApplyAuraName3 = {id}").Rows;
             var matchingSpellsSet = new HashSet<string>();
             foreach (DataRow record in matchingSpells)
             {

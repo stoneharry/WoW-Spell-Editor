@@ -1,0 +1,21 @@
+uint id
+uint name1 string
+uint name2 string
+uint name3 string
+uint name4 string
+uint name5 string
+uint name6 string
+uint name7 string
+uint name8 string
+uint name9 string
+uint name10 string
+uint name11 string
+uint name12 string
+uint name13 string
+uint name14 string
+uint name15 string
+uint name16 string
+uint nameFlags
+uint order
+uint parent
+uint type

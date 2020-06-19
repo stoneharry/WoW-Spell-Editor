@@ -1,0 +1,10 @@
+uint id
+uint name string
+uint type
+uint colour
+uint screenEdgeSize
+uint blackWhiteValue
+uint unknown
+int lightId
+uint soundAmbienceID
+uint soundMusicId

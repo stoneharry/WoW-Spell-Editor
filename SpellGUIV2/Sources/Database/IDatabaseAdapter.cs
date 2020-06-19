@@ -12,5 +12,6 @@ namespace SpellEditor.Sources.Database
         void CreateAllTablesFromBindings();
         string EscapeString(string str);
         string GetTableCreateString(Binding.Binding binding);
+        object QuerySingleValue(string query);
     }
 }

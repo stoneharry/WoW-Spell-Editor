@@ -1,0 +1,63 @@
+uint id
+uint mapId
+uint areaId
+uint phaseShift
+uint icon string
+uint text1 string
+uint text2 string
+uint text3 string
+uint text4 string
+uint text5 string
+uint text6 string
+uint text7 string
+uint text8 string
+uint text9 string
+uint text10 string
+uint text11 string
+uint text12 string
+uint text13 string
+uint text14 string
+uint text15 string
+uint text16 string
+uint textFlags
+uint tooltip1 string
+uint tooltip2 string
+uint tooltip3 string
+uint tooltip4 string
+uint tooltip5 string
+uint tooltip6 string
+uint tooltip7 string
+uint tooltip8 string
+uint tooltip9 string
+uint tooltip10 string
+uint tooltip11 string
+uint tooltip12 string
+uint tooltip13 string
+uint tooltip14 string
+uint tooltip15 string
+uint tooltip16 string
+uint tooltipFlags
+int worldState
+int type
+uint dynamicIcon string
+uint dynamicTooltip1 string
+uint dynamicTooltip2 string
+uint dynamicTooltip3 string
+uint dynamicTooltip4 string
+uint dynamicTooltip5 string
+uint dynamicTooltip6 string
+uint dynamicTooltip7 string
+uint dynamicTooltip8 string
+uint dynamicTooltip9 string
+uint dynamicTooltip10 string
+uint dynamicTooltip11 string
+uint dynamicTooltip12 string
+uint dynamicTooltip13 string
+uint dynamicTooltip14 string
+uint dynamicTooltip15 string
+uint dynamicTooltip16 string
+uint dynamicTooltipFlags
+uint extendedUIStateVar
+uint extendedUIStateVarNeutral
+uint extendedUIStateVarUnk1
+uint extendedUIStateVarUnk2
