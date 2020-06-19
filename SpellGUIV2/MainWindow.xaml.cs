@@ -2102,6 +2102,25 @@ namespace SpellEditor
         }
         #endregion
 
+        #region VisualMapBuilder
+        private void ButtonClickVisualMapBuild(object sender, RoutedEventArgs e)
+        {
+            var mapBuilder = new VisualMapBuilder
+            {
+                DbStartingId = uint.Parse(MapBuilderDbStartingId.Text),
+                MapId = uint.Parse(MapBuilderMapId.Text),
+                TopLeftX = int.Parse(MapBuilderTopLeftCoordX.Text),
+                TopLeftY = int.Parse(MapBuilderTopLeftCoordY.Text),
+                BottomRightX = int.Parse(MapBuilderBottomRightCoordX.Text),
+                BottomRightY = int.Parse(MapBuilderBottomRightCoordY.Text),
+                CoordZ = int.Parse(MapBuilderCoordZ.Text),
+                CellSize = int.Parse(MapBuilderCellSize.Text)
+            };
+            mapBuilder.RunBuild();
+            ShowFlyoutMessage("Created Map Builder files successfully in the Export folder.");
+        }
+        #endregion
+
         #region LoadSpell (load spell god-function)
         private void loadSpell(UpdateTextFunc updateProgress)
         {

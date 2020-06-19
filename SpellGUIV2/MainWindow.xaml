@@ -1003,20 +1003,20 @@
                             </Grid.RowDefinitions>
                             <Label Content="This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models." Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"/>
                             <Label Content="Database Starting ID" Margin="5" Grid.Row="1" Grid.Column="0"/>
-                            <TextBox Text="150000" Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+                            <TextBox Name="MapBuilderDbStartingId" Text="150000" Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
                             <Label Content="Map ID" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                            <TextBox Text="13" Margin="5" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+                            <TextBox Name="MapBuilderMapId" Text="13" Margin="5" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
                             <Label Content="Map Top Left Coordinate X, Y" Margin="5" Grid.Row="3" Grid.Column="0"/>
-                            <TextBox Text="138" Margin="5" Grid.Row="3" Grid.Column="1"/>
-                            <TextBox Text="138" Margin="5" Grid.Row="3" Grid.Column="2"/>
+                            <TextBox Name="MapBuilderTopLeftCoordX" Text="138" Margin="5" Grid.Row="3" Grid.Column="1"/>
+                            <TextBox Name="MapBuilderTopLeftCoordY" Text="138" Margin="5" Grid.Row="3" Grid.Column="2"/>
                             <Label Content="Map Bottom Right Coordinate X, Y" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                            <TextBox Text="-138" Margin="5" Grid.Row="4" Grid.Column="1"/>
-                            <TextBox Text="-138" Margin="5" Grid.Row="4" Grid.Column="2"/>
+                            <TextBox Name="MapBuilderBottomRightCoordX" Text="-138" Margin="5" Grid.Row="4" Grid.Column="1"/>
+                            <TextBox Name="MapBuilderBottomRightCoordY" Text="-138" Margin="5" Grid.Row="4" Grid.Column="2"/>
                             <Label Content="Map Coordinate Z" Margin="5" Grid.Row="5" Grid.Column="0"/>
-                            <TextBox Text="-144" Margin="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"/>
+                            <TextBox Name="MapBuilderCoordZ" Text="-144" Margin="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"/>
                             <Label Content="Cell Size" Margin="5" Grid.Row="6" Grid.Column="0"/>
-                            <TextBox Text="7" Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"/>
-                            <Button Content="Generate" Margin="40,5,40,5" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"/>
+                            <TextBox Name="MapBuilderCellSize" Text="7" Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"/>
+                            <Button Content="Generate" Margin="40,5,40,5" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Click="ButtonClickVisualMapBuild"/>
                         </Grid>
                     </TabItem>
                 </TabControl>

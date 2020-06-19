@@ -159,6 +159,7 @@
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
+    <Compile Include="Sources\Tools\VisualTools\VisualMapBuilder.cs" />
     <Compile Include="Sources\VersionControl\WoWVersion.cs" />
     <Compile Include="Sources\Controls\DBC\IBoxContentProvider.cs" />
     <Compile Include="Sources\Controls\DBC\DBCBoxContainer.cs" />
