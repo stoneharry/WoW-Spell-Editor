@@ -1,10 +1,9 @@
 ﻿using NLog;
+using SpellEditor.Sources.DBC;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Tools.VisualTools
 {
@@ -34,18 +33,19 @@ namespace SpellEditor.Sources.Tools.VisualTools
             Logger.Info($"Loaded {files.Count} m2 files.");
 
             Logger.Info($"Loading {Config.Config.BindingsDirectory}\\CreatureModelData.dbc...");
-            //CreatureModelData modelData = new CreatureModelData();
+            var modelData = DBCManager.GetInstance().ReadLocalDbcForBinding("CreatureModelData");
 
             Logger.Info($"Loading {Config.Config.BindingsDirectory}\\CreatureDisplayInfo.dbc...");
+            var displayInfo = DBCManager.GetInstance().ReadLocalDbcForBinding("CreatureDisplayInfo");
 
             Logger.Info($"Creating {files.Count} new entries in both DBC's...");
-            //PopulateNewEntries(modelData, displayInfo);
+            PopulateNewEntries(modelData, displayInfo, files);
 
             Logger.Info("Creating Export\\CreatureModelData.dbc...");
-            //modelData.SaveDBCFile();
+            modelData.SaveToFile("CreatureModelData");
 
             Logger.Info("Creating Export\\CreatureDisplayInfo.dbc...");
-            //displayInfo.SaveDBCFile();
+            displayInfo.SaveToFile("CreatureDisplayInfo");
 
             Logger.Info("Creating creature_template queries...");
             //generateTemplateQueries();
@@ -54,6 +54,80 @@ namespace SpellEditor.Sources.Tools.VisualTools
             //generateSpawnQueries();
 
             Logger.Info("Done.");
+        }
+
+        private void PopulateNewEntries(MutableGenericDbc modelData, MutableGenericDbc displayInfo, List<string> files)
+        {
+            uint entry = DbStartingId;
+            files.ForEach((file) =>
+            {
+                // Hardcoded for wotlk 3.3.5
+                var entryData = new Dictionary<string, object>();
+                entryData.Add("id", entry++);
+                entryData.Add("flags", 0);
+                entryData.Add("modelPath", GetPathRelativeToSpellDir(file));
+                entryData.Add("alternateModel", 0);
+                entryData.Add("sizeClass", 1);
+                entryData.Add("modelScale", 1);
+                entryData.Add("bloodId", 0);
+                entryData.Add("footprint", 0);
+                entryData.Add("footprintTextureLength", 0);
+                entryData.Add("footprintTextureWidth", 0);
+                entryData.Add("footprintParticleScale", 0);
+                entryData.Add("foleyMaterialId", 0);
+                entryData.Add("footstepShakeSize", 0);
+                entryData.Add("deathThudShakeSize", 0);
+                entryData.Add("soundData", 0);
+                entryData.Add("collisionWidth", 0);
+                entryData.Add("collisionHeight", 0);
+                entryData.Add("mountHeight", 0);
+                entryData.Add("geoBoxMin1", 0);
+                entryData.Add("geoBoxMin2", 0);
+                entryData.Add("geoBoxMin3", 0);
+                entryData.Add("geoBoxMax1", 0);
+                entryData.Add("geoBoxMax2", 0);
+                entryData.Add("geoBoxMax3", 0);
+                entryData.Add("worldEffectScale", 1);
+                entryData.Add("attachedEffectScale", 0);
+                entryData.Add("unk5", 0);
+                entryData.Add("unk6", 0);
+                modelData.AddRecord(entryData);
+            });
+
+            entry = DbStartingId;
+            files.ForEach((file) =>
+            {
+                // Hardcoded for wotlk 3.3.5
+                var entryData = new Dictionary<string, object>();
+                entryData.Add("ID", entry);
+                entryData.Add("ModelID", entry);
+                entryData.Add("SoundID", 0);
+                entryData.Add("ExtendedDisplayInfoID", 0);
+                entryData.Add("CreatureModelScale", 1);
+                entryData.Add("CreatureModelAlpha", 255);
+                entryData.Add("TextureVariation_1", 0);
+                entryData.Add("TextureVariation_2", 0);
+                entryData.Add("TextureVariation_3", 0);
+                entryData.Add("PortraitTextureName", 0);
+                entryData.Add("BloodLevel", 0);
+                entryData.Add("BloodID", 0);
+                entryData.Add("NPCSoundID", 0);
+                entryData.Add("ParticleColorID", 0);
+                entryData.Add("CreatureGeosetData", 0);
+                entryData.Add("ObjectEffectPackageID", 0);
+                displayInfo.AddRecord(entryData);
+                ++entry;
+            });
+        }
+
+        private string GetPathRelativeToSpellDir(string path)
+        {
+            string fileName = path.Substring(path.LastIndexOf('\\'));
+            string fullName = path;
+            int index = fullName.IndexOf("SPELLS");
+            int lastIndex = fullName.LastIndexOf('\\');
+            fullName = fullName.Substring(index, lastIndex - index);
+            return fullName + "\\" + fileName;
         }
 
         private List<string> AllM2FilesRecursive(string directory, List<string> foundFiles)

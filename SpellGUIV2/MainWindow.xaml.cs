@@ -2105,6 +2105,11 @@ namespace SpellEditor
         #region VisualMapBuilder
         private void ButtonClickVisualMapBuild(object sender, RoutedEventArgs e)
         {
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                ShowFlyoutMessage("This feature is only supported for patch 3.3.5 WOTLK.");
+                return;
+            }
             var mapBuilder = new VisualMapBuilder
             {
                 DbStartingId = uint.Parse(MapBuilderDbStartingId.Text),
