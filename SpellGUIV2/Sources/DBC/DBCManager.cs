@@ -71,6 +71,8 @@ namespace SpellEditor.Sources.DBC
             return null;
         }
 
+        public MutableGenericDbc ReadLocalDbcForBinding(string bindingName) => new MutableGenericDbc($"{Config.Config.DbcDirectory}\\{bindingName}.dbc");
+
         public AbstractDBC ClearDbcBinding(string bindingName) => _DbcMap.TryRemove(bindingName, out var removed) ? removed : null;
 
         public static DBCManager GetInstance() => _Instance;

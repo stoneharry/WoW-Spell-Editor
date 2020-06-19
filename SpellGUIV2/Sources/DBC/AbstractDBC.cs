@@ -165,9 +165,9 @@ namespace SpellEditor.Sources.DBC
                 Header.StringBlockSize = 0;
 
                 var body = new DBCBodyToSerialize();
-                body.Records = new List<DataRow>((int)Header.RecordCount);
+                body.Records = new List<Dictionary<string, object>>((int)Header.RecordCount);
                 for (int i = 0; i < numRows; ++i)
-                    body.Records.Add(rows[i]);
+                    body.Records.Add(ConvertDataRowToDictionary(rows[i]));
                 Header.StringBlockSize = body.GenerateStringOffsetsMap(binding);
                 SaveDbcFile(updateProgress, body, binding);
             });
@@ -202,7 +202,7 @@ namespace SpellEditor.Sources.DBC
                         var record = body.Records[i];
                         foreach (var entry in binding.Fields)
                         {
-                            if (!record.Table.Columns.Contains(entry.Name))
+                            if (!record.Keys.Contains(entry.Name))
                                 throw new Exception($"Column binding not found {entry.Name} in table, using binding {binding.Name}.txt");
                             var data = record[entry.Name].ToString();
                             if (entry.Type == BindingType.INT)
@@ -285,6 +285,16 @@ namespace SpellEditor.Sources.DBC
             return name;
         }
 
+        private Dictionary<string, object> ConvertDataRowToDictionary(DataRow dataRow)
+        {
+            var record = new Dictionary<string, object>();
+            foreach (DataColumn column in dataRow.Table.Columns)
+            {
+                record.Add(column.ColumnName, dataRow.Table.Rows[0][column]);
+            }
+            return record;
+        }
+
         public bool HasData()
         {
             return Body != null && Body.RecordMaps != null && Body.RecordMaps.Count() > 0;
@@ -307,7 +317,7 @@ namespace SpellEditor.Sources.DBC
 
         protected class DBCBodyToSerialize
         {
-            public List<DataRow> Records;
+            public List<Dictionary<string, object>> Records;
             public Dictionary<int, int> OffsetStorage;
             public Dictionary<int, string> ReverseStorage;
 

@@ -98,9 +98,9 @@ namespace SpellVisualMapBuilder
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
                 str.Append("insert into `creature` (`id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`," +
-                    " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`," +
+                    " `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `currentwaypoint`, `curhealth`," +
                     " `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`)");
-                str.Append(string.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','0','{6}','0','0','0','0','0','0');\n",
+                str.Append(string.Format("values('{0}','{1}','{2}','0','1','1','0','0','{3}','{4}','{5}','0','30','0','{6}','0','0','0','0','0','0');\n",
                     creatureEntry++, MapEntry, 0, currX, currY, MapZ, 100)); // id, map, zone, x, y, z, health
                 currX -= CellSize;
                 if (currX <= limitX)
@@ -122,12 +122,9 @@ namespace SpellVisualMapBuilder
             uint creatureEntry = CTStartingEntry;
             for (uint i = DBCStartingEntry; i < newSize; ++i)
             {
-                str.Append("INSERT INTO `creature_template` VALUES (");
-                str.Append(string.Format("'{0}', '0','0','0','0','0', '{1}', '0','0','0', \"{2}\",", creatureEntry++, i,
+                str.Append("INSERT INTO `creature_template` (entry, modelid1, name, subname, IconName, faction) VALUES (");
+                str.Append(string.Format("'{0}', '{1}', \"{2}\", '', '', 35);\n", creatureEntry++, i,
                     MySqlHelper.EscapeString(stringPaths[i - DBCStartingEntry])));
-                str.Append("'','','0','1','1','0','35','0','1','1.14286','1','0','0','1500','2000','1','1','1','0','0','0','0'"
-                    + ",'0','0','0','0','6','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',"
-                    + "'0','','0','3','1','4','1','1','1','1','0','0','0','0','0','0','0','0','0','0','0','','0');\n");
                 str.Append(string.Format("INSERT INTO `creature_model_info` VALUES ('{0}', '0', '0', '0', '0');\n", i));
             }
             File.WriteAllText("Export/CreatureTemplate.sql", str.ToString(), UTF8Encoding.GetEncoding(0));

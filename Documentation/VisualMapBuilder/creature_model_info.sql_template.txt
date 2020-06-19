@@ -1,0 +1,2 @@
+# {0} = ID
+INSERT INTO `creature_model_info` VALUES ('{0}', '0', '0', '0', '0');
