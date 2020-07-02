@@ -2,11 +2,10 @@
 uint id
 uint flags
 uint modelPath string
-uint alternateModel
 uint sizeClass
 int modelScale
 uint bloodId
-uint footprint
+uint footprintTextureId
 float footprintTextureLength
 float footprintTextureWidth
 float footprintParticleScale
@@ -17,13 +16,14 @@ uint soundData
 float collisionWidth
 float collisionHeight
 float mountHeight
-float geoBoxMin1
-float geoBoxMin2
-float geoBoxMin3
-float geoBoxMax1
-float geoBoxMax2
-float geoBoxMax3
+float geoBoxMinX
+float geoBoxMinY
+float geoBoxMinZ
+float geoBoxMaxX
+float geoBoxMaxY
+float geoBoxMaxZ
 float worldEffectScale
 float attachedEffectScale
-float unk5
-float unk6
+float MissileCollisionRadius
+float MissileCollisionPush
+float MissileCollisionRaise
