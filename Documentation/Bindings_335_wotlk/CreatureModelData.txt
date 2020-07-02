@@ -3,7 +3,7 @@ uint id
 uint flags
 uint modelPath string
 uint sizeClass
-int modelScale
+float modelScale
 uint bloodId
 uint footprintTextureId
 float footprintTextureLength
