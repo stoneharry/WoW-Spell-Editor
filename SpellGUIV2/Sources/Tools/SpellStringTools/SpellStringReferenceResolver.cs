@@ -493,7 +493,9 @@ namespace SpellEditor.Sources.SpellStringTools
                             }
                             newVal = sum.ToString();
                         }
-                        // Not sure why this code branch exists
+                        // Negative values are actually shown positive
+                        // 'reduces targets movement speed by 50%'
+                        // The 50% has a value of -50 but is shown as 50
                         if (int.TryParse(newVal, out var intVal) && intVal < 0)
                         {
                             newVal = (intVal *= -1).ToString();
