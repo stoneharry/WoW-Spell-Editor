@@ -759,6 +759,9 @@ namespace SpellEditor
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"), SafeTryFindResource("String2"));
                 return;
             }
+            var controller = await this.ShowProgressAsync(SafeTryFindResource("PleaseWait"), SafeTryFindResource("PleaseWait_2"));
+            controller.SetCancelable(false);
+            await Task.Delay(1000);
             try
             {
                 switch (Config.connectionType)
@@ -776,6 +779,7 @@ namespace SpellEditor
             }
             catch (Exception e)
             {
+                await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                     $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
                 return;
@@ -786,26 +790,26 @@ namespace SpellEditor
             }
             catch (MySqlException e)
             {
+                await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                     $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
                 return;
             }
             catch (SQLiteException e)
             {
+                await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                     $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
                 return;
             }
             catch (Exception e)
             {
+                await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                     $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
                 return;
             }
 
-            var controller = await this.ShowProgressAsync(SafeTryFindResource("PleaseWait"), SafeTryFindResource("PleaseWait_2"));
-            controller.SetCancelable(false);
-            await Task.Delay(500);
             try
             {
                 spellTable.Columns.Add("id", typeof(uint));
