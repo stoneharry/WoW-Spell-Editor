@@ -470,23 +470,36 @@ namespace SpellEditor.Sources.SpellStringTools
                         {
                             index = int.Parse(token[2].ToString());
                         }
-                        int newVal = 0;
+                        string newVal = "0";
                         if (index >= 1 && index <= 3)
                         {
-                            newVal = int.Parse(record["EffectBasePoints" + index].ToString()) + int.Parse(record["EffectDieSides" + index].ToString());
+                            var dieSides = int.Parse(record["EffectDieSides" + index].ToString());
+                            if (dieSides == 0 || dieSides == 1)
+                            {
+                                newVal = (int.Parse(record["EffectBasePoints" + index].ToString()) + dieSides).ToString();
+                            }
+                            else
+                            {
+                                var basePoints = int.Parse(record["EffectBasePoints" + index].ToString());
+                                newVal = (basePoints + 1) + " to " + (basePoints + dieSides);
+                            }
                         }
                         else if (index == 4)
                         {
+                            var sum = 0;
                             for (int i = 1; i <= 3; ++i)
                             {
-                                newVal += int.Parse(record["EffectBasePoints" + i].ToString()) + int.Parse(record["EffectDieSides" + i].ToString());
+                                sum += int.Parse(record["EffectBasePoints" + i].ToString()) + int.Parse(record["EffectDieSides" + i].ToString());
                             }
+                            newVal = sum.ToString();
                         }
                         // Not sure why this code branch exists
-                        if (newVal < 0)
-                            newVal *= -1;
+                        if (int.TryParse(newVal, out var intVal) && intVal < 0)
+                        {
+                            newVal = (intVal *= -1).ToString();
+                        }
 
-                        str = str.Replace(token, newVal.ToString());
+                        str = str.Replace(token, newVal);
                     }
                 }
 
