@@ -290,7 +290,7 @@ namespace SpellEditor.Sources.DBC
             var record = new Dictionary<string, object>();
             foreach (DataColumn column in dataRow.Table.Columns)
             {
-                record.Add(column.ColumnName, dataRow.Table.Rows[0][column]);
+                record.Add(column.ColumnName, dataRow[column]);
             }
             return record;
         }
@@ -335,7 +335,8 @@ namespace SpellEditor.Sources.DBC
                 {
                     foreach (var entry in fields)
                     {
-                        string str = Records[i][entry.Name].ToString();
+                        var record = Records.ElementAt(i);
+                        string str = record[entry.Name].ToString();
                         if (str.Length == 0)
                             continue;
                         var key = str.GetHashCode();
