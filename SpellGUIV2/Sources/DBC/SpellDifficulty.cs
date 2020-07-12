@@ -4,6 +4,7 @@ using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -12,6 +13,8 @@ namespace SpellEditor.Sources.DBC
 {
     class SpellDifficulty : AbstractDBC, IBoxContentProvider
     {
+        private static CancellationTokenSource _CancelTokenSource;
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
@@ -49,6 +52,9 @@ namespace SpellEditor.Sources.DBC
                 Heroic10Men: 69849 = Omar's Seal of Approval, You have Omar's 10 Man Heroic Seal of Approval!
                 Heroic25Men: 69850 = Omar's Seal of Approval, You have Omar's 25 Man Heroic Seal of Approval!
             */
+            _CancelTokenSource?.Cancel();
+            _CancelTokenSource = new CancellationTokenSource();
+            var cancelToken = _CancelTokenSource.Token;
             Task.Factory.StartNew(() =>
             {
                 var watch = new Stopwatch();
@@ -57,6 +63,11 @@ namespace SpellEditor.Sources.DBC
                 var column = "SpellName" + (locale - 1);
                 for (int i = 1; i < Lookups.Count; ++i)
                 {
+                    if (cancelToken.IsCancellationRequested)
+                    {
+                        Logger.Debug($"Aborted SpellDifficulty Tooltips loading after {watch.ElapsedMilliseconds}ms");
+                        break;
+                    }
                     if (i % 25 == 0)
                     {
                         Logger.Debug($"Loaded {i} / {Lookups.Count} difficulty tooltips");
