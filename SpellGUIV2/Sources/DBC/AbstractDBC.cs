@@ -31,24 +31,34 @@ namespace SpellEditor.Sources.DBC
 
         public void ReloadContents()
         {
-            var bodyWatch = new Stopwatch();
-            var stringWatch = new Stopwatch();
-            bodyWatch.Start();
-            Body = new DBCBody();
-            Reader = new DBCReader(_filePath);
             var name = Path.GetFileNameWithoutExtension(_filePath);
             var binding = BindingManager.GetInstance().FindBinding(name);
             if (binding == null)
                 throw new Exception($"Binding not found: {name}.txt");
+            var headerWatch = new Stopwatch();
+            var bodyWatch = new Stopwatch();
+            var stringWatch = new Stopwatch();
+            Body = new DBCBody();
+            Reader = new DBCReader(_filePath);
+            // Header
+            headerWatch.Start();
             Header = Reader.ReadDBCHeader();
+            headerWatch.Stop();
+            // Body
+            bodyWatch.Start();
             Reader.ReadDBCRecords(Body, name);
             bodyWatch.Stop();
+            // Strings
             stringWatch.Start();
             Reader.ReadStringBlock();
             stringWatch.Stop();
+            // Total
             var totalElapsed = stringWatch.ElapsedMilliseconds + bodyWatch.ElapsedMilliseconds;
             Logger.Info(
-                $"Loaded {name}.dbc into memory in {totalElapsed}ms. Records: {bodyWatch.ElapsedMilliseconds}ms, strings: {stringWatch.ElapsedMilliseconds}ms");
+                $"Loaded {name}.dbc into memory in {totalElapsed}ms.\n" +
+                $"\tHeader: {headerWatch.ElapsedMilliseconds}ms\n" +
+                $"\tRecords: {bodyWatch.ElapsedMilliseconds}ms\n" +
+                $"\tStrings: {stringWatch.ElapsedMilliseconds}ms");
         }
 
         public Dictionary<string, object> LookupRecord(uint ID) => LookupRecord(ID, "ID");
@@ -149,28 +159,63 @@ namespace SpellEditor.Sources.DBC
                 var binding = BindingManager.GetInstance().FindBinding(bindingName);
                 if (binding == null)
                     throw new Exception("Binding not found: " + bindingName);
+                var body = new DBCBodyToSerialize();
 
                 var orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
-                var rows = adapter.Query(string.Format($"SELECT * FROM `{bindingName}`{orderClause}")).Rows;
-                uint numRows = uint.Parse(rows.Count.ToString());
+                body.Records = LoadRecords(adapter, bindingName, orderClause, updateProgress);
+                var numRows = body.Records.Count();
                 if (numRows == 0)
                     throw new Exception("No rows to export");
 
-                Header = new DBCHeader();
-                Header.FieldCount = (uint)binding.Fields.Count();
-                // Magic is always 'WDBC' https://wowdev.wiki/DBC
-                Header.Magic = 1128416343;
-                Header.RecordCount = numRows;
-                Header.RecordSize = (uint)binding.CalcRecordSize();
-                Header.StringBlockSize = 0;
+                Header = new DBCHeader
+                {
+                    FieldCount = (uint)binding.Fields.Count(),
+                    // Magic is always 'WDBC' https://wowdev.wiki/DBC
+                    Magic = 1128416343,
+                    RecordCount = (uint)numRows,
+                    RecordSize = (uint)binding.CalcRecordSize(),
+                    StringBlockSize = body.GenerateStringOffsetsMap(binding)
+                };
 
-                var body = new DBCBodyToSerialize();
-                body.Records = new List<Dictionary<string, object>>((int)Header.RecordCount);
-                for (int i = 0; i < numRows; ++i)
-                    body.Records.Add(ConvertDataRowToDictionary(rows[i]));
-                Header.StringBlockSize = body.GenerateStringOffsetsMap(binding);
                 SaveDbcFile(updateProgress, body, binding);
             });
+        }
+
+        protected List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
+        {
+            const int pageSize = 1000;
+            int totalCount;
+            using (var queryData = adapter.Query("SELECT COUNT(*) FROM " + bindingName))
+            {
+                totalCount = int.Parse(queryData.Rows[0][0].ToString());
+            }
+            var lowerBounds = 0;
+            var results = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
+            var loadCount = results.Count;
+            while (loadCount > 0)
+            {
+                lowerBounds += pageSize;
+                // Visual studio says these casts are redundant but it does not work without them
+                double percent = (double)Math.Min(totalCount, lowerBounds) / (double)totalCount;
+                updateProgress(percent);
+                var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
+                loadCount = page.Count;
+                page.ForEach(results.Add);
+            }
+            return results;
+        }
+
+        protected List<Dictionary<string, object>> LoadRecordPage(int lowerBounds, int pageSize, IDatabaseAdapter adapter, string bindingName, string orderClause)
+        {
+            var records = new List<Dictionary<string, object>>();
+            using (var queryData = adapter.Query($"SELECT * FROM `{bindingName}`{orderClause} LIMIT {lowerBounds}, {pageSize}"))
+            {
+                foreach (DataRow row in queryData.Rows)
+                {
+                    records.Add(ConvertDataRowToDictionary(row));
+                }
+            }
+            return records;
         }
 
         protected void SaveDbcFile(MainWindow.UpdateProgressFunc updateProgress, DBCBodyToSerialize body, Binding.Binding binding)
