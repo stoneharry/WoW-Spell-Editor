@@ -142,7 +142,7 @@ namespace SpellEditor.Sources.Database
             }
 
             var idField = binding.Fields.FirstOrDefault(record => record.Name.ToLower().Equals("id"));
-            if (idField != null)
+            if (idField != null && binding.OrderOutput)
                 str.Append($"PRIMARY KEY (`{idField.Name}`)) ");
             else
             {
