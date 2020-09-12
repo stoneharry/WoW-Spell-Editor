@@ -1587,8 +1587,8 @@ namespace SpellEditor
                     row["EffectAmplitude2"] = uint.Parse(Amplitude2.Text);
                     row["EffectAmplitude3"] = uint.Parse(Amplitude3.Text);
                     row["EffectMultipleValue1"] = float.Parse(MultipleValue1.Text);
-                    row["EffectMultipleValue2"] = float.Parse(MultipleValue1.Text);
-                    row["EffectMultipleValue3"] = float.Parse(MultipleValue1.Text);
+                    row["EffectMultipleValue2"] = float.Parse(MultipleValue2.Text);
+                    row["EffectMultipleValue3"] = float.Parse(MultipleValue3.Text);
                     row["EffectChainTarget1"] = uint.Parse(ChainTarget1.Text);
                     row["EffectChainTarget2"] = uint.Parse(ChainTarget2.Text);
                     row["EffectChainTarget3"] = uint.Parse(ChainTarget3.Text);
