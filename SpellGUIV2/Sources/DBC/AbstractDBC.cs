@@ -190,7 +190,7 @@ namespace SpellEditor.Sources.DBC
         {
             const int pageSize = 1000;
             int totalCount;
-            using (var queryData = adapter.Query("SELECT COUNT(*) FROM " + bindingName))
+            using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName}`"))
             {
                 totalCount = int.Parse(queryData.Rows[0][0].ToString());
             }
