@@ -45,7 +45,7 @@ namespace SpellEditor.Sources.DBC
             {
                 Records = MemoryData
             };
-            newBody.GenerateStringOffsetsMap(binding);
+            Header.StringBlockSize = newBody.GenerateStringOffsetsMap(binding);
             SaveDbcFile(UpdateProgress, newBody, binding);
         }
 
