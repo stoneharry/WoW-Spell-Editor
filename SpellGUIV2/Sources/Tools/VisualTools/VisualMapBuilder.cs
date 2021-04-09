@@ -73,7 +73,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
                     { "sizeClass", 1 },
                     { "modelScale", 1 },
                     { "bloodId", 0 },
-                    { "footprint", 0 },
+                    { "footprintTextureId", 0 },
                     { "footprintTextureLength", 0 },
                     { "footprintTextureWidth", 0 },
                     { "footprintParticleScale", 0 },
@@ -84,16 +84,17 @@ namespace SpellEditor.Sources.Tools.VisualTools
                     { "collisionWidth", 0 },
                     { "collisionHeight", 0 },
                     { "mountHeight", 0 },
-                    { "geoBoxMin1", 0 },
-                    { "geoBoxMin2", 0 },
-                    { "geoBoxMin3", 0 },
-                    { "geoBoxMax1", 0 },
-                    { "geoBoxMax2", 0 },
-                    { "geoBoxMax3", 0 },
+                    { "geoBoxMinX", 0 },
+                    { "geoBoxMinY", 0 },
+                    { "geoBoxMinZ", 0 },
+                    { "geoBoxMaxX", 0 },
+                    { "geoBoxMaxY", 0 },
+                    { "geoBoxMaxZ", 0 },
                     { "worldEffectScale", 1 },
                     { "attachedEffectScale", 0 },
-                    { "unk5", 0 },
-                    { "unk6", 0 }
+                    { "MissileCollisionRadius", 0 },
+                    { "MissileCollisionPush", 0 },
+                    { "MissileCollisionRaise", 0 }
                 });
             });
 

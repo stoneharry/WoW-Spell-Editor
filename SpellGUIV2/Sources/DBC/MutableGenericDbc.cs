@@ -39,6 +39,7 @@ namespace SpellEditor.Sources.DBC
                     }
                 });
             });
+            Header.RecordCount = (uint)MemoryData.Count;
             Logger.Debug("Saving to DBC file: " + bindingName);
             var newBody = new DBCBodyToSerialize
             {
