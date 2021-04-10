@@ -781,9 +781,9 @@ namespace SpellEditor
                 catch (Exception e)
                 {
                     controller.CloseAsync();
-                    this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                       $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
-                    return;
+                    Logger.Error("ERROR: " + e.Message + "\n" + e.InnerException?.Message + "\n" + e);
+                    Dispatcher.InvokeAsync(() => this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                       $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}"));
                 }
             });
 
