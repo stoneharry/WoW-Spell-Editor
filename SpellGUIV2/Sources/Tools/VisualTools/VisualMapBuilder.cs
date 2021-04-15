@@ -176,7 +176,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
             int index = fullName.IndexOf("SPELLS");
             int lastIndex = fullName.LastIndexOf('\\');
             fullName = fullName.Substring(index, lastIndex - index);
-            return fullName + "\\" + fileName;
+            return fullName + fileName;
         }
 
         private List<string> AllM2FilesRecursive(string directory, List<string> foundFiles)
