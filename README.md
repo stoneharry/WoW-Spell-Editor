@@ -67,6 +67,8 @@ This feature is in its very early stages. Some values from the visual kit data a
 
 I wrote a utility tool for creating a map of creatures that show the spell visuals for every spell in the game. This was useful when trying to find which spell visual I wanted to use when creating custom spells.
 
-My generated files are distributed with the releases of this program in `\WoW Spell Editor\SpellVisualMapBuilder\Export`. The program is hardcoded to use those entries and map 13. You can see this in action in the following video:
-
 [![Spell Visual Map video](https://img.youtube.com/vi/lU4Nn_mRS9U/maxresdefault.jpg)](https://www.youtube.com/watch?v=lU4Nn_mRS9U)
+
+## Headless Exporter
+
+The `HeadlessExporter` code is included in this repository. A guide on how to make use of this and precompiled binaries are available on the [DBC Editing Workflow](https://github.com/stoneharry/DBC-Editing-Workflow) repository.
