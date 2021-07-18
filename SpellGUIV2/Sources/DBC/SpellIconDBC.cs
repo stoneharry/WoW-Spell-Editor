@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -104,19 +105,21 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        public void LoadAllIcons(double margin)
+        public async void LoadAllIcons(double margin)
         {
-            List<Icon_DBC_Lookup> lookups = Lookups.ToList();
             var pathsToAdd = new List<Icon_DBC_Lookup>();
-            var imagesPool = new List<Image>();
-            foreach (var entry in lookups)
+            foreach (var entry in Lookups)
             {
                 var path = entry.Name + ".blp";
                 if (File.Exists(path))
                 {
                     pathsToAdd.Add(entry);
-                    imagesPool.Add(new Image());
                 }
+            }
+            var imagesPool = new List<Image>(pathsToAdd.Count);
+            for (int i = 0; i < pathsToAdd.Count; ++i)
+            {
+                imagesPool.Add(new Image());
             }
             for (int i = 0; i < pathsToAdd.Count; ++i)
             {
@@ -129,12 +132,45 @@ namespace SpellEditor.Sources.DBC
                 image.HorizontalAlignment = HorizontalAlignment.Left;
                 image.Name = "Index_" + entry.Offset;
                 image.ToolTip = entry.ID + " - " + entry.Name + ".blp";
-                image.IsVisibleChanged += IsImageVisibleChanged;
+                //image.IsVisibleChanged += IsImageVisibleChanged;
                 image.MouseDown += ImageDown;
             }
             foreach (var image in imagesPool)
             {
                 main.IconGrid.Children.Add(image);
+            }
+            main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
+        }
+
+        private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            ScrollViewer sv = (ScrollViewer)sender;
+            Rect svViewportBounds = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
+
+            for (int i = 0; i < main.IconGrid.Children.Count; ++i)
+            {
+                var container = main.IconGrid.Children[i] as FrameworkElement;
+                if (container != null)
+                {
+                    var offset = VisualTreeHelper.GetOffset(container);
+                    var bounds = new Rect(offset.X, offset.Y, container.ActualWidth, container.ActualHeight);
+
+                    var image = container as Image;
+                    var source = image.Source;
+                    if (svViewportBounds.IntersectsWith(bounds))
+                    {
+                        if (source == null)
+                        {
+                            var path = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
+                            await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
+                        }
+                    }
+                    else
+                    {
+                        source = null;
+                    }
+                    image.Source = source;
+                }
             }
         }
 
