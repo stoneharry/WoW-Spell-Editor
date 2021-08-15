@@ -1,0 +1,26 @@
+# ItemDisplayInfo 3.3.5 wotlk
+uint ID
+uint LeftModel string
+uint RightModel string
+uint LeftModelTexture string
+uint RightModelTexture string
+uint InventoryIcon1 string
+uint InventoryIcon2 string
+uint GeosetGroup1
+uint GeosetGroup2
+uint GeosetGroup3
+uint Flags
+uint SpellVisualID
+uint GroupSoundIndex
+uint HelmetGeosetVisual1
+uint HelmetGeosetVisual2
+uint UpperArmTexture string
+uint LowerArmTexture string
+uint HandsTexture string
+uint UpperTorsoTexture string
+uint LowerTorsoTexture string
+uint UpperLegTexture string 
+uint LowerLegTexture string
+uint FootTexture string
+uint ItemVisual
+uint ParticleColorID

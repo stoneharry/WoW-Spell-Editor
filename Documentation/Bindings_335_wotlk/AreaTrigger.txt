@@ -1,0 +1,11 @@
+# AreaTrigger.dbc structure for 3.3.5a 12340
+uint ID
+uint ContinentID
+float X
+float Y
+float Z
+float Radius
+float Box_Length
+float Box_Width
+float Box_Height
+float Box_Yaw
