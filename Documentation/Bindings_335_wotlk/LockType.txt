@@ -1,0 +1,54 @@
+# LockType.dbc wotlk 3.3.5
+uint ID
+uint Name1 string
+uint Name2 string
+uint Name3 string
+uint Name4 string
+uint Name5 string
+uint Name6 string
+uint Name7 string
+uint Name8 string
+uint Name9 string
+uint Name10 string
+uint Name11 string
+uint Name12 string
+uint Name13 string
+uint Name14 string
+uint Name15 string
+uint Name16 string
+uint NameFlags
+uint ResourceName1 string
+uint ResourceName2 string
+uint ResourceName3 string
+uint ResourceName4 string
+uint ResourceName5 string
+uint ResourceName6 string
+uint ResourceName7 string
+uint ResourceName8 string
+uint ResourceName9 string
+uint ResourceName10 string
+uint ResourceName11 string
+uint ResourceName12 string
+uint ResourceName13 string
+uint ResourceName14 string
+uint ResourceName15 string
+uint ResourceName16 string
+uint ResourceNameFlags
+uint Verb1 string
+uint Verb2 string
+uint Verb3 string
+uint Verb4 string
+uint Verb5 string
+uint Verb6 string
+uint Verb7 string
+uint Verb8 string
+uint Verb9 string
+uint Verb10 string
+uint Verb11 string
+uint Verb12 string
+uint Verb13 string
+uint Verb14 string
+uint Verb15 string
+uint Verb16 string
+uint VerbFlags
+uint CursorName string

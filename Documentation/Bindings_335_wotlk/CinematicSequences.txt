@@ -1,0 +1,11 @@
+# CinematicSequences wotlk 3.3.5
+uint ID
+uint SoundID
+uint Camera1
+uint Camera2
+uint Camera3
+uint Camera4
+uint Camera5
+uint Camera6
+uint Camera7
+uint Camera8
