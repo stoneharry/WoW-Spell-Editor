@@ -111,6 +111,19 @@ namespace SpellEditor.Sources.Config
                 Save();
             }
         }
+        public static bool RenderImagesInView
+        {
+            get
+            {
+                var str = GetConfigValue("RenderImagesInView");
+                return "true".Equals(str);
+            }
+            set
+            {
+                UpdateConfigValue("RenderImagesInView", value ? "true" : "false");
+                Save();
+            }
+        }
 
         public static ConnectionType connectionType = ConnectionType.SQLite;
 

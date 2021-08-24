@@ -132,14 +132,20 @@ namespace SpellEditor.Sources.DBC
                 image.HorizontalAlignment = HorizontalAlignment.Left;
                 image.Name = "Index_" + entry.Offset;
                 image.ToolTip = entry.ID + " - " + entry.Name + ".blp";
-                //image.IsVisibleChanged += IsImageVisibleChanged;
                 image.MouseDown += ImageDown;
             }
             foreach (var image in imagesPool)
             {
                 main.IconGrid.Children.Add(image);
             }
-            main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
+            if (Config.Config.RenderImagesInView)
+            {
+                main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
+            }
+            else
+            {
+                imagesPool.ForEach((image) => image.IsVisibleChanged += IsImageVisibleChanged);
+            }
         }
 
         private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)

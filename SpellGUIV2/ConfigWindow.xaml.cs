@@ -61,6 +61,8 @@ namespace SpellEditor
             // Bindings and directory settings, 2 rows
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // Icon config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
@@ -119,6 +121,8 @@ namespace SpellEditor
             ConfigGrid.Children.Add(databaseButton);
             ConfigGrid.Children.Add(versionLabel);
             ConfigGrid.Children.Add(versionButton);
+
+            currentRow = BuildIconConfig(ConfigGrid, currentRow);
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
@@ -307,6 +311,35 @@ namespace SpellEditor
         {
             Flyout.IsOpen = true;
             FlyoutText.Text = message;
+        }
+
+        private int BuildIconConfig(Grid grid, int currentRow)
+        {
+            var label = new Label { Content = "Render only spell icons in view:" };
+            label.Margin = new Thickness(10);
+
+            var checkbox = new System.Windows.Controls.CheckBox { };
+            checkbox.Margin = new Thickness(10);
+
+            checkbox.IsChecked = Config.RenderImagesInView;
+            checkbox.Checked += RenderIconsInView_Checked;
+            checkbox.Unchecked += RenderIconsInView_Checked;
+            checkbox.ToolTip = "When this is turned on, the Icon tab will only load the images currently visible on the screen. It makes it slower to scroll but it can handle more images without crashing.";
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(checkbox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(checkbox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(checkbox);
+
+            return currentRow;
+        }
+
+        private void RenderIconsInView_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.RenderImagesInView = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
         }
 
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)
