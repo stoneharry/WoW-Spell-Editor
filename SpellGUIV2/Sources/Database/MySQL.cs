@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace SpellEditor.Sources.Database
 {
@@ -11,6 +12,7 @@ namespace SpellEditor.Sources.Database
     {
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
+        private Timer _heartbeat;
         public bool Updating { get; set; }
 
         public MySQL()
@@ -25,22 +27,31 @@ namespace SpellEditor.Sources.Database
                 cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
                 cmd.ExecuteNonQuery();
             }
+            // Rather than attempting to recreate the connection on being dropped,
+            //  instead just have a keep alive heartbeat.
+            // Object reference needs to be held to prevent garbage collection.
+            _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
         }
 
         ~MySQL()
         {
             if (_connection != null && _connection.State != ConnectionState.Closed)
                 _connection.Close();
+            _heartbeat?.Dispose();
+            _heartbeat = null;
         }
 
         public void CreateAllTablesFromBindings()
         {
-            foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+            lock (_syncLock)
             {
-                using (var cmd = _connection.CreateCommand())
+                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
                 {
-                    cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
-                    cmd.ExecuteNonQuery();
+                    using (var cmd = _connection.CreateCommand())
+                    {
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
@@ -158,6 +169,15 @@ namespace SpellEditor.Sources.Database
             keyWord = keyWord.Replace("'", "''");
             keyWord = keyWord.Replace("\\", "\\\\");
             return keyWord;
+        }
+
+        private Timer CreateKeepAliveTimer(TimeSpan interval)
+        {
+            return new Timer(
+                (e) => Execute("SELECT 1"),
+                null,
+                TimeSpan.Zero,
+                interval);
         }
     }
 }
