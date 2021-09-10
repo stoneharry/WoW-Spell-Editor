@@ -280,275 +280,275 @@
 	
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
-        Unknown 0 |
-        On Next Ranged |
-        On Next Swing (Player) |
-        Is Replenishment |
-        Ability |
-        Trade Spell |
-        Passive Spell |
-        Hidden Client-Side |
-        Hide in Combat Log |
-        Target Main-Hand Item |
-        On Next Swing (NPCs) |
-        Unknown 11 |
-        Daytime Only |
-        Night Only |
-        Indoors Only |
-        Outdoors Only |
-        No Shapeshift |
-        Requires Stealth |
-        Don't Affect Sheath State |
-        Spell Damage depends on Caster Level |
-        Stops Auto-Attack |
-        Impossible to Dodge, Parry or Block |
-        Track Target while Casting |
-        Castable While Dead |
-        Castable While Mounted |
-        Start Cooldown after Aura Fades |
-        Negative |
-        Castable While Sitting |
-        Cannot be used in Combat |
-        Unaffected by Invulnerability |
-        Breakable by Damage |
-        Aura Cannot be Cancelled
+		Proc Failure Burns Charge |
+		Uses Ranged Slot |
+		On Next Swing (No Damage) |
+		Do Not Log Immune Misses |
+		Is Ability |
+		Is Trade Skill |
+		Passive |
+		Do Not Display (Spellbook, Aura Icon, Combat Log) |
+		Do Not Log |
+		Held Item Only |
+		On Next Swing |
+		Wearer Casts Proc Trigger |
+		Server Only |
+		Allow Item Spell In PvP |
+		Indoors Only |
+		Outdoors Only |
+		Not Shapeshifted |
+		Only Stealthed |
+		Do Not Sheath |
+		Spell Damage scales with Level |
+		Cancels Auto Attack Combat |
+		Impossible to Dodge, Parry or Block |
+		Track Target while Casting |
+		Castable While Dead |
+		Castable While Mounted |
+		Start Cooldown after Aura Fades |
+		Negative, Aura is Debuff |
+		Castable While Sitting |
+		Cannot be used in Combat |
+		Unaffected by Invulnerability |
+		Breakable by Damage |
+		Aura Cannot be Cancelled
     </system:String>
     <system:String x:Key="attFlagsEx_strings">
-        Dismiss Pet |
+        Dismiss Pet First |
         Drains All Power |
-        Channeled 1 |
+        Is Channelled |
         Cannot be Redirected |
-        Unknown 4 |
-        Does not Break Stealth |
-        Channeled 2 |
+        No Skill Increase |
+        Allow While Stealthed |
+        Is Self Channelled |
         Cannot be Reflected |
         Cannot Target in Combat |
-        Melee Combat Start |
+        Initiates Combat (Enables Auto-Attack) |
         Generates No Threat |
-        Unknown 11 |
-        Pickpocket |
+        Aura Unique |
+        Failure Breaks Stealth |
         Far Sight |
-        Track Target while Channeling |
+        Track Target while Channel;ing |
         Remove Auras on Immunity |
-        Unaffected by School Immune |
-        Unautoscalable by Pet |
-        Stun, Polymorph, Daze, Hex |
+        Immunity to Hostile and Friendly Effects |
+        No AutoCast (AI) |
+        Prevents Animation |
         Cannot Target Self |
-        Requires Combo Points on Target 1 |
-        Unknown 21 |
-        Required Combo Points on Target 2 |
-        Unknown 23 |
-        Fishing |
-        Unknown 25 |
-        Focus Targeting Macro |
-        Unknown 27 |
+        Finishing Move - Damage |
+        Threat only on miss |
+        Finishing Move - Duration |
+        Ignore Owner's Death |
+        Special Skillup |
+        Aura Stays After Combat |
+        Require All Targets |
+        Discount Power On Miss |
         Hidden in Aura Bar |
-        Channel Display Name |
-        Enable Spell when Dodged |
-        Unknown 31
+        Name in Channel Bar |
+        Enable Spell when Dodged / Combo on Block |
+        Cast When Learned
     </system:String>
     <system:String x:Key="attFlagsEx1_strings">
         Can Target Dead Unit or Corpse |
-        Vanish, Shadowform, Ghost |
-        Can Target not in Line of Sight |
-        Unknown 3 |
-        Display in Stance Bar |
-        Autorepeat Flag |
+        No Shapeshift UI |
+        Ignore Line of Sight |
+        Allow Low Level Buff |
+        Display in Stance Bar / Use Shapeshift Bar |
+        Auto Repeat |
         Requires Untapped Target |
-        Unknown 7 |
-        Unknown 8 |
-        Unknown 9 |
-        Unknown 10 (Tame) |
-        Health Funnel |
-        Cleave, Heart Strike, Maul, Sunder Armor, Swipe |
+        Do Not Report Spell Failure |
+        Include In Advanced Combat Log |
+        Always Cast As Unit |
+        Special Taming Flag |
+        No Target Per-Second Costs |
+        Chain From Caster |
         Preserve Enchant in Arena |
-        Unknown 14 |
-        Unknown 15 |
-        Tame Beast |
-        Don't Reset Auto Actions |
-        Requires Dead Pet |
+        Allow While Invisible |
+        Do Not Consume if Gained During Cast |
+        No Active Pets |
+        Do Not Reset Combat Timers |
+        Requires Dead Pet / No Jump While Cast Pending |
         Don't Need Shapeshift |
-        Unknown 20 |
-        Damage Reduced Shield |
-        Ambush, Backstab, Cheap Shot, Death Grip, Garrote, Judgements, Mutilate, Pounce, Ravage, Shiv, Shred |
-        Arcane Concentration |
-        Unknown 24 |
-        Unknown 25 |
-        Unaffected by School Immunity |
-        Requires Fishing Pole |
-        Unknown 28 |
+        Initiate Combat Post-Cast (Enables Auto-Attack) |
+        Fail on all targets immune |
+        No Initial Threat |
+        Proc Cooldown On Failure |
+        Item Cast With Owner Skill |
+        Don't Block Mana Regen |
+        No School Immunities |
+        Ignore Weapon Skill |
+        Not an Action |
         Cannot Crit |
-        Triggered can Trigger Proc |
-        Food Buff
+        Active Threat |
+        Retain Item Cast
     </system:String>
     <system:String x:Key="attFlagsEx2_strings">
-        Unknown 0 |
-        Unknown 1 |
-        Unknown 2 |
-        Blockable Spell |
+        PvP Enabling |
+        No Proc Equip Requirement |
+        No Casting Bar Text |
+        Blockable Spell / Completely Blocked |
         Ignore Resurrection Timer |
-        Unknown 5 |
-        Unknown 6 |
+        No Durability Loss |
+        No Avoidance |
         Stack for Different Casters |
         Only Target Players |
-        Triggered can Trigger Proc 2 |
+        Not a Proc |
         Requires Main-Hand |
         Battleground Only |
         Only Target Ghosts |
         Hide Channel Bar |
-        Honorless Target |
-        Auto-Shoot |
-        Cannot Trigger Proc |
-        No Initial Aggro |
+        Hide In Raid Filter |
+        Normal Ranged Attack (Auto-Shoot) |
+        Suppress Caster Procs |
+        Suppress Target Procs |
         Cannot Miss |
-        Disable Procs |
+        Disable Procs / Instant Target Procs |
         Death Persistent |
-        Unknown 21 |
-        Requires Wands |
-        Unknown 23 |
+        Only Proc Outdoors |
+        Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) |
+        No Damage History |
         Requires Off-Hand |
-        Can Proc with Triggered |
-        Drain Soul |
-        Unknown 28 |
-        No Done Bonus |
+        Can Proc From Procs |
+        Only Proc on Caster |
+        Ignore Caster and Target Restrictions |
+        Ignore Caster Modifiers |
         Do not Display Range |
-        Unknown 31
+        Not On AOE Immune
     </system:String>
     <system:String x:Key="attFlagsEx3_strings">
         Ignore All Resistances |
         Proc Only on Caster |
         Continue to Tick while Offline |
-        Unknown 3 |
-        Unknown 4 |
-        Unknown 5 |
-        Not Stealable |
-        Triggered |
-        Fixed Damage |
-        Activate from Event |
-        Spell vs Extended Cost |
-        Unknown 11 |
-        Unknown 12 |
-        Unknown 13 |
-        Damage doesn't Break Auras |
-        Unknown 15 |
+        No Helpful Threat |
+        No Harmful Threat |
+        Allow Client Targeting |
+        Cannot Be Stolen |
+        Allow Cast While Casting / Triggered |
+        Fixed Damage / Ignore Damage Taken Modifiers |
+        Activate from Event / Combat Feedback When Usable |
+        Spell vs Extended Cost / Weapon Speed Cost Scaling |
+        No Partial Immunity |
+        Aura Is Buff |
+        Do Not Log Caster |
+        Damage doesn't Break Auras / Reactive Damage Proc |
+        Not In Spellbook |
         Not Usable in Arena |
         Usable in Arena |
-        Area Target Chain |
-        Unknown 19 |
-        Don't Check Selfcast Power |
-        Unknown 21 |
-        Unknown 22 |
-        Unknown 23 |
-        Unknown 24 |
-        Pet Scaling |
-        Can Only be Casted in Outland |
-        Unknown 27 |
-        Aimed Shot |
-        Unknown 29 |
-        Unknown 30 |
-        Polymorph
+        Bouncy Chain Missiles |
+        Allow Proc While Sitting |
+        Don't Check Selfcast Power / Aura Never Bounces |
+        Allow Entering Arena |
+        Proc Suppress Swing Anim |
+        Suppress Weapon Procs |
+        Auto Ranged Combat |
+        Pet Scaling / Owner Power Scaling |
+        Can only be used in Flying Areas |
+        Force Display Castbar |
+        Ignore Combat Timer |
+       	Aura Bounce Fails Spell |
+        Obsolete |
+        Use Facing From Spell
     </system:String>
     <system:String x:Key="attFlagsEx4_strings">
-        Unknown 0 |
-        No Reagent While Preparation |
-        Unknown 2 |
-        Usable while Stunned |
-        Unknown 4 |
-        Single-Target Spell |
-        Unknown 6 |
-        Unknown 7 |
-        Unknown 8 |
-        Start Periodic at Aura Apply |
-        Hide Duration |
-        Allow Target of Target as Target |
-        Cleave |
-        Haste Affect Duration |
-        Unknown 14 |
-        Inflict on Multiple Targets |
-        Special Item Class Check |
-        Usable while Feared |
-        Usable feared Confused |
-        Don't Turn during Casting |
-        Unknown 20 |
-        Unknown 21 |
-        Unknown 22 |
-        Unknown 23 |
-        Unknown 24 |
-        Unknown 25 |
-        Unknown 26 |
-        Don't Show Aura if Self-Cast |
-        Don't Show Aura if Not Self-Cast |
-        Unknown 29 |
-        Unknown 30 |
-        AoE Taunt
+        Allow Actions During Channel |
+        No Reagent Cost With Aura |
+        Remove Entering Arena |
+        Allow While Stunned |
+        Triggers Channeling |
+        Single-Target Spell / Limit N |
+        Ignore Area Effect PvP Check |
+        Not On Player |
+        Not On Player Controlled NPC |
+        Start Periodic at Aura Apply / Extra Initial Period |
+        Do Not Display Duration |
+        Allow Target of Target as Target / Implied Targeting |
+        Melee Chain Targeting (Cleave) |
+        Spell Haste Affects Periodic (Duration) |
+        Not Available While Charmed |
+        Treat as Area Effect (Inflict on Multiple Targets) |
+        Aura Affects Not Just Req. Equipped Item |
+        Allow While Fleeing (Feared) |
+        Allow While Confused |
+        AI Doesn't Face Target / Don't Turn during Casting |
+        Do Not Attempt a Pet Resummon When Dismounting |
+        Ignore Target Requirements |
+        Not On Trivial |
+        No Partial Resists |
+        Ignore Caster Requirements |
+        Always Line of Sight |
+        Always AOE Line of Sight |
+        No Caster Aura Icon |
+        No Target Aura Icon |
+      	Aura Unique Per Caster |
+        Always Show Ground Texture |
+        Add Melee Hit Rating / AoE Taunt
     </system:String>
     <system:String x:Key="attFlagsEx5_strings">
-        Don't Display Cooldown |
-        Only in Arena |
-        Ignore Caster Auras |
-        Assist Ignore Immune Flag |
-        Unknown 4 |
-        Unknown 5 |
-        Spell Cast Event |
-        Unknown 7 |
-        Can't Target Crowd-Controlled |
-        Unknown 9 |
-        Can Target Possessed Friends |
-        Not in Raid Instance |
-        Castable while on Vehicle |
-        Can Target Invisible |
-        Unknown 14 |
-        Unknown 15 |
-        Unknown 16 |
-        Mount |
-        Cast by Charmer |
-        Unknown 19 |
-        Only Visible to Caster |
-        Client UI Target Effects |
-        Unknown 22 |
-        Unknown 23 |
+        No Cooldown On Tooltip |
+        Do Not Reset Cooldown In Arena |
+        Not an Attack / Ignore Caster Auras |
+        Can Assist Immune PC / Assist Ignore Immune Flag |
+        Ignore For Mod Time Rate |
+        Do Not Consume Resources |
+        Floating Combat Text On Cast |
+        Aura Is Weapon Proc |
+        Do Not Chain To Crowd-Controlled Targets |
+        Allow On Charmed Targets |
+        No Aura Log |
+        Not In Raid Instances |
+        Allow While Riding Vehicle |
+        Can Target Invisible / Ignore Phase Shift |
+        AI Primary Ranged Attack |
+        No Pushback |
+        No Jump Pathing |
+        Allow Equip While Casting |
+        Originate From Controller |
+        Delay Combat Timer During Cast |
+        Aura Icon Only For Caster (Limit 10) |
+        Show Mechanic as Combat Text |
+        Absorb Cannot Be Ignore |
+        Taps immediately |
         Can Target Untargetable |
-        Exorcism, Flash of Light |
-        Unknown 26 |
-        Unknown 27 |
-        Death Grip |
-        Not Done Percent Damage Mods |
-        Unknown 30 |
-        Ignore Category Cooldown Mods
+        Doesn't Reset Swing Timer if Instant |
+        Vehicle Immunity Category |
+        Ignore Healing Modifiers |
+        Do Not Auto Select Target with Initiates Combat |
+        Ignore Caster Damage Modifiers |
+        Disable Tied Effect Points |
+        No Category Cooldown Mods
     </system:String>
     <system:String x:Key="attFlagsEx6_strings">
-        Feign Death |
-        Unknown 1 |
-        Re-Activate at Resurrect |
-        Cheat Spell |
-        Soulstone Resurrection |
-        Totem |
-        No Pushback on Damage |
-        Unknown 7 |
+        Allow Spell Reflection / Feign Death |
+        No Target Duration Mod |
+        Disable Aura While Dead |
+        Cheat Spell / Debug Spell |
+        Treat as Raid Buff |
+        Can Be Multi Cast (Totem) |
+        Don't Cause Spell Pushback |
+        Prepare for Vehicle Control End |
         Horde Only |
         Alliance Only |
-        Dispel Charges |
-        Interrupt only Non-Player |
-        Unknown 12 |
-        Unknown 13 |
-        Raise Dead |
-        Unknown 15 |
-        Restore Secondary Power |
-        Unknown 17 |
-        Charge |
-        Zone Teleport |
-        Blink, Divine Shield, Ice Block |
-        Unknown 21 |
-        Unknown 22 |
-        Unknown 23 |
-        Unknown 24 |
-        Unknown 25 |
-        Unknown 26 |
-        Unknown 27 |
-        Consolidated Raid Buff |
-        Unknown 29 |
-        Unknown 30 |
-        Client Indicator
+        Dispel Removes Charges |
+        Can Cause Interrupt (Interrupt only Non-Player) |
+        Can Cause Silence |
+        No UI Not Interruptible |
+        Recast On Resummon (Raise Dead) |
+        Reset Swing Timer at spell start |
+        Only In Spellbook Until Learned (Restore Secondary Power) |
+        Do Not Log PvP Kill |
+        Attack on Charge to Unit |
+        Report Spell failure to unit target (Zone Teleport) |
+        No Client Fail While Stunned, Fleeing, Confused (Blink, Divine Shield, Ice Block) |
+        Retain Cooldown Through Load |
+        Ignores Cold Weather Flying Requirement |
+        No Attack Dodge |
+        No Attack Parry |
+        No Attack Miss |
+        Treat as NPC AoE |
+        Bypass No Resurrect Aura |
+        Do Not Count For PvP Scoreboard / Consolidated Raid Buff |
+        Reflection Only Defends |
+        Can Proc From Suppressed Target Procs |
+        Always Cast Log / Client Indicator
     </system:String>
     <system:String x:Key="stances_strings">
         None |
