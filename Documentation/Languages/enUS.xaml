@@ -15,7 +15,7 @@
     <system:String x:Key="tabDeutsch">Deutsch</system:String>
     <system:String x:Key="tabChinese">Chinese</system:String>
     <system:String x:Key="tabTaiwanese">Taiwanese</system:String>
-    <system:String x:Key="tabMexican">Mexican</system:String>
+    <system:String x:Key="tabMexican">Spanish</system:String>
     <system:String x:Key="tabPortuguese">Portuguese</system:String>
     <system:String x:Key="tabRussian">Russian</system:String>
     <system:String x:Key="labSpellName">Spell Name:</system:String>
