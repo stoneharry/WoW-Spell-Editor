@@ -740,29 +740,76 @@ namespace SpellEditor
         {
             var controller = await this.ShowProgressAsync("Generating and persisting spell descriptions...", "");
             controller.SetCancelable(false);
+            var descriptions = new List<KeyValuePair<string, string>>();
             // Some methods in the string parser need UI thread access
             //await Task.Run(() =>
             //{
-                var adapter = GetDBAdapter();
-                using (var query = adapter.Query("SELECT * FROM spell"))
+            var adapter = GetDBAdapter();
+            using (var query = adapter.Query("SELECT * FROM spell"))
+            {
+                var rows = query.AsEnumerable();
+                var totalRows = rows.Count();
+                //int progress = 0;
+                foreach (var row in rows)
                 {
-                    var rows = query.AsEnumerable();
-                    var totalRows = rows.Count();
-                    int progress = 0;
-                    foreach (var row in rows)
+                    //if (++progress % 100 == 0)
+                    //{
+                        //controller.SetProgress(percent);
+                    //}
+                    var id = row["id"].ToString();
+                    var desc = row["spelldescription0"].ToString();
+                    if (desc.Trim().Length == 0)
+                        continue;
+                    try
                     {
-                        if (++progress % 100 == 0)
-                        {
-                            controller.SetProgress(((double)progress / (double)totalRows) * 100.0D);
-                        }
-                        var id = row["id"].ToString();
-                        var desc = row["spelldescription0"].ToString();
-                        if (desc.Trim().Length == 0)
-                            continue;
-                        desc = SpellStringParser.ParseString(desc, row, this);
-                        adapter.Execute($"REPLACE INTO new_world.item_spell_gem_desc VALUES ({id}, \"{adapter.EscapeString(desc)}\")");
+                        descriptions.Add(new KeyValuePair<string, string>(id, SpellStringParser.ParseString(desc, row, this)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
                     }
                 }
+            }
+            var sb = new StringBuilder();
+            var count = 0;
+            sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+            foreach (var pair in descriptions)
+            {
+                
+                sb.Append($"({pair.Key}, \"{MySqlHelper.EscapeString(pair.Value)}\"), ");
+                if (++count % 500 == 0)
+                {
+                    sb = sb.Remove(sb.Length - 2, 2);
+                    try
+                    {
+                        adapter.Execute(sb.ToString());
+                        sb = new StringBuilder();
+                        sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("Failed on query:\n" + sb.ToString());
+                        Logger.Error(ex);
+                        sb = new StringBuilder();
+                        sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                    }
+                }
+            }
+            if (sb.Length > 0)
+            {
+                sb = sb.Remove(sb.Length - 2, 2);
+                try
+                {
+                    adapter.Execute(sb.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("Failed on query:\n" + sb.ToString());
+                    Logger.Error(ex);
+                    sb = new StringBuilder();
+                    sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                }
+            }
             //});
             await controller.CloseAsync();
             ShowFlyoutMessage("Persisted all spell descriptions");
