@@ -736,6 +736,38 @@ namespace SpellEditor
         }
         #endregion
 
+        private async void DebugButtonClick(object sender, RoutedEventArgs e)
+        {
+            var controller = await this.ShowProgressAsync("Generating and persisting spell descriptions...", "");
+            controller.SetCancelable(false);
+            // Some methods in the string parser need UI thread access
+            //await Task.Run(() =>
+            //{
+                var adapter = GetDBAdapter();
+                using (var query = adapter.Query("SELECT * FROM spell"))
+                {
+                    var rows = query.AsEnumerable();
+                    var totalRows = rows.Count();
+                    int progress = 0;
+                    foreach (var row in rows)
+                    {
+                        if (++progress % 100 == 0)
+                        {
+                            controller.SetProgress(((double)progress / (double)totalRows) * 100.0D);
+                        }
+                        var id = row["id"].ToString();
+                        var desc = row["spelldescription0"].ToString();
+                        if (desc.Trim().Length == 0)
+                            continue;
+                        desc = SpellStringParser.ParseString(desc, row, this);
+                        adapter.Execute($"REPLACE INTO new_world.item_spell_gem_desc VALUES ({id}, \"{adapter.EscapeString(desc)}\")");
+                    }
+                }
+            //});
+            await controller.CloseAsync();
+            ShowFlyoutMessage("Persisted all spell descriptions");
+        }
+
         #region InitialiseMemberVariables
         private void loadAllRequiredDbcs()
         {
