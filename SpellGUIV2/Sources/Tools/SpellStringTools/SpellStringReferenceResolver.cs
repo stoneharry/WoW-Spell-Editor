@@ -538,6 +538,15 @@ namespace SpellEditor.Sources.SpellStringTools
             }
         };
 
+        private static TOKEN_TO_PARSER maxTargetHandler = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$i",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                return str.Replace(maxTargetHandler.TOKEN, record["MaximumAffectedTargets"].ToString());
+            }
+        };
+
         private static TOKEN_TO_PARSER knownUnhandledTokenParser = new TOKEN_TO_PARSER()
         {
             // Any tokens here we explicitly set to zero because it relies on data that is not available to the spell editor.
@@ -567,6 +576,7 @@ namespace SpellEditor.Sources.SpellStringTools
             radiusParser,
             rangeParser,
             stackParser,
+            maxTargetHandler,
             knownUnhandledTokenParser
         };
 
