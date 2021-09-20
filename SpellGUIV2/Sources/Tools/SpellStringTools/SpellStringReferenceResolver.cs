@@ -569,7 +569,7 @@ namespace SpellEditor.Sources.SpellStringTools
                         else
                         {
                             var index = token[2].ToString();
-                            str = str.Replace(token, record["EffectBonusMultiplier" + index].ToString());
+                            str = str.Replace(str, record["EffectBonusMultiplier" + index].ToString());
                         }
                         break;
                     }
