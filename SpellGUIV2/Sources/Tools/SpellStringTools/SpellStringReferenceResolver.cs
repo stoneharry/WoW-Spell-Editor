@@ -551,7 +551,7 @@ namespace SpellEditor.Sources.SpellStringTools
         {
             // Any tokens here we explicitly set to zero because it relies on data that is not available to the spell editor.
             // For example, $AP is Attack Power - we need the context of a player to get the attack power they have.
-            TOKEN = "$m1|$m2|$m3|$M1|$M2|$M3|$M|$m|$AP|$SPH",
+            TOKEN = "$m1|$m2|$m3|$M1|$M2|$M3|$M|$m|$AP|$SPH|$rwb|$RWB|$b|$B",
             tokenFunc = (str, record, mainWindow) =>
             {
                 foreach (var token in knownUnhandledTokenParser.TOKEN.Split('|'))
@@ -564,6 +564,7 @@ namespace SpellEditor.Sources.SpellStringTools
 
         // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
         private static readonly TOKEN_TO_PARSER[] TOKEN_PARSERS = {
+            knownUnhandledTokenParser, // Should be first to ensure unknowns are swapped out and other tokens can be resolved
             procChanceParser,
             spellEffectParser,
             durationParser,
@@ -576,8 +577,7 @@ namespace SpellEditor.Sources.SpellStringTools
             radiusParser,
             rangeParser,
             stackParser,
-            maxTargetHandler,
-            knownUnhandledTokenParser
+            maxTargetHandler
         };
 
         public static string GetParsedForm(string rawString, DataRow record, MainWindow mainWindow)
