@@ -749,13 +749,15 @@ namespace SpellEditor
             {
                 var rows = query.AsEnumerable();
                 var totalRows = rows.Count();
-                //int progress = 0;
+                int progress = 0;
                 foreach (var row in rows)
                 {
-                    //if (++progress % 100 == 0)
-                    //{
+                    if (++progress % 100 == 0)
+                    {
+                        int percent = (progress / totalRows) * 100;
+                        Logger.Debug($"====== Progress: ===== {percent}%");
                         //controller.SetProgress(percent);
-                    //}
+                    }
                     var id = row["id"].ToString();
                     var desc = row["spelldescription0"].ToString();
                     if (desc.Trim().Length == 0)
