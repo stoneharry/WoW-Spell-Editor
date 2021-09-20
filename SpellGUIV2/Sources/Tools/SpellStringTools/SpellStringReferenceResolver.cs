@@ -551,7 +551,7 @@ namespace SpellEditor.Sources.SpellStringTools
         {
             // Any tokens here we explicitly set to zero because it relies on data that is not available to the spell editor.
             // For example, $AP is Attack Power - we need the context of a player to get the attack power they have.
-            TOKEN = "$m1|$m2|$m3|$M1|$M2|$M3|$M|$m|$RAP|$AP|$SPH|$SPI|$rwb|$RWB|$b|$B",
+            TOKEN = "$m1|$m2|$m3|$M1|$M2|$M3|$M|$m|$RAP|$AP|$SPH|$SPI|$rwb|$RWB|$b|$B|$mwb|$MWB|$mws|$MWS",
             tokenFunc = (str, record, mainWindow) =>
             {
                 foreach (var token in knownUnhandledTokenParser.TOKEN.Split('|'))
