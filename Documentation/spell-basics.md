@@ -11,9 +11,10 @@ When you open the spell editor and select a spell, there are a lot of different 
 
  #### Select Spell
  
-The Select Spell tab has all the text (strings) used by the spell. A single spell record can support every possible language the client supports, which is why there are many different tabs for each language. The spell tooltip and description supports spell formulas and tags that are derived by the client. For example, if you input the text `$d` then it will replace it with the text with the damage done by the spell.
+The Select Spell tab has all the text (strings) used by the spell. A single spell record can support every possible language the client supports, which is why there are many different tabs for each language. The spell tooltip and description supports spell formulas and tags that are derived by the client. For example, if you input the text `$d` then it will replace it with the duration of the spell.
 
 A lot of the spell string tags are documented here: https://github.com/stoneharry/WoW-Spell-Editor/blob/master/Documentation/Vels%20Spell%20String%20Tag%20Documentation.txt
+
 Some further documentation on spell formulas:
 
 - `$17057d` - Display the duration of spell ID 17057.
