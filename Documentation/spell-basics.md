@@ -58,7 +58,7 @@ Aura interrupt flags can be used to determine when an aura should be cancelled.
 
 Channel interrupt flags can be used to determine when a channelled spell should be interrupted.
 
-The attributes tabs can be used to flag all sorts of behaviour. I would call recommend inspecting some of the values in the first Attributes tab since these are the most commonly used flags. You can flag behaviour such as hiding the spell client side, or making it a debuff (negative).
+The attributes tabs can be used to flag all sorts of behaviour. I would recommend inspecting some of the values in the first Attributes tab since these are the most commonly used flags. You can flag behaviour such as hiding the spell client side, or making it a debuff (negative).
 
 The misc column can be used to define creature type requirements or stance requirements.
 
