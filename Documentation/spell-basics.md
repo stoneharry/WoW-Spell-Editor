@@ -62,6 +62,10 @@ The attributes tabs can be used to flag all sorts of behaviour. I would recommen
 
 The misc column can be used to define creature type requirements or stance requirements.
 
+### Dummy / Script effects
+
+To do.
+
 ### Server side spells
 
 Some spells exist only server side. This is because the client never needs to know about them. An example might be an `Infernal` spell, that launches an infernal at a position, spawning a creature when it hits the target. The missile visual and impact is client side, but it triggers a spell that exists server side and only spawns the infernal.
