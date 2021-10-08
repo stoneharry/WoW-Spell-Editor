@@ -89,6 +89,9 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet, Version=2020.0.1.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2020.0.1\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="SereniaBLPLib">
       <HintPath>Resources\SereniaBLPLib.dll</HintPath>
     </Reference>
@@ -155,6 +158,7 @@
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />
+    <Compile Include="Sources\Database\SSHMySQL.cs" />
     <Compile Include="Sources\DBC\AnimationData.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />

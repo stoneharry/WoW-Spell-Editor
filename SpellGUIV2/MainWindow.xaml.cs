@@ -768,7 +768,7 @@ namespace SpellEditor
                     switch (Config.connectionType)
                     {
                         case Config.ConnectionType.MySQL:
-                            adapter = new MySQL();
+                            adapter = new SSHMySQL("ssh.shinobistory.com", "Ec2-user", 22);//MySQL();
                             break;
                         case Config.ConnectionType.SQLite:
                             adapter = new SQLite();

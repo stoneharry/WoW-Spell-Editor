@@ -10,16 +10,21 @@ namespace SpellEditor.Sources.Database
 {
     public class MySQL : IDatabaseAdapter
     {
-        private readonly object _syncLock = new object();
-        private readonly MySqlConnection _connection;
-        private Timer _heartbeat;
+        protected readonly object _syncLock = new object();
+        protected MySqlConnection _connection;
+        protected Timer _heartbeat;
         public bool Updating { get; set; }
 
         public MySQL()
         {
+            CreateConnection();
+        }
+
+        protected virtual void CreateConnection()
+        {
             string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8;";
 
-            _connection = new MySqlConnection {ConnectionString = connectionString};
+            _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
             // Create DB if not exists and use
             using (var cmd = _connection.CreateCommand())
@@ -171,7 +176,7 @@ namespace SpellEditor.Sources.Database
             return keyWord;
         }
 
-        private Timer CreateKeepAliveTimer(TimeSpan interval)
+        protected Timer CreateKeepAliveTimer(TimeSpan interval)
         {
             return new Timer(
                 (e) => Execute("SELECT 1"),
