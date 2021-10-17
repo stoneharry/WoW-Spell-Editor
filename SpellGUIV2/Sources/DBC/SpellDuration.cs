@@ -9,13 +9,44 @@ namespace SpellEditor.Sources.DBC
     {
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
+        class DurationBox : DBCBoxContainer
+        {
+            public long baseDuration;
+
+            public DurationBox(long id, string name, int comboBoxIndex, long baseDuration)
+                : base(id, name, comboBoxIndex)
+                => this.baseDuration = baseDuration;
+
+            public DurationBox(long id, Label nameLabel, int comboBoxIndex, long baseDuration)
+                : base(id, nameLabel, comboBoxIndex)
+                => this.baseDuration = baseDuration;
+        }
+
+        private static int CompareDurationBoxes(DBCBoxContainer x, DBCBoxContainer y)
+        {
+            if (x == null || ((x as DurationBox) == null))
+            {
+                if (y == null || ((y as DurationBox) == null))
+                    return 0;
+                else
+                    return - 1;
+            }
+            else if (y == null)
+                return 1;
+            else
+            {
+                var durX = x as DurationBox;
+                var durY = y as DurationBox;
+                return durX.baseDuration.CompareTo(durY.baseDuration);
+            }
+        }
+
         public SpellDuration()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDuration.dbc");
 
-            Lookups.Add(new DBCBoxContainer(0, "0", 0));
+            Lookups.Add(new DurationBox(0, "0", 0, 0));
 
-            int boxIndex = 1;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];
@@ -27,9 +58,15 @@ namespace SpellEditor.Sources.DBC
                 {
                     Content = $"ID: {id}\nBaseDur: {baseDurStr}\nMaxDur: {maxDurStr}\nPerLevel: {perLevelStr}"
                 };
-                Lookups.Add(new DBCBoxContainer(id, label, boxIndex));
-                ++boxIndex;
+                Lookups.Add(new DurationBox(id, label, 0,
+                    uint.Parse(record["BaseDuration"].ToString()) +
+                    int.Parse(record["MaximumDuration"].ToString())
+                    ));
             }
+            Lookups.Sort(Comparer<DBCBoxContainer>.Create(CompareDurationBoxes));
+            for (int i = 0; i < Lookups.Count; ++i)
+                Lookups[i].ComboBoxIndex = i;
+
             Reader.CleanStringsMap();
         }
 
