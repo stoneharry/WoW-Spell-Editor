@@ -11,15 +11,18 @@ namespace SpellEditor.Sources.SpellStringTools
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly string MODIFY_FORMULA_REGEX = "\\$(\\/|\\*|\\-|)\\d+\\;\\d*\\w+";    // $/10;17057s1 | $/10;s1
-        public static readonly string FORMULA_REGEX = "\\$\\{.*?}|\\$\\w*";                         // ${1 + $s1} | $s1
-        public static readonly string ALL_FORMULA_REGEX = $"{MODIFY_FORMULA_REGEX}|{FORMULA_REGEX}";
-        public static readonly string NUMBER_REGEX = "\\d+\\.?\\d+|\\d+";                           // 12 | 12.26
-        public static readonly string REFERENCE_REGEX = "\\$\\w+";                                  // $s1
-        public static readonly string PLUS_REGEX = "\\+";                                           // +
-        public static readonly string MINUS_REGEX = "\\-";                                          // -
-        public static readonly string MULTIPLY_REGEX = "\\*";                                       // *
-        public static readonly string DIVIDE_REGEX = "\\/";                                         // /
+        public static readonly string MODIFY_FORMULA_REGEX      = @"\$(\/|\*|\-|)\d+\;\d*\w+";                      // $/10;17057s1 | $/10;s1
+        public static readonly string FORMULA_REGEX             = @"\$\{.*?}|\$\w*";                                // ${1 + $s1} | $s1
+        public static readonly string LOCALE_STR_REGEX          = @"\$l(\w+\:)+\w+\;";                              // $lone_thing:two_things:three_things:four_things;
+        public static readonly string CONDITIONAL_FORMULA_REGEX = @"\$\?(.+?)\[(.*?)\]\[(.*?)\]";                   // $?(s70937)[true condition][false $70907d]
+        public static readonly string FORMULA_TAG_REGEX         = @"\$\<\w+\>";                                     // $<mult>
+        public static readonly string ALL_FORMULA_REGEX         = $"{MODIFY_FORMULA_REGEX}|{FORMULA_REGEX}";
+        public static readonly string NUMBER_REGEX              = @"\d+\.?\d+|\d+";                                 // 12 | 12.26
+        public static readonly string REFERENCE_REGEX           = @"\$\w+";                                         // $s1
+        public static readonly string PLUS_REGEX                = @"\+";                                            // +
+        public static readonly string MINUS_REGEX               = @"\-";                                            // -
+        public static readonly string MULTIPLY_REGEX            = @"\*";                                            // *
+        public static readonly string DIVIDE_REGEX              = @"\/";                                            // /
         public static readonly string TOKEN_REGEX = 
             $"{MODIFY_FORMULA_REGEX }|{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
@@ -32,6 +35,26 @@ namespace SpellEditor.Sources.SpellStringTools
         // Can parse references like "$s1"
         public string ParseString(string str, DataRow spell, MainWindow mainWindow)
         {
+            // Replace locale strings first
+            foreach (var localeMatch in Regex.Matches(str, LOCALE_STR_REGEX))
+            {
+                var localeFormula = localeMatch.ToString();
+                // The correct string to use appears to depend on the localisation.
+                // For the purposes of the spell editor, always display the first string.
+                var useWord = localeFormula.Substring(2, localeFormula.IndexOf(':') - 2);
+                str = str.Replace(localeFormula, useWord);
+            }
+            foreach (Match conditionMatch in Regex.Matches(str, CONDITIONAL_FORMULA_REGEX))
+            {
+                // Always take the true condition value because we don't have a player context
+                str = str.Replace(conditionMatch.ToString(), conditionMatch.Groups[2].Value);
+            }
+            foreach (var match in Regex.Matches(str, FORMULA_TAG_REGEX))
+            {
+                // Strip formula tags
+                str = str.Replace(match.ToString(), "0");
+            }
+            // Parse formulas and resolve
             var formulas = FindFormulas(str);
             foreach (var formula in formulas)
             {
