@@ -35,10 +35,10 @@ namespace SpellEditor.Sources.Database
 
         ~MySQL()
         {
-            if (_connection != null && _connection.State != ConnectionState.Closed)
-                _connection.Close();
             _heartbeat?.Dispose();
             _heartbeat = null;
+            if (_connection != null && _connection.State != ConnectionState.Closed)
+                _connection.Close();
         }
 
         public void CreateAllTablesFromBindings()
