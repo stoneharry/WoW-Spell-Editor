@@ -2839,6 +2839,10 @@ namespace SpellEditor
                 SpellMissileID.IsEnabled = isWotlkOrGreater;
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
                 Difficulty.IsEnabled = isWotlkOrGreater;
+
+                FilterClassMaskSpells1.IsEnabled = isWotlkOrGreater;
+                FilterClassMaskSpells2.IsEnabled = isWotlkOrGreater;
+                FilterClassMaskSpells3.IsEnabled = isWotlkOrGreater;
             }
             catch (Exception e)
             {
