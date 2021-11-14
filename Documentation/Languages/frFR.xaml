@@ -121,6 +121,7 @@
     <system:String x:Key="labEffectBonusMultiplier2">Multiplicateur de l'effet 2 :</system:String>
     <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3 :</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">Multiplicateur de l'effet 3 :</system:String>
+	<system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
     <system:String x:Key="labItemTool1">Totem 1 :</system:String>
     <system:String x:Key="labItemTool2">Totem 2 :</system:String>
     <system:String x:Key="labReagent1">Réactif 1 :</system:String>

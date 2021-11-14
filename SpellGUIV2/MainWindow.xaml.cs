@@ -643,6 +643,8 @@ namespace SpellEditor
                 Mask += cb.IsChecked == true ? (uint)Math.Pow(2, i) : 0;
             }
             father.Text = Mask.ToString();
+
+            SpellMask_SelectionChanged(father, null);
         }
 
         #endregion
@@ -2699,7 +2701,7 @@ namespace SpellEditor
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
+                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, adapter, null)));
                 }
                 else
                 {
@@ -2729,8 +2731,21 @@ namespace SpellEditor
                     UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
                     UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
 
+                    var masks = new List<uint>
+                    {
+                        uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC3"].ToString())
+                    };
+
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
+                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
                 }
                 SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
                 ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
@@ -4019,6 +4034,28 @@ namespace SpellEditor
                 }
                 return false;
             };
+        }
+
+        private void SpellMask_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+                return;
+
+            var masks = new List<uint>
+            {
+                uint.Parse(SpellMask11.Text),
+                uint.Parse(SpellMask21.Text),
+                uint.Parse(SpellMask31.Text),
+                uint.Parse(SpellMask21.Text),
+                uint.Parse(SpellMask22.Text),
+                uint.Parse(SpellMask23.Text),
+                uint.Parse(SpellMask31.Text),
+                uint.Parse(SpellMask32.Text),
+                uint.Parse(SpellMask33.Text)
+            };
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, uint.Parse(SpellFamilyName.Text), GetDBAdapter(), masks)));
         }
 
         private string SafeTryFindResource(object key)
