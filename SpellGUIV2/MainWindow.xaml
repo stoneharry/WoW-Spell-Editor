@@ -532,8 +532,10 @@
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,42,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <ListBox x:Name="EffectTargetSpellsList1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="469" Margin="929,73,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects2}">
@@ -582,8 +584,10 @@
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,42,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <ListBox x:Name="EffectTargetSpellsList2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="469" Margin="929,73,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects3}">
@@ -632,8 +636,10 @@
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,42,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <ListBox x:Name="EffectTargetSpellsList3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="469" Margin="929,73,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>

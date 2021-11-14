@@ -1036,10 +1036,7 @@ namespace SpellEditor
                         {
                             if (!(enumerator.Current is TextBlock block))
                                 continue;
-
-                            var name = block.Text;
-                            var spellName = name.Substring(name.IndexOf(' ', 4) + 1);
-                            return spellName.ToLower().Contains(input);
+                            return input.Length == 0 ? true : block.Text.ToLower().Contains(input);
                         }
                     }
                     return false;
@@ -4056,6 +4053,26 @@ namespace SpellEditor
 
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, uint.Parse(SpellFamilyName.Text), GetDBAdapter(), masks)));
+        }
+
+        private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ListBox targetBox;
+            if (sender == FilterClassMaskSpells1)
+                targetBox = EffectTargetSpellsList1;
+            else if (sender == FilterClassMaskSpells2)
+                targetBox = EffectTargetSpellsList2;
+            else if (sender == FilterClassMaskSpells3)
+                targetBox = EffectTargetSpellsList3;
+            else
+            {
+                Logger.Error($"Unable to find target box to Class Mask Filter: {sender}");
+                return;
+            }
+            var filterBox = sender as ThreadSafeTextBox;
+            var input = filterBox.Text.ToLower();
+            ICollectionView view = CollectionViewSource.GetDefaultView(targetBox.Items);
+            view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
         }
 
         private string SafeTryFindResource(object key)
