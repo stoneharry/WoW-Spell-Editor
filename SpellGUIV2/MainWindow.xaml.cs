@@ -2718,16 +2718,6 @@ namespace SpellEditor
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
-
                     var masks = new List<uint>
                     {
                         uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
@@ -2740,6 +2730,16 @@ namespace SpellEditor
                         uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
                         uint.Parse(row["EffectSpellClassMaskC3"].ToString())
                     };
+
+                    UpdateSpellMaskCheckBox(masks[0], SpellMask11);
+                    UpdateSpellMaskCheckBox(masks[1], SpellMask21);
+                    UpdateSpellMaskCheckBox(masks[2], SpellMask31);
+                    UpdateSpellMaskCheckBox(masks[3], SpellMask12);
+                    UpdateSpellMaskCheckBox(masks[4], SpellMask22);
+                    UpdateSpellMaskCheckBox(masks[5], SpellMask32);
+                    UpdateSpellMaskCheckBox(masks[6], SpellMask13);
+                    UpdateSpellMaskCheckBox(masks[7], SpellMask23);
+                    UpdateSpellMaskCheckBox(masks[8], SpellMask33);
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
                         spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
