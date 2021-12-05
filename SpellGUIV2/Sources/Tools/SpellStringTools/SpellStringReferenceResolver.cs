@@ -69,7 +69,7 @@ namespace SpellEditor.Sources.SpellStringTools
                         uint radiusVal = 0;
                         if (index == 1)
                         {
-                            radiusVal = uint.Parse(record["EffectRadiusIndex1"].ToString());  
+                            radiusVal = uint.Parse(record["EffectRadiusIndex1"].ToString());
                         }
                         else if (index == 2)
                         {
@@ -133,7 +133,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER hearthstoneLocationParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$z",
-            tokenFunc = (str, record,mainWindos) =>
+            tokenFunc = (str, record, mainWindos) =>
             {
                 if (str.Contains(hearthstoneLocationParser.TOKEN))
                 {
@@ -146,7 +146,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER maxTargetLevelParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$v",
-            tokenFunc = (str, record,mainWindos) =>
+            tokenFunc = (str, record, mainWindos) =>
             {
                 if (str.Contains(maxTargetLevelParser.TOKEN))
                 {
@@ -159,7 +159,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static TOKEN_TO_PARSER targetsParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$x1|$x2|$x3|$x",
-            tokenFunc = (str, record,mainWindow) =>
+            tokenFunc = (str, record, mainWindow) =>
             {
                 foreach (var token in targetsParser.TOKEN.Split('|'))
                 {
@@ -233,9 +233,9 @@ namespace SpellEditor.Sources.SpellStringTools
             TOKEN = "$o1|$o2|$o3|$o",
             tokenFunc = (str, record, mainWindow) =>
             {
-            var tokens = summaryDamage.TOKEN.Split('|');
-            foreach (var token in tokens)
-            {
+                var tokens = summaryDamage.TOKEN.Split('|');
+                foreach (var token in tokens)
+                {
                     if (str.Contains(token))
                     {
                         uint index = 0;
@@ -295,14 +295,14 @@ namespace SpellEditor.Sources.SpellStringTools
             }
         };
 
-        private static TOKEN_TO_PARSER stacksParser = new TOKEN_TO_PARSER()
+        private static TOKEN_TO_PARSER procChargesParser = new TOKEN_TO_PARSER()
         {
             TOKEN = "$n",
-            tokenFunc = (str, record, mainWindow ) =>
+            tokenFunc = (str, record, mainWindow) =>
             {
-                if (str.Contains(stacksParser.TOKEN))
+                if (str.Contains(procChargesParser.TOKEN))
                 {
-                    str = str.Replace(stacksParser.TOKEN, record["ProcCharges"].ToString());
+                    str = str.Replace(procChargesParser.TOKEN, record["ProcCharges"].ToString());
                 }
 
                 MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)n");
@@ -319,6 +319,15 @@ namespace SpellEditor.Sources.SpellStringTools
                 }
 
                 return str;
+            }
+        };
+
+        private static TOKEN_TO_PARSER stackParser = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$u",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                return str.Replace(stackParser.TOKEN, record["StackAmount"].ToString());
             }
         };
 
@@ -424,8 +433,8 @@ namespace SpellEditor.Sources.SpellStringTools
                 MatchCollection _matches = Regex.Matches(str, "\\$([0-9]+)d");
 
                 foreach (Match _str in _matches)
-                { 
-                    uint _LinkId =  uint.Parse(_str.Groups[1].Value);
+                {
+                    uint _LinkId = uint.Parse(_str.Groups[1].Value);
                     DataRow _linkRecord = GetRecordById(_LinkId, mainWindow);
                     if (uint.Parse(_linkRecord["ID"].ToString()) != 0)
                     {
@@ -519,7 +528,7 @@ namespace SpellEditor.Sources.SpellStringTools
                         int newVal = 0;
                         if (_index >= 1 && _index <= 3)
                         {
-                            newVal = int.Parse(record["EffectBasePoints" + _index].ToString()) + 
+                            newVal = int.Parse(record["EffectBasePoints" + _index].ToString()) +
                                     int.Parse(record["EffectDieSides" + _index].ToString());
                         }
                         str = str.Replace(_str.ToString(), newVal.ToString());
@@ -528,20 +537,93 @@ namespace SpellEditor.Sources.SpellStringTools
                 return str;
             }
         };
-        
+
+        private static TOKEN_TO_PARSER maxTargetHandler = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$i",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                return str.Replace(maxTargetHandler.TOKEN, record["MaximumAffectedTargets"].ToString());
+            }
+        };
+
+        private static TOKEN_TO_PARSER multiplierHandler = new TOKEN_TO_PARSER()
+        {
+            TOKEN = "$m1|$m2|$m3|$m",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                foreach (var token in multiplierHandler.TOKEN.Split('|'))
+                {
+                    if (str.ToLower().Equals(token))
+                    {
+                        if (token.Length == 2) // $m
+                        {
+                            float sum = 0.0f;
+                            for (int i = 1; i <= 3; ++i)
+                            {
+                                var multStr = record["EffectBonusMultiplier" + i].ToString();
+                                sum += float.Parse(multStr);
+                            }
+                            str = str.Replace(token, sum.ToString("0.00"));
+                        }
+                        else
+                        {
+                            var index = token[2].ToString();
+                            str = str.Replace(str, record["EffectBonusMultiplier" + index].ToString());
+                        }
+                        break;
+                    }
+                }
+                return str;
+            }
+        };
+
+        private static TOKEN_TO_PARSER knownUnhandledTokenParser = new TOKEN_TO_PARSER()
+        {
+            // Any tokens here we explicitly set to zero because it relies on data that is not available to the spell editor.
+            // For example, $AP is Attack Power - we need the context of a player to get the attack power they have.
+            /*
+             * $RAP             Ranged Attack Power
+             * $AP              Attack Power
+             * $SPS             Spell Power Shadow
+             * $SPH             Spell Power Holy
+             * $SPI             Spirit
+             * $rwb             Ranged Weapon Minimum Damage (yes, the capitalisation matters)
+             * $RWB             Ranged Weapon Maximum Damage (yes, the capitalisation matters)
+             * $B $b $b1        Unknown, seen in combo point spells
+             * $mwb             Melee Weapon Minimum Damage (yes, the capitalisation matters)
+             * $MWB             Melee Weapon Maximum Damage (yes, the capitalisation matters)
+             * $MWS             Melee Weapon Speed
+             * $MW              Unknown
+            */
+            TOKEN = "$RAP|$AP|$SPH|$SPI|$sps|$SPS|$rwb|$RWB|$b1|$b2|$b3|$B1|$B2|$B3|$b|$B|$mwb|$MWB|$mws|$MWS|$mw|$MW",
+            tokenFunc = (str, record, mainWindow) =>
+            {
+                foreach (var token in knownUnhandledTokenParser.TOKEN.Split('|'))
+                {
+                    str = str.Replace(token, "0");
+                }
+                return str;
+            }
+        };
+
         // "Causes ${$m1+0.15*$SPH+0.15*$AP} to ${$M1+0.15*$SPH+0.15*$AP} Holy damage to an enemy target"
         private static readonly TOKEN_TO_PARSER[] TOKEN_PARSERS = {
+            knownUnhandledTokenParser, // Should be first to ensure unknowns are swapped out and other tokens can be resolved
             procChanceParser,
             spellEffectParser,
             durationParser,
-            stacksParser,
+            procChargesParser,
             periodicTriggerParser,
             summaryDamage,
             targetsParser,
             maxTargetLevelParser,
             hearthstoneLocationParser,
             radiusParser,
-            rangeParser
+            rangeParser,
+            stackParser,
+            maxTargetHandler,
+            multiplierHandler
         };
 
         public static string GetParsedForm(string rawString, DataRow record, MainWindow mainWindow)

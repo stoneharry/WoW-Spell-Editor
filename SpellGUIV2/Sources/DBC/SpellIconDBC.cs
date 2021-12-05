@@ -105,7 +105,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        public async void LoadAllIcons(double margin)
+        public void LoadAllIcons(double margin)
         {
             var pathsToAdd = new List<Icon_DBC_Lookup>();
             foreach (var entry in Lookups)

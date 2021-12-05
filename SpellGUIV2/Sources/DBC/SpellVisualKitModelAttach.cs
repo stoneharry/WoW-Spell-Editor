@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.DBC
      */
     class SpellVisualKitModelAttach
     {
-        public static string LookupAttachmentIndex(int index) => Enum.GetName(typeof(AttachmentPoint), index);
+        public static string LookupAttachmentIndex(uint index) => Enum.GetName(typeof(AttachmentPoint), index);
 
         public static uint LookupAttachmentIndex(string point) => (uint)Enum.Parse(typeof(AttachmentPoint), point);
 

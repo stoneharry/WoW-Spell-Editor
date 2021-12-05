@@ -1,0 +1,15 @@
+uint ID 					
+uint flags
+float defaultPitchMin
+float defaultPitchMax
+float defaultSpeedMin
+float defaultSpeedMax
+float randomizeFacingMin
+float randomizeFacingMax
+float randomizePitchMin
+float randomizePitchMax
+float randomizeSpeedMin
+float randomizeSpeedMax
+float gravity
+float maxDuration
+float collisionRadius
