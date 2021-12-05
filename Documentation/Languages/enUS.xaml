@@ -268,6 +268,29 @@
 	<system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
 	<system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
 	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
+	<system:String x:Key="VisualMissileMotionId">Id</system:String>
+	<system:String x:Key="VisualMissileMotionName">Name</system:String>
+	<system:String x:Key="VisualMissileMotionFlags">Flags</system:String>
+	<system:String x:Key="VisualMissileMotionMissileCount">Missile Count</system:String>
+	<system:String x:Key="VisualMissileMotionScript">Script (Lua)</system:String>
+	<system:String x:Key="VisualHasMissile">Has Missile</system:String>
+	<system:String x:Key="VisualMissileModel">Missile Model</system:String>
+	<system:String x:Key="VisualMissilePathType">Missile Path Type</system:String>
+	<system:String x:Key="VisualMissileDestinationAttachment">Destination Attachment</system:String>
+	<system:String x:Key="VisualMissileSound">Missile Sound</system:String>
+	<system:String x:Key="VisualAnimEventSoundId">Animation Event Sound</system:String>
+	<system:String x:Key="VisualMissileAttachment">Missile Attachment</system:String>
+	<system:String x:Key="VisualMissileFollowGroundHeight">Follow Ground Height</system:String>
+	<system:String x:Key="VisualMissileFollowDropSpeed">Follow Drop Speed</system:String>
+	<system:String x:Key="VisualMissileFollowApproach">Follow Approach</system:String>
+	<system:String x:Key="VisualMissileFollowGroundFlags">Follow Ground Flags</system:String>
+	<system:String x:Key="VisualMissileMotion">Missile Motion</system:String>
+	<system:String x:Key="VisualMissileCastOffsetX">Missile Cast Offset X</system:String>
+	<system:String x:Key="VisualMissileCastOffsetY">Missile Cast Offset Y</system:String>
+	<system:String x:Key="VisualMissileCastOffsetZ">Missile Cast Offset Z</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetX">Missile Impact Offset X</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetY">Missile Impact Offset Y</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetZ">Missile Impact Offset Z</system:String>
 	<!--#endregion-->
 	
 	<!--#region MapBuilder-->

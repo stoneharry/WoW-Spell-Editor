@@ -3553,8 +3553,10 @@ namespace SpellEditor
             DataRow entry = null;
             if (controller.VisualId > 0)
             {
-                using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType," +
-                    " MissileDestinationAttachment, MissileSound, AnimEventSoundId, " +
+                using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType, " +
+                    "MissileDestinationAttachment, MissileSound, AnimEventSoundId, " +
+                    "MissileAttachment, MissileFollowGroundHeight, MissileFollowDropSpeed, " +
+                    "MissileFollowApproach, MissileFollowGroundFlags, MissileMotion, " +
                     "MissileCastOffsetX, MissileCastOffsetY, MissileCastOffsetZ, " +
                     "MissileImpactOffsetX, MissileImpactOffsetY, MissileImpactOffsetZ " +
                     "FROM spellvisual WHERE ID = " + controller.VisualId))
@@ -3571,6 +3573,12 @@ namespace SpellEditor
             VisualMissileDestinationAttachmentTxt.Text = entry != null ? entry["MissileDestinationAttachment"].ToString() : string.Empty;
             VisualMissileSoundTxt.Text = entry != null ? entry["MissileSound"].ToString() : string.Empty;
             VisualAnimEventSoundIdTxt.Text = entry != null ? entry["AnimEventSoundId"].ToString() : string.Empty;
+            VisualMissileAttachmentTxt.Text = entry != null ? entry["MissileAttachment"].ToString() : string.Empty;
+            VisualMissileFollowGroundHeightTxt.Text = entry != null ? entry["MissileFollowGroundHeight"].ToString() : string.Empty;
+            VisualMissileFollowDropSpeedTxt.Text = entry != null ? entry["MissileFollowDropSpeed"].ToString() : string.Empty;
+            VisualMissileFollowApproachTxt.Text = entry != null ? entry["MissileFollowApproach"].ToString() : string.Empty;
+            VisualMissileFollowGroundFlagsTxt.Text = entry != null ? entry["MissileFollowGroundFlags"].ToString() : string.Empty;
+            VisualMissileMotionTxt.Text = entry != null ? entry["MissileMotion"].ToString() : string.Empty;
             VisualMissileCastOffsetXTxt.Text = entry != null ? entry["MissileCastOffsetX"].ToString() : string.Empty;
             VisualMissileCastOffsetYTxt.Text = entry != null ? entry["MissileCastOffsetY"].ToString() : string.Empty;
             VisualMissileCastOffsetZTxt.Text = entry != null ? entry["MissileCastOffsetZ"].ToString() : string.Empty;

@@ -877,6 +877,11 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -884,6 +889,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
+                            <!-- column group 1 -->
                             <Label Content="{DynamicResource VisualHasMissile}" Grid.Row="0" Grid.Column="0" Margin="10,5,10,5"/>
                             <TextBox Name="VisualHasMissileTxt" Grid.Row="0" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
                             <Label Content="{DynamicResource VisualMissileModel}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
@@ -896,6 +902,19 @@
                             <TextBox Name="VisualMissileSoundTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
                             <Label Content="{DynamicResource VisualAnimEventSoundId}" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
                             <TextBox Name="VisualAnimEventSoundIdTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileAttachment}" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileAttachmentTxt" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileFollowGroundHeight}" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileFollowGroundHeightTxt" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileFollowDropSpeed}" Grid.Row="8" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileFollowDropSpeedTxt" Grid.Row="8" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileFollowApproach}" Grid.Row="9" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileFollowApproachTxt" Grid.Row="9" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileFollowGroundFlags}" Grid.Row="10" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileFollowGroundFlagsTxt" Grid.Row="10" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <Label Content="{DynamicResource VisualMissileMotion}" Grid.Row="11" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileMotionTxt" Grid.Row="11" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                            <!-- column group 2 -->
                             <Label Content="{DynamicResource VisualMissileCastOffsetX}" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
                             <TextBox Name="VisualMissileCastOffsetXTxt" Grid.Row="0" Grid.Column="3" Margin="10,5,10,5" MinWidth="300"/>
                             <Label Content="{DynamicResource VisualMissileCastOffsetY}" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
