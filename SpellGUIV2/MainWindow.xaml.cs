@@ -91,6 +91,15 @@ namespace SpellEditor
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             Thread.CurrentThread.CurrentCulture = customCulture;
 
+            try
+            {
+                File.Delete("debug_output.txt");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to delete debug_output.txt");
+            }
+
             // Setup logging
             var config = new LoggingConfiguration();
             var logfile = new FileTarget("logfile") { FileName = "debug_output.txt" };
