@@ -39,7 +39,16 @@ namespace SpellEditor.Sources.DBC
                     float MaximumRangeFriend = (float)record["MaximumRangeFriend"];
 
                     name = GetAllLocaleStringsForField("Name", record);
-                    name += $"\nHostile: { MinimumRangeHostile } - { MaximumRangeHostile }\t Friend: { MinimumRangeFriend } - { MaximumRangeFriend }";
+                    
+
+
+                    if (MinimumRangeFriend != MinimumRangeHostile || MaximumRangeHostile != MaximumRangeFriend)
+                    { name += $"\nHostile: { MinimumRangeHostile } - { MaximumRangeHostile }\t Friend: { MinimumRangeFriend } - { MaximumRangeFriend }"; }
+                    else
+                    {
+                        name += $"\nHostile/Friend: { MinimumRangeHostile } - { MaximumRangeHostile }";
+                    }
+
                     rangeString = MaximumRangeHostile > MaximumRangeFriend ? MaximumRangeHostile.ToString() : MaximumRangeFriend.ToString();
                 }
                 else
