@@ -993,7 +993,48 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="Missile">
-                        <!-- TODO(Harry) -->
+                        <Grid Name="VisualMissleEditorGrid" MinWidth="500" Margin="10,10,10,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Display effect details -->
+                            <Label Content="{DynamicResource VisualEffectId}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectIdTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP"  IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectName}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectNameTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectFilePath}" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectFilePathTxt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectAreaEffectSize}" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectAreaEffectSizeTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectScale}" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectScaleTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectMinScale}" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectMinAllowedScaleTxt" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <Label Content="{DynamicResource VisualEffectMaxScale}" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectMaxAllowedScaleTxt" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsEnabled="False"/>
+                            <!-- Main list box for selecting effect -->
+                            <Label Content="{DynamicResource VisualEffectMissileList}" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
+                            <ListBox x:Name="VisualMissileEffectList" Grid.Row="1" Grid.RowSpan="10" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" Width="350" MaxHeight="600" BorderThickness="1"/>
+                            <Label Content="{DynamicResource VisualEffectMissileFilter}" Grid.Row="0" Grid.Column="4" Margin="10,5,10,5"/>
+                            <c:ThreadSafeTextBox x:Name="VisualMissileFilter" Grid.Row="1" Grid.Column="4" MinWidth="250" MaxHeight="30" VerticalAlignment="TOP" Margin="5" TextChanged="VisualMissileFilter_TextChanged"/>
+                        </Grid>
                     </TabItem>
                     <TabItem Header="Map Builder">
                         <Grid>

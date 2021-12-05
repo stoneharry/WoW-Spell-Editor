@@ -183,6 +183,7 @@
     <Compile Include="Sources\Controls\Visual\AbstractVisualListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\IVisualListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualContextMenu.cs" />
+    <Compile Include="Sources\Controls\Visual\VisualMissileSelectMenuItem.cs" />
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />

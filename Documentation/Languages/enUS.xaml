@@ -249,6 +249,10 @@
 	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
 	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
 	<system:String x:Key="VisualKitFlags">Flags</system:String>
+	<system:String x:Key="VisualEffectMissileList">Missile List (right click to select)</system:String>
+	<system:String x:Key="VisualEffectMissileFilter">Filter Missile List</system:String>
+	<system:String x:Key="VisualMissileSelect">Select missile (saves immediately)</system:String>
+	<system:String x:Key="VisualEffectId">Effect ID</system:String>
 	<system:String x:Key="VisualEffectName">Effect Name</system:String>
 	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
 	<system:String x:Key="VisualEffectSize">Effect Size</system:String>
