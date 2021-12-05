@@ -3366,7 +3366,7 @@ namespace SpellEditor
             ToggleVisualAttachments(attachRecord != null);
             if (attachRecord != null)
             {
-                VisualAttachmentIdCombo.SelectedIndex = int.Parse(attachRecord["AttachmentId"].ToString());
+                VisualAttachmentIdCombo.SelectedIndex = (int)uint.Parse(attachRecord["AttachmentId"].ToString());
                 VisualAttachmentOffsetXTxt.Text = attachRecord["OffsetX"].ToString();
                 VisualAttachmentOffsetYTxt.Text = attachRecord["OffsetY"].ToString();
                 VisualAttachmentOffsetZTxt.Text = attachRecord["OffsetZ"].ToString();
