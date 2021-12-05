@@ -7,8 +7,8 @@
     <system:String x:Key="labSpellsLoaded">没有读取技能数据.</system:String>
     <system:String x:Key="labGoToSpell">跳转到技能:</system:String>
     <system:String x:Key="labFilterBtName">根据名字筛选:</system:String>
-	<system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
-	<system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
+    <system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
+    <system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
     <system:String x:Key="tabEnglish">英语</system:String>
     <system:String x:Key="tabKorean">韩语</system:String>
     <system:String x:Key="tabFrench">法语</system:String>
@@ -34,7 +34,7 @@
     <system:String x:Key="Items">物品</system:String>
     <system:String x:Key="Flags">标识</system:String>
     <system:String x:Key="Icon">图标</system:String>
-	<system:String x:Key="Visual">Visual</system:String>
+    <system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">中断</system:String>
     <system:String x:Key="Attributes">属性[第一部分]</system:String>
     <system:String x:Key="Attributes2">属性[第二部分]</system:String>
@@ -121,6 +121,8 @@
     <system:String x:Key="labEffectBonusMultiplier2" xml:space="preserve">        效果奖励乘数(?):</system:String>
     <system:String x:Key="labDamageMultiplier3" xml:space="preserve">              伤害乘数:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3" xml:space="preserve">        效果奖励乘数(?):</system:String>
+    <system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
+    <system:String x:Key="filterClassMaskSpells">Filter Target Spells:</system:String>
     <system:String x:Key="labItemTool1">Totem 1:</system:String>
     <system:String x:Key="labItemTool2">Totem 2:</system:String>
     <system:String x:Key="labReagent1">消耗物品 1:</system:String>
@@ -180,8 +182,8 @@
     <system:String x:Key="No">否</system:String>
     <system:String x:Key="ERROR">错误</system:String>
     <system:String x:Key="Import/Export">Import/Export</system:String>
-	<system:String x:Key="butConfig">Config</system:String>
-	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
+    <system:String x:Key="butConfig">Config</system:String>
+    <system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="ReloadingUI">重新加载UI中.....</system:String>
     <system:String x:Key="Input_MySQL_Details">请输入MYSQL的各项参数.</system:String>
     <system:String x:Key="Input_MySQL_Details_1">请输入你的MYSQL主机地址:</system:String>
@@ -192,7 +194,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">设置数据库连接时出错:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">MySQL详细信息输入无效.</system:String>
-	<system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
+    <system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">欢迎使用魔兽世界技能编辑工具&#x0a;                               汉化 by Ayase   [部分标注(?)的表示不确定,仅是个人理解.]&#x0a;&#x0a;你希望使用编辑器的本地版本(SQLite)还是连接到服务器(MYSQL)?&#x0a;&#x0a;Mysql:数据储存在mysql服务器中.需要额外打开Mysql服务支持才可以启动.因为mysql支持多人联机同一个数据库.因此支持多人编辑同一个技能数据库.&#x0a;&#x0a;SQLite:使用本地的'SpellEditor.db'文件储存所有的数据.因此该模式中启动不再依赖Mysql服务.但因为数据储存在本地.所以仅用于单人编辑使用.</system:String>
     <system:String x:Key="Exit" xml:space="preserve">您确定要退出吗?&#x0a;&#x0a;请确保在执行此操作之前已保存，否则将丢失所有进度!</system:String>
     <system:String x:Key="TruncateTable1">您确定要清空表格吗?</system:String>
@@ -220,64 +222,68 @@
     <system:String x:Key="String3">创建配置文件时抛出异常。</system:String>
     <system:String x:Key="String4">选择是更改法术图标ID还是法术激活图标ID。</system:String>
     <system:String x:Key="String5">一次只能选择一个法术。</system:String>
-	<system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
-	<system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
-	<system:String x:Key="ExportMpqName">MPQ name:</system:String>
-	<system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
-	
-	<!--#region visual tab -->
-	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
-	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
-	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
-	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
-	<system:String x:Key="VisualCopyContextMenu">Copy</system:String>
-	<system:String x:Key="VisualPasteContextMenu">Paste</system:String>
-	<system:String x:Key="VisualDeleteContextMenu">Delete</system:String>
-	<system:String x:Key="VisualTabSelectedId">Selected Visual ID</system:String>
-	<system:String xml:space="preserve" x:Key="VisualTabInstructions">The spell visual DBC files must be imported to see and edit these values.&#10;Any changes made must be exported to use them.</system:String>
-	<system:String x:Key="VisualTabSaveChanges">Save Visual Modifications</system:String>
-	<system:String x:Key="VisualTabKitsHeader">Visual Kits (right click a row for operations)</system:String>
-	<system:String x:Key="VisualTabEffectsHeader">Visual Kit Effects &amp; Attachments (right click a row for operations)</system:String>
-	<system:String x:Key="VisualKitStartAnimId">Start Animation ID</system:String>
-	<system:String x:Key="VisualKitAnimationId">Animation ID</system:String>
-	<system:String x:Key="VisualKitSpecialEffects1">Special Effect 1</system:String>
-	<system:String x:Key="VisualKitSpecialEffects2">Special Effect 2</system:String>
-	<system:String x:Key="VisualKitSpecialEffects3">Special Effect 3</system:String>
-	<system:String x:Key="VisualKitWorldEffect">World Effect</system:String>
-	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
-	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
-	<system:String x:Key="VisualKitFlags">Flags</system:String>
-	<system:String x:Key="VisualEffectName">Effect Name</system:String>
-	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
-	<system:String x:Key="VisualEffectSize">Effect Size</system:String>
-	<system:String x:Key="VisualEffectAreaEffectSize">Area Effect Size</system:String>
-	<system:String x:Key="VisualEffectScale">Effect Scale</system:String>
-	<system:String x:Key="VisualEffectMinScale">Effect Minimum Allowed Scale</system:String>
-	<system:String x:Key="VisualEffectMaxScale">Effect Maximum Allowed Scale</system:String>
-	<system:String x:Key="VisualAttachAttachId">Attachment ID</system:String>
-	<system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
-	<system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
-	<system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
-	<system:String x:Key="VisualAttachOffsetYaw">Attachment Offset Yaw</system:String>
-	<system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
-	<system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
-	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
-	<!--#endregion-->
-	
-	<!--#region MapBuilder-->
-	<system:String x:Key="MapBuilderDescription">This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models.</system:String>
-	<system:String x:Key="MapBuilderDbStartingId">Database Starting ID</system:String>
-	<system:String x:Key="MapBuilderMapId">Map ID</system:String>
-	<system:String x:Key="MapBuilderTopLeftCoord">Map Top Left Coordinate X, Y</system:String>
-	<system:String x:Key="MapBuilderBottomRightCoord">Map Bottom Right Coordinate X, Y</system:String>
-	<system:String x:Key="MapBuilderCoordZ">Map Coordinate Z</system:String>
-	<system:String x:Key="MapBuilderCellSize">Cell Size</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreature">Creature.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderGenerateBtn">Generate</system:String>
-	<!--#endregion-->
-	
+    <system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
+    <system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
+    <system:String x:Key="ExportMpqName">MPQ name:</system:String>
+    <system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
+    
+    <!--#region visual tab -->
+    <system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
+    <system:String x:Key="VisualCancelListEntry">Cancel</system:String>
+    <system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
+    <system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
+    <system:String x:Key="VisualCopyContextMenu">Copy</system:String>
+    <system:String x:Key="VisualPasteContextMenu">Paste</system:String>
+    <system:String x:Key="VisualDeleteContextMenu">Delete</system:String>
+    <system:String x:Key="VisualTabSelectedId">Selected Visual ID</system:String>
+    <system:String xml:space="preserve" x:Key="VisualTabInstructions">The spell visual DBC files must be imported to see and edit these values.&#10;Any changes made must be exported to use them.</system:String>
+    <system:String x:Key="VisualTabSaveChanges">Save Visual Modifications</system:String>
+    <system:String x:Key="VisualTabKitsHeader">Visual Kits (right click a row for operations)</system:String>
+    <system:String x:Key="VisualTabEffectsHeader">Visual Kit Effects &amp; Attachments (right click a row for operations)</system:String>
+    <system:String x:Key="VisualKitStartAnimId">Start Animation ID</system:String>
+    <system:String x:Key="VisualKitAnimationId">Animation ID</system:String>
+    <system:String x:Key="VisualKitSpecialEffects1">Special Effect 1</system:String>
+    <system:String x:Key="VisualKitSpecialEffects2">Special Effect 2</system:String>
+    <system:String x:Key="VisualKitSpecialEffects3">Special Effect 3</system:String>
+    <system:String x:Key="VisualKitWorldEffect">World Effect</system:String>
+    <system:String x:Key="VisualKitSoundId">Sound ID</system:String>
+    <system:String x:Key="VisualKitShakeId">Shake ID</system:String>
+    <system:String x:Key="VisualKitFlags">Flags</system:String>
+    <system:String x:Key="VisualEffectMissileList">Missile List (right click to select)</system:String>
+    <system:String x:Key="VisualEffectMissileFilter">Filter Missile List</system:String>
+    <system:String x:Key="VisualMissileSelect">Select missile (saves immediately)</system:String>
+    <system:String x:Key="VisualEffectId">Effect ID</system:String>
+    <system:String x:Key="VisualEffectName">Effect Name</system:String>
+    <system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
+    <system:String x:Key="VisualEffectSize">Effect Size</system:String>
+    <system:String x:Key="VisualEffectAreaEffectSize">Area Effect Size</system:String>
+    <system:String x:Key="VisualEffectScale">Effect Scale</system:String>
+    <system:String x:Key="VisualEffectMinScale">Effect Minimum Allowed Scale</system:String>
+    <system:String x:Key="VisualEffectMaxScale">Effect Maximum Allowed Scale</system:String>
+    <system:String x:Key="VisualAttachAttachId">Attachment ID</system:String>
+    <system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
+    <system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
+    <system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
+    <system:String x:Key="VisualAttachOffsetYaw">Attachment Offset Yaw</system:String>
+    <system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
+    <system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
+    <system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
+    <!--#endregion-->
+    
+    <!--#region MapBuilder-->
+    <system:String x:Key="MapBuilderDescription">This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models.</system:String>
+    <system:String x:Key="MapBuilderDbStartingId">Database Starting ID</system:String>
+    <system:String x:Key="MapBuilderMapId">Map ID</system:String>
+    <system:String x:Key="MapBuilderTopLeftCoord">Map Top Left Coordinate X, Y</system:String>
+    <system:String x:Key="MapBuilderBottomRightCoord">Map Bottom Right Coordinate X, Y</system:String>
+    <system:String x:Key="MapBuilderCoordZ">Map Coordinate Z</system:String>
+    <system:String x:Key="MapBuilderCellSize">Cell Size</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreature">Creature.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderGenerateBtn">Generate</system:String>
+    <!--#endregion-->
+    
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
         Unknown 0 |
@@ -1022,172 +1028,491 @@
         SPELL_AURA_UNDERWATER_WALKING |
         SPELL_AURA_PERIODIC_HASTE
     </system:String>
+    <system:String x:Key="spell_aura_effect_names_tooltips">
+        SPELL_AURA_NONE |
+        SPELL_AURA_BIND_SIGHT |
+        SPELL_AURA_MOD_POSSESS |
+        SPELL_AURA_PERIODIC_DAMAGE |
+        SPELL_AURA_DUMMY |
+        SPELL_AURA_MOD_CONFUSE |
+        SPELL_AURA_MOD_CHARM |
+        SPELL_AURA_MOD_FEAR |
+        SPELL_AURA_PERIODIC_HEAL |
+        SPELL_AURA_MOD_ATTACKSPEED |
+        SPELL_AURA_MOD_THREAT |
+        SPELL_AURA_MOD_TAUNT |
+        SPELL_AURA_MOD_STUN |
+        SPELL_AURA_MOD_DAMAGE_DONE |
+        SPELL_AURA_MOD_DAMAGE_TAKEN |
+        SPELL_AURA_DAMAGE_SHIELD |
+        SPELL_AURA_MOD_STEALTH |
+        SPELL_AURA_MOD_STEALTH_DETECT |
+        SPELL_AURA_MOD_INVISIBILITY |
+        SPELL_AURA_MOD_INVISIBILITY_DETECT |
+        SPELL_AURA_OBS_MOD_HEALTH |
+        SPELL_AURA_OBS_MOD_POWER |
+        SPELL_AURA_MOD_RESISTANCE |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL |
+        SPELL_AURA_PERIODIC_ENERGIZE |
+        SPELL_AURA_MOD_PACIFY |
+        SPELL_AURA_MOD_ROOT |
+        SPELL_AURA_MOD_SILENCE |
+        SPELL_AURA_REFLECT_SPELLS |
+        SPELL_AURA_MOD_STAT |
+        SPELL_AURA_MOD_SKILL |
+        SPELL_AURA_MOD_INCREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED |
+        SPELL_AURA_MOD_DECREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_HEALTH |
+        SPELL_AURA_MOD_INCREASE_ENERGY |
+        SPELL_AURA_MOD_SHAPESHIFT |
+        SPELL_AURA_EFFECT_IMMUNITY |
+        SPELL_AURA_STATE_IMMUNITY |
+        SPELL_AURA_SCHOOL_IMMUNITY |
+        SPELL_AURA_DAMAGE_IMMUNITY |
+        SPELL_AURA_DISPEL_IMMUNITY |
+        SPELL_AURA_PROC_TRIGGER_SPELL |
+        SPELL_AURA_PROC_TRIGGER_DAMAGE |
+        SPELL_AURA_TRACK_CREATURES |
+        SPELL_AURA_TRACK_RESOURCES |
+        SPELL_AURA_46 |
+        SPELL_AURA_MOD_PARRY_PERCENT |
+        SPELL_AURA_48 |
+        SPELL_AURA_MOD_DODGE_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT |
+        SPELL_AURA_MOD_BLOCK_PERCENT |
+        SPELL_AURA_MOD_WEAPON_CRIT_PERCENT |
+        SPELL_AURA_PERIODIC_LEECH |
+        SPELL_AURA_MOD_HIT_CHANCE |
+        SPELL_AURA_MOD_SPELL_HIT_CHANCE |
+        SPELL_AURA_TRANSFORM |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_INCREASE_SWIM_SPEED |
+        SPELL_AURA_MOD_DAMAGE_DONE_CREATURE |
+        SPELL_AURA_MOD_PACIFY_SILENCE |
+        SPELL_AURA_MOD_SCALE |
+        SPELL_AURA_PERIODIC_HEALTH_FUNNEL |
+        SPELL_AURA_63 |
+        SPELL_AURA_PERIODIC_MANA_LEECH |
+        SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK |
+        SPELL_AURA_FEIGN_DEATH |
+        SPELL_AURA_MOD_DISARM |
+        SPELL_AURA_MOD_STALKED |
+        SPELL_AURA_SCHOOL_ABSORB |
+        SPELL_AURA_EXTRA_ATTACKS |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL |
+        SPELL_AURA_REFLECT_SPELLS_SCHOOL |
+        SPELL_AURA_MOD_LANGUAGE |
+        SPELL_AURA_FAR_SIGHT |
+        SPELL_AURA_MECHANIC_IMMUNITY |
+        SPELL_AURA_MOUNTED |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_DONE |
+        SPELL_AURA_MOD_PERCENT_STAT |
+        SPELL_AURA_SPLIT_DAMAGE_PCT |
+        SPELL_AURA_WATER_BREATHING |
+        SPELL_AURA_MOD_BASE_RESISTANCE |
+        SPELL_AURA_MOD_REGEN |
+        SPELL_AURA_MOD_POWER_REGEN |
+        SPELL_AURA_CHANNEL_DEATH_ITEM |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN |
+        SPELL_AURA_MOD_HEALTH_REGEN_PERCENT |
+        SPELL_AURA_PERIODIC_DAMAGE_PERCENT |
+        SPELL_AURA_90 |
+        SPELL_AURA_MOD_DETECT_RANGE |
+        SPELL_AURA_PREVENTS_FLEEING |
+        SPELL_AURA_MOD_UNATTACKABLE |
+        SPELL_AURA_INTERRUPT_REGEN |
+        SPELL_AURA_GHOST |
+        SPELL_AURA_SPELL_MAGNET |
+        SPELL_AURA_MANA_SHIELD |
+        SPELL_AURA_MOD_SKILL_TALENT |
+        SPELL_AURA_MOD_ATTACK_POWER |
+        SPELL_AURA_AURAS_VISIBLE |
+        SPELL_AURA_MOD_RESISTANCE_PCT |
+        SPELL_AURA_MOD_MELEE_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_TOTAL_THREAT |
+        SPELL_AURA_WATER_WALK |
+        SPELL_AURA_FEATHER_FALL |
+        SPELL_AURA_HOVER |
+        SPELL_AURA_ADD_FLAT_MODIFIER |
+        SPELL_AURA_ADD_PCT_MODIFIER |
+        SPELL_AURA_ADD_TARGET_TRIGGER |
+        SPELL_AURA_MOD_POWER_REGEN_PERCENT |
+        SPELL_AURA_ADD_CASTER_HIT_TRIGGER |
+        SPELL_AURA_OVERRIDE_CLASS_SCRIPTS |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_MOD_HEALING |
+        SPELL_AURA_MOD_REGEN_DURING_COMBAT |
+        SPELL_AURA_MOD_MECHANIC_RESISTANCE |
+        SPELL_AURA_MOD_HEALING_PCT |
+        SPELL_AURA_119 |
+        SPELL_AURA_UNTRACKABLE |
+        SPELL_AURA_EMPATHY |
+        SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT |
+        SPELL_AURA_MOD_TARGET_RESISTANCE |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_POSSESS_PET |
+        SPELL_AURA_MOD_SPEED_ALWAYS |
+        SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT |
+        SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT |
+        SPELL_AURA_MOD_MANA_REGEN_INTERRUPT |
+        SPELL_AURA_MOD_HEALING_DONE |
+        SPELL_AURA_MOD_HEALING_DONE_PERCENT |
+        SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE |
+        SPELL_AURA_MOD_MELEE_HASTE |
+        SPELL_AURA_FORCE_REACTION |
+        SPELL_AURA_MOD_RANGED_HASTE |
+        SPELL_AURA_MOD_RANGED_AMMO_HASTE |
+        SPELL_AURA_MOD_BASE_RESISTANCE_PCT |
+        SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE |
+        SPELL_AURA_SAFE_FALL |
+        SPELL_AURA_MOD_PET_TALENT_POINTS |
+        SPELL_AURA_ALLOW_TAME_PET_TYPE |
+        SPELL_AURA_MECHANIC_IMMUNITY_MASK |
+        SPELL_AURA_RETAIN_COMBO_POINTS |
+        SPELL_AURA_REDUCE_PUSHBACK |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT |
+        SPELL_AURA_TRACK_STEALTHED |
+        SPELL_AURA_MOD_DETECTED_RANGE |
+        SPELL_AURA_SPLIT_DAMAGE_FLAT |
+        SPELL_AURA_MOD_STEALTH_LEVEL |
+        SPELL_AURA_MOD_WATER_BREATHING |
+        SPELL_AURA_MOD_REPUTATION_GAIN |
+        SPELL_AURA_PET_DAMAGE_MULTI |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE |
+        SPELL_AURA_NO_PVP_CREDIT |
+        SPELL_AURA_MOD_AOE_AVOIDANCE |
+        SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT |
+        SPELL_AURA_POWER_BURN |
+        SPELL_AURA_MOD_CRIT_DAMAGE_BONUS |
+        SPELL_AURA_164 |
+        SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS |
+        SPELL_AURA_MOD_CRIT_PERCENT_VERSUS |
+        SPELL_AURA_DETECT_AMORE |
+        SPELL_AURA_MOD_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_MOUNTED_SPEED_NOT_STACK |
+        SPELL_AURA_173 |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT |
+        SPELL_AURA_SPIRIT_OF_REDEMPTION |
+        SPELL_AURA_AOE_CHARM |
+        SPELL_AURA_MOD_DEBUFF_RESISTANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS |
+        SPELL_AURA_181 |
+        SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_THREAT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE |
+        SPELL_AURA_MOD_RATING |
+        SPELL_AURA_MOD_FACTION_REPUTATION_GAIN |
+        SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED |
+        SPELL_AURA_MOD_MELEE_RANGED_HASTE |
+        SPELL_AURA_MELEE_SLOW |
+        SPELL_AURA_MOD_TARGET_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_TARGET_ABILITY_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_COOLDOWN |
+        SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE |
+        SPELL_AURA_198 |
+        SPELL_AURA_MOD_INCREASES_SPELL_PCT_TO_HIT |
+        SPELL_AURA_MOD_XP_PCT |
+        SPELL_AURA_FLY |
+        SPELL_AURA_IGNORE_COMBAT_RESULT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_DAMAGE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE |
+        SPELL_AURA_MOD_SCHOOL_CRIT_DMG_TAKEN |
+        SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS |
+        SPELL_AURA_MOD_VEHICLE_SPEED_ALWAYS |
+        SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT |
+        SPELL_AURA_214 |
+        SPELL_AURA_ARENA_PREPARATION |
+        SPELL_AURA_HASTE_SPELLS |
+        SPELL_AURA_MOD_MELEE_HASTE_2 |
+        SPELL_AURA_HASTE_RANGED |
+        SPELL_AURA_MOD_MANA_REGEN_FROM_STAT |
+        SPELL_AURA_MOD_RATING_FROM_STAT |
+        SPELL_AURA_MOD_DETAUNT |
+        SPELL_AURA_222 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE |
+        SPELL_AURA_224 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE |
+        SPELL_AURA_PERIODIC_DUMMY |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_DETECT_STEALTH |
+        SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_230 |
+        SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_MECHANIC_DURATION_MOD |
+        SPELL_AURA_CHANGE_MODEL_FOR_ALL_HUMANOIDS |
+        SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK |
+        SPELL_AURA_MOD_DISPEL_RESIST |
+        SPELL_AURA_CONTROL_VEHICLE |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SCALE_2 |
+        SPELL_AURA_MOD_EXPERTISE |
+        SPELL_AURA_FORCE_MOVE_FORWARD |
+        SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING |
+        SPELL_AURA_MOD_FACTION |
+        SPELL_AURA_COMPREHEND_LANGUAGE |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK |
+        SPELL_AURA_CLONE_CASTER |
+        SPELL_AURA_MOD_COMBAT_RESULT_CHANCE |
+        SPELL_AURA_CONVERT_RUNE |
+        SPELL_AURA_MOD_INCREASE_HEALTH_2 |
+        SPELL_AURA_MOD_ENEMY_DODGE |
+        SPELL_AURA_MOD_SPEED_SLOW_ALL |
+        SPELL_AURA_MOD_BLOCK_CRIT_CHANCE |
+        SPELL_AURA_MOD_DISARM_OFFHAND |
+        SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT |
+        SPELL_AURA_NO_REAGENT_USE |
+        SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS |
+        SPELL_AURA_258 |
+        SPELL_AURA_MOD_HOT_PCT |
+        SPELL_AURA_SCREEN_EFFECT |
+        SPELL_AURA_PHASE |
+        SPELL_AURA_ABILITY_IGNORE_AURASTATE |
+        SPELL_AURA_ALLOW_ONLY_ABILITY |
+        SPELL_AURA_264 |
+        SPELL_AURA_265 |
+        SPELL_AURA_266 |
+        SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_DAMAGE_FROM_CASTER |
+        SPELL_AURA_IGNORE_MELEE_RESET |
+        SPELL_AURA_X_RAY |
+        SPELL_AURA_ABILITY_CONSUME_NO_AMMO |
+        SPELL_AURA_MOD_IGNORE_SHAPESHIFT |
+        SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC |
+        SPELL_AURA_MOD_MAX_AFFECTED_TARGETS |
+        SPELL_AURA_MOD_DISARM_RANGED |
+        SPELL_AURA_INITIALIZE_IMAGES |
+        SPELL_AURA_MOD_ARMOR_PENETRATION_PCT |
+        SPELL_AURA_MOD_HONOR_GAIN_PCT |
+        SPELL_AURA_MOD_BASE_HEALTH_PCT |
+        SPELL_AURA_MOD_HEALING_RECEIVED |
+        SPELL_AURA_LINKED |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR |
+        SPELL_AURA_ABILITY_PERIODIC_CRIT |
+        SPELL_AURA_DEFLECT_SPELLS |
+        SPELL_AURA_IGNORE_HIT_DIRECTION |
+        SPELL_AURA_289 |
+        SPELL_AURA_MOD_CRIT_PCT |
+        SPELL_AURA_MOD_XP_QUEST_PCT |
+        SPELL_AURA_OPEN_STABLE |
+        SPELL_AURA_OVERRIDE_SPELLS |
+        SPELL_AURA_PREVENT_REGENERATE_POWER |
+        SPELL_AURA_295 |
+        SPELL_AURA_SET_VEHICLE_ID |
+        SPELL_AURA_BLOCK_SPELL_FAMILY |
+        SPELL_AURA_STRANGULATE |
+        SPELL_AURA_299 |
+        SPELL_AURA_SHARE_DAMAGE_PCT |
+        SPELL_AURA_SCHOOL_HEAL_ABSORB |
+        SPELL_AURA_302 |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE |
+        SPELL_AURA_MOD_FAKE_INEBRIATE |
+        SPELL_AURA_MOD_MINIMUM_SPEED |
+        SPELL_AURA_306 |
+        SPELL_AURA_HEAL_ABSORB_TEST |
+        SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER |
+        SPELL_AURA_309 |
+        SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_311 |
+        SPELL_AURA_312 |
+        SPELL_AURA_313 |
+        SPELL_AURA_PREVENT_RESURRECTION |
+        SPELL_AURA_UNDERWATER_WALKING |
+        SPELL_AURA_PERIODIC_HASTE
+    </system:String>
     <system:String x:Key="spell_effect_names">
-		NONE |
-		全部杀死 |
-		类型伤害 |
-		傀儡 |
-		入口传送 unused |
-		传送单位 |
-		！上buff |
-		环境伤害 |
-		从目标吸取法力值转移给施法者 |
-		吸血 |
-		治疗 |
-		捆绑 |
-		传送门 |
-		基本仪式 unused |
-		特殊仪式 unused |
-		传送门仪式 unused |
-		完成任务 |
-		使用武器攻击 |
-		复活 |
-		增加额外攻击 |
-		躲避DODGE one spell: Dodge |
-		逃脱EVADE one spell: Evade (DND) |
-		招架 |
-		格挡BLOCK one spell: Block |
-		创造物品 |
-		武器 |
-		防御DEFENSE one spell: Defense |
-		持续的区域光环 |
-		召唤117=creatureid |
-		飞跃，跳跃 |
-		加能量 |
-		武器百分比伤害 |
-		触发投射武器 |
-		开锁 |
-		召唤物品 |
-		增加区域光环 |
-		！学习技能 |
-		法术防御SPELL_DEFENSE one spell: SPELLDEFENSE (DND) |
-		驱散 |
-		语言 |
-		双手武器 |
-		向前跳跃 |
-		向前跳跃JUMP_DEST |
-		传送施法者 |
-		熟练度skill的等级 |
-		增加荣誉 honor/pvp related |
-		刷怪 |
-		商业技能 |
-		STEALTH one spell: Base Stealth |
-		DETECT one spell: Detect |
-		召唤(object) |
-		FORCE_CRITICAL_HIT unused |
-		GUARANTEE_HIT one spell: zzOLDCritical Shot |
-		附魔 |
-		临时附魔 |
-		驯服生物 |
-		召唤宠物 |
-		宠物学习技能 |
-		需要武器？WEAPON_DAMAGE |
-		道具开锁CREATE_RANDOM_ITEM create item base at spell specific loot |
-		精通 |
-		召唤事件 |
-		能量燃烧(燃烧power) |
-		提高威胁值 |
-		触发技能123-125为技能ID |
-		申请团队光环 |
-		制造魔法宝石 (possibly recharge it, misc - is item ID) |
-		治愈最大生命 |
-		中断施法 |
-		吸引注意力 |
-		PULL one spell: Distract Move |
-		扒手 |
-		增加视野 |
-		UNTRAIN_TALENTS |
-		雕纹 |
-		治疗机械类的宝宝HEAL_MECHANICAL one spell: Mechanical Patch Kit |
-		召唤野外对象 |
-		脚本spell |
-		攻击 |
-		装死 |
-		增加连击点数 |
-		CREATE_HOUSE one spell: Create House (TEST) |
-		绑定视野 |
-		决斗 |
-		卡死 |
-		召唤玩家 |
-		激活OBJECT |
-		攻城伤害 |
-		修理建筑物 |
-		OBJECT转换 |
-		击杀荣誉 Kill credit but only for single person |
-		THREAT_ALL one spell: zzOLDBrainwash |
-		ENCHANT_HELD_ITEM |
-		召唤幽灵 |
-		自我复活 |
-		剥皮 |
-		冲撞 冲锋 |
-		同时放置图腾栏中的最多4个指定图腾 (totem bar since 3.2.2a) |
-		击退 |
-		分解 |
-		醉酒 |
-		喂养宠物 |
-		解散宠物 |
-		提高声望 |
-		召唤OBJECTSUMMON_OBJECT_SLOT1 |
-		召唤OBJECTSUMMON_OBJECT_SLOT2 |
-		召唤OBJECTSUMMON_OBJECT_SLOT3 |
-		召唤OBJECTSUMMON_OBJECT_SLOT4 |
-		驱散MECHANIC |
-		复活宠物 |
-		收回图腾 |
-		DURABILITY_DAMAGE |
-		112 unused |
-		复活 |
-		嘲讽目标 |
-		DURABILITY_DAMAGE_PCT |
-		SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags... |
-		复活周围队友？SPIRIT_HEAL one spell: Spirit Heal |
-		skill熟练度 professions and more |
-		给宠物加BUFF |
-		TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test |
-		武器伤害 |
-		122 unused |
-		上车 taxi/flight related (misc value is taxi path id) |
-		将某人拉向你身边 |
-		修改恐吓百分比 |
-		偷窃有益BUFF spell steal effect? |
-		选矿 Prospecting spell |
-		给队友增加BUFF |
-		给敌人增加BUFF |
-		威胁转移 |
-		PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc) |
-		PLAY_MUSIC sound id in misc value (SoundEntries.dbc) |
-		忘掉专业 unlearn profession specialization |
-		击杀荣誉2 misc value is creature entry |
-		召唤宠物 |
-		治愈百分比 |
-		能量百分比 |
-		向后方跳跃 Leap back |
-		CLEAR_QUEST Reset quest status (miscValue - quest ID) |
-		强制投掷 |
-		FORCE_CAST_WITH_VALUE |
-		触发技能的值TRIGGER_SPELL_WITH_VALUE |
-		APPLY_AREA_AURA_OWNER |
-		向后方跳跃2 |
-		PULL_TOWARDS_DEST Black Hole Effect |
-		ACTIVATE_RUNE |
-		任务失败 quest fail |
-		TRIGGER_MISSILE_SPELL_WITH_VALUE |
-		CHARGE_DEST |
-		QUEST_START |
-		触发技能值2 |
-		SUMMON_RAF_FRIEND summon Refer-a-Friend |
-		CREATE_TAMED_PET misc value is creature entry |
-		DISCOVER_TAXI |
-		泰坦之握 Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal. |
-		增加插槽 |
-		创建物品2 create item or create item template and replace by some randon spell loot item |
-		研磨 milling |
-		宠物改名 allow rename pet once again |
-		1 spell example - 45534 |
-		学习第二天赋 second talent spec (learn/revert) |
-		切换天赋 activate primary/secondary spec |
-		unused |
-		REMOVE_AURA
+        NONE |
+        全部杀死 |
+        类型伤害 |
+        傀儡 |
+        入口传送 unused |
+        传送单位 |
+        ！上buff |
+        环境伤害 |
+        从目标吸取法力值转移给施法者 |
+        吸血 |
+        治疗 |
+        捆绑 |
+        传送门 |
+        基本仪式 unused |
+        特殊仪式 unused |
+        传送门仪式 unused |
+        完成任务 |
+        使用武器攻击 |
+        复活 |
+        增加额外攻击 |
+        躲避DODGE one spell: Dodge |
+        逃脱EVADE one spell: Evade (DND) |
+        招架 |
+        格挡BLOCK one spell: Block |
+        创造物品 |
+        武器 |
+        防御DEFENSE one spell: Defense |
+        持续的区域光环 |
+        召唤117=creatureid |
+        飞跃，跳跃 |
+        加能量 |
+        武器百分比伤害 |
+        触发投射武器 |
+        开锁 |
+        召唤物品 |
+        增加区域光环 |
+        ！学习技能 |
+        法术防御SPELL_DEFENSE one spell: SPELLDEFENSE (DND) |
+        驱散 |
+        语言 |
+        双手武器 |
+        向前跳跃 |
+        向前跳跃JUMP_DEST |
+        传送施法者 |
+        熟练度skill的等级 |
+        增加荣誉 honor/pvp related |
+        刷怪 |
+        商业技能 |
+        STEALTH one spell: Base Stealth |
+        DETECT one spell: Detect |
+        召唤(object) |
+        FORCE_CRITICAL_HIT unused |
+        GUARANTEE_HIT one spell: zzOLDCritical Shot |
+        附魔 |
+        临时附魔 |
+        驯服生物 |
+        召唤宠物 |
+        宠物学习技能 |
+        需要武器？WEAPON_DAMAGE |
+        道具开锁CREATE_RANDOM_ITEM create item base at spell specific loot |
+        精通 |
+        召唤事件 |
+        能量燃烧(燃烧power) |
+        提高威胁值 |
+        触发技能123-125为技能ID |
+        申请团队光环 |
+        制造魔法宝石 (possibly recharge it, misc - is item ID) |
+        治愈最大生命 |
+        中断施法 |
+        吸引注意力 |
+        PULL one spell: Distract Move |
+        扒手 |
+        增加视野 |
+        UNTRAIN_TALENTS |
+        雕纹 |
+        治疗机械类的宝宝HEAL_MECHANICAL one spell: Mechanical Patch Kit |
+        召唤野外对象 |
+        脚本spell |
+        攻击 |
+        装死 |
+        增加连击点数 |
+        CREATE_HOUSE one spell: Create House (TEST) |
+        绑定视野 |
+        决斗 |
+        卡死 |
+        召唤玩家 |
+        激活OBJECT |
+        攻城伤害 |
+        修理建筑物 |
+        OBJECT转换 |
+        击杀荣誉 Kill credit but only for single person |
+        THREAT_ALL one spell: zzOLDBrainwash |
+        ENCHANT_HELD_ITEM |
+        召唤幽灵 |
+        自我复活 |
+        剥皮 |
+        冲撞 冲锋 |
+        同时放置图腾栏中的最多4个指定图腾 (totem bar since 3.2.2a) |
+        击退 |
+        分解 |
+        醉酒 |
+        喂养宠物 |
+        解散宠物 |
+        提高声望 |
+        召唤OBJECTSUMMON_OBJECT_SLOT1 |
+        召唤OBJECTSUMMON_OBJECT_SLOT2 |
+        召唤OBJECTSUMMON_OBJECT_SLOT3 |
+        召唤OBJECTSUMMON_OBJECT_SLOT4 |
+        驱散MECHANIC |
+        复活宠物 |
+        收回图腾 |
+        DURABILITY_DAMAGE |
+        112 unused |
+        复活 |
+        嘲讽目标 |
+        DURABILITY_DAMAGE_PCT |
+        SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags... |
+        复活周围队友？SPIRIT_HEAL one spell: Spirit Heal |
+        skill熟练度 professions and more |
+        给宠物加BUFF |
+        TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test |
+        武器伤害 |
+        122 unused |
+        上车 taxi/flight related (misc value is taxi path id) |
+        将某人拉向你身边 |
+        修改恐吓百分比 |
+        偷窃有益BUFF spell steal effect? |
+        选矿 Prospecting spell |
+        给队友增加BUFF |
+        给敌人增加BUFF |
+        威胁转移 |
+        PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc) |
+        PLAY_MUSIC sound id in misc value (SoundEntries.dbc) |
+        忘掉专业 unlearn profession specialization |
+        击杀荣誉2 misc value is creature entry |
+        召唤宠物 |
+        治愈百分比 |
+        能量百分比 |
+        向后方跳跃 Leap back |
+        CLEAR_QUEST Reset quest status (miscValue - quest ID) |
+        强制投掷 |
+        FORCE_CAST_WITH_VALUE |
+        触发技能的值TRIGGER_SPELL_WITH_VALUE |
+        APPLY_AREA_AURA_OWNER |
+        向后方跳跃2 |
+        PULL_TOWARDS_DEST Black Hole Effect |
+        ACTIVATE_RUNE |
+        任务失败 quest fail |
+        TRIGGER_MISSILE_SPELL_WITH_VALUE |
+        CHARGE_DEST |
+        QUEST_START |
+        触发技能值2 |
+        SUMMON_RAF_FRIEND summon Refer-a-Friend |
+        CREATE_TAMED_PET misc value is creature entry |
+        DISCOVER_TAXI |
+        泰坦之握 Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal. |
+        增加插槽 |
+        创建物品2 create item or create item template and replace by some randon spell loot item |
+        研磨 milling |
+        宠物改名 allow rename pet once again |
+        1 spell example - 45534 |
+        学习第二天赋 second talent spec (learn/revert) |
+        切换天赋 activate primary/secondary spec |
+        unused |
+        REMOVE_AURA
     </system:String>
     <system:String x:Key="mechanic_names">
         None |

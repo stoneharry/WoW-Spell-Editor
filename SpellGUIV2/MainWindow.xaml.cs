@@ -374,13 +374,25 @@ namespace SpellEditor
             ApplyAuraName3.Items.Clear();
             FilterAuraCombo.Items.Clear();
             string[] spell_aura_effect_names = SafeTryFindResource("spell_aura_effect_names").Split('|');
+            string[] spell_aura_effect_names_tooltips = SafeTryFindResource("spell_aura_effect_names_tooltips").Split('|');
+            var boxesToUpdate = new ThreadSafeComboBox[]
+            {
+                ApplyAuraName1,
+                ApplyAuraName2,
+                ApplyAuraName3,
+                FilterAuraCombo
+            };
             for (int i = 0; i < spell_aura_effect_names.Length; ++i)
             {
-                var auraName = i + " - " + spell_aura_effect_names[i];
-                ApplyAuraName1.Items.Add(auraName);
-                ApplyAuraName2.Items.Add(auraName);
-                ApplyAuraName3.Items.Add(auraName);
-                FilterAuraCombo.Items.Add(auraName);
+                foreach (var box in boxesToUpdate)
+                {
+                    var label = new Label
+                    {
+                        Content = i + " - " + spell_aura_effect_names[i],
+                        ToolTip = spell_aura_effect_names_tooltips.Length >= (i - 1) ? spell_aura_effect_names_tooltips[i] : string.Empty
+                    };
+                    box.Items.Add(label);
+                }
             }
 
             SpellEffect1.Items.Clear();

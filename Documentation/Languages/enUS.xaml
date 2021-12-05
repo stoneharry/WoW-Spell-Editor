@@ -7,8 +7,8 @@
     <system:String x:Key="labSpellsLoaded">No spells loaded.</system:String>
     <system:String x:Key="labGoToSpell">Go to spell id:</system:String>
     <system:String x:Key="labFilterBtName">Filter by name:</system:String>
-	<system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
-	<system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
+    <system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
+    <system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
     <system:String x:Key="tabEnglish">English</system:String>
     <system:String x:Key="tabKorean">Korean</system:String>
     <system:String x:Key="tabFrench">French</system:String>
@@ -34,7 +34,7 @@
     <system:String x:Key="Items">Items</system:String>
     <system:String x:Key="Flags">Flags</system:String>
     <system:String x:Key="Icon">Icon</system:String>
-	<system:String x:Key="Visual">Visual</system:String>
+    <system:String x:Key="Visual">Visual</system:String>
     <system:String x:Key="Interrupts">Interrupts</system:String>
     <system:String x:Key="Attributes">Attributes</system:String>
     <system:String x:Key="Attributes2">Attributes2</system:String>
@@ -168,8 +168,8 @@
     <system:String x:Key="butImportExportWindowImport">Import</system:String>
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
-	<system:String x:Key="butConfig">Config</system:String>
-	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
+    <system:String x:Key="butConfig">Config</system:String>
+    <system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
     <!--#endregion-->
 
@@ -192,7 +192,7 @@
     <system:String x:Key="Input_MySQL_Details_6">Input which MySQL table to create/use:</system:String>
     <system:String x:Key="Input_MySQL_Error">An error occured setting up the database connection:</system:String>
     <system:String x:Key="Input_MySQL_Error_2">The MySQL details input are not valid.</system:String>
-	<system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
+    <system:String x:Key="LoadDBCFromBinding_Error_1">Failed to load core DBC files based on bindings, have you got the right WoW version, bindings folder, and DBC folder configured?</system:String>
     <system:String x:Key="Welcome" xml:space="preserve">Welcome to a WoW spell editor.&#x0a;&#x0a;Do you wish to use the local version of the editor (SQLite) or connect to a server (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
@@ -220,98 +220,98 @@
     <system:String x:Key="String3">An exception was thrown creating the config file.</system:String>
     <system:String x:Key="String4">Select whether to change the Spell Icon ID or the Active Icon ID.</system:String>
     <system:String x:Key="String5">Only one spell can be selected at a time.</system:String>
-	<system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
-	<system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
-	<system:String x:Key="ExportMpqName">MPQ name:</system:String>
-	<system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
-	
-	<!--#region visual tab -->
-	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
-	<system:String x:Key="VisualCancelListEntry">Cancel</system:String>
-	<system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
-	<system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
-	<system:String x:Key="VisualCopyContextMenu">Copy</system:String>
-	<system:String x:Key="VisualPasteContextMenu">Paste</system:String>
-	<system:String x:Key="VisualDeleteContextMenu">Delete</system:String>
-	<system:String x:Key="VisualTabSelectedId">Selected Visual ID</system:String>
-	<system:String xml:space="preserve" x:Key="VisualTabInstructions">The spell visual DBC files must be imported to see and edit these values.&#10;Any changes made must be exported to use them.</system:String>
-	<system:String x:Key="VisualTabSaveChanges">Save Visual Modifications</system:String>
-	<system:String x:Key="VisualTabKitsHeader">Visual Kits (right click a row for operations)</system:String>
-	<system:String x:Key="VisualTabEffectsHeader">Visual Kit Effects &amp; Attachments (right click a row for operations)</system:String>
-	<system:String x:Key="VisualKitStartAnimId">Start Animation ID</system:String>
-	<system:String x:Key="VisualKitAnimationId">Animation ID</system:String>
-	<system:String x:Key="VisualKitSpecialEffects1">Special Effect 1</system:String>
-	<system:String x:Key="VisualKitSpecialEffects2">Special Effect 2</system:String>
-	<system:String x:Key="VisualKitSpecialEffects3">Special Effect 3</system:String>
-	<system:String x:Key="VisualKitWorldEffect">World Effect</system:String>
-	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
-	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
-	<system:String x:Key="VisualKitFlags">Flags</system:String>
-	<system:String x:Key="VisualEffectName">Effect Name</system:String>
-	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
-	<system:String x:Key="VisualEffectSize">Effect Size</system:String>
-	<system:String x:Key="VisualEffectAreaEffectSize">Area Effect Size</system:String>
-	<system:String x:Key="VisualEffectScale">Effect Scale</system:String>
-	<system:String x:Key="VisualEffectMinScale">Effect Minimum Allowed Scale</system:String>
-	<system:String x:Key="VisualEffectMaxScale">Effect Maximum Allowed Scale</system:String>
-	<system:String x:Key="VisualAttachAttachId">Attachment ID</system:String>
-	<system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
-	<system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
-	<system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
-	<system:String x:Key="VisualAttachOffsetYaw">Attachment Offset Yaw</system:String>
-	<system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
-	<system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
-	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
-	<!--#endregion-->
-	
-	<!--#region MapBuilder-->
-	<system:String x:Key="MapBuilderDescription">This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models.</system:String>
-	<system:String x:Key="MapBuilderDbStartingId">Database Starting ID</system:String>
-	<system:String x:Key="MapBuilderMapId">Map ID</system:String>
-	<system:String x:Key="MapBuilderTopLeftCoord">Map Top Left Coordinate X, Y</system:String>
-	<system:String x:Key="MapBuilderBottomRightCoord">Map Bottom Right Coordinate X, Y</system:String>
-	<system:String x:Key="MapBuilderCoordZ">Map Coordinate Z</system:String>
-	<system:String x:Key="MapBuilderCellSize">Cell Size</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreature">Creature.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql Query Template</system:String>
-	<system:String x:Key="MapBuilderGenerateBtn">Generate</system:String>
-	<!--#endregion-->
-	
+    <system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
+    <system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
+    <system:String x:Key="ExportMpqName">MPQ name:</system:String>
+    <system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
+    
+    <!--#region visual tab -->
+    <system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">CONFIRM DELETE:&#10;This change is&#10;saved immediately</system:String>
+    <system:String x:Key="VisualCancelListEntry">Cancel</system:String>
+    <system:String x:Key="VisualConfirmListEntry">Confirm Paste</system:String>
+    <system:String x:Key="VisualCancelContextMenu">Cancel</system:String>
+    <system:String x:Key="VisualCopyContextMenu">Copy</system:String>
+    <system:String x:Key="VisualPasteContextMenu">Paste</system:String>
+    <system:String x:Key="VisualDeleteContextMenu">Delete</system:String>
+    <system:String x:Key="VisualTabSelectedId">Selected Visual ID</system:String>
+    <system:String xml:space="preserve" x:Key="VisualTabInstructions">The spell visual DBC files must be imported to see and edit these values.&#10;Any changes made must be exported to use them.</system:String>
+    <system:String x:Key="VisualTabSaveChanges">Save Visual Modifications</system:String>
+    <system:String x:Key="VisualTabKitsHeader">Visual Kits (right click a row for operations)</system:String>
+    <system:String x:Key="VisualTabEffectsHeader">Visual Kit Effects &amp; Attachments (right click a row for operations)</system:String>
+    <system:String x:Key="VisualKitStartAnimId">Start Animation ID</system:String>
+    <system:String x:Key="VisualKitAnimationId">Animation ID</system:String>
+    <system:String x:Key="VisualKitSpecialEffects1">Special Effect 1</system:String>
+    <system:String x:Key="VisualKitSpecialEffects2">Special Effect 2</system:String>
+    <system:String x:Key="VisualKitSpecialEffects3">Special Effect 3</system:String>
+    <system:String x:Key="VisualKitWorldEffect">World Effect</system:String>
+    <system:String x:Key="VisualKitSoundId">Sound ID</system:String>
+    <system:String x:Key="VisualKitShakeId">Shake ID</system:String>
+    <system:String x:Key="VisualKitFlags">Flags</system:String>
+    <system:String x:Key="VisualEffectName">Effect Name</system:String>
+    <system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
+    <system:String x:Key="VisualEffectSize">Effect Size</system:String>
+    <system:String x:Key="VisualEffectAreaEffectSize">Area Effect Size</system:String>
+    <system:String x:Key="VisualEffectScale">Effect Scale</system:String>
+    <system:String x:Key="VisualEffectMinScale">Effect Minimum Allowed Scale</system:String>
+    <system:String x:Key="VisualEffectMaxScale">Effect Maximum Allowed Scale</system:String>
+    <system:String x:Key="VisualAttachAttachId">Attachment ID</system:String>
+    <system:String x:Key="VisualAttachOffsetX">Attachment Offset X</system:String>
+    <system:String x:Key="VisualAttachOffsetY">Attachment Offset Y</system:String>
+    <system:String x:Key="VisualAttachOffsetZ">Attachment Offset Z</system:String>
+    <system:String x:Key="VisualAttachOffsetYaw">Attachment Offset Yaw</system:String>
+    <system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
+    <system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
+    <system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
+    <!--#endregion-->
+    
+    <!--#region MapBuilder-->
+    <system:String x:Key="MapBuilderDescription">This tool uses the CreatureDisplayInfo.dbc and CreatureModelData.dbc files. It also requires the SPELLS directory to be present with all the M2 spell models.</system:String>
+    <system:String x:Key="MapBuilderDbStartingId">Database Starting ID</system:String>
+    <system:String x:Key="MapBuilderMapId">Map ID</system:String>
+    <system:String x:Key="MapBuilderTopLeftCoord">Map Top Left Coordinate X, Y</system:String>
+    <system:String x:Key="MapBuilderBottomRightCoord">Map Bottom Right Coordinate X, Y</system:String>
+    <system:String x:Key="MapBuilderCoordZ">Map Coordinate Z</system:String>
+    <system:String x:Key="MapBuilderCellSize">Cell Size</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreature">Creature.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql Query Template</system:String>
+    <system:String x:Key="MapBuilderGenerateBtn">Generate</system:String>
+    <!--#endregion-->
+    
     <!--#region some array of strings-->
     <system:String x:Key="attFlags_strings">
-		Proc Failure Burns Charge |
-		Uses Ranged Slot |
-		On Next Swing (No Damage) |
-		Do Not Log Immune Misses |
-		Is Ability |
-		Is Trade Skill |
-		Passive |
-		Do Not Display (Spellbook, Aura Icon, Combat Log) |
-		Do Not Log |
-		Held Item Only |
-		On Next Swing |
-		Wearer Casts Proc Trigger |
-		Server Only |
-		Allow Item Spell In PvP |
-		Indoors Only |
-		Outdoors Only |
-		Not Shapeshifted |
-		Only Stealthed |
-		Do Not Sheath |
-		Spell Damage scales with Level |
-		Cancels Auto Attack Combat |
-		Impossible to Dodge, Parry or Block |
-		Track Target while Casting |
-		Castable While Dead |
-		Castable While Mounted |
-		Start Cooldown after Aura Fades |
-		Negative, Aura is Debuff |
-		Castable While Sitting |
-		Cannot be used in Combat |
-		Unaffected by Invulnerability |
-		Breakable by Damage |
-		Aura Cannot be Cancelled
+        Proc Failure Burns Charge |
+        Uses Ranged Slot |
+        On Next Swing (No Damage) |
+        Do Not Log Immune Misses |
+        Is Ability |
+        Is Trade Skill |
+        Passive |
+        Do Not Display (Spellbook, Aura Icon, Combat Log) |
+        Do Not Log |
+        Held Item Only |
+        On Next Swing |
+        Wearer Casts Proc Trigger |
+        Server Only |
+        Allow Item Spell In PvP |
+        Indoors Only |
+        Outdoors Only |
+        Not Shapeshifted |
+        Only Stealthed |
+        Do Not Sheath |
+        Spell Damage scales with Level |
+        Cancels Auto Attack Combat |
+        Impossible to Dodge, Parry or Block |
+        Track Target while Casting |
+        Castable While Dead |
+        Castable While Mounted |
+        Start Cooldown after Aura Fades |
+        Negative, Aura is Debuff |
+        Castable While Sitting |
+        Cannot be used in Combat |
+        Unaffected by Invulnerability |
+        Breakable by Damage |
+        Aura Cannot be Cancelled
     </system:String>
     <system:String x:Key="attFlagsEx_strings">
         Dismiss Pet First |
@@ -444,7 +444,7 @@
         Can only be used in Flying Areas |
         Force Display Castbar |
         Ignore Combat Timer |
-       	Aura Bounce Fails Spell |
+        Aura Bounce Fails Spell |
         Obsolete |
         Use Facing From Spell
     </system:String>
@@ -478,7 +478,7 @@
         Always AOE Line of Sight |
         No Caster Aura Icon |
         No Target Aura Icon |
-      	Aura Unique Per Caster |
+        Aura Unique Per Caster |
         Always Show Ground Texture |
         Add Melee Hit Rating / AoE Taunt
     </system:String>
@@ -705,489 +705,808 @@
     </system:String>
     <system:String x:Key="spell_aura_effect_names">
         None |
-	Bind Sight |
-	Mod Possess |
-	Periodic Damage |
-	Dummy |
-	Mod Confuse |
-	Mod Charm |
-	Mod Fear |
-	Periodic Heal |
-	Mod Attack Speed |
-	Mod Threat |
-	Taunt |
-	Stun |
-	Mod Damage Done |
-	Mod Damage Taken |
-	Damage Shield |
-	Mod Stealth |
-	Mod Detect Stealth |
-	Mod Invisibility |
-	Mod Invisibility Detection |
-	OBS Mod Health |
-	OBS Mod Power |
-	Mod Resistance |
-	Periodic Trigger |
-	Periodic Energize |
-	Pacify |
-	Root |
-	Silence |
-	Reflect Spells % |
-	Mod Stat |
-	Mod Skill |
-	Mod Speed |
-	Mod Speed Mounted |
-	Mod Speed Slow |
-	Mod Increase Health |
-	Mod Increase Energy |
-	Shapeshift |
-	Immune Effect |
-	Immune State |
-	Immune School |
-	Immune Damage |
-	Immune Dispel Type |
-	Proc Trigger Spell |
-	Proc Trigger Damage |
-	Track Creatures |
-	Track Resources |
-	Unused_46 |
-	Mod Parry Percent |
-	Unknown 48 |
-	Mod Dodge Percent |
-	Mod Critical Healing Amount |
-	Mod Block Percent |
-	Mod Weapon Crit Percent |
-	Periodic Leech |
-	Mod Hit Chance |
-	Mod Spell Hit Chance |
-	Transform |
-	Mod Spell Crit Chance |
-	Mod Speed Swim |
-	Mod Creature Dmg Done |
-	Pacify &amp; Silence |
-	Mod Scale |
-	Periodic Health Funnel |
-	Unused_63 |
-	Periodic Mana Leech |
-	Haste - Spells |
-	Feign Death |
-	Disarm |
-	Mod Stalked |
-	School Absorb |
-	Extra Attacks |
-	Mod School Spell Crit Chance |
-	Mod School Power Cost % |
-	Mod School Power Cost |
-	Reflect School Spells % |
-	Mod Language |
-	Far Sight |
-	Immune Mechanic |
-	Mounted |
-	Mod Dmg % |
-	Mod Stat % |
-	Split Damage % |
-	Water Breathing |
-	Mod Base Resistance |
-	Mod Health Regen |
-	Mod Power Regen |
-	Create Death Item |
-	Mod Dmg % Taken |
-	Mod Health Regen Percent |
-	Periodic Damage Percent |
-	Unused_92 |
-	Mod Detect Range |
-	Prevent Fleeing |
-	Mod Uninteractible |
-	Interrupt Regen |
-	Ghost |
-	Spell Magnet |
-	Mana Shield |
-	Mod Skill Talent |
-	Mod Attack Power |
-	Auras Visible |
-	Mod Resistance % |
-	Mod  Attack Power Versus Creature |
-	Mod Total Threat (Fade) |
-	Water Walk |
-	Feather Fall |
-	Hover |
-	Add Flat Modifier |
-	Add % Modifier |
-	Add Class Target Trigger |
-	Mod Power Regen % |
-	Add Class Caster Hit Trigger |
-	Override Class Scripts |
-	Mod Ranged Dmg Taken |
-	Mod Ranged % Dmg Taken |
-	Mod Healing |
-	Regen During Combat |
-	Mod Mechanic Resistance |
-	Mod Healing % |
-	Unused_119 |
-	Untrackable |
-	Empathy (Lore, whatever) |
-	Mod Offhand Dmg % |
-	Mod Target Resistance |
-	Mod Ranged Attack Power |
-	Mod Melee Dmg Taken |
-	Mod Melee % Dmg Taken |
-	Rngd Atk Pwr Attckr Bonus |
-	Mod Possess Pet |
-	Mod Speed Always |
-	Mod Mounted Speed Always |
-	Mod  Ranged Attack Power Versus Creature |
-	Mod Increase Energy % |
-	Mod Max Health % |
-	Mod Interrupted Mana Regen |
-	Mod Healing Done |
-	Mod Healing Done % |
-	Mod Total Stat % |
-	Haste - Melee |
-	Force Reaction |
-	Haste - Ranged |
-	Haste - Ranged (Ammo Only) |
-	Mod Base Resistance % |
-	Mod Resistance Exclusive |
-	Safe Fall |
-	Pet Talent Points |
-	Allow Taming Pet Type |
-	Add Creature Immunity |
-	Retain Combo Points |
-	Reduce Pushback |
-	Mod Shield Block Value % |
-	Track Stealthed |
-	Mod Detected Range |
-	Split Damage Flat |
-	Stealth Level Modifier |
-	Mod Water Breathing |
-	Mod Reputation Gain |
-	Mod Pet Damage |
-	Mod Shield Block Value |
-	No PVP Credit |
-	Mod AOE Avoidance |
-	Health Regen During Combat |
-	Power Burn |
-	Mod Crit Damage Bonus |
-	Unused_164 |
-	Unused_165 |
-	Mod Attack Power % |
-	Mod Ranged Attack Power % |
-	Mod Dmg Versus Creature |
-	Mod Crit % Versus Creature |
-	Detect Amore |
-	Mod Speed % (Doesn't stack) |
-	Mod Mounted Speed % (Doesn't stack) |
-	Unused_173 |
-	Mod Spell Damage By Stat % |
-	Mod Spell Healing By Stat % |
-	Spirit Of Redemption |
-	AOE Charm |
-	Mod Debuff Resistance |
-	Mod Attacker Spell Crit Chance |
-	Mod Spell Damage Versus Creature |
-	Unused_181 |
-	Mod Resistance By Stat % |
-	Mod Critical Hit Threat % |
-	Mod Attacker Melee Hit Chance |
-	Mod Attacker Ranged Hit Chance |
-	Mod Attacker Spell Hit Chance |
-	Mod Attacker Melee Crit Chance |
-	Mod Attacker Ranged CritChance |
-	Mod Rating |
-	Mod Faction Reputation Gain |
-	Use Normal Movement Speed |
-	Mod Melee/Ranged Haste |
-	Mod Haste % |
-	Absorb School Damage |
-	Ignore School Absorb |
-	Mod Cooldown |
-	Mod Attacker Crit Chance |
-	Unused_198 |
-	Mod Spell % Hit Chance |
-	Mod XP % |
-	Allow Flying |
-	Ignore Combat result |
-	Mod Melee Crit Dmg Taken % |
-	Mod Ranged Crit Dmg Taken % |
-	Mod School Crit Dmg Taken % |
-	Increase Vehicle Flight Speed |
-	Increase Mount Flight Speed |
-	Increase Flight Speed |
-	Increase All Mounts Flight Speeds |
-	Increase All Vehicles Speeds |
-	Mod Flight Speed (Doesn't stack) |
-	Mod Ranged Attack Power By Stat % |
-	Mod Rage From Dmg Dealt |
-	Unused_214 |
-	Arena Preparation |
-	Mod Spell Haste |
-	Mod Melee Haste 2 |
-	Mod Ranged Haste |
-	Mod Mana Regen By Stat % |
-	Mod Rating By Stat % |
-	Detaunt (Ignore enemy) |
-	Unused_222 |
-	Raid Proc From Charge |
-	Unused_222 |
-	Raid Proc From Charge With Value |
-	Periodic Dummy |
-	Periodic Trigger Spell With Value |
-	Detect Stealth |
-	Mod AOE Damage Avoidance |
-	Unused_230 |
-	Proc Triggers Spell With Value |
-	Mod Mechanic Duration |
-	Change Model For All Humanoids (Client) |
-	Mod Mechanic Duration (Doesn't Stack) |
-	Mod Dispel Resist |
-	Control Vehicle |
-	Mod Spell Damage By Attack Power |
-	Mod Spell Healing By Attack Power |
-	Mod Scale |
-	Mod Expertise |
-	Force Moving Forward |
-	Unused_242 |
-	Mod Faction |
-	Comprehend Language |
-	Mod Aura Duration By Dispel Type |
-	Mod Aura Duration By Dispel Type (Doesn't Stack) |
-	Clone Caster |
-	Mod Combat Result Chance |
-	Covnert Rune |
-	Increase Health 2 |
-	Mod Enemy Dodge Chance |
-	Slow All Speeds |
-	Mod Critical Block Chance |
-	Disarm Offhand |
-	Mod Mechanic Damage Taken % |
-	No Reagent Use |
-	Mod Target Resist By Spell Class |
-	Unused_258 |
-	Mod Perioding Healing % |
-	Screen Effect |
-	Phase |
-	Abiltiy Ignores Aura State |
-	Can't Use Other Abilities |
-	Unused_264 |
-	Unused_265 |
-	Unused_266 |
-	Immune Aura School |
-	Mod Attack Power By Stat % |
-	Ignore Target Resist |
-	Ability Ignores Target Resist |
-	Mod dmg From Caster |
-	Ignore Melee Reset |
-	X-Ray |
-	Abiltiy Consumes No Ammo |
-	Mod Ignore Shapeshift |
-	Unused_276 |
-	Unused_277 |
-	Disarm Ranged |
-	Initialize Images |
-	Mod Armor Penetration % |
-	Mod Honor Gain % |
-	Mod Base health % |
-	Mod healing Received % |
-	Linked |
-	Mod Attack Power By Armor |
-	Ability Periodic Can Crit |
-	Deflect Spells |
-	Ignore Hit Direction |
-	Unused_289 |
-	Mod Crit % |
-	Mod Quest XP % |
-	Open Stable |
-	Override Spells |
-	Prevent Regenerating Power |
-	Unused_295 |
-	Set Vehicle ID |
-	Block Spell Family |
-	Strangulate |
-	Unused_299 |
-	Share % Damage |
-	Aborb School Healing |
-	Unused_302 |
-	Mod Dmg Done Versus Aura State |
-	Fake Inebriate |
-	Mod Minimum Speed |
-	Unused_306 |
-	Unused_307 |
-	Mod Caster Crit Chance |
-	Unused_309 |
-	Mod Creature AOE Dmg Avoidance |
-	Unused_309 |
-	Unused_309 |
-	Unused_309 |
-	Prevent Resurrection |
-	Underwater Walking |
-	Periodic Haste
+        Bind Sight |
+        Mod Possess |
+        Periodic Damage |
+        Dummy |
+        Mod Confuse |
+        Mod Charm |
+        Mod Fear |
+        Periodic Heal |
+        Mod Attack Speed |
+        Mod Threat |
+        Taunt |
+        Stun |
+        Mod Damage Done |
+        Mod Damage Taken |
+        Damage Shield |
+        Mod Stealth |
+        Mod Detect Stealth |
+        Mod Invisibility |
+        Mod Invisibility Detection |
+        OBS Mod Health |
+        OBS Mod Power |
+        Mod Resistance |
+        Periodic Trigger |
+        Periodic Energize |
+        Pacify |
+        Root |
+        Silence |
+        Reflect Spells % |
+        Mod Stat |
+        Mod Skill |
+        Mod Speed |
+        Mod Speed Mounted |
+        Mod Speed Slow |
+        Mod Increase Health |
+        Mod Increase Energy |
+        Shapeshift |
+        Immune Effect |
+        Immune State |
+        Immune School |
+        Immune Damage |
+        Immune Dispel Type |
+        Proc Trigger Spell |
+        Proc Trigger Damage |
+        Track Creatures |
+        Track Resources |
+        Unused_46 |
+        Mod Parry Percent |
+        Unknown 48 |
+        Mod Dodge Percent |
+        Mod Critical Healing Amount |
+        Mod Block Percent |
+        Mod Weapon Crit Percent |
+        Periodic Leech |
+        Mod Hit Chance |
+        Mod Spell Hit Chance |
+        Transform |
+        Mod Spell Crit Chance |
+        Mod Speed Swim |
+        Mod Creature Dmg Done |
+        Pacify &amp; Silence |
+        Mod Scale |
+        Periodic Health Funnel |
+        Unused_63 |
+        Periodic Mana Leech |
+        Haste - Spells |
+        Feign Death |
+        Disarm |
+        Mod Stalked |
+        School Absorb |
+        Extra Attacks |
+        Mod School Spell Crit Chance |
+        Mod School Power Cost % |
+        Mod School Power Cost |
+        Reflect School Spells % |
+        Mod Language |
+        Far Sight |
+        Immune Mechanic |
+        Mounted |
+        Mod Dmg % |
+        Mod Stat % |
+        Split Damage % |
+        Water Breathing |
+        Mod Base Resistance |
+        Mod Health Regen |
+        Mod Power Regen |
+        Create Death Item |
+        Mod Dmg % Taken |
+        Mod Health Regen Percent |
+        Periodic Damage Percent |
+        Unused_92 |
+        Mod Detect Range |
+        Prevent Fleeing |
+        Mod Uninteractible |
+        Interrupt Regen |
+        Ghost |
+        Spell Magnet |
+        Mana Shield |
+        Mod Skill Talent |
+        Mod Attack Power |
+        Auras Visible |
+        Mod Resistance % |
+        Mod  Attack Power Versus Creature |
+        Mod Total Threat (Fade) |
+        Water Walk |
+        Feather Fall |
+        Hover |
+        Add Flat Modifier |
+        Add % Modifier |
+        Add Class Target Trigger |
+        Mod Power Regen % |
+        Add Class Caster Hit Trigger |
+        Override Class Scripts |
+        Mod Ranged Dmg Taken |
+        Mod Ranged % Dmg Taken |
+        Mod Healing |
+        Regen During Combat |
+        Mod Mechanic Resistance |
+        Mod Healing % |
+        Unused_119 |
+        Untrackable |
+        Empathy (Lore, whatever) |
+        Mod Offhand Dmg % |
+        Mod Target Resistance |
+        Mod Ranged Attack Power |
+        Mod Melee Dmg Taken |
+        Mod Melee % Dmg Taken |
+        Rngd Atk Pwr Attckr Bonus |
+        Mod Possess Pet |
+        Mod Speed Always |
+        Mod Mounted Speed Always |
+        Mod  Ranged Attack Power Versus Creature |
+        Mod Increase Energy % |
+        Mod Max Health % |
+        Mod Interrupted Mana Regen |
+        Mod Healing Done |
+        Mod Healing Done % |
+        Mod Total Stat % |
+        Haste - Melee |
+        Force Reaction |
+        Haste - Ranged |
+        Haste - Ranged (Ammo Only) |
+        Mod Base Resistance % |
+        Mod Resistance Exclusive |
+        Safe Fall |
+        Pet Talent Points |
+        Allow Taming Pet Type |
+        Add Creature Immunity |
+        Retain Combo Points |
+        Reduce Pushback |
+        Mod Shield Block Value % |
+        Track Stealthed |
+        Mod Detected Range |
+        Split Damage Flat |
+        Stealth Level Modifier |
+        Mod Water Breathing |
+        Mod Reputation Gain |
+        Mod Pet Damage |
+        Mod Shield Block Value |
+        No PVP Credit |
+        Mod AOE Avoidance |
+        Health Regen During Combat |
+        Power Burn |
+        Mod Crit Damage Bonus |
+        Unused_164 |
+        Unused_165 |
+        Mod Attack Power % |
+        Mod Ranged Attack Power % |
+        Mod Dmg Versus Creature |
+        Mod Crit % Versus Creature |
+        Detect Amore |
+        Mod Speed % (Doesn't stack) |
+        Mod Mounted Speed % (Doesn't stack) |
+        Unused_173 |
+        Mod Spell Damage By Stat % |
+        Mod Spell Healing By Stat % |
+        Spirit Of Redemption |
+        AOE Charm |
+        Mod Debuff Resistance |
+        Mod Attacker Spell Crit Chance |
+        Mod Spell Damage Versus Creature |
+        Unused_181 |
+        Mod Resistance By Stat % |
+        Mod Critical Hit Threat % |
+        Mod Attacker Melee Hit Chance |
+        Mod Attacker Ranged Hit Chance |
+        Mod Attacker Spell Hit Chance |
+        Mod Attacker Melee Crit Chance |
+        Mod Attacker Ranged CritChance |
+        Mod Rating |
+        Mod Faction Reputation Gain |
+        Use Normal Movement Speed |
+        Mod Melee/Ranged Haste |
+        Mod Haste % |
+        Absorb School Damage |
+        Ignore School Absorb |
+        Mod Cooldown |
+        Mod Attacker Crit Chance |
+        Unused_198 |
+        Mod Spell % Hit Chance |
+        Mod XP % |
+        Allow Flying |
+        Ignore Combat result |
+        Mod Melee Crit Dmg Taken % |
+        Mod Ranged Crit Dmg Taken % |
+        Mod School Crit Dmg Taken % |
+        Increase Vehicle Flight Speed |
+        Increase Mount Flight Speed |
+        Increase Flight Speed |
+        Increase All Mounts Flight Speeds |
+        Increase All Vehicles Speeds |
+        Mod Flight Speed (Doesn't stack) |
+        Mod Ranged Attack Power By Stat % |
+        Mod Rage From Dmg Dealt |
+        Unused_214 |
+        Arena Preparation |
+        Mod Spell Haste |
+        Mod Melee Haste 2 |
+        Mod Ranged Haste |
+        Mod Mana Regen By Stat % |
+        Mod Rating By Stat % |
+        Detaunt (Ignore enemy) |
+        Unused_222 |
+        Raid Proc From Charge |
+        Unused_222 |
+        Raid Proc From Charge With Value |
+        Periodic Dummy |
+        Periodic Trigger Spell With Value |
+        Detect Stealth |
+        Mod AOE Damage Avoidance |
+        Unused_230 |
+        Proc Triggers Spell With Value |
+        Mod Mechanic Duration |
+        Change Model For All Humanoids (Client) |
+        Mod Mechanic Duration (Doesn't Stack) |
+        Mod Dispel Resist |
+        Control Vehicle |
+        Mod Spell Damage By Attack Power |
+        Mod Spell Healing By Attack Power |
+        Mod Scale |
+        Mod Expertise |
+        Force Moving Forward |
+        Unused_242 |
+        Mod Faction |
+        Comprehend Language |
+        Mod Aura Duration By Dispel Type |
+        Mod Aura Duration By Dispel Type (Doesn't Stack) |
+        Clone Caster |
+        Mod Combat Result Chance |
+        Covnert Rune |
+        Increase Health 2 |
+        Mod Enemy Dodge Chance |
+        Slow All Speeds |
+        Mod Critical Block Chance |
+        Disarm Offhand |
+        Mod Mechanic Damage Taken % |
+        No Reagent Use |
+        Mod Target Resist By Spell Class |
+        Unused_258 |
+        Mod Perioding Healing % |
+        Screen Effect |
+        Phase |
+        Abiltiy Ignores Aura State |
+        Can't Use Other Abilities |
+        Unused_264 |
+        Unused_265 |
+        Unused_266 |
+        Immune Aura School |
+        Mod Attack Power By Stat % |
+        Ignore Target Resist |
+        Ability Ignores Target Resist |
+        Mod dmg From Caster |
+        Ignore Melee Reset |
+        X-Ray |
+        Abiltiy Consumes No Ammo |
+        Mod Ignore Shapeshift |
+        Unused_276 |
+        Unused_277 |
+        Disarm Ranged |
+        Initialize Images |
+        Mod Armor Penetration % |
+        Mod Honor Gain % |
+        Mod Base health % |
+        Mod healing Received % |
+        Linked |
+        Mod Attack Power By Armor |
+        Ability Periodic Can Crit |
+        Deflect Spells |
+        Ignore Hit Direction |
+        Unused_289 |
+        Mod Crit % |
+        Mod Quest XP % |
+        Open Stable |
+        Override Spells |
+        Prevent Regenerating Power |
+        Unused_295 |
+        Set Vehicle ID |
+        Block Spell Family |
+        Strangulate |
+        Unused_299 |
+        Share % Damage |
+        Aborb School Healing |
+        Unused_302 |
+        Mod Dmg Done Versus Aura State |
+        Fake Inebriate |
+        Mod Minimum Speed |
+        Unused_306 |
+        Unused_307 |
+        Mod Caster Crit Chance |
+        Unused_309 |
+        Mod Creature AOE Dmg Avoidance |
+        Unused_309 |
+        Unused_309 |
+        Unused_309 |
+        Prevent Resurrection |
+        Underwater Walking |
+        Periodic Haste
+    </system:String>
+    <system:String x:Key="spell_aura_effect_names_tooltips">
+        SPELL_AURA_NONE |
+        SPELL_AURA_BIND_SIGHT |
+        SPELL_AURA_MOD_POSSESS |
+        SPELL_AURA_PERIODIC_DAMAGE |
+        SPELL_AURA_DUMMY |
+        SPELL_AURA_MOD_CONFUSE |
+        SPELL_AURA_MOD_CHARM |
+        SPELL_AURA_MOD_FEAR |
+        SPELL_AURA_PERIODIC_HEAL |
+        SPELL_AURA_MOD_ATTACKSPEED |
+        SPELL_AURA_MOD_THREAT |
+        SPELL_AURA_MOD_TAUNT |
+        SPELL_AURA_MOD_STUN |
+        SPELL_AURA_MOD_DAMAGE_DONE |
+        SPELL_AURA_MOD_DAMAGE_TAKEN |
+        SPELL_AURA_DAMAGE_SHIELD |
+        SPELL_AURA_MOD_STEALTH |
+        SPELL_AURA_MOD_STEALTH_DETECT |
+        SPELL_AURA_MOD_INVISIBILITY |
+        SPELL_AURA_MOD_INVISIBILITY_DETECT |
+        SPELL_AURA_OBS_MOD_HEALTH |
+        SPELL_AURA_OBS_MOD_POWER |
+        SPELL_AURA_MOD_RESISTANCE |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL |
+        SPELL_AURA_PERIODIC_ENERGIZE |
+        SPELL_AURA_MOD_PACIFY |
+        SPELL_AURA_MOD_ROOT |
+        SPELL_AURA_MOD_SILENCE |
+        SPELL_AURA_REFLECT_SPELLS |
+        SPELL_AURA_MOD_STAT |
+        SPELL_AURA_MOD_SKILL |
+        SPELL_AURA_MOD_INCREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED |
+        SPELL_AURA_MOD_DECREASE_SPEED |
+        SPELL_AURA_MOD_INCREASE_HEALTH |
+        SPELL_AURA_MOD_INCREASE_ENERGY |
+        SPELL_AURA_MOD_SHAPESHIFT |
+        SPELL_AURA_EFFECT_IMMUNITY |
+        SPELL_AURA_STATE_IMMUNITY |
+        SPELL_AURA_SCHOOL_IMMUNITY |
+        SPELL_AURA_DAMAGE_IMMUNITY |
+        SPELL_AURA_DISPEL_IMMUNITY |
+        SPELL_AURA_PROC_TRIGGER_SPELL |
+        SPELL_AURA_PROC_TRIGGER_DAMAGE |
+        SPELL_AURA_TRACK_CREATURES |
+        SPELL_AURA_TRACK_RESOURCES |
+        SPELL_AURA_46 |
+        SPELL_AURA_MOD_PARRY_PERCENT |
+        SPELL_AURA_48 |
+        SPELL_AURA_MOD_DODGE_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT |
+        SPELL_AURA_MOD_BLOCK_PERCENT |
+        SPELL_AURA_MOD_WEAPON_CRIT_PERCENT |
+        SPELL_AURA_PERIODIC_LEECH |
+        SPELL_AURA_MOD_HIT_CHANCE |
+        SPELL_AURA_MOD_SPELL_HIT_CHANCE |
+        SPELL_AURA_TRANSFORM |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_INCREASE_SWIM_SPEED |
+        SPELL_AURA_MOD_DAMAGE_DONE_CREATURE |
+        SPELL_AURA_MOD_PACIFY_SILENCE |
+        SPELL_AURA_MOD_SCALE |
+        SPELL_AURA_PERIODIC_HEALTH_FUNNEL |
+        SPELL_AURA_63 |
+        SPELL_AURA_PERIODIC_MANA_LEECH |
+        SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK |
+        SPELL_AURA_FEIGN_DEATH |
+        SPELL_AURA_MOD_DISARM |
+        SPELL_AURA_MOD_STALKED |
+        SPELL_AURA_SCHOOL_ABSORB |
+        SPELL_AURA_EXTRA_ATTACKS |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL |
+        SPELL_AURA_REFLECT_SPELLS_SCHOOL |
+        SPELL_AURA_MOD_LANGUAGE |
+        SPELL_AURA_FAR_SIGHT |
+        SPELL_AURA_MECHANIC_IMMUNITY |
+        SPELL_AURA_MOUNTED |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_DONE |
+        SPELL_AURA_MOD_PERCENT_STAT |
+        SPELL_AURA_SPLIT_DAMAGE_PCT |
+        SPELL_AURA_WATER_BREATHING |
+        SPELL_AURA_MOD_BASE_RESISTANCE |
+        SPELL_AURA_MOD_REGEN |
+        SPELL_AURA_MOD_POWER_REGEN |
+        SPELL_AURA_CHANNEL_DEATH_ITEM |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN |
+        SPELL_AURA_MOD_HEALTH_REGEN_PERCENT |
+        SPELL_AURA_PERIODIC_DAMAGE_PERCENT |
+        SPELL_AURA_90 |
+        SPELL_AURA_MOD_DETECT_RANGE |
+        SPELL_AURA_PREVENTS_FLEEING |
+        SPELL_AURA_MOD_UNATTACKABLE |
+        SPELL_AURA_INTERRUPT_REGEN |
+        SPELL_AURA_GHOST |
+        SPELL_AURA_SPELL_MAGNET |
+        SPELL_AURA_MANA_SHIELD |
+        SPELL_AURA_MOD_SKILL_TALENT |
+        SPELL_AURA_MOD_ATTACK_POWER |
+        SPELL_AURA_AURAS_VISIBLE |
+        SPELL_AURA_MOD_RESISTANCE_PCT |
+        SPELL_AURA_MOD_MELEE_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_TOTAL_THREAT |
+        SPELL_AURA_WATER_WALK |
+        SPELL_AURA_FEATHER_FALL |
+        SPELL_AURA_HOVER |
+        SPELL_AURA_ADD_FLAT_MODIFIER |
+        SPELL_AURA_ADD_PCT_MODIFIER |
+        SPELL_AURA_ADD_TARGET_TRIGGER |
+        SPELL_AURA_MOD_POWER_REGEN_PERCENT |
+        SPELL_AURA_ADD_CASTER_HIT_TRIGGER |
+        SPELL_AURA_OVERRIDE_CLASS_SCRIPTS |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_MOD_HEALING |
+        SPELL_AURA_MOD_REGEN_DURING_COMBAT |
+        SPELL_AURA_MOD_MECHANIC_RESISTANCE |
+        SPELL_AURA_MOD_HEALING_PCT |
+        SPELL_AURA_119 |
+        SPELL_AURA_UNTRACKABLE |
+        SPELL_AURA_EMPATHY |
+        SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT |
+        SPELL_AURA_MOD_TARGET_RESISTANCE |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT |
+        SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_POSSESS_PET |
+        SPELL_AURA_MOD_SPEED_ALWAYS |
+        SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS |
+        SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT |
+        SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT |
+        SPELL_AURA_MOD_MANA_REGEN_INTERRUPT |
+        SPELL_AURA_MOD_HEALING_DONE |
+        SPELL_AURA_MOD_HEALING_DONE_PERCENT |
+        SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE |
+        SPELL_AURA_MOD_MELEE_HASTE |
+        SPELL_AURA_FORCE_REACTION |
+        SPELL_AURA_MOD_RANGED_HASTE |
+        SPELL_AURA_MOD_RANGED_AMMO_HASTE |
+        SPELL_AURA_MOD_BASE_RESISTANCE_PCT |
+        SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE |
+        SPELL_AURA_SAFE_FALL |
+        SPELL_AURA_MOD_PET_TALENT_POINTS |
+        SPELL_AURA_ALLOW_TAME_PET_TYPE |
+        SPELL_AURA_MECHANIC_IMMUNITY_MASK |
+        SPELL_AURA_RETAIN_COMBO_POINTS |
+        SPELL_AURA_REDUCE_PUSHBACK |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT |
+        SPELL_AURA_TRACK_STEALTHED |
+        SPELL_AURA_MOD_DETECTED_RANGE |
+        SPELL_AURA_SPLIT_DAMAGE_FLAT |
+        SPELL_AURA_MOD_STEALTH_LEVEL |
+        SPELL_AURA_MOD_WATER_BREATHING |
+        SPELL_AURA_MOD_REPUTATION_GAIN |
+        SPELL_AURA_PET_DAMAGE_MULTI |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE |
+        SPELL_AURA_NO_PVP_CREDIT |
+        SPELL_AURA_MOD_AOE_AVOIDANCE |
+        SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT |
+        SPELL_AURA_POWER_BURN |
+        SPELL_AURA_MOD_CRIT_DAMAGE_BONUS |
+        SPELL_AURA_164 |
+        SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS |
+        SPELL_AURA_MOD_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_PCT |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS |
+        SPELL_AURA_MOD_CRIT_PERCENT_VERSUS |
+        SPELL_AURA_DETECT_AMORE |
+        SPELL_AURA_MOD_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_MOUNTED_SPEED_NOT_STACK |
+        SPELL_AURA_173 |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT |
+        SPELL_AURA_SPIRIT_OF_REDEMPTION |
+        SPELL_AURA_AOE_CHARM |
+        SPELL_AURA_MOD_DEBUFF_RESISTANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE |
+        SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS |
+        SPELL_AURA_181 |
+        SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_CRITICAL_THREAT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE |
+        SPELL_AURA_MOD_RATING |
+        SPELL_AURA_MOD_FACTION_REPUTATION_GAIN |
+        SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED |
+        SPELL_AURA_MOD_MELEE_RANGED_HASTE |
+        SPELL_AURA_MELEE_SLOW |
+        SPELL_AURA_MOD_TARGET_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_TARGET_ABILITY_ABSORB_SCHOOL |
+        SPELL_AURA_MOD_COOLDOWN |
+        SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE |
+        SPELL_AURA_198 |
+        SPELL_AURA_MOD_INCREASES_SPELL_PCT_TO_HIT |
+        SPELL_AURA_MOD_XP_PCT |
+        SPELL_AURA_FLY |
+        SPELL_AURA_IGNORE_COMBAT_RESULT |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_DAMAGE |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE |
+        SPELL_AURA_MOD_SCHOOL_CRIT_DMG_TAKEN |
+        SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED |
+        SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED |
+        SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS |
+        SPELL_AURA_MOD_VEHICLE_SPEED_ALWAYS |
+        SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT |
+        SPELL_AURA_214 |
+        SPELL_AURA_ARENA_PREPARATION |
+        SPELL_AURA_HASTE_SPELLS |
+        SPELL_AURA_MOD_MELEE_HASTE_2 |
+        SPELL_AURA_HASTE_RANGED |
+        SPELL_AURA_MOD_MANA_REGEN_FROM_STAT |
+        SPELL_AURA_MOD_RATING_FROM_STAT |
+        SPELL_AURA_MOD_DETAUNT |
+        SPELL_AURA_222 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE |
+        SPELL_AURA_224 |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE |
+        SPELL_AURA_PERIODIC_DUMMY |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_DETECT_STEALTH |
+        SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_230 |
+        SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE |
+        SPELL_AURA_MECHANIC_DURATION_MOD |
+        SPELL_AURA_CHANGE_MODEL_FOR_ALL_HUMANOIDS |
+        SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK |
+        SPELL_AURA_MOD_DISPEL_RESIST |
+        SPELL_AURA_CONTROL_VEHICLE |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER |
+        SPELL_AURA_MOD_SCALE_2 |
+        SPELL_AURA_MOD_EXPERTISE |
+        SPELL_AURA_FORCE_MOVE_FORWARD |
+        SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING |
+        SPELL_AURA_MOD_FACTION |
+        SPELL_AURA_COMPREHEND_LANGUAGE |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK |
+        SPELL_AURA_CLONE_CASTER |
+        SPELL_AURA_MOD_COMBAT_RESULT_CHANCE |
+        SPELL_AURA_CONVERT_RUNE |
+        SPELL_AURA_MOD_INCREASE_HEALTH_2 |
+        SPELL_AURA_MOD_ENEMY_DODGE |
+        SPELL_AURA_MOD_SPEED_SLOW_ALL |
+        SPELL_AURA_MOD_BLOCK_CRIT_CHANCE |
+        SPELL_AURA_MOD_DISARM_OFFHAND |
+        SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT |
+        SPELL_AURA_NO_REAGENT_USE |
+        SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS |
+        SPELL_AURA_258 |
+        SPELL_AURA_MOD_HOT_PCT |
+        SPELL_AURA_SCREEN_EFFECT |
+        SPELL_AURA_PHASE |
+        SPELL_AURA_ABILITY_IGNORE_AURASTATE |
+        SPELL_AURA_ALLOW_ONLY_ABILITY |
+        SPELL_AURA_264 |
+        SPELL_AURA_265 |
+        SPELL_AURA_266 |
+        SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT |
+        SPELL_AURA_MOD_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST |
+        SPELL_AURA_MOD_DAMAGE_FROM_CASTER |
+        SPELL_AURA_IGNORE_MELEE_RESET |
+        SPELL_AURA_X_RAY |
+        SPELL_AURA_ABILITY_CONSUME_NO_AMMO |
+        SPELL_AURA_MOD_IGNORE_SHAPESHIFT |
+        SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC |
+        SPELL_AURA_MOD_MAX_AFFECTED_TARGETS |
+        SPELL_AURA_MOD_DISARM_RANGED |
+        SPELL_AURA_INITIALIZE_IMAGES |
+        SPELL_AURA_MOD_ARMOR_PENETRATION_PCT |
+        SPELL_AURA_MOD_HONOR_GAIN_PCT |
+        SPELL_AURA_MOD_BASE_HEALTH_PCT |
+        SPELL_AURA_MOD_HEALING_RECEIVED |
+        SPELL_AURA_LINKED |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR |
+        SPELL_AURA_ABILITY_PERIODIC_CRIT |
+        SPELL_AURA_DEFLECT_SPELLS |
+        SPELL_AURA_IGNORE_HIT_DIRECTION |
+        SPELL_AURA_289 |
+        SPELL_AURA_MOD_CRIT_PCT |
+        SPELL_AURA_MOD_XP_QUEST_PCT |
+        SPELL_AURA_OPEN_STABLE |
+        SPELL_AURA_OVERRIDE_SPELLS |
+        SPELL_AURA_PREVENT_REGENERATE_POWER |
+        SPELL_AURA_295 |
+        SPELL_AURA_SET_VEHICLE_ID |
+        SPELL_AURA_BLOCK_SPELL_FAMILY |
+        SPELL_AURA_STRANGULATE |
+        SPELL_AURA_299 |
+        SPELL_AURA_SHARE_DAMAGE_PCT |
+        SPELL_AURA_SCHOOL_HEAL_ABSORB |
+        SPELL_AURA_302 |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE |
+        SPELL_AURA_MOD_FAKE_INEBRIATE |
+        SPELL_AURA_MOD_MINIMUM_SPEED |
+        SPELL_AURA_306 |
+        SPELL_AURA_HEAL_ABSORB_TEST |
+        SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER |
+        SPELL_AURA_309 |
+        SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE |
+        SPELL_AURA_311 |
+        SPELL_AURA_312 |
+        SPELL_AURA_313 |
+        SPELL_AURA_PREVENT_RESURRECTION |
+        SPELL_AURA_UNDERWATER_WALKING |
+        SPELL_AURA_PERIODIC_HASTE
     </system:String>
     <system:String x:Key="spell_effect_names">
-		NONE |
-		INSTAKILL |
-		SCHOOL_DAMAGE |
-		DUMMY |
-		PORTAL_TELEPORT unused |
-		TELEPORT_UNITS |
-		APPLY_AURA |
-		ENVIRONMENTAL_DAMAGE |
-		POWER_DRAIN |
-		HEALTH_LEECH |
-		HEAL |
-		BIND |
-		PORTAL |
-		RITUAL_BASE unused |
-		RITUAL_SPECIALIZE unused |
-		RITUAL_ACTIVATE_PORTAL unused |
-		QUEST_COMPLETE |
-		WEAPON_DAMAGE_NOSCHOOL |
-		RESURRECT |
-		ADD_EXTRA_ATTACKS |
-		DODGE one spell: Dodge |
-		EVADE one spell: Evade (DND) |
-		PARRY |
-		BLOCK one spell: Block |
-		CREATE_ITEM |
-		WEAPON |
-		DEFENSE one spell: Defense |
-		PERSISTENT_AREA_AURA |
-		SUMMON |
-		LEAP |
-		ENERGIZE |
-		WEAPON_PERCENT_DAMAGE |
-		TRIGGER_MISSILE |
-		OPEN_LOCK |
-		SUMMON_CHANGE_ITEM |
-		APPLY_AREA_AURA_PARTY |
-		LEARN_SPELL |
-		SPELL_DEFENSE one spell: SPELLDEFENSE (DND) |
-		DISPEL |
-		LANGUAGE |
-		DUAL_WIELD |
-		JUMP |
-		JUMP_DEST |
-		TELEPORT_UNITS_FACE_CASTER |
-		SKILL_STEP |
-		ADD_HONOR honor/pvp related |
-		SPAWN clientside, unit appears as if it was just spawned |
-		TRADE_SKILL |
-		STEALTH one spell: Base Stealth |
-		DETECT one spell: Detect |
-		TRANS_DOOR |
-		FORCE_CRITICAL_HIT unused |
-		GUARANTEE_HIT one spell: zzOLDCritical Shot |
-		ENCHANT_ITEM |
-		ENCHANT_ITEM_TEMPORARY |
-		TAMECREATURE |
-		SUMMON_PET |
-		LEARN_PET_SPELL |
-		WEAPON_DAMAGE |
-		CREATE_RANDOM_ITEM create item base at spell specific loot |
-		PROFICIENCY |
-		SEND_EVENT |
-		POWER_BURN |
-		THREAT |
-		TRIGGER_SPELL |
-		APPLY_AREA_AURA_RAID |
-		CREATE_MANA_GEM (possibly recharge it, misc - is item ID) |
-		HEAL_MAX_HEALTH |
-		INTERRUPT_CAST |
-		DISTRACT |
-		PULL one spell: Distract Move |
-		PICKPOCKET |
-		ADD_FARSIGHT |
-		UNTRAIN_TALENTS |
-		APPLY_GLYPH |
-		HEAL_MECHANICAL one spell: Mechanical Patch Kit |
-		SUMMON_OBJECT_WILD |
-		SCRIPT_EFFECT |
-		ATTACK |
-		SANCTUARY |
-		ADD_COMBO_POINTS |
-		CREATE_HOUSE one spell: Create House (TEST) |
-		BIND_SIGHT |
-		DUEL |
-		STUCK |
-		SUMMON_PLAYER |
-		ACTIVATE_OBJECT |
-		GAMEOBJECT_DAMAGE |
-		GAMEOBJECT_REPAIR |
-		GAMEOBJECT_SET_DESTRUCTION_STATE |
-		KILL_CREDIT Kill credit but only for single person |
-		THREAT_ALL one spell: zzOLDBrainwash |
-		ENCHANT_HELD_ITEM |
-		FORCE_DESELECT |
-		SELF_RESURRECT |
-		SKINNING |
-		CHARGE |
-		CAST_BUTTON (totem bar since 3.2.2a) |
-		KNOCK_BACK |
-		DISENCHANT |
-		INEBRIATE |
-		FEED_PET |
-		DISMISS_PET |
-		REPUTATION |
-		SUMMON_OBJECT_SLOT1 |
-		SUMMON_OBJECT_SLOT2 |
-		SUMMON_OBJECT_SLOT3 |
-		SUMMON_OBJECT_SLOT4 |
-		DISPEL_MECHANIC |
-		SUMMON_DEAD_PET |
-		DESTROY_ALL_TOTEMS |
-		DURABILITY_DAMAGE |
-		112 unused |
-		RESURRECT_NEW |
-		ATTACK_ME |
-		DURABILITY_DAMAGE_PCT |
-		SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags... |
-		SPIRIT_HEAL one spell: Spirit Heal |
-		SKILL professions and more |
-		APPLY_AREA_AURA_PET |
-		TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test |
-		NORMALIZED_WEAPON_DMG |
-		122 unused |
-		SEND_TAXI taxi/flight related (misc value is taxi path id) |
-		PULL_TOWARDS |
-		MODIFY_THREAT_PERCENT |
-		STEAL_BENEFICIAL_BUFF spell steal effect? |
-		PROSPECTING Prospecting spell |
-		APPLY_AREA_AURA_FRIEND |
-		APPLY_AREA_AURA_ENEMY |
-		REDIRECT_THREAT |
-		PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc) |
-		PLAY_MUSIC sound id in misc value (SoundEntries.dbc) |
-		UNLEARN_SPECIALIZATION unlearn profession specialization |
-		KILL_CREDIT misc value is creature entry |
-		CALL_PET |
-		HEAL_PCT |
-		ENERGIZE_PCT |
-		LEAP_BACK Leap back |
-		CLEAR_QUEST Reset quest status (miscValue - quest ID) |
-		FORCE_CAST |
-		FORCE_CAST_WITH_VALUE |
-		TRIGGER_SPELL_WITH_VALUE |
-		APPLY_AREA_AURA_OWNER |
-		KNOCK_BACK_DEST |
-		PULL_TOWARDS_DEST Black Hole Effect |
-		ACTIVATE_RUNE |
-		QUEST_FAIL quest fail |
-		TRIGGER_MISSILE_SPELL_WITH_VALUE |
-		CHARGE_DEST |
-		QUEST_START |
-		TRIGGER_SPELL_2 |
-		SUMMON_RAF_FRIEND summon Refer-a-Friend |
-		CREATE_TAMED_PET misc value is creature entry |
-		DISCOVER_TAXI |
-		TITAN_GRIP Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal. |
-		ENCHANT_ITEM_PRISMATIC |
-		CREATE_ITEM_2 create item or create item template and replace by some randon spell loot item |
-		MILLING milling |
-		ALLOW_RENAME_PET allow rename pet once again |
-		1 spell example - 45534 |
-		TALENT_SPEC_COUNT second talent spec (learn/revert) |
-		TALENT_SPEC_SELECT activate primary/secondary spec |
-		unused |
-		REMOVE_AURA
+        NONE |
+        INSTAKILL |
+        SCHOOL_DAMAGE |
+        DUMMY |
+        PORTAL_TELEPORT unused |
+        TELEPORT_UNITS |
+        APPLY_AURA |
+        ENVIRONMENTAL_DAMAGE |
+        POWER_DRAIN |
+        HEALTH_LEECH |
+        HEAL |
+        BIND |
+        PORTAL |
+        RITUAL_BASE unused |
+        RITUAL_SPECIALIZE unused |
+        RITUAL_ACTIVATE_PORTAL unused |
+        QUEST_COMPLETE |
+        WEAPON_DAMAGE_NOSCHOOL |
+        RESURRECT |
+        ADD_EXTRA_ATTACKS |
+        DODGE one spell: Dodge |
+        EVADE one spell: Evade (DND) |
+        PARRY |
+        BLOCK one spell: Block |
+        CREATE_ITEM |
+        WEAPON |
+        DEFENSE one spell: Defense |
+        PERSISTENT_AREA_AURA |
+        SUMMON |
+        LEAP |
+        ENERGIZE |
+        WEAPON_PERCENT_DAMAGE |
+        TRIGGER_MISSILE |
+        OPEN_LOCK |
+        SUMMON_CHANGE_ITEM |
+        APPLY_AREA_AURA_PARTY |
+        LEARN_SPELL |
+        SPELL_DEFENSE one spell: SPELLDEFENSE (DND) |
+        DISPEL |
+        LANGUAGE |
+        DUAL_WIELD |
+        JUMP |
+        JUMP_DEST |
+        TELEPORT_UNITS_FACE_CASTER |
+        SKILL_STEP |
+        ADD_HONOR honor/pvp related |
+        SPAWN clientside, unit appears as if it was just spawned |
+        TRADE_SKILL |
+        STEALTH one spell: Base Stealth |
+        DETECT one spell: Detect |
+        TRANS_DOOR |
+        FORCE_CRITICAL_HIT unused |
+        GUARANTEE_HIT one spell: zzOLDCritical Shot |
+        ENCHANT_ITEM |
+        ENCHANT_ITEM_TEMPORARY |
+        TAMECREATURE |
+        SUMMON_PET |
+        LEARN_PET_SPELL |
+        WEAPON_DAMAGE |
+        CREATE_RANDOM_ITEM create item base at spell specific loot |
+        PROFICIENCY |
+        SEND_EVENT |
+        POWER_BURN |
+        THREAT |
+        TRIGGER_SPELL |
+        APPLY_AREA_AURA_RAID |
+        CREATE_MANA_GEM (possibly recharge it, misc - is item ID) |
+        HEAL_MAX_HEALTH |
+        INTERRUPT_CAST |
+        DISTRACT |
+        PULL one spell: Distract Move |
+        PICKPOCKET |
+        ADD_FARSIGHT |
+        UNTRAIN_TALENTS |
+        APPLY_GLYPH |
+        HEAL_MECHANICAL one spell: Mechanical Patch Kit |
+        SUMMON_OBJECT_WILD |
+        SCRIPT_EFFECT |
+        ATTACK |
+        SANCTUARY |
+        ADD_COMBO_POINTS |
+        CREATE_HOUSE one spell: Create House (TEST) |
+        BIND_SIGHT |
+        DUEL |
+        STUCK |
+        SUMMON_PLAYER |
+        ACTIVATE_OBJECT |
+        GAMEOBJECT_DAMAGE |
+        GAMEOBJECT_REPAIR |
+        GAMEOBJECT_SET_DESTRUCTION_STATE |
+        KILL_CREDIT Kill credit but only for single person |
+        THREAT_ALL one spell: zzOLDBrainwash |
+        ENCHANT_HELD_ITEM |
+        FORCE_DESELECT |
+        SELF_RESURRECT |
+        SKINNING |
+        CHARGE |
+        CAST_BUTTON (totem bar since 3.2.2a) |
+        KNOCK_BACK |
+        DISENCHANT |
+        INEBRIATE |
+        FEED_PET |
+        DISMISS_PET |
+        REPUTATION |
+        SUMMON_OBJECT_SLOT1 |
+        SUMMON_OBJECT_SLOT2 |
+        SUMMON_OBJECT_SLOT3 |
+        SUMMON_OBJECT_SLOT4 |
+        DISPEL_MECHANIC |
+        SUMMON_DEAD_PET |
+        DESTROY_ALL_TOTEMS |
+        DURABILITY_DAMAGE |
+        112 unused |
+        RESURRECT_NEW |
+        ATTACK_ME |
+        DURABILITY_DAMAGE_PCT |
+        SKIN_PLAYER_CORPSE one spell: Remove Insignia, bg usage, required special corpse flags... |
+        SPIRIT_HEAL one spell: Spirit Heal |
+        SKILL professions and more |
+        APPLY_AREA_AURA_PET |
+        TELEPORT_GRAVEYARD one spell: Graveyard Teleport Test |
+        NORMALIZED_WEAPON_DMG |
+        122 unused |
+        SEND_TAXI taxi/flight related (misc value is taxi path id) |
+        PULL_TOWARDS |
+        MODIFY_THREAT_PERCENT |
+        STEAL_BENEFICIAL_BUFF spell steal effect? |
+        PROSPECTING Prospecting spell |
+        APPLY_AREA_AURA_FRIEND |
+        APPLY_AREA_AURA_ENEMY |
+        REDIRECT_THREAT |
+        PLAYER_NOTIFICATION sound id in misc value (SoundEntries.dbc) |
+        PLAY_MUSIC sound id in misc value (SoundEntries.dbc) |
+        UNLEARN_SPECIALIZATION unlearn profession specialization |
+        KILL_CREDIT misc value is creature entry |
+        CALL_PET |
+        HEAL_PCT |
+        ENERGIZE_PCT |
+        LEAP_BACK Leap back |
+        CLEAR_QUEST Reset quest status (miscValue - quest ID) |
+        FORCE_CAST |
+        FORCE_CAST_WITH_VALUE |
+        TRIGGER_SPELL_WITH_VALUE |
+        APPLY_AREA_AURA_OWNER |
+        KNOCK_BACK_DEST |
+        PULL_TOWARDS_DEST Black Hole Effect |
+        ACTIVATE_RUNE |
+        QUEST_FAIL quest fail |
+        TRIGGER_MISSILE_SPELL_WITH_VALUE |
+        CHARGE_DEST |
+        QUEST_START |
+        TRIGGER_SPELL_2 |
+        SUMMON_RAF_FRIEND summon Refer-a-Friend |
+        CREATE_TAMED_PET misc value is creature entry |
+        DISCOVER_TAXI |
+        TITAN_GRIP Allows you to equip two-handed axes, maces and swords in one hand, but you attack $49152s1% slower than normal. |
+        ENCHANT_ITEM_PRISMATIC |
+        CREATE_ITEM_2 create item or create item template and replace by some randon spell loot item |
+        MILLING milling |
+        ALLOW_RENAME_PET allow rename pet once again |
+        1 spell example - 45534 |
+        TALENT_SPEC_COUNT second talent spec (learn/revert) |
+        TALENT_SPEC_SELECT activate primary/secondary spec |
+        unused |
+        REMOVE_AURA
     </system:String>
     <system:String x:Key="mechanic_names">
         None |
