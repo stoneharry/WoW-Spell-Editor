@@ -1,0 +1,5 @@
+uint ID 					
+uint name string
+uint script string
+int flags
+int missileCount

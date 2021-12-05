@@ -121,6 +121,8 @@
     <system:String x:Key="labEffectBonusMultiplier2">Multiplicateur de l'effet 2 :</system:String>
     <system:String x:Key="labDamageMultiplier3">Multiplicateur de dégâts 3 :</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">Multiplicateur de l'effet 3 :</system:String>
+    <system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
+    <system:String x:Key="filterClassMaskSpells">Filter Target Spells:</system:String>
     <system:String x:Key="labItemTool1">Totem 1 :</system:String>
     <system:String x:Key="labItemTool2">Totem 2 :</system:String>
     <system:String x:Key="labReagent1">Réactif 1 :</system:String>
@@ -247,6 +249,10 @@
 	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
 	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
 	<system:String x:Key="VisualKitFlags">Flags</system:String>
+	<system:String x:Key="VisualEffectMissileList">Missile List (right click to select)</system:String>
+	<system:String x:Key="VisualEffectMissileFilter">Filter Missile List</system:String>
+	<system:String x:Key="VisualMissileSelect">Select missile (saves immediately)</system:String>
+	<system:String x:Key="VisualEffectId">Effect ID</system:String>
 	<system:String x:Key="VisualEffectName">Effect Name</system:String>
 	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
 	<system:String x:Key="VisualEffectSize">Effect Size</system:String>

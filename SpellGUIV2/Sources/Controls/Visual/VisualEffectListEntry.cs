@@ -53,7 +53,7 @@ namespace SpellEditor.Sources.Controls
             string label;
             if (IsAttachment)
             {
-                var attachmentId = int.Parse(AttachRecord["AttachmentId"].ToString());
+                var attachmentId = uint.Parse(AttachRecord["AttachmentId"].ToString());
                 var attachmentName = SpellVisualKitModelAttach.LookupAttachmentIndex(attachmentId);
                 label = $"{ id } - { attachmentName } Attachment - { name }\n { effectPath }";
             }

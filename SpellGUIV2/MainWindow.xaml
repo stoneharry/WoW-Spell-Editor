@@ -485,7 +485,7 @@
                     </TabItem>
                     <TabItem Header="{DynamicResource Effects2}">
                         <Grid>
-                            <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="606" Width="1276">
+                            <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1276">
                                 <TabItem Header="{DynamicResource SpellEffects1}">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
@@ -523,15 +523,19 @@
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True"/>
+                                        <c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects2}">
@@ -571,15 +575,19 @@
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects3}">
@@ -619,15 +627,19 @@
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" />
+                                        <c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
                                         <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <ListBox x:Name="EffectTargetSpellsList3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
+                                        <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
+                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>
@@ -981,7 +993,80 @@
                         </Grid>
                     </TabItem>
                     <TabItem Header="Missile">
-                        <!-- TODO(Harry) -->
+                        <Grid Name="VisualMissleEditorGrid" MinWidth="500" Margin="10,10,10,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Display effect details -->
+                            <Label Content="{DynamicResource VisualEffectId}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectIdTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP"  IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectName}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectNameTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectFilePath}" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectFilePathTxt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectAreaEffectSize}" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectAreaEffectSizeTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectScale}" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectScaleTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectMinScale}" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectMinAllowedScaleTxt" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <Label Content="{DynamicResource VisualEffectMaxScale}" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
+                            <TextBox Name="VisualMissileEffectMaxAllowedScaleTxt" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5" MinWidth="150" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
+                            <!-- Main list box for selecting effect -->
+                            <Label Content="{DynamicResource VisualEffectMissileList}" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
+                            <ListBox x:Name="VisualMissileEffectList" Grid.Row="1" Grid.RowSpan="40" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" Width="350" MaxHeight="600" BorderThickness="1"/>
+                            <Label Content="{DynamicResource VisualEffectMissileFilter}" Grid.Row="0" Grid.Column="4" Margin="10,5,10,5"/>
+                            <c:ThreadSafeTextBox x:Name="VisualMissileFilter" Grid.Row="1" Grid.Column="4" MinWidth="250" MaxHeight="30" VerticalAlignment="TOP" Margin="5" TextChanged="VisualMissileFilter_TextChanged"/>
+                        </Grid>
                     </TabItem>
                     <TabItem Header="Map Builder">
                         <Grid>

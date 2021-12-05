@@ -91,6 +91,15 @@ namespace SpellEditor
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             Thread.CurrentThread.CurrentCulture = customCulture;
 
+            try
+            {
+                File.Delete("debug_output.txt");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to delete debug_output.txt");
+            }
+
             // Setup logging
             var config = new LoggingConfiguration();
             var logfile = new FileTarget("logfile") { FileName = "debug_output.txt" };
@@ -643,6 +652,8 @@ namespace SpellEditor
                 Mask += cb.IsChecked == true ? (uint)Math.Pow(2, i) : 0;
             }
             father.Text = Mask.ToString();
+
+            SpellMask_SelectionChanged(father, null);
         }
 
         #endregion
@@ -1034,10 +1045,7 @@ namespace SpellEditor
                         {
                             if (!(enumerator.Current is TextBlock block))
                                 continue;
-
-                            var name = block.Text;
-                            var spellName = name.Substring(name.IndexOf(' ', 4) + 1);
-                            return spellName.ToLower().Contains(input);
+                            return input.Length == 0 ? true : block.Text.ToLower().Contains(input);
                         }
                     }
                     return false;
@@ -2699,7 +2707,7 @@ namespace SpellEditor
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
+                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, adapter, null)));
                 }
                 else
                 {
@@ -2719,18 +2727,31 @@ namespace SpellEditor
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA1"].ToString()), SpellMask11);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA2"].ToString()), SpellMask21);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskA3"].ToString()), SpellMask31);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB1"].ToString()), SpellMask12);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB2"].ToString()), SpellMask22);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskB3"].ToString()), SpellMask32);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC1"].ToString()), SpellMask13);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC2"].ToString()), SpellMask23);
-                    UpdateSpellMaskCheckBox(uint.Parse(row["EffectSpellClassMaskC3"].ToString()), SpellMask33);
+                    var masks = new List<uint>
+                    {
+                        uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC3"].ToString())
+                    };
+
+                    UpdateSpellMaskCheckBox(masks[0], SpellMask11);
+                    UpdateSpellMaskCheckBox(masks[1], SpellMask21);
+                    UpdateSpellMaskCheckBox(masks[2], SpellMask31);
+                    UpdateSpellMaskCheckBox(masks[3], SpellMask12);
+                    UpdateSpellMaskCheckBox(masks[4], SpellMask22);
+                    UpdateSpellMaskCheckBox(masks[5], SpellMask32);
+                    UpdateSpellMaskCheckBox(masks[6], SpellMask13);
+                    UpdateSpellMaskCheckBox(masks[7], SpellMask23);
+                    UpdateSpellMaskCheckBox(masks[8], SpellMask33);
 
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater)));
+                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
                 }
                 SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
                 ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
@@ -2827,6 +2848,10 @@ namespace SpellEditor
                 SpellMissileID.IsEnabled = isWotlkOrGreater;
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
                 Difficulty.IsEnabled = isWotlkOrGreater;
+
+                FilterClassMaskSpells1.IsEnabled = isWotlkOrGreater;
+                FilterClassMaskSpells2.IsEnabled = isWotlkOrGreater;
+                FilterClassMaskSpells3.IsEnabled = isWotlkOrGreater;
             }
             catch (Exception e)
             {
@@ -2836,10 +2861,12 @@ namespace SpellEditor
         }
 
         #region VisualTab
-        private void UpdateSpellVisualTab(uint selectedId, uint selectedKit = 0)
+        private void UpdateSpellVisualTab(uint selectedId, uint selectedKit = 0, bool forceRefresh = false)
         {
             SelectedVisualPath.Content = selectedId.ToString();
-            if (_currentVisualController?.VisualId == selectedId && _currentVisualController?.NextLoadAttachmentId == 0)
+            if (!forceRefresh && 
+                _currentVisualController?.VisualId == selectedId && 
+                _currentVisualController?.NextLoadAttachmentId == 0)
             {
                 return;
             }
@@ -2852,6 +2879,11 @@ namespace SpellEditor
             _currentVisualController = controller;
             UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
             UpdatePasteability(controller != null);
+            // Missile update
+            if (controller != null && WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                UpdateSpellMissileEditor(controller);
+            }
         }
 
         private void UpdatePasteability(bool enablePaste)
@@ -3343,7 +3375,7 @@ namespace SpellEditor
             ToggleVisualAttachments(attachRecord != null);
             if (attachRecord != null)
             {
-                VisualAttachmentIdCombo.SelectedIndex = int.Parse(attachRecord["AttachmentId"].ToString());
+                VisualAttachmentIdCombo.SelectedIndex = (int)uint.Parse(attachRecord["AttachmentId"].ToString());
                 VisualAttachmentOffsetXTxt.Text = attachRecord["OffsetX"].ToString();
                 VisualAttachmentOffsetYTxt.Text = attachRecord["OffsetY"].ToString();
                 VisualAttachmentOffsetZTxt.Text = attachRecord["OffsetZ"].ToString();
@@ -3510,6 +3542,67 @@ namespace SpellEditor
             ShowFlyoutMessage(message);
             _currentVisualController = null;
             UpdateSpellVisualTab(selectedKit.ParentVisualId, uint.Parse(kitId));
+        }
+
+        private void UpdateSpellMissileEditor(VisualController controller)
+        {
+            var missileModel = controller.MissileModel;
+            DataRow missileEntry = null;
+            if (missileModel > 0)
+            {
+                using (var results = adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " + missileModel))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        missileEntry = results.Rows[0];
+                    }
+                }
+            }
+            VisualMissileEffectIdTxt.Text = missileEntry != null ? missileEntry[0].ToString() : string.Empty;
+            VisualMissileEffectNameTxt.Text = missileEntry != null ? missileEntry[1].ToString() : string.Empty;
+            VisualMissileEffectFilePathTxt.Text = missileEntry != null ? missileEntry[2].ToString() : string.Empty;
+            VisualMissileEffectAreaEffectSizeTxt.Text = missileEntry != null ? missileEntry[3].ToString() : string.Empty;
+            VisualMissileEffectScaleTxt.Text = missileEntry != null ? missileEntry[4].ToString() : string.Empty;
+            VisualMissileEffectMinAllowedScaleTxt.Text = missileEntry != null ? missileEntry[5].ToString() : string.Empty;
+            VisualMissileEffectMaxAllowedScaleTxt.Text = missileEntry != null ? missileEntry[6].ToString() : string.Empty;
+            // Initialise effect list if not already
+            if (VisualMissileEffectList.HasItems)
+            {
+                return;
+            }
+            // Create all the labels
+            var itemSource = new List<Label>();
+            using (var results = adapter.Query("SELECT id, `name`, FilePath FROM spellvisualeffectname"))
+            {
+                foreach (DataRow row in results.Rows)
+                {
+                    var selectItem = new VisualMissileSelectMenuItem(controller.VisualId.ToString(), row[0].ToString());
+                    selectItem.Click += SelectItem_Click;
+                    var cancelItem = new MenuItem
+                    {
+                        Header = TryFindResource("VisualCancelContextMenu") ?? "Cancel"
+                    };
+                    var contextMenu = new ContextMenu();
+                    contextMenu.Items.Add(selectItem);
+                    contextMenu.Items.Add(new Separator());
+                    contextMenu.Items.Add(cancelItem);
+                    Label label = new Label
+                    {
+                        Content = $"{row[0]} - {row[1]}\r\n\t{row[2]}",
+                        ContextMenu = contextMenu
+                    };
+                    itemSource.Add(label);
+                }
+            }
+            VisualMissileEffectList.ItemsSource = itemSource;
+        }
+
+        private void SelectItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as VisualMissileSelectMenuItem;
+            GetDBAdapter().Execute($"UPDATE spellvisual SET MissileModel = {menu.MissileId} WHERE ID = {menu.VisualId}");
+            VisualMissileEffectList.ItemsSource = null;
+            UpdateSpellVisualTab(uint.Parse(menu.VisualId), 0, true);
         }
         #endregion
 
@@ -4019,6 +4112,60 @@ namespace SpellEditor
                 }
                 return false;
             };
+        }
+
+        private void VisualMissileFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (e.OriginalSource != VisualMissileFilter)
+            {
+                return;
+            }
+            var filterBox = sender as TextBox;
+            var input = filterBox.Text.ToLower();
+            ICollectionView view = CollectionViewSource.GetDefaultView(VisualMissileEffectList.Items);
+            view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
+        }
+
+        private void SpellMask_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+                return;
+
+            var masks = new List<uint>
+            {
+                uint.Parse(SpellMask11.Text),
+                uint.Parse(SpellMask21.Text),
+                uint.Parse(SpellMask31.Text),
+                uint.Parse(SpellMask21.Text),
+                uint.Parse(SpellMask22.Text),
+                uint.Parse(SpellMask23.Text),
+                uint.Parse(SpellMask31.Text),
+                uint.Parse(SpellMask32.Text),
+                uint.Parse(SpellMask33.Text)
+            };
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, uint.Parse(SpellFamilyName.Text), GetDBAdapter(), masks)));
+        }
+
+        private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ListBox targetBox;
+            if (sender == FilterClassMaskSpells1)
+                targetBox = EffectTargetSpellsList1;
+            else if (sender == FilterClassMaskSpells2)
+                targetBox = EffectTargetSpellsList2;
+            else if (sender == FilterClassMaskSpells3)
+                targetBox = EffectTargetSpellsList3;
+            else
+            {
+                Logger.Error($"Unable to find target box to Class Mask Filter: {sender}");
+                return;
+            }
+            var filterBox = sender as ThreadSafeTextBox;
+            var input = filterBox.Text.ToLower();
+            ICollectionView view = CollectionViewSource.GetDefaultView(targetBox.Items);
+            view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
         }
 
         private string SafeTryFindResource(object key)
