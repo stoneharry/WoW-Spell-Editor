@@ -47,6 +47,13 @@ namespace SpellEditor
             //var item = sender as TabControl;
         }
 
+        private bool IsDefaultImport(string name)
+        {
+            return name.Equals("spell") ||
+                name.Contains("spellvisual") ||
+                name.Contains("spellmissile");
+        }
+
         private void BuildImportTab()
         {
             var contents = ImportGridDbcs.Children;
@@ -63,9 +70,7 @@ namespace SpellEditor
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(1),
                     IsEnabled = numRows == 0,
-                    IsChecked = numRows == 0 && 
-                        (binding.Name.Equals("Spell") || 
-                        binding.Name.Contains("SpellVisual"))
+                    IsChecked = numRows == 0 && IsDefaultImport(binding.Name.ToLower())
                 });
             }
         }
@@ -86,9 +91,7 @@ namespace SpellEditor
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(1),
                     IsEnabled = numRows > 0,
-                    IsChecked = numRows > 0 && 
-                        (binding.Name.Equals("Spell") ||
-                        binding.Name.Contains("SpellVisual"))
+                    IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower())
                 });
             }
         }

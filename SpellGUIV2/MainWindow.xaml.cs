@@ -2879,10 +2879,14 @@ namespace SpellEditor
             _currentVisualController = controller;
             UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
             UpdatePasteability(controller != null);
-            // Missile update
-            if (controller != null && WoWVersionManager.IsWotlkOrGreaterSelected)
+            if (controller != null)
             {
-                UpdateSpellMissileEditor(controller);
+                UpdateSpellVisualProperties(controller);
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
+                {
+                    UpdateSpellMissileEditor(controller);
+                    UpdateSpellMotionEditor(controller);
+                }
             }
         }
 
@@ -3544,6 +3548,37 @@ namespace SpellEditor
             UpdateSpellVisualTab(selectedKit.ParentVisualId, uint.Parse(kitId));
         }
 
+        private void UpdateSpellVisualProperties(VisualController controller)
+        {
+            DataRow entry = null;
+            if (controller.VisualId > 0)
+            {
+                using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType," +
+                    " MissileDestinationAttachment, MissileSound, AnimEventSoundId, " +
+                    "MissileCastOffsetX, MissileCastOffsetY, MissileCastOffsetZ, " +
+                    "MissileImpactOffsetX, MissileImpactOffsetY, MissileImpactOffsetZ " +
+                    "FROM spellvisual WHERE ID = " + controller.VisualId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        entry = results.Rows[0];
+                    }
+                }
+            }
+            VisualHasMissileTxt.Text = entry != null ? entry["HasMissile"].ToString() : string.Empty;
+            VisualMissileModelTxt.Text = entry != null ? entry["MissileModel"].ToString() : string.Empty;
+            VisualMissilePathTypeTxt.Text = entry != null ? entry["MissilePathType"].ToString() : string.Empty;
+            VisualMissileDestinationAttachmentTxt.Text = entry != null ? entry["MissileDestinationAttachment"].ToString() : string.Empty;
+            VisualMissileSoundTxt.Text = entry != null ? entry["MissileSound"].ToString() : string.Empty;
+            VisualAnimEventSoundIdTxt.Text = entry != null ? entry["AnimEventSoundId"].ToString() : string.Empty;
+            VisualMissileCastOffsetXTxt.Text = entry != null ? entry["MissileCastOffsetX"].ToString() : string.Empty;
+            VisualMissileCastOffsetYTxt.Text = entry != null ? entry["MissileCastOffsetY"].ToString() : string.Empty;
+            VisualMissileCastOffsetZTxt.Text = entry != null ? entry["MissileCastOffsetZ"].ToString() : string.Empty;
+            VisualMissileImpactOffsetXTxt.Text = entry != null ? entry["MissileImpactOffsetX"].ToString() : string.Empty;
+            VisualMissileImpactOffsetYTxt.Text = entry != null ? entry["MissileImpactOffsetY"].ToString() : string.Empty;
+            VisualMissileImpactOffsetZTxt.Text = entry != null ? entry["MissileImpactOffsetZ"].ToString() : string.Empty;
+        }
+
         private void UpdateSpellMissileEditor(VisualController controller)
         {
             var missileModel = controller.MissileModel;
@@ -3595,6 +3630,27 @@ namespace SpellEditor
                 }
             }
             VisualMissileEffectList.ItemsSource = itemSource;
+        }
+
+        private void UpdateSpellMotionEditor(VisualController controller)
+        {
+            var motionId = controller.MissileMotion;
+            DataRow motionEntry = null;
+            if (motionId > 0)
+            {
+                using (var results = adapter.Query("SELECT * FROM spellmissilemotion WHERE ID = " + motionId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        motionEntry = results.Rows[0];
+                    }
+                }
+            }
+            VisualMissileMotionIdTxt.Text = motionEntry != null ? motionEntry[0].ToString() : string.Empty;
+            VisualMissileMotionNameTxt.Text = motionEntry != null ? motionEntry[1].ToString() : string.Empty;
+            VisualMissileMotionFlagsTxt.Text = motionEntry != null ? motionEntry[3].ToString() : string.Empty;
+            VisualMissileMotionMissileCountTxt.Text = motionEntry != null ? motionEntry[4].ToString() : string.Empty;
+            VisualMissileMotionScriptBox.setScript(motionEntry != null ? motionEntry[2].ToString() : string.Empty);
         }
 
         private void SelectItem_Click(object sender, RoutedEventArgs e)
