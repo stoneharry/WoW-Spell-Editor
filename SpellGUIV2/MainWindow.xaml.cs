@@ -2882,9 +2882,11 @@ namespace SpellEditor
             if (controller != null)
             {
                 UpdateSpellVisualProperties(controller);
+                // FIXME(Harry): Some of these can probably be loaded in earlier versions
                 if (WoWVersionManager.IsWotlkOrGreaterSelected)
                 {
-                    UpdateSpellMissileEditor(controller);
+                    UpdateSpellVisualMotionEditor(controller);
+                    UpdateSpellMissileMotionEditor(controller);
                     UpdateSpellMotionEditor(controller);
                 }
             }
@@ -3587,7 +3589,36 @@ namespace SpellEditor
             VisualMissileImpactOffsetZTxt.Text = entry != null ? entry["MissileImpactOffsetZ"].ToString() : string.Empty;
         }
 
-        private void UpdateSpellMissileEditor(VisualController controller)
+        private void UpdateSpellVisualMotionEditor(VisualController controller)
+        {
+            DataRow entry = null;
+            if (controller.VisualId > 0)
+            {
+                using (var results = adapter.Query("SELECT * FROM spellmissile WHERE ID = " + controller.VisualId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        entry = results.Rows[0];
+                    }
+                }
+            }
+            VisualMissileEntryFlagsTxt.Text = entry != null ? entry["flags"].ToString() : string.Empty;
+            VisualMissileEntryDefaultPitchMinTxt.Text = entry != null ? entry["defaultPitchMin"].ToString() : string.Empty;
+            VisualMissileEntryDefaultPitchMaxTxt.Text = entry != null ? entry["defaultPitchMax"].ToString() : string.Empty;
+            VisualMissileEntryDefaultSpeedMinTxt.Text = entry != null ? entry["defaultSpeedMin"].ToString() : string.Empty;
+            VisualMissileEntryDefaultSpeedMaxTxt.Text = entry != null ? entry["defaultSpeedMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseFacingMinTxt.Text = entry != null ? entry["randomizeFacingMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseFacingMaxTxt.Text = entry != null ? entry["randomizeFacingMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomisePitchMinTxt.Text = entry != null ? entry["randomizePitchMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomisePitchMaxTxt.Text = entry != null ? entry["randomizePitchMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseSpeedMinTxt.Text = entry != null ? entry["randomizeSpeedMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseSpeedMaxTxt.Text = entry != null ? entry["randomizeSpeedMax"].ToString() : string.Empty;
+            VisualMissileEntryGravityTxt.Text = entry != null ? entry["gravity"].ToString() : string.Empty;
+            VisualMissileEntryMaxDurationTxt.Text = entry != null ? entry["maxDuration"].ToString() : string.Empty;
+            VisualMissileEntryCollisionRadiusTxt.Text = entry != null ? entry["collisionRadius"].ToString() : string.Empty;
+        }
+
+        private void UpdateSpellMissileMotionEditor(VisualController controller)
         {
             var missileModel = controller.MissileModel;
             DataRow missileEntry = null;

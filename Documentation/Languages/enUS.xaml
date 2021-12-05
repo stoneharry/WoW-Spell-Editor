@@ -291,6 +291,20 @@
 	<system:String x:Key="VisualMissileImpactOffsetX">Missile Impact Offset X</system:String>
 	<system:String x:Key="VisualMissileImpactOffsetY">Missile Impact Offset Y</system:String>
 	<system:String x:Key="VisualMissileImpactOffsetZ">Missile Impact Offset Z</system:String>
+	<system:String x:Key="MissileEntryFlags">Flags</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMin">Default Pitch Min</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMax">Default Pitch Max</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMin">Default Speed Min</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMax">Default Speed Max</system:String>
+	<system:String x:Key="MissileEntryGravity">Gravity</system:String>
+	<system:String x:Key="MissileEntryCollisionRadius">Collision Radius</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMin">Randomise Facing Min</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMax">Randomise Facing Max</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMin">Randomise Pitch Min</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMax">Randomise Pitch Max</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMin">Randomise Speed Min</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMax">Randomise Speed Max</system:String>
+	<system:String x:Key="MissileEntryMaxDuration">Max Duration</system:String>
 	<!--#endregion-->
 	
 	<!--#region MapBuilder-->

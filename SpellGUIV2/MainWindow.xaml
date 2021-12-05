@@ -1143,6 +1143,9 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -1150,7 +1153,36 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
+                                    <!-- column group 1 -->
+                                    <Label Content="{DynamicResource MissileEntryFlags}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryFlagsTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                                    <Label Content="{DynamicResource MissileEntryDefaultPitchMin}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryDefaultPitchMinTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
+                                    <Label Content="{DynamicResource MissileEntryDefaultPitchMax}" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryDefaultPitchMaxTxt" Grid.Row="3" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryDefaultSpeedMin}" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryDefaultSpeedMinTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryDefaultSpeedMax}" Grid.Row="5" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryDefaultSpeedMaxTxt" Grid.Row="5" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryGravity}" Grid.Row="6" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryGravityTxt" Grid.Row="6" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryCollisionRadius}" Grid.Row="7" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryCollisionRadiusTxt" Grid.Row="7" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryMaxDuration}" Grid.Row="8" Grid.Column="0" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryMaxDurationTxt" Grid.Row="8" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
+                                    <!-- column group 2 -->
+                                    <Label Content="{DynamicResource MissileEntryRandomiseFacingMin}" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomiseFacingMinTxt" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryRandomiseFacingMax}" Grid.Row="2" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomiseFacingMaxTxt" Grid.Row="2" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryRandomisePitchMin}" Grid.Row="3" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomisePitchMinTxt" Grid.Row="3" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryRandomisePitchMax}" Grid.Row="4" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomisePitchMaxTxt" Grid.Row="4" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryRandomiseSpeedMin}" Grid.Row="5" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomiseSpeedMinTxt" Grid.Row="5" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
+                                    <Label Content="{DynamicResource MissileEntryRandomiseSpeedMax}" Grid.Row="6" Grid.Column="2" Margin="10,5,10,5"/>
+                                    <TextBox Name="VisualMissileEntryRandomiseSpeedMaxTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
                                 </Grid>
                             </TabItem>
                             <TabItem Header="Script">
