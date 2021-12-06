@@ -3587,6 +3587,24 @@ namespace SpellEditor
             VisualMissileImpactOffsetXTxt.Text = entry != null ? entry["MissileImpactOffsetX"].ToString() : string.Empty;
             VisualMissileImpactOffsetYTxt.Text = entry != null ? entry["MissileImpactOffsetY"].ToString() : string.Empty;
             VisualMissileImpactOffsetZTxt.Text = entry != null ? entry["MissileImpactOffsetZ"].ToString() : string.Empty;
+            VisualHasMissileTxt.IsEnabled = entry != null;
+            VisualMissileModelTxt.IsEnabled = entry != null;
+            VisualMissilePathTypeTxt.IsEnabled = entry != null;
+            VisualMissileDestinationAttachmentTxt.IsEnabled = entry != null;
+            VisualMissileSoundTxt.IsEnabled = entry != null;
+            VisualAnimEventSoundIdTxt.IsEnabled = entry != null;
+            VisualMissileAttachmentTxt.IsEnabled = entry != null;
+            VisualMissileFollowGroundHeightTxt.IsEnabled = entry != null;
+            VisualMissileFollowDropSpeedTxt.IsEnabled = entry != null;
+            VisualMissileFollowApproachTxt.IsEnabled = entry != null;
+            VisualMissileFollowGroundFlagsTxt.IsEnabled = entry != null;
+            VisualMissileMotionTxt.IsEnabled = entry != null;
+            VisualMissileCastOffsetXTxt.IsEnabled = entry != null;
+            VisualMissileCastOffsetYTxt.IsEnabled = entry != null;
+            VisualMissileCastOffsetZTxt.IsEnabled = entry != null;
+            VisualMissileImpactOffsetXTxt.IsEnabled = entry != null;
+            VisualMissileImpactOffsetYTxt.IsEnabled = entry != null;
+            VisualMissileImpactOffsetZTxt.IsEnabled = entry != null;
         }
 
         private void UpdateSpellVisualMotionEditor(VisualController controller)
@@ -3616,6 +3634,20 @@ namespace SpellEditor
             VisualMissileEntryGravityTxt.Text = entry != null ? entry["gravity"].ToString() : string.Empty;
             VisualMissileEntryMaxDurationTxt.Text = entry != null ? entry["maxDuration"].ToString() : string.Empty;
             VisualMissileEntryCollisionRadiusTxt.Text = entry != null ? entry["collisionRadius"].ToString() : string.Empty;
+            VisualMissileEntryFlagsTxt.IsEnabled = entry != null;
+            VisualMissileEntryDefaultPitchMinTxt.IsEnabled = entry != null;
+            VisualMissileEntryDefaultPitchMaxTxt.IsEnabled = entry != null;
+            VisualMissileEntryDefaultSpeedMinTxt.IsEnabled = entry != null;
+            VisualMissileEntryDefaultSpeedMaxTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomiseFacingMinTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomiseFacingMaxTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomisePitchMinTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomisePitchMaxTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomiseSpeedMinTxt.IsEnabled = entry != null;
+            VisualMissileEntryRandomiseSpeedMaxTxt.IsEnabled = entry != null;
+            VisualMissileEntryGravityTxt.IsEnabled = entry != null;
+            VisualMissileEntryMaxDurationTxt.IsEnabled = entry != null;
+            VisualMissileEntryCollisionRadiusTxt.IsEnabled = entry != null;
         }
 
         private void UpdateSpellMissileMotionEditor(VisualController controller)
@@ -3639,6 +3671,13 @@ namespace SpellEditor
             VisualMissileEffectScaleTxt.Text = missileEntry != null ? missileEntry[4].ToString() : string.Empty;
             VisualMissileEffectMinAllowedScaleTxt.Text = missileEntry != null ? missileEntry[5].ToString() : string.Empty;
             VisualMissileEffectMaxAllowedScaleTxt.Text = missileEntry != null ? missileEntry[6].ToString() : string.Empty;
+            VisualMissileEffectIdTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectNameTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectFilePathTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectAreaEffectSizeTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectScaleTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectMinAllowedScaleTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectMaxAllowedScaleTxt.IsEnabled = missileEntry != null;
             // Initialise effect list if not already
             if (VisualMissileEffectList.HasItems)
             {
@@ -3690,6 +3729,11 @@ namespace SpellEditor
             VisualMissileMotionFlagsTxt.Text = motionEntry != null ? motionEntry[3].ToString() : string.Empty;
             VisualMissileMotionMissileCountTxt.Text = motionEntry != null ? motionEntry[4].ToString() : string.Empty;
             VisualMissileMotionScriptBox.setScript(motionEntry != null ? motionEntry[2].ToString() : string.Empty);
+            VisualMissileMotionIdTxt.IsEnabled = motionEntry != null;
+            VisualMissileMotionNameTxt.IsEnabled = motionEntry != null;
+            VisualMissileMotionFlagsTxt.IsEnabled = motionEntry != null;
+            VisualMissileMotionMissileCountTxt.IsEnabled = motionEntry != null;
+            VisualMissileMotionScriptBox.IsEnabled = motionEntry != null;
         }
 
         private void VisualMissileSaveButton_Click(object sender, RoutedEventArgs e)
