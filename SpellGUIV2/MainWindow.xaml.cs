@@ -3692,6 +3692,103 @@ namespace SpellEditor
             VisualMissileMotionScriptBox.setScript(motionEntry != null ? motionEntry[2].ToString() : string.Empty);
         }
 
+        private void VisualMissileSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileSaveButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.MissileMotion <= 0)
+                return;
+            var query = "SELECT * FROM spellmissilemotion WHERE ID = " + _currentVisualController.MissileMotion;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["name"] = VisualMissileMotionNameTxt.Text;
+                    row["flags"] = VisualMissileMotionFlagsTxt.Text;
+                    row["missilecount"] = VisualMissileMotionMissileCountTxt.Text;
+                    VisualMissileMotionScriptBox.SelectAll();
+                    row["script"] = VisualMissileMotionScriptBox.Selection.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellMissileMotion {_currentVisualController.MissileMotion}.");
+                }
+            }
+        }
+
+        private void MissileEntrySaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntrySaveButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            var query = "SELECT * FROM spellmissile WHERE ID = " + _currentVisualController.VisualId;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["flags"] = VisualMissileEntryFlagsTxt.Text;
+                    row["defaultPitchMin"] = VisualMissileEntryDefaultPitchMinTxt.Text;
+                    row["defaultPitchMax"] = VisualMissileEntryDefaultPitchMaxTxt.Text;
+                    row["defaultSpeedMin"] = VisualMissileEntryDefaultSpeedMinTxt.Text;
+                    row["defaultSpeedMax"] = VisualMissileEntryDefaultSpeedMaxTxt.Text;
+                    row["randomizeFacingMin"] = VisualMissileEntryRandomiseFacingMinTxt.Text;
+                    row["randomizeFacingMax"] = VisualMissileEntryRandomiseFacingMaxTxt.Text;
+                    row["randomizePitchMin"] = VisualMissileEntryRandomisePitchMinTxt.Text;
+                    row["randomizePitchMax"] = VisualMissileEntryRandomisePitchMaxTxt.Text;
+                    row["randomizeSpeedMin"] = VisualMissileEntryRandomiseSpeedMinTxt.Text;
+                    row["randomizeSpeedMax"] = VisualMissileEntryRandomiseSpeedMaxTxt.Text;
+                    row["gravity"] = VisualMissileEntryGravityTxt.Text;
+                    row["maxDuration"] = VisualMissileEntryMaxDurationTxt.Text;
+                    row["collisionRadius"] = VisualMissileEntryCollisionRadiusTxt.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellMissile {_currentVisualController.VisualId}.");
+                }
+            }
+        }
+
+        private void VisualSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualSave)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            var query = "SELECT * FROM spellvisual WHERE ID = " + _currentVisualController.VisualId;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["HasMissile"] = VisualHasMissileTxt.Text;
+                    row["MissileModel"] = VisualMissileModelTxt.Text;
+                    row["MissilePathType"] = VisualMissilePathTypeTxt.Text;
+                    row["MissileDestinationAttachment"] = VisualMissileDestinationAttachmentTxt.Text;
+                    row["MissileSound"] = VisualMissileSoundTxt.Text;
+                    row["AnimEventSoundId"] = VisualAnimEventSoundIdTxt.Text;
+                    row["MissileAttachment"] = VisualMissileAttachmentTxt.Text;
+                    row["MissileFollowGroundHeight"] = VisualMissileFollowGroundHeightTxt.Text;
+                    row["MissileFollowDropSpeed"] = VisualMissileFollowDropSpeedTxt.Text;
+                    row["MissileFollowApproach"] = VisualMissileFollowApproachTxt.Text;
+                    row["MissileFollowGroundFlags"] = VisualMissileFollowGroundFlagsTxt.Text;
+                    row["MissileMotion"] = VisualMissileMotionTxt.Text;
+                    row["MissileCastOffsetX"] = VisualMissileCastOffsetXTxt.Text;
+                    row["MissileCastOffsetY"] = VisualMissileCastOffsetYTxt.Text;
+                    row["MissileCastOffsetZ"] = VisualMissileCastOffsetZTxt.Text;
+                    row["MissileImpactOffsetX"] = VisualMissileImpactOffsetXTxt.Text;
+                    row["MissileImpactOffsetY"] = VisualMissileImpactOffsetYTxt.Text;
+                    row["MissileImpactOffsetZ"] = VisualMissileImpactOffsetZTxt.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellVisual {_currentVisualController.VisualId}.");
+                }
+            }
+        }
+
         private void SelectItem_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as VisualMissileSelectMenuItem;
