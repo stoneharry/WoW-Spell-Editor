@@ -15,7 +15,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
         public readonly List<IVisualListEntry> VisualKits;
         public readonly uint VisualId;
         public uint MissileModel { get; private set; }
-        public uint MissileMotion { get; private set; }
+        public uint MissileMotion { get; set; }
         public uint NextLoadAttachmentId;
         public bool CancelNextLoad = false;
 

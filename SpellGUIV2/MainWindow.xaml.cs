@@ -2881,13 +2881,13 @@ namespace SpellEditor
             UpdatePasteability(controller != null);
             if (controller != null)
             {
-                UpdateSpellVisualProperties(controller);
+                UpdateSpellVisualProperties(controller.VisualId);
                 // FIXME(Harry): Some of these can probably be loaded in earlier versions
                 if (WoWVersionManager.IsWotlkOrGreaterSelected)
                 {
-                    UpdateSpellVisualMotionEditor(controller);
+                    UpdateSpellVisualMotionEditor(controller.VisualId);
                     UpdateSpellMissileMotionEditor(controller);
-                    UpdateSpellMotionEditor(controller);
+                    UpdateSpellMotionEditor(controller.MissileMotion);
                 }
             }
         }
@@ -3550,10 +3550,10 @@ namespace SpellEditor
             UpdateSpellVisualTab(selectedKit.ParentVisualId, uint.Parse(kitId));
         }
 
-        private void UpdateSpellVisualProperties(VisualController controller)
+        private void UpdateSpellVisualProperties(uint visualId)
         {
             DataRow entry = null;
-            if (controller.VisualId > 0)
+            if (visualId > 0)
             {
                 using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType, " +
                     "MissileDestinationAttachment, MissileSound, AnimEventSoundId, " +
@@ -3561,7 +3561,7 @@ namespace SpellEditor
                     "MissileFollowApproach, MissileFollowGroundFlags, MissileMotion, " +
                     "MissileCastOffsetX, MissileCastOffsetY, MissileCastOffsetZ, " +
                     "MissileImpactOffsetX, MissileImpactOffsetY, MissileImpactOffsetZ " +
-                    "FROM spellvisual WHERE ID = " + controller.VisualId))
+                    "FROM spellvisual WHERE ID = " + visualId))
                 {
                     if (results.Rows.Count > 0)
                     {
@@ -3607,12 +3607,12 @@ namespace SpellEditor
             VisualMissileImpactOffsetZTxt.IsEnabled = entry != null;
         }
 
-        private void UpdateSpellVisualMotionEditor(VisualController controller)
+        private void UpdateSpellVisualMotionEditor(uint visualId)
         {
             DataRow entry = null;
-            if (controller.VisualId > 0)
+            if (visualId > 0)
             {
-                using (var results = adapter.Query("SELECT * FROM spellmissile WHERE ID = " + controller.VisualId))
+                using (var results = adapter.Query("SELECT * FROM spellmissile WHERE ID = " + visualId))
                 {
                     if (results.Rows.Count > 0)
                     {
@@ -3648,6 +3648,9 @@ namespace SpellEditor
             VisualMissileEntryGravityTxt.IsEnabled = entry != null;
             VisualMissileEntryMaxDurationTxt.IsEnabled = entry != null;
             VisualMissileEntryCollisionRadiusTxt.IsEnabled = entry != null;
+            MissileEntryDeleteButton.IsEnabled = entry != null;
+            MissileEntryNewButton.IsEnabled = entry == null;
+            MissileEntrySaveButton.IsEnabled = entry != null;
         }
 
         private void UpdateSpellMissileMotionEditor(VisualController controller)
@@ -3710,9 +3713,8 @@ namespace SpellEditor
             VisualMissileEffectList.ItemsSource = itemSource;
         }
 
-        private void UpdateSpellMotionEditor(VisualController controller)
+        private void UpdateSpellMotionEditor(uint motionId)
         {
-            var motionId = controller.MissileMotion;
             DataRow motionEntry = null;
             if (motionId > 0)
             {
@@ -3734,6 +3736,9 @@ namespace SpellEditor
             VisualMissileMotionFlagsTxt.IsEnabled = motionEntry != null;
             VisualMissileMotionMissileCountTxt.IsEnabled = motionEntry != null;
             VisualMissileMotionScriptBox.IsEnabled = motionEntry != null;
+            VisualMissileDeleteButton.IsEnabled = motionEntry != null;
+            VisualMissileNewButton.IsEnabled = motionEntry == null;
+            VisualMissileSaveButton.IsEnabled = motionEntry != null;
         }
 
         private void VisualMissileSaveButton_Click(object sender, RoutedEventArgs e)
@@ -3759,6 +3764,42 @@ namespace SpellEditor
                     ShowFlyoutMessage($"Saved changes to SpellMissileMotion {_currentVisualController.MissileMotion}.");
                 }
             }
+        }
+
+        private void VisualMissileNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileNewButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+            {
+                ShowFlyoutMessage("This spell has no spell visual. Cannot create a SpellMissileMotion record.");
+                return;
+            }
+            if (!uint.TryParse(GetDBAdapter().QuerySingleValue("SELECT MAX(ID) FROM spellmissilemotion").ToString(), out uint newId))
+            {
+                ShowFlyoutMessage("Failed to get a new max ID from SpellMissileMotion.");
+                return;
+            }
+            ++newId;
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellmissilemotion VALUES ({newId}, \"New Motion Script\", \"-- Hello world.\", 0, 1)");
+            _currentVisualController.MissileMotion = newId;
+            UpdateSpellVisualProperties(_currentVisualController.VisualId);
+            UpdateSpellMotionEditor(newId);
+            ShowFlyoutMessage($"Created new SpellMissileMotion record {newId}.");
+        }
+
+        private void VisualMissileDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileDeleteButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            // We don't actually want to delete the spellmissilemotion entry here, just unlink it
+            GetDBAdapter().Execute($"UPDATE spellvisual SET MissileMotion = 0 WHERE ID = {_currentVisualController.VisualId}");
+            _currentVisualController.MissileMotion = 0;
+            UpdateSpellVisualProperties(_currentVisualController.VisualId);
+            UpdateSpellMotionEditor(_currentVisualController.MissileMotion);
         }
 
         private void MissileEntrySaveButton_Click(object sender, RoutedEventArgs e)
@@ -3793,6 +3834,30 @@ namespace SpellEditor
                     ShowFlyoutMessage($"Saved changes to SpellMissile {_currentVisualController.VisualId}.");
                 }
             }
+        }
+
+        private void MissileEntryNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntryNewButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+            {
+                ShowFlyoutMessage("This spell has no spell visual. Cannot create a SpellMissile record.");
+                return;
+            }
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellmissile VALUES ({_currentVisualController.VisualId}, 1, 0, 0, 30, 40, 0, 0, 0, 0, 0, 0, 30, 0, 0)");
+            UpdateSpellVisualMotionEditor(_currentVisualController.VisualId);
+        }
+
+        private void MissileEntryDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntryDeleteButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            GetDBAdapter().Execute($"DELETE FROM spellmissile WHERE ID = {_currentVisualController.VisualId}");
+            UpdateSpellVisualMotionEditor(_currentVisualController.VisualId);
         }
 
         private void VisualSave_Click(object sender, RoutedEventArgs e)

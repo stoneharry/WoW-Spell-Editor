@@ -988,7 +988,7 @@
                             </Grid.ColumnDefinitions>
                             <!-- Display effect details -->
                             <Label Content="{DynamicResource VisualEffectId}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
-                            <TextBox Name="VisualMissileEffectIdTxt" IsReadOnly="True" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="200" MaxHeight="30" VerticalAlignment="TOP"  IsReadOnly="true"/>
+                            <TextBox Name="VisualMissileEffectIdTxt" IsReadOnly="True" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="200" MaxHeight="30" VerticalAlignment="TOP"/>
                             <Label Content="{DynamicResource VisualEffectName}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
                             <TextBox Name="VisualMissileEffectNameTxt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="200" MaxHeight="30" VerticalAlignment="TOP" IsReadOnly="true"/>
                             <Label Content="{DynamicResource VisualEffectFilePath}" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
@@ -1156,8 +1156,12 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button Name="MissileEntrySaveButton" Content="{DynamicResource VisualSave}" MinWidth="200" Grid.Row="0" Grid.Column="4" Margin="2" Click="MissileEntrySaveButton_Click"/>
+                                    <Button Name="MissileEntryNewButton" Content="{DynamicResource VisualNew}" MinWidth="150" Grid.Row="0" Grid.Column="4" MaxHeight="20" Margin="2" Click="MissileEntryNewButton_Click"/>
+                                    <Button Name="MissileEntryDeleteButton" Content="{DynamicResource VisualDelete}" MinWidth="150" Grid.Row="0" Grid.Column="5" MaxHeight="20" Margin="2" Click="MissileEntryDeleteButton_Click"/>
+                                    <Button Name="MissileEntrySaveButton" Content="{DynamicResource VisualSave}" MinWidth="150" Grid.Row="0" Grid.Column="6" MaxHeight="20" Margin="2" Click="MissileEntrySaveButton_Click"/>
                                     <!-- column group 1 -->
                                     <Label Content="{DynamicResource MissileEntryFlags}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
                                     <TextBox Name="VisualMissileEntryFlagsTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
@@ -1212,8 +1216,12 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button Name="VisualMissileSaveButton" Content="{DynamicResource VisualSave}" Grid.Row="0" Grid.Column="5" Margin="2" Click="VisualMissileSaveButton_Click"/>
+                                    <Button Name="VisualMissileNewButton" Content="{DynamicResource VisualNew}" Grid.Row="0" Grid.Column="5" Margin="2" MaxHeight="20" Click="VisualMissileNewButton_Click"/>
+                                    <Button Name="VisualMissileDeleteButton" Content="{DynamicResource VisualDelete}" Grid.Row="0" Grid.Column="6" Margin="2" MaxHeight="20" Click="VisualMissileDeleteButton_Click"/>
+                                    <Button Name="VisualMissileSaveButton" Content="{DynamicResource VisualSave}" Grid.Row="0" Grid.Column="7" Margin="2" MaxHeight="20" Click="VisualMissileSaveButton_Click"/>
                                     <Label Content="{DynamicResource VisualMissileMotionId}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
                                     <TextBox Name="VisualMissileMotionIdTxt" IsReadOnly="True" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP"/>
                                     <Label Content="{DynamicResource VisualMissileMotionName}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
@@ -1223,7 +1231,7 @@
                                     <Label Content="{DynamicResource VisualMissileMotionMissileCount}" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
                                     <TextBox Name="VisualMissileMotionMissileCountTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP"/>
                                     <Label Content="{DynamicResource VisualMissileMotionScript}" Grid.Row="0" Grid.Column="3" Margin="10,5,10,5"/>
-                                    <c:SyntaxHighlightBox x:Name="VisualMissileMotionScriptBox" Grid.Row="1" Grid.RowSpan="10" Grid.Column="3" Grid.ColumnSpan="3" MinWidth="800" MinHeight="500"/>
+                                    <c:SyntaxHighlightBox x:Name="VisualMissileMotionScriptBox" Grid.Row="1" Grid.RowSpan="10" Grid.Column="3" Grid.ColumnSpan="5" MinWidth="800" MinHeight="500"/>
                                 </Grid>
                             </TabItem>
                         </TabControl>

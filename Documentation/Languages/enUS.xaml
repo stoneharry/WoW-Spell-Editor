@@ -305,6 +305,9 @@
 	<system:String x:Key="MissileEntryRandomiseSpeedMin">Randomise Speed Min</system:String>
 	<system:String x:Key="MissileEntryRandomiseSpeedMax">Randomise Speed Max</system:String>
 	<system:String x:Key="MissileEntryMaxDuration">Max Duration</system:String>
+	<system:String x:Key="VisualSave">Save</system:String>
+	<system:String x:Key="VisualNew">New</system:String>
+	<system:String x:Key="VisualDelete">Delete</system:String>
 	<!--#endregion-->
 	
 	<!--#region MapBuilder-->
