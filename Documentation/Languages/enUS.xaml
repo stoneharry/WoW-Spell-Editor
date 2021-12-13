@@ -308,6 +308,11 @@
 	<system:String x:Key="VisualSave">Save</system:String>
 	<system:String x:Key="VisualNew">New</system:String>
 	<system:String x:Key="VisualDelete">Delete</system:String>
+	<system:String x:Key="VisualBase">Base</system:String>
+	<system:String x:Key="VisualMissileModelTab">Missile Model</system:String>
+	<system:String x:Key="VisualKitsAndEffects">Kits &amp; Effects</system:String>
+	<system:String x:Key="VisualMotion">Motion</system:String>
+	<system:String x:Key="VisualMapBuilder">Map Builder</system:String>
 	<!--#endregion-->
 	
 	<!--#region MapBuilder-->

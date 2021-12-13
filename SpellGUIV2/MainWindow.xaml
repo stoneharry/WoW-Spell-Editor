@@ -867,7 +867,7 @@
             </TabItem>
             <TabItem Name="VisualTab" Header="{DynamicResource Visual}">
                 <TabControl>
-                    <TabItem Header="Base">
+                    <TabItem Header="{DynamicResource VisualBase}">
                         <Grid MinWidth="500" Margin="10,10,10,10">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -933,7 +933,7 @@
                             <TextBox Name="VisualMissileImpactOffsetZTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="300"/>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Missile Model">
+                    <TabItem Header="{DynamicResource VisualMissileModelTab}">
                         <Grid Name="VisualMissleEditorGrid" MinWidth="500" Margin="10,10,10,10">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -1009,7 +1009,7 @@
                             <c:ThreadSafeTextBox x:Name="VisualMissileFilter" Grid.Row="1" Grid.Column="4" MinWidth="250" MaxHeight="30" VerticalAlignment="TOP" Margin="5" TextChanged="VisualMissileFilter_TextChanged"/>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Kits &amp; Effects">
+                    <TabItem Header="{DynamicResource VisualKitsAndEffects}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -1135,7 +1135,7 @@
                             </Grid>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Motion">
+                    <TabItem Header="{DynamicResource VisualMotion}">
                         <TabControl>
                             <TabItem Header="Properties">
                                 <Grid MinWidth="500" Margin="10,10,10,10">
@@ -1195,7 +1195,7 @@
                                     <TextBox Name="VisualMissileEntryRandomiseSpeedMaxTxt" Grid.Row="6" Grid.Column="3" Margin="10,5,10,5" MinWidth="150"/>
                                 </Grid>
                             </TabItem>
-                            <TabItem Header="Script">
+                            <TabItem Header="{DynamicResource VisualScript}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -1237,7 +1237,7 @@
                             </TabItem>
                         </TabControl>
                     </TabItem>
-                    <TabItem Header="Map Builder">
+                    <TabItem Header="{DynamicResource VisualMapBuilder}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="AUTO"/>
