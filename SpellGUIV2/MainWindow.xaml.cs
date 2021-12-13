@@ -2879,16 +2879,13 @@ namespace SpellEditor
             _currentVisualController = controller;
             UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
             UpdatePasteability(controller != null);
-            if (controller != null)
+            UpdateSpellVisualProperties(controller != null ? controller.VisualId : 0);
+            // FIXME(Harry): Some of these can probably be loaded in earlier versions
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
-                UpdateSpellVisualProperties(controller.VisualId);
-                // FIXME(Harry): Some of these can probably be loaded in earlier versions
-                if (WoWVersionManager.IsWotlkOrGreaterSelected)
-                {
-                    UpdateSpellVisualMotionEditor(controller.VisualId);
-                    UpdateSpellMissileMotionEditor(controller);
-                    UpdateSpellMotionEditor(controller.MissileMotion);
-                }
+                UpdateSpellVisualMotionEditor(controller != null ? controller.VisualId : 0);
+                UpdateSpellMissileMotionEditor(controller);
+                UpdateSpellMotionEditor(controller != null ? controller.MissileMotion : 0);
             }
         }
 
@@ -3553,6 +3550,7 @@ namespace SpellEditor
         private void UpdateSpellVisualProperties(uint visualId)
         {
             DataRow entry = null;
+            var spellSelected = selectedID > 0;
             if (visualId > 0)
             {
                 using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType, " +
@@ -3587,29 +3585,32 @@ namespace SpellEditor
             VisualMissileImpactOffsetXTxt.Text = entry != null ? entry["MissileImpactOffsetX"].ToString() : string.Empty;
             VisualMissileImpactOffsetYTxt.Text = entry != null ? entry["MissileImpactOffsetY"].ToString() : string.Empty;
             VisualMissileImpactOffsetZTxt.Text = entry != null ? entry["MissileImpactOffsetZ"].ToString() : string.Empty;
-            VisualHasMissileTxt.IsEnabled = entry != null;
-            VisualMissileModelTxt.IsEnabled = entry != null;
-            VisualMissilePathTypeTxt.IsEnabled = entry != null;
-            VisualMissileDestinationAttachmentTxt.IsEnabled = entry != null;
-            VisualMissileSoundTxt.IsEnabled = entry != null;
-            VisualAnimEventSoundIdTxt.IsEnabled = entry != null;
-            VisualMissileAttachmentTxt.IsEnabled = entry != null;
-            VisualMissileFollowGroundHeightTxt.IsEnabled = entry != null;
-            VisualMissileFollowDropSpeedTxt.IsEnabled = entry != null;
-            VisualMissileFollowApproachTxt.IsEnabled = entry != null;
-            VisualMissileFollowGroundFlagsTxt.IsEnabled = entry != null;
-            VisualMissileMotionTxt.IsEnabled = entry != null;
-            VisualMissileCastOffsetXTxt.IsEnabled = entry != null;
-            VisualMissileCastOffsetYTxt.IsEnabled = entry != null;
-            VisualMissileCastOffsetZTxt.IsEnabled = entry != null;
-            VisualMissileImpactOffsetXTxt.IsEnabled = entry != null;
-            VisualMissileImpactOffsetYTxt.IsEnabled = entry != null;
-            VisualMissileImpactOffsetZTxt.IsEnabled = entry != null;
+            VisualHasMissileTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileModelTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissilePathTypeTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileDestinationAttachmentTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileSoundTxt.IsEnabled = entry != null && spellSelected;
+            VisualAnimEventSoundIdTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileAttachmentTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowGroundHeightTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowDropSpeedTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowApproachTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowGroundFlagsTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileMotionTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetXTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetYTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetZTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetXTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetYTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetZTxt.IsEnabled = entry != null && spellSelected;
+            VisualNew.IsEnabled = entry == null && spellSelected;
+            VisualSave.IsEnabled = entry != null && spellSelected;
         }
 
         private void UpdateSpellVisualMotionEditor(uint visualId)
         {
             DataRow entry = null;
+            var spellSelected = selectedID > 0;
             if (visualId > 0)
             {
                 using (var results = adapter.Query("SELECT * FROM spellmissile WHERE ID = " + visualId))
@@ -3634,29 +3635,30 @@ namespace SpellEditor
             VisualMissileEntryGravityTxt.Text = entry != null ? entry["gravity"].ToString() : string.Empty;
             VisualMissileEntryMaxDurationTxt.Text = entry != null ? entry["maxDuration"].ToString() : string.Empty;
             VisualMissileEntryCollisionRadiusTxt.Text = entry != null ? entry["collisionRadius"].ToString() : string.Empty;
-            VisualMissileEntryFlagsTxt.IsEnabled = entry != null;
-            VisualMissileEntryDefaultPitchMinTxt.IsEnabled = entry != null;
-            VisualMissileEntryDefaultPitchMaxTxt.IsEnabled = entry != null;
-            VisualMissileEntryDefaultSpeedMinTxt.IsEnabled = entry != null;
-            VisualMissileEntryDefaultSpeedMaxTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomiseFacingMinTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomiseFacingMaxTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomisePitchMinTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomisePitchMaxTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomiseSpeedMinTxt.IsEnabled = entry != null;
-            VisualMissileEntryRandomiseSpeedMaxTxt.IsEnabled = entry != null;
-            VisualMissileEntryGravityTxt.IsEnabled = entry != null;
-            VisualMissileEntryMaxDurationTxt.IsEnabled = entry != null;
-            VisualMissileEntryCollisionRadiusTxt.IsEnabled = entry != null;
-            MissileEntryDeleteButton.IsEnabled = entry != null;
-            MissileEntryNewButton.IsEnabled = entry == null;
-            MissileEntrySaveButton.IsEnabled = entry != null;
+            VisualMissileEntryFlagsTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultPitchMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultPitchMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultSpeedMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultSpeedMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseFacingMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseFacingMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomisePitchMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomisePitchMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseSpeedMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseSpeedMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryGravityTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryMaxDurationTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryCollisionRadiusTxt.IsEnabled = entry != null && spellSelected;
+            MissileEntryDeleteButton.IsEnabled = entry != null && spellSelected;
+            MissileEntryNewButton.IsEnabled = entry == null && spellSelected;
+            MissileEntrySaveButton.IsEnabled = entry != null && spellSelected;
         }
 
         private void UpdateSpellMissileMotionEditor(VisualController controller)
         {
-            var missileModel = controller.MissileModel;
+            var missileModel = controller != null ? controller.MissileModel : 0;
             DataRow missileEntry = null;
+            var spellSelected = selectedID > 0;
             if (missileModel > 0)
             {
                 using (var results = adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " + missileModel))
@@ -3674,13 +3676,17 @@ namespace SpellEditor
             VisualMissileEffectScaleTxt.Text = missileEntry != null ? missileEntry[4].ToString() : string.Empty;
             VisualMissileEffectMinAllowedScaleTxt.Text = missileEntry != null ? missileEntry[5].ToString() : string.Empty;
             VisualMissileEffectMaxAllowedScaleTxt.Text = missileEntry != null ? missileEntry[6].ToString() : string.Empty;
-            VisualMissileEffectIdTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectNameTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectFilePathTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectAreaEffectSizeTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectScaleTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectMinAllowedScaleTxt.IsEnabled = missileEntry != null;
-            VisualMissileEffectMaxAllowedScaleTxt.IsEnabled = missileEntry != null;
+            VisualMissileEffectIdTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectNameTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectFilePathTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectAreaEffectSizeTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectMinAllowedScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectMaxAllowedScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            if (controller == null)
+            {
+                return;
+            }
             // Initialise effect list if not already
             if (VisualMissileEffectList.HasItems)
             {
@@ -3716,6 +3722,7 @@ namespace SpellEditor
         private void UpdateSpellMotionEditor(uint motionId)
         {
             DataRow motionEntry = null;
+            var spellSelected = selectedID > 0;
             if (motionId > 0)
             {
                 using (var results = adapter.Query("SELECT * FROM spellmissilemotion WHERE ID = " + motionId))
@@ -3731,14 +3738,14 @@ namespace SpellEditor
             VisualMissileMotionFlagsTxt.Text = motionEntry != null ? motionEntry[3].ToString() : string.Empty;
             VisualMissileMotionMissileCountTxt.Text = motionEntry != null ? motionEntry[4].ToString() : string.Empty;
             VisualMissileMotionScriptBox.setScript(motionEntry != null ? motionEntry[2].ToString() : string.Empty);
-            VisualMissileMotionIdTxt.IsEnabled = motionEntry != null;
-            VisualMissileMotionNameTxt.IsEnabled = motionEntry != null;
-            VisualMissileMotionFlagsTxt.IsEnabled = motionEntry != null;
-            VisualMissileMotionMissileCountTxt.IsEnabled = motionEntry != null;
-            VisualMissileMotionScriptBox.IsEnabled = motionEntry != null;
-            VisualMissileDeleteButton.IsEnabled = motionEntry != null;
-            VisualMissileNewButton.IsEnabled = motionEntry == null;
-            VisualMissileSaveButton.IsEnabled = motionEntry != null;
+            VisualMissileMotionIdTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionNameTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionFlagsTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionMissileCountTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionScriptBox.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileDeleteButton.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileNewButton.IsEnabled = motionEntry == null && spellSelected;
+            VisualMissileSaveButton.IsEnabled = motionEntry != null && spellSelected;
         }
 
         private void VisualMissileSaveButton_Click(object sender, RoutedEventArgs e)
@@ -3786,7 +3793,7 @@ namespace SpellEditor
             _currentVisualController.MissileMotion = newId;
             UpdateSpellVisualProperties(_currentVisualController.VisualId);
             UpdateSpellMotionEditor(newId);
-            ShowFlyoutMessage($"Created new SpellMissileMotion record {newId}.");
+            ShowFlyoutMessage($"Created new SpellMissileMotion {newId}.");
         }
 
         private void VisualMissileDeleteButton_Click(object sender, RoutedEventArgs e)
@@ -3848,6 +3855,7 @@ namespace SpellEditor
             // FIXME(Harry): Hardcoded for 3.3.5
             GetDBAdapter().Execute($"INSERT INTO spellmissile VALUES ({_currentVisualController.VisualId}, 1, 0, 0, 30, 40, 0, 0, 0, 0, 0, 0, 30, 0, 0)");
             UpdateSpellVisualMotionEditor(_currentVisualController.VisualId);
+            ShowFlyoutMessage($"Created SpellMissile record {_currentVisualController.VisualId}.");
         }
 
         private void MissileEntryDeleteButton_Click(object sender, RoutedEventArgs e)
@@ -3898,12 +3906,27 @@ namespace SpellEditor
             }
         }
 
+        private void VisualNew_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualNew)
+                return;
+            var newId = uint.Parse(adapter.QuerySingleValue("SELECT MAX(ID) FROM spellvisual").ToString()) + 1;
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellvisual VALUES ({newId}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4294967295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
+            // Link up to selected spell
+            SpellVisual1.Text = newId.ToString();
+            GetDBAdapter().Execute($"UPDATE spell SET SpellVisual1 = {newId} WHERE ID = {selectedID}");
+            UpdateSpellVisualTab(newId, 0);
+            ShowFlyoutMessage($"Created new SpellVisual record {newId}.");
+        }
+
         private void SelectItem_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as VisualMissileSelectMenuItem;
             GetDBAdapter().Execute($"UPDATE spellvisual SET MissileModel = {menu.MissileId} WHERE ID = {menu.VisualId}");
             VisualMissileEffectList.ItemsSource = null;
             UpdateSpellVisualTab(uint.Parse(menu.VisualId), 0, true);
+            ShowFlyoutMessage($"SpellVisual {menu.VisualId} MissileModel set to {menu.MissileId}.");
         }
         #endregion
 
@@ -3948,10 +3971,7 @@ namespace SpellEditor
             else if (tab == VisualTab)
             {
                 var idStr = SpellVisual1.Text;
-                if (idStr.Length == 0 || !uint.TryParse(idStr, out var id))
-                {
-                    return;
-                }
+                uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
             }
         }

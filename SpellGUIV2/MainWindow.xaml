@@ -892,7 +892,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <!-- column group 1 -->
-                            <Button Name="VisualSave" Content="{DynamicResource VisualSave}" MinWidth="200" Grid.Row="0" Grid.Column="4" Margin="2" Click="VisualSave_Click"/>
+                            <Button Name="VisualNew" Content="{DynamicResource VisualNew}" MinWidth="150" Grid.Row="0" Grid.Column="3" Margin="2" HorizontalAlignment="Right" Click="VisualNew_Click"/>
+                            <Button Name="VisualSave" Content="{DynamicResource VisualSave}" MinWidth="150" Grid.Row="0" Grid.Column="4" Margin="2" Click="VisualSave_Click"/>
                             <Label Content="{DynamicResource VisualHasMissile}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
                             <TextBox Name="VisualHasMissileTxt" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinWidth="300"/>
                             <Label Content="{DynamicResource VisualMissileModel}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
