@@ -2877,15 +2877,25 @@ namespace SpellEditor
                 controller.NextLoadAttachmentId = attachId.Value;
             }
             _currentVisualController = controller;
-            UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
-            UpdatePasteability(controller != null);
-            UpdateSpellVisualProperties(controller != null ? controller.VisualId : 0);
             // FIXME(Harry): Some of these can probably be loaded in earlier versions
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
+                UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
+                UpdatePasteability(controller != null);
+                UpdateSpellVisualProperties(controller != null ? controller.VisualId : 0);
                 UpdateSpellVisualMotionEditor(controller != null ? controller.VisualId : 0);
                 UpdateSpellMissileMotionEditor(controller);
                 UpdateSpellMotionEditor(controller != null ? controller.MissileMotion : 0);
+            }
+            else
+            {
+                UpdateSpellVisualProperties(0);
+                VisualNew.IsEnabled = false;
+                UpdateSpellVisualMotionEditor(0);
+                MissileEntryNewButton.IsEnabled = false;
+                UpdateSpellMissileMotionEditor(null);
+                UpdateSpellMotionEditor(0);
+                VisualMissileNewButton.IsEnabled = false;
             }
         }
 

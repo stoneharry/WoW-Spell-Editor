@@ -22,7 +22,10 @@ namespace SpellEditor.Sources.Tools.VisualTools
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
             VisualId = id;
-            VisualKits = GetAllKitEntries(adapter);
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
+            {
+                VisualKits = GetAllKitEntries(adapter);
+            }
         }
 
         private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)

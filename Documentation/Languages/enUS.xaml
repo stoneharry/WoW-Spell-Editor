@@ -312,6 +312,7 @@
 	<system:String x:Key="VisualMissileModelTab">Missile Model</system:String>
 	<system:String x:Key="VisualKitsAndEffects">Kits &amp; Effects</system:String>
 	<system:String x:Key="VisualMotion">Motion</system:String>
+	<system:String x:Key="VisualScript">Script</system:String>
 	<system:String x:Key="VisualMapBuilder">Map Builder</system:String>
 	<!--#endregion-->
 	
