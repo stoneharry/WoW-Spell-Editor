@@ -1,5 +1,6 @@
 ﻿using NLog;
 using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.VersionControl;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -552,26 +553,36 @@ namespace SpellEditor.Sources.SpellStringTools
             TOKEN = "$m1|$m2|$m3|$m",
             tokenFunc = (str, record, mainWindow) =>
             {
-                foreach (var token in multiplierHandler.TOKEN.Split('|'))
+                if (!WoWVersionManager.IsWotlkOrGreaterSelected)
                 {
-                    if (str.ToLower().Equals(token))
+                    foreach (var token in multiplierHandler.TOKEN.Split('|'))
                     {
-                        if (token.Length == 2) // $m
+                        str = str.Replace(token, "0.00");
+                    }
+                }
+                else
+                {
+                    foreach (var token in multiplierHandler.TOKEN.Split('|'))
+                    {
+                        if (str.ToLower().Equals(token))
                         {
-                            float sum = 0.0f;
-                            for (int i = 1; i <= 3; ++i)
+                            if (token.Length == 2) // $m
                             {
-                                var multStr = record["EffectBonusMultiplier" + i].ToString();
-                                sum += float.Parse(multStr);
+                                float sum = 0.0f;
+                                for (int i = 1; i <= 3; ++i)
+                                {
+                                    var multStr = record["EffectBonusMultiplier" + i].ToString();
+                                    sum += float.Parse(multStr);
+                                }
+                                str = str.Replace(token, sum.ToString("0.00"));
                             }
-                            str = str.Replace(token, sum.ToString("0.00"));
+                            else
+                            {
+                                var index = token[2].ToString();
+                                str = str.Replace(str, record["EffectBonusMultiplier" + index].ToString());
+                            }
+                            break;
                         }
-                        else
-                        {
-                            var index = token[2].ToString();
-                            str = str.Replace(str, record["EffectBonusMultiplier" + index].ToString());
-                        }
-                        break;
                     }
                 }
                 return str;

@@ -15,13 +15,17 @@ namespace SpellEditor.Sources.Tools.VisualTools
         public readonly List<IVisualListEntry> VisualKits;
         public readonly uint VisualId;
         public uint MissileModel { get; private set; }
+        public uint MissileMotion { get; set; }
         public uint NextLoadAttachmentId;
         public bool CancelNextLoad = false;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
             VisualId = id;
-            VisualKits = GetAllKitEntries(adapter);
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
+            {
+                VisualKits = GetAllKitEntries(adapter);
+            }
         }
 
         private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
@@ -34,6 +38,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
             }
             var visualRecord = visualResults.Rows[0];
             MissileModel = uint.Parse(visualRecord["MissileModel"].ToString());
+            MissileMotion = uint.Parse(visualRecord["MissileMotion"].ToString());
             foreach (var key in WoWVersionManager.GetInstance().LookupKeyResource().KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();

@@ -2877,12 +2877,25 @@ namespace SpellEditor
                 controller.NextLoadAttachmentId = attachId.Value;
             }
             _currentVisualController = controller;
-            UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
-            UpdatePasteability(controller != null);
-            // Missile update
-            if (controller != null && WoWVersionManager.IsWotlkOrGreaterSelected)
+            // FIXME(Harry): Some of these can probably be loaded in earlier versions
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
-                UpdateSpellMissileEditor(controller);
+                UpdateSpellVisualKitList(controller?.VisualKits, selectedKit);
+                UpdatePasteability(controller != null);
+                UpdateSpellVisualProperties(controller != null ? controller.VisualId : 0);
+                UpdateSpellVisualMotionEditor(controller != null ? controller.VisualId : 0);
+                UpdateSpellMissileMotionEditor(controller);
+                UpdateSpellMotionEditor(controller != null ? controller.MissileMotion : 0);
+            }
+            else
+            {
+                UpdateSpellVisualProperties(0);
+                VisualNew.IsEnabled = false;
+                UpdateSpellVisualMotionEditor(0);
+                MissileEntryNewButton.IsEnabled = false;
+                UpdateSpellMissileMotionEditor(null);
+                UpdateSpellMotionEditor(0);
+                VisualMissileNewButton.IsEnabled = false;
             }
         }
 
@@ -3544,10 +3557,118 @@ namespace SpellEditor
             UpdateSpellVisualTab(selectedKit.ParentVisualId, uint.Parse(kitId));
         }
 
-        private void UpdateSpellMissileEditor(VisualController controller)
+        private void UpdateSpellVisualProperties(uint visualId)
         {
-            var missileModel = controller.MissileModel;
+            DataRow entry = null;
+            var spellSelected = selectedID > 0;
+            if (visualId > 0)
+            {
+                using (var results = adapter.Query("SELECT HasMissile, MissileModel, MissilePathType, " +
+                    "MissileDestinationAttachment, MissileSound, AnimEventSoundId, " +
+                    "MissileAttachment, MissileFollowGroundHeight, MissileFollowDropSpeed, " +
+                    "MissileFollowApproach, MissileFollowGroundFlags, MissileMotion, " +
+                    "MissileCastOffsetX, MissileCastOffsetY, MissileCastOffsetZ, " +
+                    "MissileImpactOffsetX, MissileImpactOffsetY, MissileImpactOffsetZ " +
+                    "FROM spellvisual WHERE ID = " + visualId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        entry = results.Rows[0];
+                    }
+                }
+            }
+            VisualHasMissileTxt.Text = entry != null ? entry["HasMissile"].ToString() : string.Empty;
+            VisualMissileModelTxt.Text = entry != null ? entry["MissileModel"].ToString() : string.Empty;
+            VisualMissilePathTypeTxt.Text = entry != null ? entry["MissilePathType"].ToString() : string.Empty;
+            VisualMissileDestinationAttachmentTxt.Text = entry != null ? entry["MissileDestinationAttachment"].ToString() : string.Empty;
+            VisualMissileSoundTxt.Text = entry != null ? entry["MissileSound"].ToString() : string.Empty;
+            VisualAnimEventSoundIdTxt.Text = entry != null ? entry["AnimEventSoundId"].ToString() : string.Empty;
+            VisualMissileAttachmentTxt.Text = entry != null ? entry["MissileAttachment"].ToString() : string.Empty;
+            VisualMissileFollowGroundHeightTxt.Text = entry != null ? entry["MissileFollowGroundHeight"].ToString() : string.Empty;
+            VisualMissileFollowDropSpeedTxt.Text = entry != null ? entry["MissileFollowDropSpeed"].ToString() : string.Empty;
+            VisualMissileFollowApproachTxt.Text = entry != null ? entry["MissileFollowApproach"].ToString() : string.Empty;
+            VisualMissileFollowGroundFlagsTxt.Text = entry != null ? entry["MissileFollowGroundFlags"].ToString() : string.Empty;
+            VisualMissileMotionTxt.Text = entry != null ? entry["MissileMotion"].ToString() : string.Empty;
+            VisualMissileCastOffsetXTxt.Text = entry != null ? entry["MissileCastOffsetX"].ToString() : string.Empty;
+            VisualMissileCastOffsetYTxt.Text = entry != null ? entry["MissileCastOffsetY"].ToString() : string.Empty;
+            VisualMissileCastOffsetZTxt.Text = entry != null ? entry["MissileCastOffsetZ"].ToString() : string.Empty;
+            VisualMissileImpactOffsetXTxt.Text = entry != null ? entry["MissileImpactOffsetX"].ToString() : string.Empty;
+            VisualMissileImpactOffsetYTxt.Text = entry != null ? entry["MissileImpactOffsetY"].ToString() : string.Empty;
+            VisualMissileImpactOffsetZTxt.Text = entry != null ? entry["MissileImpactOffsetZ"].ToString() : string.Empty;
+            VisualHasMissileTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileModelTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissilePathTypeTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileDestinationAttachmentTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileSoundTxt.IsEnabled = entry != null && spellSelected;
+            VisualAnimEventSoundIdTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileAttachmentTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowGroundHeightTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowDropSpeedTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowApproachTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileFollowGroundFlagsTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileMotionTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetXTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetYTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileCastOffsetZTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetXTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetYTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileImpactOffsetZTxt.IsEnabled = entry != null && spellSelected;
+            VisualNew.IsEnabled = entry == null && spellSelected;
+            VisualSave.IsEnabled = entry != null && spellSelected;
+        }
+
+        private void UpdateSpellVisualMotionEditor(uint visualId)
+        {
+            DataRow entry = null;
+            var spellSelected = selectedID > 0;
+            if (visualId > 0)
+            {
+                using (var results = adapter.Query("SELECT * FROM spellmissile WHERE ID = " + visualId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        entry = results.Rows[0];
+                    }
+                }
+            }
+            VisualMissileEntryFlagsTxt.Text = entry != null ? entry["flags"].ToString() : string.Empty;
+            VisualMissileEntryDefaultPitchMinTxt.Text = entry != null ? entry["defaultPitchMin"].ToString() : string.Empty;
+            VisualMissileEntryDefaultPitchMaxTxt.Text = entry != null ? entry["defaultPitchMax"].ToString() : string.Empty;
+            VisualMissileEntryDefaultSpeedMinTxt.Text = entry != null ? entry["defaultSpeedMin"].ToString() : string.Empty;
+            VisualMissileEntryDefaultSpeedMaxTxt.Text = entry != null ? entry["defaultSpeedMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseFacingMinTxt.Text = entry != null ? entry["randomizeFacingMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseFacingMaxTxt.Text = entry != null ? entry["randomizeFacingMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomisePitchMinTxt.Text = entry != null ? entry["randomizePitchMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomisePitchMaxTxt.Text = entry != null ? entry["randomizePitchMax"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseSpeedMinTxt.Text = entry != null ? entry["randomizeSpeedMin"].ToString() : string.Empty;
+            VisualMissileEntryRandomiseSpeedMaxTxt.Text = entry != null ? entry["randomizeSpeedMax"].ToString() : string.Empty;
+            VisualMissileEntryGravityTxt.Text = entry != null ? entry["gravity"].ToString() : string.Empty;
+            VisualMissileEntryMaxDurationTxt.Text = entry != null ? entry["maxDuration"].ToString() : string.Empty;
+            VisualMissileEntryCollisionRadiusTxt.Text = entry != null ? entry["collisionRadius"].ToString() : string.Empty;
+            VisualMissileEntryFlagsTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultPitchMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultPitchMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultSpeedMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryDefaultSpeedMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseFacingMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseFacingMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomisePitchMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomisePitchMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseSpeedMinTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryRandomiseSpeedMaxTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryGravityTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryMaxDurationTxt.IsEnabled = entry != null && spellSelected;
+            VisualMissileEntryCollisionRadiusTxt.IsEnabled = entry != null && spellSelected;
+            MissileEntryDeleteButton.IsEnabled = entry != null && spellSelected;
+            MissileEntryNewButton.IsEnabled = entry == null && spellSelected;
+            MissileEntrySaveButton.IsEnabled = entry != null && spellSelected;
+        }
+
+        private void UpdateSpellMissileMotionEditor(VisualController controller)
+        {
+            var missileModel = controller != null ? controller.MissileModel : 0;
             DataRow missileEntry = null;
+            var spellSelected = selectedID > 0;
             if (missileModel > 0)
             {
                 using (var results = adapter.Query("SELECT * FROM spellvisualeffectname WHERE ID = " + missileModel))
@@ -3565,6 +3686,17 @@ namespace SpellEditor
             VisualMissileEffectScaleTxt.Text = missileEntry != null ? missileEntry[4].ToString() : string.Empty;
             VisualMissileEffectMinAllowedScaleTxt.Text = missileEntry != null ? missileEntry[5].ToString() : string.Empty;
             VisualMissileEffectMaxAllowedScaleTxt.Text = missileEntry != null ? missileEntry[6].ToString() : string.Empty;
+            VisualMissileEffectIdTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectNameTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectFilePathTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectAreaEffectSizeTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectMinAllowedScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            VisualMissileEffectMaxAllowedScaleTxt.IsEnabled = missileEntry != null && spellSelected;
+            if (controller == null)
+            {
+                return;
+            }
             // Initialise effect list if not already
             if (VisualMissileEffectList.HasItems)
             {
@@ -3597,12 +3729,214 @@ namespace SpellEditor
             VisualMissileEffectList.ItemsSource = itemSource;
         }
 
+        private void UpdateSpellMotionEditor(uint motionId)
+        {
+            DataRow motionEntry = null;
+            var spellSelected = selectedID > 0;
+            if (motionId > 0)
+            {
+                using (var results = adapter.Query("SELECT * FROM spellmissilemotion WHERE ID = " + motionId))
+                {
+                    if (results.Rows.Count > 0)
+                    {
+                        motionEntry = results.Rows[0];
+                    }
+                }
+            }
+            VisualMissileMotionIdTxt.Text = motionEntry != null ? motionEntry[0].ToString() : string.Empty;
+            VisualMissileMotionNameTxt.Text = motionEntry != null ? motionEntry[1].ToString() : string.Empty;
+            VisualMissileMotionFlagsTxt.Text = motionEntry != null ? motionEntry[3].ToString() : string.Empty;
+            VisualMissileMotionMissileCountTxt.Text = motionEntry != null ? motionEntry[4].ToString() : string.Empty;
+            VisualMissileMotionScriptBox.setScript(motionEntry != null ? motionEntry[2].ToString() : string.Empty);
+            VisualMissileMotionIdTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionNameTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionFlagsTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionMissileCountTxt.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileMotionScriptBox.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileDeleteButton.IsEnabled = motionEntry != null && spellSelected;
+            VisualMissileNewButton.IsEnabled = motionEntry == null && spellSelected;
+            VisualMissileSaveButton.IsEnabled = motionEntry != null && spellSelected;
+        }
+
+        private void VisualMissileSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileSaveButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.MissileMotion <= 0)
+                return;
+            var query = "SELECT * FROM spellmissilemotion WHERE ID = " + _currentVisualController.MissileMotion;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["name"] = VisualMissileMotionNameTxt.Text;
+                    row["flags"] = VisualMissileMotionFlagsTxt.Text;
+                    row["missilecount"] = VisualMissileMotionMissileCountTxt.Text;
+                    VisualMissileMotionScriptBox.SelectAll();
+                    row["script"] = VisualMissileMotionScriptBox.Selection.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellMissileMotion {_currentVisualController.MissileMotion}.");
+                }
+            }
+        }
+
+        private void VisualMissileNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileNewButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+            {
+                ShowFlyoutMessage("This spell has no spell visual. Cannot create a SpellMissileMotion record.");
+                return;
+            }
+            if (!uint.TryParse(GetDBAdapter().QuerySingleValue("SELECT MAX(ID) FROM spellmissilemotion").ToString(), out uint newId))
+            {
+                ShowFlyoutMessage("Failed to get a new max ID from SpellMissileMotion.");
+                return;
+            }
+            ++newId;
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellmissilemotion VALUES ({newId}, \"New Motion Script\", \"-- Hello world.\", 0, 1)");
+            _currentVisualController.MissileMotion = newId;
+            UpdateSpellVisualProperties(_currentVisualController.VisualId);
+            UpdateSpellMotionEditor(newId);
+            ShowFlyoutMessage($"Created new SpellMissileMotion {newId}.");
+        }
+
+        private void VisualMissileDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualMissileDeleteButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            // We don't actually want to delete the spellmissilemotion entry here, just unlink it
+            GetDBAdapter().Execute($"UPDATE spellvisual SET MissileMotion = 0 WHERE ID = {_currentVisualController.VisualId}");
+            _currentVisualController.MissileMotion = 0;
+            UpdateSpellVisualProperties(_currentVisualController.VisualId);
+            UpdateSpellMotionEditor(_currentVisualController.MissileMotion);
+        }
+
+        private void MissileEntrySaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntrySaveButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            var query = "SELECT * FROM spellmissile WHERE ID = " + _currentVisualController.VisualId;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["flags"] = VisualMissileEntryFlagsTxt.Text;
+                    row["defaultPitchMin"] = VisualMissileEntryDefaultPitchMinTxt.Text;
+                    row["defaultPitchMax"] = VisualMissileEntryDefaultPitchMaxTxt.Text;
+                    row["defaultSpeedMin"] = VisualMissileEntryDefaultSpeedMinTxt.Text;
+                    row["defaultSpeedMax"] = VisualMissileEntryDefaultSpeedMaxTxt.Text;
+                    row["randomizeFacingMin"] = VisualMissileEntryRandomiseFacingMinTxt.Text;
+                    row["randomizeFacingMax"] = VisualMissileEntryRandomiseFacingMaxTxt.Text;
+                    row["randomizePitchMin"] = VisualMissileEntryRandomisePitchMinTxt.Text;
+                    row["randomizePitchMax"] = VisualMissileEntryRandomisePitchMaxTxt.Text;
+                    row["randomizeSpeedMin"] = VisualMissileEntryRandomiseSpeedMinTxt.Text;
+                    row["randomizeSpeedMax"] = VisualMissileEntryRandomiseSpeedMaxTxt.Text;
+                    row["gravity"] = VisualMissileEntryGravityTxt.Text;
+                    row["maxDuration"] = VisualMissileEntryMaxDurationTxt.Text;
+                    row["collisionRadius"] = VisualMissileEntryCollisionRadiusTxt.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellMissile {_currentVisualController.VisualId}.");
+                }
+            }
+        }
+
+        private void MissileEntryNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntryNewButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+            {
+                ShowFlyoutMessage("This spell has no spell visual. Cannot create a SpellMissile record.");
+                return;
+            }
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellmissile VALUES ({_currentVisualController.VisualId}, 1, 0, 0, 30, 40, 0, 0, 0, 0, 0, 0, 30, 0, 0)");
+            UpdateSpellVisualMotionEditor(_currentVisualController.VisualId);
+            ShowFlyoutMessage($"Created SpellMissile record {_currentVisualController.VisualId}.");
+        }
+
+        private void MissileEntryDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != MissileEntryDeleteButton)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            GetDBAdapter().Execute($"DELETE FROM spellmissile WHERE ID = {_currentVisualController.VisualId}");
+            UpdateSpellVisualMotionEditor(_currentVisualController.VisualId);
+        }
+
+        private void VisualSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualSave)
+                return;
+            if (_currentVisualController == null || _currentVisualController.VisualId <= 0)
+                return;
+            var query = "SELECT * FROM spellvisual WHERE ID = " + _currentVisualController.VisualId;
+            using (var results = GetDBAdapter().Query(query))
+            {
+                if (results.Rows.Count > 0)
+                {
+                    var row = results.Rows[0];
+                    row.BeginEdit();
+                    row["HasMissile"] = VisualHasMissileTxt.Text;
+                    row["MissileModel"] = VisualMissileModelTxt.Text;
+                    row["MissilePathType"] = VisualMissilePathTypeTxt.Text;
+                    row["MissileDestinationAttachment"] = VisualMissileDestinationAttachmentTxt.Text;
+                    row["MissileSound"] = VisualMissileSoundTxt.Text;
+                    row["AnimEventSoundId"] = VisualAnimEventSoundIdTxt.Text;
+                    row["MissileAttachment"] = VisualMissileAttachmentTxt.Text;
+                    row["MissileFollowGroundHeight"] = VisualMissileFollowGroundHeightTxt.Text;
+                    row["MissileFollowDropSpeed"] = VisualMissileFollowDropSpeedTxt.Text;
+                    row["MissileFollowApproach"] = VisualMissileFollowApproachTxt.Text;
+                    row["MissileFollowGroundFlags"] = VisualMissileFollowGroundFlagsTxt.Text;
+                    row["MissileMotion"] = VisualMissileMotionTxt.Text;
+                    row["MissileCastOffsetX"] = VisualMissileCastOffsetXTxt.Text;
+                    row["MissileCastOffsetY"] = VisualMissileCastOffsetYTxt.Text;
+                    row["MissileCastOffsetZ"] = VisualMissileCastOffsetZTxt.Text;
+                    row["MissileImpactOffsetX"] = VisualMissileImpactOffsetXTxt.Text;
+                    row["MissileImpactOffsetY"] = VisualMissileImpactOffsetYTxt.Text;
+                    row["MissileImpactOffsetZ"] = VisualMissileImpactOffsetZTxt.Text;
+                    row.EndEdit();
+                    adapter.CommitChanges(query, results);
+                    ShowFlyoutMessage($"Saved changes to SpellVisual {_currentVisualController.VisualId}.");
+                }
+            }
+        }
+
+        private void VisualNew_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender != VisualNew)
+                return;
+            var newId = uint.Parse(adapter.QuerySingleValue("SELECT MAX(ID) FROM spellvisual").ToString()) + 1;
+            // FIXME(Harry): Hardcoded for 3.3.5
+            GetDBAdapter().Execute($"INSERT INTO spellvisual VALUES ({newId}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4294967295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
+            // Link up to selected spell
+            SpellVisual1.Text = newId.ToString();
+            GetDBAdapter().Execute($"UPDATE spell SET SpellVisual1 = {newId} WHERE ID = {selectedID}");
+            UpdateSpellVisualTab(newId, 0);
+            ShowFlyoutMessage($"Created new SpellVisual record {newId}.");
+        }
+
         private void SelectItem_Click(object sender, RoutedEventArgs e)
         {
             var menu = sender as VisualMissileSelectMenuItem;
             GetDBAdapter().Execute($"UPDATE spellvisual SET MissileModel = {menu.MissileId} WHERE ID = {menu.VisualId}");
             VisualMissileEffectList.ItemsSource = null;
             UpdateSpellVisualTab(uint.Parse(menu.VisualId), 0, true);
+            ShowFlyoutMessage($"SpellVisual {menu.VisualId} MissileModel set to {menu.MissileId}.");
         }
         #endregion
 
@@ -3647,10 +3981,7 @@ namespace SpellEditor
             else if (tab == VisualTab)
             {
                 var idStr = SpellVisual1.Text;
-                if (idStr.Length == 0 || !uint.TryParse(idStr, out var id))
-                {
-                    return;
-                }
+                uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
             }
         }
