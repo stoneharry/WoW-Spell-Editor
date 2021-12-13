@@ -595,43 +595,6 @@ namespace SpellEditor
                 foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
                 foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
 
-
-                // TODO: This should happen when the language has been established 
-                /*
-                switch ((LocaleConstant)GetLanguage())
-                {
-                    case LocaleConstant.LOCALE_enUS:
-                        TabItem_English.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_koKR:
-                        TabItem_Korean.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_frFR:
-                        TabItem_French.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_deDE:
-                        TabItem_Deutsch.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_zhCN:
-                        TabItem_Chinese.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_zhTW:
-                        TabItem_Taiwanese.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_esES:
-                        TabItem_Mexican.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_esMX:
-                        TabItem_Portuguese.Focus();
-                        break;
-                    case LocaleConstant.LOCALE_ruRU:
-                        TabItem_Russian.Focus();
-                        break;
-                    default:
-                        break;
-                }
-                */
-
                 loadAllData();
             }
 
@@ -895,6 +858,39 @@ namespace SpellEditor
 
             await controller.CloseAsync();
             PopulateSelectSpell();
+
+            switch ((LocaleConstant)(GetLanguage() - 1))
+            {
+                case LocaleConstant.LOCALE_enUS:
+                    TabItem_English.Focus();
+                    break;
+                case LocaleConstant.LOCALE_koKR:
+                    TabItem_Korean.Focus();
+                    break;
+                case LocaleConstant.LOCALE_frFR:
+                    TabItem_French.Focus();
+                    break;
+                case LocaleConstant.LOCALE_deDE:
+                    TabItem_Deutsch.Focus();
+                    break;
+                case LocaleConstant.LOCALE_zhCN:
+                    TabItem_Chinese.Focus();
+                    break;
+                case LocaleConstant.LOCALE_zhTW:
+                    TabItem_Taiwanese.Focus();
+                    break;
+                case LocaleConstant.LOCALE_esES:
+                    TabItem_Mexican.Focus();
+                    break;
+                case LocaleConstant.LOCALE_esMX:
+                    TabItem_Portuguese.Focus();
+                    break;
+                case LocaleConstant.LOCALE_ruRU:
+                    TabItem_Russian.Focus();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private List<Label> ConvertBoxListToLabels(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabel()).ToList();
