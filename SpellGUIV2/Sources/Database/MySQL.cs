@@ -176,7 +176,7 @@ namespace SpellEditor.Sources.Database
             return new Timer(
                 (e) => Execute("SELECT 1"),
                 null,
-                TimeSpan.Zero,
+                interval,
                 interval);
         }
     }
