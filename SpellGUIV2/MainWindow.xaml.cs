@@ -104,7 +104,7 @@ namespace SpellEditor
             var config = new LoggingConfiguration();
             var logfile = new FileTarget("logfile") { FileName = "debug_output.txt" };
             var logconsole = new ConsoleTarget("logconsole");
-            var layout = Layout.FromString("[${time}|${level:uppercase=true}|${logger}] ${message}");
+            var layout = Layout.FromString("[${time}|${level:uppercase=true}|${logger}] ${message} ${exception:innerFormat=@}");
             logfile.Layout = layout;
             logconsole.Layout = layout;
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logconsole);
@@ -841,6 +841,9 @@ namespace SpellEditor
                 TotemCategory2.IsEnabled = isTbcOrGreater;
                 RuneCost.IsEnabled = isWotlkOrGreater;
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+
+                AdvancedKit.ItemsSource = WoWVersionManager.GetInstance().LookupKeyResource().KitColumnKeys;
+                AdvancedEffect.ItemsSource = WoWVersionManager.GetInstance().LookupKeyResource().EffectColumnKeys;
 
                 VisualSettingsGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualKitAction());
                 VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction());
@@ -4499,6 +4502,57 @@ namespace SpellEditor
         {
             var resource = TryFindResource(key);
             return resource != null ? resource.ToString() : $"Language files out of date, missing key: {key}";
+        }
+
+        // TODO: Refactor to somewhere sensible
+        private void AdvancedCreateButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+                return;
+
+            var effectModelPath = AdvancedNewPathTxt.Text;
+            var kitSelected = AdvancedKit.SelectedItem.ToString();
+            var effectSelected = AdvancedEffect.SelectedItem.ToString();
+            var missilePath = AdvancedMissilePathTxt.Text;
+
+            if (effectModelPath.Length == 0)
+                return;
+
+            var newVisualId = uint.Parse(adapter.QuerySingleValue("SELECT max(id) FROM spellvisual").ToString()) + 1;
+            var newKitId = uint.Parse(adapter.QuerySingleValue("SELECT max(id) FROM spellvisualkit").ToString()) + 1;
+            var newEffectId = uint.Parse(adapter.QuerySingleValue("SELECT max(id) FROM spellvisualeffectname").ToString()) + 1;
+
+            // Create new spell visual
+            GetDBAdapter().Execute($"INSERT INTO spellvisual VALUES ({newVisualId}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4294967295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
+            // Link up to selected spell
+            GetDBAdapter().Execute($"UPDATE spell SET SpellVisual1 = {newVisualId} WHERE ID = {selectedID}");
+            SpellVisual1.Text = newVisualId.ToString();
+
+            // Add new spellvisualkit
+            GetDBAdapter().Execute($"INSERT INTO spellvisualkit VALUES ({newKitId}, 4294967295, 4294967295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4294967295, 4294967295, 4294967295, 4294967295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
+
+            // Link spell visual to spell visual kit
+            GetDBAdapter().Execute($"UPDATE spellvisual SET {kitSelected} = {newKitId} WHERE id = {newVisualId}");
+
+            // Create new effect
+            GetDBAdapter().Execute($"INSERT INTO spellvisualeffectname VALUES ({newEffectId}, \"Visual Effect\", \"{effectModelPath.Replace(".m2", ".mdx").Replace(".M2", ".mdx")}\", 1, 1, 0.01, 100)");
+
+            // Link effect to kit
+            GetDBAdapter().Execute($"UPDATE spellvisualkit SET {effectSelected} = {newEffectId} WHERE id = {newKitId}");
+
+            // Update Log
+            AdvancedBlockOutput.Text = $@"
+> Created new spell visual: {newVisualId}
+> Created new spell kit: {newKitId} - {kitSelected}
+> Created new spell visual effect: {newEffectId} - {effectSelected}
+> Updated spell {selectedID} to use spell visual {newVisualId}.
+> Everything is linked up and done.
+> Ignored missile path creation for now: {missilePath}";
+
+            // Update UI
+            _currentVisualController = null;
+            UpdateSpellVisualTab(newVisualId);
+            UpdateMainWindow();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.VersionControl
 
         private readonly List<WoWVersion> _VersionList = new List<WoWVersion>();
 
-        private readonly Dictionary<WoWVersion, KeyResource> _KeyResourceLookup = new Dictionary<WoWVersion, KeyResource>();
+        private readonly Dictionary<WoWVersion, VisualKeyResource> _KeyResourceLookup = new Dictionary<WoWVersion, VisualKeyResource>();
 
         private WoWVersionManager()
         {
@@ -20,9 +20,9 @@ namespace SpellEditor.Sources.VersionControl
             // 3.3.5a actually has 15 locales and 1 flag but we load it like this for legacy backwards compatibility
             var wotlk = new WoWVersion() { Identity = 335, Name = "WoW 3.3.5a 12340", Version = DefaultVersionString, NumLocales = 9 };
 
-            var vanillaLookups = GenerateKeyResource(vanilla);
-            var tbcLookups = GenerateKeyResource(tbc);
-            var wotlkLookups = GenerateKeyResource(wotlk);
+            var vanillaLookups = GenerateVisualKeyResource(vanilla);
+            var tbcLookups = GenerateVisualKeyResource(tbc);
+            var wotlkLookups = GenerateVisualKeyResource(wotlk);
 
             _VersionList.Add(vanilla);
             _VersionList.Add(tbc);
@@ -39,8 +39,8 @@ namespace SpellEditor.Sources.VersionControl
 
         public WoWVersion LookupVersion(string version) => _VersionList.Find(i => i.Version.Equals(version, StringComparison.CurrentCultureIgnoreCase));
 
-        public KeyResource LookupKeyResource() => LookupKeyResource(SelectedVersion());
-        public KeyResource LookupKeyResource(WoWVersion version) => _KeyResourceLookup[version];
+        public VisualKeyResource LookupKeyResource() => LookupKeyResource(SelectedVersion());
+        public VisualKeyResource LookupKeyResource(WoWVersion version) => _KeyResourceLookup[version];
 
         public List<WoWVersion> AllVersions() => _VersionList;
 
@@ -49,12 +49,12 @@ namespace SpellEditor.Sources.VersionControl
         public static bool IsTbcOrGreaterSelected => GetInstance().SelectedVersion().Identity >= 243;
 
         #region GenerateKeyResource strings
-        private KeyResource GenerateKeyResource(WoWVersion version)
+        private VisualKeyResource GenerateVisualKeyResource(WoWVersion version)
         {
             switch (version.Identity)
             {
                 case 112:
-                    return new KeyResource(new string[]
+                    return new VisualKeyResource(new string[]
                         {
                             "PrecastKit",
                             "CastKit",
@@ -75,7 +75,7 @@ namespace SpellEditor.Sources.VersionControl
                             "RightWeaponEffect"
                         });
                 case 243:
-                    return new KeyResource(new string[]
+                    return new VisualKeyResource(new string[]
                          {
                             "PrecastKit",
                             "CastKit",
@@ -96,7 +96,7 @@ namespace SpellEditor.Sources.VersionControl
                             "RightWeaponEffect"
                         });
                 case 335:
-                    return new KeyResource(new string[]
+                    return new VisualKeyResource(new string[]
                         {
                             "PrecastKit",
                             "CastKit",
@@ -128,12 +128,12 @@ namespace SpellEditor.Sources.VersionControl
         }
         #endregion
 
-        public class KeyResource
+        public class VisualKeyResource
         {
             public readonly string[] KitColumnKeys;
             public readonly string[] EffectColumnKeys;
 
-            public KeyResource(string[] kitColumnKeys, string[] effectColumnKeys)
+            public VisualKeyResource(string[] kitColumnKeys, string[] effectColumnKeys)
             {
                 KitColumnKeys = kitColumnKeys;
                 EffectColumnKeys = effectColumnKeys;
