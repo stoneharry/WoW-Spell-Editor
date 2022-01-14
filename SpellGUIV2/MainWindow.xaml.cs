@@ -3139,7 +3139,10 @@ namespace SpellEditor
                 // Update kit to point to new effect if no attachment
                 if (!effectEntry.IsAttachment)
                 {
-                    adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { effectEntry.ParentKitId }");
+                    if (kitList.SelectedItem is VisualKitListEntry selectedKitEntry)
+                        adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { selectedKitEntry.KitRecord[0] }");
+                    else
+                        adapter.Execute($"UPDATE spellvisualkit SET { key } = { newEffectId } WHERE ID = { (kitList.Items.CurrentItem as VisualKitListEntry).KitRecord[0] }");
                 }
                 // If attachment update effect with new id and persist
                 else
