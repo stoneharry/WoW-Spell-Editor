@@ -40,8 +40,7 @@ namespace SpellEditor
         private void _Loaded(object sender, RoutedEventArgs e)
         {
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            BuildImportTab();
-            BuildExportTab();
+            BuildImportExportTab();
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -56,20 +55,83 @@ namespace SpellEditor
                 name.Contains("spellmissile");
         }
 
-        private void BuildImportTab()
+        private void BuildImportExportTab()
         {
-            var contents = ImportGridDbcs.Children;
-            if (contents.Count > 0)
+            var importContents = ImportGridDbcs.Children;
+            if (importContents.Count > 0)
                 return;
-            BuildDatabaseListGrid("ImportCheckBox", contents, true);
-        }
-
-        private void BuildExportTab()
-        {
-            var contents = ExportGridDbcs.Children;
-            if (contents.Count > 0)
+            var exportContents = ExportGridDbcs.Children;
+            if (exportContents.Count > 0)
                 return;
-            BuildDatabaseListGrid("ExportCheckBox", contents, false);
+            var bindings = new List<Binding>(BindingManager.GetInstance().GetAllBindings());
+            // Build initial checkboxes
+            bindings.ForEach((binding) =>
+            {
+                importContents.Add(
+                    new CheckBox
+                    {
+                        Name = binding.Name + "ImportCheckBox",
+                        Content = $"{binding.Name}.dbc Loading...",
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(1),
+                        IsEnabled = false,
+                        IsChecked = false
+                    }
+                );
+                exportContents.Add(
+                    new CheckBox
+                    {
+                        Name = binding.Name + "ExportCheckBox",
+                        Content = $"{binding.Name} Loading...",
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(1),
+                        IsEnabled = false,
+                        IsChecked = false
+                    }
+                );
+            });
+            // Populate all contents asynchronously (expensive)
+            Task.Run(() => bindings.AsParallel().ForAll(binding =>
+            {
+                var numRows = binding.GetNumRowsInTable(_Adapter);
+                Dispatcher.InvokeAsync(new Action(() =>
+                {
+                    // Import
+                    CheckBox box = null;
+                    foreach (CheckBox child in importContents)
+                    {
+                        if (child.Name.StartsWith(binding.Name))
+                        {
+                            box = child;
+                            break;
+                        }
+                    }
+                    if (box != null)
+                    {
+                        box.Content = $"{binding.Name}.dbc {(numRows > 0 ? $"- {numRows} rows" : "")}";
+                        box.IsEnabled = numRows > 0;
+                        box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
+                    }
+                    // Export
+                    box = null;
+                    foreach (CheckBox child in exportContents)
+                    {
+                        if (child.Name.StartsWith(binding.Name))
+                        {
+                            box = child;
+                            break;
+                        }
+                    }
+                    if (box != null)
+                    {
+                        box.Content = $"{binding.Name} {(numRows > 0 ? numRows.ToString() : "")} {(numRows > 0 ? "rows " : "")}to Export\\{binding.Name}.dbc";
+                        box.IsEnabled = numRows > 0;
+                        box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
+                    }
+                }));
+            }));
         }
 
         private void BuildDatabaseListGrid(string name, UIElementCollection contents, bool isImport)
@@ -81,7 +143,7 @@ namespace SpellEditor
                     new CheckBox
                     {
                         Name = binding.Name + name,
-                        Content = $"{binding.Name} Loading...",
+                        Content = $"{binding.Name}{(isImport ? ".dbc" : string.Empty)} Loading...",
                         HorizontalAlignment = HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(1),
