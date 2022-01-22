@@ -134,50 +134,6 @@ namespace SpellEditor
             }));
         }
 
-        private void BuildDatabaseListGrid(string name, UIElementCollection contents, bool isImport)
-        {
-            var bindings = new List<Binding>(BindingManager.GetInstance().GetAllBindings());
-            // Build initial checkboxes
-            bindings.ForEach((binding) =>
-                contents.Add(
-                    new CheckBox
-                    {
-                        Name = binding.Name + name,
-                        Content = $"{binding.Name}{(isImport ? ".dbc" : string.Empty)} Loading...",
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(1),
-                        IsEnabled = false,
-                        IsChecked = false
-                    }
-                ));
-            // Populate all contents asynchronously (expensive)
-            Task.Run(() => bindings.AsParallel().ForAll(binding =>
-            {
-                var numRows = binding.GetNumRowsInTable(_Adapter);
-                Dispatcher.InvokeAsync(new Action(() =>
-                {
-                    CheckBox box = null;
-                    foreach (CheckBox child in contents)
-                    {
-                        if (child.Name.StartsWith(binding.Name))
-                        {
-                            box = child;
-                            break;
-                        }
-                    }
-                    if (box != null)
-                    {
-                        box.Content = isImport ?
-                            $"{binding.Name}.dbc {(numRows > 0 ? $"- {numRows} rows" : "")}" :
-                            $"{binding.Name} {(numRows > 0 ? numRows.ToString() : "")} {(numRows > 0 ? "rows " : "")}to Export\\{binding.Name}.dbc";
-                        box.IsEnabled = numRows > 0;
-                        box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
-                    }
-                }));
-            }));
-        }
-
         private void MpqClick(object sender, RoutedEventArgs e)
         {
             var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
