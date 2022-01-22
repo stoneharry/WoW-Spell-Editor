@@ -61,7 +61,7 @@ namespace SpellEditor
             var contents = ImportGridDbcs.Children;
             if (contents.Count > 0)
                 return;
-            BuildDatabaseListGrid("ImportCheckBox", contents);
+            BuildDatabaseListGrid("ImportCheckBox", contents, true);
         }
 
         private void BuildExportTab()
@@ -69,10 +69,10 @@ namespace SpellEditor
             var contents = ExportGridDbcs.Children;
             if (contents.Count > 0)
                 return;
-            BuildDatabaseListGrid("ExportCheckBox", contents);
+            BuildDatabaseListGrid("ExportCheckBox", contents, false);
         }
 
-        private void BuildDatabaseListGrid(string name, UIElementCollection contents)
+        private void BuildDatabaseListGrid(string name, UIElementCollection contents, bool isImport)
         {
             var bindings = new List<Binding>(BindingManager.GetInstance().GetAllBindings());
             // Build initial checkboxes
@@ -106,7 +106,9 @@ namespace SpellEditor
                     }
                     if (box != null)
                     {
-                        box.Content = $"{binding.Name} {(numRows > 0 ? numRows.ToString() : "")} {(numRows > 0 ? "rows " : "")}to Export\\{binding.Name}.dbc";
+                        box.Content = isImport ?
+                            $"{binding.Name}.dbc {(numRows > 0 ? $"- {numRows} rows" : "")}" :
+                            $"{binding.Name} {(numRows > 0 ? numRows.ToString() : "")} {(numRows > 0 ? "rows " : "")}to Export\\{binding.Name}.dbc";
                         box.IsEnabled = numRows > 0;
                         box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
                     }
