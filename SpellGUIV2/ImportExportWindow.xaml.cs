@@ -111,8 +111,8 @@ namespace SpellEditor
                     if (box != null)
                     {
                         box.Content = $"{binding.Name}.dbc {(numRows > 0 ? $"- {numRows} rows" : "")}";
-                        box.IsEnabled = numRows > 0;
-                        box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
+                        box.IsEnabled = numRows == 0;
+                        box.IsChecked = numRows == 0 && IsDefaultImport(binding.Name.ToLower());
                     }
                     // Export
                     box = null;
