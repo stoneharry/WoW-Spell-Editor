@@ -1,0 +1,16 @@
+# Light.dbc wotlk 3.3.5
+uint ID
+int mapId
+float posX
+float posY
+float posZ
+float falloffStart
+float falloffEnd
+int paramsClear
+int paramsClearUnderwater
+int paramsStorm
+int paramsStormUnderwater
+int paramsDeath
+int paramsUnk1
+int paramsUnk2
+int paramsUnk3

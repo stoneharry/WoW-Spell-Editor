@@ -1,0 +1,19 @@
+# 3.3.5 HolidayDescriptions.dbc struct
+uint id
+uint description1 string
+uint description2 string
+uint description3 string
+uint description4 string
+uint description5 string
+uint description6 string
+uint description7 string
+uint description8 string
+uint description9 string
+uint description10 string
+uint description11 string
+uint description12 string
+uint description13 string
+uint description14 string
+uint description15 string
+uint description16 string
+uint descriptionFlags

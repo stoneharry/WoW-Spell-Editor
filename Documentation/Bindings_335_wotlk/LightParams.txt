@@ -1,0 +1,10 @@
+# LightParams.dbc wotlk 3.3.5
+uint ID
+uint higlightSky
+uint skyboxId
+int cloudType
+float glow
+float waterShallowAlpha
+float waterDeepAlpha
+float oceanShallowAlpha
+float oceanDeepAlpha

@@ -1,0 +1,54 @@
+# ItemSet.dbc structure for 3.3.5a 12340
+uint ID
+uint Name1 string
+uint Name2 string
+uint Name3 string
+uint Name4 string
+uint Name5 string
+uint Name6 string
+uint Name7 string
+uint Name8 string
+uint Name9 string
+uint Name10 string
+uint Name11 string
+uint Name12 string
+uint Name13 string
+uint Name14 string
+uint Name15 string
+uint Name16 string
+uint Flags
+uint ItemId1
+uint ItemId2
+uint ItemId3
+uint ItemId4
+uint ItemId5
+uint ItemId6
+uint ItemId7
+uint ItemId8
+uint ItemId9
+uint ItemId10
+uint ItemId11
+uint ItemId12
+uint ItemId13
+uint ItemId14
+uint ItemId15
+uint ItemId16
+uint ItemId17
+uint SetBonus1
+uint SetBonus2
+uint SetBonus3
+uint SetBonus4
+uint SetBonus5
+uint SetBonus6
+uint SetBonus7
+uint SetBonus8
+uint SetBonusThreshold1
+uint SetBonusThreshold2
+uint SetBonusThreshold3
+uint SetBonusThreshold4
+uint SetBonusThreshold5
+uint SetBonusThreshold6
+uint SetBonusThreshold7
+uint SetBonusThreshold8
+uint RequiredSkill
+uint RequiredSkillRank

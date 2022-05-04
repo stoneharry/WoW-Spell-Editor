@@ -1,0 +1,4 @@
+# LockSkybox.dbc wotlk 3.3.5
+uint ID
+uint name string
+uint flags
