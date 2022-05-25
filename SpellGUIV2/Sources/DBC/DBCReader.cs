@@ -29,8 +29,11 @@ namespace SpellEditor.Sources.DBC
             if (_stringsMap == null)
                 return "";
             if (!_stringsMap.ContainsKey(offset))
-                throw new KeyNotFoundException("A string column points to invalid data, unable to find string offset" +
-                    $" [{offset}]. This is most likely caused by a column being marked as a string where it is not a string.");
+            {
+                var errorMsg = $"ERROR: Unknown string offset {offset}. This value will be replaced by the spell editor!";
+                Logger.Error(errorMsg, new KeyNotFoundException(errorMsg));
+                return $"Unknown String: {offset}";
+            }
             return _stringsMap[offset].Value;
         }
 
