@@ -5,11 +5,14 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using NLog;
 
 namespace SpellEditor.Sources.Database
 {
     public class MySQL : IDatabaseAdapter
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
         private Timer _heartbeat;
@@ -49,7 +52,8 @@ namespace SpellEditor.Sources.Database
                 {
                     using (var cmd = _connection.CreateCommand())
                     {
-                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
+                        Logger.Trace(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -58,6 +62,7 @@ namespace SpellEditor.Sources.Database
 
         public DataTable Query(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter(query, _connection))
@@ -74,6 +79,7 @@ namespace SpellEditor.Sources.Database
 
         public object QuerySingleValue(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter(query, _connection))
@@ -94,6 +100,7 @@ namespace SpellEditor.Sources.Database
             if (Updating)
                 return;
 
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter())
@@ -113,6 +120,8 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+
+            Logger.Trace(p);
             lock (_syncLock)
             {
                 using (var cmd = _connection.CreateCommand())
@@ -160,7 +169,7 @@ namespace SpellEditor.Sources.Database
                 str = str.Remove(str.Length - 2, 2);
                 str = str.Append(") ");
             } 
-            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");   
+            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");
             return str.ToString();
         }
 

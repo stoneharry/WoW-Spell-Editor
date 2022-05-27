@@ -94,6 +94,7 @@ namespace SpellEditor
             try
             {
                 File.Delete("debug_output.txt");
+                File.Delete("query_log.txt");
             }
             catch (Exception ex)
             {
@@ -103,12 +104,16 @@ namespace SpellEditor
             // Setup logging
             var config = new LoggingConfiguration();
             var logfile = new FileTarget("logfile") { FileName = "debug_output.txt" };
+            var querylog = new FileTarget("logfile") { FileName = "query_log.txt" };
             var logconsole = new ConsoleTarget("logconsole");
             var layout = Layout.FromString("[${time}|${level:uppercase=true}|${logger}] ${message}");
+            var queryLayout = Layout.FromString("[${time}] ${message}");
             logfile.Layout = layout;
             logconsole.Layout = layout;
+            querylog.Layout = queryLayout;
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logconsole);
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+            config.AddRuleForOneLevel(LogLevel.Trace, querylog);
             LogManager.Configuration = config;
 
             // Banner
@@ -1083,7 +1088,7 @@ namespace SpellEditor
                 if (res == MessageDialogResult.Affirmative)
                 {
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
-                        adapter.Execute($"drop table `{binding.Name}`");
+                        adapter.Execute($"drop table `{binding.Name.ToLower()}`");
                     adapter.CreateAllTablesFromBindings();
                     PopulateSelectSpell();
                 }

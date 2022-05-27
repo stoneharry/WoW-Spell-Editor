@@ -4,11 +4,14 @@ using System.Data.SQLite;
 using System.Text;
 using SpellEditor.Sources.Binding;
 using System.Linq;
+using NLog;
 
 namespace SpellEditor.Sources.Database
 {
     public class SQLite : IDatabaseAdapter
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly object _syncLock = new object();
         private readonly SQLiteConnection _connection;
 
@@ -32,7 +35,8 @@ namespace SpellEditor.Sources.Database
                 {
                     using (var cmd = _connection.CreateCommand())
                     {
-                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
+                        Logger.Trace(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -41,6 +45,7 @@ namespace SpellEditor.Sources.Database
 
         public DataTable Query(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new SQLiteDataAdapter(query, _connection))
@@ -58,6 +63,7 @@ namespace SpellEditor.Sources.Database
 
         public object QuerySingleValue(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new SQLiteDataAdapter(query, _connection))
@@ -78,6 +84,7 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+            Logger.Trace(query);
 
             lock (_syncLock)
             {
@@ -99,6 +106,7 @@ namespace SpellEditor.Sources.Database
             if (Updating)
                 return;
 
+            Logger.Trace(p);
             lock (_syncLock)
             {
                 using (var cmd = _connection.CreateCommand())

@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
             return Task.Run(() =>
             {
                 var binding = BindingManager.GetInstance().FindBinding(bindingName);
-                adapter.Execute(string.Format(adapter.GetTableCreateString(binding), binding.Name));
+                adapter.Execute(string.Format(adapter.GetTableCreateString(binding), binding.Name.ToLower()));
                 uint currentRecord = 0;
                 uint count = Header.RecordCount;
                 uint updateRate = count < 100 ? 100 : count / 100;
@@ -98,7 +98,7 @@ namespace SpellEditor.Sources.DBC
                             adapter.Execute(q.ToString());
                         }
                         q = new StringBuilder();
-                        q.Append(string.Format("INSERT INTO `{0}` VALUES ", bindingName));
+                        q.Append(string.Format("INSERT INTO `{0}` VALUES ", bindingName.ToLower()));
                     }
                     if (++index % updateRate == 0)
                     {
@@ -190,7 +190,7 @@ namespace SpellEditor.Sources.DBC
         {
             const int pageSize = 1000;
             int totalCount;
-            using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName}`"))
+            using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName.ToLower()}`"))
             {
                 totalCount = int.Parse(queryData.Rows[0][0].ToString());
             }
@@ -213,7 +213,7 @@ namespace SpellEditor.Sources.DBC
         protected List<Dictionary<string, object>> LoadRecordPage(int lowerBounds, int pageSize, IDatabaseAdapter adapter, string bindingName, string orderClause)
         {
             var records = new List<Dictionary<string, object>>();
-            using (var queryData = adapter.Query($"SELECT * FROM `{bindingName}`{orderClause} LIMIT {lowerBounds}, {pageSize}"))
+            using (var queryData = adapter.Query($"SELECT * FROM `{bindingName.ToLower()}`{orderClause} LIMIT {lowerBounds}, {pageSize}"))
             {
                 foreach (DataRow row in queryData.Rows)
                 {
@@ -295,7 +295,7 @@ namespace SpellEditor.Sources.DBC
                                 writer.Write(data.Length == 0 ? 0 : body.OffsetStorage[data.GetHashCode()]);
                             }
                             else
-                                throw new Exception($"Unknwon type: {entry.Type} on entry {entry.Name} binding {binding.Name}");
+                                throw new Exception($"Unknown type: {entry.Type} on entry {entry.Name} binding {binding.Name}");
                         }
                     }
                     // Write string block
