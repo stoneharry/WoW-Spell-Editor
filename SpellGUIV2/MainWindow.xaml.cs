@@ -136,8 +136,9 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Logger.Info("ERROR: " + e.Exception + "\n" + e.Exception.InnerException);
-            File.WriteAllText("error.txt", e.Exception + "\n" + e.Exception.InnerException, Encoding.GetEncoding(0));
+            var errorMsg = $"ERROR: {e.Exception}\n{e.Exception.StackTrace}\n{e.Exception.InnerException}\n{e.Exception.InnerException.StackTrace}";
+            Logger.Fatal(errorMsg);
+            File.WriteAllText("error.txt", errorMsg);
             HandleErrorMessage(e.Exception + "\n\n" + e.Exception.InnerException);
             e.Handled = true;
             Console.Out.Flush();
@@ -724,7 +725,7 @@ namespace SpellEditor
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
                 manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, GetLocale()));
+                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, GetLanguage()));
             }
             manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
             spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
@@ -774,28 +775,28 @@ namespace SpellEditor
             {
                 await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
+                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
                 return;
             }
             catch (SQLiteException e)
             {
                 await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
+                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
                 return;
             }
             catch (Exception e)
             {
                 await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n\n{e}\n{e.InnerException}");
+                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
                 return;
             }
             
             try
             {
                 spellTable.Columns.Add("id", typeof(uint));
-                spellTable.Columns.Add("SpellName" + GetLocale(), typeof(string));
+                spellTable.Columns.Add("SpellName" + GetLanguage(), typeof(string));
                 spellTable.Columns.Add("Icon", typeof(uint));
 
                 // Populate UI based on DBC data
@@ -1027,7 +1028,7 @@ namespace SpellEditor
                 if (imageLoadEventRunning)
                     return;
                 imageLoadEventRunning = true;
-                var locale = GetLocale();
+                //var locale = GetLocale();
                 var input = FilterSpellNames.Text.ToLower();
                 var badInput = string.IsNullOrEmpty(input);
                 if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
@@ -1790,7 +1791,7 @@ namespace SpellEditor
                 if (uint.TryParse(text.Text.Substring(0, text.Text.IndexOf('-')).Trim(), out var id) &&
                     changedId == id)
                 {
-                    text.Text = $" { id } - { row["SpellName" + (GetLocale() - 1)] }";
+                    text.Text = $" { id } - { row["SpellName" + (GetLanguage() - 1)] }";
                     var image = panel.Children[0] as Image;
                     image.ToolTip = row["SpellIconID"].ToString();
                     image.Visibility = Visibility.Hidden;
@@ -1845,6 +1846,8 @@ namespace SpellEditor
         {
             if (storedLocale != -1)
                 return storedLocale;
+            if (adapter == null)
+                return -1;
 
             // Attempt localisation on Death Touch, HACKY
             var aboveClassic = WoWVersionManager.GetInstance().SelectedVersion().Identity > 112;
@@ -1889,7 +1892,7 @@ namespace SpellEditor
             {
                 if (worker.Adapter == null || !Config.IsInit)
                     return;
-                int locale = GetLocale();
+                int locale = GetLanguage();
                 if (locale > 0)
                     locale -= 1;
 
@@ -4322,7 +4325,7 @@ namespace SpellEditor
         public string GetSpellNameById(uint spellId)
         {
             var dr = spellTable.Select($"id = {spellId}");
-            return dr.Length == 1 ? dr[0]["SpellName" + (GetLocale() - 1)].ToString() : "";
+            return dr.Length == 1 ? dr[0]["SpellName" + (GetLanguage() - 1)].ToString() : "";
         }
         #endregion
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)

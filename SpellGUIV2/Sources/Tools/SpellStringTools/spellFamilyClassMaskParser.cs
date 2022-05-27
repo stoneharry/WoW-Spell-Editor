@@ -14,13 +14,14 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
         public SpellFamilyClassMaskParser(MainWindow window)
         {
             SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
-                                                                   // by giving it some unique id for procces on our own spells
 
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
             var query = isWotlkOrGreater ?
                 "SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell" :
                 "SELECT id,SpellFamilyName,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell";
-            DataTable dt = window.GetDBAdapter().Query(query);
+            DataTable dt = window?.GetDBAdapter()?.Query(query);
+            if (dt == null)
+                return;
 
             foreach (DataRow dr in dt.Rows)
             {
