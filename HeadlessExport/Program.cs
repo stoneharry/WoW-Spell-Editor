@@ -13,29 +13,34 @@ namespace HeadlessExport
 {
     class Program
     {
+        static Dictionary<int, string> _TaskNameLookup;
+
         static void Main(string[] args)
         {
             try
             {
                 Console.WriteLine("Loading config...");
                 Config.Init();
+
                 Console.WriteLine("Creating MySQL connection from config.xml...");
                 var adapter = new MySQL();
 
-                Console.WriteLine("Exporting all DBC files...");
+                Console.WriteLine("Reading all bindings...");
                 var bindingManager = BindingManager.GetInstance();
                 Console.WriteLine($"Got { bindingManager.GetAllBindings().Count() } bindings to export");
+
+                Console.WriteLine("Exporting all DBC files...");
                 var taskList = new List<Task>();
+                _TaskNameLookup = new Dictionary<int, string>();
                 foreach (var binding in bindingManager.GetAllBindings())
                 {
                     Console.WriteLine($"Exporting { binding.Name }...");
-                    var dbc = new HeadlessDbc();
-                    taskList.Add(dbc.ExportToDbc(adapter, SetProgress, binding.Fields[0].Name, binding.Name));
+                    var task = new HeadlessDbc()
+                        .ExportToDbc(adapter, SetProgress, binding.Fields[0].Name, binding.Name);
+                    _TaskNameLookup.Add(task.Id, binding.Name);
+                    taskList.Add(task);
                 }
-                while (taskList.Any(task => !task.IsCompleted))
-                {
-                    Thread.Sleep(500);
-                }
+                Task.WaitAll(taskList.ToArray());
                 Console.WriteLine($"Finished exporting { taskList.Count() } dbc files.");
             }
             catch (Exception e)
@@ -46,7 +51,9 @@ namespace HeadlessExport
 
         public static void SetProgress(double value)
         {
-            Console.WriteLine($"[{ Task.CurrentId }]: { Convert.ToInt32(value * 100D) }%");
+            int id = Task.CurrentId.GetValueOrDefault(0);
+            var name = _TaskNameLookup.Keys.Contains(id) ? _TaskNameLookup[id] : string.Empty;
+            Console.WriteLine($" { (name.Length > 0 ? name : $"[{ id }]") }: { Convert.ToInt32(value * 100D) }%");
         }
     }
 }

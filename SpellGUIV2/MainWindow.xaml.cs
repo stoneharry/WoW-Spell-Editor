@@ -136,7 +136,7 @@ namespace SpellEditor
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            var errorMsg = $"ERROR: {e.Exception}\n{e.Exception.StackTrace}\n{e.Exception.InnerException}\n{e.Exception.InnerException.StackTrace}";
+            var errorMsg = $"ERROR: {e.Exception}\n{e.Exception.StackTrace}\n{e.Exception.InnerException}\n{e.Exception.InnerException?.StackTrace}";
             Logger.Fatal(errorMsg);
             File.WriteAllText("error.txt", errorMsg);
             HandleErrorMessage(e.Exception + "\n\n" + e.Exception.InnerException);
