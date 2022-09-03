@@ -151,6 +151,11 @@ namespace SpellEditor
             //return (int)Locale_language;
         }
 
+        
+
+        
+
+
         #region LanguageSwitch
         private void RefreshAllUIElements()
         {
@@ -283,6 +288,7 @@ namespace SpellEditor
 
             TargetCreatureType.Children.Clear();
             targetCreatureTypeBoxes.Clear();
+            EffectCreatureType1.Items.Clear();
             string[] creature_type_strings = SafeTryFindResource("creature_type_strings").Split('|');
             foreach (string creatureType in creature_type_strings)
             {
@@ -294,6 +300,8 @@ namespace SpellEditor
 
                 TargetCreatureType.Children.Add(box);
                 targetCreatureTypeBoxes.Add(box);
+
+                EffectCreatureType1.Items.Add(creatureType);
             }
 
             CasterAuraState.Items.Clear();
@@ -335,8 +343,20 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
+            EffectPowerType1.Items.Clear();
             string[] school_strings = SafeTryFindResource("school_strings").Split('|');
-            foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
+            foreach (string schoolString in school_strings)
+            {
+                PowerType.Items.Add(schoolString);
+                EffectPowerType1.Items.Add(schoolString);
+            }
+
+            SpellFamilyName.Items.Clear();
+            string[] spell_family_strings = SafeTryFindResource("spell_family_strings").Split('|');
+            foreach (string familyString in spell_family_strings)
+            {
+                SpellFamilyName.Items.Add(familyString);
+            }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
@@ -415,12 +435,14 @@ namespace SpellEditor
             Mechanic1.Items.Clear();
             Mechanic2.Items.Clear();
             Mechanic3.Items.Clear();
+            EffectMechanicType1.Items.Clear();
             string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
             foreach (string mechanicName in mechanic_names)
             {
                 Mechanic1.Items.Add(mechanicName);
                 Mechanic2.Items.Add(mechanicName);
                 Mechanic3.Items.Add(mechanicName);
+                EffectMechanicType1.Items.Add(mechanicName);
             }
 
             if (TargetA1.Items.Count == 0)
@@ -506,7 +528,68 @@ namespace SpellEditor
                 S7.Content = "Unused";
             }
             S7.IsEnabled = WoWVersionManager.IsTbcOrGreaterSelected;
+
+            // stat_names
+            EffectStatType1.Items.Clear();
+            // EffectStatType1.Items.Clear();
+            // EffectStatType1.Items.Clear();
+            string[] stat_names = SafeTryFindResource("stat_names").Split('|');
+            foreach (string statName in stat_names)
+            {
+                EffectStatType1.Items.Add(statName);
+                // Mechanic2.Items.Add(mechanicName);
+                // Mechanic3.Items.Add(mechanicName);
+            }
+
+            // stealth types
+            EffectStealthType1.Items.Clear();
+            // EffectStealthType1.Items.Clear();
+            // EffectStealthType1.Items.Clear();
+            string[] stealth_types = SafeTryFindResource("stealth_types").Split('|');
+            foreach (string stealthType in stealth_types)
+            {
+                EffectStealthType1.Items.Add(stealthType);
+                // EffectStealthType1.Items.Add(mechanicName);
+                // EffectStealthType1.Items.Add(mechanicName);
+            }
+
+            // invisibility types
+            EffectInvisibilityType1.Items.Clear();
+            // EffectStealthType1.Items.Clear();
+            // EffectStealthType1.Items.Clear();
+            string[] invisibility_strings = SafeTryFindResource("invisibility_strings").Split('|');
+            foreach (string invisibilityType in invisibility_strings)
+            {
+                EffectInvisibilityType1.Items.Add(invisibilityType);
+                // EffectStealthType1.Items.Add(mechanicName);
+                // EffectStealthType1.Items.Add(mechanicName);
+            }
+
+            // language file update required
+            EffectLockType1.Items.Clear();
+            string[] lock_strings = SafeTryFindResource("lock_strings").Split('|');
+            foreach (string lockString in lock_strings) { EffectLockType1.Items.Add(lockString); }
+
+
+            // TODO : languages. id doesn't match row count
+
+            Category.Items.Clear();
+            string[] category_strings = SafeTryFindResource("category_strings").Split('|');
+            foreach (string categoryName in category_strings) { Category.Items.Add(categoryName); }
+
+            StartRecoveryCategoryBasic.Items.Clear();
+            string[] global_category_strings = {"0 - None ", "133 - Global ", "330 - Mount ", " Special "};
+            foreach (string globalcategoryName in global_category_strings) { StartRecoveryCategoryBasic.Items.Add(globalcategoryName); }
+
+            EffectShapeshiftType1.Items.Clear();
+            foreach (string stance in stances_strings) EffectShapeshiftType1.Items.Add(stance);
+
+            EffectAuraModType1.Items.Clear();
+            string[] aura_mod_types = SafeTryFindResource("aura_mod_types").Split('|');
+            foreach (string modType in aura_mod_types) { EffectAuraModType1.Items.Add(modType); }
+
         }
+
         #endregion
 
         #region Loaded
@@ -591,6 +674,28 @@ namespace SpellEditor
                     SpellMask33.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
                 }
 
+                string[] school_names = SafeTryFindResource("school_names").Split('|');
+                for (int i = 0; i < 7; ++i)
+                {
+                    int mask = (int)Math.Pow(2, i);
+
+                    EffectSchoolMask1.Items.Add(new ThreadSafeCheckBox { Content = school_names[i] });
+                    // EffectSchoolMask1.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x3") + " " + school_names[i] });
+                    // EffectSchoolMask1.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x3") });
+                    // EffectSchoolMask1.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                }
+
+                string[] creature_types = SafeTryFindResource("creature_type_strings").Split('|');
+                for (int i = 0; i < creature_types.Count(); ++i)
+                {
+                    int mask = (int)Math.Pow(2, i);
+                    EffectCreatureTypeMask1.Items.Add(new ThreadSafeCheckBox { Content = creature_types[i] });
+                }
+
+                foreach (ThreadSafeCheckBox cb in EffectSchoolMask1.Items) { cb.Checked += HandspellSchoolMask_Checked; cb.Unchecked += HandspellSchoolMask_Checked; }
+                // 
+                foreach (ThreadSafeCheckBox cb in EffectCreatureTypeMask1.Items) { cb.Checked += HandspellCreatureMask_Checked; cb.Unchecked += HandspellCreatureMask_Checked; }
+                //
                 foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
                 foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
                 foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
@@ -623,6 +728,65 @@ namespace SpellEditor
             father.Text = Mask.ToString();
 
             SpellMask_SelectionChanged(father, null);
+        }
+
+        // titi
+        private void HandspellSchoolMask_Checked(object obj, RoutedEventArgs e)
+        {
+            ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent;
+
+            int Mask = 0;
+
+            string Masktext = "";
+
+            string[] school_names = SafeTryFindResource("school_names").Split('|');
+            for (int i = 0; i < 7; i++)
+            {
+                ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
+                Mask += cb.IsChecked == true ? (int)Math.Pow(2, i) : 0;
+
+                if (cb.IsChecked == true)
+                {
+                    if (Masktext.Length.Equals(0) )
+                    { Masktext += school_names[i]; }
+                    else
+                    { Masktext += $", {school_names[i]}"; }
+                }
+            }
+            // father.Text = Mask.ToString();
+            if (Masktext.Length.Equals(0))
+            { father.Text = $"{Mask} (None selected)"; }
+            else
+            { father.Text = $"{Mask} ({Masktext})"; }
+        }
+
+        private void HandspellCreatureMask_Checked(object obj, RoutedEventArgs e)
+        {
+            ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent;
+
+            int Mask = 0;
+
+            string Masktext = "";
+
+            string[] creature_names = SafeTryFindResource("creature_type_strings").Split('|');
+            for (int i = 0; i < 7; i++)
+            {
+                ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
+                Mask += cb.IsChecked == true ? (int)Math.Pow(2, i) : 0;
+
+                if (cb.IsChecked == true)
+                {
+                    if (Masktext.Length.Equals(0))
+                    { Masktext += creature_names[i]; }
+                    else
+                    { Masktext += $", {creature_names[i]}"; }
+                }
+            }
+            // father.Text = Mask.ToString();
+            if (Masktext.Length.Equals(0))
+            { father.Text = $"{Mask} (None selected)"; }
+            else
+            { father.Text = $"{Mask} ({Masktext})"; }
         }
 
         #endregion
@@ -800,9 +964,11 @@ namespace SpellEditor
                 spellTable.Columns.Add("Icon", typeof(uint));
 
                 // Populate UI based on DBC data
-                Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                // Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                //     DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
                 DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
+                EffectDispelType1.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
                     DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
                 MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
                     DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
@@ -1605,12 +1771,172 @@ namespace SpellEditor
                     row["EffectItemType1"] = uint.Parse(ItemType1.Text);
                     row["EffectItemType2"] = uint.Parse(ItemType2.Text);
                     row["EffectItemType3"] = uint.Parse(ItemType3.Text);
-                    row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+
+                    // miscvalueA saving
+                    // completely redo this shit later
+                    // if ( (uint) ApplyAuraName1.SelectedIndex == 87 ) // 87 = mod damage percent take. list aura types that use school mask
+                    //     {
+                    //     row["EffectMiscValue1"] = int.Parse(EffectSchoolMask1.Text.Split(' ')[0]); // either that or parse the checkboxes
+                    //     }
+                    // else if ((uint)ApplyAuraName1.SelectedIndex == 137) // mod_stat
+                    // {
+                    //     row["EffectMiscValue1"] = EffectStatType1.SelectedIndex;
+                    // }
+                    // else
+                    // {
+                    // row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+                    // }
+
+                    Dictionary<int, List<ThreadSafeComboBox>> aurasmiscvalues = new Dictionary<int, List<ThreadSafeComboBox>>()
+                    {
+                        {10, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {13, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {14, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {16, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {17, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {18, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {19, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {21, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {22, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {24, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {29, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 30 = skill id
+                        {35, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {36, new List<ThreadSafeComboBox>() { EffectShapeshiftType1 } },
+                        // 37 spell effects
+                        // 39 auras
+                        {39, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {40, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {41, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {44, new List<ThreadSafeComboBox>() { EffectCreatureType1 } },
+                        {45, new List<ThreadSafeComboBox>() { EffectLockType1 } },
+                        // 56 creature id
+                        {59, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {69, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {71, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {72, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {73, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {74, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {75, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {77, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 78 creature id
+                        {79, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {80, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {81, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {83, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {85, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 86 exists in vanilla/bc
+                        {87, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {90, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {97, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 98 skill id
+                        {101, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {102, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {107, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        {108, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        // TODO : !!!! 109
+                        {110, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // TODO : !!!! 111
+                        // 112 script package
+                        {113, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {114, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {115, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {117, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {118, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {131, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {132, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {135, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {136, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {137, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 139 faction
+                        {142, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {143, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature immunity !!MASK!!
+                        {151, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {153, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {163, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {168, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {169, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {174, new List<ThreadSafeComboBox>() {EffectSchoolMask1, EffectStatType1} },
+                        {175, new List<ThreadSafeComboBox>() {EffectStatType1} },
+                        {178, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {179, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {180, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        // TODO : 182
+                        {183, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {186, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {189, new List<ThreadSafeComboBox>() { EffectRatingType1 } },
+                        // faction
+                        {194, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+
+                        {195, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {199, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature id
+                        // 202 TODO
+                        {205, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {212, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {219, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {220, new List<ThreadSafeComboBox>() { EffectRatingType1, EffectStatType1 } },
+                        {229, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {232, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // cerature id
+                        {234, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {244, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {245, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {246, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        // 248
+                        {249, new List<ThreadSafeComboBox>() { EffectRuneType1, EffectRuneType1 } },
+                        {255, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 256 UNKNOWN
+                        {259, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {260, new List<ThreadSafeComboBox>() { EffectScreenEffect1 } },
+                        {261, new List<ThreadSafeComboBox>() { EffectPhaseMask1 } },
+                        {267, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {268, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {269, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {270, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {271, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {276, new List<ThreadSafeComboBox>() { EffectMechanicType1 } }, // unused
+                        // 293
+                        {294, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {300, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {301, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {303, new List<ThreadSafeComboBox>() { EffectAuraStateType1 } }, // TODO
+                        {310, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } }
+                    };
+
+                    if (aurasmiscvalues.ContainsKey((int)ApplyAuraName1.SelectedIndex))
+                    {
+                        int miscvalueindex = 0;
+                        foreach (ThreadSafeComboBox combobox in aurasmiscvalues[(int)ApplyAuraName1.SelectedIndex])
+                        {
+                            string rowname = "";
+                            if (miscvalueindex == 0) rowname = "EffectMiscValue1";
+                            else if (miscvalueindex == 1 && isTbcOrGreater) rowname = "EffectMiscValueB1";
+
+
+                            if (combobox.Name == "EffectSchoolMask1" || combobox.Name == "EffectCreatureTypeMask1") // mask comboboxes work differently
+                                row[rowname] = int.Parse(combobox.Text.Split(' ')[0]);
+
+                            else
+                                row[rowname] = combobox.SelectedIndex;
+
+                            miscvalueindex++;
+                        }
+                    }
+                    else
+                    {
+                        row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+                        if (isTbcOrGreater)
+                            row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
+                    }
+
+                //////////
                     row["EffectMiscValue2"] = int.Parse(MiscValueA2.Text);
                     row["EffectMiscValue3"] = int.Parse(MiscValueA3.Text);
                     if (isTbcOrGreater)
                     {
-                        row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
+                        // row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
                         row["EffectMiscValueB2"] = int.Parse(MiscValueB2.Text);
                         row["EffectMiscValueB3"] = int.Parse(MiscValueB3.Text);
                     }
@@ -1635,19 +1961,23 @@ namespace SpellEditor
                     row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
                     row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
                     row["ManaCostPercentage"] = uint.Parse(ManaCostPercent.Text);
-                    row["StartRecoveryCategory"] = uint.Parse(StartRecoveryCategory.Text);
+
+                    if (StartRecoveryCategoryBasic.SelectedIndex == 0) { row["StartRecoveryCategory"] = 0; }
+                    else if (StartRecoveryCategoryBasic.SelectedIndex == 1) { row["StartRecoveryCategory"] = 133; }
+                    else if (StartRecoveryCategoryBasic.SelectedIndex == 2) { row["StartRecoveryCategory"] = 330; }
+                    else { row["StartRecoveryCategory"] = uint.Parse(StartRecoveryCategory.Text); }
                     row["StartRecoveryTime"] = uint.Parse(StartRecoveryTime.Text);
                     row["MaximumTargetLevel"] = uint.Parse(MaxTargetsLevel.Text);
                     // Before WOTLK there are only two flags, we misnamed them in WOTLK as the last flag handles A3/B3/C3 of the affecting spells
+                    // row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
+                    row["SpellFamilyName"] = (uint)SpellFamilyName.SelectedIndex;
                     if (!isWotlkOrGreater)
                     {
-                        row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
                         row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags.Text);
                         row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags1.Text);
                     }
                     else
                     {
-                        row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
                         row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
                         row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
                         row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
@@ -2178,6 +2508,8 @@ namespace SpellEditor
         #endregion
 
         #region LoadSpell (load spell god-function)
+
+
         private void loadSpell(UpdateTextFunc updateProgress)
         {
             _currentVisualController = null;
@@ -2190,6 +2522,127 @@ namespace SpellEditor
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
             var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
+
+
+            // temporarily hardcoded
+            Dictionary<int, List<ThreadSafeComboBox>> aurasmiscvalues = new Dictionary<int, List<ThreadSafeComboBox>>()
+                    {
+                        {10, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {13, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {14, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {16, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {17, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {18, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {19, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {21, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {22, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {24, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {29, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 30 = skill id
+                        {35, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {36, new List<ThreadSafeComboBox>() { EffectShapeshiftType1 } },
+                        // 37 spell effects
+                        // 39 auras
+                        {39, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {40, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {41, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {44, new List<ThreadSafeComboBox>() { EffectCreatureType1 } },
+                        {45, new List<ThreadSafeComboBox>() { EffectLockType1 } },
+                        // 56 creature id
+                        {59, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {69, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {71, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {72, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {73, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {74, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {75, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {77, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 78 creature id
+                        {79, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {80, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {81, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {83, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {85, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 86 exists in vanilla/bc
+                        {87, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {90, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {97, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 98 skill id
+                        {101, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {102, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {107, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        {108, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        // TODO : !!!! 109
+                        {110, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // TODO : !!!! 111
+                        // 112 script package
+                        {113, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {114, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {115, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {117, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {118, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {131, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {132, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {135, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {136, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {137, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 139 faction
+                        {142, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {143, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature immunity !!MASK!!
+                        {151, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {153, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {163, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {168, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {169, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {174, new List<ThreadSafeComboBox>() {EffectSchoolMask1, EffectStatType1} },
+                        {175, new List<ThreadSafeComboBox>() {EffectStatType1} },
+                        {178, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {179, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {180, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        // TODO : 182
+                        {183, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {186, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {189, new List<ThreadSafeComboBox>() { EffectRatingType1 } },
+                        // faction
+                        {194, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+
+                        {195, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {199, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature id
+                        // 202 TODO
+                        {205, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {212, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {219, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {220, new List<ThreadSafeComboBox>() { EffectRatingType1, EffectStatType1 } },
+                        {229, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {232, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // cerature id
+                        {234, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {244, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {245, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {246, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        // 248
+                        {249, new List<ThreadSafeComboBox>() { EffectRuneType1, EffectRuneType1 } },
+                        {255, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 256 UNKNOWN
+                        {259, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {260, new List<ThreadSafeComboBox>() { EffectScreenEffect1 } },
+                        {261, new List<ThreadSafeComboBox>() { EffectPhaseMask1 } },
+                        {267, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {268, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {269, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {270, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {271, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {276, new List<ThreadSafeComboBox>() { EffectMechanicType1 } }, // unused
+                        // 293
+                        {294, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {300, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {301, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {303, new List<ThreadSafeComboBox>() { EffectAuraStateType1 } }, // TODO
+                        {310, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } }
+                    };
+
             try
             {
                 updateProgress("Updating text control's...");
@@ -2659,6 +3112,7 @@ namespace SpellEditor
                 TargetB1.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB1"].ToString());
                 TargetB2.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB2"].ToString());
                 TargetB3.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB3"].ToString());
+                
 
                 updateProgress("Updating radius index...");
                 var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
@@ -2684,6 +3138,65 @@ namespace SpellEditor
                 ItemType1.ThreadSafeText = row["EffectItemType1"].ToString();
                 ItemType2.ThreadSafeText = row["EffectItemType2"].ToString();
                 ItemType3.ThreadSafeText = row["EffectItemType3"].ToString();
+
+                // foreach ( int key in aurasmiscvalues.Keys )
+                // {
+                //     foreach(ThreadSafeComboBox combobox in aurasmiscvalues[key])
+                //     {
+                // 
+                //     }
+                // }
+
+                EffectSchoolMask1.ThreadSafeText = "0 (None selected)";
+                EffectCreatureTypeMask1.ThreadSafeText = "0 (None selected)";
+                EffectStatType1.ThreadSafeIndex = 0;
+                EffectStealthType1.ThreadSafeIndex = 0; //temp default
+                EffectPowerType1.ThreadSafeIndex = 0; //temp default
+                EffectDispelType1.ThreadSafeIndex = 0; //temp default
+                EffectCreatureType1.ThreadSafeIndex = 0; //temp default
+                EffectInvisibilityType1.ThreadSafeIndex = 0; //temp default
+                EffectLockType1.ThreadSafeIndex = 0; //temp default
+                EffectLanguageType1.ThreadSafeIndex = 0; //temp default
+                EffectMechanicType1.ThreadSafeIndex = 0; //temp default
+                EffectAuraModType1.ThreadSafeIndex = 0; //temp default
+                EffectRatingType1.ThreadSafeIndex = 0; //temp default
+                EffectRuneType1.ThreadSafeIndex = 0; //temp default
+                EffectScreenEffect1.ThreadSafeIndex = 0; //temp default
+                EffectPhaseMask1.ThreadSafeIndex = 0; //temp default
+                EffectAuraStateType1.ThreadSafeIndex = 0; //temp default
+                EffectShapeshiftType1.ThreadSafeIndex = 0; //temp default
+
+                /// 
+                foreach (StackPanel panel in MiscValueAGrid1.Children)
+                    panel.Visibility = Visibility.Collapsed;
+
+                    // TODO : turn this into a reusable function for effects 2/3
+                if ( aurasmiscvalues.ContainsKey( (int)ApplyAuraName1.SelectedIndex) )
+                {
+                    int miscvalueindex = 0;
+                    foreach (ThreadSafeComboBox combobox in aurasmiscvalues[(int)ApplyAuraName1.SelectedIndex])
+                    {
+                        StackPanel parent = (StackPanel)combobox.Parent;
+                        parent.Visibility = Visibility.Visible;
+
+                        Console.Write(combobox.Name);
+                        string rowname = "";
+                        if (miscvalueindex == 0) rowname = "EffectMiscValue1";
+                        else if (miscvalueindex == 1 && isTbcOrGreater) rowname = "EffectMiscValueB1";
+
+
+                        if (combobox.Name == "EffectSchoolMask1" || combobox.Name == "EffectCreatureTypeMask1" ) // mask comboboxes work differently
+                        {
+                            combobox.ThreadSafeText = row[rowname].ToString();
+                            UpdateMaskCheckBox(int.Parse(row[rowname].ToString()), combobox);
+                        }
+                        else combobox.ThreadSafeIndex = int.Parse(row[rowname].ToString());
+
+                        miscvalueindex++;
+                    }
+                }
+
+                ///////
                 MiscValueA1.ThreadSafeText = row["EffectMiscValue1"].ToString();
                 MiscValueA2.ThreadSafeText = row["EffectMiscValue2"].ToString();
                 MiscValueA3.ThreadSafeText = row["EffectMiscValue3"].ToString();
@@ -2702,11 +3215,12 @@ namespace SpellEditor
                 PointsPerComboPoint1.ThreadSafeText = row["EffectPointsPerComboPoint1"].ToString();
                 PointsPerComboPoint2.ThreadSafeText = row["EffectPointsPerComboPoint2"].ToString();
                 PointsPerComboPoint3.ThreadSafeText = row["EffectPointsPerComboPoint3"].ToString();
+                uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+                // SpellFamilyName.ThreadSafeText = familyName.ToString();
+                SpellFamilyName.ThreadSafeIndex = uint.Parse(row["SpellFamilyName"].ToString());
 
                 if (!isWotlkOrGreater)
                 {
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
@@ -2725,8 +3239,6 @@ namespace SpellEditor
                     SpellMask23.ThreadSafeText = row["EffectSpellClassMaskC2"].ToString();
                     SpellMask33.ThreadSafeText = row["EffectSpellClassMaskC3"].ToString();
 
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
@@ -2764,7 +3276,18 @@ namespace SpellEditor
                 SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
 
                 ManaCostPercent.ThreadSafeText = row["ManaCostPercentage"].ToString();
+
                 StartRecoveryCategory.ThreadSafeText = row["StartRecoveryCategory"].ToString();
+                // hardcode basic global cd cats
+                if (uint.Parse(row["StartRecoveryCategory"].ToString()) == 0) { StartRecoveryCategoryBasic.ThreadSafeIndex = 0; }
+                else if (uint.Parse(row["StartRecoveryCategory"].ToString()) == 133) { StartRecoveryCategoryBasic.ThreadSafeIndex = 1; }
+                else if (uint.Parse(row["StartRecoveryCategory"].ToString()) == 330) { StartRecoveryCategoryBasic.ThreadSafeIndex = 2; }
+                else
+                {
+                    StartRecoveryCategoryBasic.ThreadSafeIndex = 3;
+                    StartRecoveryCategory.Visibility = Visibility.Visible;
+                }
+
                 StartRecoveryTime.ThreadSafeText = row["StartRecoveryTime"].ToString();
                 MaxTargetsLevel.ThreadSafeText = row["MaximumTargetLevel"].ToString();
                 MaxTargets.ThreadSafeText = row["MaximumAffectedTargets"].ToString();
@@ -3961,6 +4484,21 @@ namespace SpellEditor
             }
         }
 
+        private void UpdateMaskCheckBox(int mask, ThreadSafeComboBox comBox)
+        {
+            int itemscount = comBox.Items.Count;
+            for (int i = 0; i < itemscount; i++)
+            {
+                int maskPow = (int)Math.Pow(2, i);
+
+                ThreadSafeCheckBox safeCheckBox = (ThreadSafeCheckBox)comBox.Items.GetItemAt(i);
+
+                safeCheckBox.ThreadSafeChecked = false;
+                if ((mask & maskPow) != 0)
+                    safeCheckBox.ThreadSafeChecked = true;
+            }
+        }
+
         private void ToggleAllSpellMaskCheckBoxes(bool enabled)
         {
             SpellMask11.IsEnabled = enabled;
@@ -4259,6 +4797,158 @@ namespace SpellEditor
                     }
                 }
             }
+
+            // titi, temporarily copied there
+            Dictionary<int, List<ThreadSafeComboBox>> aurasmiscvalues = new Dictionary<int, List<ThreadSafeComboBox>>()
+                    {
+                        {10, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {13, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {14, new List<ThreadSafeComboBox>() {EffectSchoolMask1} },
+                        {16, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {17, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {18, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {19, new List<ThreadSafeComboBox>() {EffectInvisibilityType1} },
+                        {21, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {22, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {24, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {29, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 30 = skill id
+                        {35, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {36, new List<ThreadSafeComboBox>() { EffectShapeshiftType1 } },
+                        // 37 spell effects
+                        // 39 auras
+                        {39, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {40, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {41, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {44, new List<ThreadSafeComboBox>() { EffectCreatureType1 } },
+                        {45, new List<ThreadSafeComboBox>() { EffectLockType1 } },
+                        // 56 creature id
+                        {59, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {69, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {71, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {72, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {73, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {74, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {75, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {77, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 78 creature id
+                        {79, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {80, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {81, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {83, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {85, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 86 exists in vanilla/bc
+                        {87, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {90, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {97, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // 98 skill id
+                        {101, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {102, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {107, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        {108, new List<ThreadSafeComboBox>() { EffectAuraModType1 } },
+                        // TODO : !!!! 109
+                        {110, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        // TODO : !!!! 111
+                        // 112 script package
+                        {113, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {114, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {115, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {117, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {118, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {131, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {132, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {135, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {136, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {137, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        // 139 faction
+                        {142, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {143, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature immunity !!MASK!!
+                        {151, new List<ThreadSafeComboBox>() {EffectStealthType1} },
+                        {153, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {163, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {168, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {169, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        {174, new List<ThreadSafeComboBox>() {EffectSchoolMask1, EffectStatType1} },
+                        {175, new List<ThreadSafeComboBox>() {EffectStatType1} },
+                        {178, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {179, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {180, new List<ThreadSafeComboBox>() { EffectCreatureTypeMask1 } },
+                        // TODO : 182
+                        {183, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {186, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {189, new List<ThreadSafeComboBox>() { EffectRatingType1 } },
+                        // faction
+                        {194, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+
+                        {195, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {199, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        // creature id
+                        // 202 TODO
+                        {205, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {212, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {219, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {220, new List<ThreadSafeComboBox>() { EffectRatingType1, EffectStatType1 } },
+                        {229, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {232, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // cerature id
+                        {234, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        {244, new List<ThreadSafeComboBox>() { EffectLanguageType1 } },
+                        {245, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        {246, new List<ThreadSafeComboBox>() { EffectDispelType1 } },
+                        // 248
+                        {249, new List<ThreadSafeComboBox>() { EffectRuneType1, EffectRuneType1 } },
+                        {255, new List<ThreadSafeComboBox>() { EffectMechanicType1 } },
+                        // 256 UNKNOWN
+                        {259, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {260, new List<ThreadSafeComboBox>() { EffectScreenEffect1 } },
+                        {261, new List<ThreadSafeComboBox>() { EffectPhaseMask1 } },
+                        {267, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {268, new List<ThreadSafeComboBox>() { EffectStatType1 } },
+                        {269, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {270, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {271, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {276, new List<ThreadSafeComboBox>() { EffectMechanicType1 } }, // unused
+                        // 293
+                        {294, new List<ThreadSafeComboBox>() { EffectPowerType1 } },
+                        {300, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {301, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } },
+                        {303, new List<ThreadSafeComboBox>() { EffectAuraStateType1 } }, // TODO
+                        {310, new List<ThreadSafeComboBox>() { EffectSchoolMask1 } }
+                    };
+
+            if (sender == ApplyAuraName1)
+            {
+                foreach (StackPanel panel in MiscValueAGrid1.Children)
+                    panel.Visibility = Visibility.Collapsed;
+
+                if (aurasmiscvalues.ContainsKey((int)ApplyAuraName1.SelectedIndex))
+                {
+                    foreach (ThreadSafeComboBox combobox in aurasmiscvalues[(int)ApplyAuraName1.SelectedIndex])
+                    {
+                        StackPanel parent = (StackPanel)combobox.Parent;
+                        parent.Visibility = Visibility.Visible;
+                    }
+
+                }
+            }
+
+            if (sender == StartRecoveryCategoryBasic)
+            {
+                // if gcd type selected is "special", show the textbox instead of the basic options
+                if (StartRecoveryCategoryBasic.SelectedIndex == 3)
+                {
+                    StartRecoveryCategory.Visibility = Visibility.Visible;
+                    // labGlobalCooldownCategory.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    StartRecoveryCategory.Visibility = Visibility.Collapsed;
+                    // labGlobalCooldownCategory.Visibility = Visibility.Visible;
+                }
+
+            }
+
         }
 
         public void UpdateItemSubClass(long classId)
