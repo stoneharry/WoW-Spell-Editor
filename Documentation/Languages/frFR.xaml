@@ -82,6 +82,7 @@
     <system:String x:Key="labRequiresSpellFocus">Requiert le Focus :</system:String>
     <system:String x:Key="labRuneCost">Coût runique:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">Variables de la description :</system:String>
+	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
     <system:String x:Key="labSchool">École :</system:String>
     <system:String x:Key="checkboxPhysical">Physique</system:String>
     <system:String x:Key="checkboxHoly">Sacré</system:String>

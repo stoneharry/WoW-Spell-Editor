@@ -96,5 +96,10 @@ namespace SpellEditor.Sources.Binding
                 return -1;
             }
         }
+
+        public override string ToString()
+        {
+            return $"{ Name }${ GetHashCode() }";
+        }
     }
 }

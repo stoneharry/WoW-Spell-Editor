@@ -1515,6 +1515,7 @@ namespace SpellEditor
                     row["ManaCostPerLevel"] = uint.Parse(ManaCostPerLevel.Text);
                     row["ManaPerSecond"] = uint.Parse(ManaCostPerSecond.Text);
                     row["ManaPerSecondPerLevel"] = uint.Parse(PerSecondPerLevel.Text);
+                    row["SpellPriority"] = int.Parse(SpellPriority.Text);
                     row["Speed"] = float.Parse(Speed.Text);
                     row["StackAmount"] = uint.Parse(Stacks.Text);
                     row["Totem1"] = uint.Parse(Totem1.Text);
@@ -2547,6 +2548,7 @@ namespace SpellEditor
                 ManaCostPerLevel.ThreadSafeText = uint.Parse(row["ManaCostPerLevel"].ToString());
                 ManaCostPerSecond.ThreadSafeText = uint.Parse(row["ManaPerSecond"].ToString());
                 PerSecondPerLevel.ThreadSafeText = uint.Parse(row["ManaPerSecondPerLevel"].ToString());
+                SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
                 updateProgress("Updating spell range selection...");
                 var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                 Range.ThreadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(adapter.Query(

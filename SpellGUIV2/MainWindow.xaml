@@ -343,6 +343,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -435,6 +436,8 @@
                     <c:ThreadSafeComboBox x:Name="RuneCost" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="1"/>
                     <Label Content="{DynamicResource labSpellDescriptionVariables}" Margin="5,5,5,5" Grid.Row="13" Grid.Column="2"/>
                     <c:ThreadSafeComboBox x:Name="SpellDescriptionVariables" Margin="5,5,5,5"  Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labSpellPriority}" Margin="5,5,5,5" Grid.Row="14" Grid.Column="0"/>
+                    <c:ThreadSafeTextBox x:Name="SpellPriority" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="14" Grid.Column="1"/>
                     <Grid Grid.Row="0" Grid.Column="6" Grid.RowSpan="10" Margin="20,5,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

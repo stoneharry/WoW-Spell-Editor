@@ -82,6 +82,7 @@
     <system:String x:Key="labRequiresSpellFocus">Requires Spell Focus:</system:String>
     <system:String x:Key="labRuneCost">Rune Cost:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
+	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
     <system:String x:Key="labSchool">School:</system:String>
     <system:String x:Key="checkboxPhysical">Physical</system:String>
     <system:String x:Key="checkboxHoly">Holy</system:String>

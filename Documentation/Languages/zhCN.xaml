@@ -82,6 +82,7 @@
     <system:String x:Key="labRequiresSpellFocus">施法需要对象(区域):</system:String>
     <system:String x:Key="labRuneCost">符文消耗:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">法术变量详细描述:</system:String>
+	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
     <system:String x:Key="labSchool">属性类型:</system:String>
     <system:String x:Key="checkboxPhysical">物理</system:String>
     <system:String x:Key="checkboxHoly">神圣</system:String>
