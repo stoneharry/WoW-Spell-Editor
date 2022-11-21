@@ -118,8 +118,6 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 
         private void UpdateSpellEffectTargetList(ListBox list, int effectIndex, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
         {
-            list.Items.Clear();
-
             uint mask1 = masks[0 + (effectIndex * 3)];
             uint mask2 = masks[1 + (effectIndex * 3)];
             uint mask3 = masks[2 + (effectIndex * 3)];
@@ -136,10 +134,12 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
                 mask2,
                 mask3);
 
+            var newItems = new List<string>();
             foreach (DataRow row in adapter.Query(query).Rows)
             {
-                list.Items.Add($"{row[0]} - {row[1]}");
+                newItems.Add($"{row[0]} - {row[1]}");
             }
+            list.ItemsSource = newItems;
         }
     }
 

@@ -4470,6 +4470,8 @@ namespace SpellEditor
         {
             if (!WoWVersionManager.IsWotlkOrGreaterSelected)
                 return;
+            if (!sender.ToString().Contains("SpellMask"))
+                return;
 
             var masks = new List<uint>
             {
