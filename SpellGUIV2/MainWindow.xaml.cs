@@ -1953,7 +1953,7 @@ namespace SpellEditor
                     var image = stackPanel.Children[0] as Image;
                     var textBlock = stackPanel.Children[1] as TextBlock;
                     var spellName = row[1].ToString();
-                    textBlock.Text = $" {row[0]} - {spellName}";
+                    textBlock.Text = $" {row[0]} - {spellName}\n  {row[3]}";
                     var iconId = uint.Parse(row[2].ToString());
                     if (iconId <= 0)
                         continue;
@@ -1968,7 +1968,7 @@ namespace SpellEditor
             {
                 var row = collection[rowIndex];
                 var spellName = row[1].ToString();
-                var textBlock = new TextBlock {Text = $" {row[0]} - {spellName}"};
+                var textBlock = new TextBlock {Text = $" {row[0]} - {spellName}\n  {row[3]}"};
                 var image = new Image();
                 var iconId = uint.Parse(row[2].ToString());
                 //if (iconId > 0)
@@ -2026,8 +2026,8 @@ namespace SpellEditor
 
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
-            DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID` FROM `{0}` ORDER BY `id` LIMIT {2}, {3}",
-                 "spell", locale, lowerBound, pageSize));
+            DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{2}` FROM `{0}` ORDER BY `id` LIMIT {3}, {4}",
+                 "spell", locale, locale, lowerBound, pageSize));
 
             spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
 
@@ -2184,7 +2184,8 @@ namespace SpellEditor
             _currentVisualController = null;
             adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-            DataRowCollection rowResult = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'").Rows;
+            var data = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'");
+            var rowResult = data.Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID);
             var row = rowResult[0];
@@ -2548,7 +2549,15 @@ namespace SpellEditor
                 ManaCostPerLevel.ThreadSafeText = uint.Parse(row["ManaCostPerLevel"].ToString());
                 ManaCostPerSecond.ThreadSafeText = uint.Parse(row["ManaPerSecond"].ToString());
                 PerSecondPerLevel.ThreadSafeText = uint.Parse(row["ManaPerSecondPerLevel"].ToString());
-                SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
+                if (data.Columns.Contains("SpellPriority"))
+                {
+                    SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
+                    SpellPriority.IsEnabled = true;
+                }
+                else
+                {
+                    SpellPriority.IsEnabled = false;
+                }
                 updateProgress("Updating spell range selection...");
                 var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                 Range.ThreadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(adapter.Query(
