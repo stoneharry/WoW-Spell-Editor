@@ -61,7 +61,6 @@
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
                              VirtualizingStackPanel.VirtualizationMode="Recycling"
-                             ScrollViewer.IsDeferredScrollingEnabled="True"
                              Width="400"
                              SelectionChanged="SelectSpell_SelectionChanged"
                              Focusable="False"
