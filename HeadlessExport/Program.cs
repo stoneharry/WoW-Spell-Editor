@@ -4,9 +4,10 @@ using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 
 namespace HeadlessExport
 {
@@ -14,6 +15,27 @@ namespace HeadlessExport
     {
         static ConcurrentDictionary<int, string> _TaskNameLookup;
         static ConcurrentDictionary<int, ReportProgress> _TaskProgressLookup;
+        static ConcurrentDictionary<int, HeadlessDbc> _HeadlessDbcLookup;
+
+        private static BlockingCollection<string> m_Queue = new BlockingCollection<string>();
+
+        static Program()
+        {
+            var thread = new Thread(
+              () =>
+              {
+                  while (true) Console.WriteLine(m_Queue.Take());
+              })
+            {
+                IsBackground = true
+            };
+            thread.Start();
+        }
+
+        public static void WriteLine(string value)
+        {
+            m_Queue.Add(value);
+        }
 
         static void Main(string[] args)
         {
@@ -30,19 +52,31 @@ namespace HeadlessExport
                 Console.WriteLine($"Got { bindingManager.GetAllBindings().Count() } bindings to export");
 
                 Console.WriteLine("Exporting all DBC files...");
-                var taskList = new List<Task>();
+                var taskList = new List<Task<Stopwatch>>();
                 _TaskNameLookup = new ConcurrentDictionary<int, string>();
                 _TaskProgressLookup = new ConcurrentDictionary<int, ReportProgress>();
+                _HeadlessDbcLookup = new ConcurrentDictionary<int, HeadlessDbc>();
+                var exportWatch = new Stopwatch();
+                exportWatch.Start();
                 foreach (var binding in bindingManager.GetAllBindings())
                 {
                     Console.WriteLine($"Exporting { binding.Name }...");
-                    var task = new HeadlessDbc()
-                        .ExportToDbc(adapter, SetProgress, binding.Fields[0].Name, binding.Name);
+                    var dbc = new HeadlessDbc();
+                    var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name);
+                    _TaskNameLookup.TryAdd(dbc.TaskId, binding.Name);
                     _TaskNameLookup.TryAdd(task.Id, binding.Name);
+                    _HeadlessDbcLookup.TryAdd(dbc.TaskId, dbc);
                     taskList.Add(task);
                 }
                 Task.WaitAll(taskList.ToArray());
-                Console.WriteLine($"Finished exporting { taskList.Count() } dbc files.");
+                exportWatch.Stop();
+                taskList.Sort((x, y) => x.Result.ElapsedMilliseconds.CompareTo(y.Result.ElapsedMilliseconds));
+                taskList.ForEach(task =>
+                {
+                    var bindingName = _TaskNameLookup.Keys.Contains(task.Id) ? _TaskNameLookup[task.Id] : task.Id.ToString();
+                    Console.WriteLine($" - [{bindingName}]: {Math.Round(task.Result.Elapsed.TotalSeconds, 2)} seconds");
+                });
+                Console.WriteLine($"Finished exporting { taskList.Count() } dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
             }
             catch (Exception e)
             {
@@ -77,9 +111,11 @@ namespace HeadlessExport
 
         public static void LogProgress(string name, int id, int reportValue, int state)
         {
+            var dbc = _HeadlessDbcLookup.Keys.Contains(id) ? _HeadlessDbcLookup[id] : null;
+            var elapsedStr = dbc != null ? $"{Math.Round(dbc.Timer.Elapsed.TotalSeconds, 2)}s, " : string.Empty;
             var stateStr = state == 0 ? "Export" : "Write";
-            var nameStr = name.Length > 0 ? name : $"[{id}]";
-            Console.WriteLine($" [{nameStr}] {stateStr}: {reportValue}%");
+            var nameStr = name.Length > 0 ? name : id.ToString();
+            WriteLine($" [{nameStr}] {stateStr}: {elapsedStr}{reportValue}%");
         }
 
         class ReportProgress
