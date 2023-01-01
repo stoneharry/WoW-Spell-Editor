@@ -37,6 +37,16 @@ namespace HeadlessExport
             m_Queue.Add(value);
         }
 
+        static int PrioritiseSpellCompareBindings(Binding b1, Binding b2)
+        {
+            if (b1.ToString().Contains("Spell$"))
+                return -1;
+            if (b2.ToString().Contains("Spell$"))
+                return 1;
+            
+            return string.Compare(b1.ToString(), b2.ToString());
+        }
+
         static void Main(string[] args)
         {
             try
@@ -58,7 +68,9 @@ namespace HeadlessExport
                 _HeadlessDbcLookup = new ConcurrentDictionary<int, HeadlessDbc>();
                 var exportWatch = new Stopwatch();
                 exportWatch.Start();
-                foreach (var binding in bindingManager.GetAllBindings())
+                var bindings = bindingManager.GetAllBindings();
+                Array.Sort(bindings, PrioritiseSpellCompareBindings);
+                foreach (var binding in bindings)
                 {
                     Console.WriteLine($"Exporting { binding.Name }...");
                     var dbc = new HeadlessDbc();
