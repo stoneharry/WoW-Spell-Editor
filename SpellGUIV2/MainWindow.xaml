@@ -46,7 +46,7 @@
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="260"/>
-                        <ColumnDefinition Width="190"/>
+                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="270"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labGoToSpell}" Margin="5" Grid.Row="0" Grid.Column="2"/>
@@ -57,6 +57,10 @@
                     <c:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
                     <Label Content="{DynamicResource labFilterByAura}" Margin="5" Grid.Row="3" Grid.Column="2"/>
                     <c:ThreadSafeComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3" SelectionChanged="FilterAuraCombo_SelectionChanged"/>
+                    <Label Content="Filter Target A:" Margin="5" Grid.Row="2" Grid.Column="4"/>
+                    <c:ThreadSafeComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5" SelectionChanged="FilterSpellTargetA_SelectionChanged"/>
+                    <Label Content="Filter Target B:" Margin="5" Grid.Row="3" Grid.Column="4"/>
+                    <c:ThreadSafeComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5" SelectionChanged="FilterSpellTargetB_SelectionChanged"/>
                     <ListBox Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"

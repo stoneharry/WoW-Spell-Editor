@@ -20,7 +20,7 @@ namespace SpellEditor.Sources.Database
 
         public MySQL()
         {
-            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8;";
+            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8mb4;";
 
             _connection = new MySqlConnection {ConnectionString = connectionString};
             _connection.Open();
@@ -169,7 +169,7 @@ namespace SpellEditor.Sources.Database
                 str = str.Remove(str.Length - 2, 2);
                 str = str.Append(") ");
             } 
-            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");
+            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");
             return str.ToString();
         }
 
