@@ -672,9 +672,9 @@ namespace SpellEditor
                     if (isImport && !abstractDbc.HasData())
                         abstractDbc.ReloadContents();
                     if (isImport)
-                        await abstractDbc.ImportToSql(adapter, controller.SetProgress, "ID", bindingName);
+                        await abstractDbc.ImportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
                     else
-                        await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
+                        await abstractDbc.ExportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
                 }
                 catch (Exception exception)
                 {
