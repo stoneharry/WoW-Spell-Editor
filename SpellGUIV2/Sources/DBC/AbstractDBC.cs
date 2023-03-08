@@ -128,7 +128,7 @@ namespace SpellEditor.Sources.DBC
                         UpdateProgress(percent);
                     }
                     q.Append("(");
-                    q.Append(record);
+                    q.Append(record.Replace("\\r", "\r").Replace("\\n", "\n"));
                     q.Append("), ");
                 }
                 if (q.Length > 0)
