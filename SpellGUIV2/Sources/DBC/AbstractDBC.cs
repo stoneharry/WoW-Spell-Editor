@@ -223,7 +223,7 @@ namespace SpellEditor.Sources.DBC
             switch (_type)
             {
                 case ImportExportType.DBC:
-                    return ExportToSql(adapter, updateProgress, IdKey, bindingName);
+                    return ExportToDbc(adapter, updateProgress, IdKey, bindingName);
                 case ImportExportType.CSV:
                     return ExportToCsv(adapter, updateProgress, IdKey, bindingName);
                 default:
@@ -231,7 +231,7 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        public Task ExportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
+        public Task ExportToDbc(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
