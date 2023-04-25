@@ -9,6 +9,8 @@
     <system:String x:Key="labFilterBtName">根据名字筛选:</system:String>
 	<system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
 	<system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
+    <system:String x:Key="labFilterByTargetA">Filter by Target A:</system:String>
+	<system:String x:Key="labFilterByTargetB">Filter by Target B:</system:String>
     <system:String x:Key="tabEnglish">英语</system:String>
     <system:String x:Key="tabKorean">韩语</system:String>
     <system:String x:Key="tabFrench">法语</system:String>

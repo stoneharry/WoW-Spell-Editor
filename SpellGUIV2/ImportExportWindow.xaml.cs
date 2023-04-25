@@ -21,6 +21,7 @@ namespace SpellEditor
         public volatile string MpqArchiveName;
         public volatile List<string> BindingImportList = new List<string>();
         public volatile List<string> BindingExportList = new List<string>();
+        public volatile ImportExportType UseImportExportType;
 
         public bool IsDataSelected() => BindingImportList.Count > 0 || BindingExportList.Count > 0;
 
@@ -57,6 +58,17 @@ namespace SpellEditor
 
         private void BuildImportExportTab()
         {
+            if (ImportTypeCombo.Items.Count == 0)
+            {
+                foreach (var type in Enum.GetValues(typeof(ImportExportType)))
+                {
+                    ImportTypeCombo.Items.Add(type.ToString());
+                    ExportTypeCombo.Items.Add(type.ToString());
+                }
+                ImportTypeCombo.SelectedIndex = 0;
+                ExportTypeCombo.SelectedIndex = 0;
+            }
+
             var importContents = ImportGridDbcs.Children;
             if (importContents.Count > 0)
                 return;
@@ -146,6 +158,10 @@ namespace SpellEditor
         private void ExportClick(object sender, RoutedEventArgs e) => ClickHandler(false);
         private void ClickHandler(bool isImport)
         {
+            if (Enum.TryParse(isImport ? ImportTypeCombo.Text : ExportTypeCombo.Text, out ImportExportType _type))
+                UseImportExportType = _type;
+            else
+                UseImportExportType = ImportExportType.DBC;
             var bindingNameList = new List<string>();
             var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
             var prefix = isImport ? "Import" : "Export";

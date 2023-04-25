@@ -435,6 +435,8 @@ namespace SpellEditor
                     TargetB2.Items.Add(toDisplay);
                     TargetA3.Items.Add(toDisplay);
                     TargetB3.Items.Add(toDisplay);
+                    FilterSpellTargetA.Items.Add(toDisplay);
+                    FilterSpellTargetB.Items.Add(toDisplay);
 
                     //ChainTarget1.Items.Add(toDisplay);
                     //ChainTarget2.Items.Add(toDisplay);
@@ -670,9 +672,9 @@ namespace SpellEditor
                     if (isImport && !abstractDbc.HasData())
                         abstractDbc.ReloadContents();
                     if (isImport)
-                        await abstractDbc.ImportToSql(adapter, controller.SetProgress, "ID", bindingName);
+                        await abstractDbc.ImportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
                     else
-                        await abstractDbc.ExportToDbc(adapter, controller.SetProgress, "ID", bindingName);
+                        await abstractDbc.ExportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
                 }
                 catch (Exception exception)
                 {
@@ -4439,6 +4441,86 @@ namespace SpellEditor
             }
             // Collect all spell ID's with the effect id
             var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE EffectApplyAuraName1 = {id} or EffectApplyAuraName2 = {id} or EffectApplyAuraName3 = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
+        }
+
+        private void FilterSpellTargetA_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterSpellTargetA)
+                return;
+            var box = sender as ComboBox;
+            var selected = box.SelectedItem?.ToString() ?? "0 ";
+            var id = int.Parse(selected.Substring(0, selected.IndexOf(' ')));
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the effect id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE EffectImplicitTargetA1 = {id} or EffectImplicitTargetA2 = {id} or EffectImplicitTargetA3 = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
+        }
+
+        private void FilterSpellTargetB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterSpellTargetB)
+                return;
+            var box = sender as ComboBox;
+            var selected = box.SelectedItem?.ToString() ?? "0 ";
+            var id = int.Parse(selected.Substring(0, selected.IndexOf(' ')));
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the effect id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE EffectImplicitTargetB1 = {id} or EffectImplicitTargetB2 = {id} or EffectImplicitTargetB3 = {id}").Rows;
             var matchingSpellsSet = new HashSet<string>();
             foreach (DataRow record in matchingSpells)
             {

@@ -21,9 +21,9 @@ namespace SpellEditor.Sources.DBC
             return true;
         }
 
-        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
+        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName, ImportExportType _type)
         {
-            return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
+            return ImportTo(adapter, UpdateProgress, "ID", bindingName, _type);
         }
 
         public static DataRow GetRecordById(uint id, MainWindow mainWindows)
@@ -34,9 +34,9 @@ namespace SpellEditor.Sources.DBC
             return null;
         }
 
-        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
+        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, ImportExportType _type)
         {
-            return ExportToDbc(adapter, updateProgress, "ID", "Spell");
+            return ExportTo(adapter, updateProgress, "ID", "Spell", _type);
         }
     }
 }
