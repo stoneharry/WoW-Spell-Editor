@@ -15,6 +15,10 @@ Config changes require a program restart to take effect.
 
 Enjoy.
 
+## Video tutorial
+
+https://www.youtube.com/watch?v=oM4AU0KMuw0
+
 ## Brief Guide
 
 The `spell.dbc` exists client side inside the MPQ files: `DBFilesClient/Spell.dbc`. You extract this file and use it server side too. The client uses it to display spell strings, and other client side requirements. The server side uses it to calculate damage, healing, spell effects, etc, and validating that the requests the clients are sending are valid.
