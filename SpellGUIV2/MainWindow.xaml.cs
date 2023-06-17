@@ -632,69 +632,21 @@ namespace SpellEditor
         public delegate void UpdateProgressFunc(double value);
         public delegate void UpdateTextFunc(string value);
 
+        private ImportExportWindow _ImportExportWindow;
+
         #region ImportExportSpellDBC
-        private async void ImportExportSpellDbcButton(object sender, RoutedEventArgs e)
+        private void ImportExportSpellDbcButton(object sender, RoutedEventArgs e)
         {
-            var window = new ImportExportWindow(adapter);
-            var controller = await this.ShowProgressAsync(TryFindResource("Import/Export").ToString(), SafeTryFindResource("String1"));
-            controller.SetCancelable(false);
+            if (_ImportExportWindow != null && _ImportExportWindow.IsVisible)
+            {
+                _ImportExportWindow.Show();
+                return;
+            }
+            var window = new ImportExportWindow(adapter, PopulateSelectSpell);
             window.Show();
             window.Height += 40;
             window.Width /= 2;
-            while (window.IsVisible && !window.IsDataSelected())
-                await Task.Delay(100);
-            if (window.IsVisible)
-                window.Close();
-            var isImport = window.BindingImportList.Count > 0;
-            var archiveName = window.MpqArchiveName;
-            var bindingList = isImport ? window.BindingImportList : window.BindingExportList;
-            var manager = DBCManager.GetInstance();
-            foreach (var bindingName in bindingList)
-            {
-                try
-                {
-                    controller.SetMessage($"{(isImport ? "Importing" : "Exporting")} {bindingName}.dbc...");
-                    manager.ClearDbcBinding(bindingName);
-                    var abstractDbc = manager.FindDbcForBinding(bindingName);
-                    if (abstractDbc == null)
-                    {
-                        try
-                        {
-                            abstractDbc = new GenericDbc($"{ Config.DbcDirectory }\\{ bindingName }.dbc");
-                        }
-                        catch (Exception exception)
-                        {
-                            Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                            ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                            continue;
-                        }
-                    }
-                    if (isImport && !abstractDbc.HasData())
-                        abstractDbc.ReloadContents();
-                    if (isImport)
-                        await abstractDbc.ImportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
-                    else
-                        await abstractDbc.ExportTo(adapter, controller.SetProgress, "ID", bindingName, window.UseImportExportType);
-                }
-                catch (Exception exception)
-                {
-                    HandleErrorMessage(exception.GetType() + ": " + exception.Message + "\n" + exception.InnerException + "\n" + exception.StackTrace);
-                }
-            }
-            controller.SetMessage(SafeTryFindResource("ReloadingUI"));
-            loadAllRequiredDbcs();
-            await controller.CloseAsync();
-            if (!string.IsNullOrEmpty(archiveName))
-            {
-                var exportList = new List<string>();
-                Directory.EnumerateFiles("Export")
-                    .Where((dbcFile) => dbcFile.EndsWith(".dbc"))
-                    .ToList()
-                    .ForEach(exportList.Add);
-                var mpqExport = new MpqExport();
-                mpqExport.CreateMpqFromDbcFileList(archiveName, exportList);
-            }
-            PopulateSelectSpell();
+            _ImportExportWindow = window;
         }
 
         #endregion
