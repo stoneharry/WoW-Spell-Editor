@@ -25,6 +25,7 @@
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="AUTO"/>
@@ -35,7 +36,10 @@
                     </Grid.RowDefinitions>
                     <Label Content="The required DBCs are checked by default." Margin="10" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
                     <Button Content="Import Checked DBC Files" Margin="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Click="ImportClick"/>
-                    <ComboBox Name="ImportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="2"/>
+                    <Label Name="ImportLoadedCount" Margin="5" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+                    <CheckBox Name="ImportSelectAll" Content="Select All" Margin="5" Grid.Row="0" Grid.Column="3" Checked="SelectAllChanged" Unchecked="SelectAllChanged"/>
+                    <Label Content="Import Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                    <ComboBox Name="ImportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="3"/>
                     <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="500">
                         <UniformGrid Name="ImportGridDbcs" Columns="1"/>
                     </ScrollViewer>
@@ -44,6 +48,7 @@
             <TabItem Header="{DynamicResource butImportExportWindowExport}">
                 <Grid Name="ExportGrid" Margin="5">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
@@ -60,7 +65,10 @@
                     <Label Content="{DynamicResource ExportMpqName}" HorizontalAlignment="Right" Margin="5" Grid.Row="1" Grid.Column="0"/>
                     <TextBox Name="ExportMpqNameTxt" Text="patch-4.mpq" Margin="10,5,10,5" Grid.Row="1" Grid.Column="1"/>
                     <Label Content="{DynamicResource TablesToExport}" Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                    <ComboBox Name="ExportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="2"/>
+                    <Label Name="ExportLoadedCount" Margin="5" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+                    <CheckBox Name="ExportSelectAll" Content="Select All" Margin="5" Grid.Row="0" Grid.Column="3" Checked="SelectAllChanged" Unchecked="SelectAllChanged"/>
+                    <Label Content="Export Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                    <ComboBox Name="ExportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="3"/>
                     <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="500">
                         <UniformGrid Name="ExportGridDbcs" Columns="1"/>
                     </ScrollViewer>

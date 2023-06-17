@@ -104,6 +104,8 @@ namespace SpellEditor
                     }
                 );
             });
+            var totalBindings = bindings.Count;
+            var loadedCount = 0;
             // Populate all contents asynchronously (expensive)
             Task.Run(() => bindings.AsParallel().ForAll(binding =>
             {
@@ -142,6 +144,9 @@ namespace SpellEditor
                         box.IsEnabled = numRows > 0;
                         box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
                     }
+                    ++loadedCount;
+                    ImportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
+                    ExportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
                 }));
             }));
         }
@@ -177,7 +182,21 @@ namespace SpellEditor
                 BindingImportList = bindingNameList;
             else
                 BindingExportList = bindingNameList;
-            Logger.Info($"Bindings selected to {prefix.ToLower()}: {String.Join(", ", bindingNameList)}");
+            Logger.Info($"Bindings selected to {prefix.ToLower()}: {string.Join(", ", bindingNameList)}");
+        }
+
+
+        private void SelectAllChanged(object sender, RoutedEventArgs e)
+        {
+            var isChecked = (sender as CheckBox).IsChecked;
+            var isImport = sender == ImportSelectAll;
+            var contents = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
+            for (int i = 0; i < contents.Count; ++i)
+            {
+                var box = contents[i] as CheckBox;
+                if (box.IsEnabled)
+                    box.IsChecked = isChecked;
+            }
         }
     }
 }
