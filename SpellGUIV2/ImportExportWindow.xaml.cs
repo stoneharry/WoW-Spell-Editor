@@ -330,7 +330,12 @@ namespace SpellEditor
                 // Refresh spell selection list on import
                 if (isImport)
                 {
-                    Dispatcher.InvokeAsync(new Action(() => _PopulateSelectSpell.Invoke()));
+                    Thread.Sleep(250);
+                    Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        _PopulateSelectSpell.Invoke();
+                        Close();
+                    }));
                 }
             });
         }

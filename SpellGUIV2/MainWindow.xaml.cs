@@ -1972,10 +1972,13 @@ namespace SpellEditor
             {
                 return;
             }
-            var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
-            var iconId = uint.Parse(image.ToolTip.ToString());
-            var filePath = loadIcons.GetIconPath(iconId) + ".blp";
-            image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
+            var loadIcons = (SpellIconDBC) DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
+            if (loadIcons != null)
+            {
+                var iconId = uint.Parse(image.ToolTip.ToString());
+                var filePath = loadIcons.GetIconPath(iconId) + ".blp";
+                image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
+            }
         }
 
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
