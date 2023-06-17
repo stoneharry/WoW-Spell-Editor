@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using MahApps.Metro.Controls;
 using NLog;
 using SpellEditor.Sources.Binding;
+using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Tools.MPQ;
 
 namespace SpellEditor
 {
@@ -18,16 +24,15 @@ namespace SpellEditor
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDatabaseAdapter _Adapter;
-        public volatile string MpqArchiveName;
-        public volatile List<string> BindingImportList = new List<string>();
-        public volatile List<string> BindingExportList = new List<string>();
-        public volatile ImportExportType UseImportExportType;
+        private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
+        private string _MpqArchiveName;
+        private Action _PopulateSelectSpell;
 
-        public bool IsDataSelected() => BindingImportList.Count > 0 || BindingExportList.Count > 0;
-
-        public ImportExportWindow(IDatabaseAdapter adapter)
+        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell)
         {
             _Adapter = adapter;
+            _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
+            _PopulateSelectSpell = populateSelectSpell;
             InitializeComponent();
         }
 
@@ -42,11 +47,7 @@ namespace SpellEditor
         {
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             BuildImportExportTab();
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //var item = sender as TabControl;
+            ExportMpqNameTxt.Text = string.IsNullOrEmpty(Config.DefaultMpqName) ? "patch-4.MPQ" : Config.DefaultMpqName;
         }
 
         private bool IsDefaultImport(string name)
@@ -79,31 +80,49 @@ namespace SpellEditor
             // Build initial checkboxes
             bindings.ForEach((binding) =>
             {
-                importContents.Add(
-                    new CheckBox
-                    {
-                        Name = binding.Name + "ImportCheckBox",
-                        Content = $"{binding.Name}.dbc Loading...",
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(1),
-                        IsEnabled = false,
-                        IsChecked = false
-                    }
-                );
-                exportContents.Add(
-                    new CheckBox
-                    {
-                        Name = binding.Name + "ExportCheckBox",
-                        Content = $"{binding.Name} Loading...",
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(1),
-                        IsEnabled = false,
-                        IsChecked = false
-                    }
-                );
+                // Import
+                importContents.Add(new CheckBox
+                {
+                    Name = binding.Name + "ImportCheckBox",
+                    Content = $"{binding.Name}.dbc Loading...",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1),
+                    IsEnabled = false,
+                    IsChecked = false
+                });
+                importContents.Add(new ProgressBar
+                {
+                    Name = binding.Name + "ImportProgressBar",
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1, 1, 5, 1),
+                    Width = 200,
+                    Visibility = Visibility.Hidden
+                });
+                // Export
+                exportContents.Add(new CheckBox
+                {
+                    Name = binding.Name + "ExportCheckBox",
+                    Content = $"{binding.Name} Loading...",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1),
+                    IsEnabled = false,
+                    IsChecked = false
+                });
+                exportContents.Add(new ProgressBar
+                {
+                    Name = binding.Name + "ImportProgressBar",
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(1, 1, 5, 1),
+                    Width = 200,
+                    Visibility = Visibility.Hidden
+                });
             });
+            var totalBindings = bindings.Count;
+            var loadedCount = 0;
             // Populate all contents asynchronously (expensive)
             Task.Run(() => bindings.AsParallel().ForAll(binding =>
             {
@@ -112,9 +131,9 @@ namespace SpellEditor
                 {
                     // Import
                     CheckBox box = null;
-                    foreach (CheckBox child in importContents)
+                    foreach (UIElement element in importContents)
                     {
-                        if (child.Name.StartsWith(binding.Name))
+                        if (element is CheckBox child && child.Name.StartsWith(binding.Name))
                         {
                             box = child;
                             break;
@@ -128,9 +147,9 @@ namespace SpellEditor
                     }
                     // Export
                     box = null;
-                    foreach (CheckBox child in exportContents)
+                    foreach (UIElement element in exportContents)
                     {
-                        if (child.Name.StartsWith(binding.Name))
+                        if (element is CheckBox child && child.Name.StartsWith(binding.Name))
                         {
                             box = child;
                             break;
@@ -142,6 +161,9 @@ namespace SpellEditor
                         box.IsEnabled = numRows > 0;
                         box.IsChecked = numRows > 0 && IsDefaultImport(binding.Name.ToLower());
                     }
+                    ++loadedCount;
+                    ImportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
+                    ExportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
                 }));
             }));
         }
@@ -150,7 +172,7 @@ namespace SpellEditor
         {
             var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
             archiveName = archiveName.EndsWith(".mpq") ? archiveName : archiveName + ".mpq";
-            MpqArchiveName = archiveName;
+            _MpqArchiveName = archiveName;
             ClickHandler(false);
         }
 
@@ -158,26 +180,195 @@ namespace SpellEditor
         private void ExportClick(object sender, RoutedEventArgs e) => ClickHandler(false);
         private void ClickHandler(bool isImport)
         {
+            ImportExportType useType;
             if (Enum.TryParse(isImport ? ImportTypeCombo.Text : ExportTypeCombo.Text, out ImportExportType _type))
-                UseImportExportType = _type;
+                useType = _type;
             else
-                UseImportExportType = ImportExportType.DBC;
+                useType = ImportExportType.DBC;
             var bindingNameList = new List<string>();
             var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
             var prefix = isImport ? "Import" : "Export";
+            bool showBar = false;
             foreach (var element in children)
             {
                 if (element is CheckBox box)
                 {
-                    if (box.IsChecked.HasValue && box.IsChecked.Value)
+                    showBar = box.IsChecked.HasValue && box.IsChecked.Value;
+                    if (showBar)
                         bindingNameList.Add(box.Name.Substring(0, box.Name.IndexOf(prefix + "CheckBox")));
                 }
+                else if (element is ProgressBar bar)
+                {
+                    bar.Visibility = showBar ? Visibility.Visible : Visibility.Hidden;
+                }
             }
-            if (isImport)
-                BindingImportList = bindingNameList;
-            else
-                BindingExportList = bindingNameList;
-            Logger.Info($"Bindings selected to {prefix.ToLower()}: {String.Join(", ", bindingNameList)}");
+            Logger.Info($"Bindings selected to {prefix.ToLower()}: {string.Join(", ", bindingNameList)}");
+
+            // Now we want to disable the UI elements and update the progress bars
+            ImportClickBtn.IsEnabled = false;
+            ExportClickBtn1.IsEnabled = false;
+            ExportClickBtn2.IsEnabled = false;
+
+            doImportExport(isImport, bindingNameList, useType);
+        }
+
+
+        private void SelectAllChanged(object sender, RoutedEventArgs e)
+        {
+            var isChecked = (sender as CheckBox).IsChecked;
+            var isImport = sender == ImportSelectAll;
+            var contents = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
+            for (int i = 0; i < contents.Count; ++i)
+            {
+                if (contents[i] is CheckBox box && box.IsEnabled)
+                    box.IsChecked = isChecked;
+            }
+        }
+
+        private void doImportExport(bool isImport, List<string> bindingList, ImportExportType useType)
+        {
+            var manager = DBCManager.GetInstance();
+
+            Dictionary<string, ProgressBar> barLookup = new Dictionary<string, ProgressBar>();
+            bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, isImport)));
+
+            var label = isImport ? ImportLoadedCount : ExportLoadedCount;
+
+            Task.Run(() =>
+            {
+                ConcurrentBag<Task> bag = new ConcurrentBag<Task>();
+
+                // Start tasks
+                bindingList.AsParallel().ForAll(bindingName =>
+                {
+                    try
+                    {
+                        manager.ClearDbcBinding(bindingName);
+                        var abstractDbc = manager.FindDbcForBinding(bindingName);
+                        if (abstractDbc == null)
+                        {
+                            try
+                            {
+                                abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                            }
+                            catch (Exception exception)
+                            {
+                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                                return;
+                            }
+                        }
+                        if (isImport && !abstractDbc.HasData())
+                            abstractDbc.ReloadContents();
+
+                        int id;
+                        if (isImport)
+                        {
+                            var task = abstractDbc.ImportTo(_Adapter, SetProgress, "ID", bindingName, useType);
+                            bag.Add(task);
+                            id = task.Id;
+                        }
+                        else
+                        {
+                            var task = abstractDbc.ExportTo(_Adapter, SetProgress, "ID", bindingName, useType);
+                            bag.Add(task);
+                            id = task.Id;
+                        }
+                        _TaskLookup.TryAdd(id, barLookup[bindingName]);
+                    }
+                    catch (Exception exception)
+                    {
+                        Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                    }
+                });
+
+                // Wait for all tasks to complete
+                List<Task> allTasks = bag.ToList();
+                Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                while (allTasks.Count > 0)
+                {
+                    Thread.Sleep(100);
+                    for (int i = allTasks.Count - 1; i >= 0; --i)
+                    {
+                        var task = allTasks[i];
+                        if (task.IsCompleted)
+                        {
+                            var bar = _TaskLookup[task.Id];
+                            Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
+                            allTasks.RemoveAt(i);
+                        }
+                    }
+                    Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                }
+
+                // Create MPQ if required
+                if (!string.IsNullOrEmpty(_MpqArchiveName))
+                {
+                    var exportList = new List<string>();
+                    Directory.EnumerateFiles("Export")
+                        .Where((dbcFile) => dbcFile.EndsWith(".dbc"))
+                        .ToList()
+                        .ForEach(exportList.Add);
+                    var mpqExport = new MpqExport();
+                    mpqExport.CreateMpqFromDbcFileList(_MpqArchiveName, exportList);
+                }
+
+                // Reset
+                Dispatcher.InvokeAsync(new Action(() => {
+                    _TaskLookup.Values.ToList().ForEach(bar =>
+                    {
+                        bar.Value = 0;
+                        bar.Visibility = Visibility.Hidden;
+                    });
+                    ImportClickBtn.IsEnabled = true;
+                    ExportClickBtn1.IsEnabled = true;
+                    ExportClickBtn2.IsEnabled = true;
+                    _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
+                }));
+
+                // Refresh spell selection list on import
+                if (isImport)
+                {
+                    Thread.Sleep(250);
+                    Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        _PopulateSelectSpell.Invoke();
+                        Close();
+                    }));
+                }
+            });
+        }
+
+        public ProgressBar LookupProgressBar(string bindingName, bool isImport)
+        {
+            var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
+            for (int i = 0; i < children.Count; ++i)
+            {
+                if (children[i] is CheckBox box && box.Content.ToString().StartsWith(bindingName))
+                {
+                    return children[i + 1] as ProgressBar;
+                }
+            }
+            return null;
+        }
+
+        public void SetProgress(double progress)
+        {
+            int id = Task.CurrentId.GetValueOrDefault(0);
+            var bar = _TaskLookup[id];
+            if (bar != null)
+            {
+                int reportValue = Convert.ToInt32(progress * 100D);
+                Dispatcher.InvokeAsync(new Action(() => bar.Value = reportValue));
+            }
+        }
+        public void ShowFlyoutMessage(string message)
+        {
+            Dispatcher.InvokeAsync(new Action(() => {
+                Flyout.IsOpen = true;
+                FlyoutText.Text = message;
+            }));
         }
     }
 }

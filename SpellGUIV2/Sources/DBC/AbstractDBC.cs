@@ -108,9 +108,6 @@ namespace SpellEditor.Sources.DBC
                 StringBuilder q = null;
                 foreach (var record in records)
                 {
-                    // This might be needed? Disabled unless bugs are reported around this
-                    //if (r.record.ID == 0)
-                    //  continue;
                     if (index == 0 || index % 250 == 0)
                     {
                         if (q != null)
@@ -153,9 +150,6 @@ namespace SpellEditor.Sources.DBC
                 StringBuilder q = null;
                 foreach (var recordMap in Body.RecordMaps)
                 {
-                    // This might be needed? Disabled unless bugs are reported around this
-                    //if (r.record.ID == 0)
-                    //  continue;
                     if (index == 0 || index % 250 == 0)
                     {
                         if (q != null)
@@ -358,8 +352,10 @@ namespace SpellEditor.Sources.DBC
             {
                 lowerBounds += pageSize;
                 // Visual studio says these casts are redundant but it does not work without them
-                double percent = (double)Math.Min(totalCount, lowerBounds) / (double)totalCount;
-                updateProgress(percent);
+                double percent = ((double)Math.Min(totalCount, lowerBounds) / (double)totalCount);
+                // Report 0 .. 0.8 only
+                updateProgress(percent * 0.8);
+
                 var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
                 loadCount = page.Count;
                 page.ForEach(results.Add);
@@ -404,7 +400,8 @@ namespace SpellEditor.Sources.DBC
                         {
                             // Visual studio says these casts are redundant but it does not work without them
                             double percent = (double)i / (double)Header.RecordCount;
-                            updateProgress(percent);
+                            // Report 0.8 .. 1.0 only
+                            updateProgress((percent * 0.2) + 0.8);
                         }
                         var record = body.Records[i];
                         foreach (var entry in binding.Fields)

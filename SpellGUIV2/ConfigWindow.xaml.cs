@@ -28,6 +28,7 @@ namespace SpellEditor
         private Grid MySQLConfigGrid;
         private Grid SQLiteConfigGrid;
         private DatabaseIdentifier defaultConfigType;
+        private TextBox _MpqNameText;
 
         public ConfigWindow(DatabaseIdentifier defaultConfigToShow)
         {
@@ -58,10 +59,12 @@ namespace SpellEditor
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // Icon config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // MPQ name config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Bindings and directory settings, 2 rows
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            // Icon config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -123,6 +126,8 @@ namespace SpellEditor
             ConfigGrid.Children.Add(versionButton);
 
             currentRow = BuildIconConfig(ConfigGrid, currentRow);
+
+            currentRow = BuildMpqConfig(ConfigGrid, currentRow);
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
@@ -297,6 +302,7 @@ namespace SpellEditor
             Config.Pass = button.Pass();
             Config.Port = button.Port();
             Config.Database = button.Database();
+            Config.DefaultMpqName = _MpqNameText.Text;
             ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
@@ -304,6 +310,7 @@ namespace SpellEditor
         {
             var button = sender as SQLiteConfirmButton;
             Config.SQLiteFilename = button.SQLiteFilename();
+            Config.DefaultMpqName = _MpqNameText.Text;
             ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
@@ -333,6 +340,32 @@ namespace SpellEditor
 
             grid.Children.Add(label);
             grid.Children.Add(checkbox);
+
+            return currentRow;
+        }
+
+        private int BuildMpqConfig(Grid grid, int currentRow)
+        {
+            var label = new Label
+            {
+                Content = "Default MPQ name for Export:",
+                Margin = new Thickness(10)
+            };
+
+            var textBox = new TextBox
+            {
+                Margin = new Thickness(10),
+                Text = Config.DefaultMpqName
+            };
+            _MpqNameText = textBox;
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(textBox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(textBox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(textBox);
 
             return currentRow;
         }
