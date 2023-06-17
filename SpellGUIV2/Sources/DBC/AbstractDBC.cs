@@ -108,9 +108,6 @@ namespace SpellEditor.Sources.DBC
                 StringBuilder q = null;
                 foreach (var record in records)
                 {
-                    // This might be needed? Disabled unless bugs are reported around this
-                    //if (r.record.ID == 0)
-                    //  continue;
                     if (index == 0 || index % 250 == 0)
                     {
                         if (q != null)
@@ -153,9 +150,6 @@ namespace SpellEditor.Sources.DBC
                 StringBuilder q = null;
                 foreach (var recordMap in Body.RecordMaps)
                 {
-                    // This might be needed? Disabled unless bugs are reported around this
-                    //if (r.record.ID == 0)
-                    //  continue;
                     if (index == 0 || index % 250 == 0)
                     {
                         if (q != null)

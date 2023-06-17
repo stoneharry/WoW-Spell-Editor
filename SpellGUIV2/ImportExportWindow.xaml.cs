@@ -47,6 +47,7 @@ namespace SpellEditor
         {
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             BuildImportExportTab();
+            ExportMpqNameTxt.Text = string.IsNullOrEmpty(Config.DefaultMpqName) ? "patch-4.MPQ" : Config.DefaultMpqName;
         }
 
         private bool IsDefaultImport(string name)

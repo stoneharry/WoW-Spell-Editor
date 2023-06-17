@@ -125,6 +125,16 @@ namespace SpellEditor.Sources.Config
             }
         }
 
+        public static string DefaultMpqName
+        {
+            get { return GetConfigValue("DefaultMpqName"); }
+            set
+            {
+                UpdateConfigValue("DefaultMpqName", value);
+                Save();
+            }
+        }
+
         public static ConnectionType connectionType = ConnectionType.SQLite;
 
         private static void CreateXmlFile()
