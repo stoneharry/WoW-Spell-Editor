@@ -457,7 +457,7 @@ namespace SpellEditor
 
                         _TaskLookup.TryAdd(id, barLookup[bindingName]);
                     }
-                    catch (NotImplementedException exception)
+                    catch (NotImplementedException)
                     {
                         ShowFlyoutMessage("Feature only available in MySql");
                     }
