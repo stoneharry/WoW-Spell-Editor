@@ -1,10 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Binding;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Documents;
 using NLog;
 
 namespace SpellEditor.Sources.Database
@@ -22,7 +25,7 @@ namespace SpellEditor.Sources.Database
         {
             string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8mb4;";
 
-            _connection = new MySqlConnection {ConnectionString = connectionString};
+            _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
             // Create DB if not exists and use
             using (var cmd = _connection.CreateCommand())
@@ -72,6 +75,35 @@ namespace SpellEditor.Sources.Database
                         adapter.SelectCommand.CommandTimeout = 0;
                         adapter.Fill(dataSet);
                         return dataSet.Tables[0];
+                    }
+                }
+            }
+        }
+
+        public void ExportTableToSql(string tableName, string path = "Export")
+        {
+            lock (_syncLock)
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    using (MySqlBackup mb = new MySqlBackup(cmd))
+                    {
+                        var dbTableName = tableName.ToLower();
+                        cmd.Connection = _connection;
+                        var tableList = new List<string>()
+                        {
+                            dbTableName
+                        };
+                        mb.ExportInfo.TablesToBeExportedList = tableList;
+                        mb.ExportInfo.ExportTableStructure = true;
+                        mb.ExportInfo.ExportRows = true;
+                        mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
+                        Stream stream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+                        var script = mb.ExportToString();
+                        script = script.Replace($"{dbTableName}", $"{dbTableName}_dbc");
+                        var bytes = Encoding.UTF8.GetBytes(script);
+                        stream.Write(bytes, 0, bytes.Length);
+                        stream.Close();
                     }
                 }
             }
@@ -168,7 +200,7 @@ namespace SpellEditor.Sources.Database
             {
                 str = str.Remove(str.Length - 2, 2);
                 str = str.Append(") ");
-            } 
+            }
             str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");
             return str.ToString();
         }

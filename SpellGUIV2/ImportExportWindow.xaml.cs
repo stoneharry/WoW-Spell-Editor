@@ -387,6 +387,11 @@ namespace SpellEditor
 
         private void SqlClick(object sender, RoutedEventArgs e)
         {
+            if (_Adapter.GetType() == typeof(SQLite))
+            {
+                ShowFlyoutMessage("Feature only available in MySql");
+                return;
+            }
 
             var manager = DBCManager.GetInstance();
 
@@ -436,11 +441,13 @@ namespace SpellEditor
                             }
                             catch (Exception exception)
                             {
-                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                Logger.Info(
+                                    $"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
                                 ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
                                 return;
                             }
                         }
+
                         if (!abstractDbc.HasData())
                             abstractDbc.ReloadContents();
 
@@ -449,6 +456,10 @@ namespace SpellEditor
                         int id = task.Id;
 
                         _TaskLookup.TryAdd(id, barLookup[bindingName]);
+                    }
+                    catch (NotImplementedException exception)
+                    {
+                        ShowFlyoutMessage("Feature only available in MySql");
                     }
                     catch (Exception exception)
                     {

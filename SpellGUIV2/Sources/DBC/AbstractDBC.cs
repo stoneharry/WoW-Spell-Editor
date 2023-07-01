@@ -266,11 +266,7 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    Thread.Sleep(1000);
-                    updateProgress(0.1 * (i + 1));
-                }
+                adapter.ExportTableToSql(bindingName);
             });
 
         }

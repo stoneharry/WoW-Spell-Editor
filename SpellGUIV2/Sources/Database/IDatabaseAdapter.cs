@@ -9,6 +9,7 @@ namespace SpellEditor.Sources.Database
         DataTable Query(string query);
         void CommitChanges(string query, DataTable dataTable);
         void Execute(string p);
+        void ExportTableToSql(string tableName, string path = "Export");
         void CreateAllTablesFromBindings();
         string EscapeString(string str);
         string GetTableCreateString(Binding.Binding binding);
