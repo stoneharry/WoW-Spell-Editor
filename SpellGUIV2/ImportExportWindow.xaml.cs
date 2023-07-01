@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
+
 using MahApps.Metro.Controls;
+
 using NLog;
+
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
@@ -208,6 +213,7 @@ namespace SpellEditor
             ImportClickBtn.IsEnabled = false;
             ExportClickBtn1.IsEnabled = false;
             ExportClickBtn2.IsEnabled = false;
+            ExportClickBtn3.IsEnabled = false;
 
             doImportExport(isImport, bindingNameList, useType);
         }
@@ -315,7 +321,8 @@ namespace SpellEditor
                 }
 
                 // Reset
-                Dispatcher.InvokeAsync(new Action(() => {
+                Dispatcher.InvokeAsync(new Action(() =>
+                {
                     _TaskLookup.Values.ToList().ForEach(bar =>
                     {
                         bar.Value = 0;
@@ -324,6 +331,7 @@ namespace SpellEditor
                     ImportClickBtn.IsEnabled = true;
                     ExportClickBtn1.IsEnabled = true;
                     ExportClickBtn2.IsEnabled = true;
+                    ExportClickBtn3.IsEnabled = true;
                     _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
                 }));
 
@@ -365,10 +373,127 @@ namespace SpellEditor
         }
         public void ShowFlyoutMessage(string message)
         {
-            Dispatcher.InvokeAsync(new Action(() => {
+            Dispatcher.InvokeAsync(new Action(() =>
+            {
                 Flyout.IsOpen = true;
                 FlyoutText.Text = message;
             }));
+        }
+
+        private void TabClick(object sender, MouseButtonEventArgs e)
+        {
+            SizeToContent = SizeToContent.Width;
+        }
+
+        private void SqlClick(object sender, RoutedEventArgs e)
+        {
+
+            var manager = DBCManager.GetInstance();
+
+            Dictionary<string, ProgressBar> barLookup = new Dictionary<string, ProgressBar>();
+            var bindingList = new List<string>();
+            var children = ExportGridDbcs.Children;
+            var prefix = "Export";
+            bool showBar = false;
+            foreach (var element in children)
+            {
+                if (element is CheckBox box)
+                {
+                    showBar = box.IsChecked.HasValue && box.IsChecked.Value;
+                    if (showBar)
+                        bindingList.Add(box.Name.Substring(0, box.Name.IndexOf(prefix + "CheckBox")));
+                }
+                else if (element is ProgressBar bar)
+                {
+                    bar.Visibility = showBar ? Visibility.Visible : Visibility.Hidden;
+                }
+            }
+
+            bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, false)));
+
+            // Now we want to disable the UI elements and update the progress bars
+            ImportClickBtn.IsEnabled = false;
+            ExportClickBtn1.IsEnabled = false;
+            ExportClickBtn2.IsEnabled = false;
+            ExportClickBtn3.IsEnabled = false;
+
+            Task.Run(() =>
+            {
+                ConcurrentBag<Task> bag = new ConcurrentBag<Task>();
+
+                // Start tasks
+                bindingList.AsParallel().ForAll(bindingName =>
+                {
+                    try
+                    {
+                        manager.ClearDbcBinding(bindingName);
+                        var abstractDbc = manager.FindDbcForBinding(bindingName);
+                        if (abstractDbc == null)
+                        {
+                            try
+                            {
+                                abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                            }
+                            catch (Exception exception)
+                            {
+                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                                return;
+                            }
+                        }
+                        if (!abstractDbc.HasData())
+                            abstractDbc.ReloadContents();
+
+                        var task = abstractDbc.ExportToSql(_Adapter, SetProgress, "ID", bindingName);
+                        bag.Add(task);
+                        int id = task.Id;
+
+                        _TaskLookup.TryAdd(id, barLookup[bindingName]);
+                    }
+                    catch (Exception exception)
+                    {
+                        Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                    }
+                });
+
+                var label = ExportLoadedCount;
+
+                // Wait for all tasks to complete
+                List<Task> allTasks = bag.ToList();
+                Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                while (allTasks.Count > 0)
+                {
+                    Thread.Sleep(100);
+                    for (int i = allTasks.Count - 1; i >= 0; --i)
+                    {
+                        var task = allTasks[i];
+                        if (task.IsCompleted)
+                        {
+                            var bar = _TaskLookup[task.Id];
+                            Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
+                            allTasks.RemoveAt(i);
+                        }
+                    }
+                    Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                }
+
+                Dispatcher.InvokeAsync(new Action(() =>
+                {
+                    _TaskLookup.Values.ToList().ForEach(bar =>
+                    {
+                        bar.Value = 0;
+                        bar.Visibility = Visibility.Hidden;
+                    });
+                    ImportClickBtn.IsEnabled = true;
+                    ExportClickBtn1.IsEnabled = true;
+                    ExportClickBtn2.IsEnabled = true;
+                    ExportClickBtn3.IsEnabled = true;
+                    _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
+                }));
+            });
+
+
         }
     }
 }
