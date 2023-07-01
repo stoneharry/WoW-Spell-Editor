@@ -227,6 +227,7 @@
     <system:String x:Key="String5">Un seul sort peut être sélectionné à la fois.</system:String>
 	<system:String x:Key="ExportCheckedFiles">Export checked to DBC Files</system:String>
 	<system:String x:Key="ExportCheckedFilesMpq">Export checked to MPQ</system:String>
+	<system:String x:Key="ExportCheckedFilesSql">Export checked to SQL</system:String>
 	<system:String x:Key="ExportMpqName">MPQ name:</system:String>
 	<system:String x:Key="TablesToExport">Select which SQL tables you wish to export.</system:String>
 	
