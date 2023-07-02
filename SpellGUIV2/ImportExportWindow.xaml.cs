@@ -363,7 +363,10 @@ namespace SpellEditor
 
         public void SetProgress(double progress)
         {
-            int id = Task.CurrentId.GetValueOrDefault(0);
+            // Sending the id in the progress variable is a hack to get around the fact that I can't pass more than one variable to the callback
+            // this happens because the callback is called from a different task
+            int id = progress > 1 ? (int)progress : Task.CurrentId.GetValueOrDefault(0);
+            progress = progress > 1 ? progress - id : progress;
             var bar = _TaskLookup[id];
             if (bar != null)
             {
@@ -451,11 +454,10 @@ namespace SpellEditor
                         if (!abstractDbc.HasData())
                             abstractDbc.ReloadContents();
 
-                        var task = abstractDbc.ExportToSql(_Adapter, SetProgress, "ID", bindingName);
+                        var task = abstractDbc.ExportToSql(_Adapter, SetProgress, bindingName);
                         bag.Add(task);
-                        int id = task.Id;
 
-                        _TaskLookup.TryAdd(id, barLookup[bindingName]);
+                        _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
                     }
                     catch (NotImplementedException)
                     {

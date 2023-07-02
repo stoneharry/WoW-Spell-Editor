@@ -262,11 +262,11 @@ namespace SpellEditor.Sources.DBC
             });
         }
 
-        public Task ExportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
+        public Task ExportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string bindingName)
         {
             return Task.Run(() =>
             {
-                adapter.ExportTableToSql(bindingName);
+                adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
             });
 
         }

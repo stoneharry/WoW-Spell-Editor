@@ -18,6 +18,7 @@ namespace SpellEditor.Sources.Database
 
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
+        private Dictionary<string, List<Tuple<string, string>>> _tableColumns = new Dictionary<string, List<Tuple<string, string>>>();
         private Timer _heartbeat;
         public bool Updating { get; set; }
 
@@ -37,6 +38,8 @@ namespace SpellEditor.Sources.Database
             //  instead just have a keep alive heartbeat.
             // Object reference needs to be held to prevent garbage collection.
             _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
+
+            CreateDatabasesTablesColumns();
         }
 
         ~MySQL()
@@ -80,33 +83,69 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void ExportTableToSql(string tableName, string path = "Export")
+        public void ExportTableToSql(string tableName, string path = "Export", int? taskId = null, MainWindow.UpdateProgressFunc func = null)
         {
+            string script = null;
+            var dbTableName = tableName.ToLower();
+
             lock (_syncLock)
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     using (MySqlBackup mb = new MySqlBackup(cmd))
                     {
-                        var dbTableName = tableName.ToLower();
                         cmd.Connection = _connection;
                         var tableList = new List<string>()
                         {
                             dbTableName
                         };
                         mb.ExportInfo.TablesToBeExportedList = tableList;
-                        mb.ExportInfo.ExportTableStructure = true;
+                        mb.ExportInfo.ExportTableStructure = false;
                         mb.ExportInfo.ExportRows = true;
+                        mb.ExportInfo.EnableComment = false;
                         mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
-                        Stream stream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
-                        var script = mb.ExportToString();
-                        script = script.Replace($"{dbTableName}", $"{dbTableName}_dbc");
-                        var bytes = Encoding.UTF8.GetBytes(script);
-                        stream.Write(bytes, 0, bytes.Length);
-                        stream.Close();
+                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
+                        if (func != null)
+                        {
+                            mb.ExportProgressChanged += (sender, args) =>
+                            {
+                                var currentRowIndexInCurrentTable = (int)args.CurrentRowIndexInCurrentTable;
+                                var totalRowsInCurrentTable = (int)args.TotalRowsInCurrentTable;
+                                var progress = 0.8 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
+                                if (taskId != null)
+                                {
+                                    progress += Convert.ToDouble((int)taskId);
+                                }
+                                func(progress);
+                            };
+                        }
+                        script = mb.ExportToString();
                     }
                 }
             }
+            Stream stream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+            script = script.Replace($"INTO `{dbTableName}`", $"INTO `{dbTableName}_dbc`");
+            script = script.Replace($"TABLE `{dbTableName}`", $"TABLE `{dbTableName}_dbc`");
+
+
+            // Not the fastest way, but it works
+            if (_tableColumns.TryGetValue(dbTableName, out var tableColumn))
+            {
+                script = tableColumn.Aggregate(script, (current, column) => current.Replace(column.Item1, column.Item2));
+            }
+
+            if (func != null)
+            {
+                var progress = 0.9;
+                if (taskId != null)
+                {
+                    progress += Convert.ToDouble((int)taskId);
+                }
+                func(progress);
+            }
+            var bytes = Encoding.UTF8.GetBytes(script);
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Close();
         }
 
         public object QuerySingleValue(string query)
@@ -219,6 +258,21 @@ namespace SpellEditor.Sources.Database
                 null,
                 interval,
                 interval);
+        }
+
+        private void CreateDatabasesTablesColumns()
+        {
+            _tableColumns["spell"] = new List<Tuple<string, string>>()
+            {
+
+            };
+
+            _tableColumns["spellvisual"] = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>("MissileFollowDropSpeed","MissileFollowGroundDropSpeed"),
+                new Tuple<string, string>("MissileFollowApproach","MissileFollowGroundApproach"),
+            };
+
         }
     }
 }
