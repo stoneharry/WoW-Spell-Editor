@@ -86,6 +86,7 @@ namespace SpellEditor.Sources.DBC
                     return ImportToSql(adapter, UpdateProgress, IdKey, bindingName);
                 case ImportExportType.CSV:
                     return ImportToCsv(adapter, UpdateProgress, IdKey, bindingName);
+                // TODO: Handle import of raw SQL
                 default:
                     throw new Exception("Unhandled ImportExport type: " + _type.ToString());
             }
@@ -223,6 +224,8 @@ namespace SpellEditor.Sources.DBC
                     return ExportToDbc(adapter, updateProgress, IdKey, bindingName);
                 case ImportExportType.CSV:
                     return ExportToCsv(adapter, updateProgress, IdKey, bindingName);
+                case ImportExportType.SQL:
+                    return ExportToSql(adapter, updateProgress, bindingName);
                 default:
                     throw new Exception("Unhandled ImportExport type: " + _type.ToString());
             }
@@ -266,9 +269,16 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
+                var newAdapter = new MySQL();
+                try
+                {
+                    adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
+                }
+                finally
+                {
+                    // Adapter should be disposable
+                }
             });
-
         }
 
         public Task ExportToCsv(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)

@@ -89,6 +89,7 @@ namespace SpellEditor.Sources.Database
             var script = new StringBuilder();
             var dbTableName = tableName.ToLower();
 
+            // TODO(Harry): Do we really need to lock? We should create a new connection for this export since it's expensive...
             lock (_syncLock)
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -112,7 +113,7 @@ namespace SpellEditor.Sources.Database
                             {
                                 var currentRowIndexInCurrentTable = (int)args.CurrentRowIndexInCurrentTable;
                                 var totalRowsInCurrentTable = (int)args.TotalRowsInCurrentTable;
-                                var progress = 0.8 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
+                                var progress = 0.8 * (double)currentRowIndexInCurrentTable / (double)totalRowsInCurrentTable;
                                 if (taskId != null)
                                 {
                                     progress += Convert.ToDouble((int)taskId);
@@ -125,9 +126,11 @@ namespace SpellEditor.Sources.Database
                 }
             }
 
+            // TODO(Harry): This shouldn't be hardcoded
             script.Replace($"INTO `{dbTableName}`", $"INTO `{dbTableName}_dbc`");
             script.Replace($"TABLE `{dbTableName}`", $"TABLE `{dbTableName}_dbc`");
 
+            // TODO(Harry): Should come from a file instead of hardcoding
             if (dbTableName.Equals("spell"))
             {
                 FormatSpellTableScript(script);
@@ -144,6 +147,7 @@ namespace SpellEditor.Sources.Database
                 var progress = 0.9;
                 if (taskId != null)
                 {
+                    // Huh? TODO(Harry): Might need to refactor this
                     progress += Convert.ToDouble((int)taskId);
                 }
                 func(progress);
