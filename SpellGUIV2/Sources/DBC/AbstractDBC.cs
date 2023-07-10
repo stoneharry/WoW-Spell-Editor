@@ -269,14 +269,9 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                var newAdapter = new MySQL();
-                try
+                using (var newAdapter = AdapterFactory.Instance.GetAdapter(false))
                 {
                     adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
-                }
-                finally
-                {
-                    // Adapter should be disposable
                 }
             });
         }

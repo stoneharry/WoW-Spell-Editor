@@ -126,6 +126,15 @@ namespace SpellEditor
             InitializeComponent();
         }
 
+        ~MainWindow()
+        {
+            GetDBAdapter()?.Dispose();
+            Logger.Info("######################################################");
+            Logger.Info("### SHUTTING DOWN                                    #");
+            Logger.Info("######################################################");
+            Console.Out.Flush();
+        }
+
         public async void HandleErrorMessage(string msg)
         {
             if (Dispatcher != null && Dispatcher.CheckAccess())
@@ -699,17 +708,7 @@ namespace SpellEditor
             {
                 try
                 {
-                    switch (Config.connectionType)
-                    {
-                        case Config.ConnectionType.MySQL:
-                            adapter = new MySQL();
-                            break;
-                        case Config.ConnectionType.SQLite:
-                            adapter = new SQLite();
-                            break;
-                        default:
-                            throw new Exception("Unknown connection type, valid types: MySQL, SQLite");
-                    }
+                    adapter = AdapterFactory.Instance.GetAdapter(true);
                     adapter.CreateAllTablesFromBindings();
                 }
                 catch (Exception e)

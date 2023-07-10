@@ -13,7 +13,7 @@ using NLog;
 
 namespace SpellEditor.Sources.Database
 {
-    public class MySQL : IDatabaseAdapter
+    public class MySQL : IDatabaseAdapter, IDisposable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -23,32 +23,54 @@ namespace SpellEditor.Sources.Database
         private Timer _heartbeat;
         public bool Updating { get; set; }
 
-        public MySQL()
+        public MySQL(bool initialiseDatabase)
         {
             string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8mb4;";
 
             _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
-            // Create DB if not exists and use
-            using (var cmd = _connection.CreateCommand())
+
+            if (initialiseDatabase)
             {
-                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
-                cmd.ExecuteNonQuery();
+                // Create DB if not exists and use
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
+                    cmd.ExecuteNonQuery();
+                }
             }
-            // Rather than attempting to recreate the connection on being dropped,
-            //  instead just have a keep alive heartbeat.
-            // Object reference needs to be held to prevent garbage collection.
-            _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
+            else
+            {
+                // Use DB
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("USE `{0}`;", Config.Config.Database);
+                    cmd.ExecuteNonQuery();
+                }
+            }
 
             CreateDatabasesTablesColumns();
+
+            // Heartbeat keeps the connection alive, otherwise it can be killed by remote for inactivity
+            // Object reference needs to be held to prevent garbage collection.
+            _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
         }
 
-        ~MySQL()
+        public void Dispose()
         {
             _heartbeat?.Dispose();
             _heartbeat = null;
             if (_connection != null && _connection.State != ConnectionState.Closed)
-                _connection.Close();
+            {
+                try
+                {
+                    _connection.Close();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
+                }
+            }
         }
 
         public void CreateAllTablesFromBindings()
@@ -89,7 +111,6 @@ namespace SpellEditor.Sources.Database
             var script = new StringBuilder();
             var dbTableName = tableName.ToLower();
 
-            // TODO(Harry): Do we really need to lock? We should create a new connection for this export since it's expensive...
             lock (_syncLock)
             {
                 using (MySqlCommand cmd = new MySqlCommand())
@@ -114,10 +135,6 @@ namespace SpellEditor.Sources.Database
                                 var currentRowIndexInCurrentTable = (int)args.CurrentRowIndexInCurrentTable;
                                 var totalRowsInCurrentTable = (int)args.TotalRowsInCurrentTable;
                                 var progress = 0.8 * (double)currentRowIndexInCurrentTable / (double)totalRowsInCurrentTable;
-                                if (taskId != null)
-                                {
-                                    progress += Convert.ToDouble((int)taskId);
-                                }
                                 func(progress);
                             };
                         }
@@ -144,13 +161,7 @@ namespace SpellEditor.Sources.Database
 
             if (func != null)
             {
-                var progress = 0.9;
-                if (taskId != null)
-                {
-                    // Huh? TODO(Harry): Might need to refactor this
-                    progress += Convert.ToDouble((int)taskId);
-                }
-                func(progress);
+                func(0.9);
             }
 
             var bytes = Encoding.UTF8.GetBytes(script.ToString());
