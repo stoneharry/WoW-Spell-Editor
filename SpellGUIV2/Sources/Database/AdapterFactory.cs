@@ -1,7 +1,7 @@
 ﻿using SpellEditor.Sources.Database;
 using System;
 
-namespace SpellEditor.Sources.DBC
+namespace SpellEditor.Sources.Database
 {
     public class AdapterFactory
     {
