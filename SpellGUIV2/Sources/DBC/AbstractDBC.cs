@@ -12,8 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
@@ -23,9 +21,9 @@ namespace SpellEditor.Sources.DBC
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private string _filePath;
-        protected DBCHeader Header;
-        protected DBCBody Body;
-        protected DBCReader Reader;
+        public DBCHeader Header;
+        public DBCBody Body;
+        public DBCReader Reader;
 
         protected void ReadDBCFile(string filePath)
         {
@@ -42,7 +40,6 @@ namespace SpellEditor.Sources.DBC
             var headerWatch = new Stopwatch();
             var bodyWatch = new Stopwatch();
             var stringWatch = new Stopwatch();
-            Body = new DBCBody();
             Reader = new DBCReader(_filePath);
             // Header
             headerWatch.Start();
@@ -50,7 +47,7 @@ namespace SpellEditor.Sources.DBC
             headerWatch.Stop();
             // Body
             bodyWatch.Start();
-            Reader.ReadDBCRecords(Body, name);
+            Reader.ReadDBCRecords(ref Body, name);
             bodyWatch.Stop();
             // Strings
             stringWatch.Start();
@@ -80,15 +77,15 @@ namespace SpellEditor.Sources.DBC
 
         public Task ImportTo(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey, string bindingName, ImportExportType _type)
         {
-            return StorageFactory.Instance.GetStorageAdapter(_type).Import(adapter, UpdateProgress, IdKey, bindingName);
+            return StorageFactory.Instance.GetStorageAdapter(_type).Import(adapter, this, UpdateProgress, IdKey, bindingName);
         }
 
         public Task ExportTo(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, ImportExportType _type)
         {
-            return StorageFactory.Instance.GetStorageAdapter(_type).Export(adapter, updateProgress, IdKey, bindingName);
+            return StorageFactory.Instance.GetStorageAdapter(_type).Export(adapter, this, updateProgress, IdKey, bindingName);
         }
 
-        protected List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
+        public List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
         {
             const int pageSize = 1000;
             int totalCount;
@@ -127,7 +124,7 @@ namespace SpellEditor.Sources.DBC
             return records;
         }
 
-        protected void SaveDbcFile(MainWindow.UpdateProgressFunc updateProgress, DBCBodyToSerialize body, Binding.Binding binding)
+        public void SaveDbcFile(MainWindow.UpdateProgressFunc updateProgress, DBCBodyToSerialize body, Binding.Binding binding)
         {
             string path = $"Export/{binding.Name}.dbc";
             Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -252,7 +249,7 @@ namespace SpellEditor.Sources.DBC
 
         public bool HasData()
         {
-            return Body != null && Body.RecordMaps != null && Body.RecordMaps.Count() > 0;
+            return Body.RecordMaps != null && Body.RecordMaps.Count() > 0;
         }
 
         public struct DBCHeader
@@ -264,50 +261,13 @@ namespace SpellEditor.Sources.DBC
             public int StringBlockSize;
         };
 
-        public class DBCBody
+        public struct DBCBody
         {
             // Column Name -> Column Value
             public Dictionary<string, object>[] RecordMaps;
-        };
-
-        protected class DBCBodyToSerialize
-        {
-            public List<Dictionary<string, object>> Records;
-            public Dictionary<int, int> OffsetStorage;
-            public Dictionary<int, string> ReverseStorage;
-
-            // Returns new header stringBlockOffset
-            public int GenerateStringOffsetsMap(Binding.Binding binding)
-            {
-                // Start at 1 as 0 is hardcoded as '\0'
-                int stringBlockOffset = 1;
-                // Performance gain by collecting the fields to iterate first
-                var fields = binding.Fields.Where(field => field.Type == BindingType.STRING_OFFSET).ToArray();
-                OffsetStorage = new Dictionary<int, int>();
-                ReverseStorage = new Dictionary<int, string>();
-                // Populate string <-> offset lookup maps
-                for (int i = 0; i < Records.Count; ++i)
-                {
-                    foreach (var entry in fields)
-                    {
-                        var record = Records.ElementAt(i);
-                        string str = record[entry.Name].ToString();
-                        if (str.Length == 0)
-                            continue;
-                        var key = str.GetHashCode();
-                        if (!OffsetStorage.ContainsKey(key))
-                        {
-                            OffsetStorage.Add(key, stringBlockOffset);
-                            ReverseStorage.Add(stringBlockOffset, str);
-                            stringBlockOffset += Encoding.UTF8.GetByteCount(str) + 1;
-                        }
-                    }
-                }
-                return stringBlockOffset;
-            }
         }
 
-        public class VirtualStrTableEntry
+        public struct VirtualStrTableEntry
         {
             public string Value;
             public uint NewValue;

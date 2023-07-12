@@ -220,6 +220,7 @@
     <Compile Include="Sources\Database\ImportExportType.cs" />
     <Compile Include="Sources\Database\AdapterFactory.cs" />
     <Compile Include="Sources\DBC\AnimationData.cs" />
+    <Compile Include="Sources\DBC\DBCBodyToSerialize.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />

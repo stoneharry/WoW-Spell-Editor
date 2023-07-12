@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpellEditor.Sources.DBC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SpellEditor.Sources.Database
 {
     public class SqlFileStorage : IStorageAdapter
     {
-        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
+        public Task Export(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
         {
             return Task.Run(() =>
             {
@@ -19,7 +20,7 @@ namespace SpellEditor.Sources.Database
             });
         }
 
-        public Task Import(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
+        public Task Import(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
         {
             throw new NotImplementedException();
         }

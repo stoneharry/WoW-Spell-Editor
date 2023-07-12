@@ -1,4 +1,5 @@
 ﻿using SpellEditor.Sources.Binding;
+using SpellEditor.Sources.DBC;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,13 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace SpellEditor.Sources.Database
 {
     public class CsvFileStorage : IStorageAdapter
     {
-        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
+        public Task Export(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
             {
@@ -27,7 +27,7 @@ namespace SpellEditor.Sources.Database
                     orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
                 }
 
-                body.Records = LoadRecords(adapter, bindingName, orderClause, updateProgress);
+                body.Records = dbc.LoadRecords(adapter, bindingName, orderClause, updateProgress);
                 var numRows = body.Records.Count();
                 if (numRows == 0)
                     throw new Exception("No rows to export");
@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.Database
             });
         }
 
-        public Task Import(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
+        public Task Import(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
         {
             return Task.Run(() =>
             {

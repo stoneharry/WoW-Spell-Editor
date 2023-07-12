@@ -651,7 +651,7 @@ namespace SpellEditor
                 _ImportExportWindow.Show();
                 return;
             }
-            var window = new ImportExportWindow(adapter, PopulateSelectSpell);
+            var window = new ImportExportWindow(adapter, PopulateSelectSpell, LoadAllRequiredDbcs);
             window.Show();
             window.Height += 40;
             window.Width /= 2;
@@ -680,7 +680,7 @@ namespace SpellEditor
         #endregion
 
         #region InitialiseMemberVariables
-        private void loadAllRequiredDbcs()
+        private void LoadAllRequiredDbcs()
         {
             // Load required DBC's. First the ones with dependencies and inject them into the manager
             var manager = DBCManager.GetInstance();
@@ -722,7 +722,7 @@ namespace SpellEditor
 
             try
             {
-                loadAllRequiredDbcs();
+                LoadAllRequiredDbcs();
             }
             catch (MySqlException e)
             {

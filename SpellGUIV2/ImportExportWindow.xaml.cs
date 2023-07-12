@@ -30,12 +30,14 @@ namespace SpellEditor
         private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
+        private Action _ReloadData;
 
-        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell)
+        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action reloadData)
         {
             _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
             _PopulateSelectSpell = populateSelectSpell;
+            _ReloadData = reloadData;
             InitializeComponent();
         }
 
@@ -337,6 +339,7 @@ namespace SpellEditor
                     Thread.Sleep(250);
                     Dispatcher.InvokeAsync(new Action(() =>
                     {
+                        _ReloadData.Invoke();
                         _PopulateSelectSpell.Invoke();
                         Close();
                     }));
@@ -363,7 +366,7 @@ namespace SpellEditor
             // this happens because the callback is called from a different task
             int id = progress > 1 ? (int)progress : Task.CurrentId.GetValueOrDefault(0);
             progress = progress > 1 ? progress - id : progress;
-            var bar = _TaskLookup[id];
+            var bar = id == 0 ? null : _TaskLookup[id];
             if (bar != null)
             {
                 int reportValue = Convert.ToInt32(progress * 100D);
