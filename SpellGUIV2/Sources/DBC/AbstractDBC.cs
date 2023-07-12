@@ -1,9 +1,7 @@
 ﻿using NLog;
-
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +11,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
@@ -262,15 +259,6 @@ namespace SpellEditor.Sources.DBC
             });
         }
 
-        public Task ExportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string bindingName)
-        {
-            return Task.Run(() =>
-            {
-                adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
-            });
-
-        }
-
         public Task ExportToCsv(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             return Task.Run(() =>
@@ -306,7 +294,7 @@ namespace SpellEditor.Sources.DBC
                     List<string> fields = new List<string>(binding.Fields.Length);
                     foreach (var field in binding.Fields)
                     {
-                        switch (field.Type)
+                        switch(field.Type)
                         {
                             case BindingType.STRING_OFFSET:
                                 {
@@ -319,7 +307,7 @@ namespace SpellEditor.Sources.DBC
                             default:
                                 fields.Add(record[field.Name].ToString());
                                 break;
-
+                                
                         }
                     }
                     toWrite.Add(string.Join(",", fields));
