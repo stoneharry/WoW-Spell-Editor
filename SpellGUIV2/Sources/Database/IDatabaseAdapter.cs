@@ -1,8 +1,9 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace SpellEditor.Sources.Database
 {
-    public interface IDatabaseAdapter
+    public interface IDatabaseAdapter : IDisposable
     {
         bool Updating { get; set; }
 

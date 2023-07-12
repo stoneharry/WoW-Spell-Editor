@@ -9,6 +9,7 @@ namespace SpellEditor.Sources.Database
     public enum ImportExportType
     {
         DBC,
-        CSV
+        CSV,
+        SQL
     }
 }

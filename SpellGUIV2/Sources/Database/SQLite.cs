@@ -25,6 +25,11 @@ namespace SpellEditor.Sources.Database
             _connection.Open();
         }
 
+        public void Dispose()
+        {
+            _connection?.Dispose();
+        }
+
         // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
 
         public void CreateAllTablesFromBindings()
@@ -82,6 +87,7 @@ namespace SpellEditor.Sources.Database
 
         public void ExportTableToSql(string tableName = null, string path = null, int? taskId = 0, MainWindow.UpdateProgressFunc func = null)
         {
+            // TODO
             throw new NotImplementedException();
         }
 

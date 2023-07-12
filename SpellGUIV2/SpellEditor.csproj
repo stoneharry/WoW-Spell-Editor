@@ -77,7 +77,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>D074FCD8783D9D3959BF856D474D6937665C5AB5</ManifestCertificateThumbprint>
@@ -212,8 +212,15 @@
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />
+    <Compile Include="Sources\Database\SqlFileStorage.cs" />
+    <Compile Include="Sources\Database\CsvFileStorage.cs" />
+    <Compile Include="Sources\Database\DbcFileStorage.cs" />
+    <Compile Include="Sources\Database\StorageAdapter.cs" />
+    <Compile Include="Sources\Database\StorageFactory.cs" />
     <Compile Include="Sources\Database\ImportExportType.cs" />
+    <Compile Include="Sources\Database\AdapterFactory.cs" />
     <Compile Include="Sources\DBC\AnimationData.cs" />
+    <Compile Include="Sources\DBC\DBCBodyToSerialize.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
@@ -304,7 +311,6 @@
     </None>
     <AppDesigner Include="Properties\" />
     <Compile Include="Sources\DBC\AbstractDBC.cs" />
-    <None Include="SpellEditor_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
