@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Documents;
 using NLog;
+using System.Security.Policy;
 
 namespace SpellEditor.Sources.Database
 {
@@ -19,7 +20,8 @@ namespace SpellEditor.Sources.Database
 
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
-        private Dictionary<string, List<Tuple<string, string>>> _tableColumns = new Dictionary<string, List<Tuple<string, string>>>();
+        private Dictionary<string, Dictionary<string, string>> _tableColumns = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, string> _tableNames = new Dictionary<string, string>();
         private Timer _heartbeat;
         public bool Updating { get; set; }
 
@@ -106,68 +108,73 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void ExportTableToSql(string tableName, string path = "Export", int? taskId = null, MainWindow.UpdateProgressFunc func = null)
+        public void ExportTableToSql(string tableName, string path, int? taskId, MainWindow.UpdateProgressFunc func)
         {
             var script = new StringBuilder();
             var dbTableName = tableName.ToLower();
 
-            lock (_syncLock)
+            using (var cmd = new MySqlCommand())
             {
-                using (MySqlCommand cmd = new MySqlCommand())
+                using (var mb = new MySqlBackup(cmd))
                 {
-                    using (MySqlBackup mb = new MySqlBackup(cmd))
+                    MySqlConnection conn = null;
+                    lock (_syncLock)
                     {
-                        cmd.Connection = _connection;
-                        var tableList = new List<string>()
+                        conn = (MySqlConnection)_connection.Clone();
+                    }
+                    conn.Open();
+                    conn.ChangeDatabase(Config.Config.Database);
+                    cmd.Connection = conn;
+                    var tableList = new List<string>()
                         {
                             dbTableName
                         };
-                        mb.ExportInfo.TablesToBeExportedList = tableList;
-                        mb.ExportInfo.ExportTableStructure = false;
-                        mb.ExportInfo.ExportRows = true;
-                        mb.ExportInfo.EnableComment = false;
-                        mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
-                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
-                        if (func != null)
+                    mb.ExportInfo.TablesToBeExportedList = tableList;
+                    mb.ExportInfo.ExportTableStructure = false;
+                    mb.ExportInfo.ExportRows = true;
+                    mb.ExportInfo.EnableComment = false;
+                    mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
+                    mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
+                    mb.ExportProgressChanged += (sender, args) =>
+                    {
+                        var currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
+                        var totalRowsInCurrentTable = args.TotalRowsInCurrentTable;
+                        var progress =  0.9 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
+                        if (taskId != null)
                         {
-                            mb.ExportProgressChanged += (sender, args) =>
-                            {
-                                var currentRowIndexInCurrentTable = (int)args.CurrentRowIndexInCurrentTable;
-                                var totalRowsInCurrentTable = (int)args.TotalRowsInCurrentTable;
-                                var progress = 0.8 * (double)currentRowIndexInCurrentTable / (double)totalRowsInCurrentTable;
-                                func(progress);
-                            };
+                            progress += (double)taskId;
                         }
-                        script.AppendLine(mb.ExportToString());
-                    }
+                        func?.Invoke(progress);
+                    };
+                    script.AppendLine(mb.ExportToString());
+                    conn.Close();
                 }
             }
 
-            // TODO(Harry): This shouldn't be hardcoded
-            script.Replace($"INTO `{dbTableName}`", $"INTO `{dbTableName}_dbc`");
-            script.Replace($"TABLE `{dbTableName}`", $"TABLE `{dbTableName}_dbc`");
-
-            // TODO(Harry): Should come from a file instead of hardcoding
-            if (dbTableName.Equals("spell"))
+            // Then we replace the dbTableName names
+            if (_tableNames.TryGetValue(dbTableName, out var tableNameValue))
             {
-                FormatSpellTableScript(script);
+                script.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
+                script.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
             }
 
-            // Not the fastest way, but it works
-            if (_tableColumns.TryGetValue(dbTableName, out var tableColumn))
+            // Surprisingly, this is fast enough
+            if (_tableColumns.TryGetValue(dbTableName, out var tableColumns))
             {
-                tableColumn.Aggregate(script, (current, column) => current.Replace(column.Item1, column.Item2));
+                foreach (var entry in tableColumns)
+                {
+                    script.Replace($"`{entry.Key}`", $"`{entry.Value}`");
+                }
             }
 
-            if (func != null)
-            {
-                func(0.9);
-            }
+            func?.Invoke(0.95);
 
             var bytes = Encoding.UTF8.GetBytes(script.ToString());
-            FileStream fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+            var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
             fileStream.Write(bytes, 0, bytes.Length);
             fileStream.Close();
+
+            func?.Invoke(1.0);
         }
 
         public object QuerySingleValue(string query)
@@ -284,160 +291,45 @@ namespace SpellEditor.Sources.Database
 
         private void CreateDatabasesTablesColumns()
         {
-            _tableColumns["spell"] = new List<Tuple<string, string>>()
+            var sqlMapperDir = Config.Config.SqlMapperDirectory;
+
+            var tables = Directory.GetFiles(sqlMapperDir, ".tables", SearchOption.TopDirectoryOnly);
+            var files = Directory.GetFiles(sqlMapperDir, "*.txt", SearchOption.TopDirectoryOnly);
+
+            if (tables.Length == 1)
             {
-                new Tuple<string, string>("Dispel","DispelType"),
-                new Tuple<string, string>("Stances","ShapeshiftMask"),
-                new Tuple<string, string>("Unknown1","unk_320_2"),
-                new Tuple<string, string>("ShapeshiftMaskNot","ShapeshiftExclude"),
-                new Tuple<string, string>("Unknown2","unk_320_3"),
-                new Tuple<string, string>("CasterAuraStateNot","ExcludeCasterAuraState"),
-                new Tuple<string, string>("TargetAuraStateNot","ExcludeTargetAuraState"),
-                new Tuple<string, string>("ProcFlags","ProcTypeMask"),
-                new Tuple<string, string>("MaximumLevel","MaxLevel"),
-                new Tuple<string, string>("StackAmount","CumulativeAura"),
-                new Tuple<string, string>("Totem1","Totem_1"),
-                new Tuple<string, string>("Totem2","Totem_2"),
-                new Tuple<string, string>("Reagent1","Reagent_1"),
-                new Tuple<string, string>("Reagent2","Reagent_2"),
-                new Tuple<string, string>("Reagent3","Reagent_3"),
-                new Tuple<string, string>("Reagent4","Reagent_4"),
-                new Tuple<string, string>("Reagent5","Reagent_5"),
-                new Tuple<string, string>("Reagent6","Reagent_6"),
-                new Tuple<string, string>("Reagent7","Reagent_7"),
-                new Tuple<string, string>("Reagent8","Reagent_8"),
-                new Tuple<string, string>("Effect1","Effect_1"),
-                new Tuple<string, string>("Effect2","Effect_2"),
-                new Tuple<string, string>("Effect3","Effect_3"),
-                new Tuple<string, string>("EffectMiscValue1","EffectMiscValue_1"),
-                new Tuple<string, string>("EffectMiscValue2","EffectMiscValue_2"),
-                new Tuple<string, string>("EffectMiscValue3","EffectMiscValue_3"),
-                new Tuple<string, string>("EquippedItemSubClassMask","EquippedItemSubclass"),
-                new Tuple<string, string>("EquippedItemInventoryTypeMask","EquippedItemInvTypes"),
+                using (var reader = new StreamReader(tables[0]))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var split = line.ToLower().Split('=');
+                        if (split.Length != 2)
+                            continue;
+                        _tableNames[split[0]] = split[1];
+                    }
+                }
+            }
 
-                new Tuple<string, string>("SpellName0","Name_Lang_enUS"),
-                new Tuple<string, string>("SpellName1","Name_Lang_enGB"),
-                new Tuple<string, string>("SpellName2","Name_Lang_koKR"),
-                new Tuple<string, string>("SpellName3","Name_Lang_frFR"),
-                new Tuple<string, string>("SpellName4","Name_Lang_deDE"),
-                new Tuple<string, string>("SpellName5","Name_Lang_enCN"),
-                new Tuple<string, string>("SpellName6","Name_Lang_zhCN"),
-                new Tuple<string, string>("SpellName7","Name_Lang_enTW"),
-                new Tuple<string, string>("SpellName8","Name_Lang_zhTW"),
-                new Tuple<string, string>("SpellNameFlag0","Name_Lang_esES"),
-                new Tuple<string, string>("SpellNameFlag1","Name_Lang_esMX"),
-                new Tuple<string, string>("SpellNameFlag2","Name_Lang_ruRU"),
-                new Tuple<string, string>("SpellNameFlag3","Name_Lang_ptPT"),
-                new Tuple<string, string>("SpellNameFlag4","Name_Lang_ptBR"),
-                new Tuple<string, string>("SpellNameFlag5","Name_Lang_itIT"),
-                new Tuple<string, string>("SpellNameFlag6","Name_Lang_Unk"),
-                new Tuple<string, string>("SpellNameFlag7","Name_Lang_Mask"),
-
-                new Tuple<string, string>("SpellRank0","NameSubtext_Lang_enUS"),
-                new Tuple<string, string>("SpellRank1","NameSubtext_Lang_enGB"),
-                new Tuple<string, string>("SpellRank2","NameSubtext_Lang_koKR"),
-                new Tuple<string, string>("SpellRank3","NameSubtext_Lang_frFR"),
-                new Tuple<string, string>("SpellRank4","NameSubtext_Lang_deDE"),
-                new Tuple<string, string>("SpellRank5","NameSubtext_Lang_enCN"),
-                new Tuple<string, string>("SpellRank6","NameSubtext_Lang_zhCN"),
-                new Tuple<string, string>("SpellRank7","NameSubtext_Lang_enTW"),
-                new Tuple<string, string>("SpellRank8","NameSubtext_Lang_zhTW"),
-                new Tuple<string, string>("SpellRankFlags0","NameSubtext_Lang_esES"),
-                new Tuple<string, string>("SpellRankFlags1","NameSubtext_Lang_esMX"),
-                new Tuple<string, string>("SpellRankFlags2","NameSubtext_Lang_ruRU"),
-                new Tuple<string, string>("SpellRankFlags3","NameSubtext_Lang_ptPT"),
-                new Tuple<string, string>("SpellRankFlags4","NameSubtext_Lang_ptBR"),
-                new Tuple<string, string>("SpellRankFlags5","NameSubtext_Lang_itIT"),
-                new Tuple<string, string>("SpellRankFlags6","NameSubtext_Lang_Unk"),
-                new Tuple<string, string>("SpellRankFlags7","NameSubtext_Lang_Mask"),
-                                                        
-                new Tuple<string, string>("SpellDescription0","Description_Lang_enUS"),
-                new Tuple<string, string>("SpellDescription1","Description_Lang_enGB"),
-                new Tuple<string, string>("SpellDescription2","Description_Lang_koKR"),
-                new Tuple<string, string>("SpellDescription3","Description_Lang_frFR"),
-                new Tuple<string, string>("SpellDescription4","Description_Lang_deDE"),
-                new Tuple<string, string>("SpellDescription5","Description_Lang_enCN"),
-                new Tuple<string, string>("SpellDescription6","Description_Lang_zhCN"),
-                new Tuple<string, string>("SpellDescription7","Description_Lang_enTW"),
-                new Tuple<string, string>("SpellDescription8","Description_Lang_zhTW"),
-                new Tuple<string, string>("SpellDescriptionFlags0","Description_Lang_esES"),
-                new Tuple<string, string>("SpellDescriptionFlags1","Description_Lang_esMX"),
-                new Tuple<string, string>("SpellDescriptionFlags2","Description_Lang_ruRU"),
-                new Tuple<string, string>("SpellDescriptionFlags3","Description_Lang_ptPT"),
-                new Tuple<string, string>("SpellDescriptionFlags4","Description_Lang_ptBR"),
-                new Tuple<string, string>("SpellDescriptionFlags5","Description_Lang_itIT"),
-                new Tuple<string, string>("SpellDescriptionFlags6","Description_Lang_Unk"),
-                new Tuple<string, string>("SpellDescriptionFlags7","Description_Lang_Mask"),
-
-                new Tuple<string, string>("SpellToolTip0","AuraDescription_Lang_enUS"),
-                new Tuple<string, string>("SpellToolTip1","AuraDescription_Lang_enGB"),
-                new Tuple<string, string>("SpellToolTip2","AuraDescription_Lang_koKR"),
-                new Tuple<string, string>("SpellToolTip3","AuraDescription_Lang_frFR"),
-                new Tuple<string, string>("SpellToolTip4","AuraDescription_Lang_deDE"),
-                new Tuple<string, string>("SpellToolTip5","AuraDescription_Lang_enCN"),
-                new Tuple<string, string>("SpellToolTip6","AuraDescription_Lang_zhCN"),
-                new Tuple<string, string>("SpellToolTip7","AuraDescription_Lang_enTW"),
-                new Tuple<string, string>("SpellToolTip8","AuraDescription_Lang_zhTW"),
-                new Tuple<string, string>("SpellToolTipFlags0","AuraDescription_Lang_esES"),
-                new Tuple<string, string>("SpellToolTipFlags1","AuraDescription_Lang_esMX"),
-                new Tuple<string, string>("SpellToolTipFlags2","AuraDescription_Lang_ruRU"),
-                new Tuple<string, string>("SpellToolTipFlags3","AuraDescription_Lang_ptPT"),
-                new Tuple<string, string>("SpellToolTipFlags4","AuraDescription_Lang_ptBR"),
-                new Tuple<string, string>("SpellToolTipFlags5","AuraDescription_Lang_itIT"),
-                new Tuple<string, string>("SpellToolTipFlags6","AuraDescription_Lang_Unk"),
-                new Tuple<string, string>("SpellToolTipFlags7","AuraDescription_Lang_Mask"),
-
-                new Tuple<string, string>("AreaGroupID","RequiredAreasID"),
-                new Tuple<string, string>("MinimumFactionId","MinFactionID"),
-                new Tuple<string, string>("MinimumReputation","MinReputation"),
-                new Tuple<string, string>("DamageClass","DefenseType"),
-                new Tuple<string, string>("MaximumAffectedTargets","MaxTargets"),
-                new Tuple<string, string>("SpellFamilyName","SpellClassSet"),
-                new Tuple<string, string>("MaximumTargetLevel","MaxTargetLevel"),
-                new Tuple<string, string>("ManaCostPercentage","ManaCostPct"),
-
-                new Tuple<string, string>("SpellFamilyFlags1","SpellClassMask_2"),
-                new Tuple<string, string>("SpellFamilyFlags2","SpellClassMask_3"),
-                new Tuple<string, string>("SpellFamilyFlags","SpellClassMask_1"),
-            };
-
-            _tableColumns["spellvisual"] = new List<Tuple<string, string>>()
+            foreach (var file in files)
             {
-                new Tuple<string, string>("MissileFollowDropSpeed","MissileFollowGroundDropSpeed"),
-                new Tuple<string, string>("MissileFollowApproach","MissileFollowGroundApproach"),
-            };
-
+                var fileName = Path.GetFileNameWithoutExtension(file).ToLower();
+                _tableColumns[fileName] = new Dictionary<string, string>();
+                using (var reader = new StreamReader(file))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var split = line.Split('=');
+                        if (split.Length != 2)
+                        {
+                            continue;
+                        }
+                        _tableColumns[fileName][split[0]] = split[1];
+                    }
+                }
+            }
         }
 
-        private void FormatSpellTableScript(StringBuilder script)
-        {
-            script.Replace("ReagentCount", "ReagentCount_");
-            script.Replace("EffectDieSides", "EffectDieSides_");
-            script.Replace("EffectRealPointsPerLevel", "EffectRealPointsPerLevel_");
-            script.Replace("EffectBasePoints", "EffectBasePoints_");
-            script.Replace("EffectMechanic", "EffectMechanic_");
-            script.Replace("EffectImplicitTargetA", "ImplicitTargetA_");
-            script.Replace("EffectImplicitTargetB", "ImplicitTargetB_");
-            script.Replace("EffectRadiusIndex", "EffectRadiusIndex_");
-            script.Replace("EffectAura", "EffectAura_");
-            script.Replace("EffectAuraPeriod", "EffectAuraPeriod_");
-            script.Replace("EffectMultipleValue", "EffectMultipleValue_");
-            script.Replace("EffectChainTargets", "EffectChainTargets_");
-            script.Replace("EffectItemType", "EffectItemType_");
-            script.Replace("EffectMiscValueB", "EffectMiscValueB_");
-            script.Replace("EffectTriggerSpell", "EffectTriggerSpell_");
-            script.Replace("EffectPointsPerComboPoint", "EffectPointsPerCombo_");
-            script.Replace("EffectSpellClassMaskA", "EffectSpellClassMaskA_");
-            script.Replace("EffectSpellClassMaskB", "EffectSpellClassMaskB_");
-            script.Replace("EffectSpellClassMaskC", "EffectSpellClassMaskC_");
-            script.Replace("EffectApplyAuraName", "EffectAura_");
-            script.Replace("EffectAmplitude", "EffectAuraPeriod_");
-            script.Replace("EffectChainTarget", "EffectChainTargets_");
-            script.Replace("SpellVisual", "SpellVisualID_");
-            script.Replace("EffectBonusMultiplier", "EffectBonusMultiplier_");
-            script.Replace("TotemCategory", "RequiredTotemCategoryID_");
-            script.Replace("EffectDamageMultiplier", "EffectChainAmplitude_");
-
-        }
     }
 }

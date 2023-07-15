@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 using MahApps.Metro.Controls;
@@ -380,6 +381,11 @@ namespace SpellEditor
                 Flyout.IsOpen = true;
                 FlyoutText.Text = message;
             }));
+        }
+
+        private void TabClick(object sender, MouseButtonEventArgs e)
+        {
+            SizeToContent = SizeToContent.Width;
         }
     }
 }
