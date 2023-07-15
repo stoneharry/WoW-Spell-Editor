@@ -1,6 +1,7 @@
 ﻿using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HeadlessExport
@@ -10,12 +11,12 @@ namespace HeadlessExport
         public int TaskId;
         public Stopwatch Timer;
 
-        public async Task<Stopwatch> TimedExportToDBC(IDatabaseAdapter adapter, string IdKey, string bindingName)
+        public async Task<Stopwatch> TimedExportToDBC(IDatabaseAdapter adapter, string IdKey, string bindingName, ImportExportType type)
         {
             Timer = new Stopwatch();
-            Timer.Start();
-            var task = ExportToDbc(adapter, Program.SetProgress, IdKey, bindingName);
+            var task = ExportTo(adapter, Program.SetProgress, IdKey, bindingName, type);
             TaskId = task.Id;
+            Timer.Start();
             await task;
             Timer.Stop();
             return Timer;
