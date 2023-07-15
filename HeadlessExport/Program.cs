@@ -14,7 +14,7 @@ namespace HeadlessExport
     class Program
     {
         static ConcurrentDictionary<int, string> _TaskNameLookup;
-        static ConcurrentDictionary<int, ReportProgress> _TaskProgressLookup;
+        static ConcurrentDictionary<int, int> _TaskProgressLookup;
         static ConcurrentDictionary<int, HeadlessDbc> _HeadlessDbcLookup;
 
         private static BlockingCollection<string> m_Queue = new BlockingCollection<string>();
@@ -66,7 +66,7 @@ namespace HeadlessExport
                 Console.WriteLine("Exporting all DBC files...");
                 var taskList = new List<Task<Stopwatch>>();
                 _TaskNameLookup = new ConcurrentDictionary<int, string>();
-                _TaskProgressLookup = new ConcurrentDictionary<int, ReportProgress>();
+                _TaskProgressLookup = new ConcurrentDictionary<int, int>();
                 _HeadlessDbcLookup = new ConcurrentDictionary<int, HeadlessDbc>();
                 var exportWatch = new Stopwatch();
                 exportWatch.Start();
@@ -108,7 +108,8 @@ namespace HeadlessExport
         private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters)
         {
             var tasks = new List<Task<IDatabaseAdapter>>();
-            int numConnections = BindingManager.GetInstance().GetAllBindings().Length / 6;
+            int numBindings = BindingManager.GetInstance().GetAllBindings().Length;
+            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
             WriteLine($"Spawning {numConnections} adapters...");
             var timer = new Stopwatch();
             timer.Start();
@@ -137,43 +138,26 @@ namespace HeadlessExport
             var name = _TaskNameLookup.Keys.Contains(id) ? _TaskNameLookup[id] : string.Empty;
             if (_TaskProgressLookup.TryGetValue(id, out var savedProgress))
             {
-                int state = savedProgress.State;
-                if (reportValue > savedProgress.Progress)
+                if (reportValue > (savedProgress + 5))
                 {
-                    LogProgress(name, id, reportValue, state);
+                    if (_TaskProgressLookup.TryUpdate(id, reportValue, savedProgress))
+                    {
+                        LogProgress(name, id, reportValue);
+                    }
                 }
-                else if (reportValue < savedProgress.Progress)
-                {
-                    ++state;
-                    LogProgress(name, id, reportValue, state);
-                }
-                _TaskProgressLookup.TryUpdate(id, new ReportProgress(reportValue, state), savedProgress);
             }
             else
             {
-                _TaskProgressLookup.TryAdd(id, new ReportProgress(reportValue, 0));
+                _TaskProgressLookup.TryAdd(id, reportValue);
             }
         }
 
-        public static void LogProgress(string name, int id, int reportValue, int state)
+        public static void LogProgress(string name, int id, int reportValue)
         {
             var dbc = _HeadlessDbcLookup.Keys.Contains(id) ? _HeadlessDbcLookup[id] : null;
             var elapsedStr = dbc != null ? $"{Math.Round(dbc.Timer.Elapsed.TotalSeconds, 2)}s, " : string.Empty;
-            var stateStr = state == 0 ? "Export" : "Write";
             var nameStr = name.Length > 0 ? name : id.ToString();
-            WriteLine($" [{nameStr}] {stateStr}: {elapsedStr}{reportValue}%");
-        }
-
-        class ReportProgress
-        {
-            public readonly int Progress;
-            public readonly int State;
-
-            public ReportProgress(int progress, int state)
-            {
-                Progress = progress;
-                State = state;
-            }
+            WriteLine($" [{nameStr}] Export: {elapsedStr}{reportValue}%");
         }
     }
 }
