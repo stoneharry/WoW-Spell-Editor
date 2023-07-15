@@ -49,17 +49,19 @@ namespace HeadlessExport
 
         static void Main(string[] args)
         {
+            var adapters = new List<IDatabaseAdapter>();
             try
             {
                 Console.WriteLine("Loading config...");
                 Config.Init();
+                Config.connectionType = Config.ConnectionType.MySQL;
 
-                Console.WriteLine("Creating MySQL connection from config.xml...");
-                var adapter = new MySQL();
+                SpawnAdapters(ref adapters);
+                var adapterIndex = 0;
 
                 Console.WriteLine("Reading all bindings...");
                 var bindingManager = BindingManager.GetInstance();
-                Console.WriteLine($"Got { bindingManager.GetAllBindings().Count() } bindings to export");
+                Console.WriteLine($"Got {bindingManager.GetAllBindings().Count()} bindings to export");
 
                 Console.WriteLine("Exporting all DBC files...");
                 var taskList = new List<Task<Stopwatch>>();
@@ -72,9 +74,12 @@ namespace HeadlessExport
                 Array.Sort(bindings, PrioritiseSpellCompareBindings);
                 foreach (var binding in bindings)
                 {
-                    Console.WriteLine($"Exporting { binding.Name }...");
+                    Console.WriteLine($"Exporting {binding.Name} using Adapter{adapterIndex + 1}...");
+                    var adapter = adapters[adapterIndex++];
+                    if (adapterIndex >= adapters.Count)
+                        adapterIndex = 0;
                     var dbc = new HeadlessDbc();
-                    var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name);
+                    var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name, ImportExportType.DBC);
                     _TaskNameLookup.TryAdd(dbc.TaskId, binding.Name);
                     _TaskNameLookup.TryAdd(task.Id, binding.Name);
                     _HeadlessDbcLookup.TryAdd(dbc.TaskId, dbc);
@@ -88,12 +93,41 @@ namespace HeadlessExport
                     var bindingName = _TaskNameLookup.Keys.Contains(task.Id) ? _TaskNameLookup[task.Id] : task.Id.ToString();
                     Console.WriteLine($" - [{bindingName}]: {Math.Round(task.Result.Elapsed.TotalSeconds, 2)} seconds");
                 });
-                Console.WriteLine($"Finished exporting { taskList.Count() } dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
+                Console.WriteLine($"Finished exporting {taskList.Count()} dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Build failed: {e.GetType() }: { e.Message }\n{ e }");
+                Console.WriteLine($"Build failed: {e.GetType()}: {e.Message}\n{e}");
             }
+            finally
+            {
+                adapters.ForEach((adapter) => adapter.Dispose());
+            }
+        }
+
+        private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters)
+        {
+            var tasks = new List<Task<IDatabaseAdapter>>();
+            int numConnections = BindingManager.GetInstance().GetAllBindings().Length / 6;
+            WriteLine($"Spawning {numConnections} adapters...");
+            var timer = new Stopwatch();
+            timer.Start();
+            for (var i = 0; i < numConnections; ++i)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    var adapter = AdapterFactory.Instance.GetAdapter(false);
+                    WriteLine($"Spawned Adapter{Task.CurrentId}");
+                    return adapter;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                adapters.Add(task.Result);
+            }
+            timer.Stop();
+            WriteLine($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
         }
 
         public static void SetProgress(double value)
