@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -235,59 +236,71 @@ namespace SpellEditor
         {
             var manager = DBCManager.GetInstance();
 
-            Dictionary<string, ProgressBar> barLookup = new Dictionary<string, ProgressBar>();
+            var barLookup = new Dictionary<string, ProgressBar>();
             bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, isImport)));
 
             var label = isImport ? ImportLoadedCount : ExportLoadedCount;
 
             Task.Run(() =>
             {
-                ConcurrentBag<Task> bag = new ConcurrentBag<Task>();
+                var bag = new ConcurrentBag<Task>();
+                var adapters = new List<IDatabaseAdapter>();
+                SpawnAdapters(ref adapters, bindingList.Count);
+                var adapterIndex = 0;
 
-                // Start tasks
-                bindingList.AsParallel().ForAll(bindingName =>
+                try
                 {
-                    try
+                    // Start tasks
+                    bindingList.AsParallel().ForAll(bindingName =>
                     {
-                        manager.ClearDbcBinding(bindingName);
-                        var abstractDbc = manager.FindDbcForBinding(bindingName);
-                        if (abstractDbc == null)
+                        try
                         {
-                            try
+                            // Load Data
+                            manager.ClearDbcBinding(bindingName);
+                            var abstractDbc = manager.FindDbcForBinding(bindingName);
+                            if (abstractDbc == null)
                             {
-                                abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                                try
+                                {
+                                    abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                                }
+                                catch (Exception exception)
+                                {
+                                    Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                    ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                                    return;
+                                }
                             }
-                            catch (Exception exception)
-                            {
-                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                                ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                                return;
-                            }
-                        }
-                        if (isImport && !abstractDbc.HasData())
-                            abstractDbc.ReloadContents();
+                            if (isImport && !abstractDbc.HasData())
+                                abstractDbc.ReloadContents();
 
-                        int id;
-                        if (isImport)
-                        {
-                            var task = abstractDbc.ImportTo(_Adapter, SetProgress, "ID", bindingName, useType);
+                            // Get adapter
+                            int id;
+                            var adapter = adapters[adapterIndex];
+                            if (++adapterIndex >= adapters.Count)
+                            {
+                                adapterIndex = 0;
+                            }
+
+                            // Perform operation
+                            var task = isImport ? 
+                                abstractDbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
+                                abstractDbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
                             bag.Add(task);
                             id = task.Id;
+                            _TaskLookup.TryAdd(id, barLookup[bindingName]);
                         }
-                        else
+                        catch (Exception exception)
                         {
-                            var task = abstractDbc.ExportTo(_Adapter, SetProgress, "ID", bindingName, useType);
-                            bag.Add(task);
-                            id = task.Id;
+                            Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                            ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
                         }
-                        _TaskLookup.TryAdd(id, barLookup[bindingName]);
-                    }
-                    catch (Exception exception)
-                    {
-                        Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                    }
-                });
+                    });
+                }
+                finally
+                {
+                    adapters.ForEach(adapter => adapter.Dispose());
+                }
 
                 // Wait for all tasks to complete
                 List<Task> allTasks = bag.ToList();
@@ -359,6 +372,31 @@ namespace SpellEditor
                 }
             }
             return null;
+        }
+
+        private void SpawnAdapters(ref List<IDatabaseAdapter> adapters, int numBindings)
+        {
+            var tasks = new List<Task<IDatabaseAdapter>>();
+            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
+            Logger.Info($"Spawning {numConnections} adapters...");
+            var timer = new Stopwatch();
+            timer.Start();
+            for (var i = 0; i < numConnections; ++i)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    var adapter = AdapterFactory.Instance.GetAdapter(false);
+                    Logger.Info($"Spawned Adapter{Task.CurrentId}");
+                    return adapter;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                adapters.Add(task.Result);
+            }
+            timer.Stop();
+            Logger.Info($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
         }
 
         public void SetProgress(double progress)
