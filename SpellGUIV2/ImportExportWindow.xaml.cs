@@ -296,29 +296,29 @@ namespace SpellEditor
                             ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
                         }
                     });
+
+                    // Wait for all tasks to complete
+                    List<Task> allTasks = bag.ToList();
+                    Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                    while (allTasks.Count > 0)
+                    {
+                        Thread.Sleep(100);
+                        for (int i = allTasks.Count - 1; i >= 0; --i)
+                        {
+                            var task = allTasks[i];
+                            if (task.IsCompleted)
+                            {
+                                var bar = _TaskLookup[task.Id];
+                                Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
+                                allTasks.RemoveAt(i);
+                            }
+                        }
+                        Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                    }
                 }
                 finally
                 {
                     adapters.ForEach(adapter => adapter.Dispose());
-                }
-
-                // Wait for all tasks to complete
-                List<Task> allTasks = bag.ToList();
-                Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
-                while (allTasks.Count > 0)
-                {
-                    Thread.Sleep(100);
-                    for (int i = allTasks.Count - 1; i >= 0; --i)
-                    {
-                        var task = allTasks[i];
-                        if (task.IsCompleted)
-                        {
-                            var bar = _TaskLookup[task.Id];
-                            Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
-                            allTasks.RemoveAt(i);
-                        }
-                    }
-                    Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
                 }
 
                 // Create MPQ if required
