@@ -1,17 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Binding;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Documents;
 using NLog;
-using System.Security.Policy;
-using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Database
 {
@@ -21,8 +15,6 @@ namespace SpellEditor.Sources.Database
 
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
-        private Dictionary<string, Dictionary<string, string>> _tableColumns = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, string> _tableNames = new Dictionary<string, string>();
         private Timer _heartbeat;
         public bool Updating { get; set; }
 
@@ -51,8 +43,6 @@ namespace SpellEditor.Sources.Database
                     cmd.ExecuteNonQuery();
                 }
             }
-
-            CreateDatabasesTablesColumns();
 
             // Heartbeat keeps the connection alive, otherwise it can be killed by remote for inactivity
             // Object reference needs to be held to prevent garbage collection.
@@ -107,68 +97,6 @@ namespace SpellEditor.Sources.Database
                     }
                 }
             }
-        }
-
-        public void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func)
-        {
-            var script = new StringBuilder();
-            var dbTableName = tableName.ToLower();
-            var taskId = Task.CurrentId.GetValueOrDefault(0);
-            lock (_syncLock)
-            {
-                using (var cmd = new MySqlCommand())
-                {
-                    cmd.Connection = _connection;
-                    using (var mb = new MySqlBackup(cmd))
-                    {
-                        var tableList = new List<string>()
-                        {
-                            dbTableName
-                        };
-                        mb.ExportInfo.TablesToBeExportedList = tableList;
-                        mb.ExportInfo.ExportTableStructure = false;
-                        mb.ExportInfo.ExportRows = true;
-                        mb.ExportInfo.EnableComment = false;
-                        mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
-                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.SelectCount;
-                        mb.ExportProgressChanged += (sender, args) =>
-                        {
-                            double currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
-                            double totalRowsInCurrentTable = Math.Max(currentRowIndexInCurrentTable, args.TotalRowsInCurrentTable);
-                            double progress = 0.9 * (currentRowIndexInCurrentTable / totalRowsInCurrentTable);
-                            func?.Invoke(progress, taskId);
-                        };
-                        script.AppendLine(mb.ExportToString());
-                    }
-                }
-            }
-
-
-            // Then we replace the dbTableName names
-            if (_tableNames.TryGetValue(dbTableName, out var tableNameValue))
-            {
-                script.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
-                script.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
-            }
-
-            // Surprisingly, this is fast enough
-            if (_tableColumns.TryGetValue(dbTableName, out var tableColumns))
-            {
-                foreach (var entry in tableColumns)
-                {
-                    script.Replace($"`{entry.Key}`", $"`{entry.Value}`");
-                }
-            }
-
-            func?.Invoke(0.95);
-
-            var bytes = Encoding.UTF8.GetBytes(script.ToString());
-            using (var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create))
-            {
-                fileStream.Write(bytes, 0, bytes.Length);
-            }
-
-            func?.Invoke(1.0);
         }
 
         public object QuerySingleValue(string query)
@@ -282,48 +210,5 @@ namespace SpellEditor.Sources.Database
                 interval,
                 interval);
         }
-
-        private void CreateDatabasesTablesColumns()
-        {
-            var sqlMapperDir = Config.Config.SqlMapperDirectory;
-
-            var tables = Directory.GetFiles(sqlMapperDir, ".tables", SearchOption.TopDirectoryOnly);
-            var files = Directory.GetFiles(sqlMapperDir, "*.txt", SearchOption.TopDirectoryOnly);
-
-            if (tables.Length == 1)
-            {
-                using (var reader = new StreamReader(tables[0]))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var split = line.ToLower().Split('=');
-                        if (split.Length != 2)
-                            continue;
-                        _tableNames[split[0]] = split[1];
-                    }
-                }
-            }
-
-            foreach (var file in files)
-            {
-                var fileName = Path.GetFileNameWithoutExtension(file).ToLower();
-                _tableColumns[fileName] = new Dictionary<string, string>();
-                using (var reader = new StreamReader(file))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var split = line.Split('=');
-                        if (split.Length != 2)
-                        {
-                            continue;
-                        }
-                        _tableColumns[fileName][split[0]] = split[1];
-                    }
-                }
-            }
-        }
-
     }
 }
