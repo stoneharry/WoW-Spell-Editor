@@ -27,12 +27,8 @@
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
     <Grid>
-        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10">
-            <TabItem>
-                <TabItem.Header>
-                    <Label Content="{DynamicResource butImportExportWindowImport}" 
-                           MouseLeftButtonDown="TabClick"/>
-                </TabItem.Header>
+        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="MainTabControl_SelectionChanged">
+            <TabItem Header="{DynamicResource butImportExportWindowImport}">
                 <Grid Name="ImportGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="AUTO"/>
@@ -58,11 +54,7 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem>
-                <TabItem.Header>
-                    <Label Content="{DynamicResource butImportExportWindowExport}" 
-                           MouseLeftButtonDown="TabClick"/>
-                </TabItem.Header>
+            <TabItem Header="{DynamicResource butImportExportWindowExport}">
                 <Grid Name="ExportGrid" Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="AUTO"/>

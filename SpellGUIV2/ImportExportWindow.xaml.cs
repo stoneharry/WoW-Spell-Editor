@@ -397,10 +397,10 @@ namespace SpellEditor
             Logger.Info($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
         }
 
-        public void SetProgress(double progress)
+        public void SetProgress(double progress, int taskIdOverride = 0)
         {
-            int id = Task.CurrentId.GetValueOrDefault(0);
-            var bar = id > 0 ? _TaskLookup[id] : null;
+            int id = taskIdOverride > 0 ? taskIdOverride : Task.CurrentId.GetValueOrDefault(0);
+            var bar = id > 0 ? _TaskLookup.ContainsKey(id) ? _TaskLookup[id] : null : null;
             if (bar != null)
             {
                 int reportValue = Convert.ToInt32(progress * 100D);
@@ -416,7 +416,7 @@ namespace SpellEditor
             }));
         }
 
-        private void TabClick(object sender, MouseButtonEventArgs e)
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SizeToContent = SizeToContent.Width;
         }

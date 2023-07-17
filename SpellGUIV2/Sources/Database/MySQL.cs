@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows.Documents;
 using NLog;
 using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Database
 {
@@ -112,6 +113,7 @@ namespace SpellEditor.Sources.Database
         {
             var script = new StringBuilder();
             var dbTableName = tableName.ToLower();
+            var taskId = Task.CurrentId.GetValueOrDefault(0);
             lock (_syncLock)
             {
                 using (var cmd = new MySqlCommand())
@@ -128,13 +130,13 @@ namespace SpellEditor.Sources.Database
                         mb.ExportInfo.ExportRows = true;
                         mb.ExportInfo.EnableComment = false;
                         mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
-                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
+                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.SelectCount;
                         mb.ExportProgressChanged += (sender, args) =>
                         {
-                            var currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
-                            var totalRowsInCurrentTable = args.TotalRowsInCurrentTable;
-                            var progress = 0.9 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
-                            func?.Invoke(progress);
+                            double currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
+                            double totalRowsInCurrentTable = Math.Max(currentRowIndexInCurrentTable, args.TotalRowsInCurrentTable);
+                            double progress = 0.9 * (currentRowIndexInCurrentTable / totalRowsInCurrentTable);
+                            func?.Invoke(progress, taskId);
                         };
                         script.AppendLine(mb.ExportToString());
                     }

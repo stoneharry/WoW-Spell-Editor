@@ -638,7 +638,7 @@ namespace SpellEditor
 
         #endregion
 
-        public delegate void UpdateProgressFunc(double value);
+        public delegate void UpdateProgressFunc(double value, int taskIdOverride = 0);
         public delegate void UpdateTextFunc(string value);
 
         private ImportExportWindow _ImportExportWindow;
