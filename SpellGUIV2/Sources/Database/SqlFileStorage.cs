@@ -13,10 +13,7 @@ namespace SpellEditor.Sources.Database
         {
             return Task.Run(() =>
             {
-                using (var newAdapter = AdapterFactory.Instance.GetAdapter(false))
-                {
-                    adapter.ExportTableToSql(bindingName, "Export", Task.CurrentId, updateProgress);
-                }
+                adapter.ExportTableToSql(bindingName, "Export", updateProgress);
             });
         }
 
