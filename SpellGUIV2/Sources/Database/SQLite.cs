@@ -85,7 +85,7 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void ExportTableToSql(string tableName = null, string path = null, int? taskId = 0, MainWindow.UpdateProgressFunc func = null)
+        public void ExportTableToSql(string tableName = null, string path = null, MainWindow.UpdateProgressFunc func = null)
         {
             // TODO
             throw new NotImplementedException();
