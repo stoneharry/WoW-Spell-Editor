@@ -275,7 +275,6 @@ namespace SpellEditor
                                 abstractDbc.ReloadContents();
 
                             // Get adapter
-                            int id;
                             var adapter = adapters[adapterIndex];
                             if (++adapterIndex >= adapters.Count)
                             {
@@ -286,9 +285,8 @@ namespace SpellEditor
                             var task = isImport ? 
                                 abstractDbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
                                 abstractDbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
+                            _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
                             bag.Add(task);
-                            id = task.Id;
-                            _TaskLookup.TryAdd(id, barLookup[bindingName]);
                         }
                         catch (Exception exception)
                         {
@@ -350,7 +348,6 @@ namespace SpellEditor
                 // Refresh spell selection list on import
                 if (isImport)
                 {
-                    Thread.Sleep(250);
                     Dispatcher.InvokeAsync(new Action(() =>
                     {
                         _ReloadData.Invoke();
@@ -401,11 +398,8 @@ namespace SpellEditor
 
         public void SetProgress(double progress)
         {
-            // Sending the id in the progress variable is a hack to get around the fact that I can't pass more than one variable to the callback
-            // this happens because the callback is called from a different task
-            int id = progress > 1 ? (int)progress : Task.CurrentId.GetValueOrDefault(0);
-            progress = progress > 1 ? progress - id : progress;
-            var bar = id == 0 ? null : _TaskLookup[id];
+            int id = Task.CurrentId.GetValueOrDefault(0);
+            var bar = id > 0 ? _TaskLookup[id] : null;
             if (bar != null)
             {
                 int reportValue = Convert.ToInt32(progress * 100D);

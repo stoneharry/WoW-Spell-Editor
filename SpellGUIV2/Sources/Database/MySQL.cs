@@ -108,48 +108,39 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void ExportTableToSql(string tableName, string path, int? taskId, MainWindow.UpdateProgressFunc func)
+        public void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func)
         {
             var script = new StringBuilder();
             var dbTableName = tableName.ToLower();
-
-            using (var cmd = new MySqlCommand())
+            lock (_syncLock)
             {
-                using (var mb = new MySqlBackup(cmd))
+                using (var cmd = new MySqlCommand())
                 {
-                    MySqlConnection conn = null;
-                    lock (_syncLock)
+                    cmd.Connection = _connection;
+                    using (var mb = new MySqlBackup(cmd))
                     {
-                        conn = (MySqlConnection)_connection.Clone();
-                    }
-                    conn.Open();
-                    conn.ChangeDatabase(Config.Config.Database);
-                    cmd.Connection = conn;
-                    var tableList = new List<string>()
+                        var tableList = new List<string>()
                         {
                             dbTableName
                         };
-                    mb.ExportInfo.TablesToBeExportedList = tableList;
-                    mb.ExportInfo.ExportTableStructure = false;
-                    mb.ExportInfo.ExportRows = true;
-                    mb.ExportInfo.EnableComment = false;
-                    mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
-                    mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
-                    mb.ExportProgressChanged += (sender, args) =>
-                    {
-                        var currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
-                        var totalRowsInCurrentTable = args.TotalRowsInCurrentTable;
-                        var progress =  0.9 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
-                        if (taskId != null)
+                        mb.ExportInfo.TablesToBeExportedList = tableList;
+                        mb.ExportInfo.ExportTableStructure = false;
+                        mb.ExportInfo.ExportRows = true;
+                        mb.ExportInfo.EnableComment = false;
+                        mb.ExportInfo.RowsExportMode = RowsDataExportMode.Replace;
+                        mb.ExportInfo.GetTotalRowsMode = GetTotalRowsMethod.InformationSchema;
+                        mb.ExportProgressChanged += (sender, args) =>
                         {
-                            progress += (double)taskId;
-                        }
-                        func?.Invoke(progress);
-                    };
-                    script.AppendLine(mb.ExportToString());
-                    conn.Close();
+                            var currentRowIndexInCurrentTable = args.CurrentRowIndexInCurrentTable;
+                            var totalRowsInCurrentTable = args.TotalRowsInCurrentTable;
+                            var progress = 0.9 * currentRowIndexInCurrentTable / totalRowsInCurrentTable;
+                            func?.Invoke(progress);
+                        };
+                        script.AppendLine(mb.ExportToString());
+                    }
                 }
             }
+
 
             // Then we replace the dbTableName names
             if (_tableNames.TryGetValue(dbTableName, out var tableNameValue))
@@ -170,9 +161,10 @@ namespace SpellEditor.Sources.Database
             func?.Invoke(0.95);
 
             var bytes = Encoding.UTF8.GetBytes(script.ToString());
-            var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
-            fileStream.Write(bytes, 0, bytes.Length);
-            fileStream.Close();
+            using (var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create))
+            {
+                fileStream.Write(bytes, 0, bytes.Length);
+            }
 
             func?.Invoke(1.0);
         }
