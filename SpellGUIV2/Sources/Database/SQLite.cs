@@ -80,15 +80,8 @@ namespace SpellEditor.Sources.Database
                         var table = dataSet.Tables[0];
                         return table.Rows.Count > 0 ? table.Rows[0][0] : null;
                     }
-
                 }
             }
-        }
-
-        public void ExportTableToSql(string tableName = null, string path = null, MainWindow.UpdateProgressFunc func = null)
-        {
-            // TODO
-            throw new NotImplementedException();
         }
 
         public void CommitChanges(string query, DataTable dataTable)

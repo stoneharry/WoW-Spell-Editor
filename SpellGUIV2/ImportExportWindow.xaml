@@ -27,12 +27,8 @@
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
     <Grid>
-        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10">
-            <TabItem>
-                <TabItem.Header>
-                    <Label Content="{DynamicResource butImportExportWindowImport}" 
-                           MouseLeftButtonDown="TabClick"/>
-                </TabItem.Header>
+        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="MainTabControl_SelectionChanged">
+            <TabItem Header="{DynamicResource butImportExportWindowImport}">
                 <Grid Name="ImportGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="AUTO"/>
@@ -58,11 +54,7 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem>
-                <TabItem.Header>
-                    <Label Content="{DynamicResource butImportExportWindowExport}" 
-                           MouseLeftButtonDown="TabClick"/>
-                </TabItem.Header>
+            <TabItem Header="{DynamicResource butImportExportWindowExport}">
                 <Grid Name="ExportGrid" Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="AUTO"/>
@@ -84,7 +76,7 @@
                     <Label Content="{DynamicResource TablesToExport}" Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
                     <Label Name="ExportLoadedCount" Margin="5" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
                     <CheckBox Name="ExportSelectAll" Content="Select All" Margin="5" Grid.Row="0" Grid.Column="3" Checked="SelectAllChanged" Unchecked="SelectAllChanged"/>
-                    <Label Content="Export Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                    <Label Content="Export Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     <ComboBox Name="ExportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="3"/>
                     <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="4" MinWidth="500">
                         <UniformGrid Name="ExportGridDbcs" Columns="2"/>
