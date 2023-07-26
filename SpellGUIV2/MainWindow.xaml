@@ -20,6 +20,7 @@
             <Style TargetType="c:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
             <Style TargetType="c2:VisualContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
             <Style TargetType="c:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
+            <Style TargetType="c:SpellSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
@@ -61,7 +62,7 @@
                     <c:ThreadSafeComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5" SelectionChanged="FilterSpellTargetA_SelectionChanged"/>
                     <Label Content="{DynamicResource labFilterByTargetB}" Margin="5" Grid.Row="3" Grid.Column="4"/>
                     <c:ThreadSafeComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5" SelectionChanged="FilterSpellTargetB_SelectionChanged"/>
-                    <ListBox Name="SelectSpell"
+                    <c:SpellSelectionList x:Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
                              VirtualizingStackPanel.VirtualizationMode="Recycling"

@@ -69,7 +69,6 @@ namespace SpellEditor
         public uint selectedID;
         public uint newIconID = 1;
         private bool updating;
-        private readonly DataTable spellTable = new DataTable();
         private int storedLocale = -1;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
 
@@ -748,9 +747,10 @@ namespace SpellEditor
             
             try
             {
-                spellTable.Columns.Add("id", typeof(uint));
-                spellTable.Columns.Add("SpellName" + GetLanguage(), typeof(string));
-                spellTable.Columns.Add("Icon", typeof(uint));
+                // Initialise select spell list
+                SelectSpell.SetAdapter(GetDBAdapter())
+                    .SetLanguage(GetLanguage())
+                    .Initialise();
 
                 // Populate UI based on DBC data
                 Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
@@ -984,7 +984,7 @@ namespace SpellEditor
                 //var locale = GetLocale();
                 var input = FilterSpellNames.Text.ToLower();
                 var badInput = string.IsNullOrEmpty(input);
-                if (badInput && spellTable.Rows.Count == SelectSpell.Items.Count)
+                if (badInput && SelectSpell.GetLoadedRowCount() == SelectSpell.Items.Count)
                 {
                     imageLoadEventRunning = false;
                     return;
@@ -1828,166 +1828,10 @@ namespace SpellEditor
         #endregion
 
         #region PopulateSelectSpell
-        private int selectSpellContentsCount;
-        private int selectSpellContentsIndex;
 
         private void PopulateSelectSpell()
         {
-            var selectSpellWatch = new Stopwatch();
-            selectSpellWatch.Start();
-            selectSpellContentsIndex = 0;
-            selectSpellContentsCount = SelectSpell.Items.Count;
-            var worker = new SpellListQueryWorker(adapter, selectSpellWatch) {WorkerReportsProgress = true};
-            worker.ProgressChanged += _worker_ProgressChanged;
-
-            FilterSpellNames.IsEnabled = false;
-
-            worker.DoWork += delegate
-            {
-                if (worker.Adapter == null || !Config.IsInit)
-                    return;
-                int locale = GetLanguage();
-                if (locale > 0)
-                    locale -= 1;
-
-                spellTable.Rows.Clear();
-
-                const uint pageSize = 5000;
-                uint lowerBounds = 0;
-                DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
-                lowerBounds += 100;
-                // Edge case of empty table after truncating, need to send a event to the handler
-                if (results != null && results.Count == 0)
-                {
-                    worker.ReportProgress(0, results);
-                }
-                while (results != null && results.Count != 0)
-                {
-                    worker.ReportProgress(0, results);
-                    results = GetSpellNames(lowerBounds, pageSize, locale);
-                    lowerBounds += pageSize;
-                }
-
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => FilterSpellNames.IsEnabled = true));
-            };
-            worker.RunWorkerAsync();
-            worker.RunWorkerCompleted += (sender, args) =>
-            {
-                if (!(sender is SpellListQueryWorker spellListQueryWorker))
-                    return;
-
-                spellListQueryWorker.Watch.Stop();
-                Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
-            };
-        }
-
-        private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // Ignores spells with a iconId <= 0
-            var watch = new Stopwatch();
-            watch.Start();
-            DataRowCollection collection = (DataRowCollection)e.UserState;
-            int rowIndex = 0;
-            // Reuse existing UI elements if they exist
-            if (selectSpellContentsIndex < selectSpellContentsCount)
-            {
-                foreach (DataRow row in collection)
-                {
-                    ++rowIndex;
-                    if (selectSpellContentsIndex == selectSpellContentsCount ||
-                        selectSpellContentsIndex >= SelectSpell.Items.Count)
-                    {
-                        break;
-                    }
-
-                    if (!(SelectSpell.Items[selectSpellContentsIndex] is StackPanel stackPanel))
-                        continue;
-
-                    var image = stackPanel.Children[0] as Image;
-                    var textBlock = stackPanel.Children[1] as TextBlock;
-                    var spellName = row[1].ToString();
-                    textBlock.Text = $" {row[0]} - {spellName}\n  {row[3]}";
-                    var iconId = uint.Parse(row[2].ToString());
-                    if (iconId <= 0)
-                        continue;
-
-                    image.ToolTip = iconId.ToString();
-                    ++selectSpellContentsIndex;
-                }
-            }
-            // Spawn any new UI elements required
-            var newElements = new List<UIElement>();
-            for (; rowIndex < collection.Count; ++rowIndex)
-            {
-                var row = collection[rowIndex];
-                var spellName = row[1].ToString();
-                var textBlock = new TextBlock {Text = $" {row[0]} - {spellName}\n  {row[3]}"};
-                var image = new Image();
-                var iconId = uint.Parse(row[2].ToString());
-                //if (iconId > 0)
-                //{
-                    image.ToolTip = iconId.ToString();
-                    image.Width = 32;
-                    image.Height = 32;
-                    image.Margin = new Thickness(1, 1, 1, 1);
-                    image.IsVisibleChanged += isSpellListEntryVisibileChanged;
-                    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                    stackPanel.Children.Add(image);
-                    stackPanel.Children.Add(textBlock);
-                    ++selectSpellContentsIndex;
-                //}
-                newElements.Add(stackPanel);
-            }
-            // Replace the item source directly, adding each item will raise a high amount of events
-            var src = SelectSpell.ItemsSource;
-            var newSrc = new List<object>();
-            if (src != null)
-            {
-                // Don't keep more UI elements than we need
-                var enumerator = src.GetEnumerator();
-                for (int i = 0; i < selectSpellContentsIndex; ++i)
-                {
-                    if (!enumerator.MoveNext())
-                        break;
-                    newSrc.Add(enumerator.Current);
-                }
-            }
-
-            newSrc.AddRange(newElements);
-            SelectSpell.ItemsSource = newSrc;
-            watch.Stop();
-            Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
-        }
-
-        private void isSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
-        {
-            var image = o as Image;
-            if (!(bool)args.NewValue)
-            {
-                image.Source = null;
-                return;
-            }
-            if (image.Source != null)
-            {
-                return;
-            }
-            var loadIcons = (SpellIconDBC) DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
-            if (loadIcons != null)
-            {
-                var iconId = uint.Parse(image.ToolTip.ToString());
-                var filePath = loadIcons.GetIconPath(iconId) + ".blp";
-                image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
-            }
-        }
-
-        private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
-        {
-            DataTable newSpellNames = adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{2}` FROM `{0}` ORDER BY `id` LIMIT {3}, {4}",
-                 "spell", locale, locale, lowerBound, pageSize));
-
-            spellTable.Merge(newSpellNames, false, MissingSchemaAction.Add);
-
-            return newSpellNames.Rows;
+            SelectSpell.PopulateSelectSpell();
         }
         #endregion
 
@@ -4291,8 +4135,7 @@ namespace SpellEditor
 
         public string GetSpellNameById(uint spellId)
         {
-            var dr = spellTable.Select($"id = {spellId}");
-            return dr.Length == 1 ? dr[0]["SpellName" + (GetLanguage() - 1)].ToString() : "";
+            return SelectSpell.GetSpellNameById(spellId);
         }
         #endregion
         private void MultilingualSwitch_SelectionChanged(object sender, SelectionChangedEventArgs e)

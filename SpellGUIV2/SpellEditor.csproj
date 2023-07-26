@@ -176,6 +176,7 @@
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\Common\SpellSelectionList.cs" />
     <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />
     <Compile Include="Sources\Controls\Visual\AbstractVisualListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\IVisualListEntry.cs" />
