@@ -63,6 +63,10 @@ namespace SpellEditor.Sources.Database
                 {
                     Logger.Error(exception);
                 }
+                finally
+                {
+                    _connection.Dispose();
+                }
             }
         }
 
