@@ -245,11 +245,13 @@ namespace SpellEditor
             {
                 var bag = new ConcurrentBag<Task>();
                 var adapters = new List<IDatabaseAdapter>();
-                SpawnAdapters(ref adapters, bindingList.Count);
                 var adapterIndex = 0;
 
                 try
                 {
+                    // Spawn adapters
+                    SpawnAdapters(ref adapters, bindingList.Count);
+
                     // Start tasks
                     bindingList.AsParallel().ForAll(bindingName =>
                     {
@@ -318,6 +320,7 @@ namespace SpellEditor
                 finally
                 {
                     adapters.ForEach(adapter => adapter.Dispose());
+                    adapters.Clear();
                 }
 
                 // Create MPQ if required
