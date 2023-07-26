@@ -20,18 +20,8 @@ namespace SpellEditor.Sources.Database
         {
             return Task.Run(() =>
             {
-                // Initialise mappings if not yet
-                if (!initialised)
-                {
-                    lock (_lock)
-                    {
-                        if (!initialised)
-                        {
-                            CreateDatabasesTablesColumns();
-                            initialised = true;
-                        }
-                    }
-                }
+                // Initialise
+                Initialise();
 
                 // Setup export data
                 var binding = BindingManager.GetInstance().FindBinding(bindingName);
@@ -59,28 +49,30 @@ namespace SpellEditor.Sources.Database
                     var rowStr = new StringBuilder();
                     // INSERT INTO table (
                     rowStr.Append($"INSERT INTO `{binding.Name.ToLower()}` (");
-                    string[] values = new string[binding.Fields.Count()];
+                    var fieldCount = binding.Fields.Count();
+                    string[] values = new string[fieldCount];
                     var fieldI = 0;
                     foreach (var field in binding.Fields)
                     {
                         ++fieldI;
                         // Append each column name
-                        rowStr.Append(field.Name + (fieldI < body.Records.Count ? ", " : ") "));
+                        rowStr.Append($"`{field.Name}`" + (fieldI < fieldCount ? ", " : ") "));
                         // save value to write after
                         values[fieldI - 1] = GetValue(field, row[field.Name]);
                     }
                     // Now insert values
-                    fieldI = 0;
                     rowStr.Append("VALUES (");
+                    fieldI = 0;
                     foreach (var value in values)
                     {
-                        rowStr.Append(value + (fieldI++ < body.Records.Count ? ", " : ");"));
+                        ++fieldI;
+                        rowStr.Append(value + (fieldI < fieldCount ? ", " : ");"));
                     }
                     export.AppendLine(rowStr.ToString());
                     // Update progress
                     if (++progressI % 250 == 0)
                     {
-                        double percent = (double)progressI / (double)body.Records.Count;
+                        double percent = (double)progressI / (double)numRows;
                         // Report 0.8 .. 0.9 only
                         updateProgress((percent * 0.1) + 0.8);
                     }
@@ -138,6 +130,22 @@ namespace SpellEditor.Sources.Database
         public Task Import(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName)
         {
             throw new NotImplementedException();
+        }
+
+        private void Initialise()
+        {
+            // Initialise mappings if not yet
+            if (!initialised)
+            {
+                lock (_lock)
+                {
+                    if (!initialised)
+                    {
+                        CreateDatabasesTablesColumns();
+                        initialised = true;
+                    }
+                }
+            }
         }
 
 
