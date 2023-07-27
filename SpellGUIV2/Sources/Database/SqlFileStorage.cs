@@ -4,6 +4,7 @@ using SpellEditor.Sources.DBC;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,9 +70,8 @@ namespace SpellEditor.Sources.Database
                         ++fieldI;
                         rowStr.Append(value + (fieldI < fieldCount ? ", " : ");"));
                     }
-
-                    var temp = FormatLine(binding.Name, rowStr);
-                    export.AppendLine(temp);
+                    // Append to export
+                    export.AppendLine(FormatLine(binding.Name, rowStr));
                     // Update progress
                     if (++progressI % 250 == 0)
                     {
@@ -81,7 +81,7 @@ namespace SpellEditor.Sources.Database
                     }
                 }
 
-                ExportTableToSql(bindingName, "Export", updateProgress, export);
+                ExportTableToSql(bindingName, "Export", updateProgress, export.ToString());
             });
         }
 
@@ -105,24 +105,44 @@ namespace SpellEditor.Sources.Database
                 }
             }
 
-            line.Replace(System.Environment.NewLine, @"\n");
+            line.Replace(Environment.NewLine, @"\n");
             return line.ToString();
         }
 
-        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func, StringBuilder script)
+        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc updateProgress, string script)
         {
-            func?.Invoke(0.95);
-
-            // Write to file logic
-            var bytes = Encoding.UTF8.GetBytes(script.ToString());
+            var lines = script.Split('\n');
             // Try to GC collect immediately
             script = null;
+            double linesCount = lines.Count();
 
-            var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
-            fileStream.Write(bytes, 0, bytes.Length);
-            fileStream.Close();
+            FileStream fileStream = null;
+            try
+            {
+                var i = 0;
+                fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+                foreach (var line in lines)
+                {
+                    // Write to file logic
+                    var bytes = Encoding.UTF8.GetBytes(line + '\n');
+                    fileStream.Write(bytes, 0, bytes.Length);
+                    // Report progress
+                    if (++i % 750 == 0)
+                    {
+                        // 0.95..1.0
+                        var percent = (double)i / linesCount;
+                        updateProgress((percent * 0.05) + 0.95);
+                    }
+                }
+            }
+            finally
+            {
+                fileStream?.Close();
+                fileStream?.Dispose();
+            }
 
-            func?.Invoke(1.0);
+            // Complete
+            updateProgress(1.0);
         }
 
         private string GetValue(BindingEntry field, object value)
