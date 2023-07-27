@@ -105,7 +105,7 @@ namespace SpellEditor.Sources.Database
                 }
             }
 
-            line.Replace(System.Environment.NewLine, "\\n");
+            line.Replace(System.Environment.NewLine, @"\n");
             return line.ToString();
         }
 
