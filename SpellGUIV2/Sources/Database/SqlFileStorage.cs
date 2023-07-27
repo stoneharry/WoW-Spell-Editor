@@ -1,5 +1,6 @@
 ﻿using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.DBC;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,29 +69,31 @@ namespace SpellEditor.Sources.Database
                         ++fieldI;
                         rowStr.Append(value + (fieldI < fieldCount ? ", " : ");"));
                     }
-                    export.AppendLine(rowStr.ToString());
+
+                    var temp = FormatLine(binding.Name, rowStr);
+                    export.AppendLine(temp);
                     // Update progress
                     if (++progressI % 250 == 0)
                     {
-                        double percent = (double)progressI / (double)numRows;
+                        var percent = (double)progressI / (double)numRows;
                         // Report 0.8 .. 0.9 only
                         updateProgress((percent * 0.1) + 0.8);
                     }
                 }
 
-                ExportTableToSql(bindingName, "Export", updateProgress, export.ToString());
+                ExportTableToSql(bindingName, "Export", updateProgress, export);
             });
         }
 
-        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func, string script)
+        private string FormatLine(string tableName, StringBuilder line)
         {
             var dbTableName = tableName.ToLower();
 
             // Then we replace the dbTableName names
             if (_tableNames.TryGetValue(dbTableName, out var tableNameValue))
             {
-                script.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
-                script.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
+                line.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
+                line.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
             }
 
             // Surprisingly, this is fast enough
@@ -98,20 +101,26 @@ namespace SpellEditor.Sources.Database
             {
                 foreach (var entry in tableColumns)
                 {
-                    script.Replace($"`{entry.Key}`", $"`{entry.Value}`");
+                    line.Replace($"`{entry.Key}`", $"`{entry.Value}`");
                 }
             }
 
+            line.Replace(System.Environment.NewLine, "\\n");
+            return line.ToString();
+        }
+
+        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func, StringBuilder script)
+        {
             func?.Invoke(0.95);
 
             // Write to file logic
             var bytes = Encoding.UTF8.GetBytes(script.ToString());
             // Try to GC collect immediately
             script = null;
-            using (var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create))
-            {
-                fileStream.Write(bytes, 0, bytes.Length);
-            }
+
+            var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+            fileStream.Write(bytes, 0, bytes.Length);
+            fileStream.Close();
 
             func?.Invoke(1.0);
         }
