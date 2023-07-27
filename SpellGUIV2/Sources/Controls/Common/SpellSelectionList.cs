@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -50,7 +51,7 @@ namespace SpellEditor.Sources.Controls
             return result.Length == 1 ? result[0]["SpellName" + (_language - 1)].ToString() : "";
         }
 
-        public void PopulateSelectSpell()
+        public void PopulateSelectSpell(bool clearData = true)
         {
             if (_adapter == null)
                 throw new Exception("Adapter has not been configured");
@@ -66,13 +67,16 @@ namespace SpellEditor.Sources.Controls
 
             worker.DoWork += delegate
             {
+                // Validate
                 if (worker.Adapter == null || !Config.Config.IsInit)
                     return;
                 int locale = _language;
                 if (locale > 0)
                     locale -= 1;
 
-                _table.Rows.Clear();
+                // Clear Data
+                if (clearData)
+                    _table.Rows.Clear();
 
                 const uint pageSize = 5000;
                 uint lowerBounds = 0;
@@ -101,6 +105,30 @@ namespace SpellEditor.Sources.Controls
             };
         }
 
+        public void AddNewSpell(uint copyFrom, uint copyTo)
+        {
+            // Copy spell
+            using (var result = _adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{copyFrom}' LIMIT 1"))
+            {
+                var row = result.Rows[0];
+                var str = new StringBuilder();
+                str.Append($"INSERT INTO `spell` VALUES ('{copyTo}'");
+                for (int i = 1; i < row.Table.Columns.Count; ++i)
+                    str.Append($", \"{row[i]}\"");
+                str.Append(")");
+                _adapter.Execute(str.ToString());
+            }
+            // Merge result with member table
+            using (var result = _adapter.Query($"SELECT `id`,`SpellName{_language - 1}`,`SpellIconID`,`SpellRank{_language - 1}` FROM `spell` WHERE `ID` = '{copyTo}' LIMIT 1"))
+            {
+                _table.Merge(result, false, MissingSchemaAction.Add);
+            }
+            // Update UI
+            _contentsIndex = 0;
+            var arg = new ProgressChangedEventArgs(100, _table.Rows);
+            _worker_ProgressChanged(this, arg);
+        }
+
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Ignores spells with a iconId <= 0
@@ -127,12 +155,12 @@ namespace SpellEditor.Sources.Controls
                     var textBlock = stackPanel.Children[1] as TextBlock;
                     var spellName = row[1].ToString();
                     textBlock.Text = $" {row[0]} - {spellName}\n  {row[3]}";
-                    var iconId = uint.Parse(row[2].ToString());
-                    if (iconId <= 0)
+                    ++_contentsIndex;
+
+                    if (!uint.TryParse(row[2].ToString(), out uint iconId) || iconId <= 0)
                         continue;
 
                     image.ToolTip = iconId.ToString();
-                    ++_contentsIndex;
                 }
             }
             // Spawn any new UI elements required
@@ -143,9 +171,7 @@ namespace SpellEditor.Sources.Controls
                 var spellName = row[1].ToString();
                 var textBlock = new TextBlock { Text = $" {row[0]} - {spellName}\n  {row[3]}" };
                 var image = new Image();
-                var iconId = uint.Parse(row[2].ToString());
-                //if (iconId > 0)
-                //{
+                uint.TryParse(row[2].ToString(), out uint iconId);
                 image.ToolTip = iconId.ToString();
                 image.Width = 32;
                 image.Height = 32;
@@ -155,7 +181,6 @@ namespace SpellEditor.Sources.Controls
                 stackPanel.Children.Add(image);
                 stackPanel.Children.Add(textBlock);
                 ++_contentsIndex;
-                //}
                 newElements.Add(stackPanel);
             }
             // Replace the item source directly, adding each item will raise a high amount of events

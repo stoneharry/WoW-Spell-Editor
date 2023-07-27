@@ -1094,13 +1094,7 @@ namespace SpellEditor
                 if (oldIDIndex != uint.MaxValue)
                 {
                     // Copy old spell to new spell
-                    var row = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{oldIDIndex}' LIMIT 1").Rows[0];
-                    StringBuilder str = new StringBuilder();
-                    str.Append($"INSERT INTO `spell` VALUES ('{newID}'");
-                    for (int i = 1; i < row.Table.Columns.Count; ++i)
-                        str.Append($", \"{row[i]}\"");
-                    str.Append(")");
-                    adapter.Execute(str.ToString());
+                    SelectSpell.AddNewSpell(oldIDIndex, newID);
                 }
                 else
                 {
