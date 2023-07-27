@@ -1,8 +1,10 @@
 ﻿using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.DBC;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,11 +70,12 @@ namespace SpellEditor.Sources.Database
                         ++fieldI;
                         rowStr.Append(value + (fieldI < fieldCount ? ", " : ");"));
                     }
-                    export.AppendLine(rowStr.ToString());
+                    // Append to export
+                    export.AppendLine(FormatLine(binding.Name, rowStr));
                     // Update progress
                     if (++progressI % 250 == 0)
                     {
-                        double percent = (double)progressI / (double)numRows;
+                        var percent = (double)progressI / (double)numRows;
                         // Report 0.8 .. 0.9 only
                         updateProgress((percent * 0.1) + 0.8);
                     }
@@ -82,15 +85,15 @@ namespace SpellEditor.Sources.Database
             });
         }
 
-        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc func, string script)
+        private string FormatLine(string tableName, StringBuilder line)
         {
             var dbTableName = tableName.ToLower();
 
             // Then we replace the dbTableName names
             if (_tableNames.TryGetValue(dbTableName, out var tableNameValue))
             {
-                script.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
-                script.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
+                line.Replace($"INTO `{dbTableName}`", $"INTO `{tableNameValue}`");
+                line.Replace($"TABLE `{dbTableName}`", $"TABLE `{tableNameValue}`");
             }
 
             // Surprisingly, this is fast enough
@@ -98,22 +101,48 @@ namespace SpellEditor.Sources.Database
             {
                 foreach (var entry in tableColumns)
                 {
-                    script.Replace($"`{entry.Key}`", $"`{entry.Value}`");
+                    line.Replace($"`{entry.Key}`", $"`{entry.Value}`");
                 }
             }
 
-            func?.Invoke(0.95);
+            line.Replace(Environment.NewLine, @"\n");
+            return line.ToString();
+        }
 
-            // Write to file logic
-            var bytes = Encoding.UTF8.GetBytes(script.ToString());
+        private void ExportTableToSql(string tableName, string path, MainWindow.UpdateProgressFunc updateProgress, string script)
+        {
+            var lines = script.Split('\n');
             // Try to GC collect immediately
             script = null;
-            using (var fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create))
+            double linesCount = lines.Count();
+
+            FileStream fileStream = null;
+            try
             {
-                fileStream.Write(bytes, 0, bytes.Length);
+                var i = 0;
+                fileStream = new FileStream($"{path}/{tableName}.sql", FileMode.Create);
+                foreach (var line in lines)
+                {
+                    // Write to file logic
+                    var bytes = Encoding.UTF8.GetBytes(line + '\n');
+                    fileStream.Write(bytes, 0, bytes.Length);
+                    // Report progress
+                    if (++i % 750 == 0)
+                    {
+                        // 0.95..1.0
+                        var percent = (double)i / linesCount;
+                        updateProgress((percent * 0.05) + 0.95);
+                    }
+                }
+            }
+            finally
+            {
+                fileStream?.Close();
+                fileStream?.Dispose();
             }
 
-            func?.Invoke(1.0);
+            // Complete
+            updateProgress(1.0);
         }
 
         private string GetValue(BindingEntry field, object value)
