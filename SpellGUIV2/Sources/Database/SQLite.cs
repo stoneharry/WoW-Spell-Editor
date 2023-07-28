@@ -24,7 +24,19 @@ namespace SpellEditor.Sources.Database
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
         }
-        
+
+        public void Dispose()
+        {
+            try
+            {
+                _connection?.Close();
+            }
+            finally
+            {
+                _connection?.Dispose();
+            }
+        }
+
         // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
 
         public void CreateAllTablesFromBindings()
@@ -75,7 +87,6 @@ namespace SpellEditor.Sources.Database
                         var table = dataSet.Tables[0];
                         return table.Rows.Count > 0 ? table.Rows[0][0] : null;
                     }
-
                 }
             }
         }

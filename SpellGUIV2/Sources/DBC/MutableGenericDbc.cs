@@ -49,7 +49,7 @@ namespace SpellEditor.Sources.DBC
             SaveDbcFile(UpdateProgress, newBody, binding);
         }
 
-        public static void UpdateProgress(double value)
+        public static void UpdateProgress(double value, int taskId = 0)
         {
             Logger.Debug($"{ Convert.ToInt32(value * 100D) }%");
         }

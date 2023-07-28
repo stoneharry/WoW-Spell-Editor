@@ -45,7 +45,7 @@ namespace SpellEditor.Sources.DBC
         /**
          * Reads a DBC record from a given binary reader.
          */
-        private Struct ReadStruct<Struct>(BinaryReader reader, byte[] readBuffer)
+        private Struct ReadStruct<Struct>(byte[] readBuffer)
         {
             Struct structure;
             GCHandle handle;
@@ -79,7 +79,7 @@ namespace SpellEditor.Sources.DBC
                 {
                     readBuffer = reader.ReadBytes(count);
                     _filePosition = reader.BaseStream.Position;
-                    header = ReadStruct<DBCHeader>(reader, readBuffer);
+                    header = ReadStruct<DBCHeader>(readBuffer);
                 }
             }
             _header = header;
@@ -91,7 +91,7 @@ namespace SpellEditor.Sources.DBC
          * array of key value pairs inside the body. The key value pairs are
          * column name to column value.
          */
-        public void ReadDBCRecords(DBCBody body, string bindingName)
+        public void ReadDBCRecords(ref DBCBody body, string bindingName)
         {
             var binding = BindingManager.GetInstance().FindBinding(bindingName);
             if (binding == null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
+
 using MahApps.Metro.Controls;
+
 using NLog;
+
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
@@ -27,12 +32,14 @@ namespace SpellEditor
         private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
+        private Action _ReloadData;
 
-        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell)
+        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action reloadData)
         {
             _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
             _PopulateSelectSpell = populateSelectSpell;
+            _ReloadData = reloadData;
             InitializeComponent();
         }
 
@@ -229,77 +236,91 @@ namespace SpellEditor
         {
             var manager = DBCManager.GetInstance();
 
-            Dictionary<string, ProgressBar> barLookup = new Dictionary<string, ProgressBar>();
+            var barLookup = new Dictionary<string, ProgressBar>();
             bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, isImport)));
 
             var label = isImport ? ImportLoadedCount : ExportLoadedCount;
 
             Task.Run(() =>
             {
-                ConcurrentBag<Task> bag = new ConcurrentBag<Task>();
+                var bag = new ConcurrentBag<Task>();
+                var adapters = new List<IDatabaseAdapter>();
+                var adapterIndex = 0;
 
-                // Start tasks
-                bindingList.AsParallel().ForAll(bindingName =>
+                try
                 {
-                    try
-                    {
-                        manager.ClearDbcBinding(bindingName);
-                        var abstractDbc = manager.FindDbcForBinding(bindingName);
-                        if (abstractDbc == null)
-                        {
-                            try
-                            {
-                                abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
-                            }
-                            catch (Exception exception)
-                            {
-                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                                ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                                return;
-                            }
-                        }
-                        if (isImport && !abstractDbc.HasData())
-                            abstractDbc.ReloadContents();
+                    // Spawn adapters
+                    SpawnAdapters(ref adapters, bindingList.Count);
 
-                        int id;
-                        if (isImport)
-                        {
-                            var task = abstractDbc.ImportTo(_Adapter, SetProgress, "ID", bindingName, useType);
-                            bag.Add(task);
-                            id = task.Id;
-                        }
-                        else
-                        {
-                            var task = abstractDbc.ExportTo(_Adapter, SetProgress, "ID", bindingName, useType);
-                            bag.Add(task);
-                            id = task.Id;
-                        }
-                        _TaskLookup.TryAdd(id, barLookup[bindingName]);
-                    }
-                    catch (Exception exception)
+                    // Start tasks
+                    bindingList.AsParallel().ForAll(bindingName =>
                     {
-                        Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                        ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                    }
-                });
+                        try
+                        {
+                            // Load Data
+                            manager.ClearDbcBinding(bindingName);
+                            var abstractDbc = manager.FindDbcForBinding(bindingName);
+                            if (abstractDbc == null)
+                            {
+                                try
+                                {
+                                    abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                                }
+                                catch (Exception exception)
+                                {
+                                    Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                    ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                                    return;
+                                }
+                            }
+                            if (isImport && !abstractDbc.HasData())
+                                abstractDbc.ReloadContents();
 
-                // Wait for all tasks to complete
-                List<Task> allTasks = bag.ToList();
-                Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
-                while (allTasks.Count > 0)
-                {
-                    Thread.Sleep(100);
-                    for (int i = allTasks.Count - 1; i >= 0; --i)
-                    {
-                        var task = allTasks[i];
-                        if (task.IsCompleted)
-                        {
-                            var bar = _TaskLookup[task.Id];
-                            Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
-                            allTasks.RemoveAt(i);
+                            // Get adapter
+                            var adapter = adapters[adapterIndex];
+                            if (++adapterIndex >= adapters.Count)
+                            {
+                                adapterIndex = 0;
+                            }
+
+                            // Perform operation
+                            var task = isImport ? 
+                                abstractDbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
+                                abstractDbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
+
+                            _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
+                            bag.Add(task);
                         }
-                    }
+                        catch (Exception exception)
+                        {
+                            Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                            ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                        }
+                    });
+
+                    // Wait for all tasks to complete
+                    List<Task> allTasks = bag.ToList();
                     Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                    while (allTasks.Count > 0)
+                    {
+                        Thread.Sleep(100);
+                        for (int i = allTasks.Count - 1; i >= 0; --i)
+                        {
+                            var task = allTasks[i];
+                            if (task.IsCompleted)
+                            {
+                                var bar = _TaskLookup[task.Id];
+                                Dispatcher.InvokeAsync(new Action(() => bar.Value = 100));
+                                allTasks.RemoveAt(i);
+                            }
+                        }
+                        Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
+                    }
+                }
+                finally
+                {
+                    adapters.ForEach(adapter => adapter.Dispose());
+                    adapters.Clear();
                 }
 
                 // Create MPQ if required
@@ -315,7 +336,8 @@ namespace SpellEditor
                 }
 
                 // Reset
-                Dispatcher.InvokeAsync(new Action(() => {
+                Dispatcher.InvokeAsync(new Action(() =>
+                {
                     _TaskLookup.Values.ToList().ForEach(bar =>
                     {
                         bar.Value = 0;
@@ -330,9 +352,9 @@ namespace SpellEditor
                 // Refresh spell selection list on import
                 if (isImport)
                 {
-                    Thread.Sleep(250);
                     Dispatcher.InvokeAsync(new Action(() =>
                     {
+                        _ReloadData.Invoke();
                         _PopulateSelectSpell.Invoke();
                         Close();
                     }));
@@ -353,10 +375,35 @@ namespace SpellEditor
             return null;
         }
 
-        public void SetProgress(double progress)
+        private void SpawnAdapters(ref List<IDatabaseAdapter> adapters, int numBindings)
         {
-            int id = Task.CurrentId.GetValueOrDefault(0);
-            var bar = _TaskLookup[id];
+            var tasks = new List<Task<IDatabaseAdapter>>();
+            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
+            Logger.Info($"Spawning {numConnections} adapters...");
+            var timer = new Stopwatch();
+            timer.Start();
+            for (var i = 0; i < numConnections; ++i)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    var adapter = AdapterFactory.Instance.GetAdapter(false);
+                    Logger.Info($"Spawned Adapter{Task.CurrentId}");
+                    return adapter;
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                adapters.Add(task.Result);
+            }
+            timer.Stop();
+            Logger.Info($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
+        }
+
+        public void SetProgress(double progress, int taskIdOverride = 0)
+        {
+            int id = taskIdOverride > 0 ? taskIdOverride : Task.CurrentId.GetValueOrDefault(0);
+            var bar = id > 0 ? _TaskLookup.ContainsKey(id) ? _TaskLookup[id] : null : null;
             if (bar != null)
             {
                 int reportValue = Convert.ToInt32(progress * 100D);
@@ -365,10 +412,16 @@ namespace SpellEditor
         }
         public void ShowFlyoutMessage(string message)
         {
-            Dispatcher.InvokeAsync(new Action(() => {
+            Dispatcher.InvokeAsync(new Action(() =>
+            {
                 Flyout.IsOpen = true;
                 FlyoutText.Text = message;
             }));
+        }
+
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SizeToContent = SizeToContent.Width;
         }
     }
 }

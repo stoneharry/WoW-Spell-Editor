@@ -52,7 +52,7 @@ namespace SpellEditor.Sources.DBC
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
             Reader = null;
-            Body = null;
+            Body.RecordMaps = null;
         }
 
         public void LoadImages(double margin)

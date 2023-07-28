@@ -126,6 +126,15 @@ namespace SpellEditor
             InitializeComponent();
         }
 
+        ~MainWindow()
+        {
+            GetDBAdapter()?.Dispose();
+            Logger.Info("######################################################");
+            Logger.Info("### SHUTTING DOWN                                    #");
+            Logger.Info("######################################################");
+            Console.Out.Flush();
+        }
+
         public async void HandleErrorMessage(string msg)
         {
             if (Dispatcher != null && Dispatcher.CheckAccess())
@@ -629,7 +638,7 @@ namespace SpellEditor
 
         #endregion
 
-        public delegate void UpdateProgressFunc(double value);
+        public delegate void UpdateProgressFunc(double value, int taskIdOverride = 0);
         public delegate void UpdateTextFunc(string value);
 
         private ImportExportWindow _ImportExportWindow;
@@ -642,7 +651,7 @@ namespace SpellEditor
                 _ImportExportWindow.Show();
                 return;
             }
-            var window = new ImportExportWindow(adapter, PopulateSelectSpell);
+            var window = new ImportExportWindow(adapter, PopulateSelectSpell, LoadAllRequiredDbcs);
             window.Show();
             window.Height += 40;
             window.Width /= 2;
@@ -671,7 +680,7 @@ namespace SpellEditor
         #endregion
 
         #region InitialiseMemberVariables
-        private void loadAllRequiredDbcs()
+        private void LoadAllRequiredDbcs()
         {
             // Load required DBC's. First the ones with dependencies and inject them into the manager
             var manager = DBCManager.GetInstance();
@@ -699,17 +708,7 @@ namespace SpellEditor
             {
                 try
                 {
-                    switch (Config.connectionType)
-                    {
-                        case Config.ConnectionType.MySQL:
-                            adapter = new MySQL();
-                            break;
-                        case Config.ConnectionType.SQLite:
-                            adapter = new SQLite();
-                            break;
-                        default:
-                            throw new Exception("Unknown connection type, valid types: MySQL, SQLite");
-                    }
+                    adapter = AdapterFactory.Instance.GetAdapter(true);
                     adapter.CreateAllTablesFromBindings();
                 }
                 catch (Exception e)
@@ -723,7 +722,7 @@ namespace SpellEditor
 
             try
             {
-                loadAllRequiredDbcs();
+                LoadAllRequiredDbcs();
             }
             catch (MySqlException e)
             {
