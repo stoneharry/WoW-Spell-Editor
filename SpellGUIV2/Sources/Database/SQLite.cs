@@ -27,7 +27,14 @@ namespace SpellEditor.Sources.Database
 
         public void Dispose()
         {
-            _connection?.Dispose();
+            try
+            {
+                _connection?.Close();
+            }
+            finally
+            {
+                _connection?.Dispose();
+            }
         }
 
         // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
