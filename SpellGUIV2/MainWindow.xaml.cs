@@ -1121,11 +1121,9 @@ namespace SpellEditor
                     return;
                 }
 
-                adapter.Execute($"DELETE FROM `spell` WHERE `ID` = '{spellID}'");
+                SelectSpell.DeleteSpell(spellID);
                 
                 selectedID = 0;
-
-                PopulateSelectSpell();
 
                 ShowFlyoutMessage(SafeTryFindResource("DeleteSpellRecord3"));
                 return;

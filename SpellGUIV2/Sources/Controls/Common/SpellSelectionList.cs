@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -123,6 +124,20 @@ namespace SpellEditor.Sources.Controls
             {
                 _table.Merge(result, false, MissingSchemaAction.Add);
             }
+            // Refresh
+            RefreshSpellList();
+        }
+
+        public void DeleteSpell(uint spellId)
+        {
+            _adapter.Execute($"DELETE FROM `spell` WHERE `ID` = '{spellId}'");
+            _table.Select($"id = {spellId}").First().Delete();
+            _table.AcceptChanges();
+            RefreshSpellList();
+        }
+
+        private void RefreshSpellList()
+        {
             // Update UI
             _contentsIndex = 0;
             var arg = new ProgressChangedEventArgs(100, _table.Rows);
@@ -176,7 +191,7 @@ namespace SpellEditor.Sources.Controls
                 image.Width = 32;
                 image.Height = 32;
                 image.Margin = new Thickness(1, 1, 1, 1);
-                image.IsVisibleChanged += isSpellListEntryVisibileChanged;
+                image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
                 var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
                 stackPanel.Children.Add(image);
                 stackPanel.Children.Add(textBlock);
@@ -204,7 +219,7 @@ namespace SpellEditor.Sources.Controls
             Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
 
-        private void isSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
+        private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
             var image = o as Image;
             if (!(bool)args.NewValue)
