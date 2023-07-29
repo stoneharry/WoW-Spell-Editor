@@ -108,7 +108,7 @@ namespace SpellEditor.Sources.Controls
 
         public void AddNewSpell(uint copyFrom, uint copyTo)
         {
-            // Copy spell
+            // Copy spell in DB
             using (var result = _adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{copyFrom}' LIMIT 1"))
             {
                 var row = result.Rows[0];
@@ -119,20 +119,24 @@ namespace SpellEditor.Sources.Controls
                 str.Append(")");
                 _adapter.Execute(str.ToString());
             }
-            // Merge result with member table
+            // Merge result with spell list
             using (var result = _adapter.Query($"SELECT `id`,`SpellName{_language - 1}`,`SpellIconID`,`SpellRank{_language - 1}` FROM `spell` WHERE `ID` = '{copyTo}' LIMIT 1"))
             {
                 _table.Merge(result, false, MissingSchemaAction.Add);
+                _table.AcceptChanges();
             }
-            // Refresh
+            // Refresh UI
             RefreshSpellList();
         }
 
         public void DeleteSpell(uint spellId)
         {
+            // Delete from DB
             _adapter.Execute($"DELETE FROM `spell` WHERE `ID` = '{spellId}'");
+            // Delete from spell list
             _table.Select($"id = {spellId}").First().Delete();
             _table.AcceptChanges();
+            // Refresh UI
             RefreshSpellList();
         }
 
@@ -140,6 +144,7 @@ namespace SpellEditor.Sources.Controls
         {
             // Update UI
             _contentsIndex = 0;
+            _contentsCount = Items.Count;
             var arg = new ProgressChangedEventArgs(100, _table.Rows);
             _worker_ProgressChanged(this, arg);
         }
@@ -168,11 +173,10 @@ namespace SpellEditor.Sources.Controls
 
                     var image = stackPanel.Children[0] as Image;
                     var textBlock = stackPanel.Children[1] as TextBlock;
-                    var spellName = row[1].ToString();
-                    textBlock.Text = $" {row[0]} - {spellName}\n  {row[3]}";
+                    textBlock.Text = $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}";
                     ++_contentsIndex;
 
-                    if (!uint.TryParse(row[2].ToString(), out uint iconId) || iconId <= 0)
+                    if (!uint.TryParse(row["SpellIconID"].ToString(), out uint iconId) || iconId <= 0)
                         continue;
 
                     image.ToolTip = iconId.ToString();
@@ -204,6 +208,7 @@ namespace SpellEditor.Sources.Controls
             if (src != null)
             {
                 // Don't keep more UI elements than we need
+                // This will delete any listbox items we no longer need
                 var enumerator = src.GetEnumerator();
                 for (int i = 0; i < _contentsIndex; ++i)
                 {
@@ -246,6 +251,7 @@ namespace SpellEditor.Sources.Controls
                  "spell", locale, locale, lowerBound, pageSize));
 
             _table.Merge(newSpellNames, false, MissingSchemaAction.Add);
+            _table.AcceptChanges();
 
             return newSpellNames.Rows;
         }

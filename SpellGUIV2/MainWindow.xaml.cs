@@ -1103,8 +1103,6 @@ namespace SpellEditor
                     return;
                 }
 
-                PopulateSelectSpell();
-
                 ShowFlyoutMessage(string.Format(SafeTryFindResource("CopySpellRecord8"), inputNewRecord));
                 return;
             }
