@@ -31,6 +31,7 @@ using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Locale;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.Tools.MPQ;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
@@ -69,7 +70,6 @@ namespace SpellEditor
         public uint selectedID;
         public uint newIconID = 1;
         private bool updating;
-        private int storedLocale = -1;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
 
         private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
@@ -155,7 +155,8 @@ namespace SpellEditor
         public int GetLanguage() {
             // FIXME(Harry)
             // Disabled returning Locale_langauge until it can at least support multiple client types
-            return GetLocale() == -1 ? 0 : GetLocale();
+            var locale = LocaleManager.Instance.GetLocale(GetDBAdapter());
+            return locale == -1 ? 0 : locale;
             //return (int)Locale_language;
         }
 
@@ -817,7 +818,10 @@ namespace SpellEditor
 
             await controller.CloseAsync();
             PopulateSelectSpell();
+        }
 
+        private void FocusLanguage()
+        {
             switch ((LocaleConstant)(GetLanguage() - 1))
             {
                 case LocaleConstant.LOCALE_enUS:
@@ -1774,47 +1778,6 @@ namespace SpellEditor
             loadIcons.updateIconSize(64, new Thickness(16, 0, 0, 0));
         }
 
-        private class SpellListQueryWorker : BackgroundWorker
-        {
-            public readonly IDatabaseAdapter Adapter;
-            public readonly Stopwatch Watch;
-
-            public SpellListQueryWorker(IDatabaseAdapter adapter, Stopwatch watch)
-            {
-                Adapter = adapter;
-                Watch = watch;
-            }
-        }
-
-        public int GetLocale()
-        {
-            if (storedLocale != -1)
-                return storedLocale;
-            if (adapter == null)
-                return -1;
-
-            // Attempt localisation on Death Touch, HACKY
-            var aboveClassic = WoWVersionManager.GetInstance().SelectedVersion().Identity > 112;
-            var name8 = aboveClassic ? ",`SpellName8` " : "";
-            DataRowCollection res = adapter.Query("SELECT `id`,`SpellName0`,`SpellName1`,`SpellName2`,`SpellName3`,`SpellName4`," +
-                "`SpellName5`,`SpellName6`,`SpellName7`" + name8 + " FROM `spell` WHERE `ID` = '5'").Rows;
-            if (res.Count == 0)
-                return -1;
-            int locale = 0;
-            if (res[0] != null)
-            {
-                for (int i = 1; i < res[0].Table.Columns.Count; ++i)
-                {
-                    if (res[0][i].ToString().Length > 3)
-                    {
-                        locale = i;
-                        break;
-                    }
-                }
-            }
-            storedLocale = locale;
-            return locale;
-        }
         #endregion
 
         #region PopulateSelectSpell
@@ -1822,6 +1785,7 @@ namespace SpellEditor
         private void PopulateSelectSpell()
         {
             SelectSpell.PopulateSelectSpell();
+            FocusLanguage();
         }
         #endregion
 

@@ -2,6 +2,7 @@
 using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Locale;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,7 +35,7 @@ namespace SpellEditor.Sources.Controls
 
         public SpellSelectionList SetLanguage(int language)
         { 
-            _language = language; 
+            _language = language;
             return this;
         }
 
@@ -58,6 +59,15 @@ namespace SpellEditor.Sources.Controls
                 throw new Exception("Adapter has not been configured");
             if (_table.Columns.Count == 0)
                 throw new Exception("Initialise has not been invoked");
+
+            // Refresh language
+            LocaleManager.Instance.MarkDirty();
+            var newLocale = LocaleManager.Instance.GetLocale(_adapter);
+            if (newLocale != _language)
+            {
+                _table.Columns["SpellName" + _language].ColumnName = "SpellName" + newLocale;
+                SetLanguage(newLocale);
+            }
 
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
@@ -161,12 +171,13 @@ namespace SpellEditor.Sources.Controls
             {
                 foreach (DataRow row in collection)
                 {
-                    ++rowIndex;
                     if (_contentsIndex == _contentsCount ||
                         _contentsIndex >= Items.Count)
                     {
                         break;
                     }
+
+                    ++rowIndex;
 
                     if (!(Items[_contentsIndex] is StackPanel stackPanel))
                         continue;
@@ -187,10 +198,9 @@ namespace SpellEditor.Sources.Controls
             for (; rowIndex < collection.Count; ++rowIndex)
             {
                 var row = collection[rowIndex];
-                var spellName = row[1].ToString();
-                var textBlock = new TextBlock { Text = $" {row[0]} - {spellName}\n  {row[3]}" };
+                var textBlock = new TextBlock { Text = $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}" };
                 var image = new Image();
-                uint.TryParse(row[2].ToString(), out uint iconId);
+                uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
                 image.ToolTip = iconId.ToString();
                 image.Width = 32;
                 image.Height = 32;
