@@ -185,14 +185,13 @@ namespace SpellEditor.Sources.Controls
                     if (!(Items[_contentsIndex] is StackPanel stackPanel))
                         continue;
 
-                    var image = stackPanel.Children[0] as Image;
-                    var textBlock = stackPanel.Children[1] as TextBlock;
-                    textBlock.Text = $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}";
                     ++_contentsIndex;
 
-                    if (!uint.TryParse(row["SpellIconID"].ToString(), out uint iconId) || iconId <= 0)
-                        continue;
+                    var image = stackPanel.Children[0] as Image;
+                    var textBlock = stackPanel.Children[1] as TextBlock;
+                    textBlock.Text = BuildText(row);
 
+                    uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
                     image.ToolTip = iconId.ToString();
                 }
             }
@@ -201,7 +200,7 @@ namespace SpellEditor.Sources.Controls
             for (; rowIndex < collection.Count; ++rowIndex)
             {
                 var row = collection[rowIndex];
-                var textBlock = new TextBlock { Text = $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}" };
+                var textBlock = new TextBlock { Text = BuildText(row) };
                 var image = new Image();
                 uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
                 image.ToolTip = iconId.ToString();
@@ -236,6 +235,8 @@ namespace SpellEditor.Sources.Controls
             watch.Stop();
             Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
+
+        private string BuildText(DataRow row) => $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}";
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
