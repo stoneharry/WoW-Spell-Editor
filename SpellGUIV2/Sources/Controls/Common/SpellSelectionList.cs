@@ -155,7 +155,10 @@ namespace SpellEditor.Sources.Controls
             // Update UI
             _contentsIndex = 0;
             _contentsCount = Items.Count;
-            var arg = new ProgressChangedEventArgs(100, _table.Rows);
+            _table.DefaultView.Sort = "id";
+            // We have to call ToTable to return a new sorted data table
+            // Returning the existing table will have new rows at the end of the collection
+            var arg = new ProgressChangedEventArgs(100, _table.DefaultView.ToTable().Rows);
             _worker_ProgressChanged(this, arg);
         }
 
