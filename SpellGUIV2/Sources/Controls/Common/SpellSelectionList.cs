@@ -1,5 +1,6 @@
 ﻿using NLog;
 using SpellEditor.Sources.BLP;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Locale;
@@ -182,17 +183,12 @@ namespace SpellEditor.Sources.Controls
 
                     ++rowIndex;
 
-                    if (!(Items[_contentsIndex] is StackPanel stackPanel))
+                    if (!(Items[_contentsIndex] is SpellSelectionEntry entry))
                         continue;
 
+                    entry.RefreshEntry(row, _language);
+
                     ++_contentsIndex;
-
-                    var image = stackPanel.Children[0] as Image;
-                    var textBlock = stackPanel.Children[1] as TextBlock;
-                    textBlock.Text = BuildText(row);
-
-                    uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
-                    image.ToolTip = iconId.ToString();
                 }
             }
             // Spawn any new UI elements required
@@ -200,19 +196,10 @@ namespace SpellEditor.Sources.Controls
             for (; rowIndex < collection.Count; ++rowIndex)
             {
                 var row = collection[rowIndex];
-                var textBlock = new TextBlock { Text = BuildText(row) };
-                var image = new Image();
-                uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
-                image.ToolTip = iconId.ToString();
-                image.Width = 32;
-                image.Height = 32;
-                image.Margin = new Thickness(1, 1, 1, 1);
-                image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
-                var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                stackPanel.Children.Add(image);
-                stackPanel.Children.Add(textBlock);
+                var entry = new SpellSelectionEntry();
+                entry.RefreshEntry(row, _language);
+                newElements.Add(entry);
                 ++_contentsIndex;
-                newElements.Add(stackPanel);
             }
             // Replace the item source directly, adding each item will raise a high amount of events
             var src = ItemsSource;
@@ -234,29 +221,6 @@ namespace SpellEditor.Sources.Controls
             ItemsSource = newSrc;
             watch.Stop();
             Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
-        }
-
-        private string BuildText(DataRow row) => $" {row["id"]} - {row[$"SpellName{_language - 1}"]}\n  {row[$"SpellRank{_language - 1}"]}";
-
-        private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
-        {
-            var image = o as Image;
-            if (!(bool)args.NewValue)
-            {
-                image.Source = null;
-                return;
-            }
-            if (image.Source != null)
-            {
-                return;
-            }
-            var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
-            if (loadIcons != null)
-            {
-                var iconId = uint.Parse(image.ToolTip.ToString());
-                var filePath = loadIcons.GetIconPath(iconId) + ".blp";
-                image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
-            }
         }
 
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
