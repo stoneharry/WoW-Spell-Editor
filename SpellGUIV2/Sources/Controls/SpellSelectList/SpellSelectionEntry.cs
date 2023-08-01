@@ -1,15 +1,10 @@
 ﻿using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.DBC;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SpellEditor.Sources.Controls.Common
+namespace SpellEditor.Sources.Controls.SpellSelectList
 {
     public class SpellSelectionEntry : StackPanel
     {
@@ -51,15 +46,18 @@ namespace SpellEditor.Sources.Controls.Common
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
             var image = o as Image;
+            // If not visible then unload icon
             if (!(bool)args.NewValue)
             {
                 image.Source = null;
                 return;
             }
+            // If we have a source and we are not dirty then do nothing
             if (image.Source != null && !_Dirty)
             {
                 return;
             }
+            // Try to load icon
             var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
             if (loadIcons != null)
             {
@@ -67,6 +65,11 @@ namespace SpellEditor.Sources.Controls.Common
                 var iconId = uint.Parse(image.ToolTip.ToString());
                 var filePath = loadIcons.GetIconPath(iconId) + ".blp";
                 image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
+            }
+            // Load context menu
+            if (ContextMenu == null)
+            {
+                ContextMenu = new SpellSelectContextMenu();
             }
         }
 
