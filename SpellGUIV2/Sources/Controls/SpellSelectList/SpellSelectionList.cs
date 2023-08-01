@@ -19,60 +19,60 @@ namespace SpellEditor.Sources.Controls
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private int _contentsCount;
-        private int _contentsIndex;
-        private int _language;
-        private IDatabaseAdapter _adapter;
-        private readonly DataTable _table = new DataTable();
+        private int _ContentsCount;
+        private int _ContentsIndex;
+        private int _Language;
+        private IDatabaseAdapter _Adapter;
+        private readonly DataTable _Table = new DataTable();
 
         public void Initialise()
         {
-            _table.Columns.Add("id", typeof(uint));
-            _table.Columns.Add("SpellName" + _language, typeof(string));
-            _table.Columns.Add("Icon", typeof(uint));
+            _Table.Columns.Add("id", typeof(uint));
+            _Table.Columns.Add("SpellName" + _Language, typeof(string));
+            _Table.Columns.Add("Icon", typeof(uint));
         }
 
         public SpellSelectionList SetLanguage(int language)
         { 
-            _language = language;
+            _Language = language;
             return this;
         }
 
         public SpellSelectionList SetAdapter(IDatabaseAdapter adapter)
         {
-            _adapter = adapter;
+            _Adapter = adapter;
             return this;
         }
 
-        public int GetLoadedRowCount() => _table.Rows.Count;
+        public int GetLoadedRowCount() => _Table.Rows.Count;
 
         public string GetSpellNameById(uint spellId)
         {
-            var result = _table.Select($"id = {spellId}");
-            return result.Length == 1 ? result[0]["SpellName" + (_language - 1)].ToString() : "";
+            var result = _Table.Select($"id = {spellId}");
+            return result.Length == 1 ? result[0]["SpellName" + (_Language - 1)].ToString() : "";
         }
 
         public void PopulateSelectSpell(bool clearData = true)
         {
-            if (_adapter == null)
+            if (_Adapter == null)
                 throw new Exception("Adapter has not been configured");
-            if (_table.Columns.Count == 0)
+            if (_Table.Columns.Count == 0)
                 throw new Exception("Initialise has not been invoked");
 
             // Refresh language
             LocaleManager.Instance.MarkDirty();
-            var newLocale = LocaleManager.Instance.GetLocale(_adapter);
-            if (newLocale != _language)
+            var newLocale = LocaleManager.Instance.GetLocale(_Adapter);
+            if (newLocale != _Language)
             {
-                _table.Columns["SpellName" + _language].ColumnName = "SpellName" + newLocale;
+                _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
                 SetLanguage(newLocale);
             }
 
             var selectSpellWatch = new Stopwatch();
             selectSpellWatch.Start();
-            _contentsIndex = 0;
-            _contentsCount = Items.Count;
-            var worker = new SpellListQueryWorker(_adapter, selectSpellWatch) { WorkerReportsProgress = true };
+            _ContentsIndex = 0;
+            _ContentsCount = Items.Count;
+            var worker = new SpellListQueryWorker(_Adapter, selectSpellWatch) { WorkerReportsProgress = true };
             worker.ProgressChanged += _worker_ProgressChanged;
 
             worker.DoWork += delegate
@@ -80,13 +80,13 @@ namespace SpellEditor.Sources.Controls
                 // Validate
                 if (worker.Adapter == null || !Config.Config.IsInit)
                     return;
-                int locale = _language;
+                int locale = _Language;
                 if (locale > 0)
                     locale -= 1;
 
                 // Clear Data
                 if (clearData)
-                    _table.Rows.Clear();
+                    _Table.Rows.Clear();
 
                 const uint pageSize = 5000;
                 uint lowerBounds = 0;
@@ -118,7 +118,7 @@ namespace SpellEditor.Sources.Controls
         public void AddNewSpell(uint copyFrom, uint copyTo)
         {
             // Copy spell in DB
-            using (var result = _adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{copyFrom}' LIMIT 1"))
+            using (var result = _Adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{copyFrom}' LIMIT 1"))
             {
                 var row = result.Rows[0];
                 var str = new StringBuilder();
@@ -126,13 +126,13 @@ namespace SpellEditor.Sources.Controls
                 for (int i = 1; i < row.Table.Columns.Count; ++i)
                     str.Append($", \"{row[i]}\"");
                 str.Append(")");
-                _adapter.Execute(str.ToString());
+                _Adapter.Execute(str.ToString());
             }
             // Merge result with spell list
-            using (var result = _adapter.Query($"SELECT `id`,`SpellName{_language - 1}`,`SpellIconID`,`SpellRank{_language - 1}` FROM `spell` WHERE `ID` = '{copyTo}' LIMIT 1"))
+            using (var result = _Adapter.Query($"SELECT `id`,`SpellName{_Language - 1}`,`SpellIconID`,`SpellRank{_Language - 1}` FROM `spell` WHERE `ID` = '{copyTo}' LIMIT 1"))
             {
-                _table.Merge(result, false, MissingSchemaAction.Add);
-                _table.AcceptChanges();
+                _Table.Merge(result, false, MissingSchemaAction.Add);
+                _Table.AcceptChanges();
             }
             // Refresh UI
             RefreshSpellList();
@@ -141,10 +141,10 @@ namespace SpellEditor.Sources.Controls
         public void DeleteSpell(uint spellId)
         {
             // Delete from DB
-            _adapter.Execute($"DELETE FROM `spell` WHERE `ID` = '{spellId}'");
+            _Adapter.Execute($"DELETE FROM `spell` WHERE `ID` = '{spellId}'");
             // Delete from spell list
-            _table.Select($"id = {spellId}").First().Delete();
-            _table.AcceptChanges();
+            _Table.Select($"id = {spellId}").First().Delete();
+            _Table.AcceptChanges();
             // Refresh UI
             RefreshSpellList();
         }
@@ -152,41 +152,37 @@ namespace SpellEditor.Sources.Controls
         private void RefreshSpellList()
         {
             // Update UI
-            _contentsIndex = 0;
-            _contentsCount = Items.Count;
-            _table.DefaultView.Sort = "id";
+            _ContentsIndex = 0;
+            _ContentsCount = Items.Count;
+            _Table.DefaultView.Sort = "id";
             // We have to call ToTable to return a new sorted data table
             // Returning the existing table will have new rows at the end of the collection
-            var arg = new ProgressChangedEventArgs(100, _table.DefaultView.ToTable().Rows);
+            var arg = new ProgressChangedEventArgs(100, _Table.DefaultView.ToTable().Rows);
             _worker_ProgressChanged(this, arg);
         }
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // Ignores spells with a iconId <= 0
             var watch = new Stopwatch();
             watch.Start();
             DataRowCollection collection = (DataRowCollection)e.UserState;
             int rowIndex = 0;
             // Reuse existing UI elements if they exist
-            if (_contentsIndex < _contentsCount)
+            if (_ContentsIndex < _ContentsCount)
             {
                 foreach (DataRow row in collection)
                 {
-                    if (_contentsIndex == _contentsCount ||
-                        _contentsIndex >= Items.Count)
-                    {
+                    if (_ContentsIndex == _ContentsCount || _ContentsIndex >= Items.Count)
                         break;
-                    }
+
+                    if (!(Items[_ContentsIndex] is SpellSelectionEntry entry))
+                        continue;
 
                     ++rowIndex;
 
-                    if (!(Items[_contentsIndex] is SpellSelectionEntry entry))
-                        continue;
+                    entry.RefreshEntry(row, _Language);
 
-                    entry.RefreshEntry(row, _language);
-
-                    ++_contentsIndex;
+                    ++_ContentsIndex;
                 }
             }
             // Spawn any new UI elements required
@@ -195,19 +191,18 @@ namespace SpellEditor.Sources.Controls
             {
                 var row = collection[rowIndex];
                 var entry = new SpellSelectionEntry();
-                entry.RefreshEntry(row, _language);
+                entry.RefreshEntry(row, _Language);
                 newElements.Add(entry);
-                ++_contentsIndex;
+                ++_ContentsIndex;
             }
-            // Replace the item source directly, adding each item will raise a high amount of events
+            // Replace the item source directly, adding each item would raise a high amount of events
             var src = ItemsSource;
             var newSrc = new List<object>();
             if (src != null)
             {
-                // Don't keep more UI elements than we need
-                // This will delete any listbox items we no longer need
+                // This will also delete any listbox items we no longer need
                 var enumerator = src.GetEnumerator();
-                for (int i = 0; i < _contentsIndex; ++i)
+                for (int i = 0; i < _ContentsIndex; ++i)
                 {
                     if (!enumerator.MoveNext())
                         break;
@@ -223,11 +218,11 @@ namespace SpellEditor.Sources.Controls
 
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
-            DataTable newSpellNames = _adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{2}` FROM `{0}` ORDER BY `id` LIMIT {3}, {4}",
+            DataTable newSpellNames = _Adapter.Query(string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{2}` FROM `{0}` ORDER BY `id` LIMIT {3}, {4}",
                  "spell", locale, locale, lowerBound, pageSize));
 
-            _table.Merge(newSpellNames, false, MissingSchemaAction.Add);
-            _table.AcceptChanges();
+            _Table.Merge(newSpellNames, false, MissingSchemaAction.Add);
+            _Table.AcceptChanges();
 
             return newSpellNames.Rows;
         }
