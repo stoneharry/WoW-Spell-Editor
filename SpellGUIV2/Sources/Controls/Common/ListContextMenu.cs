@@ -1,15 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace SpellEditor.Sources.Controls.Visual
+namespace SpellEditor.Sources.Controls.Common
 {
-    class VisualContextMenu : ContextMenu
+    class ListContextMenu : ContextMenu
     {
         private readonly MenuItem _PasteItem;
 
-        public VisualContextMenu(IVisualListEntry entry)
+        public ListContextMenu(IListEntry entry, bool addSeparators)
         {
             var copyItem = new MenuItem
             {
@@ -32,15 +30,15 @@ namespace SpellEditor.Sources.Controls.Visual
                 Header = TryFindResource("VisualCancelContextMenu") ?? "Cancel"
             };
             Items.Add(copyItem);
-            Items.Add(new Separator());
+            if (addSeparators) Items.Add(new Separator());
             Items.Add(_PasteItem);
-            Items.Add(new Separator());
+            if (addSeparators) Items.Add(new Separator());
             Items.Add(deleteItem);
-            Items.Add(new Separator());
+            if (addSeparators) Items.Add(new Separator());
             Items.Add(cancelItem);
         }
 
-        public VisualContextMenu(RoutedEventHandler pasteAction)
+        public ListContextMenu(RoutedEventHandler pasteAction, bool addSeparators)
         {
             _PasteItem = new MenuItem
             {
@@ -53,7 +51,7 @@ namespace SpellEditor.Sources.Controls.Visual
                 Header = TryFindResource("VisualCancelContextMenu") ?? "Cancel"
             };
             Items.Add(_PasteItem);
-            Items.Add(new Separator());
+            if (addSeparators) Items.Add(new Separator());
             Items.Add(cancelItem);
         }
 

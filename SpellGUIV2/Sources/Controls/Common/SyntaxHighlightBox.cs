@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace SpellEditor.Sources.Controls
+namespace SpellEditor.Sources.Controls.Common
 {
     class SyntaxHighlightBox : RichTextBox
     {

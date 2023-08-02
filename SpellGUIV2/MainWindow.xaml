@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
-        xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Visual"
+        xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Common"
         Title="{DynamicResource mainTitle}"
         Height="800"
         Width="1300"
@@ -14,12 +14,12 @@
         Loaded="_Loaded">
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
-            <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
-            <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
-            <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
-            <Style TargetType="c:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
-            <Style TargetType="c2:VisualContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
-            <Style TargetType="c:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
+            <Style TargetType="c2:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c2:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="c2:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+            <Style TargetType="c2:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c2:ListContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
+            <Style TargetType="c2:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
             <Style TargetType="c:SpellSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
@@ -51,17 +51,17 @@
                         <ColumnDefinition Width="270"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labGoToSpell}" Margin="5" Grid.Row="0" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="NavigateToSpell" HorizontalAlignment="Left" Margin="5" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Row="0"  Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="NavigateToSpell" HorizontalAlignment="Left" Margin="5" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Row="0"  Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="1" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByEffect}" Margin="5" Grid.Row="2" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
                     <Label Content="{DynamicResource labFilterByAura}" Margin="5" Grid.Row="3" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3" SelectionChanged="FilterAuraCombo_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3" SelectionChanged="FilterAuraCombo_SelectionChanged"/>
                     <Label Content="{DynamicResource labFilterByTargetA}" Margin="5" Grid.Row="2" Grid.Column="4"/>
-                    <c:ThreadSafeComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5" SelectionChanged="FilterSpellTargetA_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5" SelectionChanged="FilterSpellTargetA_SelectionChanged"/>
                     <Label Content="{DynamicResource labFilterByTargetB}" Margin="5" Grid.Row="3" Grid.Column="4"/>
-                    <c:ThreadSafeComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5" SelectionChanged="FilterSpellTargetB_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5" SelectionChanged="FilterSpellTargetB_SelectionChanged"/>
                     <c:SpellSelectionList x:Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
@@ -89,17 +89,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName0" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName0" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip0" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip0" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription0" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription0" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen0" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabKorean}" x:Name="TabItem_Korean">
@@ -117,17 +117,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName1" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName1" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip1" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip1" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription1" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen1" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabFrench}" x:Name="TabItem_French">
@@ -145,17 +145,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName2" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName2" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip2" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip2" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription2" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen2" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabDeutsch}" x:Name="TabItem_Deutsch">
@@ -173,17 +173,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName3" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName3" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip3" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip3" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription3" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen3" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="TabItem_Chinese" Header="{DynamicResource tabChinese}">
@@ -201,17 +201,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName4" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName4" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip4" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip4" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription4" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen4" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabTaiwanese}" x:Name="TabItem_Taiwanese">
@@ -229,17 +229,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName5" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName5" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip5" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip5" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription5" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen5" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabMexican}" x:Name="TabItem_Mexican">
@@ -257,17 +257,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName6" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName6" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip6" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip6" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription6" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen6" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabPortuguese}" x:Name="TabItem_Portuguese">
@@ -285,17 +285,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName7" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName7" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip7" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip7" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription7" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen7" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="{DynamicResource tabRussian}" x:Name="TabItem_Russian">
@@ -313,17 +313,17 @@
                                     <ColumnDefinition Width="AUTO"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{DynamicResource labSpellName}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellName8" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellName8" Height="118" Width="300" Margin="5" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellRank}" Margin="5" Grid.Row="0" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellRank8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellRank8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="1" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellTooltip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltip8" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltip8" TextChanged="SpellTooltipGen_TextChanged" Margin="5" Height="119" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="3" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellDescription}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescription8" TextChanged="SpellDescriptionGen_TextChanged" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="5" Grid.Column="0"/>
                                 <Label Content="{DynamicResource labSpellIngameTooltip}" Margin="5" Grid.Row="2" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellTooltipGen8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellTooltipGen8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="3" Grid.Column="1"/>
                                 <Label Content="{DynamicResource labSpellIngameDescription}" Margin="5" Width="157" Grid.Row="4" Grid.Column="1"/>
-                                <c:ThreadSafeTextBox x:Name="SpellDescriptionGen8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                                <c2:ThreadSafeTextBox x:Name="SpellDescriptionGen8" Margin="5" Height="118" Width="300" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
                             </Grid>
                         </TabItem>
                     </TabControl>
@@ -359,89 +359,89 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labCategory}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="Category" Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="Category" Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labDispelType}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="DispelType" Margin="5,5,5,5" Width="150" Grid.Row="1" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="DispelType" Margin="5,5,5,5" Width="150" Grid.Row="1" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labMechanicType}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="MechanicType" Margin="5,5,5,5" Width="150" Grid.Row="2" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="MechanicType" Margin="5,5,5,5" Width="150" Grid.Row="2" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labCastTime}" Margin="5,5,5,5" Grid.Row="3" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="CastTime" Margin="5,5,5,5" Width="150" Grid.Row="3" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="CastTime" Margin="5,5,5,5" Width="150" Grid.Row="3" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labDuration}" Margin="5,5,5,5" Grid.Row="4" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="Duration" Margin="5,5,5,5" Width="150" Grid.Row="4" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="Duration" Margin="5,5,5,5" Width="150" Grid.Row="4" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labRange}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="Range" Margin="5,5,5,5" Width="150" Grid.Row="5" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:ThreadSafeComboBox x:Name="Range" Margin="5,5,5,5" Width="150" Grid.Row="5" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labCasterAuraState}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="CasterAuraState" Margin="5,5,5,5" Width="150" Grid.Row="6" Grid.Column="1"/>
+                    <c2:ThreadSafeComboBox x:Name="CasterAuraState" Margin="5,5,5,5" Width="150" Grid.Row="6" Grid.Column="1"/>
                     <Label Content="{DynamicResource labSpellLevel}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="SpellLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="1"/>
                     <Label Content="{DynamicResource labBaseLevel}" Margin="5,5,5,5" Grid.Row="8" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="BaseLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="BaseLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
                     <Label Content="{DynamicResource labMaxLevel}" Margin="5,5,5,5" Grid.Row="9" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="MaximumLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="9" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="MaximumLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="9" Grid.Column="1"/>
                     <Label Content="{DynamicResource labSpellVisual1}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="SpellVisual1" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="0" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellVisual1" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="0" Grid.Column="3"/>
                     <Label Content="{DynamicResource labSpellVisual2}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="SpellVisual2" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="1"  Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellVisual2" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="1"  Grid.Column="3"/>
                     <Label Content="{DynamicResource labSpeed}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="Speed" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="2" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="Speed" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="2" Grid.Column="3"/>
                     <Label Content="{DynamicResource labTargetAuraState}" Margin="5,5,5,5" Grid.Row="3" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="TargetAuraState" Margin="5,5,5,5" Width="150" Grid.Row="3" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="TargetAuraState" Margin="5,5,5,5" Width="150" Grid.Row="3" Grid.Column="3"/>
                     <Label Content="{DynamicResource labRecoveryTime}" Margin="5,5,5,5" Grid.Row="4" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="RecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="4" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="RecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="4" Grid.Column="3"/>
                     <Label Content="{DynamicResource labCategoryRecoveryTime}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="CategoryRecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="CategoryRecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3"/>
                     <Label Content="{DynamicResource labSpellMissileID}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="SpellMissileID" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellMissileID" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="3"/>
                     <Label Content="{DynamicResource labStacks}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="Stacks" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="Stacks" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="3"/>
                     <Label Content="{DynamicResource labDifficulty}" Margin="5,5,5,5" Grid.Row="8" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="Difficulty" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="8" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="Difficulty" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="8" Grid.Column="3"/>
                     <Label Content="{DynamicResource labPowerType}" Margin="5,5,5,5" Grid.Row="9" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="PowerType" Margin="5,5,5,5" Width="150" Grid.Row="9" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="PowerType" Margin="5,5,5,5" Width="150" Grid.Row="9" Grid.Column="3"/>
                     <Label Content="{DynamicResource labGlobalCooldownCategory}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="StartRecoveryCategory" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="0" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="StartRecoveryCategory" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="0" Grid.Column="5"/>
                     <Label Content="{DynamicResource labPowerCost}" Margin="5,5,5,5"  Grid.Row="1" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="PowerCost" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="1" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="PowerCost" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="1" Grid.Column="5"/>
                     <Label Content="{DynamicResource labManaCostPerLevel}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="ManaCostPerLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="2" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="ManaCostPerLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="2" Grid.Column="5"/>
                     <Label Content="{DynamicResource labManaCostPerSecond}" Margin="5,5,5,5" Grid.Row="3" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="ManaCostPerSecond" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="3" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="ManaCostPerSecond" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="3" Grid.Column="5"/>
                     <Label Content="{DynamicResource labPerSecondPerLevel}" Margin="5,5,5,5" Grid.Row="4" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="PerSecondPerLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="4" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="PerSecondPerLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="4" Grid.Column="5"/>
                     <Label Content="{DynamicResource labManaCost%}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="ManaCostPercent" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="ManaCostPercent" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyName}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyFlags}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellFamilyFlags" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyFlags1}" Margin="5,5,5,5" Grid.Row="8" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags1" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="8" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellFamilyFlags1" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="8" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyFlags2}" Margin="5,5,5,5" Grid.Row="9" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="SpellFamilyFlags2" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="9" Grid.Column="5"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellFamilyFlags2" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="9" Grid.Column="5"/>
                     <Label Content="{DynamicResource labGlobalCooldownTime}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="StartRecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="10" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="StartRecoveryTime" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="10" Grid.Column="1"/>
                     <Label Content="{DynamicResource labMaxTargets}" Margin="5,5,5,5" Grid.Row="11" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="MaxTargets" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="11" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="MaxTargets" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="11" Grid.Column="1"/>
                     <Label Content="{DynamicResource labMaxTargetsLevel}" Margin="5,5,5,5" Grid.Row="12" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="MaxTargetsLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="12" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="MaxTargetsLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="12" Grid.Column="1"/>
                     <Label Content="{DynamicResource labTotemCategory1}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="TotemCategory1" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="10" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="TotemCategory1" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="10" Grid.Column="3"/>
                     <Label Content="{DynamicResource labTotemCategory2}" Margin="5,5,5,5" Grid.Row="11" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="TotemCategory2" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="11" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="TotemCategory2" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="11" Grid.Column="3"/>
                     <Label Content="{DynamicResource labAreaGroup}" Margin="5,5,5,5" Grid.Row="12" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="AreaGroup" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="12" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="AreaGroup" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="12" Grid.Column="3"/>
                     <Label Content="{DynamicResource labPreventionType}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="4"/>
-                    <c:ThreadSafeComboBox x:Name="PreventionType" Margin="5,5,5,5" Width="150" Grid.Row="10" Grid.Column="5"/>
+                    <c2:ThreadSafeComboBox x:Name="PreventionType" Margin="5,5,5,5" Width="150" Grid.Row="10" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellDamageType}" Margin="5,5,5,5" Grid.Row="11" Grid.Column="4"/>
-                    <c:ThreadSafeComboBox x:Name="SpellDamageType" Margin="5,5,5,5" Width="150" Grid.Row="11" Grid.Column="5"/>
+                    <c2:ThreadSafeComboBox x:Name="SpellDamageType" Margin="5,5,5,5" Width="150" Grid.Row="11" Grid.Column="5"/>
                     <Label Content="{DynamicResource labRequiresSpellFocus}" Margin="5,5,5,5" Grid.Row="12" Grid.Column="4"/>
-                    <c:ThreadSafeComboBox x:Name="RequiresSpellFocus" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="12" Grid.Column="5"/>
+                    <c2:ThreadSafeComboBox x:Name="RequiresSpellFocus" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="12" Grid.Column="5"/>
                     <Label Content="{DynamicResource labRuneCost}" Margin="5,5,5,5" Grid.Row="13" Grid.Column="0"/>
-                    <c:ThreadSafeComboBox x:Name="RuneCost" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="1"/>
+                    <c2:ThreadSafeComboBox x:Name="RuneCost" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="1"/>
                     <Label Content="{DynamicResource labSpellDescriptionVariables}" Margin="5,5,5,5" Grid.Row="13" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="SpellDescriptionVariables" Margin="5,5,5,5"  Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="SpellDescriptionVariables" Margin="5,5,5,5"  Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="3"/>
                     <Label Content="{DynamicResource labSpellPriority}" Margin="5,5,5,5" Grid.Row="14" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="SpellPriority" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="14" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="SpellPriority" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="14" Grid.Column="1"/>
                     <Grid Grid.Row="0" Grid.Column="6" Grid.RowSpan="10" Margin="20,5,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -461,15 +461,15 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="{DynamicResource labSchool}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S1" Content="{DynamicResource checkboxPhysical}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S2" Content="{DynamicResource checkboxHoly}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S3" Content="{DynamicResource checkboxFire}" Margin="5,5,5,5" Grid.Row="3" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S4" Content="{DynamicResource checkboxNature}" Margin="5,5,5,5" Grid.Row="4" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S5" Content="{DynamicResource checkboxFrost}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S6" Content="{DynamicResource checkboxShadow}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="S7" Content="{DynamicResource checkboxArcane}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S1" Content="{DynamicResource checkboxPhysical}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S2" Content="{DynamicResource checkboxHoly}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S3" Content="{DynamicResource checkboxFire}" Margin="5,5,5,5" Grid.Row="3" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S4" Content="{DynamicResource checkboxNature}" Margin="5,5,5,5" Grid.Row="4" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S5" Content="{DynamicResource checkboxFrost}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S6" Content="{DynamicResource checkboxShadow}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="S7" Content="{DynamicResource checkboxArcane}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="0"/>
                         <Label Content=" " Grid.Row="8" Grid.Column="0"/>
-                        <c:ThreadSafeCheckBox x:Name="FacingFrontFlag" Content="{DynamicResource checkboxFacingFront}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="0"/>
+                        <c2:ThreadSafeCheckBox x:Name="FacingFrontFlag" Content="{DynamicResource checkboxFacingFront}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="0"/>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -486,9 +486,9 @@
                                 <StackPanel Name="ProcEditorGrid"/>
                             </ScrollViewer>
                             <Label Content="{DynamicResource labProcCharges}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,160,0,0"/>
-                            <c:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,186,0,0" Width="90" TextWrapping="Wrap"/>
+                            <c2:ThreadSafeTextBox x:Name="ProcCharges" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,186,0,0" Width="90" TextWrapping="Wrap"/>
                             <Label Content="{DynamicResource labProcChance}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="820,236,0,0"/>
-                            <c:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
+                            <c2:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="{DynamicResource Effects2}">
@@ -497,157 +497,157 @@
                                 <TabItem Header="{DynamicResource SpellEffects1}">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="DieSides1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="DieSides1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labRealPointsPerLevel}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePointsPerLevel1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMechanic}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="Mechanic1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="Mechanic1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="RadiusIndex1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="RadiusIndex1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="Amplitude1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="Amplitude1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MultipleValue1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MultipleValue1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labChainTarget}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,382,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
+                                        <c2:ThreadSafeTextBox x:Name="ChainTarget1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <ListBox x:Name="EffectTargetSpellsList1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
+                                        <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects2}">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePoints2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePoints2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="DieSides2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="DieSides2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labRealPointsPerLevel}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePointsPerLevel2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMechanic}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="Mechanic2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="Mechanic2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="RadiusIndex2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="RadiusIndex2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="Amplitude2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="Amplitude2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MultipleValue2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MultipleValue2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labChainTarget}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,382,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
+                                        <c2:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <ListBox x:Name="EffectTargetSpellsList2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
+                                        <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects3}">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePoints3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePoints3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="DieSides3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="DieSides3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labRealPointsPerLevel}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="BasePointsPerLevel3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="BasePointsPerLevel3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMechanic}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="Mechanic3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="Mechanic3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,166,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,197,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labTargetB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="TargetB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="TargetB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="RadiusIndex3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="RadiusIndex3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <c2:ThreadSafeComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="Amplitude3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="Amplitude3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MultipleValue3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MultipleValue3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,351,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labChainTarget}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,382,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
+                                        <c2:ThreadSafeTextBox x:Name="ChainTarget3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
-                                        <c:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
+                                        <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,290,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,72,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <ListBox x:Name="EffectTargetSpellsList3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="436" Margin="929,103,0,0" Width="300" BorderThickness="1"/>
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
-                                        <c:ThreadSafeTextBox x:Name="FilterClassMaskSpells3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
+                                        <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>
@@ -679,12 +679,12 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labItemTool1}" Margin="5" Grid.Row="0" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Totem1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Totem1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1"/>
                     <Label Content="{DynamicResource labItemTool2}" Margin="5" Grid.Row="1" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Totem2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Totem2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1"/>
 
                     <Label Content="{DynamicResource labEquippedItemClass}" Margin="5" Grid.Row="0" Grid.Column="2"/>
-                    <c:ThreadSafeComboBox x:Name="EquippedItemClass" Margin="5" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="0" Grid.Column="3"/>
+                    <c2:ThreadSafeComboBox x:Name="EquippedItemClass" Margin="5" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="0" Grid.Column="3"/>
                     <Label Content="{DynamicResource labEquippedItemInventoryType}" HorizontalAlignment="Center" Margin="5,5,5,5" Grid.Row="0" Grid.Column="4"/>
                     <ScrollViewer Margin="10,10,10,10" Grid.Row="1" Grid.RowSpan="10" Grid.Column="4" MinWidth="200">
                         <StackPanel Name="EquippedItemInventoryTypeGrid" IsEnabled="False"/>
@@ -695,37 +695,37 @@
                     </ScrollViewer>
 
                     <Label Content="{DynamicResource labReagent1}" Margin="5" Grid.Row="2" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent2}" Margin="5" Grid.Row="3" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent3}" Margin="5" Grid.Row="4" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent4}" Margin="5" Grid.Row="5" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent5}" Margin="5" Grid.Row="6" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent6}" Margin="5" Grid.Row="7" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent7}" Margin="5" Grid.Row="8" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagent8}" Margin="5" Grid.Row="9" Grid.Column="0"/>
-                    <c:ThreadSafeTextBox x:Name="Reagent8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="1"/>
+                    <c2:ThreadSafeTextBox x:Name="Reagent8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="1"/>
                     <Label Content="{DynamicResource labReagentCount1}" Margin="5" Grid.Row="2" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount1" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="2" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount2}" Margin="5" Grid.Row="3" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount2" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="3" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount3}" Margin="5" Grid.Row="4" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount3" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="4" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount4}" Margin="5" Grid.Row="5" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount4" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount5}" Margin="5" Grid.Row="6" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount5" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="6" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount6}" Margin="5" Grid.Row="7" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount6" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="7" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount7}" Margin="5" Grid.Row="8" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount7" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="8" Grid.Column="3"/>
                     <Label Content="{DynamicResource labReagentCount8}" Margin="5" Grid.Row="9" Grid.Column="2"/>
-                    <c:ThreadSafeTextBox x:Name="ReagentCount8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="ReagentCount8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="3"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Flags}">
@@ -863,7 +863,7 @@
                     <Label Content="{DynamicResource labNewIcon}" Margin="5" Grid.Row="1" Grid.Column="2"/>
                     <Image Name="NewIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFiltericons}" Margin="5" Grid.Row="1" Grid.Column="4"/>
-                    <c:ThreadSafeTextBox x:Name="FilterIcons" Margin="5" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <c2:ThreadSafeTextBox x:Name="FilterIcons" Margin="5" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
                     <Slider x:Name="slider" Margin="20,10,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE"
                             ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" 
                             Focusable="False" Grid.Row="1" Grid.Column="6"/>
@@ -1013,7 +1013,7 @@
                             <Label Content="{DynamicResource VisualEffectMissileList}" Grid.Row="0" Grid.Column="2" Margin="10,5,10,5"/>
                             <ListBox x:Name="VisualMissileEffectList" Grid.Row="1" Grid.RowSpan="40" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" Width="350" MaxHeight="550" BorderThickness="1"/>
                             <Label Content="{DynamicResource VisualEffectMissileFilter}" Grid.Row="0" Grid.Column="4" Margin="10,5,10,5"/>
-                            <c:ThreadSafeTextBox x:Name="VisualMissileFilter" Grid.Row="1" Grid.Column="4" MinWidth="250" MaxHeight="30" VerticalAlignment="TOP" Margin="5" TextChanged="VisualMissileFilter_TextChanged"/>
+                            <c2:ThreadSafeTextBox x:Name="VisualMissileFilter" Grid.Row="1" Grid.Column="4" MinWidth="250" MaxHeight="30" VerticalAlignment="TOP" Margin="5" TextChanged="VisualMissileFilter_TextChanged"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="{DynamicResource VisualKitsAndEffects}">
@@ -1066,17 +1066,17 @@
                                 </Grid.ColumnDefinitions>
                                 <!-- Spell Visual Kit -->
                                 <Label Content="{DynamicResource VisualKitStartAnimId}" Grid.Row="0" Grid.Column="0" Margin="10,30,10,5"/>
-                                <c:FilteredComboBox x:Name="StartAnimIdCombo" Grid.Row="0" Grid.Column="1" Margin="10,30,10,5" MinHeight="50" MinWidth="250"
+                                <c2:FilteredComboBox x:Name="StartAnimIdCombo" Grid.Row="0" Grid.Column="1" Margin="10,30,10,5" MinHeight="50" MinWidth="250"
                             IsEditable="True" 
                             IsTextSearchEnabled="True"
                             StaysOpenOnEdit="True"
-                            c:OnlyValuesInList="True"/>
+                            c2:OnlyValuesInList="True"/>
                                 <Label Content="{DynamicResource VisualKitAnimationId}" Grid.Row="1" Grid.Column="0" Margin="10,5,10,5"/>
-                                <c:FilteredComboBox x:Name="AnimationIdCombo" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinHeight="50" MinWidth="250"
+                                <c2:FilteredComboBox x:Name="AnimationIdCombo" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" MinHeight="50" MinWidth="250"
                             IsEditable="True" 
                             IsTextSearchEnabled="True"
                             StaysOpenOnEdit="True"
-                            c:OnlyValuesInList="True"/>
+                            c2:OnlyValuesInList="True"/>
                                 <Label Content="{DynamicResource VisualKitSpecialEffects1}" Grid.Row="2" Grid.Column="0" Margin="10,5,10,5"/>
                                 <TextBox Name="SpecialEffect1Txt" Grid.Row="2" Grid.Column="1" Margin="10,5,10,5" MinWidth="150"/>
                                 <Label Content="{DynamicResource VisualKitSpecialEffects2}" Grid.Row="3" Grid.Column="0" Margin="10,5,10,5"/>
@@ -1239,7 +1239,7 @@
                                     <Label Content="{DynamicResource VisualMissileMotionMissileCount}" Grid.Row="4" Grid.Column="0" Margin="10,5,10,5"/>
                                     <TextBox Name="VisualMissileMotionMissileCountTxt" Grid.Row="4" Grid.Column="1" Margin="10,5,10,5" MinWidth="300" MaxHeight="30" VerticalAlignment="TOP"/>
                                     <Label Content="{DynamicResource VisualMissileMotionScript}" Grid.Row="0" Grid.Column="3" Margin="10,5,10,5"/>
-                                    <c:SyntaxHighlightBox x:Name="VisualMissileMotionScriptBox" Grid.Row="1" Grid.RowSpan="10" Grid.Column="3" Grid.ColumnSpan="5" MinWidth="800" MinHeight="500"/>
+                                    <c2:SyntaxHighlightBox x:Name="VisualMissileMotionScriptBox" Grid.Row="1" Grid.RowSpan="10" Grid.Column="3" Grid.ColumnSpan="5" MinWidth="800" MinHeight="500"/>
                                 </Grid>
                             </TabItem>
                         </TabControl>

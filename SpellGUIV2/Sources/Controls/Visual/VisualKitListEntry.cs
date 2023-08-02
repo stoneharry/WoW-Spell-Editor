@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
-using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualKitListEntry : AbstractVisualListEntry, IVisualListEntry
+    public class VisualKitListEntry : AbstractListEntry, IListEntry
     {
         public readonly string KitName;
         public readonly DataRow KitRecord;
@@ -47,7 +46,7 @@ namespace SpellEditor.Sources.Controls
             };
             Children.Add(label);
 
-            ContextMenu = new VisualContextMenu(this);
+            ContextMenu = new ListContextMenu(this, true);
         }
 
         private List<VisualEffectListEntry> findAllEffects(IDatabaseAdapter adapter)
@@ -169,9 +168,9 @@ namespace SpellEditor.Sources.Controls
             return string.Join("\n", effectsFound);
         }
 
-        public List<IVisualListEntry> GetAllEffectsAndAttachmentsEntries()
+        public List<IListEntry> GetAllEffectsAndAttachmentsEntries()
         {
-            var listEntries = new List<IVisualListEntry>();
+            var listEntries = new List<IListEntry>();
 
             _Effects.ForEach(listEntries.Add);
             _Attachments.ForEach(listEntries.Add);

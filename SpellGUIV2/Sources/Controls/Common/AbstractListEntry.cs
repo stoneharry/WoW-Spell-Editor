@@ -2,13 +2,13 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SpellEditor.Sources.Controls.Visual
+namespace SpellEditor.Sources.Controls.Common
 {
-    public class AbstractVisualListEntry : StackPanel, IVisualListEntry
+    public class AbstractListEntry : StackPanel, IListEntry
     {
-        private Action<IVisualListEntry> _CopyClickAction;
-        private Action<IVisualListEntry> _PasteClickAction;
-        private Action<IVisualListEntry> _DeleteClickAction;
+        private Action<IListEntry> _CopyClickAction;
+        private Action<IListEntry> _PasteClickAction;
+        private Action<IListEntry> _DeleteClickAction;
 
         public void InvokeCopyAction() => Dispatcher?.Invoke(new Action(() => _CopyClickAction?.Invoke(this)));
 
@@ -22,10 +22,10 @@ namespace SpellEditor.Sources.Controls.Visual
 
         public virtual void DeleteItemClick(object sender, RoutedEventArgs args) => InvokeDeleteAction();
 
-        public virtual void SetCopyClickAction(Action<IVisualListEntry> copyClickAction) => _CopyClickAction = copyClickAction;
+        public virtual void SetCopyClickAction(Action<IListEntry> copyClickAction) => _CopyClickAction = copyClickAction;
 
-        public virtual void SetPasteClickAction(Action<IVisualListEntry> pasteClickAction) => _PasteClickAction = pasteClickAction;
+        public virtual void SetPasteClickAction(Action<IListEntry> pasteClickAction) => _PasteClickAction = pasteClickAction;
 
-        public virtual void SetDeleteClickAction(Action<IVisualListEntry> deleteEntryAction) => _DeleteClickAction = deleteEntryAction;
+        public virtual void SetDeleteClickAction(Action<IListEntry> deleteEntryAction) => _DeleteClickAction = deleteEntryAction;
     }
 }

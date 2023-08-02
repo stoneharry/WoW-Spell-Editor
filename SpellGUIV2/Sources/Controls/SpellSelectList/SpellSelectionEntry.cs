@@ -1,4 +1,5 @@
 ﻿using SpellEditor.Sources.BLP;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.DBC;
 using System.Data;
 using System.Windows;
@@ -6,7 +7,7 @@ using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls.SpellSelectList
 {
-    public class SpellSelectionEntry : StackPanel
+    public class SpellSelectionEntry : AbstractListEntry
     {
         private Image _Image;
         private TextBlock _Text;
@@ -69,7 +70,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             // Load context menu
             if (ContextMenu == null)
             {
-                ContextMenu = new SpellSelectContextMenu();
+                ContextMenu = new ListContextMenu(this, false);
             }
         }
 

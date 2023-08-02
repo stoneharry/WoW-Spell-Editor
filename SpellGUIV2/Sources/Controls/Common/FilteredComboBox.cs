@@ -9,7 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace SpellEditor.Sources.Controls
+namespace SpellEditor.Sources.Controls.Common
 {
     /**
      * A combo box that allows filtering of its values.

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,16 +22,15 @@ using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
 using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Locale;
 using SpellEditor.Sources.SpellStringTools;
-using SpellEditor.Sources.Tools.MPQ;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
@@ -802,8 +799,8 @@ namespace SpellEditor
                 RuneCost.IsEnabled = isWotlkOrGreater;
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
 
-                VisualSettingsGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualKitAction());
-                VisualEffectsListGrid.ContextMenu = new VisualContextMenu((item, args) => PasteVisualEffectAction());
+                VisualSettingsGrid.ContextMenu = new ListContextMenu((item, args) => PasteVisualKitAction(), true);
+                VisualEffectsListGrid.ContextMenu = new ListContextMenu((item, args) => PasteVisualEffectAction(), true);
                 InitialiseSpellVisualEffectList();
 
                 prepareIconEditor();
@@ -2686,7 +2683,7 @@ namespace SpellEditor
             }
         }
 
-        private void UpdateSpellVisualKitList(List<IVisualListEntry> kitEntries, uint selectedKit = 0)
+        private void UpdateSpellVisualKitList(List<IListEntry> kitEntries, uint selectedKit = 0)
         {
             // Reuse the existing ListBox if it already exists
             ListBox scrollList;
@@ -2735,7 +2732,7 @@ namespace SpellEditor
             }
         }
 
-        private void CopyVisualKitAction(IVisualListEntry selectedEntry)
+        private void CopyVisualKitAction(IListEntry selectedEntry)
         {
             var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists)
@@ -2749,7 +2746,7 @@ namespace SpellEditor
         private void PasteVisualKitAction() => PasteVisualKitAction(VisualController.GetCopiedKitEntry());
         private void PasteVisualEffectAction() => PasteVisualEffectAction(VisualController.GetCopiedEffectEntry());
 
-        private void PasteVisualKitAction(IVisualListEntry selectedEntry)
+        private void PasteVisualKitAction(IListEntry selectedEntry)
         {
             var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists || selectedEntry == null)
@@ -2757,7 +2754,7 @@ namespace SpellEditor
                 return;
             }
             var scrollList = VisualSettingsGrid.Children[0] as ListBox;
-            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            var entries = scrollList.ItemsSource as List<IListEntry>;
 
             var visualIdStr = SpellVisual1.ThreadSafeText?.ToString();
             if (visualIdStr == null || !uint.TryParse(visualIdStr, out uint visualId))
@@ -2770,7 +2767,7 @@ namespace SpellEditor
                 _currentVisualController?.GetAvailableFields(itemToPaste) ?? keyResource.KitColumnKeys.ToList());
             pasteEntry.SetDeleteClickAction(entry =>
             {
-                entries = scrollList.ItemsSource as List<IVisualListEntry>;
+                entries = scrollList.ItemsSource as List<IListEntry>;
                 entries.Remove(pasteEntry);
                 scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
                 scrollList.ItemsSource = entries;
@@ -2834,14 +2831,14 @@ namespace SpellEditor
 
             if (entries == null)
             {
-                entries = new List<IVisualListEntry>();
+                entries = new List<IListEntry>();
             }
             entries.Add(pasteEntry);
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             scrollList.ItemsSource = entries;
         }
 
-        private void PasteVisualEffectAction(IVisualListEntry selectedEntry)
+        private void PasteVisualEffectAction(IListEntry selectedEntry)
         {
             if (!uint.TryParse(SpellVisual1.ThreadSafeText?.ToString(), out var visualId))
             {
@@ -2864,7 +2861,7 @@ namespace SpellEditor
             {
                 parentKitId = uint.Parse((kitList.SelectedItem as VisualKitListEntry).KitRecord[0].ToString());
             }
-            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            var entries = scrollList.ItemsSource as List<IListEntry>;
 
             var effectEntry = VisualController.GetCopiedEffectEntry();
             var pasteEntry = new VisualPasteListEntry(effectEntry,
@@ -2872,7 +2869,7 @@ namespace SpellEditor
                 WoWVersionManager.GetInstance().LookupKeyResource().EffectColumnKeys.ToList());
             pasteEntry.SetDeleteClickAction(entry =>
             {
-                entries = scrollList.ItemsSource as List<IVisualListEntry>;
+                entries = scrollList.ItemsSource as List<IListEntry>;
                 entries.Remove(pasteEntry);
                 scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
                 scrollList.ItemsSource = entries;
@@ -2931,14 +2928,14 @@ namespace SpellEditor
 
             if (entries == null)
             {
-                entries = new List<IVisualListEntry>();
+                entries = new List<IListEntry>();
             }
             entries.Add(pasteEntry);
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             scrollList.ItemsSource = entries;
         }
 
-        private void DeleteVisualKitAction(IVisualListEntry entry)
+        private void DeleteVisualKitAction(IListEntry entry)
         {
             var exists = VisualSettingsGrid.Children.Count == 1 && VisualSettingsGrid.Children[0] is ListBox;
             if (!exists)
@@ -2946,7 +2943,7 @@ namespace SpellEditor
                 return;
             }
             var scrollList = VisualSettingsGrid.Children[0] as ListBox;
-            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            var entries = scrollList.ItemsSource as List<IListEntry>;
             entries.Remove(entry);
             scrollList.ClearValue(ItemsControl.ItemsSourceProperty);
             scrollList.ItemsSource = entries;
@@ -3103,7 +3100,7 @@ namespace SpellEditor
             }
         }
 
-        private void CopyVisualEffectAction(IVisualListEntry copiedEntry)
+        private void CopyVisualEffectAction(IListEntry copiedEntry)
         {
             var exists = VisualEffectsListGrid.Children.Count == 1 && VisualEffectsListGrid.Children[0] is ListBox;
             if (!exists)
@@ -3116,18 +3113,18 @@ namespace SpellEditor
 
         private void UpdateVisualListPasteEnabled(bool enablePaste, ListBox scrollList, Grid parentGrid)
         {
-            var entries = scrollList.ItemsSource as List<IVisualListEntry>;
+            var entries = scrollList.ItemsSource as List<IListEntry>;
             entries?.Select(entry => entry as StackPanel)
-                ?.Select(entry => entry?.ContextMenu as VisualContextMenu)
+                ?.Select(entry => entry?.ContextMenu as ListContextMenu)
                 ?.ToList()
                 ?.ForEach(entry => entry?.SetCanPaste(enablePaste));
-            if (parentGrid.ContextMenu is VisualContextMenu menu)
+            if (parentGrid.ContextMenu is ListContextMenu menu)
             {
                 menu.SetCanPaste(enablePaste);
             }
         }
 
-        private void DeleteVisualEffectAction(IVisualListEntry entry)
+        private void DeleteVisualEffectAction(IListEntry entry)
         {
             var selectedKit = (entry as VisualEffectListEntry).ParentKitId;
             var parentVisual = (entry as VisualEffectListEntry).ParentVisualId;
