@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Locale;
@@ -192,6 +193,7 @@ namespace SpellEditor.Sources.Controls
                 var row = collection[rowIndex];
                 var entry = new SpellSelectionEntry();
                 entry.RefreshEntry(row, _Language);
+                entry.SetDeleteClickAction(DeleteAction);
                 newElements.Add(entry);
                 ++_ContentsIndex;
             }
@@ -225,6 +227,14 @@ namespace SpellEditor.Sources.Controls
             _Table.AcceptChanges();
 
             return newSpellNames.Rows;
+        }
+
+        private void DeleteAction(IListEntry obj)
+        {
+            if (obj is SpellSelectionEntry entry)
+            {
+                DeleteSpell(entry.GetSpellId());
+            }
         }
 
         private class SpellListQueryWorker : BackgroundWorker

@@ -9,9 +9,12 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
 {
     public class SpellSelectionEntry : AbstractListEntry
     {
+        private uint _SpellId;
         private Image _Image;
         private TextBlock _Text;
         private bool _Dirty = false;
+        private static SpellSelectionEntry _CopiedEntry = null;
+        private StackPanel _ConfirmDeletePanel = null;
 
         public SpellSelectionEntry()
         {
@@ -37,12 +40,14 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
 
         public void RefreshEntry(DataRow row, int language)
         {
-
+            uint.TryParse(row["id"].ToString(), out _SpellId);
             _Text.Text = BuildText(row, language);
             uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
             _Image.ToolTip = iconId.ToString();
             _Dirty = true;
         }
+
+        public uint GetSpellId() => _SpellId;
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
@@ -75,5 +80,49 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         }
 
         private string BuildText(DataRow row, int language) => $" {row["id"]} - {row[$"SpellName{language - 1}"]}\n  {row[$"SpellRank{language - 1}"]}";
+
+        public override void CopyItemClick(object sender, RoutedEventArgs args)
+        {
+            _CopiedEntry = this;
+            InvokeCopyAction();
+        }
+
+        public override void DeleteItemClick(object sender, RoutedEventArgs args)
+        {
+            if (_ConfirmDeletePanel != null)
+            {
+                _ConfirmDeletePanel.Visibility = Visibility.Visible;
+                return;
+            }
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            var confirmDeleteButton = new Button
+            {
+                Content = TryFindResource("SpellSelectListEntryConfirm") ?? "Confirm\nDelete",
+                Margin = new Thickness(3),
+                MinWidth = 80
+            };
+            confirmDeleteButton.Click += (_sender, _args) => {
+                // Stop and delete everything in this instance
+                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
+                InvokeDeleteAction();
+            };
+            var cancelButton = new Button
+            {
+                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
+                Margin = new Thickness(3),
+                MinWidth = 80
+            };
+            cancelButton.Click += (_sender, _args) =>
+            {
+                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
+            };
+            panel.Children.Add(confirmDeleteButton);
+            panel.Children.Add(cancelButton);
+            Children.Add(panel);
+            _ConfirmDeletePanel = panel;
+        }
     }
 }
