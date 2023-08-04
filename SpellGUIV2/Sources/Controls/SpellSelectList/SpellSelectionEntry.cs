@@ -111,7 +111,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             };
             var confirmButton = new Button
             {
-                Content = TryFindResource("SpellSelectListEntryConfirm") ?? "Confirm\nDuplicate",
+                Content = TryFindResource("SpellSelectListEntryConfirmDup") ?? "Confirm\nDuplicate",
                 Margin = new Thickness(2),
                 MinWidth = 80
             };
@@ -154,7 +154,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             };
             var confirmDeleteButton = new Button
             {
-                Content = TryFindResource("SpellSelectListEntryConfirm") ?? "Confirm\nDelete",
+                Content = TryFindResource("SpellSelectListEntryConfirmDel") ?? "Confirm\nDelete",
                 Margin = new Thickness(3),
                 MinWidth = 80
             };

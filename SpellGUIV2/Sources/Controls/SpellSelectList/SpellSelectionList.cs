@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -257,31 +256,16 @@ namespace SpellEditor.Sources.Controls
         {
             if (obj is SpellSelectionEntry entry)
             {
-                var currentId = entry.GetSpellId();
                 uint newId = 0;
-                using (var newSpellNames = _Adapter.Query(string.Format($"SELECT id FROM spell WHERE id > {currentId} ORDER BY id")))
+                using (var newSpellNames = _Adapter.Query(string.Format($"SELECT max(id) FROM spell")))
                 {
-                    uint lastId = currentId;
                     foreach (DataRow row in newSpellNames.Rows)
                     {
-                        var rowId = (uint)row["id"];
-                        // If the next row is more than our current+1, then the next id is free
-                        if (lastId > 0 && rowId > lastId + 1)
-                        {
-                            newId = lastId + 1;
-                            break;
-                        }
-                        lastId = rowId;
-                    }
-                    // If no gap found and we found rows higher, use max+1
-                    if (newId == 0 && lastId > 0)
-                    {
-                        newId = lastId + 1;
+                        newId = (uint)row[0] + 1;
                     }
                     if (newId == 0)
                     {
-                        // If no rows found then use current+1
-                        newId = currentId + 1;
+                        newId = 1;
                     }
                 }
                 if (newId > 0)
