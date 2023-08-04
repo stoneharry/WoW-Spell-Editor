@@ -10,11 +10,11 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
     public class SpellSelectionEntry : AbstractListEntry
     {
         private uint _SpellId;
-        private Image _Image;
-        private TextBlock _Text;
+        private readonly Image _Image;
+        private readonly TextBlock _Text;
         private bool _Dirty = false;
-        private static SpellSelectionEntry _CopiedEntry = null;
         private StackPanel _ConfirmDeletePanel = null;
+        private StackPanel _DuplicatePanel = null;
 
         public SpellSelectionEntry()
         {
@@ -25,7 +25,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 Width = 32,
                 Height = 32,
-                Margin = new Thickness(1, 1, 1, 1)
+                Margin = new Thickness(1)
             };
             image.IsVisibleChanged += IsSpellListEntryVisibileChanged;
             // Build main text block
@@ -75,7 +75,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             // Load context menu
             if (ContextMenu == null)
             {
-                ContextMenu = new ListContextMenu(this, false);
+                ContextMenu = new ListContextMenu(this, true, ListContextMenu.MenuType.Duplicate);
             }
         }
 
@@ -83,8 +83,47 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
 
         public override void CopyItemClick(object sender, RoutedEventArgs args)
         {
-            _CopiedEntry = this;
-            InvokeCopyAction();
+            if (_DuplicatePanel != null)
+            {
+                _DuplicatePanel.Visibility = Visibility.Visible;
+                return;
+            }
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
+            var newIdField = new TextBox
+            {
+                Text = (GetSpellId() + 1).ToString(),
+                Margin = new Thickness(2)
+            };
+            var confirmButton = new Button
+            {
+                Content = TryFindResource("SpellSelectListEntryConfirm") ?? "Confirm\nDuplicate",
+                Margin = new Thickness(2),
+                MinWidth = 80
+            };
+            confirmButton.Click += (_sender, _args) =>
+            {
+                // Stop and delete everything in this instance
+                _DuplicatePanel.Visibility = Visibility.Collapsed;
+                InvokeCopyAction();
+            };
+            var cancelButton = new Button
+            {
+                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
+                Margin = new Thickness(2),
+                MinWidth = 80
+            };
+            cancelButton.Click += (_sender, _args) =>
+            {
+                _DuplicatePanel.Visibility = Visibility.Collapsed;
+            };
+            panel.Children.Add(newIdField);
+            panel.Children.Add(confirmButton);
+            panel.Children.Add(cancelButton);
+            Children.Add(panel);
+            _DuplicatePanel = panel;
         }
 
         public override void DeleteItemClick(object sender, RoutedEventArgs args)
@@ -104,7 +143,8 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
                 Margin = new Thickness(3),
                 MinWidth = 80
             };
-            confirmDeleteButton.Click += (_sender, _args) => {
+            confirmDeleteButton.Click += (_sender, _args) => 
+            {
                 // Stop and delete everything in this instance
                 _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
                 InvokeDeleteAction();
@@ -123,6 +163,14 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             panel.Children.Add(cancelButton);
             Children.Add(panel);
             _ConfirmDeletePanel = panel;
+        }
+
+        public override void CancelItemClick(object sender, RoutedEventArgs args)
+        {
+            if (_ConfirmDeletePanel != null)
+                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
+            if (_DuplicatePanel != null)
+                _DuplicatePanel.Visibility = Visibility.Collapsed;
         }
     }
 }

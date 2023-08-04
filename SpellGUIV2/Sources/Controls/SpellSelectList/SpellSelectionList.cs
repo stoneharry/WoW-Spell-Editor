@@ -193,6 +193,7 @@ namespace SpellEditor.Sources.Controls
                 var row = collection[rowIndex];
                 var entry = new SpellSelectionEntry();
                 entry.RefreshEntry(row, _Language);
+                entry.SetCopyClickAction(DuplicateAction);
                 entry.SetDeleteClickAction(DeleteAction);
                 newElements.Add(entry);
                 ++_ContentsIndex;
@@ -227,6 +228,14 @@ namespace SpellEditor.Sources.Controls
             _Table.AcceptChanges();
 
             return newSpellNames.Rows;
+        }
+
+        private void DuplicateAction(IListEntry obj)
+        {
+            if (obj is SpellSelectionEntry entry)
+            {
+                // Paste to new ID
+            }
         }
 
         private void DeleteAction(IListEntry obj)

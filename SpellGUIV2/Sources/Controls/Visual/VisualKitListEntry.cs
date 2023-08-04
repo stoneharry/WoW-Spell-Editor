@@ -45,8 +45,7 @@ namespace SpellEditor.Sources.Controls
                 MinWidth = 275.00
             };
             Children.Add(label);
-
-            ContextMenu = new ListContextMenu(this, true);
+            ContextMenu = new ListContextMenu(this, true, ListContextMenu.MenuType.CopyPaste);
         }
 
         private List<VisualEffectListEntry> findAllEffects(IDatabaseAdapter adapter)

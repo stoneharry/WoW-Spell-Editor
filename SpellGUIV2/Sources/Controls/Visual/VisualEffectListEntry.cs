@@ -68,7 +68,7 @@ namespace SpellEditor.Sources.Controls
             };
             Children.Add(textBlock);
 
-            ContextMenu = new ListContextMenu(this, true);
+            ContextMenu = new ListContextMenu(this, true, ListContextMenu.MenuType.CopyPaste);
         }
 
         public override void CopyItemClick(object sender, RoutedEventArgs args)
