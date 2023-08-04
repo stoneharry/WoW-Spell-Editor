@@ -1,6 +1,7 @@
 ﻿using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.DBC;
+using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,6 +53,12 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
 
         public uint GetDuplicateSpellId() => _DuplicateIdBox == null ? 0 : uint.Parse(_DuplicateIdBox.Text);
 
+        public void UpdateDuplicateText(uint newId)
+        {
+            if (_DuplicateIdBox != null)
+                _DuplicateIdBox.Text = newId.ToString();
+        }
+
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
             var image = o as Image;
@@ -89,6 +96,8 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             if (_DuplicatePanel != null)
             {
                 _DuplicatePanel.Visibility = Visibility.Visible;
+                // Update new ID with paste action hook
+                InvokePasteAction();
                 return;
             }
             var panel = new StackPanel
@@ -110,6 +119,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 // Stop and delete everything in this instance
                 _DuplicatePanel.Visibility = Visibility.Collapsed;
+                // Confirmation is handled by copy action
                 InvokeCopyAction();
             };
             var cancelButton = new Button
@@ -127,6 +137,8 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             panel.Children.Add(cancelButton);
             Children.Add(panel);
             _DuplicatePanel = panel;
+            // Update new ID with paste action hook
+            InvokePasteAction();
         }
 
         public override void DeleteItemClick(object sender, RoutedEventArgs args)
