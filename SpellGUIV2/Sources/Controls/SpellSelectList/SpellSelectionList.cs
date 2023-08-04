@@ -234,7 +234,10 @@ namespace SpellEditor.Sources.Controls
         {
             if (obj is SpellSelectionEntry entry)
             {
-                // Paste to new ID
+                var currentId = entry.GetSpellId();
+                var newId = entry.GetDuplicateSpellId();
+
+                AddNewSpell(currentId, newId);
             }
         }
 

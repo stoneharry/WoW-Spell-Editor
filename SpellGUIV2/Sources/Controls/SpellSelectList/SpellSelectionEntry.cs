@@ -15,6 +15,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         private bool _Dirty = false;
         private StackPanel _ConfirmDeletePanel = null;
         private StackPanel _DuplicatePanel = null;
+        private TextBox _DuplicateIdBox = null;
 
         public SpellSelectionEntry()
         {
@@ -48,6 +49,8 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         }
 
         public uint GetSpellId() => _SpellId;
+
+        public uint GetDuplicateSpellId() => _DuplicateIdBox == null ? 0 : uint.Parse(_DuplicateIdBox.Text);
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
@@ -92,7 +95,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 Orientation = Orientation.Horizontal
             };
-            var newIdField = new TextBox
+            _DuplicateIdBox = new TextBox
             {
                 Text = (GetSpellId() + 1).ToString(),
                 Margin = new Thickness(2)
@@ -119,7 +122,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 _DuplicatePanel.Visibility = Visibility.Collapsed;
             };
-            panel.Children.Add(newIdField);
+            panel.Children.Add(_DuplicateIdBox);
             panel.Children.Add(confirmButton);
             panel.Children.Add(cancelButton);
             Children.Add(panel);
