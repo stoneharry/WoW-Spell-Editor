@@ -41,6 +41,8 @@
     <system:String x:Key="Attributes">属性[第一部分]</system:String>
     <system:String x:Key="Attributes2">属性[第二部分]</system:String>
     <system:String x:Key="Misc">杂项</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDup" xml:space="preserve">Confirm&#x0a;Duplicate</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDel" xml:space="preserve">Confirm&#x0a;Delete</system:String>
     <system:String x:Key="butResetSpellIconID">重设法术图标ID</system:String>
     <system:String x:Key="butResetActiveIconID">重设法术激活时图标ID</system:String>
     <system:String x:Key="labCategory">类别:</system:String>
