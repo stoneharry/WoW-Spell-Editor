@@ -5,6 +5,7 @@ using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SpellEditor.Sources.Controls.SpellSelectList
 {
@@ -186,6 +187,11 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
                 _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
             if (_DuplicatePanel != null)
                 _DuplicatePanel.Visibility = Visibility.Collapsed;
+        }
+
+        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

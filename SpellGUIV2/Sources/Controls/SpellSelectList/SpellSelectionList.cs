@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -261,7 +262,7 @@ namespace SpellEditor.Sources.Controls
                 {
                     foreach (DataRow row in newSpellNames.Rows)
                     {
-                        newId = (uint)row[0] + 1;
+                        newId = uint.Parse(row[0].ToString()) + 1;
                     }
                     if (newId == 0)
                     {
@@ -285,6 +286,11 @@ namespace SpellEditor.Sources.Controls
                 Adapter = adapter;
                 Watch = watch;
             }
+        }
+
+        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
