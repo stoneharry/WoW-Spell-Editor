@@ -131,7 +131,7 @@ namespace HeadlessExport
             WriteLine($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
         }
 
-        public static void SetProgress(double value)
+        public static void SetProgress(double value, int taskId = 0)
         {
             int reportValue = Convert.ToInt32(value * 100D);
             int id = Task.CurrentId.GetValueOrDefault(0);
