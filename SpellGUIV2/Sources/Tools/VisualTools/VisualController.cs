@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SpellEditor.Sources.Controls;
-using SpellEditor.Sources.Controls.Visual;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
 
@@ -12,7 +12,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
     {
         private static VisualKitListEntry _CopiedKitEntry;
         private static VisualEffectListEntry _CopiedEffectEntry;
-        public readonly List<IVisualListEntry> VisualKits;
+        public readonly List<IListEntry> VisualKits;
         public readonly uint VisualId;
         public uint MissileModel { get; private set; }
         public uint MissileMotion { get; set; }
@@ -28,9 +28,9 @@ namespace SpellEditor.Sources.Tools.VisualTools
             }
         }
 
-        private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
+        private List<IListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
         {
-            var kitList = new List<IVisualListEntry>();
+            var kitList = new List<IListEntry>();
             var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + VisualId);
             if (visualResults == null || visualResults.Rows.Count == 0)
             {
@@ -67,7 +67,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
 
         public static VisualEffectListEntry GetCopiedEffectEntry() => _CopiedEffectEntry;
 
-        public List<string> GetAvailableFields(IVisualListEntry item)
+        public List<string> GetAvailableFields(IListEntry item)
         {
             List<string> availableKeys;
             List<string> usedKeys;

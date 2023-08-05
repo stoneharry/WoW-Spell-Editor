@@ -176,10 +176,12 @@
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionEntry.cs" />
+    <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionList.cs" />
     <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />
-    <Compile Include="Sources\Controls\Visual\AbstractVisualListEntry.cs" />
-    <Compile Include="Sources\Controls\Visual\IVisualListEntry.cs" />
-    <Compile Include="Sources\Controls\Visual\VisualContextMenu.cs" />
+    <Compile Include="Sources\Controls\Common\AbstractListEntry.cs" />
+    <Compile Include="Sources\Controls\Common\IListEntry.cs" />
+    <Compile Include="Sources\Controls\Common\ListContextMenu.cs" />
     <Compile Include="Sources\Controls\Visual\VisualMissileSelectMenuItem.cs" />
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="Sources\DBC\DBCBodyToSerialize.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
+    <Compile Include="Sources\Locale\LocaleManager.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualMapBuilder.cs" />

@@ -41,6 +41,8 @@
     <system:String x:Key="Attributes">Attributs</system:String>
     <system:String x:Key="Attributes2">Attributs 2</system:String>
     <system:String x:Key="Misc">Divers</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDup" xml:space="preserve">Confirm&#x0a;Duplicate</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDel" xml:space="preserve">Confirm&#x0a;Delete</system:String>
     <system:String x:Key="butResetSpellIconID">Réinitialiser l'icône</system:String>
     <system:String x:Key="butResetActiveIconID">Réinitialiser l'icône active</system:String>
     <system:String x:Key="labCategory">Catégorie :</system:String>

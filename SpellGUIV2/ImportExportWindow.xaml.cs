@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -21,6 +22,7 @@ using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.MPQ;
+using Binding = SpellEditor.Sources.Binding.Binding;
 
 namespace SpellEditor
 {
@@ -33,6 +35,7 @@ namespace SpellEditor
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
         private Action _ReloadData;
+        private readonly string _SpellBindingName = "Spell";
 
         public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action reloadData)
         {
@@ -234,8 +237,6 @@ namespace SpellEditor
 
         private void doImportExport(bool isImport, List<string> bindingList, ImportExportType useType)
         {
-            var manager = DBCManager.GetInstance();
-
             var barLookup = new Dictionary<string, ProgressBar>();
             bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, isImport)));
 
@@ -249,6 +250,16 @@ namespace SpellEditor
 
                 try
                 {
+                    // Start spell export immediately if it is selected
+                    if (bindingList.Contains(_SpellBindingName))
+                    {
+                        bindingList.Remove(_SpellBindingName);
+                        // Load data
+                        var abstractDbc = GetDBC(_SpellBindingName, isImport);
+                        // Perform operation using existing adapter
+                        StartImportExport(abstractDbc, _Adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                    }
+
                     // Spawn adapters
                     SpawnAdapters(ref adapters, bindingList.Count);
 
@@ -257,24 +268,8 @@ namespace SpellEditor
                     {
                         try
                         {
-                            // Load Data
-                            manager.ClearDbcBinding(bindingName);
-                            var abstractDbc = manager.FindDbcForBinding(bindingName);
-                            if (abstractDbc == null)
-                            {
-                                try
-                                {
-                                    abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
-                                }
-                                catch (Exception exception)
-                                {
-                                    Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
-                                    ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
-                                    return;
-                                }
-                            }
-                            if (isImport && !abstractDbc.HasData())
-                                abstractDbc.ReloadContents();
+                            // Load data
+                            var abstractDbc = GetDBC(bindingName, isImport);
 
                             // Get adapter
                             var adapter = adapters[adapterIndex];
@@ -284,12 +279,7 @@ namespace SpellEditor
                             }
 
                             // Perform operation
-                            var task = isImport ? 
-                                abstractDbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
-                                abstractDbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
-
-                            _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
-                            bag.Add(task);
+                            StartImportExport(abstractDbc, adapter, bindingName, isImport, ref bag, ref barLookup, useType);
                         }
                         catch (Exception exception)
                         {
@@ -362,6 +352,41 @@ namespace SpellEditor
             });
         }
 
+        private AbstractDBC GetDBC(string bindingName, bool isImport)
+        {
+            var manager = DBCManager.GetInstance();
+            manager.ClearDbcBinding(bindingName);
+            var abstractDbc = manager.FindDbcForBinding(bindingName);
+            if (abstractDbc == null)
+            {
+                try
+                {
+                    abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                }
+                catch (Exception exception)
+                {
+                    Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc: {exception.Message}\n{exception}\n{exception.InnerException}");
+                    ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                    return null;
+                }
+            }
+            if (isImport && !abstractDbc.HasData())
+                abstractDbc.ReloadContents();
+            return abstractDbc;
+        }
+
+        private Task StartImportExport(AbstractDBC dbc, IDatabaseAdapter adapter, string bindingName, bool isImport, ref ConcurrentBag<Task> bag, ref Dictionary<string, ProgressBar> barLookup, ImportExportType useType)
+        {
+            var task = isImport ?
+                dbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
+                dbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
+
+            _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
+            bag.Add(task);
+
+            return task;
+        }
+
         public ProgressBar LookupProgressBar(string bindingName, bool isImport)
         {
             var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
@@ -378,7 +403,7 @@ namespace SpellEditor
         private void SpawnAdapters(ref List<IDatabaseAdapter> adapters, int numBindings)
         {
             var tasks = new List<Task<IDatabaseAdapter>>();
-            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
+            int numConnections = Math.Max(numBindings >= 4 ? 2 : 1, numBindings / 10);
             Logger.Info($"Spawning {numConnections} adapters...");
             var timer = new Stopwatch();
             timer.Start();

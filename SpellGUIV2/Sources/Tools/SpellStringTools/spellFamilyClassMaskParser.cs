@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Controls;
-using SpellEditor.Sources.Controls;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
 

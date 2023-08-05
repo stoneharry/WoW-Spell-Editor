@@ -3,7 +3,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
+        xmlns:c="clr-namespace:SpellEditor.Sources.Controls.Common"
         Title="{DynamicResource ImportExportWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"

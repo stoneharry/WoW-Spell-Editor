@@ -60,7 +60,7 @@ namespace SpellEditor.Sources.DBC
                 var watch = new Stopwatch();
                 watch.Start();
                 Logger.Debug("Loading SpellDifficulty tooltips lazily");
-                var column = "SpellName" + (locale - 1);
+                var column = "SpellName" + Math.Max(0, locale - 1);
                 for (int i = 1; i < Lookups.Count; ++i)
                 {
                     if (cancelToken.IsCancellationRequested)

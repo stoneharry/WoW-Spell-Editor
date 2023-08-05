@@ -1,16 +1,15 @@
-﻿using SpellEditor.Sources.Controls.Visual;
+﻿using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Tools.VisualTools;
-using System;
 using System.Data;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualEffectListEntry : AbstractVisualListEntry, IVisualListEntry
+    public class VisualEffectListEntry : AbstractListEntry, IListEntry
     {
         public readonly string EffectName;
         public readonly uint ParentKitId;
@@ -69,7 +68,7 @@ namespace SpellEditor.Sources.Controls
             };
             Children.Add(textBlock);
 
-            ContextMenu = new VisualContextMenu(this);
+            ContextMenu = new ListContextMenu(this, true, ListContextMenu.MenuType.CopyPaste);
         }
 
         public override void CopyItemClick(object sender, RoutedEventArgs args)

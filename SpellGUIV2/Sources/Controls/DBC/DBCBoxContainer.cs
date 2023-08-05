@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using SpellEditor.Sources.Controls.Common;
+using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls
 {

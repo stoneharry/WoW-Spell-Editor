@@ -1,18 +1,16 @@
-﻿using SpellEditor.Sources.Controls.Visual;
-using System;
+﻿using SpellEditor.Sources.Controls.Common;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace SpellEditor.Sources.Controls
 {
-    public class VisualPasteListEntry : AbstractVisualListEntry, IVisualListEntry
+    public class VisualPasteListEntry : AbstractListEntry, IListEntry
     {
-        public readonly IVisualListEntry CopyEntry;
+        public readonly IListEntry CopyEntry;
         private readonly ComboBox _keyComboBox;
 
-        public VisualPasteListEntry(IVisualListEntry copyEntry, List<string> availableKeys)
+        public VisualPasteListEntry(IListEntry copyEntry, List<string> availableKeys)
         {
             Orientation = Orientation.Horizontal;
             CopyEntry = copyEntry;
