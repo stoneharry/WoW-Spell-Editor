@@ -166,11 +166,11 @@ namespace SpellEditor.Sources.SpellStringTools
             double nextValue;
             double prevValue;
             if (nextToken.ResolvedValue is string && ((string)nextToken.ResolvedValue).Length > 0)
-                nextValue = double.Parse((string)nextToken.FriendlyResolvedValue());
+                double.TryParse((string)nextToken.FriendlyResolvedValue(), out nextValue);
             else 
                 nextValue = (double)nextToken.ResolvedValue;
             if (prevToken.ResolvedValue is string && ((string)prevToken.ResolvedValue).Length > 0)
-                prevValue = double.Parse((string)prevToken.FriendlyResolvedValue());
+                double.TryParse((string)prevToken.FriendlyResolvedValue(), out prevValue);
             else
                 prevValue = (double)prevToken.ResolvedValue;
             // Calculation
