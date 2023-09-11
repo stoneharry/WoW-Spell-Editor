@@ -49,6 +49,11 @@ namespace HeadlessExport
 
         static void Main(string[] args)
         {
+            if (true)
+            {
+                new SpellFixer().Run();
+                return;
+            }
             var adapters = new List<IDatabaseAdapter>();
             try
             {
