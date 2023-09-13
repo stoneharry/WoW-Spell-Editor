@@ -464,6 +464,7 @@
         Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) |
         No Damage History |
         Requires Off-Hand |
+        Treat as Periodic |
         Can Proc From Procs |
         Only Proc on Caster |
         Ignore Caster and Target Restrictions |
