@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
@@ -524,7 +526,8 @@ namespace SpellEditor
 
             try
             {
-                Title = $"{Title} - {WoWVersionManager.GetInstance().SelectedVersion().Version}";
+                var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+                Title = $"{Title} - {WoWVersionManager.GetInstance().SelectedVersion().Version} - V{version.Substring(0, version.Length - 2)}";
 
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
