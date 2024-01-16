@@ -1686,7 +1686,7 @@ namespace SpellEditor
 
                     ShowFlyoutMessage($"Saved spell {selectedID}.");
 
-                    ReloadSpellListForSpellId(row);
+                    SelectSpell.UpdateSpell(row);
                 }
                 catch (Exception ex)
                 {
@@ -1728,27 +1728,6 @@ namespace SpellEditor
             }
         }
 
-        private bool ReloadSpellListForSpellId(DataRow row)
-        {
-            var changedId = uint.Parse(row[0].ToString());
-            foreach (var item in SelectSpell.Items)
-            {
-                var panel = item as StackPanel;
-                var text = panel.Children[1] as TextBlock;
-                // text block is formatted as: $" { id } - { spellName }"
-                if (uint.TryParse(text.Text.Substring(0, text.Text.IndexOf('-')).Trim(), out var id) &&
-                    changedId == id)
-                {
-                    text.Text = $" { id } - { row["SpellName" + (GetLanguage() - 1)] }";
-                    var image = panel.Children[0] as Image;
-                    image.ToolTip = row["SpellIconID"].ToString();
-                    image.Visibility = Visibility.Hidden;
-                    image.Visibility = Visibility.Visible;
-                    return true;
-                }
-            }
-            return false;
-        }
         #endregion
 
         #region Utilities

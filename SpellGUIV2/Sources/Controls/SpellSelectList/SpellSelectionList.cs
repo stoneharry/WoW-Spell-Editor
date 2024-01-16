@@ -140,6 +140,33 @@ namespace SpellEditor.Sources.Controls
             RefreshSpellList();
         }
 
+        public void UpdateSpell(DataRow row)
+        {
+            // Update UI
+            var lang = _Language - 1;
+            var changedId = uint.Parse(row[0].ToString());
+            foreach (var item in Items)
+            {
+                var panel = item as SpellSelectionEntry;
+                if (panel.GetSpellId() == changedId)
+                {
+                    panel.RefreshEntry(row, _Language);
+                    break;
+                }
+            }
+            // Update Table
+            var result = _Table.Select($"id = {changedId}");
+            if (result.Length == 1)
+            {
+                var data = result.First();
+                data.BeginEdit();
+                data["SpellName" + lang] = row["SpellName" + lang];
+                data["SpellIconID"] = row["SpellIconID"];
+                data["SpellRank" + lang] = row["SpellRank" + lang];
+                data.EndEdit();
+            }
+        }
+
         public void DeleteSpell(uint spellId)
         {
             // Delete from DB
@@ -224,8 +251,8 @@ namespace SpellEditor.Sources.Controls
         private DataRowCollection GetSpellNames(uint lowerBound, uint pageSize, int locale)
         {
             using (var newSpellNames = _Adapter.Query(
-                string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{2}` FROM `{0}` ORDER BY `id` LIMIT {3}, {4}",
-                 "spell", locale, locale, lowerBound, pageSize)))
+                string.Format(@"SELECT `id`,`SpellName{1}`,`SpellIconID`,`SpellRank{1}` FROM `{0}` ORDER BY `id` LIMIT {2}, {3}",
+                 "spell", locale, lowerBound, pageSize)))
             {
                 _Table.Merge(newSpellNames, false, MissingSchemaAction.Add);
                 _Table.AcceptChanges();
