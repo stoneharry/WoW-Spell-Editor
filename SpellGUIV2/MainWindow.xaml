@@ -25,7 +25,7 @@
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
+            <controls:Flyout Name="Flyout" Position="Bottom" Height="65" AutoCloseInterval="1700" IsAutoCloseEnabled="true" IsPinned="false">
                 <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
             </controls:Flyout>
         </controls:FlyoutsControl>
