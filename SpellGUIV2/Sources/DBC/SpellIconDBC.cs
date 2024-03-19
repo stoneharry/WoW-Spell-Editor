@@ -187,9 +187,11 @@ namespace SpellEditor.Sources.DBC
             if (source == null && (bool)e.NewValue)
             {
                 var path = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
-                await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
+                await Task.Factory.StartNew(() => 
+                    source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path)
+                );
+                image.Source = source;
             }
-            image.Source = source;
         }
 
         public void ImageDown(object sender, EventArgs e)
