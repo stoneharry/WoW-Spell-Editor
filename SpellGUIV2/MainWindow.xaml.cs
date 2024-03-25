@@ -1045,6 +1045,7 @@ namespace SpellEditor
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
                         adapter.Execute($"drop table `{binding.Name.ToLower()}`");
                     adapter.CreateAllTablesFromBindings();
+                    selectedID = 0;
                     PopulateSelectSpell();
                 }
                 return;
