@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -16,7 +15,7 @@ namespace SpellEditor.Sources.Controls.Common
      * 
      * Mainly ripped from https://stackoverflow.com/questions/2001842/dynamic-filter-of-wpf-combobox-based-on-text-input
      */
-    public class FilteredComboBox : ComboBox
+    public class FilteredComboBox : ThreadSafeComboBox
     {
         private static readonly TimeSpan RefreshFilterDelay = TimeSpan.FromMilliseconds(1000);
 
