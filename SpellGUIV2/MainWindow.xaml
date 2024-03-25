@@ -55,13 +55,13 @@
                     <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="1" Grid.Column="2"/>
                     <c2:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByEffect}" Margin="5" Grid.Row="2" Grid.Column="2"/>
-                    <c2:ThreadSafeComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3" SelectionChanged="FilterSpellEffectCombo_SelectionChanged"/>
+                    <c2:FilteredComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByAura}" Margin="5" Grid.Row="3" Grid.Column="2"/>
-                    <c2:ThreadSafeComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3" SelectionChanged="FilterAuraCombo_SelectionChanged"/>
+                    <c2:FilteredComboBox x:Name="FilterAuraCombo" Margin="5" Width="250" Grid.Row="3" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByTargetA}" Margin="5" Grid.Row="2" Grid.Column="4"/>
-                    <c2:ThreadSafeComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5" SelectionChanged="FilterSpellTargetA_SelectionChanged"/>
+                    <c2:FilteredComboBox x:Name="FilterSpellTargetA" Margin="5" Width="250" Grid.Row="2" Grid.Column="5"/>
                     <Label Content="{DynamicResource labFilterByTargetB}" Margin="5" Grid.Row="3" Grid.Column="4"/>
-                    <c2:ThreadSafeComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5" SelectionChanged="FilterSpellTargetB_SelectionChanged"/>
+                    <c2:FilteredComboBox x:Name="FilterSpellTargetB" Margin="5" Width="250" Grid.Row="3" Grid.Column="5"/>
                     <c:SpellSelectionList x:Name="SelectSpell"
                              Margin="10,10,0,10"
                              VirtualizingStackPanel.IsVirtualizing="True"
