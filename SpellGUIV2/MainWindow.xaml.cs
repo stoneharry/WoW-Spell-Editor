@@ -907,11 +907,11 @@ namespace SpellEditor
 
         private void _KeyUp(object sender, KeyEventArgs e)
         {
-            if (sender == FilterSpellNames && e.Key == Key.Back)
-            {
-                _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
-            }
-            else if (sender == FilterIcons && e.Key == Key.Back)
+            if (e.Key == Key.Back && (
+                sender == FilterSpellNames || 
+                sender == FilterIcons ||
+                sender == Attributes1Search ||
+                sender == Attributes2Search))
             {
                 _KeyDown(sender, new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, Key.Space));
             }
@@ -1016,6 +1016,25 @@ namespace SpellEditor
                 {
                     var name = image.ToolTip.ToString().ToLower();
                     image.Visibility = name.Contains(input) ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+            else if (sender == Attributes1Search || sender == Attributes2Search)
+            {
+                var input = sender == Attributes1Search ? 
+                    Attributes1Search.Text.ToLower() : 
+                    Attributes2Search.Text.ToLower();
+                var controls = sender == Attributes1Search ? 
+                    new StackPanel[] { Attributes1, Attributes2, Attributes3, Attributes4 } :
+                    new StackPanel[] { Attributes5, Attributes6, Attributes7, Attributes8 };
+
+                for (int i = 0; i < controls.Length; ++i)
+                {
+                    foreach (ThreadSafeCheckBox box in controls[i].Children)
+                    {
+                        box.Visibility = box.Content.ToString().Length <= 0 || box.Content.ToString().ToLower().Contains(input) ?
+                            Visibility.Visible :
+                            Visibility.Collapsed;
+                    }
                 }
             }
         }
