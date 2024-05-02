@@ -30,7 +30,7 @@ namespace SpellEditor.Sources.Database
                 if (numRows == 0)
                     throw new Exception("No rows to export");
 
-                dbc.Header = new DBCHeader
+                dbc.UpdateHeader(new DBCHeader
                 {
                     FieldCount = (uint)binding.Fields.Count(),
                     // Magic is always 'WDBC' https://wowdev.wiki/DBC
@@ -38,7 +38,7 @@ namespace SpellEditor.Sources.Database
                     RecordCount = (uint)numRows,
                     RecordSize = (uint)binding.CalcRecordSize(),
                     StringBlockSize = body.GenerateStringOffsetsMap(binding)
-                };
+                });
 
                 dbc.SaveDbcFile(updateProgress, body, binding);
             });
@@ -96,7 +96,7 @@ namespace SpellEditor.Sources.Database
                             case BindingType.STRING_OFFSET:
                                 {
                                     var strOffset = (uint)recordMap[field.Name];
-                                    var lookupResult = dbc.Reader.LookupStringOffset(strOffset);
+                                    var lookupResult = dbc.LookupStringOffset(strOffset);
                                     q.Append(string.Format("'{0}', ", adapter.EscapeString(lookupResult)));
                                     break;
                                 }
@@ -116,7 +116,7 @@ namespace SpellEditor.Sources.Database
                 }
                 // We have attempted to import the Spell.dbc so clean up unneeded data
                 // This will be recreated if the import process is started again
-                dbc.Reader.CleanStringsMap();
+                dbc.CleanStringsMap();
             });
         }
     }

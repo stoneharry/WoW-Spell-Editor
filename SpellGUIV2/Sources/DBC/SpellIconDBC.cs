@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,7 +37,7 @@ namespace SpellEditor.Sources.DBC
                 uint offset = (uint)record["Name"];
                 if (offset == 0)
                     continue;
-                string name = Reader.LookupStringOffset(offset);
+                string name = LookupStringOffset(offset);
                 uint id = (uint)record["ID"];
 
                 Icon_DBC_Lookup lookup;
@@ -47,12 +46,12 @@ namespace SpellEditor.Sources.DBC
                 lookup.Name = name;
                 Lookups.Add(lookup);
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body.RecordMaps = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public void LoadImages(double margin)

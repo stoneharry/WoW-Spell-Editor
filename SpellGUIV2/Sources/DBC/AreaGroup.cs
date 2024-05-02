@@ -54,9 +54,8 @@ namespace SpellEditor.Sources.DBC
                 Lookups.Add(new DBCBoxContainer(id, areaGroupLab, boxIndex));
 
                 boxIndex++;
-                Reader.CleanStringsMap();
             }
-            Reader.CleanStringsMap();
+            CleanStringsMap();
         }
 
         public List<DBCBoxContainer> GetAllBoxes()

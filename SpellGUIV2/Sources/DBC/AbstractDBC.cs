@@ -20,10 +20,11 @@ namespace SpellEditor.Sources.DBC
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public DBCHeader Header { get; private set; }
+        public DBCBody Body { get; private set; }
+
         private string _filePath;
-        public DBCHeader Header;
-        public DBCBody Body;
-        public DBCReader Reader;
+        private Dictionary<uint, VirtualStrTableEntry> _stringsMap;
 
         protected void ReadDBCFile(string filePath)
         {
@@ -40,21 +41,21 @@ namespace SpellEditor.Sources.DBC
             var headerWatch = new Stopwatch();
             var bodyWatch = new Stopwatch();
             var stringWatch = new Stopwatch();
-            Reader = new DBCReader(_filePath);
+            var reader = new DBCReader(_filePath);
             // Header
             headerWatch.Start();
-            Header = Reader.ReadDBCHeader();
+            Header = reader.ReadDBCHeader();
             headerWatch.Stop();
             // Body
             bodyWatch.Start();
-            Reader.ReadDBCRecords(ref Body, name);
+            Body = reader.ReadDBCRecords(name);
             bodyWatch.Stop();
             // Strings
             stringWatch.Start();
-            Reader.ReadStringBlock();
+            _stringsMap = reader.ReadStringBlock();
             stringWatch.Stop();
             // Total
-            var totalElapsed = stringWatch.ElapsedMilliseconds + bodyWatch.ElapsedMilliseconds;
+            var totalElapsed = stringWatch.ElapsedMilliseconds + bodyWatch.ElapsedMilliseconds + headerWatch.ElapsedMilliseconds;
             Logger.Info(
                 $"Loaded {name}.dbc into memory in {totalElapsed}ms.\n" +
                 $"\tHeader: {headerWatch.ElapsedMilliseconds}ms\n" +
@@ -73,6 +74,34 @@ namespace SpellEditor.Sources.DBC
                     return entry;
             }
             return null;
+        }
+
+        public string LookupStringOffset(uint offset)
+        {
+            if (_stringsMap == null)
+                return "";
+            if (!_stringsMap.ContainsKey(offset))
+            {
+                var errorMsg = $"ERROR: Unknown string offset {offset}. This value will be replaced by the spell editor!";
+                Logger.Error(errorMsg, new KeyNotFoundException(errorMsg));
+                return $"Unknown String: {offset}";
+            }
+            return _stringsMap[offset].Value;
+        }
+
+        public void CleanStringsMap()
+        {
+            _stringsMap = null;
+        }
+
+        public void CleanBody()
+        {
+            Body = new DBCBody();
+        }
+
+        public void UpdateHeader(DBCHeader _header)
+        {
+            Header = _header;
         }
 
         public Task ImportTo(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string IdKey, string bindingName, ImportExportType _type)
@@ -223,7 +252,7 @@ namespace SpellEditor.Sources.DBC
                 uint strOffset = (uint)record[fieldName + i];
                 if (strOffset > 0)
                 {
-                    string areaName = Reader.LookupStringOffset(strOffset);
+                    string areaName = LookupStringOffset(strOffset);
                     if (areaName.Length > 0)
                     {
                         name += areaName;

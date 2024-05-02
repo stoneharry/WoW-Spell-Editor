@@ -17,7 +17,7 @@ namespace SpellEditor.Sources.DBC
             ReadDBCFile(path);
             Body.RecordMaps.ToList().ForEach(MemoryData.Add);
             // Try to let GC collect this to save memory
-            Body.RecordMaps = null;
+            CleanBody();
         }
 
         public void AddRecord(Dictionary<string, object> entryData) => MemoryData.Add(entryData);
@@ -35,17 +35,27 @@ namespace SpellEditor.Sources.DBC
                     var value = record[field.Name].ToString();
                     if (uint.TryParse(value, out var offset))
                     {
-                        record[field.Name] = Reader.LookupStringOffset(offset);
+                        record[field.Name] = LookupStringOffset(offset);
                     }
                 });
             });
-            Header.RecordCount = (uint)MemoryData.Count;
+
             Logger.Debug("Saving to DBC file: " + bindingName);
+
             var newBody = new DBCBodyToSerialize
             {
                 Records = MemoryData
             };
-            Header.StringBlockSize = newBody.GenerateStringOffsetsMap(binding);
+
+            UpdateHeader(new DBCHeader
+            {
+                FieldCount = Header.FieldCount,
+                Magic = Header.Magic,
+                RecordSize = Header.RecordSize,
+                RecordCount = (uint)MemoryData.Count,
+                StringBlockSize = newBody.GenerateStringOffsetsMap(binding)
+            });
+
             SaveDbcFile(UpdateProgress, newBody, binding);
         }
 

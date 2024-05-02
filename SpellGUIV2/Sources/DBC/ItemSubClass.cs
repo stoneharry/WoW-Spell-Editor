@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -24,12 +23,12 @@ namespace SpellEditor.Sources.DBC
                 temp.Name = GetAllLocaleStringsForField("displayName", record);
                 Lookups.Add($"{(uint)record["Class"]}-{temp.ID}", temp);
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body.RecordMaps = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         private string GetLookupKey(long clazz, uint subclass)

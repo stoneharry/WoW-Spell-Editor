@@ -67,7 +67,7 @@ namespace SpellEditor.Sources.DBC
             for (int i = 0; i < Lookups.Count; ++i)
                 Lookups[i].ComboBoxIndex = i;
 
-            Reader.CleanStringsMap();
+            CleanStringsMap();
         }
 
         private string GetFriendlyDuration(object data)

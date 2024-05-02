@@ -20,12 +20,12 @@ namespace SpellEditor.Sources.DBC
                 temp.AreaName = GetAllLocaleStringsForField("Name", record);
                 Lookups.Add(temp.ID, temp);
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body.RecordMaps = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public struct AreaTableLookup
