@@ -8,7 +8,8 @@ namespace SpellEditor.Sources.DBC
     {
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        public class SpellRangeBoxContainer : DBCBoxContainer {
+        public class SpellRangeBoxContainer : DBCBoxContainer
+        {
             public string RangeString;
 
             public SpellRangeBoxContainer(uint ID, string Name, int ComboBoxIndex) : base(ID, Name, ComboBoxIndex)
@@ -19,7 +20,10 @@ namespace SpellEditor.Sources.DBC
         public SpellRange()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRange.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             int boxIndex = 0;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
@@ -38,7 +42,7 @@ namespace SpellEditor.Sources.DBC
                     float MaximumRangeFriend = (float)record["MaximumRangeFriend"];
 
                     name = GetAllLocaleStringsForField("Name", record);
-                    name += $"\nHostile: { MinimumRangeHostile } - { MaximumRangeHostile }\t Friend: { MinimumRangeFriend } - { MaximumRangeFriend }";
+                    name += $"\nHostile: {MinimumRangeHostile} - {MaximumRangeHostile}\t Friend: {MinimumRangeFriend} - {MaximumRangeFriend}";
                     rangeString = MaximumRangeHostile > MaximumRangeFriend ? MaximumRangeHostile.ToString() : MaximumRangeFriend.ToString();
                 }
                 else

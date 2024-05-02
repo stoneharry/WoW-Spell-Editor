@@ -195,8 +195,9 @@
     <Compile Include="Sources\Database\AdapterFactory.cs" />
     <Compile Include="Sources\DBC\AnimationData.cs" />
     <Compile Include="Sources\DBC\DBCBodyToSerialize.cs" />
+    <Compile Include="Sources\DBC\IGraphicUserInterfaceDBC.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
-    <Compile Include="Sources\DBC\SpellVisualKitModelAttach.cs" />
+    <Compile Include="Sources\Constants\SpellVisualKitModelAttach.cs" />
     <Compile Include="Sources\Locale\LocaleManager.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />

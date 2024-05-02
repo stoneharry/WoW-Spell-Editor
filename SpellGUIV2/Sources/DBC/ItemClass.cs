@@ -10,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public ItemClass()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\ItemClass.dbc");
- 
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(-1, "None", 0));
             int boxIndex = 1;
             for (uint i = 0; i < Header.RecordCount; ++i)

@@ -7,20 +7,6 @@ namespace SpellEditor.Sources.DBC
 {
     class SpellDBC : AbstractDBC
     {
-        public bool LoadDBCFile(MainWindow window)
-        {
-            try
-            {
-                ReadDBCFile(Config.Config.DbcDirectory + "\\Spell.dbc");
-            }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return false;
-            }
-            return true;
-        }
-
         public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName, ImportExportType _type)
         {
             return ImportTo(adapter, UpdateProgress, "ID", bindingName, _type);

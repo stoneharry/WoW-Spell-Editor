@@ -1,5 +1,6 @@
 ﻿using NLog;
 using SpellEditor.Sources.BLP;
+using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,10 @@ namespace SpellEditor.Sources.DBC
         {
             main = window;
             this.adapter = adapter;
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellIcon.dbc");
             for (uint i = 0; i < Header.RecordCount; ++i)
             {

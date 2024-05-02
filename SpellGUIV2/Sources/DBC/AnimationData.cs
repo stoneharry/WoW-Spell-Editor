@@ -11,7 +11,10 @@ namespace SpellEditor.Sources.DBC
         public AnimationData()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\AnimationData.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             BuildLookups();
         }
 

@@ -44,13 +44,16 @@ namespace SpellEditor.Sources.DBC
         public SpellDuration()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDuration.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DurationBox(0, "0", 0, 0));
 
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];
-                var id = (uint) record["ID"];
+                var id = (uint)record["ID"];
                 var baseDurStr = GetFriendlyDuration(record["BaseDuration"]);
                 var maxDurStr = GetFriendlyDuration(record["MaximumDuration"]);
                 var perLevelStr = record["PerLevel"].ToString();

@@ -1,5 +1,4 @@
 ﻿using SpellEditor.Sources.VersionControl;
-using System;
 using System.Collections.Concurrent;
 
 namespace SpellEditor.Sources.DBC
@@ -74,6 +73,14 @@ namespace SpellEditor.Sources.DBC
         public MutableGenericDbc ReadLocalDbcForBinding(string bindingName) => new MutableGenericDbc($"{Config.Config.DbcDirectory}\\{bindingName}.dbc");
 
         public AbstractDBC ClearDbcBinding(string bindingName) => _DbcMap.TryRemove(bindingName, out var removed) ? removed : null;
+
+        internal void LoadGraphicUserInterface()
+        {
+            foreach (var item in _DbcMap.Values)
+            {
+                item.LoadGraphicUserInterface();
+            }
+        }
 
         public static DBCManager GetInstance() => _Instance;
     }

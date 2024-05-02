@@ -701,48 +701,99 @@ namespace SpellEditor
             }
             var controller = await this.ShowProgressAsync(SafeTryFindResource("PleaseWait"), SafeTryFindResource("PleaseWait_2"));
             controller.SetCancelable(false);
+
+            var taskList = new List<Task>();
+            bool shouldReturn = false;
+
+            controller.SetMessage("Loading MySQL connection...");
             await Task.Run(() =>
             {
                 try
                 {
                     adapter = AdapterFactory.Instance.GetAdapter(true);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("ERROR: " + e.Message + "\n" + e.InnerException?.Message + "\n" + e);
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        controller.CloseAsync();
+                        this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                           $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
+
+                    });
+                }
+            });
+
+            controller.SetMessage("Loading DBC data...");
+            // Creating all MySQL tables from bindings
+            //  We actually don't need to block the UI on this completing
+            var createTask = Task.Run(() =>
+            {
+                try
+                {
                     adapter.CreateAllTablesFromBindings();
                 }
                 catch (Exception e)
                 {
-                    controller.CloseAsync();
                     Logger.Error("ERROR: " + e.Message + "\n" + e.InnerException?.Message + "\n" + e);
-                    Dispatcher.InvokeAsync(() => this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                       $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}"));
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        controller?.CloseAsync();
+                        this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                           $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
+
+                    });
                 }
             });
 
-            try
+            // Load DBC data
+            await Task.Run(() =>
             {
-                LoadAllRequiredDbcs();
-            }
-            catch (MySqlException e)
-            {
-                await controller.CloseAsync();
-                await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
+                try
+                {
+                    LoadAllRequiredDbcs();
+                }
+                catch (MySqlException e)
+                {
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        controller.CloseAsync();
+                        this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                            $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
+                    });
+                    shouldReturn = true;
+                }
+                catch (SQLiteException e)
+                {
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        controller.CloseAsync();
+                        this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                            $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
+                    });
+                    shouldReturn = true;
+                }
+                catch (Exception e)
+                {
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        controller.CloseAsync();
+                        this.ShowMessageAsync(SafeTryFindResource("ERROR"),
+                            $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
+                    });
+                    shouldReturn = true;
+                }
+            });
+
+            controller.SetMessage("Loading DBC UI data...");
+            DBCManager.GetInstance().LoadGraphicUserInterface();
+
+            if (shouldReturn)
                 return;
-            }
-            catch (SQLiteException e)
-            {
-                await controller.CloseAsync();
-                await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
-                return;
-            }
-            catch (Exception e)
-            {
-                await controller.CloseAsync();
-                await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
-                    $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}: {e.Message}\n{e.StackTrace}\n{e.InnerException}");
-                return;
-            }
-            
+
+
+            controller.SetMessage("Loading content UI data...");
             try
             {
                 // Initialise select spell list
@@ -813,6 +864,11 @@ namespace SpellEditor
                 return;
             }
 
+            if (!createTask.IsCompleted)
+            {
+                controller.SetMessage("Waiting for table creation to finish...");
+                await createTask;
+            }
             await controller.CloseAsync();
             PopulateSelectSpell();
         }

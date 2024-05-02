@@ -10,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public SpellDispelType()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDispelType.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             int boxIndex = 0;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
