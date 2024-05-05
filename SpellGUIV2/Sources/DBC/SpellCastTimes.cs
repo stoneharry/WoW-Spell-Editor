@@ -11,7 +11,10 @@ namespace SpellEditor.Sources.DBC
         public SpellCastTimes()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellCastTimes.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             int boxIndex = 0;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {

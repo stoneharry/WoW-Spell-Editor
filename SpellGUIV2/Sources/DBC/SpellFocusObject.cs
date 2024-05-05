@@ -10,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public SpellFocusObject()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellFocusObject.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(0, "None", 0));
 
             int boxIndex = 0;
@@ -18,7 +21,7 @@ namespace SpellEditor.Sources.DBC
             {
                 var record = Body.RecordMaps[i];
                 var name = GetAllLocaleStringsForField("Name", record);
-                var id = (uint) record["ID"];
+                var id = (uint)record["ID"];
 
                 Lookups.Add(new DBCBoxContainer(id, name, ++boxIndex));
             }

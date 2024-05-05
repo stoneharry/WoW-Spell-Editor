@@ -63,58 +63,62 @@ namespace SpellEditor.Sources.Controls
 
             // Refresh language
             LocaleManager.Instance.MarkDirty();
-            var newLocale = LocaleManager.Instance.GetLocale(_Adapter);
-            if (newLocale != _Language)
+
+            using (var adapter = AdapterFactory.Instance.GetAdapter(false))
             {
-                _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
-                SetLanguage(newLocale);
+                var newLocale = LocaleManager.Instance.GetLocale(adapter);
+                if (newLocale != _Language)
+                {
+                    _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
+                    SetLanguage(newLocale);
+                }
+
+                var selectSpellWatch = new Stopwatch();
+                selectSpellWatch.Start();
+                _ContentsIndex = 0;
+                _ContentsCount = Items.Count;
+                var worker = new SpellListQueryWorker(adapter, selectSpellWatch) { WorkerReportsProgress = true };
+                worker.ProgressChanged += _worker_ProgressChanged;
+
+                worker.DoWork += delegate
+                {
+                    // Validate
+                    if (worker.Adapter == null || !Config.Config.IsInit)
+                        return;
+                    int locale = _Language;
+                    if (locale > 0)
+                        locale -= 1;
+
+                    // Clear Data
+                    if (clearData)
+                        _Table.Rows.Clear();
+
+                    const uint pageSize = 5000;
+                    uint lowerBounds = 0;
+                    DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
+                    lowerBounds += 100;
+                    // Edge case of empty table after truncating, need to send a event to the handler
+                    if (results != null && results.Count == 0)
+                    {
+                        worker.ReportProgress(0, results);
+                    }
+                    while (results != null && results.Count != 0)
+                    {
+                        worker.ReportProgress(0, results);
+                        results = GetSpellNames(lowerBounds, pageSize, locale);
+                        lowerBounds += pageSize;
+                    }
+                };
+                worker.RunWorkerAsync();
+                worker.RunWorkerCompleted += (sender, args) =>
+                {
+                    if (!(sender is SpellListQueryWorker spellListQueryWorker))
+                        return;
+
+                    spellListQueryWorker.Watch.Stop();
+                    Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
+                };
             }
-
-            var selectSpellWatch = new Stopwatch();
-            selectSpellWatch.Start();
-            _ContentsIndex = 0;
-            _ContentsCount = Items.Count;
-            var worker = new SpellListQueryWorker(_Adapter, selectSpellWatch) { WorkerReportsProgress = true };
-            worker.ProgressChanged += _worker_ProgressChanged;
-
-            worker.DoWork += delegate
-            {
-                // Validate
-                if (worker.Adapter == null || !Config.Config.IsInit)
-                    return;
-                int locale = _Language;
-                if (locale > 0)
-                    locale -= 1;
-
-                // Clear Data
-                if (clearData)
-                    _Table.Rows.Clear();
-
-                const uint pageSize = 5000;
-                uint lowerBounds = 0;
-                DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
-                lowerBounds += 100;
-                // Edge case of empty table after truncating, need to send a event to the handler
-                if (results != null && results.Count == 0)
-                {
-                    worker.ReportProgress(0, results);
-                }
-                while (results != null && results.Count != 0)
-                {
-                    worker.ReportProgress(0, results);
-                    results = GetSpellNames(lowerBounds, pageSize, locale);
-                    lowerBounds += pageSize;
-                }
-            };
-            worker.RunWorkerAsync();
-            worker.RunWorkerCompleted += (sender, args) =>
-            {
-                if (!(sender is SpellListQueryWorker spellListQueryWorker))
-                    return;
-
-                spellListQueryWorker.Watch.Stop();
-                Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
-            };
         }
 
         public void AddNewSpell(uint copyFrom, uint copyTo)

@@ -11,21 +11,24 @@ namespace SpellEditor.Sources.DBC
         public SpellDescriptionVariables()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDescriptionVariables.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 
             int boxIndex = 1;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];
-                uint id = (uint) record["ID"];
-                uint offset = (uint) record["Formula"];
+                uint id = (uint)record["ID"];
+                uint offset = (uint)record["Formula"];
                 string description = offset == 0 ? "" : LookupStringOffset(offset);
 
                 Label label = new Label
                 {
-                    Content = id + ": " + (description.Length <= 30 ? 
-                        description : 
+                    Content = id + ": " + (description.Length <= 30 ?
+                        description :
                         (description.Substring(0, 29) + "...")),
                     ToolTip = id + ": " + description
                 };

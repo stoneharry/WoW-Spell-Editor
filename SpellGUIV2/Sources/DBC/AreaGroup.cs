@@ -9,11 +9,17 @@ namespace SpellEditor.Sources.DBC
     {
         
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
+        private Dictionary<uint, AreaTable.AreaTableLookup> _areaTableLookups;
 
         public AreaGroup(Dictionary<uint, AreaTable.AreaTableLookup> areaTableLookups)
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\AreaGroup.dbc");
 
+            _areaTableLookups = areaTableLookups;
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 
             int boxIndex = 1;
@@ -39,14 +45,14 @@ namespace SpellEditor.Sources.DBC
                 string areaList_str = "";
                 foreach (uint val in al)
                 {
-                    string areaName = GetAreaTableName(val, areaTableLookups);
-                    areaList_str += $"AreaId: { val }\t\t{ areaName }\n";
+                    string areaName = GetAreaTableName(val, _areaTableLookups);
+                    areaList_str += $"AreaId: {val}\t\t{areaName}\n";
                 }
                 areaGroupLab.ToolTip = areaList_str;
 
                 string contentString = record["ID"].ToString() + ": ";
                 foreach (uint val in al)
-                    contentString += GetAreaTableName(val, areaTableLookups) + ", ";
+                    contentString += GetAreaTableName(val, _areaTableLookups) + ", ";
                 if (al.Count > 0)
                     contentString = contentString.Substring(0, contentString.Length - 2);
                 areaGroupLab.Content = contentString.Length > 120 ? (contentString.Substring(0, 110) + "...") : contentString;
@@ -56,6 +62,7 @@ namespace SpellEditor.Sources.DBC
                 boxIndex++;
             }
             CleanStringsMap();
+            _areaTableLookups = null;
         }
 
         public List<DBCBoxContainer> GetAllBoxes()

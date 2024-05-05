@@ -6,14 +6,13 @@ namespace SpellEditor.Sources.DBC
     {
         public Dictionary<string, ItemSubClassLookup> Lookups = new Dictionary<string, ItemSubClassLookup>();
 
-        public ItemSubClassLookup LookupClassAndSubclass(long clazz, uint subclass)
-        {
-            return Lookups.TryGetValue(GetLookupKey(clazz, subclass), out var result) ? result : new ItemSubClassLookup();
-        }
-
         public ItemSubClass()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\ItemSubClass.dbc");
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
 
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
@@ -31,10 +30,14 @@ namespace SpellEditor.Sources.DBC
             CleanBody();
         }
 
-        private string GetLookupKey(long clazz, uint subclass)
+        public ItemSubClassLookup LookupClassAndSubclass(long clazz, uint subclass)
         {
-            return $"{ clazz }-{ subclass }";
+            return Lookups.TryGetValue(GetLookupKey(clazz, subclass), out var result) ? 
+                result : 
+                new ItemSubClassLookup();
         }
+
+        private string GetLookupKey(long clazz, uint subclass) => $"{ clazz }-{ subclass }";
 
         public struct ItemSubClassLookup
         {

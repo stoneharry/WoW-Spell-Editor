@@ -19,11 +19,20 @@ namespace SpellEditor.Sources.DBC
 
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
+        private IDatabaseAdapter _adapter;
+        private int _locale;
+
         // needs adapter or spell DBC to lookup spells
-        // does not save a reference to the adapter
         public SpellDifficulty(IDatabaseAdapter adapter, int locale)
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDifficulty.dbc");
+
+            _adapter = adapter;
+            _locale = locale;
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
 
             Lookups.Add(new DBCBoxContainer(0, new Label { Content = "0" }, 0));
 
@@ -60,7 +69,7 @@ namespace SpellEditor.Sources.DBC
                 var watch = new Stopwatch();
                 watch.Start();
                 Logger.Debug("Loading SpellDifficulty tooltips lazily");
-                var column = "SpellName" + Math.Max(0, locale - 1);
+                var column = "SpellName" + Math.Max(0, _locale - 1);
                 for (int i = 1; i < Lookups.Count; ++i)
                 {
                     if (cancelToken.IsCancellationRequested)
@@ -81,7 +90,7 @@ namespace SpellEditor.Sources.DBC
                         var difficulty = record["Difficulties" + diffIndex].ToString();
                         content += difficulty + ", ";
                         tooltip += "[" + difficulty + "] ";
-                        var result = adapter.QuerySingleValue(string.Format("SELECT {0} FROM `{1}` WHERE `ID` = '{2}' LIMIT 1", column, "spell", difficulty));
+                        var result = _adapter.QuerySingleValue(string.Format("SELECT {0} FROM `{1}` WHERE `ID` = '{2}' LIMIT 1", column, "spell", difficulty));
                         if (result != null)
                         {
                             tooltip += result.ToString();

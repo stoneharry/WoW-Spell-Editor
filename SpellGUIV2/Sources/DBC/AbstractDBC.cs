@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.DBC
 {
-    public abstract class AbstractDBC
+    public abstract class AbstractDBC : IGraphicUserInterfaceDBC
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -279,6 +279,11 @@ namespace SpellEditor.Sources.DBC
         public bool HasData()
         {
             return Body.RecordMaps != null && Body.RecordMaps.Count() > 0;
+        }
+
+        public virtual void LoadGraphicUserInterface()
+        {
+            // NOOP default implementation
         }
 
         public struct DBCHeader

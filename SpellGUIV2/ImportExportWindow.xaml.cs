@@ -34,10 +34,10 @@ namespace SpellEditor
         private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
-        private Action _ReloadData;
+        private Action<Action<string>> _ReloadData;
         private readonly string _SpellBindingName = "Spell";
 
-        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action reloadData)
+        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData)
         {
             _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
@@ -344,7 +344,7 @@ namespace SpellEditor
                 {
                     Dispatcher.InvokeAsync(new Action(() =>
                     {
-                        _ReloadData.Invoke();
+                        _ReloadData.Invoke(null);
                         _PopulateSelectSpell.Invoke();
                         Close();
                     }));

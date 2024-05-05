@@ -11,7 +11,15 @@ namespace SpellEditor.Sources.DBC
         public SpellRuneCost()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRuneCost.dbc");
+        }
 
+        public List<DBCBoxContainer> GetAllBoxes()
+        {
+            return Lookups;
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 
             int boxIndex = 1;
@@ -19,12 +27,12 @@ namespace SpellEditor.Sources.DBC
             {
                 var record = Body.RecordMaps[i];
 
-                uint id = (uint) record["ID"];
+                uint id = (uint)record["ID"];
                 uint runeCost1 = (uint)record["RuneCost1"];
                 uint runeCost2 = (uint)record["RuneCost2"];
                 uint runeCost3 = (uint)record["RuneCost3"];
-                uint runepowerGain = (uint) record["RunePowerGain"];
-                string name = $"Cost {runeCost1}, {runeCost2}, {runeCost3} Gain { runepowerGain } ID { id }";
+                uint runepowerGain = (uint)record["RunePowerGain"];
+                string name = $"Cost {runeCost1}, {runeCost2}, {runeCost3} Gain {runepowerGain} ID {id}";
 
                 Lookups.Add(new DBCBoxContainer(id, name, boxIndex));
 
@@ -38,11 +46,6 @@ namespace SpellEditor.Sources.DBC
             // memory consumption.
             CleanStringsMap();
             CleanBody();
-        }
-
-        public List<DBCBoxContainer> GetAllBoxes()
-        {
-            return Lookups;
         }
 
         public int UpdateSpellRuneCostSelection(uint ID)
