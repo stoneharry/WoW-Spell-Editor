@@ -154,8 +154,12 @@ namespace SpellEditor
         public int GetLanguage() {
             // FIXME(Harry)
             // Disabled returning Locale_langauge until it can at least support multiple client types
-            var locale = LocaleManager.Instance.GetLocale(GetDBAdapter());
-            return locale == -1 ? 0 : locale;
+            // Get a new adapter to avoid lock blocking calling thread
+            using (var adapter = AdapterFactory.Instance.GetAdapter(false))
+            {
+                var locale = LocaleManager.Instance.GetLocale(adapter);
+                return locale == -1 ? 0 : locale;
+            }
             //return (int)Locale_language;
         }
 
@@ -604,7 +608,7 @@ namespace SpellEditor
                 foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
                 foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
 
-                loadAllData();
+                LoadAllData();
 
                 FilterSpellEffectCombo.SelectionChanged += FilterSpellEffectCombo_SelectionChanged;
                 FilterAuraCombo.SelectionChanged += FilterAuraCombo_SelectionChanged;
@@ -677,21 +681,45 @@ namespace SpellEditor
         #endregion
 
         #region InitialiseMemberVariables
-        private void LoadAllRequiredDbcs()
+        private void LoadAllRequiredDbcs(Action<string> setMessage)
         {
             // Load required DBC's. First the ones with dependencies and inject them into the manager
             var manager = DBCManager.GetInstance();
-            manager.LoadRequiredDbcs();
+            var tasks = manager.LoadRequiredDbcs();
+            var lang = GetLanguage();
+
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
-                manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
-                manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, GetLanguage()));
+                tasks.Add(Task.Run(() =>
+                    manager.InjectLoadedDbc("SpellDifficulty", new SpellDifficulty(adapter, lang))));
             }
-            manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter));
-            spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(this);
+            
+            tasks.Add(Task.Run(() =>
+                manager.InjectLoadedDbc("SpellIcon", new SpellIconDBC(this, adapter))));
+
+            var incompleteCount = tasks.Where(t => !t.IsCompleted).Count();
+            while (incompleteCount > 0)
+            {
+                setMessage?.Invoke("Remaining DBCs: " + incompleteCount);
+                Thread.Sleep(50);
+                incompleteCount = tasks.Where(t => !t.IsCompleted).Count();
+            }
+
+            setMessage?.Invoke("Loading dependent DBCs...");
+
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                // Has a dependency on the earlier tasks completing
+                manager.InjectLoadedDbc("AreaGroup", new AreaGroup(((AreaTable)manager.FindDbcForBinding("AreaTable")).Lookups));
+            }
+
+            Task.Run(() =>
+            {
+                spellFamilyClassMaskParser = new SpellFamilyClassMaskParser(GetDBAdapter());
+            });
         }
 
-        private async void loadAllData()
+        private async void LoadAllData()
         {
             await GetConfig();
             if (!Config.IsInit)
@@ -705,7 +733,7 @@ namespace SpellEditor
             var taskList = new List<Task>();
             bool shouldReturn = false;
 
-            controller.SetMessage("Loading MySQL connection...");
+            controller.SetMessage("Loading SQL connection...");
             await Task.Run(() =>
             {
                 try
@@ -720,10 +748,13 @@ namespace SpellEditor
                         controller.CloseAsync();
                         this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                            $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
-
+                        shouldReturn = true;
                     });
                 }
             });
+
+            if (shouldReturn)
+                return;
 
             controller.SetMessage("Loading DBC data...");
             // Creating all MySQL tables from bindings
@@ -732,7 +763,8 @@ namespace SpellEditor
             {
                 try
                 {
-                    adapter.CreateAllTablesFromBindings();
+                    using (var innerAdapter = AdapterFactory.Instance.GetAdapter(false))
+                        innerAdapter.CreateAllTablesFromBindings();
                 }
                 catch (Exception e)
                 {
@@ -742,7 +774,6 @@ namespace SpellEditor
                         controller?.CloseAsync();
                         this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                            $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
-
                     });
                 }
             });
@@ -752,7 +783,7 @@ namespace SpellEditor
             {
                 try
                 {
-                    LoadAllRequiredDbcs();
+                    LoadAllRequiredDbcs(controller.SetMessage);
                 }
                 catch (MySqlException e)
                 {
@@ -786,12 +817,11 @@ namespace SpellEditor
                 }
             });
 
-            controller.SetMessage("Loading DBC UI data...");
-            DBCManager.GetInstance().LoadGraphicUserInterface();
-
             if (shouldReturn)
                 return;
 
+            controller.SetMessage("Loading DBC UI data...");
+            DBCManager.GetInstance().LoadGraphicUserInterface();
 
             controller.SetMessage("Loading content UI data...");
             try
@@ -864,11 +894,11 @@ namespace SpellEditor
                 return;
             }
 
-            if (!createTask.IsCompleted)
+            /*if (!createTask.IsCompleted)
             {
                 controller.SetMessage("Waiting for table creation to finish...");
                 await createTask;
-            }
+            }*/
             await controller.CloseAsync();
             PopulateSelectSpell();
         }
@@ -1101,7 +1131,7 @@ namespace SpellEditor
         {
             if (adapter == null)
             {
-                loadAllData();
+                LoadAllData();
                 return;
             }
             

@@ -23,7 +23,6 @@ namespace SpellEditor.Sources.DBC
         private int _locale;
 
         // needs adapter or spell DBC to lookup spells
-        // does not save a reference to the adapter
         public SpellDifficulty(IDatabaseAdapter adapter, int locale)
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDifficulty.dbc");

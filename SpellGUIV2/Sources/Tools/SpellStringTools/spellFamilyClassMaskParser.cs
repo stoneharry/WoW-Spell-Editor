@@ -11,7 +11,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 {
     public class SpellFamilyClassMaskParser
     {
-        public SpellFamilyClassMaskParser(MainWindow window)
+        public SpellFamilyClassMaskParser(IDatabaseAdapter adapter)
         {
             SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
 
@@ -19,41 +19,44 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             var query = isWotlkOrGreater ?
                 "SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell" :
                 "SELECT id,SpellFamilyName,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell";
-            DataTable dt = window?.GetDBAdapter()?.Query(query);
-            if (dt == null)
-                return;
 
-            foreach (DataRow dr in dt.Rows)
+            using (DataTable dt = adapter?.Query(query))
             {
-                uint id = uint.Parse(dr[0].ToString());
-                uint SpellFamilyName = uint.Parse(dr[1].ToString());
-                uint[] SpellFamilyFlag;
-                if (isWotlkOrGreater)
-                {
-                    SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()), uint.Parse(dr[4].ToString()) };
-                }
-                else
-                {
-                    SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()) };
-                }
+                if (dt == null)
+                    return;
 
-                if (SpellFamilyName == 0)
-                    continue;
-
-                for (uint MaskIndex = 0; MaskIndex < (isWotlkOrGreater ? 3 : 2); MaskIndex++)
+                foreach (DataRow dr in dt.Rows)
                 {
-                    if (SpellFamilyFlag[MaskIndex] != 0)
+                    uint id = uint.Parse(dr[0].ToString());
+                    uint SpellFamilyName = uint.Parse(dr[1].ToString());
+                    uint[] SpellFamilyFlag;
+                    if (isWotlkOrGreater)
                     {
-                        for (uint i = 0; i < 32; i++)
+                        SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()), uint.Parse(dr[4].ToString()) };
+                    }
+                    else
+                    {
+                        SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()) };
+                    }
+
+                    if (SpellFamilyName == 0)
+                        continue;
+
+                    for (uint MaskIndex = 0; MaskIndex < (isWotlkOrGreater ? 3 : 2); MaskIndex++)
+                    {
+                        if (SpellFamilyFlag[MaskIndex] != 0)
                         {
-                            uint Mask = (uint)Math.Pow(2, i);
-
-                            if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
+                            for (uint i = 0; i < 32; i++)
                             {
-                                if (SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
-                                    SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
+                                uint Mask = (uint)Math.Pow(2, i);
 
-                                SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(id);
+                                if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
+                                {
+                                    if (SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
+                                        SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
+
+                                    SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(id);
+                                }
                             }
                         }
                     }

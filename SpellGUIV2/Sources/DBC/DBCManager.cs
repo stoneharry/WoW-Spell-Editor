@@ -1,5 +1,8 @@
 ﻿using SpellEditor.Sources.VersionControl;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -19,38 +22,45 @@ namespace SpellEditor.Sources.DBC
          * There are some exemptions to this where dependencies were not easy to remove.
          * These are loaded by the ForceLoadDbc function.
          */
-        public void LoadRequiredDbcs()
+        public List<Task<bool>> LoadRequiredDbcs()
         {
-            ForceLoadDbc<AreaTable>("AreaTable");
-            ForceLoadDbc<SpellCategory>("SpellCategory");
-            ForceLoadDbc<SpellDispelType>("SpellDispelType");
-            ForceLoadDbc<SpellMechanic>("SpellMechanic");
-            ForceLoadDbc<SpellFocusObject>("SpellFocusObject");
-            ForceLoadDbc<SpellCastTimes>("SpellCastTimes");
-            ForceLoadDbc<SpellDuration>("SpellDuration");
-            ForceLoadDbc<SpellRange>("SpellRange");
-            ForceLoadDbc<SpellRadius>("SpellRadius");
-            ForceLoadDbc<ItemClass>("ItemClass");
-            ForceLoadDbc<ItemSubClass>("ItemSubClass");
-            ForceLoadDbc<AnimationData>("AnimationData");
+            var tasks = new List<Task<bool>>
+            {
+                ForceLoadDbc<AreaTable>("AreaTable"),
+                ForceLoadDbc<SpellCategory>("SpellCategory"),
+                ForceLoadDbc<SpellDispelType>("SpellDispelType"),
+                ForceLoadDbc<SpellMechanic>("SpellMechanic"),
+                ForceLoadDbc<SpellFocusObject>("SpellFocusObject"),
+                ForceLoadDbc<SpellCastTimes>("SpellCastTimes"),
+                ForceLoadDbc<SpellDuration>("SpellDuration"),
+                ForceLoadDbc<SpellRange>("SpellRange"),
+                ForceLoadDbc<SpellRadius>("SpellRadius"),
+                ForceLoadDbc<ItemClass>("ItemClass"),
+                ForceLoadDbc<ItemSubClass>("ItemSubClass"),
+                ForceLoadDbc<AnimationData>("AnimationData")
+            };
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
-                ForceLoadDbc<TotemCategory>("TotemCategory");
+                tasks.Add(ForceLoadDbc<TotemCategory>("TotemCategory"));
             }
             if (WoWVersionManager.IsWotlkOrGreaterSelected)
             {
-                ForceLoadDbc<SpellRuneCost>("SpellRuneCost");
-                ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables");
+                tasks.Add(ForceLoadDbc<SpellRuneCost>("SpellRuneCost"));
+                tasks.Add(ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables"));
             }
+            return tasks;
         }
         
-        private bool ForceLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new()
+        private Task<bool> ForceLoadDbc<DBCType>(string name) where DBCType : AbstractDBC, new()
         {
-            if (_DbcMap.ContainsKey(name))
+            return Task.Run(() =>
             {
-                _DbcMap.TryRemove(name, out var oldDbc);
-            }
-            return _DbcMap.TryAdd(name, new DBCType());
+                if (_DbcMap.ContainsKey(name))
+                {
+                    _DbcMap.TryRemove(name, out var oldDbc);
+                }
+                return _DbcMap.TryAdd(name, new DBCType());
+            });
         }
 
         public bool InjectLoadedDbc(string name, AbstractDBC dbc) => _DbcMap.TryAdd(name, dbc);
