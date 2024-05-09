@@ -73,6 +73,43 @@ namespace SpellEditor.Sources.Controls.Common
             SelectionEffectivelyChanged += (_, o) => EffectivelySelectedItem = o;
         }
 
+        public uint GetNumberPrefixFromText(string text = null)
+        {
+            text = text != null ? text.TrimStart() : Text.TrimStart();
+            var numStr = "";
+            for (int i = 0; i < text.Length; ++i)
+            {
+                if (char.IsDigit(text[i]))
+                {
+                    numStr += text[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (uint.TryParse(numStr, out var num))
+            {
+                return num;
+            }
+            return 0u;
+        }
+
+        public void SetTextFromIndex(uint index)
+        {
+            foreach (var item in Items)
+            {
+                var itemText = item.ToString();
+                var num = GetNumberPrefixFromText(itemText);
+                if (num == index)
+                {
+                    ThreadSafeText = itemText;
+                    return;
+                }
+            }
+            ThreadSafeIndex = 0;
+        }
+
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);

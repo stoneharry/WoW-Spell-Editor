@@ -1620,9 +1620,9 @@ namespace SpellEditor
                         row["EquippedItemSubClassMask"] = Mask;
                     }
 
-                    row["Effect1"] = (uint)SpellEffect1.SelectedIndex;
-                    row["Effect2"] = (uint)SpellEffect2.SelectedIndex;
-                    row["Effect3"] = (uint)SpellEffect3.SelectedIndex;
+                    row["Effect1"] = SpellEffect1.GetNumberPrefixFromText();
+                    row["Effect2"] = SpellEffect2.GetNumberPrefixFromText();
+                    row["Effect3"] = SpellEffect3.GetNumberPrefixFromText();
                     row["EffectDieSides1"] = int.Parse(DieSides1.Text);
                     row["EffectDieSides2"] = int.Parse(DieSides2.Text);
                     row["EffectDieSides3"] = int.Parse(DieSides3.Text);
@@ -1641,9 +1641,9 @@ namespace SpellEditor
                     row["EffectImplicitTargetB1"] = (uint)TargetB1.SelectedIndex;
                     row["EffectImplicitTargetB2"] = (uint)TargetB2.SelectedIndex;
                     row["EffectImplicitTargetB3"] = (uint)TargetB3.SelectedIndex;
-                    row["EffectApplyAuraName1"] = (uint)ApplyAuraName1.SelectedIndex;
-                    row["EffectApplyAuraName2"] = (uint)ApplyAuraName2.SelectedIndex;
-                    row["EffectApplyAuraName3"] = (uint)ApplyAuraName3.SelectedIndex;
+                    row["EffectApplyAuraName1"] = ApplyAuraName1.GetNumberPrefixFromText();
+                    row["EffectApplyAuraName2"] = ApplyAuraName2.GetNumberPrefixFromText();
+                    row["EffectApplyAuraName3"] = ApplyAuraName3.GetNumberPrefixFromText();
                     row["EffectAmplitude1"] = uint.Parse(Amplitude1.Text);
                     row["EffectAmplitude2"] = uint.Parse(Amplitude2.Text);
                     row["EffectAmplitude3"] = uint.Parse(Amplitude3.Text);
@@ -2485,9 +2485,9 @@ namespace SpellEditor
                     }
                 }
                 updateProgress("Updating effects 1-3...");
-                SpellEffect1.ThreadSafeIndex = int.Parse(row["Effect1"].ToString());
-                SpellEffect2.ThreadSafeIndex = int.Parse(row["Effect2"].ToString());
-                SpellEffect3.ThreadSafeIndex = int.Parse(row["Effect3"].ToString());
+                SpellEffect1.SetTextFromIndex(uint.Parse(row["Effect1"].ToString()));
+                SpellEffect2.SetTextFromIndex(uint.Parse(row["Effect2"].ToString()));
+                SpellEffect3.SetTextFromIndex(uint.Parse(row["Effect3"].ToString()));
                 DieSides1.ThreadSafeText = row["EffectDieSides1"].ToString();
                 DieSides2.ThreadSafeText = row["EffectDieSides2"].ToString();
                 DieSides3.ThreadSafeText = row["EffectDieSides3"].ToString();
@@ -2516,9 +2516,9 @@ namespace SpellEditor
                 RadiusIndex3.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[2]);
 
                 updateProgress("Updating effect 1-3 data...");
-                ApplyAuraName1.ThreadSafeIndex = int.Parse(row["EffectApplyAuraName1"].ToString());
-                ApplyAuraName2.ThreadSafeIndex = int.Parse(row["EffectApplyAuraName2"].ToString());
-                ApplyAuraName3.ThreadSafeIndex = int.Parse(row["EffectApplyAuraName3"].ToString());
+                ApplyAuraName1.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName1"].ToString()));
+                ApplyAuraName2.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName2"].ToString()));
+                ApplyAuraName3.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName3"].ToString()));
                 Amplitude1.ThreadSafeText = row["EffectAmplitude1"].ToString();
                 Amplitude2.ThreadSafeText = row["EffectAmplitude2"].ToString();
                 Amplitude3.ThreadSafeText = row["EffectAmplitude3"].ToString();
