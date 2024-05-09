@@ -1866,6 +1866,16 @@ namespace SpellEditor
 
         private void PopulateSelectSpell()
         {
+            if (!SelectSpell.IsInitialised())
+            {
+                SelectSpell.SetAdapter(GetDBAdapter())
+                    .SetLanguage(GetLanguage())
+                    .Initialise();
+            }
+            if (!SelectSpell.HasAdapter())
+            {
+                SelectSpell.SetAdapter(GetDBAdapter());
+            }
             SelectSpell.PopulateSelectSpell();
             FocusLanguage();
         }

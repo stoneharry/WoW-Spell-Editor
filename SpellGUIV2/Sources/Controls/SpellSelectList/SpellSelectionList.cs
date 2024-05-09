@@ -3,7 +3,6 @@ using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Locale;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,13 +25,18 @@ namespace SpellEditor.Sources.Controls
         private int _Language;
         private IDatabaseAdapter _Adapter;
         private readonly DataTable _Table = new DataTable();
+        private bool _initialised = false;
 
         public void Initialise()
         {
             _Table.Columns.Add("id", typeof(uint));
             _Table.Columns.Add("SpellName" + _Language, typeof(string));
             _Table.Columns.Add("Icon", typeof(uint));
+            _initialised = true;
         }
+
+        public bool IsInitialised() => _initialised;
+        public bool HasAdapter() => _Adapter != null;
 
         public SpellSelectionList SetLanguage(int language)
         { 
@@ -57,9 +61,9 @@ namespace SpellEditor.Sources.Controls
         public void PopulateSelectSpell(bool clearData = true)
         {
             if (_Adapter == null)
-                throw new Exception("Adapter has not been configured");
+                return;
             if (_Table.Columns.Count == 0)
-                throw new Exception("Initialise has not been invoked");
+                return;
 
             // Refresh language
             LocaleManager.Instance.MarkDirty();
@@ -67,7 +71,7 @@ namespace SpellEditor.Sources.Controls
             using (var adapter = AdapterFactory.Instance.GetAdapter(false))
             {
                 var newLocale = LocaleManager.Instance.GetLocale(adapter);
-                if (newLocale != _Language)
+                if (newLocale != _Language && (newLocale != -1 || _Language == -1))
                 {
                     _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
                     SetLanguage(newLocale);
