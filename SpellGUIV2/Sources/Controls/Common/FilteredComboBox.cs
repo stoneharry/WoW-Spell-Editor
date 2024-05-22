@@ -104,10 +104,12 @@ namespace SpellEditor.Sources.Controls.Common
                 if (num == index)
                 {
                     ThreadSafeText = itemText;
+                    ClearFilter();
                     return;
                 }
             }
             ThreadSafeIndex = 0;
+            ClearFilter();
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
