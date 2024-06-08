@@ -68,7 +68,8 @@ You can copy and paste kits and effects/attachments freely. Whenever you paste i
 This feature is in its very early stages. Some values from the visual kit data are not handled in the UI. Other features can be added like displaying other spells using the same kit/effect/attachment or generally being able to search all existing objects.
 
 The full class model is not currently supported. The spell visual class model looks like this:
-![Spell Visual Class Model](https://i.imgur.com/o7mPR9k.png)
+
+![Spell Visual Class Model](https://i.imgur.com/m4bH2xF.png)
 
 ## Spell Visual Map
 
