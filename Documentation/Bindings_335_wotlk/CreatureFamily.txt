@@ -26,4 +26,4 @@ uint name14 string
 uint name15 string
 uint name16 string
 uint nameFlags
-uint inconpath string
+uint iconpath string
