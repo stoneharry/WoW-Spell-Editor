@@ -65,7 +65,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.Cryptography.2.3.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
@@ -207,6 +207,8 @@
     <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
     <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />
+    <Compile Include="Sources\Database\AbstractAdapter.cs" />
+    <Compile Include="Sources\Database\MariaDB.cs" />
     <Compile Include="Sources\Database\SqlFileStorage.cs" />
     <Compile Include="Sources\Database\CsvFileStorage.cs" />
     <Compile Include="Sources\Database\DbcFileStorage.cs" />

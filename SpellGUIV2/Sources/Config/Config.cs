@@ -14,7 +14,8 @@ namespace SpellEditor.Sources.Config
         public enum ConnectionType
         {
             SQLite,
-            MySQL
+            MySQL,
+            MariaDB
         }
 
         public static bool IsInit = false;
