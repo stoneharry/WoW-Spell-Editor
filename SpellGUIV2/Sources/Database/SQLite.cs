@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Text;
-using SpellEditor.Sources.Binding;
-using System.Linq;
 using NLog;
 
 namespace SpellEditor.Sources.Database
 {
-    public class SQLite : IDatabaseAdapter
+    public class SQLite : AbstractAdapter
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly object _syncLock = new object();
-        private readonly SQLiteConnection _connection;
-
-        public bool Updating { get; set; }
+        private SQLiteConnection _connection;
 
         public SQLite()
         {
@@ -25,7 +19,7 @@ namespace SpellEditor.Sources.Database
             _connection.Open();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             try
             {
@@ -37,17 +31,16 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
-
-        public void CreateAllTablesFromBindings()
+        public override void CreateAllTablesFromBindings()
         {
-            foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+
+            lock (_syncLock)
             {
-                lock (_syncLock)
+                foreach (var createStatement in GetAllTableCreateStrings())
                 {
                     using (var cmd = _connection.CreateCommand())
                     {
-                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
+                        cmd.CommandText = createStatement;
                         Logger.Trace(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                     }
@@ -55,7 +48,7 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public DataTable Query(string query)
+        public override DataTable Query(string query)
         {
             Logger.Trace(query);
             lock (_syncLock)
@@ -73,7 +66,7 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public object QuerySingleValue(string query)
+        public override object QuerySingleValue(string query)
         {
             Logger.Trace(query);
             lock (_syncLock)
@@ -91,7 +84,7 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void CommitChanges(string query, DataTable dataTable)
+        public override void CommitChanges(string query, DataTable dataTable)
         {
             if (Updating)
                 return;
@@ -112,7 +105,7 @@ namespace SpellEditor.Sources.Database
             }
         }
 
-        public void Execute(string p)
+        public override void Execute(string p)
         {
             if (Updating)
                 return;
@@ -127,7 +120,7 @@ namespace SpellEditor.Sources.Database
                 }
             }
         }
-
+        /*
         public string GetTableCreateString(Binding.Binding binding)
         {
             StringBuilder str = new StringBuilder();
@@ -164,8 +157,9 @@ namespace SpellEditor.Sources.Database
             str.Append(");");
             return str.ToString();
         }
+        */
 
-        public string EscapeString(string keyWord)
+        public override string EscapeString(string keyWord)
         {
             keyWord = keyWord.Replace("'", "''");
             return keyWord;

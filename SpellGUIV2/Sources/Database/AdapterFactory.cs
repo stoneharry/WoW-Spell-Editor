@@ -22,8 +22,10 @@ namespace SpellEditor.Sources.Database
                     return new MySQL(initialiseDatabase);
                 case Config.Config.ConnectionType.SQLite:
                     return new SQLite();
+                case Config.Config.ConnectionType.MariaDB:
+                    return new MariaDB(initialiseDatabase);
                 default:
-                    throw new Exception("Unknown config connection type, valid types: MySQL, SQLite");
+                    throw new Exception("Unknown config connection type, valid types: MySQL, MariaDB, SQLite");
             }
         }
 
