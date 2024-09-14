@@ -995,6 +995,7 @@ namespace SpellEditor
         {
             if (e.Key == Key.Back && (
                 sender == FilterSpellNames || 
+                sender == FilterGemNames ||
                 sender == FilterIcons ||
                 sender == Attributes1Search ||
                 sender == Attributes2Search))
@@ -1088,6 +1089,31 @@ namespace SpellEditor
                             if (!(enumerator.Current is TextBlock block))
                                 continue;
                             return input.Length == 0 ? true : block.Text.ToLower().Contains(input);
+                        }
+                    }
+                    return false;
+                };
+
+                imageLoadEventRunning = false;
+            }
+            else if (sender == FilterGemNames)
+            {
+                if (imageLoadEventRunning)
+                    return;
+                imageLoadEventRunning = true;
+                var input = FilterGemNames.Text.ToLower();
+
+                ICollectionView view = CollectionViewSource.GetDefaultView(SelectGemList.Items);
+                view.Filter = o =>
+                {
+                    var panel = (StackPanel)o;
+                    using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (!(enumerator.Current is TextBlock block))
+                                continue;
+                            return input.Length == 0 || block.Text.ToLower().Contains(input);
                         }
                     }
                     return false;
@@ -3847,6 +3873,10 @@ namespace SpellEditor
                 var idStr = SpellVisual1.Text;
                 uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
+            }
+            else if (tab == GemTab)
+            {
+                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox);
             }
         }
 
