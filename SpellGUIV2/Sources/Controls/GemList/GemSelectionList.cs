@@ -41,7 +41,6 @@ namespace SpellEditor.Sources.Controls
                 _Table.Columns.Add("id", typeof(uint));
                 _Table.Columns.Add("SpellItemEnchantmentRef", typeof(uint));
                 _Table.Columns.Add("gemType", typeof(uint));
-                _Table.Columns.Add("objectId1", typeof(uint));
                 _Table.Columns.Add("sRefName0", typeof(string));
                 _Table.Columns.Add("ItemCache", typeof(uint));
                 _Table.Columns.Add("TriggerSpell", typeof(uint));
@@ -66,10 +65,11 @@ namespace SpellEditor.Sources.Controls
             if (selected == null)
                 return;
 
-            _SelectedGemText.Content = selected.GemId + " - " + selected.GemName;
+            _SelectedGemText.Content = selected.GemId;
             var gem = selected.GemTypeEntry.Name;
             _GemTypeBox.Text = gem ?? string.Empty;
 
+            ((ThreadSafeTextBox)_Elements[7]).Text = selected.SpellItemEnchantmentEntry.Name;
             ((ThreadSafeTextBox)_Elements[3]).Text = selected.SpellItemEnchantmentEntry.ItemCache.Id.ToString();
             ((ThreadSafeTextBox)_Elements[4]).Text = selected.SpellItemEnchantmentEntry.TriggerSpell.Id.ToString();
             ((ThreadSafeTextBox)_Elements[5]).Text = selected.SpellItemEnchantmentEntry.TempLearnSpell.Id.ToString();
@@ -82,6 +82,35 @@ namespace SpellEditor.Sources.Controls
 
         private void SaveGemChangesClick(object sender, RoutedEventArgs e)
         {
+            if (sender != _Elements[0] || SelectedItem == null)
+                return;
+
+            if (!(SelectedItem is GemSelectionEntry entry))
+                return;
+
+            // Update UI
+            var result = _Table.Select("id = " + entry.GemId);
+            var data = result.First();
+            data.BeginEdit();
+            data["gemType"] = GemTypeManager.Instance.LookupGemTypeByName(_GemTypeBox.Text).Type;
+            data["TriggerSpell"] = ((ThreadSafeTextBox)_Elements[4]).Text;
+            data["TempLearnSpell"] = ((ThreadSafeTextBox)_Elements[5]).Text;
+            data["ItemCache"] = ((ThreadSafeTextBox)_Elements[3]).Text;
+            data["sRefName0"] = ((ThreadSafeTextBox)_Elements[7]).Text;
+            data.EndEdit();
+            entry.RefreshEntry(data);
+
+            // GemType
+            _Adapter.Execute($"UPDATE gemproperties SET gemType = {entry.GemTypeEntry.Type} WHERE id = {entry.GemId}");
+
+            // SpellItemEnchantmentRef
+            _Adapter.Execute($"UPDATE spellitemenchantment SET objectId1 = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}," +
+                $" ItemCache = {entry.SpellItemEnchantmentEntry.ItemCache.Id}," +
+                $" sRefName0 = \"{entry.SpellItemEnchantmentEntry.Name}\"" +
+                $" WHERE id = {entry.SpellItemEnchantmentEntry.Id}");
+
+            // Spell
+            _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id} WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
 
         }
 
@@ -203,9 +232,6 @@ namespace SpellEditor.Sources.Controls
                 var row = collection[rowIndex];
                 var entry = new GemSelectionEntry();
                 entry.RefreshEntry(row);
-                /*entry.SetCopyClickAction(DuplicateAction);
-                entry.SetDeleteClickAction(DeleteAction);
-                entry.SetPasteClickAction(PasteAction);*/
                 newElements.Add(entry);
                 ++_ContentsIndex;
             }
@@ -233,7 +259,7 @@ namespace SpellEditor.Sources.Controls
         private DataRowCollection GetGemData(uint lowerBound, uint pageSize)
         {
             using (var gemData = _Adapter.Query(
-                string.Format("SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.objectId1, e.sRefName0, e.ItemCache, " +
+                string.Format("SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.sRefName0, e.ItemCache, " +
                 "s.id AS \"TriggerSpell\", s.EffectTriggerSpell1 AS \"TempLearnSpell\", " +
                 "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\" " +
                 "FROM gemproperties g " +

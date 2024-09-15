@@ -1321,6 +1321,7 @@
                 <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
               </Grid.RowDefinitions>
@@ -1341,7 +1342,7 @@
                  Width="400"
                  Focusable="False"
                  Grid.Row="0"
-                 Grid.RowSpan="10"
+                 Grid.RowSpan="11"
                  Grid.Column="0"
                  Grid.ColumnSpan="2"/>
               <Label Content="Selected Gem:" Margin="5" Grid.Row="1" Grid.Column="2"/>
@@ -1349,16 +1350,18 @@
               <Button Name="SameGemChangesBtn" Content="Save Gem Changes" Grid.Row="2" Grid.Column="2" Margin="5,10,5,10" IsEnabled="false"/>
               <Button Name="DuplicateGemBtn" Content="Duplicate to New Gem" Grid.Row="2" Grid.Column="3" Margin="5,10,5,10" IsEnabled="false"/>
               <Button Name="DeleteGemBtn" Content="Delete Selected Gem" Grid.Row="2" Grid.Column="4" Margin="5,10,5,10" IsEnabled="false"/>
-              <Label Content="Gem Type:" Margin="5" Grid.Row="3" Grid.Column="2"/>
-              <c2:ThreadSafeComboBox x:Name="GemTypeBox" Margin="5" Width="150" Grid.Row="3" Grid.Column="3" HorizontalAlignment="LEFT" IsEnabled="false"/>
-              <Label Content="Gem Item Id:" Margin="5" Grid.Row="4" Grid.Column="2"/>
-              <c2:ThreadSafeTextBox x:Name="GemItemIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="4" Grid.Column="3"/>
-              <Label Content="Trigger Spell:" Margin="5" Grid.Row="5" Grid.Column="2"/>
-              <c2:ThreadSafeTextBox x:Name="GemTriggerSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="5" Grid.Column="3"/>
-              <Label Content="Temp Learn Spell:" Margin="5" Grid.Row="6" Grid.Column="2"/>
-              <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="6" Grid.Column="3"/>
-              <Label Content="Achievement Id:" Margin="5" Grid.Row="7" Grid.Column="2"/>
-              <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="7" Grid.Column="3" IsReadOnly="true"/>
+              <Label Content="Enchantment Name:" Margin="5" Grid.Row="3" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemEnchantNameTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="3" Grid.Column="3"/>
+              <Label Content="Gem Type:" Margin="5" Grid.Row="4" Grid.Column="2"/>
+              <c2:ThreadSafeComboBox x:Name="GemTypeBox" Margin="5" Width="150" Grid.Row="4" Grid.Column="3" HorizontalAlignment="LEFT" IsEnabled="false"/>
+              <Label Content="Gem Item Id:" Margin="5" Grid.Row="5" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemItemIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="5" Grid.Column="3"/>
+              <Label Content="Trigger Spell:" Margin="5" Grid.Row="6" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTriggerSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="6" Grid.Column="3"/>
+              <Label Content="Temp Learn Spell:" Margin="5" Grid.Row="7" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="7" Grid.Column="3"/>
+              <Label Content="Achievement Id:" Margin="5" Grid.Row="8" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="8" Grid.Column="3" IsReadOnly="true"/>
             </Grid>
           </TabItem>
         </TabControl>

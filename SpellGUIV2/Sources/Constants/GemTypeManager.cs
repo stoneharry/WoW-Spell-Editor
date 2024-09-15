@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Constants
 {
@@ -22,6 +20,8 @@ namespace SpellEditor.Sources.Constants
         }
 
         public GemType LookupGemType(uint id) => GemTypes.FirstOrDefault(type => type.Type == id);
+
+        public GemType LookupGemTypeByName(string name) => GemTypes.FirstOrDefault(type => type.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         public int LookupIndexByType(uint type)
         {

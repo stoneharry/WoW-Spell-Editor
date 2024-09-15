@@ -14,7 +14,6 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
     public class GemSelectionEntry : AbstractListEntry
     {
         public uint GemId;
-        public string GemName;
         public GemType GemTypeEntry;
         public SpellItemEnchantment SpellItemEnchantmentEntry;
         public Achievement AchievementEntry;
@@ -52,7 +51,6 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         public void RefreshEntry(DataRow row)
         {
             uint.TryParse(row["id"].ToString(), out GemId);
-            GemName = row["sRefName0"].ToString();
             _Text.Text = BuildText(row);
             uint.TryParse(row["gemType"].ToString(), out var gemType);
             var entry = GemTypeManager.Instance.LookupGemType(gemType);
@@ -62,6 +60,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             SpellItemEnchantmentEntry = new SpellItemEnchantment
             (
                 uint.Parse(row["SpellItemEnchantmentRef"].ToString()),
+                row["sRefName0"].ToString(),
                 new Item(uint.Parse(row["ItemCache"].ToString())),
                 new Spell(uint.Parse(row["TriggerSpell"].ToString())),
                 new Spell(uint.Parse(row["TempLearnSpell"].ToString()))
@@ -78,6 +77,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             );
 
             _Dirty = true;
+            IsSpellListEntryVisibileChanged(_Image);
         }
 
         public uint GetGemId() => GemId;
@@ -94,11 +94,16 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         {
             var image = o as Image;
             // If not visible then unload icon
-            if (!(bool)args.NewValue)
+            if (args != null && !(bool)args.NewValue)
             {
                 image.Source = null;
                 return;
             }
+            IsSpellListEntryVisibileChanged(image);
+        }
+
+        private void IsSpellListEntryVisibileChanged(Image image)
+        {
             // If we have a source and we are not dirty then do nothing
             if (image.Source != null && !_Dirty)
             {
@@ -115,7 +120,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             }
         }
 
-        private string BuildText(DataRow row) => $" {row["id"]} - {row["sRefName0"]}\n  TriggerSpellId: {row["objectId1"]} - ItemId: {row["ItemCache"]}";
+        private string BuildText(DataRow row) => $" {row["id"]} - {row["sRefName0"]}\n  TriggerSpellId: {row["TriggerSpell"]} - ItemId: {row["ItemCache"]}";
 
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
