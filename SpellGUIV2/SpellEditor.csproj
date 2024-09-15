@@ -205,6 +205,7 @@
     <Compile Include="Sources\Gem\Achievement.cs" />
     <Compile Include="Sources\Gem\AchievementCriteria.cs" />
     <Compile Include="Sources\Gem\Item.cs" />
+    <Compile Include="Sources\Gem\SkillDiscovery.cs" />
     <Compile Include="Sources\Gem\Spell.cs" />
     <Compile Include="Sources\Gem\SpellItemEnchantment.cs" />
     <Compile Include="Sources\Locale\LocaleManager.cs" />

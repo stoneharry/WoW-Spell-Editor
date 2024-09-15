@@ -1,9 +1,11 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using NLog;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.Gem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -27,14 +30,18 @@ namespace SpellEditor.Sources.Controls
         private int _ContentsIndex;
         private IDatabaseAdapter _Adapter;
         private readonly DataTable _Table = new DataTable();
-        private bool _initialised = false;
+        public bool Initialised = false;
         private Label _SelectedGemText;
         private ThreadSafeComboBox _GemTypeBox;
         private List<UIElement> _Elements;
         private Action<string> _ShowFlyoutMessage;
         private Func<string, string, MetroDialogSettings, Task<string>> _ShowInputAsync;
+        // ItemCache -> SkillDiscovery
+        private Dictionary<uint, SkillDiscovery> _DiscoveryLookup = new Dictionary<uint, SkillDiscovery>();
 
+        //
         // TODO(Harry): skill_discovery_template.spellId points to spell.Effect1ItemType points to Item
+        //
 
         private static readonly string _SelectColumnsString =
             "SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.sRefName0, e.ItemCache, " +
@@ -52,17 +59,23 @@ namespace SpellEditor.Sources.Controls
                 "JOIN achievement a ON c.referredAchievement = a.id " +
                 "WHERE e.ItemCache >= 70000";
 
+        private static readonly string _SelectSkillDiscoveryString =
+            "SELECT d.spellId, d.reqSpell, s.EffectItemType1 AS Item " +
+            "FROM new_world.skill_discovery_template d " +
+            "JOIN spell s ON s.id = d.spellId " +
+            "WHERE reqSpell IN (170000, 170001, 170002)";
+
         private static readonly string _QueryTableString = _SelectColumnsString + _QueryCriteriaString;
         private static readonly string _QueryMaxString = _SelectMaxString + _QueryCriteriaString;
 
-        public void Initialise(Label selectedGemText, ThreadSafeComboBox gemTypeBox, List<UIElement> elements, 
+        public void Initialise(Label selectedGemText, List<UIElement> elements, 
             Action<string> showFlyoutMessage, Func<string, string, MetroDialogSettings, Task<string>> showInputAsync)
         {
-            if (!_initialised)
+            if (!Initialised)
             {
-                _initialised = true;
-                _GemTypeBox = gemTypeBox;
+                Initialised = true;
                 _Elements = elements;
+                _GemTypeBox = (ThreadSafeComboBox)elements[9];
                 _SelectedGemText = selectedGemText;
                 _ShowFlyoutMessage = showFlyoutMessage;
                 _ShowInputAsync = showInputAsync;
@@ -76,11 +89,23 @@ namespace SpellEditor.Sources.Controls
                 _Table.Columns.Add("Achievement", typeof(uint));
                 _Table.Columns.Add("AchievementCriteria", typeof(uint));
                 PopulateGemSelect();
-                gemTypeBox.ItemsSource = GemTypeManager.Instance.GemTypes;
+                _GemTypeBox.ItemsSource = GemTypeManager.Instance.GemTypes;
                 SelectionChanged += GemSelectionList_SelectionChanged;
                 ((Button)elements[0]).Click += SaveGemChangesClick;
                 ((Button)elements[1]).Click += DuplicateGemClick;
                 ((Button)elements[2]).Click += DeleteGemClick;
+                var filterByColour = ((ThreadSafeComboBox)_Elements[10]);
+                filterByColour.ItemsSource = GemTypeManager.Instance.GemTypes;
+                filterByColour.SelectionChanged += FilterGemColourChanged;
+                var filterByDisc = ((ThreadSafeComboBox)_Elements[11]);
+                filterByDisc.SelectionChanged += FilterDiscoverableChanged;
+                var discOptions = new List<string>
+                {
+                    "No Filter",
+                    "Discoverable",
+                    "Not Discoverable"
+                };
+                filterByDisc.ItemsSource = discOptions;
             }
         }
 
@@ -103,8 +128,44 @@ namespace SpellEditor.Sources.Controls
             ((ThreadSafeTextBox)_Elements[5]).Text = selected.SpellItemEnchantmentEntry.TempLearnSpell.Id.ToString();
             ((ThreadSafeTextBox)_Elements[6]).Text = selected.AchievementEntry.Id.ToString() + " / " + selected.AchievementCriteriaEntry.Id;
 
+            LoadSkillDiscoveryData();
+            ((ThreadSafeTextBox)_Elements[8]).Text = _DiscoveryLookup.ContainsKey(selected.SpellItemEnchantmentEntry.ItemCache.Id) ? 
+                _DiscoveryLookup[selected.SpellItemEnchantmentEntry.ItemCache.Id].Id.ToString() :
+                string.Empty;
+
             _Elements.ForEach(element => element.IsEnabled = true);
             _GemTypeBox.IsEnabled = true;
+        }
+
+        private void LoadSkillDiscoveryData()
+        {
+            if (_DiscoveryLookup.Count > 0)
+                return;
+
+            lock (_DiscoveryLookup)
+            {
+                if (_DiscoveryLookup.Count > 0)
+                    return;
+
+                try
+                {
+                    using (var query = _Adapter.Query(_SelectSkillDiscoveryString))
+                    {
+                        foreach (DataRow row in query.Rows)
+                        {
+                            var spellId = uint.Parse(row[0].ToString());
+                            var reqSpell = uint.Parse(row[1].ToString());
+                            var item = uint.Parse(row[2].ToString());
+                            _DiscoveryLookup.Add(item, new SkillDiscovery(spellId, reqSpell, item));
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Info(exception, "ERROR: " + exception.Message);
+                    _ShowFlyoutMessage.Invoke("ERROR: new_world.skill_discovery_template could not be loaded: " + exception.Message);
+                }
+            }
         }
 
 
@@ -143,6 +204,8 @@ namespace SpellEditor.Sources.Controls
             // TODO(Harry): Update item data (DBC and server side), gem colour
 
             // TODO(Harry): Update SkillLineAbility, by TempLearnSpell Id, based on gem colour
+
+            // TODO(Harry): Update achievement name based on effect name
 
             _ShowFlyoutMessage.Invoke($"Saved gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
         }
@@ -206,9 +269,85 @@ namespace SpellEditor.Sources.Controls
                 // Refresh UI
                 RefreshGemList();
             }
+
+            // TODO: Soft delete option, only removes skill_discovery data
         }
 
-        public bool IsInitialised() => _initialised;
+        private void FilterGemColourChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var items = e.AddedItems;
+            if (items.Count > 0)
+            {
+                var item = items[0].ToString();
+                var typeId = GemTypeManager.Instance.LookupGemTypeByName(item).Type.ToString();
+
+                ICollectionView view = CollectionViewSource.GetDefaultView(Items);
+                view.Filter = o =>
+                {
+                    var panel = (StackPanel)o;
+                    using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (!(enumerator.Current is TextBlock block))
+                                continue;
+
+                            var trimmed = block.Text.TrimStart();
+                            var idString = trimmed.Substring(0, trimmed.IndexOf(' ')).Trim();
+                            var row = _Table.Select("id = " + idString).First();
+                            return row["gemType"].ToString().Equals(typeId);
+                        }
+                    }
+                    return false;
+                };
+            }
+        }
+
+        private void FilterDiscoverableChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var items = e.AddedItems;
+            if (items.Count > 0)
+            {
+                var item = items[0].ToString();
+                var mode = 0;
+                if (item.Equals("Discoverable"))
+                {
+                    mode = 1;
+                }
+                else if (item.Equals("Not Discoverable"))
+                {
+                    mode = 2;
+                }
+
+                LoadSkillDiscoveryData();
+
+                ICollectionView view = CollectionViewSource.GetDefaultView(Items);
+                view.Filter = o =>
+                {
+                    var panel = (StackPanel)o;
+                    using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (mode == 0)
+                                return true;
+
+                            if (!(enumerator.Current is TextBlock block))
+                                continue;
+
+                            var trimmed = block.Text.TrimStart();
+                            var idString = trimmed.Substring(0, trimmed.IndexOf(' ')).Trim();
+                            var row = _Table.Select("id = " + idString).First();
+                            var keyExists = _DiscoveryLookup.ContainsKey(uint.Parse(row["ItemCache"].ToString()));
+                            return mode == 1 ? keyExists : !keyExists;
+                        }
+                    }
+                    return false;
+                };
+            }
+        }
+
+        public bool IsInitialised() => Initialised;
         public bool HasAdapter() => _Adapter != null;
 
         public GemSelectionList SetAdapter(IDatabaseAdapter adapter)
@@ -268,7 +407,7 @@ namespace SpellEditor.Sources.Controls
                         return;
 
                     spellListQueryWorker.Watch.Stop();
-                    Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
+                    Logger.Info($"Loaded gem selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
                 };
             }
         }
@@ -287,8 +426,6 @@ namespace SpellEditor.Sources.Controls
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            var watch = new Stopwatch();
-            watch.Start();
             DataRowCollection collection = (DataRowCollection)e.UserState;
             int rowIndex = 0;
             // Reuse existing UI elements if they exist
@@ -336,8 +473,6 @@ namespace SpellEditor.Sources.Controls
 
             newSrc.AddRange(newElements);
             ItemsSource = newSrc;
-            watch.Stop();
-            Logger.Info($"Worker progress change event took {watch.ElapsedMilliseconds}ms to handle");
         }
 
         private DataRowCollection GetGemData(uint lowerBound, uint pageSize)

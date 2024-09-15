@@ -3876,18 +3876,25 @@ namespace SpellEditor
             }
             else if (tab == GemTab)
             {
-                var elements = new List<UIElement>
+                if (!SelectGemList.Initialised)
                 {
-                    SameGemChangesBtn,
-                    DuplicateGemBtn,
-                    DeleteGemBtn,
-                    GemItemIdTxt,
-                    GemTriggerSpellTxt,
-                    GemTempLearnSpellTxt,
-                    GemAchievementIdTxt,
-                    GemEnchantNameTxt
-                };
-                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox, elements, ShowFlyoutMessage, this.ShowInputAsync);
+                    var elements = new List<UIElement>
+                    {
+                        SameGemChangesBtn,
+                        DuplicateGemBtn,
+                        DeleteGemBtn,
+                        GemItemIdTxt,
+                        GemTriggerSpellTxt,
+                        GemTempLearnSpellTxt,
+                        GemAchievementIdTxt,
+                        GemEnchantNameTxt,
+                        SkillDiscSpellIdTxt,
+                        GemTypeBox,
+                        FilterGemBox,
+                        FilterGemDisc
+                    };
+                    SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, elements, ShowFlyoutMessage, this.ShowInputAsync);
+                }
             }
         }
 
