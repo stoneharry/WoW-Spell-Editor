@@ -3887,7 +3887,7 @@ namespace SpellEditor
                     GemAchievementIdTxt,
                     GemEnchantNameTxt
                 };
-                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox, elements);
+                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox, elements, ShowFlyoutMessage, this.ShowInputAsync);
             }
         }
 

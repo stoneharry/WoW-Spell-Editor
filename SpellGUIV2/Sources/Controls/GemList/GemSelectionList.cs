@@ -1,14 +1,16 @@
-﻿using NLog;
+﻿using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Database;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,8 +31,32 @@ namespace SpellEditor.Sources.Controls
         private Label _SelectedGemText;
         private ThreadSafeComboBox _GemTypeBox;
         private List<UIElement> _Elements;
+        private Action<string> _ShowFlyoutMessage;
+        private Func<string, string, MetroDialogSettings, Task<string>> _ShowInputAsync;
 
-        public void Initialise(Label selectedGemText, ThreadSafeComboBox gemTypeBox, List<UIElement> elements)
+        // TODO(Harry): skill_discovery_template.spellId points to spell.Effect1ItemType points to Item
+
+        private static readonly string _SelectColumnsString =
+            "SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.sRefName0, e.ItemCache, " +
+                "s.id AS \"TriggerSpell\", s.EffectTriggerSpell1 AS \"TempLearnSpell\", " +
+                "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\" ";
+
+        private static readonly string _SelectMaxString =
+            "SELECT max(g.id), max(g.SpellItemEnchantmentRef), max(e.ItemCache) ";
+
+        private static readonly string _QueryCriteriaString = 
+            "FROM gemproperties g " +
+                "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
+                "JOIN spell s ON e.objectId1 = s.id " +
+                "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
+                "JOIN achievement a ON c.referredAchievement = a.id " +
+                "WHERE e.ItemCache >= 70000";
+
+        private static readonly string _QueryTableString = _SelectColumnsString + _QueryCriteriaString;
+        private static readonly string _QueryMaxString = _SelectMaxString + _QueryCriteriaString;
+
+        public void Initialise(Label selectedGemText, ThreadSafeComboBox gemTypeBox, List<UIElement> elements, 
+            Action<string> showFlyoutMessage, Func<string, string, MetroDialogSettings, Task<string>> showInputAsync)
         {
             if (!_initialised)
             {
@@ -38,6 +64,8 @@ namespace SpellEditor.Sources.Controls
                 _GemTypeBox = gemTypeBox;
                 _Elements = elements;
                 _SelectedGemText = selectedGemText;
+                _ShowFlyoutMessage = showFlyoutMessage;
+                _ShowInputAsync = showInputAsync;
                 _Table.Columns.Add("id", typeof(uint));
                 _Table.Columns.Add("SpellItemEnchantmentRef", typeof(uint));
                 _Table.Columns.Add("gemType", typeof(uint));
@@ -73,7 +101,7 @@ namespace SpellEditor.Sources.Controls
             ((ThreadSafeTextBox)_Elements[3]).Text = selected.SpellItemEnchantmentEntry.ItemCache.Id.ToString();
             ((ThreadSafeTextBox)_Elements[4]).Text = selected.SpellItemEnchantmentEntry.TriggerSpell.Id.ToString();
             ((ThreadSafeTextBox)_Elements[5]).Text = selected.SpellItemEnchantmentEntry.TempLearnSpell.Id.ToString();
-            ((ThreadSafeTextBox)_Elements[6]).Text = selected.AchievementEntry.Id.ToString() + ": " + selected.AchievementCriteriaEntry.Id;
+            ((ThreadSafeTextBox)_Elements[6]).Text = selected.AchievementEntry.Id.ToString() + " / " + selected.AchievementCriteriaEntry.Id;
 
             _Elements.ForEach(element => element.IsEnabled = true);
             _GemTypeBox.IsEnabled = true;
@@ -112,16 +140,72 @@ namespace SpellEditor.Sources.Controls
             // Spell
             _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id} WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
 
+            // TODO(Harry): Update item data (DBC and server side), gem colour
+
+            // TODO(Harry): Update SkillLineAbility, by TempLearnSpell Id, based on gem colour
+
+            _ShowFlyoutMessage.Invoke($"Saved gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
         }
 
-        private void DuplicateGemClick(object sender, RoutedEventArgs e)
+        private async void DuplicateGemClick(object sender, RoutedEventArgs e)
         {
+            if (sender != _Elements[1] || SelectedItem == null)
+                return;
 
+            if (!(SelectedItem is GemSelectionEntry entry))
+                return;
+
+            var input = await _ShowInputAsync("Duplicate", $"Input the new gem name for [{entry.SpellItemEnchantmentEntry.Name}].", null);
+            if (string.IsNullOrWhiteSpace(input))
+                return;
+
+            uint newGemId;
+            uint newEnchantId;
+            uint newItemId;
+            using (var query = _Adapter.Query(_QueryMaxString))
+            {
+                var row = query.Rows[0];
+                newGemId = uint.Parse(row[0].ToString()) + 1;
+                newEnchantId = uint.Parse(row[1].ToString()) + 1;
+                newItemId = uint.Parse(row[2].ToString()) + 1;
+            }
+
+            // TODO: Create new rows
+
+            // TODO: Create new gem actual item?
+
+            // TODO: Insert SkillLineAbility, by TempLearnSpell Id, based on gem colour
+
+            // TODO: Insert new row into UI table and refresh UI
+
+            _ShowFlyoutMessage.Invoke($"New gem: {newGemId} - {input}");
         }
 
-        private void DeleteGemClick(object sender, RoutedEventArgs e)
+        private async void DeleteGemClick(object sender, RoutedEventArgs e)
         {
+            if (sender != _Elements[2] || SelectedItem == null)
+                return;
 
+            if (!(SelectedItem is GemSelectionEntry entry))
+                return;
+
+            var input = await _ShowInputAsync("ARE YOU SURE?", $"Input \"confirm\" to delete [{entry.SpellItemEnchantmentEntry.Name}]. This will nuke the gem and ALL of the linked data.", null);
+            if (!string.IsNullOrEmpty(input) && input.Equals("confirm"))
+            {
+                _Adapter.Execute($"DELETE FROM gemproperties WHERE id = {entry.GemId}");
+                _Adapter.Execute($"DELETE FROM spellitemenchantment WHERE id = {entry.SpellItemEnchantmentEntry.Id}");
+                _Adapter.Execute($"DELETE FROM achievement WHERE id = {entry.AchievementEntry.Id}");
+                _Adapter.Execute($"DELETE FROM achievement_criteria WHERE id = {entry.AchievementCriteriaEntry.Id}");
+                // Leave the SkillLineAbility data in place?
+                // Leave the item data in place?
+
+                _ShowFlyoutMessage.Invoke($"Deleted gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
+
+                _Table.Select($"id = {entry.GemId}").First().Delete();
+                _Table.AcceptChanges();
+                // Refresh UI
+                RefreshGemList();
+            }
         }
 
         public bool IsInitialised() => _initialised;
@@ -258,18 +342,9 @@ namespace SpellEditor.Sources.Controls
 
         private DataRowCollection GetGemData(uint lowerBound, uint pageSize)
         {
-            using (var gemData = _Adapter.Query(
-                string.Format("SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.sRefName0, e.ItemCache, " +
-                "s.id AS \"TriggerSpell\", s.EffectTriggerSpell1 AS \"TempLearnSpell\", " +
-                "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\" " +
-                "FROM gemproperties g " +
-                "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
-                "JOIN spell s ON e.objectId1 = s.id " + 
-                "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
-                "JOIN achievement a ON c.referredAchievement = a.id " +
-                "WHERE e.ItemCache >= 70000 " +
-                "ORDER BY g.id DESC LIMIT {0}, {1}",
-                 lowerBound, pageSize)))
+            using (var gemData = _Adapter.Query(string.Format(_QueryTableString + 
+                " ORDER BY g.id DESC LIMIT {0}, {1}", 
+                lowerBound, pageSize)))
             {
                 _Table.Merge(gemData, false, MissingSchemaAction.Add);
                 _Table.AcceptChanges();

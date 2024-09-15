@@ -1360,7 +1360,7 @@
               <c2:ThreadSafeTextBox x:Name="GemTriggerSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="6" Grid.Column="3"/>
               <Label Content="Temp Learn Spell:" Margin="5" Grid.Row="7" Grid.Column="2"/>
               <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="7" Grid.Column="3"/>
-              <Label Content="Achievement Id:" Margin="5" Grid.Row="8" Grid.Column="2"/>
+              <Label Content="AchievementId / CriteriaId:" Margin="5" Grid.Row="8" Grid.Column="2"/>
               <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="8" Grid.Column="3" IsReadOnly="true"/>
             </Grid>
           </TabItem>
