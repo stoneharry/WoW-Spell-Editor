@@ -202,6 +202,11 @@
     <Compile Include="Sources\DBC\IGraphicUserInterfaceDBC.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\Constants\SpellVisualKitModelAttach.cs" />
+    <Compile Include="Sources\Gem\Achievement.cs" />
+    <Compile Include="Sources\Gem\AchievementCriteria.cs" />
+    <Compile Include="Sources\Gem\Item.cs" />
+    <Compile Include="Sources\Gem\Spell.cs" />
+    <Compile Include="Sources\Gem\SpellItemEnchantment.cs" />
     <Compile Include="Sources\Locale\LocaleManager.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />

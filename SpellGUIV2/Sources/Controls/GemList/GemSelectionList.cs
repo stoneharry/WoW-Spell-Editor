@@ -12,6 +12,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -27,23 +28,32 @@ namespace SpellEditor.Sources.Controls
         private bool _initialised = false;
         private Label _SelectedGemText;
         private ThreadSafeComboBox _GemTypeBox;
+        private List<UIElement> _Elements;
 
-        public void Initialise(Label selectedGemText, ThreadSafeComboBox gemTypeBox)
+        public void Initialise(Label selectedGemText, ThreadSafeComboBox gemTypeBox, List<UIElement> elements)
         {
             if (!_initialised)
             {
                 _initialised = true;
                 _GemTypeBox = gemTypeBox;
+                _Elements = elements;
                 _SelectedGemText = selectedGemText;
                 _Table.Columns.Add("id", typeof(uint));
                 _Table.Columns.Add("SpellItemEnchantmentRef", typeof(uint));
                 _Table.Columns.Add("gemType", typeof(uint));
                 _Table.Columns.Add("objectId1", typeof(uint));
                 _Table.Columns.Add("sRefName0", typeof(string));
-                _Table.Columns.Add("ItemCache", typeof(uint));   
+                _Table.Columns.Add("ItemCache", typeof(uint));
+                _Table.Columns.Add("TriggerSpell", typeof(uint));
+                _Table.Columns.Add("TempLearnSpell", typeof(uint));
+                _Table.Columns.Add("Achievement", typeof(uint));
+                _Table.Columns.Add("AchievementCriteria", typeof(uint));
                 PopulateGemSelect();
                 gemTypeBox.ItemsSource = GemTypeManager.Instance.GemTypes;
                 SelectionChanged += GemSelectionList_SelectionChanged;
+                ((Button)elements[0]).Click += SaveGemChangesClick;
+                ((Button)elements[1]).Click += DuplicateGemClick;
+                ((Button)elements[2]).Click += DeleteGemClick;
             }
         }
 
@@ -56,9 +66,33 @@ namespace SpellEditor.Sources.Controls
             if (selected == null)
                 return;
 
-            _SelectedGemText.Content = selected.GemId;
-            var gem = GemTypeManager.Instance.LookupGemType(selected.GemType);
-            _GemTypeBox.Text = gem == null ? string.Empty : gem.Name;
+            _SelectedGemText.Content = selected.GemId + " - " + selected.GemName;
+            var gem = selected.GemTypeEntry.Name;
+            _GemTypeBox.Text = gem ?? string.Empty;
+
+            ((ThreadSafeTextBox)_Elements[3]).Text = selected.SpellItemEnchantmentEntry.ItemCache.Id.ToString();
+            ((ThreadSafeTextBox)_Elements[4]).Text = selected.SpellItemEnchantmentEntry.TriggerSpell.Id.ToString();
+            ((ThreadSafeTextBox)_Elements[5]).Text = selected.SpellItemEnchantmentEntry.TempLearnSpell.Id.ToString();
+            ((ThreadSafeTextBox)_Elements[6]).Text = selected.AchievementEntry.Id.ToString() + ": " + selected.AchievementCriteriaEntry.Id;
+
+            _Elements.ForEach(element => element.IsEnabled = true);
+            _GemTypeBox.IsEnabled = true;
+        }
+
+
+        private void SaveGemChangesClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DuplicateGemClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteGemClick(object sender, RoutedEventArgs e)
+        {
+
         }
 
         public bool IsInitialised() => _initialised;
@@ -199,10 +233,14 @@ namespace SpellEditor.Sources.Controls
         private DataRowCollection GetGemData(uint lowerBound, uint pageSize)
         {
             using (var gemData = _Adapter.Query(
-                string.Format("SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.objectId1, e.sRefName0, e.ItemCache " +
+                string.Format("SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.objectId1, e.sRefName0, e.ItemCache, " +
+                "s.id AS \"TriggerSpell\", s.EffectTriggerSpell1 AS \"TempLearnSpell\", " +
+                "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\" " +
                 "FROM gemproperties g " +
                 "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
-                //"JOIN spell s ON e.objectId1 = s.id " + 
+                "JOIN spell s ON e.objectId1 = s.id " + 
+                "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
+                "JOIN achievement a ON c.referredAchievement = a.id " +
                 "WHERE e.ItemCache >= 70000 " +
                 "ORDER BY g.id DESC LIMIT {0}, {1}",
                  lowerBound, pageSize)))

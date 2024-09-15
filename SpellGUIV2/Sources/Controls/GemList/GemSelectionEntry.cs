@@ -2,6 +2,7 @@
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Gem;
 using System;
 using System.Data;
 using System.Windows;
@@ -13,13 +14,18 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
     public class GemSelectionEntry : AbstractListEntry
     {
         public uint GemId;
-        public uint GemType;
+        public string GemName;
+        public GemType GemTypeEntry;
+        public SpellItemEnchantment SpellItemEnchantmentEntry;
+        public Achievement AchievementEntry;
+        public AchievementCriteria AchievementCriteriaEntry;
+
         private readonly Image _Image;
         private readonly TextBlock _Text;
         private bool _Dirty = false;
-        private StackPanel _ConfirmDeletePanel = null;
-        private StackPanel _DuplicatePanel = null;
-        private TextBox _DuplicateIdBox = null;
+        private readonly StackPanel _ConfirmDeletePanel = null;
+        private readonly StackPanel _DuplicatePanel = null;
+        private readonly TextBox _DuplicateIdBox = null;
 
         public GemSelectionEntry()
         {
@@ -46,9 +52,31 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         public void RefreshEntry(DataRow row)
         {
             uint.TryParse(row["id"].ToString(), out GemId);
+            GemName = row["sRefName0"].ToString();
             _Text.Text = BuildText(row);
-            uint.TryParse(row["gemType"].ToString(), out GemType);
-            _Image.ToolTip = GemTypeManager.Instance.LookupGemType(GemType).IconId.ToString();
+            uint.TryParse(row["gemType"].ToString(), out var gemType);
+            var entry = GemTypeManager.Instance.LookupGemType(gemType);
+            GemTypeEntry = entry;
+            _Image.ToolTip = entry.IconId.ToString();
+
+            SpellItemEnchantmentEntry = new SpellItemEnchantment
+            (
+                uint.Parse(row["SpellItemEnchantmentRef"].ToString()),
+                new Item(uint.Parse(row["ItemCache"].ToString())),
+                new Spell(uint.Parse(row["TriggerSpell"].ToString())),
+                new Spell(uint.Parse(row["TempLearnSpell"].ToString()))
+            );
+            AchievementEntry = new Achievement
+            (
+                uint.Parse(row["Achievement"].ToString())
+            );
+            AchievementCriteriaEntry = new AchievementCriteria
+            (
+                uint.Parse(row["AchievementCriteria"].ToString()), 
+                AchievementEntry,
+                SpellItemEnchantmentEntry.ItemCache
+            );
+
             _Dirty = true;
         }
 
@@ -85,111 +113,9 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
                 var filePath = loadIcons.GetIconPath(iconId) + ".blp";
                 image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
             }
-            // Load context menu
-            if (ContextMenu == null)
-            {
-                ContextMenu = new ListContextMenu(this, true, ListContextMenu.MenuType.Duplicate);
-            }
         }
 
         private string BuildText(DataRow row) => $" {row["id"]} - {row["sRefName0"]}\n  TriggerSpellId: {row["objectId1"]} - ItemId: {row["ItemCache"]}";
-
-        public override void CopyItemClick(object sender, RoutedEventArgs args)
-        {
-            if (_DuplicatePanel != null)
-            {
-                _DuplicatePanel.Visibility = Visibility.Visible;
-                // Update new ID with paste action hook
-                InvokePasteAction();
-                return;
-            }
-            var panel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal
-            };
-            _DuplicateIdBox = new TextBox
-            {
-                Text = (GetGemId() + 1).ToString(),
-                Margin = new Thickness(2)
-            };
-            var confirmButton = new Button
-            {
-                Content = TryFindResource("SpellSelectListEntryConfirmDup") ?? "Confirm\nDuplicate",
-                Margin = new Thickness(2),
-                MinWidth = 80
-            };
-            confirmButton.Click += (_sender, _args) =>
-            {
-                // Stop and delete everything in this instance
-                _DuplicatePanel.Visibility = Visibility.Collapsed;
-                // Confirmation is handled by copy action
-                InvokeCopyAction();
-            };
-            var cancelButton = new Button
-            {
-                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
-                Margin = new Thickness(2),
-                MinWidth = 80
-            };
-            cancelButton.Click += (_sender, _args) =>
-            {
-                _DuplicatePanel.Visibility = Visibility.Collapsed;
-            };
-            panel.Children.Add(_DuplicateIdBox);
-            panel.Children.Add(confirmButton);
-            panel.Children.Add(cancelButton);
-            Children.Add(panel);
-            _DuplicatePanel = panel;
-            // Update new ID with paste action hook
-            InvokePasteAction();
-        }
-
-        public override void DeleteItemClick(object sender, RoutedEventArgs args)
-        {
-            if (_ConfirmDeletePanel != null)
-            {
-                _ConfirmDeletePanel.Visibility = Visibility.Visible;
-                return;
-            }
-            var panel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal
-            };
-            var confirmDeleteButton = new Button
-            {
-                Content = TryFindResource("SpellSelectListEntryConfirmDel") ?? "Confirm\nDelete",
-                Margin = new Thickness(3),
-                MinWidth = 80
-            };
-            confirmDeleteButton.Click += (_sender, _args) => 
-            {
-                // Stop and delete everything in this instance
-                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
-                InvokeDeleteAction();
-            };
-            var cancelButton = new Button
-            {
-                Content = TryFindResource("VisualCancelListEntry") ?? "Cancel",
-                Margin = new Thickness(3),
-                MinWidth = 80
-            };
-            cancelButton.Click += (_sender, _args) =>
-            {
-                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
-            };
-            panel.Children.Add(confirmDeleteButton);
-            panel.Children.Add(cancelButton);
-            Children.Add(panel);
-            _ConfirmDeletePanel = panel;
-        }
-
-        public override void CancelItemClick(object sender, RoutedEventArgs args)
-        {
-            if (_ConfirmDeletePanel != null)
-                _ConfirmDeletePanel.Visibility = Visibility.Collapsed;
-            if (_DuplicatePanel != null)
-                _DuplicatePanel.Visibility = Visibility.Collapsed;
-        }
 
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {

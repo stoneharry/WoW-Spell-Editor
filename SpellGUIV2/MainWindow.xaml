@@ -1317,19 +1317,23 @@
                 <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="AUTO"/>
                 <ColumnDefinition Width="AUTO"/>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="260"/>
-                <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="270"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
               </Grid.ColumnDefinitions>
               <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="0" Grid.Column="2"/>
-              <c2:ThreadSafeTextBox x:Name="FilterGemNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="0" Grid.Column="3"/>
+              <c2:ThreadSafeTextBox x:Name="FilterGemNames" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="0" Grid.Column="3"/>
               <c:GemSelectionList x:Name="SelectGemList"
                  Margin="10,10,0,10"
                  VirtualizingStackPanel.IsVirtualizing="True"
@@ -1337,13 +1341,24 @@
                  Width="400"
                  Focusable="False"
                  Grid.Row="0"
-                 Grid.RowSpan="6"
+                 Grid.RowSpan="10"
                  Grid.Column="0"
                  Grid.ColumnSpan="2"/>
-              <Label Content="Selected GemId:" Margin="5" Grid.Row="1" Grid.Column="2"/>
+              <Label Content="Selected Gem:" Margin="5" Grid.Row="1" Grid.Column="2"/>
               <Label x:Name="SelectedGemIdTxt" Content="0" Margin="5" Grid.Row="1" Grid.Column="3"/>
-              <Label Content="Gem Type:" Margin="5" Grid.Row="2" Grid.Column="2"/>
-              <c2:ThreadSafeComboBox x:Name="GemTypeBox" Margin="5" Width="150" Grid.Row="2" Grid.Column="3" HorizontalAlignment="LEFT"/>
+              <Button Name="SameGemChangesBtn" Content="Save Gem Changes" Grid.Row="2" Grid.Column="2" Margin="5,10,5,10" IsEnabled="false"/>
+              <Button Name="DuplicateGemBtn" Content="Duplicate to New Gem" Grid.Row="2" Grid.Column="3" Margin="5,10,5,10" IsEnabled="false"/>
+              <Button Name="DeleteGemBtn" Content="Delete Selected Gem" Grid.Row="2" Grid.Column="4" Margin="5,10,5,10" IsEnabled="false"/>
+              <Label Content="Gem Type:" Margin="5" Grid.Row="3" Grid.Column="2"/>
+              <c2:ThreadSafeComboBox x:Name="GemTypeBox" Margin="5" Width="150" Grid.Row="3" Grid.Column="3" HorizontalAlignment="LEFT" IsEnabled="false"/>
+              <Label Content="Gem Item Id:" Margin="5" Grid.Row="4" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemItemIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="4" Grid.Column="3"/>
+              <Label Content="Trigger Spell:" Margin="5" Grid.Row="5" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTriggerSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="5" Grid.Column="3"/>
+              <Label Content="Temp Learn Spell:" Margin="5" Grid.Row="6" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="6" Grid.Column="3"/>
+              <Label Content="Achievement Id:" Margin="5" Grid.Row="7" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="150" TextWrapping="NoWrap" Grid.Row="7" Grid.Column="3" IsReadOnly="true"/>
             </Grid>
           </TabItem>
         </TabControl>

@@ -3876,7 +3876,17 @@ namespace SpellEditor
             }
             else if (tab == GemTab)
             {
-                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox);
+                var elements = new List<UIElement>
+                {
+                    SameGemChangesBtn,
+                    DuplicateGemBtn,
+                    DeleteGemBtn,
+                    GemItemIdTxt,
+                    GemTriggerSpellTxt,
+                    GemTempLearnSpellTxt,
+                    GemAchievementIdTxt
+                };
+                SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, GemTypeBox, elements);
             }
         }
 
