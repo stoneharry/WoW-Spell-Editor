@@ -211,15 +211,17 @@ namespace SpellEditor.Sources.Controls
             _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, " +
                 $"SpellName0 = \"triggerSpellName\" " +
                 $"WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
-
-            // Update Discover Spell Name
+            
+            // Discovery data
             if (_DiscoveryLookup.ContainsKey(entry.SpellItemEnchantmentEntry.ItemCache.Id))
             {
+                // Update Discover Spell Name
                 var skillSpellId = _DiscoveryLookup[entry.SpellItemEnchantmentEntry.ItemCache.Id].Id;
                 _Adapter.Execute($"UPDATE spell SET SpellName0 = \"{discoverSpellName}\", " +
                     $"EffectItemType1 = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
                     $"WHERE id = {skillSpellId}");
 
+                // Update category for discovery spell
                 _Adapter.Execute($"UPDATE new_world.skill_discovery_template SET reqSpell = {entry.GemTypeEntry.SkillDiscoverySpellId} " +
                     $"WHERE spellId = {skillSpellId}");
             }

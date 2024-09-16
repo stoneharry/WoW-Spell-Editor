@@ -3,7 +3,6 @@ using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.Gem;
-using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,9 +21,6 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         private readonly Image _Image;
         private readonly TextBlock _Text;
         private bool _Dirty = false;
-        private readonly StackPanel _ConfirmDeletePanel = null;
-        private readonly StackPanel _DuplicatePanel = null;
-        private readonly TextBox _DuplicateIdBox = null;
 
         public GemSelectionEntry()
         {
@@ -81,14 +77,6 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         }
 
         public uint GetGemId() => GemId;
-
-        public uint GetDuplicateSpellId() => _DuplicateIdBox == null ? 0 : uint.Parse(_DuplicateIdBox.Text);
-
-        public void UpdateDuplicateText(uint newId)
-        {
-            if (_DuplicateIdBox != null)
-                _DuplicateIdBox.Text = newId.ToString();
-        }
 
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
