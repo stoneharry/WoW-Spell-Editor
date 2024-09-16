@@ -174,8 +174,8 @@
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
-    <Compile Include="Sources\Constants\GemType.cs" />
-    <Compile Include="Sources\Constants\GemTypeManager.cs" />
+    <Compile Include="Sources\Gem\GemType.cs" />
+    <Compile Include="Sources\Gem\GemTypeManager.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
     <Compile Include="Sources\Controls\GemList\GemSelectionEntry.cs" />

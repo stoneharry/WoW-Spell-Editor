@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace SpellEditor.Sources.Gem
 {
     public class Achievement
@@ -8,6 +10,11 @@ namespace SpellEditor.Sources.Gem
         public Achievement(uint id)
         {
             Id = id;
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

@@ -1336,11 +1336,11 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
               </Grid.ColumnDefinitions>
-              <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="0" Grid.Column="2"/>
+              <Label Content="Filter by Name:" Margin="5" Grid.Row="0" Grid.Column="2"/>
               <c2:ThreadSafeTextBox x:Name="FilterGemNames" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="0" Grid.Column="3"/>
-              <Label Content="Filter by Colour" Margin="5" Grid.Row="1" Grid.Column="2"/>
+              <Label Content="Filter by Colour:" Margin="5" Grid.Row="1" Grid.Column="2"/>
               <c2:ThreadSafeComboBox x:Name="FilterGemBox" Margin="5" Width="180" Grid.Row="1" Grid.Column="3" HorizontalAlignment="LEFT"/>
-              <Label Content="Filter by Discoverable" Margin="5" Grid.Row="2" Grid.Column="2"/>
+              <Label Content="Filter by Discoverable:" Margin="5" Grid.Row="2" Grid.Column="2"/>
               <c2:ThreadSafeComboBox x:Name="FilterGemDisc" Margin="5" Width="180" Grid.Row="2" Grid.Column="3" HorizontalAlignment="LEFT"/>
               <c:GemSelectionList x:Name="SelectGemList"
                  Margin="10,10,0,10"

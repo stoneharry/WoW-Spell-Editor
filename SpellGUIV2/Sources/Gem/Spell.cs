@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace SpellEditor.Sources.Gem
 {
     public class Spell
@@ -8,6 +10,10 @@ namespace SpellEditor.Sources.Gem
         public Spell(uint id)
         {
             Id = id;
+        }
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

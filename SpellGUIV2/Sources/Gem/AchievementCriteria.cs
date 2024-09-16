@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace SpellEditor.Sources.Gem
 {
     public class AchievementCriteria
@@ -12,6 +14,11 @@ namespace SpellEditor.Sources.Gem
             Id = id;
             Parent = parent;
             RequiredItem = requiredItem;
+        }
+
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }

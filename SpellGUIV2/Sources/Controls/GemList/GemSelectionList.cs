@@ -39,14 +39,10 @@ namespace SpellEditor.Sources.Controls
         // ItemCache -> SkillDiscovery
         private Dictionary<uint, SkillDiscovery> _DiscoveryLookup = new Dictionary<uint, SkillDiscovery>();
 
-        //
-        // TODO(Harry): skill_discovery_template.spellId points to spell.Effect1ItemType points to Item
-        //
-
         private static readonly string _SelectColumnsString =
             "SELECT g.id, g.SpellItemEnchantmentRef, g.gemType, e.sRefName0, e.ItemCache, " +
                 "s.id AS \"TriggerSpell\", s.EffectTriggerSpell1 AS \"TempLearnSpell\", " +
-                "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\" ";
+                "a.id AS \"Achievement\", c.id AS \"AchievementCriteria\", s2.SpellIconID ";
 
         private static readonly string _SelectMaxString =
             "SELECT max(g.id), max(g.SpellItemEnchantmentRef), max(e.ItemCache) ";
@@ -55,6 +51,7 @@ namespace SpellEditor.Sources.Controls
             "FROM gemproperties g " +
                 "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
                 "JOIN spell s ON e.objectId1 = s.id " +
+                "JOIN spell s2 ON s.EffectTriggerSpell1 = s2.id " +
                 "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
                 "JOIN achievement a ON c.referredAchievement = a.id " +
                 "WHERE e.ItemCache >= 70000";
@@ -88,6 +85,7 @@ namespace SpellEditor.Sources.Controls
                 _Table.Columns.Add("TempLearnSpell", typeof(uint));
                 _Table.Columns.Add("Achievement", typeof(uint));
                 _Table.Columns.Add("AchievementCriteria", typeof(uint));
+                _Table.Columns.Add("SpellIconID", typeof(uint));
                 PopulateGemSelect();
                 _GemTypeBox.ItemsSource = GemTypeManager.Instance.GemTypes;
                 SelectionChanged += GemSelectionList_SelectionChanged;
@@ -168,6 +166,10 @@ namespace SpellEditor.Sources.Controls
             }
         }
 
+        private string DeriveName(string text) =>
+            text.ToLower().StartsWith("teaches you ") ?
+            text.Substring("teaches you".Length).Trim() :
+            text;
 
         private void SaveGemChangesClick(object sender, RoutedEventArgs e)
         {
@@ -177,7 +179,9 @@ namespace SpellEditor.Sources.Controls
             if (!(SelectedItem is GemSelectionEntry entry))
                 return;
 
-            // Update UI
+            var spellIconId = _Adapter.QuerySingleValue($"SELECT SpellIconID FROM spell WHERE id = {((ThreadSafeTextBox)_Elements[5]).Text}").ToString();
+
+            // Update UI and entry
             var result = _Table.Select("id = " + entry.GemId);
             var data = result.First();
             data.BeginEdit();
@@ -186,8 +190,13 @@ namespace SpellEditor.Sources.Controls
             data["TempLearnSpell"] = ((ThreadSafeTextBox)_Elements[5]).Text;
             data["ItemCache"] = ((ThreadSafeTextBox)_Elements[3]).Text;
             data["sRefName0"] = ((ThreadSafeTextBox)_Elements[7]).Text;
+            data["SpellIconID"] = spellIconId;
             data.EndEdit();
             entry.RefreshEntry(data);
+
+            var name = DeriveName(data["sRefName0"].ToString());
+            var discoverSpellName = "Gem of " + name;
+            var triggerSpellName = discoverSpellName + " Trigger";
 
             // GemType
             _Adapter.Execute($"UPDATE gemproperties SET gemType = {entry.GemTypeEntry.Type} WHERE id = {entry.GemId}");
@@ -198,14 +207,44 @@ namespace SpellEditor.Sources.Controls
                 $" sRefName0 = \"{entry.SpellItemEnchantmentEntry.Name}\"" +
                 $" WHERE id = {entry.SpellItemEnchantmentEntry.Id}");
 
-            // Spell
-            _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id} WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
+            // Update trigger spell pointing to which spell to temp learn
+            _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, " +
+                $"SpellName0 = \"triggerSpellName\" " +
+                $"WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
 
-            // TODO(Harry): Update item data (DBC and server side), gem colour
+            // Update Discover Spell Name
+            if (_DiscoveryLookup.ContainsKey(entry.SpellItemEnchantmentEntry.ItemCache.Id))
+            {
+                var skillSpellId = _DiscoveryLookup[entry.SpellItemEnchantmentEntry.ItemCache.Id].Id;
+                _Adapter.Execute($"UPDATE spell SET SpellName0 = \"{discoverSpellName}\", " +
+                    $"EffectItemType1 = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
+                    $"WHERE id = {skillSpellId}");
 
-            // TODO(Harry): Update SkillLineAbility, by TempLearnSpell Id, based on gem colour
+                _Adapter.Execute($"UPDATE new_world.skill_discovery_template SET reqSpell = {entry.GemTypeEntry.SkillDiscoverySpellId} " +
+                    $"WHERE spellId = {skillSpellId}");
+            }
 
-            // TODO(Harry): Update achievement name based on effect name
+            // Update Skill Line Ability based on gem colour
+            _Adapter.Execute($"UPDATE skilllineability SET skillId = {entry.GemTypeEntry.SkillId} " +
+                $"WHERE spellId = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}");
+
+            // Update Achievement
+            _Adapter.Execute($"UPDATE achievement SET name1 = \"{discoverSpellName}\", " +
+                $"categoryId = {entry.GemTypeEntry.AchievementCategory}, " +
+                $"icon = {spellIconId} " +
+                $"WHERE ID = {entry.AchievementEntry.Id}");
+
+            // Update Achievement_Criteria
+            _Adapter.Execute($"UPDATE achievement_criteria SET assetType = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
+                $"WHERE ID = {entry.AchievementCriteriaEntry.Id}");
+
+            // Update item data (DBC and server side)
+            _Adapter.Execute($"UPDATE item SET ItemDisplayInfo = {entry.GemTypeEntry.ItemDisplayId} " +
+                $"WHERE itemID = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
+            _Adapter.Execute($"UPDATE new_world.item_template SET displayId = {entry.GemTypeEntry.ItemDisplayId}, " +
+                $"`name` = \"{discoverSpellName}\", " +
+                $"GemProperties = {entry.GemId} " +
+                $"WHERE entry = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
 
             _ShowFlyoutMessage.Invoke($"Saved gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
         }

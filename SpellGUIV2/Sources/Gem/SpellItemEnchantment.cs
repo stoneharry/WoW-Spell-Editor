@@ -17,5 +17,9 @@ namespace SpellEditor.Sources.Gem
             TriggerSpell = triggerSpell;
             TempLearnSpell = tempLearnSpell;
         }
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
     }
 }

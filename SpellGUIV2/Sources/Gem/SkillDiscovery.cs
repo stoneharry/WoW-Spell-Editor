@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace SpellEditor.Sources.Gem
 {
     public class SkillDiscovery
@@ -12,6 +14,10 @@ namespace SpellEditor.Sources.Gem
             Id = id;
             ReqSpell = reqSpell;
             Item = item;
+        }
+        public override string ToString()
+        {
+            return Id.ToString();
         }
     }
 }
