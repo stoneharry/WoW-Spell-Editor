@@ -32,7 +32,7 @@ namespace SpellEditor.Sources.Constants
             Red = 2,
             Yellow = 4,
             Blue = 8,
-            Green = 12,
+            Green = 64,
             Purple = 126
         }
     }
