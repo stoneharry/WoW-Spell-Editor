@@ -76,8 +76,6 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             IsSpellListEntryVisibileChanged(_Image);
         }
 
-        public uint GetGemId() => GemId;
-
         private void IsSpellListEntryVisibileChanged(object o, DependencyPropertyChangedEventArgs args)
         {
             var image = o as Image;

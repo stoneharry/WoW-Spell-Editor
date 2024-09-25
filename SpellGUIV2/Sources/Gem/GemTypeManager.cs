@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SpellEditor.Sources.Constants.GemType;
 
 namespace SpellEditor.Sources.Constants
 {
@@ -12,11 +13,11 @@ namespace SpellEditor.Sources.Constants
 
         private GemTypeManager()
         {
-            GemTypes.Add(new GemType(2, 1039, "Red", 170000, 44920, 1001, 40000));
-            GemTypes.Add(new GemType(4, 1470, "Yellow", 170002, 44926, 1002, 41000));
-            GemTypes.Add(new GemType(8, 2451, "Blue", 170001, 44930, 1000, 42000));
-            GemTypes.Add(new GemType(12, 1037, "Green", 0, 0, 0, 0)); // TODO: Needs data created
-            GemTypes.Add(new GemType(126, 1518, "Purple", 0, 43108, 1003, 43000));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Red, 1039, "Red", 170000, 44920, 1001, 40000));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Yellow, 1470, "Yellow", 170002, 44926, 1002, 41000));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Blue, 2451, "Blue", 170001, 44930, 1000, 42000));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Green, 1037, "Green", 0, 0, 0, 0)); // TODO: Needs data created
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Purple, 1518, "Purple", 0, 43108, 1003, 43000));
         }
 
         public GemType LookupGemType(uint id) => GemTypes.FirstOrDefault(type => type.Type == id);

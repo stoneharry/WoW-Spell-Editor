@@ -26,5 +26,14 @@ namespace SpellEditor.Sources.Constants
         {
             return Name;
         }
+
+        public enum GemTypeEnum
+        {
+            Red = 2,
+            Yellow = 4,
+            Blue = 8,
+            Green = 12,
+            Purple = 126
+        }
     }
 }

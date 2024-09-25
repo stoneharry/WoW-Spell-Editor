@@ -17,7 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Xml.Linq;
+using static SpellEditor.Sources.Constants.GemType;
 
 namespace SpellEditor.Sources.Controls
 {
@@ -25,6 +25,10 @@ namespace SpellEditor.Sources.Controls
     {
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        // These should not be hardcoded
+        private static readonly uint _PrismaticRefLootId = 90010;
+        private static readonly string _WorldTableName = "new_world";
 
         private int _ContentsCount;
         private int _ContentsIndex;
@@ -49,18 +53,18 @@ namespace SpellEditor.Sources.Controls
 
         private static readonly string _QueryCriteriaString = 
             "FROM gemproperties g " +
-                "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
-                "JOIN spell s ON e.objectId1 = s.id " +
-                "JOIN spell s2 ON s.EffectTriggerSpell1 = s2.id " +
-                "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
-                "JOIN achievement a ON c.referredAchievement = a.id " +
-                "WHERE e.ItemCache >= 70000";
+            "JOIN spellitemenchantment e on g.SpellItemEnchantmentRef = e.id " +
+            "JOIN spell s ON e.objectId1 = s.id " +
+            "JOIN spell s2 ON s.EffectTriggerSpell1 = s2.id " +
+            "JOIN achievement_criteria c ON e.ItemCache = c.assetType " +
+            "JOIN achievement a ON c.referredAchievement = a.id " +
+            "WHERE e.ItemCache >= 70000";
 
         private static readonly string _SelectSkillDiscoveryString =
-            "SELECT d.spellId, d.reqSpell, s.EffectItemType1 AS Item " +
-            "FROM new_world.skill_discovery_template d " +
-            "JOIN spell s ON s.id = d.spellId " +
-            "WHERE reqSpell IN (170000, 170001, 170002)";
+             "SELECT d.spellId, d.reqSpell, s.EffectItemType1 AS Item " +
+            $"FROM {_WorldTableName}.skill_discovery_template d " +
+             "JOIN spell s ON s.id = d.spellId " +
+             "WHERE reqSpell IN (170000, 170001, 170002)";
 
         private static readonly string _QueryTableString = _SelectColumnsString + _QueryCriteriaString;
         private static readonly string _QueryMaxString = _SelectMaxString + _QueryCriteriaString;
@@ -161,7 +165,7 @@ namespace SpellEditor.Sources.Controls
                 catch (Exception exception)
                 {
                     Logger.Info(exception, "ERROR: " + exception.Message);
-                    _ShowFlyoutMessage.Invoke("ERROR: new_world.skill_discovery_template could not be loaded: " + exception.Message);
+                    _ShowFlyoutMessage.Invoke("ERROR: {_WorldTableName}.skill_discovery_template could not be loaded: " + exception.Message);
                 }
             }
         }
@@ -222,7 +226,7 @@ namespace SpellEditor.Sources.Controls
                     $"WHERE id = {skillSpellId}");
 
                 // Update category for discovery spell
-                _Adapter.Execute($"UPDATE new_world.skill_discovery_template SET reqSpell = {entry.GemTypeEntry.SkillDiscoverySpellId} " +
+                _Adapter.Execute($"UPDATE {_WorldTableName}.skill_discovery_template SET reqSpell = {entry.GemTypeEntry.SkillDiscoverySpellId} " +
                     $"WHERE spellId = {skillSpellId}");
             }
 
@@ -243,10 +247,20 @@ namespace SpellEditor.Sources.Controls
             // Update item data (DBC and server side)
             _Adapter.Execute($"UPDATE item SET ItemDisplayInfo = {entry.GemTypeEntry.ItemDisplayId} " +
                 $"WHERE itemID = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
-            _Adapter.Execute($"UPDATE new_world.item_template SET displayId = {entry.GemTypeEntry.ItemDisplayId}, " +
+            _Adapter.Execute($"UPDATE {_WorldTableName}.item_template SET displayId = {entry.GemTypeEntry.ItemDisplayId}, " +
                 $"`name` = \"{discoverSpellName}\", " +
                 $"GemProperties = {entry.GemId} " +
                 $"WHERE entry = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
+
+            // Update chest prismatic gem loot
+            if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
+            {
+                _Adapter.Execute($"REPLACE INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {entry.SpellItemEnchantmentEntry.ItemCache}, 0, 0, 0, 1, 1, 1, 1, \"{discoverSpellName}\")");
+            }
+            else
+            {
+                _Adapter.Execute($"DELETE FROM {_WorldTableName}.reference_loot_template WHERE entry = {_PrismaticRefLootId} AND item = {entry.SpellItemEnchantmentEntry.ItemCache}");
+            }
 
             _ShowFlyoutMessage.Invoke($"Saved gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
         }
