@@ -523,7 +523,7 @@ namespace SpellEditor
             try
             {
                 var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
-                Title = $"{Title} - {WoWVersionManager.GetInstance().SelectedVersion().Version} - V{version.Substring(0, version.Length - 2)}";
+                Title = $"HoT Gem Editor - {WoWVersionManager.GetInstance().SelectedVersion().Version} - V{version.Substring(0, version.Length - 2)}";
 
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
@@ -885,6 +885,20 @@ namespace SpellEditor
                 InitialiseSpellVisualEffectList();
 
                 prepareIconEditor();
+
+                foreach (TabItem item in MainTabControl.Items)
+                {
+                    if (item.Header.ToString().ToLower().Contains("gem"))
+                    {
+                        item.Visibility = Visibility.Visible;
+                        item.IsSelected = true;
+                        item.Focus();
+                    }
+                    else
+                    {
+                        item.Visibility = Visibility.Hidden;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -1027,7 +1041,7 @@ namespace SpellEditor
                 }
                 else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
                 {
-                    Button_Click(SaveSpellChanges, e);
+                    //Button_Click(SaveSpellChanges, e);
                 }
             }
             else if (sender == NavigateToSpell)
@@ -1160,7 +1174,7 @@ namespace SpellEditor
                 LoadAllData();
                 return;
             }
-            
+            /*
             if (sender == TruncateTable)
             {
                 MetroDialogSettings settings = new MetroDialogSettings
@@ -1855,6 +1869,7 @@ namespace SpellEditor
             {
                 adapter.Execute($"UPDATE `{"spell"}` SET `{"ActiveIconID"}` = '{0}' WHERE `ID` = '{selectedID}'");
             }
+            */
         }
 
         #endregion
@@ -2943,7 +2958,7 @@ namespace SpellEditor
                     adapter.Execute($"INSERT INTO spellvisual VALUES ({ string.Join(", ", copyParent.ItemArray) })");
                     SpellVisual1.ThreadSafeText = newVisualId.ToString();
                     visualId = newVisualId;
-                    Button_Click(SaveSpellChanges, null);
+                    //Button_Click(SaveSpellChanges, null);
                 }
                 _currentVisualController = null;
                 UpdateSpellVisualTab(visualId);

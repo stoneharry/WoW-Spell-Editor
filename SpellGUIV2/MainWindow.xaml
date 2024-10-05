@@ -1387,26 +1387,6 @@
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="TruncateTable" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="InsertANewRecord" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butInsertANewRecord}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="DeleteARecord" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butDeleteARecord}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="SaveSpellChanges" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
             <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>

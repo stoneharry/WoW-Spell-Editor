@@ -7,8 +7,8 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpellEditor")]
-[assembly: AssemblyDescription("WoW Spell Editor")]
+[assembly: AssemblyTitle("GemEditor")]
+[assembly: AssemblyDescription("HoT Gem Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("stoneharry")]
 [assembly: AssemblyProduct("SpellEditor")]

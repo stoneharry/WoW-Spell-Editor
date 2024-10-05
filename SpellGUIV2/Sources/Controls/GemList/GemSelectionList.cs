@@ -307,8 +307,13 @@ namespace SpellEditor.Sources.Controls
             if (!(SelectedItem is GemSelectionEntry entry))
                 return;
 
-            var input = await _ShowInputAsync("ARE YOU SURE?", $"Input \"confirm\" to delete [{entry.SpellItemEnchantmentEntry.Name}]. This will nuke the gem and ALL of the linked data.", null);
-            if (!string.IsNullOrEmpty(input) && input.Equals("confirm"))
+            var input = await _ShowInputAsync("ARE YOU SURE?", $"Input \"hard\" to delete [{entry.SpellItemEnchantmentEntry.Name}] completely. Input \"soft\" to only remove the gem from discovery.", null);
+            if (string.IsNullOrEmpty(input))
+            {
+                return;
+            }
+            // hard delete
+            else if (input.Equals("hard"))
             {
                 _Adapter.Execute($"DELETE FROM gemproperties WHERE id = {entry.GemId}");
                 _Adapter.Execute($"DELETE FROM spellitemenchantment WHERE id = {entry.SpellItemEnchantmentEntry.Id}");
@@ -324,8 +329,12 @@ namespace SpellEditor.Sources.Controls
                 // Refresh UI
                 RefreshGemList();
             }
+            // soft delete
+            else if (input.Equals("soft"))
+            {
+                // TODO: Soft delete option, only removes skill_discovery data
 
-            // TODO: Soft delete option, only removes skill_discovery data
+            }
         }
 
         private void FilterGemColourChanged(object sender, SelectionChangedEventArgs e)
