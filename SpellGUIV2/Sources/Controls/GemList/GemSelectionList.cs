@@ -357,6 +357,12 @@ namespace SpellEditor.Sources.Controls
                 _Adapter.Execute(
                     $"INSERT INTO {_WorldTableName}.skill_discovery_template SELECT {newDiscoverSpellId}, reqSpell, reqSkillValue, chance " +
                     $"FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {skillId}");
+
+                // UI Cache Update
+                _DiscoveryLookup[newItemId] = new SkillDiscovery(
+                    newDiscoverSpellId, 
+                    _DiscoveryLookup[entry.SpellItemEnchantmentEntry.ItemCache.Id].ReqSpell,
+                    newItemId);
             }
 
             // SkillLineAbility
