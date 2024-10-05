@@ -174,8 +174,12 @@
     <Compile Include="Sources\Binding\BindingManager.cs" />
     <Compile Include="Sources\BLP\BlpManager.cs" />
     <Compile Include="Sources\Config\Config.cs" />
+    <Compile Include="Sources\Gem\GemType.cs" />
+    <Compile Include="Sources\Gem\GemTypeManager.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\GemList\GemSelectionEntry.cs" />
+    <Compile Include="Sources\Controls\GemList\GemSelectionList.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionEntry.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionList.cs" />
     <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />
@@ -198,6 +202,12 @@
     <Compile Include="Sources\DBC\IGraphicUserInterfaceDBC.cs" />
     <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
     <Compile Include="Sources\Constants\SpellVisualKitModelAttach.cs" />
+    <Compile Include="Sources\Gem\Achievement.cs" />
+    <Compile Include="Sources\Gem\AchievementCriteria.cs" />
+    <Compile Include="Sources\Gem\Item.cs" />
+    <Compile Include="Sources\Gem\SkillDiscovery.cs" />
+    <Compile Include="Sources\Gem\Spell.cs" />
+    <Compile Include="Sources\Gem\SpellItemEnchantment.cs" />
     <Compile Include="Sources\Locale\LocaleManager.cs" />
     <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
     <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
