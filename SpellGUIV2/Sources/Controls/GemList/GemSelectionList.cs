@@ -273,8 +273,8 @@ namespace SpellEditor.Sources.Controls
             if (!(SelectedItem is GemSelectionEntry entry))
                 return;
 
-            var input = await _ShowInputAsync("Duplicate", $"Input the new gem name for [{entry.SpellItemEnchantmentEntry.Name}].", null);
-            if (string.IsNullOrWhiteSpace(input))
+            var input = await _ShowInputAsync("Duplicate", $"Input \"y\" to duplicate [{entry.SpellItemEnchantmentEntry.Name}].", null);
+            if (string.IsNullOrWhiteSpace(input) || !input.Contains("y"))
                 return;
 
             var newGemId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM gemproperties").ToString()) + 1u;
@@ -401,7 +401,7 @@ namespace SpellEditor.Sources.Controls
             // Refresh UI
             PopulateGemSelect(false);
 
-            _ShowFlyoutMessage.Invoke($"New gem: {newGemId} - {input}");
+            _ShowFlyoutMessage.Invoke($"New gem: {newGemId} with same spell name.");
         }
 
         private async void DeleteGemClick(object sender, RoutedEventArgs e)
@@ -429,7 +429,7 @@ namespace SpellEditor.Sources.Controls
                 var triggerSpellId = entry.SpellItemEnchantmentEntry.TriggerSpell.Id;
                 var tempLearnSpellId = entry.SpellItemEnchantmentEntry.TempLearnSpell.Id;
                 _Adapter.Execute($"DELETE FROM spell WHERE id IN ({triggerSpellId}, {tempLearnSpellId})");
-                _Adapter.Execute($"DELETE FROM item WHERE id = {itemId}");
+                _Adapter.Execute($"DELETE FROM item WHERE itemId = {itemId}");
                 _Adapter.Execute($"DELETE FROM {_WorldTableName}.item_template WHERE entry = {itemId}");
 
                 if (_DiscoveryLookup.ContainsKey(itemId))
