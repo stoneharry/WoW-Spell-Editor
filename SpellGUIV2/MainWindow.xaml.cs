@@ -967,10 +967,10 @@ namespace SpellEditor
                     AnimateShow = true,
                     ColorScheme = MetroDialogColorScheme.Accented
                 };
-                MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
-                    SafeTryFindResource("Welcome"),
-                    MessageDialogStyle.AffirmativeAndNegative, settings);
-                bool isSqlite = exitCode == MessageDialogResult.Affirmative;
+                //MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
+                //    SafeTryFindResource("Welcome"),
+                //    MessageDialogStyle.AffirmativeAndNegative, settings);
+                bool isSqlite = false;//exitCode == MessageDialogResult.Affirmative;
 
                 if (!isSqlite)
                 {
