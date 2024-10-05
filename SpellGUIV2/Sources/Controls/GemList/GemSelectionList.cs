@@ -281,8 +281,8 @@ namespace SpellEditor.Sources.Controls
             var newEnchantId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(ID) FROM spellitemenchantment").ToString()) + 1u;
             var newItemId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(entry) FROM {_WorldTableName}.item_template WHERE entry < 100000").ToString()) + 1u;
             var newTriggerSpellId = uint.Parse(_Adapter.QuerySingleValue("SELECT MAX(ID) FROM spell").ToString()) + 1u;
-            //var newTempLearnSpellId = newTriggerSpellId + 1u;
-            var newDiscoverSpellId = newTriggerSpellId + 1u;
+            var newTempLearnSpellId = newTriggerSpellId + 1u;
+            var newDiscoverSpellId = newTriggerSpellId + 2u;
             var discoverExists = _DiscoveryLookup.ContainsKey(entry.SpellItemEnchantmentEntry.ItemCache.Id);
 
             // GemProperties
@@ -344,7 +344,10 @@ namespace SpellEditor.Sources.Controls
                 spellCopyColumns.Replace("EffectTriggerSpell1", newTriggerSpellId.ToString()) +
                 $"FROM spell WHERE ID = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
             // Temp Learn Spell
-            //  We do not want to clone the spell that is temporarily learned.
+            _Adapter.Execute(
+                $"INSERT INTO spell SELECT {newTempLearnSpellId}, " +
+                spellCopyColumns +
+                $"FROM spell WHERE ID = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}");
             // Discover Spell
             if (discoverExists)
             {
@@ -409,7 +412,7 @@ namespace SpellEditor.Sources.Controls
             if (!(SelectedItem is GemSelectionEntry entry))
                 return;
 
-            var input = await _ShowInputAsync("ARE YOU SURE?", $"Input \"hard\" to delete [{entry.SpellItemEnchantmentEntry.Name}] completely. Input \"soft\" to only remove the gem from discovery.", null);
+            var input = await _ShowInputAsync("ARE YOU SURE?", $"Input \"hard\" to delete [{entry.SpellItemEnchantmentEntry.Name}] *COMPLETELY*. ", null);
             if (string.IsNullOrEmpty(input))
             {
                 return;
@@ -421,8 +424,28 @@ namespace SpellEditor.Sources.Controls
                 _Adapter.Execute($"DELETE FROM spellitemenchantment WHERE id = {entry.SpellItemEnchantmentEntry.Id}");
                 _Adapter.Execute($"DELETE FROM achievement WHERE id = {entry.AchievementEntry.Id}");
                 _Adapter.Execute($"DELETE FROM achievement_criteria WHERE id = {entry.AchievementCriteriaEntry.Id}");
-                // Leave the SkillLineAbility data in place?
-                // Leave the item data in place?
+
+                var itemId = entry.SpellItemEnchantmentEntry.ItemCache.Id;
+                var triggerSpellId = entry.SpellItemEnchantmentEntry.TriggerSpell.Id;
+                var tempLearnSpellId = entry.SpellItemEnchantmentEntry.TempLearnSpell.Id;
+                _Adapter.Execute($"DELETE FROM spell WHERE id IN ({triggerSpellId}, {tempLearnSpellId})");
+                _Adapter.Execute($"DELETE FROM item WHERE id = {itemId}");
+                _Adapter.Execute($"DELETE FROM {_WorldTableName}.item_template WHERE entry = {itemId}");
+
+                if (_DiscoveryLookup.ContainsKey(itemId))
+                {
+                    var spellId = _DiscoveryLookup[itemId].Id;
+
+                    _Adapter.Execute($"DELETE FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {spellId}");
+
+                    // UI Cache update
+                    _DiscoveryLookup.Remove(itemId);
+                }
+
+                // We leave SkillLineAbility in place, no harm
+
+                // Prismatic Gem Loot
+                _Adapter.Execute($"DELETE FROM {_WorldTableName}.reference_loot_template WHERE entry = {_PrismaticRefLootId} AND item = {itemId}");
 
                 _ShowFlyoutMessage.Invoke($"Deleted gem: {entry.GemId} - {entry.SpellItemEnchantmentEntry.Name}");
 
@@ -435,7 +458,9 @@ namespace SpellEditor.Sources.Controls
             else if (input.Equals("soft"))
             {
                 // TODO: Soft delete option, only removes skill_discovery data
-
+                // Also disable the gem item? Trivial to do
+                // Hard bit is having these soft-disabled gems still show up in this editor.
+                // For now, not handling.
             }
         }
 
