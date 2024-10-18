@@ -97,7 +97,7 @@ namespace SpellEditor.Sources.Controls
                 ((Button)elements[1]).Click += DuplicateGemClick;
                 ((Button)elements[2]).Click += DeleteGemClick;
                 var filterByColour = ((ThreadSafeComboBox)_Elements[10]);
-                filterByColour.ItemsSource = GemTypeManager.Instance.GemTypes;
+                filterByColour.ItemsSource = GetFilterByColourSource();
                 filterByColour.SelectionChanged += FilterGemColourChanged;
                 var filterByDisc = ((ThreadSafeComboBox)_Elements[11]);
                 filterByDisc.SelectionChanged += FilterDiscoverableChanged;
@@ -109,6 +109,13 @@ namespace SpellEditor.Sources.Controls
                 };
                 filterByDisc.ItemsSource = discOptions;
             }
+        }
+
+        private List<string> GetFilterByColourSource()
+        {
+            var gems = GemTypeManager.Instance.GemTypes.Select(gem => gem.Name).ToList();
+            gems.Insert(0, "No Filter");
+            return gems;
         }
 
         private void GemSelectionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -470,7 +477,9 @@ namespace SpellEditor.Sources.Controls
             if (items.Count > 0)
             {
                 var item = items[0].ToString();
-                var typeId = GemTypeManager.Instance.LookupGemTypeByName(item).Type.ToString();
+                var typeId = item.ToLower().Contains("no filter") ? 
+                    "-1" : 
+                    GemTypeManager.Instance.LookupGemTypeByName(item).Type.ToString();
 
                 ICollectionView view = CollectionViewSource.GetDefaultView(Items);
                 view.Filter = o =>
@@ -482,6 +491,9 @@ namespace SpellEditor.Sources.Controls
                         {
                             if (!(enumerator.Current is TextBlock block))
                                 continue;
+
+                            if (typeId.Equals("-1"))
+                                return true;
 
                             var trimmed = block.Text.TrimStart();
                             var idString = trimmed.Substring(0, trimmed.IndexOf(' ')).Trim();
