@@ -213,7 +213,7 @@ namespace SpellEditor.Sources.Controls
 
             // Update trigger spell pointing to which spell to temp learn
             _Adapter.Execute($"UPDATE spell SET EffectTriggerSpell1 = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, " +
-                $"SpellName0 = \"triggerSpellName\" " +
+                $"SpellName0 = \"{triggerSpellName}\" " +
                 $"WHERE id = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
             
             // Discovery data
