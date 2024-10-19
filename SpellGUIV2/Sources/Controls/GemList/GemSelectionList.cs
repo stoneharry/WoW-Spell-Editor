@@ -65,7 +65,7 @@ namespace SpellEditor.Sources.Controls
              "SELECT d.spellId, d.reqSpell, s.EffectItemType1 AS Item " +
             $"FROM {_WorldTableName}.skill_discovery_template d " +
              "JOIN spell s ON s.id = d.spellId " +
-             "WHERE reqSpell IN (170000, 170001, 170002)";
+             "WHERE reqSpell IN (170000, 170001, 170002, 170004)";
 
         private static readonly string _QueryTableString = _SelectColumnsString + _QueryCriteriaString;
         private static readonly string _QueryMaxString = _SelectMaxString + _QueryCriteriaString;
