@@ -1369,6 +1369,7 @@
               <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="9" Grid.Column="3"/>
               <Label Content="SkillDiscovery SpellId:" Margin="5" Grid.Row="10" Grid.Column="2"/>
               <c2:ThreadSafeTextBox x:Name="SkillDiscSpellIdTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="10" Grid.Column="3" IsReadOnly="true"/>
+              <Button Name="GenerateDiscoveryBtn" Content="Generate Discovery Data" Grid.Row="10" Grid.Column="4" IsEnabled="false"/>
               <Label Content="AchievementId / CriteriaId:" Margin="5" Grid.Row="11" Grid.Column="2"/>
               <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="11" Grid.Column="3" IsReadOnly="true"/>
             </Grid>

@@ -37,6 +37,7 @@ namespace SpellEditor.Sources.Controls
         public bool Initialised = false;
         private Label _SelectedGemText;
         private ThreadSafeComboBox _GemTypeBox;
+        private Button _GenerateDiscoveryButton;
         private List<UIElement> _Elements;
         private Action<string> _ShowFlyoutMessage;
         private Func<string, string, MetroDialogSettings, Task<string>> _ShowInputAsync;
@@ -68,6 +69,30 @@ namespace SpellEditor.Sources.Controls
 
         private static readonly string _QueryTableString = _SelectColumnsString + _QueryCriteriaString;
         private static readonly string _QueryMaxString = _SelectMaxString + _QueryCriteriaString;
+
+        private static readonly string _SpellCopyColumns = 
+            "Category,Dispel,Mechanic,Attributes,AttributesEx,AttributesEx2,AttributesEx3,AttributesEx4,AttributesEx5,AttributesEx6,AttributesEx7,Stances,Unknown1,StancesNot,Unknown2,Targets," +
+            "TargetCreatureType,RequiresSpellFocus,FacingCasterFlags,CasterAuraState,TargetAuraState,CasterAuraStateNot,TargetAuraStateNot,CasterAuraSpell,TargetAuraSpell,ExcludeCasterAuraSpell," +
+            "ExcludeTargetAuraSpell,CastingTimeIndex,RecoveryTime,CategoryRecoveryTime,InterruptFlags,AuraInterruptFlags,ChannelInterruptFlags,ProcFlags,ProcChance,ProcCharges,MaximumLevel," +
+            "BaseLevel,SpellLevel,DurationIndex,PowerType,ManaCost,ManaCostPerLevel,ManaPerSecond,ManaPerSecondPerLevel,RangeIndex,Speed,ModalNextSpell,StackAmount,Totem1,Totem2,Reagent1," +
+            "Reagent2,Reagent3,Reagent4,Reagent5,Reagent6,Reagent7,Reagent8,ReagentCount1,ReagentCount2,ReagentCount3,ReagentCount4,ReagentCount5,ReagentCount6,ReagentCount7,ReagentCount8," +
+            "EquippedItemClass,EquippedItemSubClassMask,EquippedItemInventoryTypeMask,Effect1,Effect2,Effect3,EffectDieSides1,EffectDieSides2,EffectDieSides3,EffectRealPointsPerLevel1," +
+            "EffectRealPointsPerLevel2,EffectRealPointsPerLevel3,EffectBasePoints1,EffectBasePoints2,EffectBasePoints3,EffectMechanic1,EffectMechanic2,EffectMechanic3,EffectImplicitTargetA1," +
+            "EffectImplicitTargetA2,EffectImplicitTargetA3,EffectImplicitTargetB1,EffectImplicitTargetB2,EffectImplicitTargetB3,EffectRadiusIndex1,EffectRadiusIndex2,EffectRadiusIndex3," +
+            "EffectApplyAuraName1,EffectApplyAuraName2,EffectApplyAuraName3,EffectAmplitude1,EffectAmplitude2,EffectAmplitude3,EffectMultipleValue1,EffectMultipleValue2,EffectMultipleValue3," +
+            "EffectChainTarget1,EffectChainTarget2,EffectChainTarget3,EffectItemType1,EffectItemType2,EffectItemType3,EffectMiscValue1,EffectMiscValue2,EffectMiscValue3,EffectMiscValueB1," +
+            "EffectMiscValueB2,EffectMiscValueB3,EffectTriggerSpell1,EffectTriggerSpell2,EffectTriggerSpell3,EffectPointsPerComboPoint1,EffectPointsPerComboPoint2,EffectPointsPerComboPoint3," +
+            "EffectSpellClassMaskA1,EffectSpellClassMaskA2,EffectSpellClassMaskA3,EffectSpellClassMaskB1,EffectSpellClassMaskB2,EffectSpellClassMaskB3,EffectSpellClassMaskC1," +
+            "EffectSpellClassMaskC2,EffectSpellClassMaskC3,SpellVisual1,SpellVisual2,SpellIconID,ActiveIconID,SpellPriority,SpellName0,SpellName1,SpellName2,SpellName3,SpellName4,SpellName5," +
+            "SpellName6,SpellName7,SpellName8,SpellNameFlag0,SpellNameFlag1,SpellNameFlag2,SpellNameFlag3,SpellNameFlag4,SpellNameFlag5,SpellNameFlag6,SpellNameFlag7,SpellRank0,SpellRank1," +
+            "SpellRank2,SpellRank3,SpellRank4,SpellRank5,SpellRank6,SpellRank7,SpellRank8,SpellRankFlags0,SpellRankFlags1,SpellRankFlags2,SpellRankFlags3,SpellRankFlags4,SpellRankFlags5," +
+            "SpellRankFlags6,SpellRankFlags7,SpellDescription0,SpellDescription1,SpellDescription2,SpellDescription3,SpellDescription4,SpellDescription5,SpellDescription6,SpellDescription7," +
+            "SpellDescription8,SpellDescriptionFlags0,SpellDescriptionFlags1,SpellDescriptionFlags2,SpellDescriptionFlags3,SpellDescriptionFlags4,SpellDescriptionFlags5,SpellDescriptionFlags6," +
+            "SpellDescriptionFlags7,SpellToolTip0,SpellToolTip1,SpellToolTip2,SpellToolTip3,SpellToolTip4,SpellToolTip5,SpellToolTip6,SpellToolTip7,SpellToolTip8,SpellToolTipFlags0,SpellToolTipFlags1," +
+            "SpellToolTipFlags2,SpellToolTipFlags3,SpellToolTipFlags4,SpellToolTipFlags5,SpellToolTipFlags6,SpellToolTipFlags7,ManaCostPercentage,StartRecoveryCategory,StartRecoveryTime,MaximumTargetLevel," +
+            "SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2,MaximumAffectedTargets,DamageClass,PreventionType,StanceBarOrder,EffectDamageMultiplier1,EffectDamageMultiplier2," +
+            "EffectDamageMultiplier3,MinimumFactionId,MinimumReputation,RequiredAuraVision,TotemCategory1,TotemCategory2,AreaGroupID,SchoolMask,RuneCostID,SpellMissileID,PowerDisplayId,EffectBonusMultiplier1," +
+            "EffectBonusMultiplier2,EffectBonusMultiplier3,SpellDescriptionVariableID,SpellDifficultyID ";
 
         public void Initialise(Label selectedGemText, List<UIElement> elements, 
             Action<string> showFlyoutMessage, Func<string, string, MetroDialogSettings, Task<string>> showInputAsync)
@@ -108,7 +133,48 @@ namespace SpellEditor.Sources.Controls
                     "Not Discoverable"
                 };
                 filterByDisc.ItemsSource = discOptions;
+                _GenerateDiscoveryButton = (Button)_Elements[12];
+                _GenerateDiscoveryButton.Click += GenerateDiscoveryButtonClick;
             }
+        }
+
+        private void GenerateDiscoveryButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender != _Elements[12] || SelectedItem == null)
+                return;
+
+            if (!(SelectedItem is GemSelectionEntry entry))
+                return;
+
+            var template = LookupDiscoveryDataForGemType(entry.GemTypeEntry);
+            var itemId = entry.SpellItemEnchantmentEntry.ItemCache.Id;
+            var skillId = template.Id;
+            var newDiscoverSpellId = uint.Parse(_Adapter.QuerySingleValue("SELECT MAX(ID) FROM spell").ToString()) + 1u;
+            var reqSpell = template.ReqSpell;
+            _Adapter.Execute(
+                $"INSERT INTO spell SELECT {newDiscoverSpellId}, " +
+                _SpellCopyColumns.Replace("EffectItemType1", itemId.ToString())
+                .Replace("SpellName0", "\"Gem of " + entry.GemTypeEntry.Name + "\"") +
+                $"FROM spell WHERE ID = {skillId}");
+
+            _Adapter.Execute(
+                $"INSERT INTO {_WorldTableName}.skill_discovery_template SELECT {newDiscoverSpellId}, reqSpell, reqSkillValue, chance " +
+                $"FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {skillId}");
+
+            // UI Cache Update
+            _DiscoveryLookup[itemId] = new SkillDiscovery(newDiscoverSpellId, reqSpell, itemId);
+            ((ThreadSafeTextBox)_Elements[8]).Text = newDiscoverSpellId.ToString();
+            _ShowFlyoutMessage("Created discovery data for " + entry.GemTypeEntry.Name);
+        }
+
+        private SkillDiscovery LookupDiscoveryDataForGemType(GemType type)
+        {
+            var existingCopy = _DiscoveryLookup.FirstOrDefault(pair => pair.Value.ReqSpell == type.SkillDiscoverySpellId);
+            if (existingCopy.Equals(default(KeyValuePair<uint, SkillDiscovery>)))
+            {
+                throw new Exception($"You need at least 1 {type.Name} gem with discovery data before this will work.\n");
+            }
+            return existingCopy.Value;
         }
 
         private List<string> GetFilterByColourSource()
@@ -144,6 +210,8 @@ namespace SpellEditor.Sources.Controls
 
             _Elements.ForEach(element => element.IsEnabled = true);
             _GemTypeBox.IsEnabled = true;
+
+            _GenerateDiscoveryButton.IsEnabled = !_DiscoveryLookup.ContainsKey(selected.SpellItemEnchantmentEntry.ItemCache.Id);
         }
 
         private void LoadSkillDiscoveryData()
@@ -333,37 +401,15 @@ namespace SpellEditor.Sources.Controls
                 $"WHERE entry = {newItemId}");
 
             // Duplicate spell data
-            var spellCopyColumns = "Category,Dispel,Mechanic,Attributes,AttributesEx,AttributesEx2,AttributesEx3,AttributesEx4,AttributesEx5,AttributesEx6,AttributesEx7,Stances,Unknown1,StancesNot,Unknown2,Targets," +
-                "TargetCreatureType,RequiresSpellFocus,FacingCasterFlags,CasterAuraState,TargetAuraState,CasterAuraStateNot,TargetAuraStateNot,CasterAuraSpell,TargetAuraSpell,ExcludeCasterAuraSpell," +
-                "ExcludeTargetAuraSpell,CastingTimeIndex,RecoveryTime,CategoryRecoveryTime,InterruptFlags,AuraInterruptFlags,ChannelInterruptFlags,ProcFlags,ProcChance,ProcCharges,MaximumLevel," +
-                "BaseLevel,SpellLevel,DurationIndex,PowerType,ManaCost,ManaCostPerLevel,ManaPerSecond,ManaPerSecondPerLevel,RangeIndex,Speed,ModalNextSpell,StackAmount,Totem1,Totem2,Reagent1," +
-                "Reagent2,Reagent3,Reagent4,Reagent5,Reagent6,Reagent7,Reagent8,ReagentCount1,ReagentCount2,ReagentCount3,ReagentCount4,ReagentCount5,ReagentCount6,ReagentCount7,ReagentCount8," +
-                "EquippedItemClass,EquippedItemSubClassMask,EquippedItemInventoryTypeMask,Effect1,Effect2,Effect3,EffectDieSides1,EffectDieSides2,EffectDieSides3,EffectRealPointsPerLevel1," +
-                "EffectRealPointsPerLevel2,EffectRealPointsPerLevel3,EffectBasePoints1,EffectBasePoints2,EffectBasePoints3,EffectMechanic1,EffectMechanic2,EffectMechanic3,EffectImplicitTargetA1," +
-                "EffectImplicitTargetA2,EffectImplicitTargetA3,EffectImplicitTargetB1,EffectImplicitTargetB2,EffectImplicitTargetB3,EffectRadiusIndex1,EffectRadiusIndex2,EffectRadiusIndex3," +
-                "EffectApplyAuraName1,EffectApplyAuraName2,EffectApplyAuraName3,EffectAmplitude1,EffectAmplitude2,EffectAmplitude3,EffectMultipleValue1,EffectMultipleValue2,EffectMultipleValue3," +
-                "EffectChainTarget1,EffectChainTarget2,EffectChainTarget3,EffectItemType1,EffectItemType2,EffectItemType3,EffectMiscValue1,EffectMiscValue2,EffectMiscValue3,EffectMiscValueB1," +
-                "EffectMiscValueB2,EffectMiscValueB3,EffectTriggerSpell1,EffectTriggerSpell2,EffectTriggerSpell3,EffectPointsPerComboPoint1,EffectPointsPerComboPoint2,EffectPointsPerComboPoint3," +
-                "EffectSpellClassMaskA1,EffectSpellClassMaskA2,EffectSpellClassMaskA3,EffectSpellClassMaskB1,EffectSpellClassMaskB2,EffectSpellClassMaskB3,EffectSpellClassMaskC1," +
-                "EffectSpellClassMaskC2,EffectSpellClassMaskC3,SpellVisual1,SpellVisual2,SpellIconID,ActiveIconID,SpellPriority,SpellName0,SpellName1,SpellName2,SpellName3,SpellName4,SpellName5," +
-                "SpellName6,SpellName7,SpellName8,SpellNameFlag0,SpellNameFlag1,SpellNameFlag2,SpellNameFlag3,SpellNameFlag4,SpellNameFlag5,SpellNameFlag6,SpellNameFlag7,SpellRank0,SpellRank1," +
-                "SpellRank2,SpellRank3,SpellRank4,SpellRank5,SpellRank6,SpellRank7,SpellRank8,SpellRankFlags0,SpellRankFlags1,SpellRankFlags2,SpellRankFlags3,SpellRankFlags4,SpellRankFlags5," +
-                "SpellRankFlags6,SpellRankFlags7,SpellDescription0,SpellDescription1,SpellDescription2,SpellDescription3,SpellDescription4,SpellDescription5,SpellDescription6,SpellDescription7," +
-                "SpellDescription8,SpellDescriptionFlags0,SpellDescriptionFlags1,SpellDescriptionFlags2,SpellDescriptionFlags3,SpellDescriptionFlags4,SpellDescriptionFlags5,SpellDescriptionFlags6," +
-                "SpellDescriptionFlags7,SpellToolTip0,SpellToolTip1,SpellToolTip2,SpellToolTip3,SpellToolTip4,SpellToolTip5,SpellToolTip6,SpellToolTip7,SpellToolTip8,SpellToolTipFlags0,SpellToolTipFlags1," +
-                "SpellToolTipFlags2,SpellToolTipFlags3,SpellToolTipFlags4,SpellToolTipFlags5,SpellToolTipFlags6,SpellToolTipFlags7,ManaCostPercentage,StartRecoveryCategory,StartRecoveryTime,MaximumTargetLevel," +
-                "SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2,MaximumAffectedTargets,DamageClass,PreventionType,StanceBarOrder,EffectDamageMultiplier1,EffectDamageMultiplier2," +
-                "EffectDamageMultiplier3,MinimumFactionId,MinimumReputation,RequiredAuraVision,TotemCategory1,TotemCategory2,AreaGroupID,SchoolMask,RuneCostID,SpellMissileID,PowerDisplayId,EffectBonusMultiplier1," +
-                "EffectBonusMultiplier2,EffectBonusMultiplier3,SpellDescriptionVariableID,SpellDifficultyID ";
             // Trigger Spell
             _Adapter.Execute(
                 $"INSERT INTO spell SELECT {newTriggerSpellId}, " +
-                spellCopyColumns.Replace("EffectTriggerSpell1", newTriggerSpellId.ToString()) +
+                _SpellCopyColumns.Replace("EffectTriggerSpell1", newTriggerSpellId.ToString()) +
                 $"FROM spell WHERE ID = {entry.SpellItemEnchantmentEntry.TriggerSpell.Id}");
             // Temp Learn Spell
             _Adapter.Execute(
                 $"INSERT INTO spell SELECT {newTempLearnSpellId}, " +
-                spellCopyColumns +
+                _SpellCopyColumns +
                 $"FROM spell WHERE ID = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}");
             // Discover Spell
             if (discoverExists)
@@ -371,7 +417,7 @@ namespace SpellEditor.Sources.Controls
                 var skillId = _DiscoveryLookup[entry.SpellItemEnchantmentEntry.ItemCache.Id].Id;
                 _Adapter.Execute(
                     $"INSERT INTO spell SELECT {newDiscoverSpellId}, " +
-                    spellCopyColumns.Replace("EffectItemType1", newItemId.ToString()) +
+                    _SpellCopyColumns.Replace("EffectItemType1", newItemId.ToString()) +
                     $"FROM spell WHERE ID = {skillId}");
 
                 _Adapter.Execute(

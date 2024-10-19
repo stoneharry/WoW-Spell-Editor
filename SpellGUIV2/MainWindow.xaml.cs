@@ -3906,7 +3906,8 @@ namespace SpellEditor
                         SkillDiscSpellIdTxt,
                         GemTypeBox,
                         FilterGemBox,
-                        FilterGemDisc
+                        FilterGemDisc,
+                        GenerateDiscoveryBtn
                     };
                     SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, elements, ShowFlyoutMessage, this.ShowInputAsync);
                 }
