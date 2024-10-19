@@ -238,8 +238,18 @@ namespace SpellEditor.Sources.Controls
             }
 
             // Update Skill Line Ability based on gem colour
-            _Adapter.Execute($"UPDATE skilllineability SET skillId = {entry.GemTypeEntry.SkillId} " +
-                $"WHERE spellId = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}");
+            if (0 == int.Parse(_Adapter.QuerySingleValue(
+                $"SELECT COUNT(*) FROM skilllineability WHERE spellId = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}").ToString()))
+            {
+                var newAbilityId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM skilllineability").ToString()) + 1u;
+                _Adapter.Execute($"INSERT INTO skilllineability VALUES " +
+                    $"({newAbilityId}, {entry.GemTypeEntry.SkillId}, {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, 0, 0, 0, 0, 1, 0, 1, 10, 20, 0, 0)");
+            }
+            else
+            {
+                _Adapter.Execute($"UPDATE skilllineability SET skillId = {entry.GemTypeEntry.SkillId} " +
+                    $"WHERE spellId = {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}");
+            }
 
             // Update Achievement
             _Adapter.Execute($"UPDATE achievement SET name1 = \"{discoverSpellName}\", " +
