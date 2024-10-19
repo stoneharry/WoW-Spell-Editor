@@ -243,7 +243,7 @@ namespace SpellEditor.Sources.Controls
             {
                 var newAbilityId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM skilllineability").ToString()) + 1u;
                 _Adapter.Execute($"INSERT INTO skilllineability VALUES " +
-                    $"({newAbilityId}, {entry.GemTypeEntry.SkillId}, {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, 0, 0, 0, 0, 1, 0, 1, 10, 20, 0, 0)");
+                    $"({newAbilityId}, {entry.GemTypeEntry.SkillId}, {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0)");
             }
             else
             {
