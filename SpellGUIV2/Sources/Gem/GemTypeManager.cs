@@ -13,11 +13,11 @@ namespace SpellEditor.Sources.Constants
 
         private GemTypeManager()
         {
-            GemTypes.Add(new GemType((uint)GemTypeEnum.Red, 8063, "Red", 170000, 44920, 1001, 40000));
-            GemTypes.Add(new GemType((uint)GemTypeEnum.Yellow, 27238, "Yellow", 170002, 44926, 1002, 41000));
-            GemTypes.Add(new GemType((uint)GemTypeEnum.Blue, 22712, "Blue", 170001, 44930, 1000, 42000));
-            GemTypes.Add(new GemType((uint)GemTypeEnum.Green, 13960, "Green", 170004, 44921, 1005, 44000));
-            GemTypes.Add(new GemType((uint)GemTypeEnum.Purple, 8605, "Purple", 0, 43108, 1003, 43000));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Red, 8063, "Red", 170000, 44920, 1001, 40000, 9));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Yellow, 27238, "Yellow", 170002, 44926, 1002, 41000, 11));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Blue, 22712, "Blue", 170001, 44930, 1000, 42000, 10));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Green, 13960, "Green", 170004, 44921, 1005, 44000, 12));
+            GemTypes.Add(new GemType((uint)GemTypeEnum.Purple, 8605, "Purple", 0, 43108, 1003, 43000, 8));
         }
 
         public GemType LookupGemType(uint id) => GemTypes.FirstOrDefault(type => type.Type == id);

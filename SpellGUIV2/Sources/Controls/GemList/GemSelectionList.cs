@@ -330,10 +330,14 @@ namespace SpellEditor.Sources.Controls
                 $"WHERE ID = {entry.AchievementCriteriaEntry.Id}");
 
             // Update item data (DBC and server side)
-            _Adapter.Execute($"UPDATE item SET ItemDisplayInfo = {entry.GemTypeEntry.ItemDisplayId} " +
+            _Adapter.Execute($"UPDATE item SET " +
+                $"ItemDisplayInfo = {entry.GemTypeEntry.ItemDisplayId}, " +
+                $"ItemSubClass = {entry.GemTypeEntry.Subclass} " +
                 $"WHERE itemID = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
-            _Adapter.Execute($"UPDATE {_WorldTableName}.item_template SET displayId = {entry.GemTypeEntry.ItemDisplayId}, " +
+            _Adapter.Execute($"UPDATE {_WorldTableName}.item_template SET " +
+                $"displayId = {entry.GemTypeEntry.ItemDisplayId}, " +
                 $"`name` = \"{discoverSpellName}\", " +
+                $"subclass = {entry.GemTypeEntry.Subclass}, " +
                 $"GemProperties = {entry.GemId} " +
                 $"WHERE entry = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
 

@@ -10,8 +10,9 @@ namespace SpellEditor.Sources.Constants
         public readonly uint ItemDisplayId;
         public readonly uint SkillId;
         public readonly uint AchievementCategory;
+        public readonly uint Subclass;
 
-        public GemType(uint type, uint iconId, string name, uint skillDiscoverySpellId, uint itemDisplayId, uint skillId, uint achievementCategory)
+        public GemType(uint type, uint iconId, string name, uint skillDiscoverySpellId, uint itemDisplayId, uint skillId, uint achievementCategory, uint subclass)
         {
             Type = type;
             IconId = iconId;
@@ -20,6 +21,7 @@ namespace SpellEditor.Sources.Constants
             ItemDisplayId = itemDisplayId;
             SkillId = skillId;
             AchievementCategory = achievementCategory;
+            Subclass = subclass;
         }
 
         public override string ToString()
