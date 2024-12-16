@@ -294,15 +294,23 @@ namespace SpellEditor.Sources.Controls
             // Discovery data
             if (_DiscoveryLookup.ContainsKey(entry.SpellItemEnchantmentEntry.ItemCache.Id))
             {
-                // Update Discover Spell Name
                 var skillSpellId = _DiscoveryLookup[entry.SpellItemEnchantmentEntry.ItemCache.Id].Id;
-                _Adapter.Execute($"UPDATE spell SET SpellName0 = \"{discoverSpellName}\", " +
-                    $"EffectItemType1 = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
-                    $"WHERE id = {skillSpellId}");
+                // Delete if switching to purple
+                if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
+                {
+                    _Adapter.Execute($"DELETE FROM skill_discovery_template WHERE spellId = {skillSpellId}");
+                }
+                // Otherwise replace into
+                else
+                {
+                    // Update Discover Spell Name
+                    _Adapter.Execute($"UPDATE spell SET SpellName0 = \"{discoverSpellName}\", " +
+                        $"EffectItemType1 = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
+                        $"WHERE id = {skillSpellId}");
 
-                // Update category for discovery spell
-                _Adapter.Execute($"UPDATE {_WorldTableName}.skill_discovery_template SET reqSpell = {entry.GemTypeEntry.SkillDiscoverySpellId} " +
-                    $"WHERE spellId = {skillSpellId}");
+                    // Update category for discovery spell
+                    _Adapter.Execute($"REPLACE INTO {_WorldTableName}.skill_discovery_template VALUES ({skillSpellId}, {entry.GemTypeEntry.SkillDiscoverySpellId}, 0, 100)");
+                }
             }
 
             // Update Skill Line Ability based on gem colour
