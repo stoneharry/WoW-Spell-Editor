@@ -502,8 +502,7 @@ namespace SpellEditor.Sources.Controls
 
                 var itemId = entry.SpellItemEnchantmentEntry.ItemCache.Id;
                 var triggerSpellId = entry.SpellItemEnchantmentEntry.TriggerSpell.Id;
-                var tempLearnSpellId = entry.SpellItemEnchantmentEntry.TempLearnSpell.Id;
-                _Adapter.Execute($"DELETE FROM spell WHERE id IN ({triggerSpellId}, {tempLearnSpellId})");
+                _Adapter.Execute($"DELETE FROM spell WHERE id = {triggerSpellId}");
                 _Adapter.Execute($"DELETE FROM item WHERE itemId = {itemId}");
                 _Adapter.Execute($"DELETE FROM {_WorldTableName}.item_template WHERE entry = {itemId}");
 
@@ -512,6 +511,7 @@ namespace SpellEditor.Sources.Controls
                     var spellId = _DiscoveryLookup[itemId].Id;
 
                     _Adapter.Execute($"DELETE FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {spellId}");
+                    _Adapter.Execute($"DELETE FROM spell WHERE id = {spellId}");
 
                     // UI Cache update
                     _DiscoveryLookup.Remove(itemId);
