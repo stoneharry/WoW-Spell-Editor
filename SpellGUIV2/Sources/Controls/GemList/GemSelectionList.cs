@@ -751,7 +751,7 @@ namespace SpellEditor.Sources.Controls
         private DataRowCollection GetGemData(uint lowerBound, uint pageSize)
         {
             using (var gemData = _Adapter.Query(string.Format(_QueryTableString + 
-                " ORDER BY g.id DESC LIMIT {0}, {1}", 
+                " ORDER BY s.SpellName0 ASC LIMIT {0}, {1}", 
                 lowerBound, pageSize)))
             {
                 _Table.Merge(gemData, false, MissingSchemaAction.Add);
