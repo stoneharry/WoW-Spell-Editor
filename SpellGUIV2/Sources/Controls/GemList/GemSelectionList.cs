@@ -224,23 +224,25 @@ namespace SpellEditor.Sources.Controls
                 if (_DiscoveryLookup.Count > 0)
                     return;
 
-                try
+                using (var query = _Adapter.Query(_SelectSkillDiscoveryString))
                 {
-                    using (var query = _Adapter.Query(_SelectSkillDiscoveryString))
+                    foreach (DataRow row in query.Rows)
                     {
-                        foreach (DataRow row in query.Rows)
+                        uint spellId = 0u;
+                        uint itemId = 0u;
+                        try
                         {
-                            var spellId = uint.Parse(row[0].ToString());
+                            spellId = uint.Parse(row[0].ToString());
                             var reqSpell = uint.Parse(row[1].ToString());
-                            var item = uint.Parse(row[2].ToString());
-                            _DiscoveryLookup.Add(item, new SkillDiscovery(spellId, reqSpell, item));
+                            itemId = uint.Parse(row[2].ToString());
+                            _DiscoveryLookup.Add(itemId, new SkillDiscovery(spellId, reqSpell, itemId));
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Info(exception, $"ERROR: Failed to load discovery data for spell {spellId} itemId {itemId}: {exception.Message}\n" + exception);
+                            _ShowFlyoutMessage.Invoke("ERROR: {_WorldTableName}.skill_discovery_template could not be loaded: " + exception.Message);
                         }
                     }
-                }
-                catch (Exception exception)
-                {
-                    Logger.Info(exception, "ERROR: " + exception.Message);
-                    _ShowFlyoutMessage.Invoke("ERROR: {_WorldTableName}.skill_discovery_template could not be loaded: " + exception.Message);
                 }
             }
         }
