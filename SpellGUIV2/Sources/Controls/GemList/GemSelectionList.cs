@@ -300,7 +300,7 @@ namespace SpellEditor.Sources.Controls
                 // Delete if switching to purple
                 if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
                 {
-                    _Adapter.Execute($"DELETE FROM skill_discovery_template WHERE spellId = {skillSpellId}");
+                    _Adapter.Execute($"DELETE FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {skillSpellId}");
                 }
                 // Otherwise replace into
                 else
