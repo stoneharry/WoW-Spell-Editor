@@ -354,7 +354,7 @@ namespace SpellEditor.Sources.Controls
             // Update chest prismatic gem loot
             if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
             {
-                _Adapter.Execute($"REPLACE INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {entry.SpellItemEnchantmentEntry.ItemCache}, 0, 0, 0, 1, 1, 1, 1, \"{discoverSpellName}\")");
+                _Adapter.Execute($"REPLACE INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {entry.SpellItemEnchantmentEntry.ItemCache}, 0, 0, 0, 1, 1, 1, 1, \"{discoverSpellName}\", 0)");
             }
             else
             {
@@ -455,7 +455,7 @@ namespace SpellEditor.Sources.Controls
             // Update chest prismatic gem loot
             if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
             {
-                _Adapter.Execute($"INSERT INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {newItemId}, 0, 0, 0, 1, 1, 1, 1, \"Gem of {input}\")");
+                _Adapter.Execute($"INSERT INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {newItemId}, 0, 0, 0, 1, 1, 1, 1, \"Gem of {input}\", 0)");
             }
 
             // Achievement
