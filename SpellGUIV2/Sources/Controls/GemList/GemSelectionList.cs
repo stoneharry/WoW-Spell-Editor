@@ -301,6 +301,7 @@ namespace SpellEditor.Sources.Controls
                 if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
                 {
                     _Adapter.Execute($"DELETE FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {skillSpellId}");
+                    _Adapter.Execute($"DELETE FROM skilllineability WHERE spellId = {skillSpellId}");
                 }
                 // Otherwise replace into
                 else
@@ -312,6 +313,15 @@ namespace SpellEditor.Sources.Controls
 
                     // Update category for discovery spell
                     _Adapter.Execute($"REPLACE INTO {_WorldTableName}.skill_discovery_template VALUES ({skillSpellId}, {entry.GemTypeEntry.SkillDiscoverySpellId}, 0, 100)");
+
+                    // Insert Skill Line Ability based if it does not exist
+                    if (0 == int.Parse(_Adapter.QuerySingleValue(
+                        $"SELECT COUNT(*) FROM skilllineability WHERE spellId = {skillSpellId}").ToString()))
+                    {
+                        var newAbilityId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM skilllineability").ToString()) + 1u;
+                        _Adapter.Execute($"INSERT INTO skilllineability VALUES " +
+                            $"({newAbilityId}, {755}, {skillSpellId}, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0)"); // 755 = Jewelcrafting ID
+                    }
                 }
             }
 
