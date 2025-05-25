@@ -116,33 +116,36 @@ namespace SpellEditor.Sources.DBC
 
         public List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
         {
-            const int pageSize = 1000;
+            const int pageSize = 2500;
             int totalCount;
             using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName.ToLower()}`"))
             {
                 totalCount = int.Parse(queryData.Rows[0][0].ToString());
             }
-            var lowerBounds = 0;
-            var results = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
-            var loadCount = results.Count;
-            while (loadCount > 0)
+            int lowerBounds = 0;
+            int loadCount;
+            var results = new List<Dictionary<string, object>>(totalCount);
+            do
             {
+                var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
+                loadCount = page.Count;
+                page.AddRange(results);
+
                 lowerBounds += pageSize;
+
                 // Visual studio says these casts are redundant but it does not work without them
                 double percent = ((double)Math.Min(totalCount, lowerBounds) / (double)totalCount);
                 // Report 0 .. 0.8 only
                 updateProgress(percent * 0.8);
-
-                var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
-                loadCount = page.Count;
-                page.ForEach(results.Add);
             }
+            while (loadCount > 0);
+
             return results;
         }
 
         protected List<Dictionary<string, object>> LoadRecordPage(int lowerBounds, int pageSize, IDatabaseAdapter adapter, string bindingName, string orderClause)
         {
-            var records = new List<Dictionary<string, object>>();
+            var records = new List<Dictionary<string, object>>(pageSize);
             using (var queryData = adapter.Query($"SELECT * FROM `{bindingName.ToLower()}`{orderClause} LIMIT {lowerBounds}, {pageSize}"))
             {
                 foreach (DataRow row in queryData.Rows)
@@ -268,7 +271,7 @@ namespace SpellEditor.Sources.DBC
 
         private Dictionary<string, object> ConvertDataRowToDictionary(DataRow dataRow)
         {
-            var record = new Dictionary<string, object>();
+            var record = new Dictionary<string, object>(dataRow.Table.Columns.Count);
             foreach (DataColumn column in dataRow.Table.Columns)
             {
                 record.Add(column.ColumnName, dataRow[column]);
