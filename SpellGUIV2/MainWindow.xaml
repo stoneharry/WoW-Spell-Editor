@@ -494,10 +494,10 @@
                     <TabItem Header="{DynamicResource Effects2}">
                         <Grid>
                             <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1276">
-                                <TabItem Header="{DynamicResource SpellEffects1}">
+                                <TabItem Header="{DynamicResource SpellEffects1}" x:Name="effect1TabItem" Width="250" MaxWidth="250">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c2:FilteredComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:FilteredComboBox x:Name="SpellEffect1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged" LostFocus="FilteredComboBox_LostFocus"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="BasePoints1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
@@ -512,8 +512,8 @@
                                         <c2:ThreadSafeComboBox x:Name="TargetB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,228,0,0" Width="300"/>
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
                                         <c2:ThreadSafeComboBox x:Name="RadiusIndex1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
-                                        <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c2:FilteredComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0" />
+                                        <c2:FilteredComboBox x:Name="ApplyAuraName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300" LostFocus="FilteredComboBox_LostFocus" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="Amplitude1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
@@ -526,16 +526,19 @@
                                         <c2:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueA1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueB1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+
+                                        <Label x:Name="LabMiscValueA1" Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
+                                        <ContentControl x:Name="MiscValueA1DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300"/>
+
+                                        <Label x:Name="LabMiscValueB1" Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
+                                        <ContentControl x:Name="MiscValueB1DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300"/>
+
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask11" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask21" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask31" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labDamageMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
@@ -546,10 +549,10 @@
                                         <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
-                                <TabItem Header="{DynamicResource SpellEffects2}">
+                                <TabItem Header="{DynamicResource SpellEffects2}" x:Name="effect2TabItem" Width="250" MaxWidth="250">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c2:FilteredComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:FilteredComboBox x:Name="SpellEffect2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" LostFocus="FilteredComboBox_LostFocus" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="BasePoints2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
@@ -565,7 +568,7 @@
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
                                         <c2:ThreadSafeComboBox x:Name="RadiusIndex2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c2:FilteredComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <c2:FilteredComboBox x:Name="ApplyAuraName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300" LostFocus="FilteredComboBox_LostFocus" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="Amplitude2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
@@ -578,16 +581,19 @@
                                         <c2:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueA2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueB2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+
+                                        <Label x:Name="LabMiscValueA2" Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
+                                        <ContentControl x:Name="MiscValueA2DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300"/>
+
+                                        <Label x:Name="LabMiscValueB2" Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
+                                        <ContentControl x:Name="MiscValueB2DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300"/>
+
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask12" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask22" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask32" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>
@@ -598,10 +604,10 @@
                                         <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                     </Grid>
                                 </TabItem>
-                                <TabItem Header="{DynamicResource SpellEffects3}">
+                                <TabItem Header="{DynamicResource SpellEffects3}" x:Name="effect3TabItem" Width="250" MaxWidth="250">
                                     <Grid>
                                         <Label Content="{DynamicResource labSpellEffect}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,41,0,0"/>
-                                        <c2:FilteredComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
+                                        <c2:FilteredComboBox x:Name="SpellEffect3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,41,0,0" Width="300" LostFocus="FilteredComboBox_LostFocus" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labBasePoints}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,73,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="BasePoints3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,73,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labDieSides}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,103,0,0"/>
@@ -617,7 +623,7 @@
                                         <Label Content="{DynamicResource labRadius}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,259,0,0"/>
                                         <c2:ThreadSafeComboBox x:Name="RadiusIndex3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,259,0,0" Width="300" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labApplyAuraName}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,290,0,0"/>
-                                        <c2:FilteredComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300"/>
+                                        <c2:FilteredComboBox x:Name="ApplyAuraName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,290,0,0" Width="300" LostFocus="FilteredComboBox_LostFocus" SelectionChanged="ComboBox_SelectionChanged"/>
                                         <Label Content="{DynamicResource labAmplitude}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,321,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="Amplitude3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,321,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labMultipleValue}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,351,0,0"/>
@@ -630,16 +636,19 @@
                                         <c2:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueA3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300" TextWrapping="Wrap"/>
-                                        <Label Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
-                                        <c2:ThreadSafeTextBox x:Name="MiscValueB3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300" TextWrapping="Wrap"/>
+
+                                        <Label x:Name="LabMiscValueA3" Content="{DynamicResource labMiscValueA}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,103,0,0"/>
+                                        <ContentControl x:Name="MiscValueA3DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,103,0,0" Width="300"/>
+
+                                        <Label x:Name="LabMiscValueB3" Content="{DynamicResource labMiscValueB}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,135,0,0"/>
+                                        <ContentControl x:Name="MiscValueB3DynamicContent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,135,0,0" Width="300"/>
+
                                         <Label Content="{DynamicResource labSpellClassMask1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,166,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask13" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask23" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labSpellClassMask3}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,228,0,0"/>
-                                        <c2:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged"/>
+                                        <c2:ThreadSafeComboBox x:Name="SpellMask33" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,228,0,0" Width="300" IsEditable="True" IsReadOnly="True" SelectionChanged="SpellMask_SelectionChanged" DropDownClosed="SpellMask_DropDownClosed"/>
                                         <Label Content="{DynamicResource labDamageMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,259,0,0"/>
                                         <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,259,0,0" Width="300" TextWrapping="Wrap"/>
                                         <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,290,0,0"/>

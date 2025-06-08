@@ -37,7 +37,20 @@ namespace SpellEditor.Sources.DBC
                 ForceLoadDbc<SpellRadius>("SpellRadius"),
                 ForceLoadDbc<ItemClass>("ItemClass"),
                 ForceLoadDbc<ItemSubClass>("ItemSubClass"),
-                ForceLoadDbc<AnimationData>("AnimationData")
+                ForceLoadDbc<AnimationData>("AnimationData"),
+
+                // used for misc values
+                ForceLoadDbc<SkillLine>("SkillLine"),
+                ForceLoadDbc<Languages>("Languages"),
+                // ForceLoadDbc<AnimationData>("CreatureDisplayInfo")
+                ForceLoadDbc<LockType>("LockType"),
+                ForceLoadDbc<CreatureType>("CreatureType"),
+                ForceLoadDbc<SpellShapeshiftForm>("SpellShapeshiftForm"),
+                ForceLoadDbc<SkillLineCategory>("SkillLineCategory"),
+                // SpellItemEnchantment
+                // Faction
+                // TaxiPath
+
             };
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
@@ -47,6 +60,9 @@ namespace SpellEditor.Sources.DBC
             {
                 tasks.Add(ForceLoadDbc<SpellRuneCost>("SpellRuneCost"));
                 tasks.Add(ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables"));
+
+                // tasks.Add(ForceLoadDbc<...>("OverrideSpellData"));
+                tasks.Add(ForceLoadDbc<ScreenEffect>("ScreenEffect"));
             }
             return tasks;
         }

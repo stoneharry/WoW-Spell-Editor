@@ -19,6 +19,8 @@ namespace SpellEditor.Sources.Controls.Common
     {
         private static readonly TimeSpan RefreshFilterDelay = TimeSpan.FromMilliseconds(1000);
 
+        public static int LastSelectedIndex = 0;
+
         /// <summary>
         /// If true, on lost focus or enter key pressed, checks the text in the combobox. If the text is not present
         /// in the list, it leaves it blank.
@@ -75,6 +77,12 @@ namespace SpellEditor.Sources.Controls.Common
 
         public uint GetNumberPrefixFromText(string text = null)
         {
+            if (SelectedItem == null)
+            {
+                SelectedIndex = 0;
+                SetTextFromIndex(0);
+            }
+
             text = text != null ? text.TrimStart() : Text.TrimStart();
             var numStr = "";
             for (int i = 0; i < text.Length; ++i)
@@ -173,6 +181,10 @@ namespace SpellEditor.Sources.Controls.Common
         private void FilteredComboBox_UserTextChange(object sender, EventArgs e)
         {
             if (TextBoxFreezed) return;
+
+            // todo
+            // LastSelectedIndex = SelectedIndex;
+
             var tb = EditableTextBox;
             if (tb.SelectionStart + tb.SelectionLength == tb.Text.Length)
                 CurrentFilter = tb.Text.Substring(0, tb.SelectionStart).ToLower();

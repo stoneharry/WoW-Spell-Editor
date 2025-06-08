@@ -9,12 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -75,11 +77,65 @@ namespace SpellEditor
         private readonly List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
         private VisualController _currentVisualController;
+
+        // store effects UI stuff in arrays for easy access
+        private FilteredComboBox[] spellEffectTypeBoxes;
+        private ThreadSafeTextBox[] effectMultipleValueBoxes;
+        private FilteredComboBox[] effectAuraNameBoxes;
+        private ThreadSafeTextBox[] effectChainTargetBoxes;
+        private ThreadSafeTextBox[] effectItemTypeBoxes;
+        private ThreadSafeTextBox[] effectTriggerSpellBoxes;
+        private ThreadSafeTextBox[] effectAmplitudeBoxes;
+        private Label[] miscValueLabelA;
+        private ContentControl[] miscValueDynamicContentsA;
+        private Label[] miscValueLabelB;
+        private ContentControl[] miscValueDynamicContentsB;
+
         #endregion
 
         public IDatabaseAdapter GetDBAdapter()
         {
             return adapter;
+        }
+
+        private void VerifyStaticData()
+        {
+            // Enforces implementing all known effects
+            foreach (spellEffectTypes effect in Enum.GetValues(typeof(spellEffectTypes)))
+            {
+                if (effect != spellEffectTypes.NONE)
+                    Debug.Assert(MiscValueConstants.spellEffectsData.ContainsKey(effect), $"Spell Effect {effect} doesn't have data in spellEffectsData");
+            }
+
+            // foreach (var aura in MiscValueConstants.auraMiscValues)
+            // {
+            // 
+            // }
+
+            foreach (MiscValueType miscvalue in Enum.GetValues(typeof(MiscValueType)))
+            {
+                if (miscvalue != MiscValueType.None && miscvalue != MiscValueType.UNKNOWN)
+                    Debug.Assert(MiscValueConstants.MiscValueTypesData.ContainsKey(miscvalue), $"Misc value {miscvalue} doesn't have data in MiscValueTypesData");
+
+            }
+
+            foreach (var miscvaluedata in MiscValueConstants.MiscValueTypesData)
+            {
+                if (miscvaluedata.Value.RessourceType == RessourceType.None && miscvaluedata.Value.ControlType != ControlType.TextBox)
+                    throw new Exception("found ressource type none in a non textbox control");
+
+                // verify data mapping definitions exists
+                if (miscvaluedata.Value.RessourceType == RessourceType.StringList)
+                {
+                    Debug.Assert(MiscValueConstants.miscValueMappedStringsRessource.ContainsKey(miscvaluedata.Key),
+                        $"Misc value {miscvaluedata.Key.ToString()} doesn't have data in miscValueMappedStringsRessource");
+                }
+                else if (miscvaluedata.Value.RessourceType == RessourceType.DBC)
+                {
+                    Debug.Assert(MiscValueConstants.miscValueMappedDbcRessource.ContainsKey(miscvaluedata.Key),
+                        $"Misc value {miscvaluedata.Key.ToString()} doesn't have data in miscValueMappedDbcRessource");
+                }
+            }
         }
 
         public MainWindow()
@@ -118,10 +174,26 @@ namespace SpellEditor
             Logger.Info("######################################################");
             Logger.Info($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
             Logger.Info("######################################################");
+
+            VerifyStaticData();
             
             // Config must be initialised fast
             Config.Init();
             InitializeComponent();
+
+            // store effects Ui elements in arrays for easy access
+            spellEffectTypeBoxes = new[] { SpellEffect1, SpellEffect2, SpellEffect3 };
+            effectMultipleValueBoxes = new[] { MultipleValue1, MultipleValue2, MultipleValue3 };
+            effectAuraNameBoxes = new[] { ApplyAuraName1, ApplyAuraName2, ApplyAuraName3 };
+            effectChainTargetBoxes = new[] { ChainTarget1, ChainTarget2, ChainTarget3 };
+            effectItemTypeBoxes = new[] { ItemType1, ItemType2, ItemType3 };
+            effectTriggerSpellBoxes = new[] { TriggerSpell1, TriggerSpell2, TriggerSpell3 };
+            effectAmplitudeBoxes = new[] { Amplitude1, Amplitude2, Amplitude3 };
+            miscValueLabelA = new[] { LabMiscValueA1, LabMiscValueA2, LabMiscValueA3 };
+            miscValueDynamicContentsA = new[] { MiscValueA1DynamicContent, MiscValueA2DynamicContent, MiscValueA3DynamicContent };
+            miscValueLabelB = new[] { LabMiscValueB1, LabMiscValueB2, LabMiscValueB3 };
+            miscValueDynamicContentsB = new[] { MiscValueB1DynamicContent, MiscValueB2DynamicContent, MiscValueB3DynamicContent };
+
         }
 
         ~MainWindow()
@@ -278,36 +350,6 @@ namespace SpellEditor
                 attributes7.Add(box);
             }
 
-            StancesGrid.Children.Clear();
-            stancesBoxes.Clear();
-            string[] stances_strings = SafeTryFindResource("stances_strings").Split('|');
-            foreach (string stance in stances_strings)
-            {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox
-                {
-                    Content = stance, ToolTip = stance, Margin = new Thickness(0, 5, 0, 0)
-                };
-
-
-                StancesGrid.Children.Add(box);
-                stancesBoxes.Add(box);
-            }
-
-            TargetCreatureType.Children.Clear();
-            targetCreatureTypeBoxes.Clear();
-            string[] creature_type_strings = SafeTryFindResource("creature_type_strings").Split('|');
-            foreach (string creatureType in creature_type_strings)
-            {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox
-                {
-                    Content = creatureType, ToolTip = creatureType, Margin = new Thickness(0, 5, 0, 0)
-                };
-
-
-                TargetCreatureType.Children.Add(box);
-                targetCreatureTypeBoxes.Add(box);
-            }
-
             CasterAuraState.Items.Clear();
             string[] caster_aura_state_strings = SafeTryFindResource("caster_aura_state_strings").Split('|');
             foreach (string casterAuraState in caster_aura_state_strings) { CasterAuraState.Items.Add(casterAuraState); }
@@ -347,7 +389,7 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
-            string[] school_strings = SafeTryFindResource("school_strings").Split('|');
+            string[] school_strings = SafeTryFindResource("power_type_strings").Split('|');
             foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
 
             SpellDamageType.Items.Clear();
@@ -407,7 +449,7 @@ namespace SpellEditor
             ApplyAuraName3.ItemsSource = new List<string>(comboEntries);
             FilterAuraCombo.ItemsSource = new List<string>(comboEntries);
 
-            string[] spell_effect_names = SafeTryFindResource("spell_effect_names").Split('|');
+            string[] spell_effect_names = SafeTryFindResource("spell_effect_names_clear").Split('|');
             comboEntries = new string[spell_effect_names.Length];
             for (int i = 0; i < spell_effect_names.Length; ++i)
             {
@@ -421,19 +463,20 @@ namespace SpellEditor
             Mechanic1.Items.Clear();
             Mechanic2.Items.Clear();
             Mechanic3.Items.Clear();
-            string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
-            foreach (string mechanicName in mechanic_names)
-            {
-                Mechanic1.Items.Add(mechanicName);
-                Mechanic2.Items.Add(mechanicName);
-                Mechanic3.Items.Add(mechanicName);
-            }
+            // TODO DBC instead
+            // string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
+            // foreach (string mechanicName in mechanic_names)
+            // {
+            //     Mechanic1.Items.Add(mechanicName);
+            //     Mechanic2.Items.Add(mechanicName);
+            //     Mechanic3.Items.Add(mechanicName);
+            // }
 
             if (TargetA1.Items.Count == 0)
             {
                 int number = 0;
                 var comboList = new List<string>();
-                foreach (Targets t in Enum.GetValues(typeof(Targets)))
+                foreach (Targets t in System.Enum.GetValues(typeof(Targets)))
                 {
                     comboList.Add(number + " - " + t);
                     ++number;
@@ -518,7 +561,7 @@ namespace SpellEditor
         #region Loaded
         private void _Loaded(object sender, RoutedEventArgs e)
         {
-            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            System.Windows.Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             try
             {
@@ -585,7 +628,7 @@ namespace SpellEditor
 
                 for (int i = 0; i < 32; ++i)
                 {
-                    uint mask = (uint)Math.Pow(2, i);
+                    uint mask = 1u << i;
 
                     SpellMask11.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
                     SpellMask12.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
@@ -630,11 +673,75 @@ namespace SpellEditor
             for (uint i = 0; i < 32; i++)
             {
                 ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
-                Mask += cb.IsChecked == true ? (uint)Math.Pow(2, i) : 0;
+                if (cb.IsChecked == true)
+                    Mask |= (1u << (int)i);
             }
             father.Text = Mask.ToString();
 
             SpellMask_SelectionChanged(father, null);
+        }
+
+        private void RefreshMaskComboboxText(ThreadSafeComboBox combobox)
+        {
+           uint Mask = 0;
+            List<string> item_names = new List<string> {};
+            foreach (ThreadSafeCheckBox cb in combobox.Items)
+            // foreach (var item in father.Items)
+            {
+                // if (item is Grid grid && grid.Children[0] is ThreadSafeCheckBox cb)
+                {
+                    // note : index must start at 0
+                    // if (cb.Tag is uint index)
+
+                    string cb_text = (string)cb.Content;
+                    uint index = (uint)GetNumberPrefixFromText(cb_text);
+                    {
+                        // Mask += cb.IsChecked == true ? (uint)Math.Pow(2, index) : 0;
+                        if (cb.IsChecked == true)
+                            Mask |= (1u << ((int)index - 1));
+
+                        if (cb.IsChecked == true)
+                        {
+                            // remove the Id prefix
+                            string result = Regex.Replace(cb_text, @"^\s*\d+\s*-\s*", "");
+                            // Trim ending spaces
+                            result = result.TrimEnd();
+                            item_names.Add(result);
+                        }
+
+                    }
+                    // else
+                    //     throw new Exception($"error with checkbox tag value.");
+                }
+
+            }
+            string controlText = Mask.ToString();
+
+            if (item_names.Count > 0)
+            {
+                controlText += " - ";
+                foreach (string item in item_names)
+                {
+                    controlText += item + ", ";
+                }
+                
+                controlText = controlText.TrimEnd(); // remove spaces
+                controlText = controlText.Substring(0, controlText.Length - 1);// remove last "," char, lazy way
+            }
+
+            combobox.Text = controlText;
+        }
+
+        private void HandMaskCombobox_Checked(object obj, RoutedEventArgs e)
+        {
+            ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent; // old without grid
+
+            // ThreadSafeCheckBox checkbox = (ThreadSafeCheckBox)obj;
+            // Grid containerGrid = (Grid)checkbox.Parent;
+            // // note : only works if there's only one parent
+            // ThreadSafeComboBox father = (ThreadSafeComboBox)LogicalTreeHelper.GetParent(containerGrid);
+
+            RefreshMaskComboboxText(father);
         }
 
         #endregion
@@ -853,6 +960,48 @@ namespace SpellEditor
                 RadiusIndex3.ItemsSource = radiusLabels;
                 EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
                     DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
+
+
+                var shapeshift_labels = ConvertBoxListToLabels(((SpellShapeshiftForm)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellShapeshiftForm")).GetAllBoxes());
+                foreach (var stance in shapeshift_labels)
+                {
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                    {
+                        Content = stance.ToString(),
+                        ToolTip = stance.ToString(),
+                        Margin = new Thickness(0, 5, 0, 0)
+                    };
+
+                    StancesGrid.Children.Add(box);
+                    stancesBoxes.Add(box);
+                }
+
+                var creature_type_labels = ConvertBoxListToLabels(((CreatureType)
+                        DBCManager.GetInstance().FindDbcForBinding("CreatureType")).GetAllBoxes());
+                foreach (var creatureType in creature_type_labels)
+                {
+                    ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                    {
+                        Content = creatureType,
+                        ToolTip = creatureType,
+                        Margin = new Thickness(0, 5, 0, 0)
+                    };
+
+                    TargetCreatureType.Children.Add(box);
+                    targetCreatureTypeBoxes.Add(box);
+                }
+
+
+                var mechanic_names_labels = ConvertBoxListToLabels(((SpellMechanic)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());
+                foreach (var mechanicType in mechanic_names_labels)
+                {
+                    Mechanic1.Items.Add(mechanicType.Content);
+                    Mechanic2.Items.Add(mechanicType.Content);
+                    Mechanic3.Items.Add(mechanicType.Content);
+                }
+
                 var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
                 var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
                 if (isTbcOrGreater)
@@ -940,6 +1089,8 @@ namespace SpellEditor
         }
 
         private List<Label> ConvertBoxListToLabels(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabel()).ToList();
+
+        private List<Label> ConvertBoxListToLabelsWithIds(List<DBCBoxContainer> boxes) => boxes.Select(entry => entry.ItemLabelWithId()).ToList();
 
         private async Task GetConfig()
         {
@@ -1098,7 +1249,7 @@ namespace SpellEditor
             else if (sender == FilterIcons)
             {
                 var input = FilterIcons.Text.ToLower();
-                foreach (Image image in IconGrid.Children)
+                foreach (System.Windows.Controls.Image image in IconGrid.Children)
                 {
                     var name = image.ToolTip.ToString().ToLower();
                     image.Visibility = name.Contains(input) ? Visibility.Visible : Visibility.Collapsed;
@@ -1615,11 +1766,13 @@ namespace SpellEditor
                     {
                         uint Mask = 0;
                         for (int i = 0; i < equippedItemSubClassMaskBoxes.Count; i++)
-                            Mask += equippedItemSubClassMaskBoxes[i].IsChecked.Value ? (uint)Math.Pow(2, i) : 0;
-                        
+                        {
+                            if (equippedItemSubClassMaskBoxes[i].IsChecked == true)
+                                Mask |= (1u << i);
+                        }
                         row["EquippedItemSubClassMask"] = Mask;
                     }
-
+                    
                     row["Effect1"] = SpellEffect1.GetNumberPrefixFromText();
                     row["Effect2"] = SpellEffect2.GetNumberPrefixFromText();
                     row["Effect3"] = SpellEffect3.GetNumberPrefixFromText();
@@ -1656,14 +1809,16 @@ namespace SpellEditor
                     row["EffectItemType1"] = uint.Parse(ItemType1.Text);
                     row["EffectItemType2"] = uint.Parse(ItemType2.Text);
                     row["EffectItemType3"] = uint.Parse(ItemType3.Text);
-                    row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
-                    row["EffectMiscValue2"] = int.Parse(MiscValueA2.Text);
-                    row["EffectMiscValue3"] = int.Parse(MiscValueA3.Text);
+                    // row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+                    row["EffectMiscValue1"] = GetMiscValue(1, 1);
+                    row["EffectMiscValue2"] = GetMiscValue(2, 1);
+                    row["EffectMiscValue3"] = GetMiscValue(3, 1);
                     if (isTbcOrGreater)
                     {
-                        row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
-                        row["EffectMiscValueB2"] = int.Parse(MiscValueB2.Text);
-                        row["EffectMiscValueB3"] = int.Parse(MiscValueB3.Text);
+                        // row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
+                        row["EffectMiscValueB1"] = GetMiscValue(1, 2);
+                        row["EffectMiscValueB2"] = GetMiscValue(2, 2);
+                        row["EffectMiscValueB3"] = GetMiscValue(3, 2);
                     }
                     row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
                     row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
@@ -2025,6 +2180,752 @@ namespace SpellEditor
         #endregion
 
         #region LoadSpell (load spell god-function)
+
+
+        // store current misc value data type so we don't have to reverse it to access.
+        private ControlType miscvalueA1data = ControlType.TextBox;
+        private ControlType miscvalueB1data = ControlType.TextBox;
+        private ControlType miscvalueA2data = ControlType.TextBox;
+        private ControlType miscvalueB2data = ControlType.TextBox;
+        private ControlType miscvalueA3data = ControlType.TextBox;
+        private ControlType miscvalueB3data = ControlType.TextBox;
+
+
+        private int GetNumberPrefixFromText(string text)
+        {
+            text = text.TrimStart();
+            var numStr = "";
+            for (int i = 0; i < text.Length; ++i)
+            {
+                if (char.IsDigit(text[i]) 
+                    | (text[i] == '-' && i == 0)) // support negative values
+                {
+                    numStr += text[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (int.TryParse(numStr, out var num))
+            {
+                return num;
+            }
+            return 0;
+        }
+
+        private bool IsAuraSpellEffect(int spellEffectTypeId)
+        {
+            if (spellEffectTypeId == 0)
+                return false;
+
+            SpellEffectData spellEffectData = new SpellEffectData();
+            bool EffectHasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spellEffectTypeId, out spellEffectData);
+            Debug.Assert(EffectHasData);
+
+            // didn't have aura pre Wrath
+            if ( (!WoWVersionManager.IsWotlkOrGreaterSelected) && spellEffectTypeId == 65)
+            {
+                return false;
+            }
+
+            // if (spellEffectTypeId == 6 || spellEffectTypeId == 27 || spellEffectTypeId == 35 ||
+            //     spellEffectTypeId == 119 || spellEffectTypeId == 128 || spellEffectTypeId == 143)
+            if (spellEffectData.usesAura)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        // refreshes the UI to load the right miscvalue ui control, but doesn't load its value
+        private void SetupMiscValueControl(int effectIndex /* 1 to 3 */, int spellEffectType, int auraType, int miscValue = 0)
+        {
+            // setup UI controls, disable everything by default
+            effectMultipleValueBoxes[effectIndex - 1].IsEnabled = false;
+            effectAuraNameBoxes[effectIndex - 1].IsEnabled = false;
+            effectChainTargetBoxes[effectIndex - 1].IsEnabled = false;
+            effectItemTypeBoxes[effectIndex - 1].IsEnabled = false;
+            effectTriggerSpellBoxes[effectIndex - 1].IsEnabled = false;
+            effectAmplitudeBoxes[effectIndex - 1].IsEnabled = false;
+
+            ContentControl DynamicContentA = miscValueDynamicContentsA[effectIndex - 1];
+            ContentControl DynamicContentB = miscValueDynamicContentsB[effectIndex - 1];
+
+            ref ControlType currMiscValueAData = ref miscvalueA1data; // temporary for initialization
+            ref ControlType currMiscValueBData = ref miscvalueB1data;
+
+            Label currLabelA = miscValueLabelA[effectIndex - 1];
+            Label currLabelB = miscValueLabelB[effectIndex - 1];
+
+            switch (effectIndex)
+            {
+                case 1:
+                    currMiscValueAData = ref miscvalueA1data;
+                    currMiscValueBData = ref miscvalueB1data;
+                    break;
+                case 2:
+                    currMiscValueAData = ref miscvalueA2data;
+                    currMiscValueBData = ref miscvalueB2data;
+                    break;
+                case 3:
+                    currMiscValueAData = ref miscvalueA3data;
+                    currMiscValueBData = ref miscvalueB3data;
+                    break;
+            }
+            // reset ui control
+            DynamicContentA.Content = null;
+            DynamicContentB.Content = null;
+            DynamicContentA.IsEnabled = false;
+            DynamicContentB.IsEnabled = false;
+            currMiscValueAData = ControlType.TextBox;
+            currMiscValueBData = ControlType.TextBox;
+            currLabelA.Content = SafeTryFindResource("labMiscValueA");
+            currLabelB.Content = SafeTryFindResource("labMiscValueB");
+            ////
+            ///
+
+            // no spell effect, we're done, everythnig disabled
+            if (spellEffectType == (int)spellEffectTypes.NONE)
+            {
+                DynamicContentA.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                DynamicContentB.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                return;
+            }
+
+            // effect data, maybe move to another function
+            SpellEffectData spellEffectData = new SpellEffectData();
+
+            MiscValuePair miscValues;
+            bool hasMiscValues = false;
+            bool isAura = false;
+
+            bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spellEffectType, out spellEffectData);
+            if (!hasData && spellEffectType != (int)spellEffectTypes.NONE)
+                throw new NotImplementedException($"Spell Effect {spellEffectType} does not have data. Report to devs.");
+            
+
+
+            // if (IsAuraSpellEffect(spellEffectType))
+            if (spellEffectData.usesAura)
+            {
+                // get miscvalue from aura instead of effect
+                isAura = true;
+                hasMiscValues = MiscValueConstants.auraMiscValues.TryGetValue(auraType, out miscValues);
+            }
+            else // get misc values from effect. // TODO : get more data from aura : multiplevalue, spelltrigger etc
+            {
+                miscValues = new MiscValuePair(spellEffectData.MiscValueA, spellEffectData.MiscValueB);
+                if (miscValues.ValueA != MiscValueType.None || miscValues.ValueB != MiscValueType.None)
+                    hasMiscValues = true;
+            }
+
+            // enable fields based on spell effect
+            if (spellEffectData.usesAura)
+            {   // enable everything for auras for now, gotta analyse in the future how auras use those fields.
+                effectMultipleValueBoxes[effectIndex - 1].IsEnabled = true;
+                effectAuraNameBoxes[effectIndex - 1].IsEnabled = true;
+                effectChainTargetBoxes[effectIndex - 1].IsEnabled = true;
+                effectItemTypeBoxes[effectIndex - 1].IsEnabled = true;
+                effectTriggerSpellBoxes[effectIndex - 1].IsEnabled = true;
+                effectAmplitudeBoxes[effectIndex - 1].IsEnabled = true;
+            }
+            else
+            {
+                effectMultipleValueBoxes[effectIndex - 1].IsEnabled = spellEffectData.usesMultipleValue;
+                effectAuraNameBoxes[effectIndex - 1].IsEnabled = spellEffectData.usesAura;
+                effectChainTargetBoxes[effectIndex - 1].IsEnabled = spellEffectData.UsesChainTarget;
+                effectItemTypeBoxes[effectIndex - 1].IsEnabled = spellEffectData.UsesItemType;
+                effectTriggerSpellBoxes[effectIndex - 1].IsEnabled = spellEffectData.UsesSpell;
+                effectAmplitudeBoxes[effectIndex - 1].IsEnabled = spellEffectData.UsesAmplitude;
+            }
+
+            // dev helpers to find possible used fields, ignore auras for now
+            if ((spellEffectData.usesAura == false))
+            {
+                if (spellEffectData.usesMultipleValue == false)
+                    Debug.Assert(effectMultipleValueBoxes[effectIndex - 1].Text == "0"
+                              || effectMultipleValueBoxes[effectIndex - 1].Text == "1");
+                if (spellEffectData.usesAura == false)
+                    Debug.Assert(effectAuraNameBoxes[effectIndex - 1].GetNumberPrefixFromText() == 0u);
+                if (spellEffectData.UsesChainTarget == false)
+                    Debug.Assert(effectChainTargetBoxes[effectIndex - 1].Text == "0");
+                if (spellEffectData.UsesItemType == false)
+                    Debug.Assert(effectItemTypeBoxes[effectIndex - 1].Text == "0");
+                if (spellEffectData.UsesSpell == false)
+                    Debug.Assert(effectTriggerSpellBoxes[effectIndex - 1].Text == "0");
+                if (spellEffectData.UsesAmplitude == false)
+                    Debug.Assert(effectAmplitudeBoxes[effectIndex - 1].Text == "0");
+            }
+
+
+
+            ////
+            // misc value Aura specific stuff -------
+
+            // no spell effect, we're done
+           if (!hasMiscValues)
+            {
+                DynamicContentA.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                DynamicContentB.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                return;
+            }
+
+            Debug.Assert(miscValues.ValueA != MiscValueType.None);
+
+            // initialize dynamic UI control for both A and B
+            for (int misc_value_idx = 0; misc_value_idx < 2; misc_value_idx++)
+            {
+                if (WoWVersionManager.IsTbcOrGreaterSelected == false && misc_value_idx == 1)
+                    continue;
+
+                MiscValueType currMiscValue;
+                ContentControl currContentControl;
+
+                if (misc_value_idx == 0)
+                {
+                    currMiscValue = miscValues.ValueA;
+                    currContentControl = DynamicContentA;
+                }
+                else
+                {
+                    currMiscValue = miscValues.ValueB;
+                    currContentControl = DynamicContentB;
+                }
+
+                if (currMiscValue == MiscValueType.None)
+                {
+                    // use default textbox
+                    currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                    continue;
+                }
+
+                // set description label to misc value type
+                // add a space where uppercase is found, eg : SpellAura becomes Spell Aura.
+                string misc_value_type_name = Regex.Replace(currMiscValue.ToString(), "(?<!^)([A-Z])", " $1");
+                if (misc_value_idx == 0)
+                    currLabelA.Content = misc_value_type_name;
+                else
+                    currLabelB.Content = misc_value_type_name;
+
+
+                currContentControl.IsEnabled = true;
+
+                if (!MiscValueConstants.MiscValueTypesData.ContainsKey(currMiscValue))
+                {
+                    throw new Exception($"Unimplemented misc value type {currMiscValue.ToString()}.");
+                }
+
+                MiscValueTypeData miscValueTypeData = MiscValueConstants.MiscValueTypesData[currMiscValue];
+                ControlType controltype = miscValueTypeData.ControlType;
+                RessourceType ressourcetype = miscValueTypeData.RessourceType;
+                string dbc_name = "";
+                string ressource_string_name = "";
+
+                if (controltype == ControlType.TextBox)
+                {
+                    // shouldn't need any ressource
+                    currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                    continue;
+                }
+
+                // load ressources mapping
+                if (ressourcetype == RessourceType.DBC)
+                {
+                    if (!MiscValueConstants.miscValueMappedDbcRessource.TryGetValue(currMiscValue, out dbc_name))
+                        throw new Exception($"Unimplemented DBC ressource for misc value type {currMiscValue.ToString()}.");
+                }
+                else if (ressourcetype == RessourceType.StringList)
+                {
+                    if (!MiscValueConstants.miscValueMappedStringsRessource.TryGetValue(currMiscValue, out ressource_string_name))
+                    {
+                        // currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                        // continue;
+                        throw new Exception($"Unimplemented XAML strings ressource for misc value type {currMiscValue.ToString()}.");
+
+                    }
+                }
+                else if (ressourcetype == RessourceType.DB || ressourcetype == RessourceType.None)
+                {
+                    // todo
+                    // unimplemented, create default text box
+                    currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                    continue;
+                }
+
+                if (controltype == ControlType.ComboboxList || controltype == ControlType.ComboboxMask)
+                {
+                    ThreadSafeComboBox comboBox = new ThreadSafeComboBox();
+
+                    // setup special mode for mask combobox
+                    if (controltype == ControlType.ComboboxMask)
+                    {
+                        comboBox.IsEditable = true;
+                        comboBox.IsReadOnly = true;
+                        comboBox.IsTextSearchEnabled = false; // Disable WPF trying to search by text
+
+                        // comboBox.SelectionChanged += (s, e) => ((ComboBox)s).SelectedItem = null;
+                    }
+
+                    // load dbc ressource
+                    if (ressourcetype == RessourceType.DBC)
+                    {
+                        string dbcClassName = $"SpellEditor.Sources.DBC.{dbc_name}"; // too lazy to map the classes
+                        System.Type type = System.Type.GetType(dbcClassName);
+
+                        object dbcInstance = DBCManager.GetInstance().FindDbcForBinding(dbc_name);
+                        if (dbcInstance == null)
+                        {
+                            // currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                            // continue;
+                            throw new Exception($"DBC could not be loaded : {dbc_name}.");
+                        }
+
+                        dynamic dynamicDbcInstance = Convert.ChangeType(dbcInstance, type);
+
+                        var labels = ConvertBoxListToLabelsWithIds(dynamicDbcInstance.GetAllBoxes());
+
+                        // verify first line has index, expected format : "420 - text"
+                        if (!Regex.IsMatch(labels[0].ToString(), @"^\d+ -"))
+                            throw new Exception($"DBC ressource for misc value type {currMiscValue.ToString()} (xkey:{ressource_string_name}) doesn't use expected indexing format.");
+
+
+                        if (controltype == ControlType.ComboboxList)
+                        {
+                            // comboBox.ItemsSource = ConvertBoxListToLabels(dynamicDbcInstance.GetAllBoxes());
+                            comboBox.ItemsSource = labels;
+                        }
+                        else if (controltype == ControlType.ComboboxMask)
+                        {
+                            // TODO implement mask combobox from dbc
+
+                            foreach (var label in labels)
+                            {
+                                string text = label.ToString();
+                                uint id = (uint)GetNumberPrefixFromText(text);
+
+                                // ISSUE : DBCs start at id 1, enums for bitmasks start at id 0.
+
+
+                                // ignore 0/none, don't need that in a mask combobox
+                                if (id == 0)
+                                    continue;
+
+                                ThreadSafeCheckBox chk = new ThreadSafeCheckBox
+                                {
+                                    Content = text,
+                                    Tag = id, // store index
+
+                                    // to make the checkbox fill horizontally
+                                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                };
+                                chk.Checked += HandMaskCombobox_Checked;
+                                chk.Unchecked += HandMaskCombobox_Checked;
+
+                                comboBox.Items.Add(chk);
+
+
+                            }
+                            // solve the bug of text changing when clicking outside the checkbox
+                            comboBox.DropDownClosed += MiscValueMask_DropDownClosed;
+                        }
+
+                    }
+                    else if (ressourcetype == RessourceType.StringList) // string list ressource
+                    {
+                        string[] ressource_strings = SafeTryFindResource(ressource_string_name).Split('|');
+                        int length = ressource_strings.Length;
+
+                        if (length < 2)
+                        {
+                            throw new Exception($"Missing or invalid XAML string ressource for misc value type {currMiscValue.ToString()}, xkey {ressource_string_name} .");
+                        }
+
+                        // manually add prefix to some ressource string that are missing it, can add them to file instead.
+                        
+                        if (currMiscValue == MiscValueType.SpellEffect || currMiscValue == MiscValueType.AuraState)
+                        {
+
+                            string[] comboEntries = new string[length];
+                            for (int i = 0; i < length; ++i)
+                            {
+                                comboEntries[i] = i + " - " + ressource_strings[i];
+                            }
+                            ressource_strings = comboEntries;
+                        }
+                        // verify first line has index, expected format : "420 - text"
+                        if (!Regex.IsMatch(ressource_strings[0], @"^\d+ -"))
+                            throw new Exception($"XAML string ressource for misc value type {currMiscValue.ToString()} (xkey:{ressource_string_name}) doesn't use expected indexing format.");
+
+                        if (controltype == ControlType.ComboboxList)
+                        {
+                            foreach (string ressource_string in ressource_strings)
+                            {
+                                comboBox.Items.Add(ressource_string);
+                            }
+                        }
+                        else if (controltype == ControlType.ComboboxMask)
+                        {
+                            for (uint i = 0; i < ressource_strings.Length; ++i)
+                            {
+                                string text = ressource_strings[i];
+                                uint id = (uint)GetNumberPrefixFromText(text);
+
+                                Debug.Assert(id > 0, "error");
+                                if (id == 0)
+                                    continue;
+
+                                ThreadSafeCheckBox chk = new ThreadSafeCheckBox
+                                {
+                                    Content = text,
+                                    Tag = id, // store index
+
+                                    // to make the checkbox fill horizontally
+                                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                };
+
+                                chk.Checked += HandMaskCombobox_Checked;
+                                chk.Unchecked += HandMaskCombobox_Checked;
+
+                                comboBox.Items.Add(chk);
+                            }
+
+                            comboBox.DropDownClosed += MiscValueMask_DropDownClosed;
+                        }
+
+                    }
+
+                    currContentControl.Content = comboBox;
+
+                    // store curr UI type for quick access
+                    if (controltype == ControlType.ComboboxList)
+                    {
+                        if (misc_value_idx == 0)
+                            currMiscValueAData = ControlType.ComboboxList;
+                        else
+                            currMiscValueBData = ControlType.ComboboxList;
+                    }
+                    else if (controltype == ControlType.ComboboxMask)
+                    {
+                        if (misc_value_idx == 0)
+                            currMiscValueAData = ControlType.ComboboxMask;
+                        else
+                            currMiscValueBData = ControlType.ComboboxMask;
+                    }
+
+                }
+                else if (controltype == ControlType.ListSelector) // NYI
+                {
+                    currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                }
+
+            }
+            ///
+        }
+
+        private ContentControl GetMiscValueDynamicContent(int effectIndex, int miscvalueId /* 1 or 2 (A or B)*/)
+        {
+            ContentControl DynamicContent = null;
+
+            switch (effectIndex)
+            {
+                case 1:
+                    if (miscvalueId == 1) 
+                        DynamicContent = MiscValueA1DynamicContent;// A
+                    else
+                        DynamicContent = MiscValueB1DynamicContent; // B
+                    break;
+                case 2:
+                    if (miscvalueId == 1)
+                        DynamicContent = MiscValueA2DynamicContent;// A
+                    else
+                        DynamicContent = MiscValueB2DynamicContent; // B
+                    break;
+                case 3:
+                    if (miscvalueId == 1)
+                        DynamicContent = MiscValueA3DynamicContent;// A
+                    else
+                        DynamicContent = MiscValueB3DynamicContent; // B
+                    break;
+            }
+
+            return DynamicContent;
+        }
+
+        private ControlType GetMiscValueControlType(int effectIndex, int miscvalueId /* 1 or 2 (A or B)*/)
+        {
+            ControlType currMiscValueData = miscvalueA1data;
+
+            switch (effectIndex)
+            {
+                case 1:
+                    if (miscvalueId == 1)
+                        currMiscValueData = miscvalueA1data;// A
+                    else
+                        currMiscValueData = miscvalueB1data; // B
+                    break;
+                case 2:
+                    if (miscvalueId == 1)
+                        currMiscValueData = miscvalueA2data;// A
+                    else
+                        currMiscValueData = miscvalueB2data; // B
+                    break;
+                case 3:
+                    if (miscvalueId == 1)
+                        currMiscValueData = miscvalueA3data;// A
+                    else
+                        currMiscValueData = miscvalueB3data; // B
+                    break;
+            }
+
+            return currMiscValueData;
+        }
+
+
+        private MiscValuePair GetCurrentMiscValueType(int effectIndex /*1-3*/)
+        {
+            uint spellEffectType = 0;
+            uint auraType = 0;
+
+            switch (effectIndex)
+            {
+                case 1:
+                    spellEffectType = SpellEffect1.GetNumberPrefixFromText();
+                    auraType = ApplyAuraName1.GetNumberPrefixFromText();
+                    break;
+                case 2:
+                    spellEffectType = SpellEffect2.GetNumberPrefixFromText();
+                    auraType = ApplyAuraName2.GetNumberPrefixFromText();
+                    break;
+                case 3:
+                    spellEffectType = SpellEffect3.GetNumberPrefixFromText();
+                    auraType = ApplyAuraName3.GetNumberPrefixFromText();
+                    break;
+            }
+
+            MiscValuePair miscValues;
+            bool hasMiscValues = false;
+
+            if (IsAuraSpellEffect((int)spellEffectType))
+            {
+                // get miscvalue from aura instead of effect
+                hasMiscValues = MiscValueConstants.auraMiscValues.TryGetValue((int)auraType, out miscValues);
+            }
+            else // get misc values from effect
+            {
+                SpellEffectData spellEffectData = new SpellEffectData();
+                bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spellEffectType, out spellEffectData);
+                if (!hasData)
+                    throw new NotImplementedException($"Spell Effect {spellEffectType} does not have data. Report to devs.");
+
+                miscValues = new MiscValuePair(spellEffectData.MiscValueA, spellEffectData.MiscValueB);
+            }
+
+
+            return miscValues;
+        }
+
+        private void SetMiscValue(int effectIndex, int miscvalueId /* 1 or 2 (A or B)*/, int miscValue, bool reset_combobox = false)
+        {
+            ContentControl DynamicContent = GetMiscValueDynamicContent(effectIndex, miscvalueId);
+            ControlType currMiscValueData = GetMiscValueControlType(effectIndex, miscvalueId);
+
+            // assign value, TODO move to function
+            if (currMiscValueData == ControlType.TextBox || currMiscValueData == ControlType.ListSelector)
+            {
+                if (DynamicContent.Content is ThreadSafeTextBox textBox)
+                    textBox.ThreadSafeText = miscValue.ToString();
+            }
+            else if (currMiscValueData == ControlType.ComboboxList)
+            {
+                if (DynamicContent.Content is ThreadSafeComboBox comboBox)
+                {
+                    // skip checks if resetting
+                    if (reset_combobox)
+                    {
+                        comboBox.ThreadSafeIndex = 0;
+                    }
+                    else
+                    {
+                        comboBox.ThreadSafeIndex = miscValue;
+
+                        int text_misc_value = 0;
+                        // then verify if id prefix matches
+                        if (comboBox.SelectedItem != null)
+                        {
+                            string selectedText = comboBox.SelectedItem.ToString();
+                            text_misc_value = GetNumberPrefixFromText(selectedText);
+                        }
+
+                        // Debug.Assert(miscValue == text_misc_value, $"expected Id  {miscValue.ToString()}, got {text_misc_value.ToString()} in miscvalue {GetMiscValueType(effectIndex).ValueA.ToString()} enum.");
+
+                        if (miscValue != text_misc_value)
+                        {
+                            bool found = false;
+                            // mismatch, could simply be because id is offset by 1 or it is a specific value, let's iterate all
+                            foreach (var item in comboBox.Items)
+                            {
+                                string text = "";
+
+                                // for some reason it can be either types
+                                if (item is string strItem)
+                                    text = strItem;
+                                else if (item is FriendlyLabel labelItem)
+                                    text = labelItem.Content.ToString();
+
+                                int text_value = GetNumberPrefixFromText(text);
+                                if (text_value == miscValue)
+                                {
+                                    comboBox.SelectedItem = item;
+
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            // later, create new entry if doesn't exist
+                            if (!found)
+                            {
+                                Debug.Assert(miscValue == text_misc_value
+                                    , $"No enum value with Id  {miscValue.ToString()} found in miscvalue {GetCurrentMiscValueType(effectIndex).ValueA.ToString()} enum.");
+                                ComboBoxItem newItem = new ComboBoxItem
+                                {
+                                    Content = miscValue.ToString() + " - Unknown value, report to devs",
+                                    Foreground = Brushes.Red
+                                };
+
+                                comboBox.Items.Add(newItem);
+                            }
+
+                        }
+                    }
+
+                    // comboBox.ToolTip = miscValue;
+                }
+            }
+            else if (currMiscValueData == ControlType.ComboboxMask)
+            {
+                if (DynamicContent.Content is ThreadSafeComboBox comboBox)
+                {
+                    comboBox.ThreadSafeText = miscValue.ToString();
+
+                    // reset every box
+                    foreach (ThreadSafeCheckBox cb in comboBox.Items)
+                    {
+                        cb.ThreadSafeChecked = false;
+                    }
+
+                    // iterate all active bits to find if there is a missing option
+                    // start at 1 to avoid 0 (none)
+                    for (int i = 1; i < 33; i++)
+                    {
+                        // used bit. -1 because we started at 1 instead of 0.
+                        if ((miscValue & (1 << ( i - 1) ) ) != 0)
+                        {
+
+                            bool found = false;
+                            // find the checkbox row with this id
+                            foreach (ThreadSafeCheckBox cb in comboBox.Items)
+                            {
+                                int cb_id = GetNumberPrefixFromText((string)cb.Content);
+                                // if ((miscValue & (1 << (cb_id - 1))) != 0)
+                                if (cb_id == i)
+                                {
+                                    cb.ThreadSafeChecked = true;
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            // Bit not found in our enum, create new row with the value
+
+                            // note that this can happen because sometime they have bit values that include everything like -1
+                            // -2 is also common for schools, it's "all except physical"
+                            if (miscValue == -1 || miscValue == -2) // in that case ignore "all"
+                                continue;
+
+                            Debug.Assert
+                                (found, $"No enum value with Id  {i.ToString()} found in miscvalue {GetCurrentMiscValueType(effectIndex).ValueA.ToString()} enum.");
+                            if (!found)
+                            {
+                                // create the new checkbox row
+                                Debug.Assert(i != 0, "got 0");
+
+                                string text = $"{i} - UNKNOWN";
+
+                                ThreadSafeCheckBox chk = new ThreadSafeCheckBox
+                                {
+                                    Content = text,
+                                    Tag = (uint)i, // store index
+
+                                    // to make the checkbox fill horizontally
+                                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                };
+                                chk.IsChecked = true;
+
+                                chk.Checked += HandMaskCombobox_Checked;
+                                chk.Unchecked += HandMaskCombobox_Checked;
+
+                                comboBox.Items.Add(chk);
+                            }
+                        }
+                    }
+
+                    // force a checkbox changed event to force update the fancy text even if nothing changed
+                    if (comboBox.Items.Count > 0)
+                    {
+                        // HandMaskCombobox_Checked(comboBox.Items.GetItemAt(0), null);
+                        var item = comboBox.Items.GetItemAt(0);
+                        ThreadSafeCheckBox chkBox = (ThreadSafeCheckBox)item;
+                        // if (item is Grid grid && grid.Children[0] is ThreadSafeCheckBox chkBox)
+                            HandMaskCombobox_Checked(chkBox, null);
+                    }
+                        
+                }
+            }
+        }
+
+        // usable for saving
+        private int GetMiscValue(int effectIndex, int miscvalueId /* 1 or 2 (A or B)*/)
+        {
+            ContentControl DynamicContent = GetMiscValueDynamicContent(effectIndex, miscvalueId);
+            ControlType currMiscValueData = GetMiscValueControlType(effectIndex, miscvalueId);
+
+            int misc_value = 0;
+
+            if (currMiscValueData == ControlType.TextBox || currMiscValueData == ControlType.ListSelector)
+            {
+                if (DynamicContent.Content is ThreadSafeTextBox textBox)
+                    misc_value = int.Parse(textBox.Text); // need thread safe text ?
+            }
+            else if (currMiscValueData == ControlType.ComboboxList)
+            {
+                if (DynamicContent.Content is ThreadSafeComboBox comboBox)
+                {
+                    misc_value = GetNumberPrefixFromText(comboBox.Text);
+                }
+            }
+            else if (currMiscValueData == ControlType.ComboboxMask)
+            {
+                if (DynamicContent.Content is ThreadSafeComboBox comboBox)
+                {
+                    // temporary
+                    misc_value = GetNumberPrefixFromText(comboBox.Text);
+
+                    // TODO : parse boxes instead
+                }
+            }
+
+            return misc_value;
+        }
+
         private void loadSpell(UpdateTextFunc updateProgress)
         {
             _currentVisualController = null;
@@ -2498,6 +3399,10 @@ namespace SpellEditor
                 SpellEffect1.SetTextFromIndex(uint.Parse(row["Effect1"].ToString()));
                 SpellEffect2.SetTextFromIndex(uint.Parse(row["Effect2"].ToString()));
                 SpellEffect3.SetTextFromIndex(uint.Parse(row["Effect3"].ToString()));
+                GenerateSpellEffectHeader(1);
+                GenerateSpellEffectHeader(2);
+                GenerateSpellEffectHeader(3);
+
                 DieSides1.ThreadSafeText = row["EffectDieSides1"].ToString();
                 DieSides2.ThreadSafeText = row["EffectDieSides2"].ToString();
                 DieSides3.ThreadSafeText = row["EffectDieSides3"].ToString();
@@ -2541,24 +3446,32 @@ namespace SpellEditor
                 ItemType1.ThreadSafeText = row["EffectItemType1"].ToString();
                 ItemType2.ThreadSafeText = row["EffectItemType2"].ToString();
                 ItemType3.ThreadSafeText = row["EffectItemType3"].ToString();
-                MiscValueA1.ThreadSafeText = row["EffectMiscValue1"].ToString();
-                MiscValueA2.ThreadSafeText = row["EffectMiscValue2"].ToString();
-                MiscValueA3.ThreadSafeText = row["EffectMiscValue3"].ToString();
-                if (isTbcOrGreater)
-                {
-                    MiscValueB1.ThreadSafeText = row["EffectMiscValueB1"].ToString();
-                    MiscValueB2.ThreadSafeText = row["EffectMiscValueB2"].ToString();
-                    MiscValueB3.ThreadSafeText = row["EffectMiscValueB3"].ToString();
-                }
-                MiscValueB1.IsEnabled = isTbcOrGreater;
-                MiscValueB2.IsEnabled = isTbcOrGreater;
-                MiscValueB3.IsEnabled = isTbcOrGreater;
                 TriggerSpell1.ThreadSafeText = row["EffectTriggerSpell1"].ToString();
                 TriggerSpell2.ThreadSafeText = row["EffectTriggerSpell2"].ToString();
                 TriggerSpell3.ThreadSafeText = row["EffectTriggerSpell3"].ToString();
                 PointsPerComboPoint1.ThreadSafeText = row["EffectPointsPerComboPoint1"].ToString();
                 PointsPerComboPoint2.ThreadSafeText = row["EffectPointsPerComboPoint2"].ToString();
                 PointsPerComboPoint3.ThreadSafeText = row["EffectPointsPerComboPoint3"].ToString();
+
+                // handle misc value type UIs
+                // MiscValueA1.ThreadSafeText = row["EffectMiscValue1"].ToString();
+                // this creates the UI
+                SetupMiscValueControl(1, int.Parse(row["Effect1"].ToString()), int.Parse(row["EffectApplyAuraName1"].ToString()));
+                SetMiscValue(1, 1, int.Parse(row["EffectMiscValue1"].ToString()));
+                SetupMiscValueControl(2, int.Parse(row["Effect2"].ToString()), int.Parse(row["EffectApplyAuraName2"].ToString()));
+                SetMiscValue(2, 1, int.Parse(row["EffectMiscValue2"].ToString()));
+                SetupMiscValueControl(3, int.Parse(row["Effect3"].ToString()), int.Parse(row["EffectApplyAuraName3"].ToString()));
+                SetMiscValue(3, 1, int.Parse(row["EffectMiscValue3"].ToString()));
+
+                if (isTbcOrGreater)
+                {
+                    // MiscValueB1.ThreadSafeText = row["EffectMiscValueB1"].ToString();
+                    // creation is already handled by setupMiscValueControl
+                    SetMiscValue(1, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
+                    SetMiscValue(2, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
+                    SetMiscValue(3, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
+                }
+                // MiscValueB1.IsEnabled = isTbcOrGreater;
 
                 if (!isWotlkOrGreater)
                 {
@@ -3085,7 +3998,7 @@ namespace SpellEditor
             // Populate animation combo box
             if (VisualAttachmentIdCombo.Items.Count == 0)
             {
-                var names = Enum.GetValues(typeof(SpellVisualKitModelAttach.AttachmentPoint))
+                var names = System.Enum.GetValues(typeof(SpellVisualKitModelAttach.AttachmentPoint))
                     .Cast<SpellVisualKitModelAttach.AttachmentPoint>().ToList();
                 var animComboSource = new List<Label>(names.Count);
                 names.ForEach((name) => animComboSource.Add(new Label() { Content = $"{ (int)name } - { name.ToString() }" }));
@@ -3808,13 +4721,11 @@ namespace SpellEditor
         {
             for (int i = 0; i < 32; i++)
             {
-                uint maskPow = (uint)Math.Pow(2, i);
+                uint maskPow = (1u << i);
 
                 ThreadSafeCheckBox safeCheckBox = (ThreadSafeCheckBox)comBox.Items.GetItemAt(i);
-                
-                safeCheckBox.ThreadSafeChecked = false;
-                if ((mask & maskPow) != 0)
-                    safeCheckBox.ThreadSafeChecked = true;
+
+                safeCheckBox.ThreadSafeChecked = (mask & maskPow) != 0;
             }
         }
 
@@ -3830,6 +4741,50 @@ namespace SpellEditor
             SpellMask32.IsEnabled = enabled;
             SpellMask33.IsEnabled = enabled;
         }
+
+        private void GenerateSpellEffectHeader(int effectIdx /* 1 -3*/)
+        {
+            // test display spell effect under the tab
+            string ressource_name = "SpellEffects" + effectIdx.ToString(); // SpellEffects1
+            string text = SafeTryFindResource(ressource_name);
+
+            FilteredComboBox effect_combobox = null;
+            System.Windows.Controls.TabItem tab_item = null;
+            if (effectIdx == 1)
+            {
+                effect_combobox = SpellEffect1;
+                tab_item = effect1TabItem;
+            }
+            else if (effectIdx == 2)
+            {
+                effect_combobox = SpellEffect2;
+                tab_item = effect2TabItem;
+            }
+            else if (effectIdx == 3)
+            { 
+                effect_combobox = SpellEffect3;
+                tab_item = effect3TabItem;
+            }
+
+            string spell_effect_name = effect_combobox.Items.GetItemAt(0) as string;
+            bool no_effect = true;
+            if (effect_combobox.SelectedItem != null && effect_combobox.SelectedIndex != 0)
+            {
+                no_effect = false;
+                spell_effect_name = effect_combobox.SelectedItem as string;
+            }
+            // remove the Id prefix
+            spell_effect_name = Regex.Replace(spell_effect_name, @"^\s*\d+\s*-\s*", "");
+
+            text += "\n" + spell_effect_name;
+
+            tab_item.BorderThickness = new Thickness(1);// (no_effect ? 0 : 1);
+            // tab_item.Padding = new Thickness(4);
+            tab_item.BorderBrush = Brushes.DarkGray; // no_effect ? Brushes.DarkGray : Brushes.White;
+
+            tab_item.Header = text;
+        }
+
         #endregion
 
         #region SelectionChanges
@@ -4116,6 +5071,109 @@ namespace SpellEditor
                     }
                 }
             }
+
+            // optional cleanup : reset fields unsupported by new spell effect
+            if (sender == SpellEffect1 || sender == SpellEffect2 || sender == SpellEffect3)
+            {
+                int effect_id = 0;
+                if (sender == SpellEffect2)
+                    effect_id = 1;
+                else if (sender == SpellEffect3)
+                    effect_id = 2;
+
+                string selectedEffectText = SpellEffect1.SelectedItem as string;
+                int spelleffect_id = (int)SpellEffect1.GetNumberPrefixFromText(selectedEffectText);
+
+                SpellEffectData spellEffectData = new SpellEffectData();
+                bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spelleffect_id, out spellEffectData);
+                if (!hasData && spelleffect_id != (int)spellEffectTypes.NONE)
+                    throw new NotImplementedException($"Spell Effect {spelleffect_id} does not have data. Report to devs.");
+
+                if (spelleffect_id == (int)spellEffectTypes.NONE)
+                    return;
+
+                if (spellEffectData.usesMultipleValue == false)
+                    effectMultipleValueBoxes[effect_id].ThreadSafeText = "0";
+                if (spellEffectData.usesAura == false)
+                {
+                    effectAuraNameBoxes[effect_id].SelectionChanged -= ComboBox_SelectionChanged;
+                    effectAuraNameBoxes[effect_id].ThreadSafeIndex = 0;
+                    effectAuraNameBoxes[effect_id].SelectionChanged += ComboBox_SelectionChanged;
+                }
+                if (spellEffectData.UsesChainTarget == false)
+                    effectChainTargetBoxes[effect_id].Text = "0";
+                if (spellEffectData.UsesItemType == false)
+                    effectItemTypeBoxes[effect_id].Text = "0";
+                if (spellEffectData.UsesSpell == false)
+                    effectTriggerSpellBoxes[effect_id].Text = "0";
+                if (spellEffectData.UsesAmplitude == false)
+                    effectAmplitudeBoxes[effect_id].Text = "0";
+            }
+
+            // can turn into a reusable fucntion eventually
+            if (sender == ApplyAuraName1 || sender == SpellEffect1)
+            {
+                GenerateSpellEffectHeader(1);
+
+                // TODO : store og value and field instead of resetting?
+
+                // need to get from selected item because control main text might not be updated yet
+                if (SpellEffect1.SelectedItem != null)
+                {
+                    string selectedEffectText = SpellEffect1.SelectedItem as string;
+                    string selectedAuraText = ApplyAuraName1.SelectedItem as string;
+
+                    int spelleffect = (int)SpellEffect1.GetNumberPrefixFromText(selectedEffectText);
+                    int auraindex = (int)ApplyAuraName1.GetNumberPrefixFromText(selectedAuraText);
+
+                    SetupMiscValueControl(1, spelleffect, auraindex);
+
+                    // reset to 0 for now
+                    SetMiscValue(1, 1, 0, true);
+                    SetMiscValue(1, 2, 0, true);
+                }
+            }
+            // can turn into a reusable fucntion eventually instead of copy pasta
+            if (sender == ApplyAuraName2 || sender == SpellEffect2)
+            {
+                GenerateSpellEffectHeader(2);
+
+                // need to get from selected item because control main text might not be updated yet
+                if (SpellEffect2.SelectedItem != null)
+                {
+                    string selectedEffectText = SpellEffect2.SelectedItem as string ?? string.Empty;
+                    string selectedAuraText = ApplyAuraName2.SelectedItem as string ?? string.Empty;
+
+                    int spelleffect = (int)SpellEffect2.GetNumberPrefixFromText(selectedEffectText);
+                    int auraindex = (int)ApplyAuraName2.GetNumberPrefixFromText(selectedAuraText);
+
+                    SetupMiscValueControl(2, spelleffect, auraindex);
+
+                    // reset to 0 for now
+                    SetMiscValue(2, 1, 0, true);
+                    SetMiscValue(2, 2, 0, true);
+                }
+            }
+
+            if (sender == ApplyAuraName3 || sender == SpellEffect3)
+            {
+                GenerateSpellEffectHeader(3);
+
+                if (SpellEffect3.SelectedItem != null)
+                {
+                    string selectedEffectText = SpellEffect3.SelectedItem as string;
+                    string selectedAuraText = ApplyAuraName3.SelectedItem as string;
+
+                    int spelleffect = (int)SpellEffect3.GetNumberPrefixFromText(selectedEffectText);
+                    int auraindex = (int)ApplyAuraName3.GetNumberPrefixFromText(selectedAuraText);
+
+                    SetupMiscValueControl(3, spelleffect, auraindex);
+
+                    // reset to 0 for now
+                    SetMiscValue(3, 1, 0, true);
+                    SetMiscValue(3, 2, 0, true);
+                }
+            }
         }
 
         public void UpdateItemSubClass(long classId)
@@ -4169,7 +5227,7 @@ namespace SpellEditor
             double newSize = e.NewValue / 4;
             var margin = new Thickness(newSize, 0, 0, 0);
             ((SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon"))?.updateIconSize(newSize, margin);
-            foreach (Image image in IconGrid.Children)
+            foreach (System.Windows.Controls.Image image in IconGrid.Children)
             {
                 image.Margin = margin;
                 image.Width = e.NewValue;
@@ -4188,7 +5246,7 @@ namespace SpellEditor
         {
             string language = e.AddedItems[0].ToString();
             string path = $"pack://SiteOfOrigin:,,,/Languages/{language}.xaml";
-            Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
+            System.Windows.Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
             Config.Language = language;
             RefreshAllUIElements();
         }
@@ -4405,8 +5463,12 @@ namespace SpellEditor
         {
             if (!WoWVersionManager.IsWotlkOrGreaterSelected)
                 return;
-            if (!sender.ToString().Contains("SpellMask"))
-                return;
+
+            if (sender is ComboBox comboBox)
+            {
+                if (!comboBox.Name.Contains("SpellMask"))
+                    return;
+            }
 
             var masks = new List<uint>
             {
@@ -4423,6 +5485,47 @@ namespace SpellEditor
 
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, uint.Parse(SpellFamilyName.Text), GetDBAdapter(), masks)));
+        }
+
+        /*
+        private void RefreshComboBoxMaskText(ThreadSafeComboBox comboBox)
+        {
+            uint Mask = 0;
+            for (uint i = 0; i < 32; i++)
+            {
+                ThreadSafeCheckBox cb = (ThreadSafeCheckBox)comboBox.Items.GetItemAt((int)i);
+                if (cb.IsChecked == true)
+                    Mask |= (1u << (int)i);
+            }
+            comboBox.Text = Mask.ToString();
+        }*/
+
+        private void SpellMask_DropDownClosed(object sender, EventArgs e)
+        {
+            // recalc to ensure text is right, same code as HandspellFamilyClassMask_Checked for checkboxes
+            if (sender is ThreadSafeComboBox comboBox)
+            {
+                uint Mask = 0;
+                for (uint i = 0; i < 32; i++)
+                {
+                    ThreadSafeCheckBox cb = (ThreadSafeCheckBox)comboBox.Items.GetItemAt((int)i);
+                    if (cb.IsChecked == true)
+                        Mask |= (1u << (int)i);
+                }
+                comboBox.Text = Mask.ToString();
+
+                SpellMask_SelectionChanged(sender, null);
+            }
+        }
+
+        private void MiscValueMask_DropDownClosed(object sender, EventArgs e)
+        {
+            // recalc to ensure text is right, same code as HandspellFamilyClassMask_Checked for checkboxes
+            if (sender is ThreadSafeComboBox comboBox)
+            {
+                // can't use the same code as spellmask
+                RefreshMaskComboboxText(comboBox);
+            }
         }
 
         private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)
@@ -4449,6 +5552,23 @@ namespace SpellEditor
         {
             var resource = TryFindResource(key);
             return resource != null ? resource.ToString() : $"Language files out of date, missing key: {key}";
+        }
+
+        private void FilteredComboBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // reset text of searchable comboboxes when losing focus
+            if (sender is FilteredComboBox comboBox)
+            {
+                if (comboBox.SelectedItem != null && comboBox.Text != comboBox.SelectedItem.ToString())
+                    comboBox.Text = comboBox.SelectedItem.ToString();
+                else if (comboBox.SelectedItem == null)
+                {
+                    comboBox.SelectedIndex = 0; // reset it. TODO : reset to last index if possible
+                    // comboBox.Text = comboBox.SelectedItem?.ToString();
+                    comboBox.SetTextFromIndex(0);
+                }
+
+            }
         }
     }
 }

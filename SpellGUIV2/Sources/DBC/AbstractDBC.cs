@@ -266,6 +266,27 @@ namespace SpellEditor.Sources.DBC
             return name;
         }
 
+        protected string GetStringForField(string fieldName, Dictionary<string, object> record)
+        {
+            string name = "";
+
+            if (!record.ContainsKey(fieldName))
+            {
+                if (record.ContainsKey(fieldName + 1))
+                    fieldName = fieldName + 1;
+                else
+                    return "";
+            }
+
+            uint strOffset = (uint)record[fieldName];
+            if (strOffset > 0)
+            {
+                name = LookupStringOffset(strOffset);
+            }
+
+            return name;
+        }
+
         private Dictionary<string, object> ConvertDataRowToDictionary(DataRow dataRow)
         {
             var record = new Dictionary<string, object>();
