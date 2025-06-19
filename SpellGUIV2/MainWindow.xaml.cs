@@ -3468,8 +3468,8 @@ namespace SpellEditor
                     // MiscValueB1.ThreadSafeText = row["EffectMiscValueB1"].ToString();
                     // creation is already handled by setupMiscValueControl
                     SetMiscValue(1, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
-                    SetMiscValue(2, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
-                    SetMiscValue(3, 2, int.Parse(row["EffectMiscValueB1"].ToString()));
+                    SetMiscValue(2, 2, int.Parse(row["EffectMiscValueB2"].ToString()));
+                    SetMiscValue(3, 2, int.Parse(row["EffectMiscValueB3"].ToString()));
                 }
                 // MiscValueB1.IsEnabled = isTbcOrGreater;
 

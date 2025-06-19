@@ -676,7 +676,7 @@ namespace SpellEditor.Sources.Constants
             { MiscValueType.FactionId, new MiscValueTypeData(ControlType.ListSelector, RessourceType.DBC) },
 
             // { MiscValueType.CreatureImmunitiesMask, new MiscValueTypeData(ControlType.ComboboxMask, RessourceType.StringList) }, // TODO
-            { MiscValueType.CreatureImmunities, new MiscValueTypeData(ControlType.TextBox, RessourceType.None) }, // this is actually a database record in blizz'
+            { MiscValueType.CreatureImmunities, new MiscValueTypeData(ControlType.TextBox, RessourceType.DB) }, // this is actually a database record in blizz', hardcoded in core by emus
 
             { MiscValueType.SlotType, new MiscValueTypeData(ControlType.ListSelector, RessourceType.StringList) }, // TODO
             { MiscValueType.CreatureTypesMask, new MiscValueTypeData(ControlType.ComboboxMask, RessourceType.DBC) },
