@@ -544,6 +544,7 @@ namespace SpellEditor.Sources.Constants
             { 147, new MiscValuePair(MiscValueType.CreatureImmunities) },
             { 151, new MiscValuePair(MiscValueType.StealthType) },
             { 153, new MiscValuePair(MiscValueType.SchoolsMask) },
+            { 162, new MiscValuePair(MiscValueType.PowerType) },
             { 163, new MiscValuePair(MiscValueType.SchoolsMask) },
             { 168, new MiscValuePair(MiscValueType.CreatureTypesMask) },
             { 169, new MiscValuePair(MiscValueType.CreatureTypesMask) },
