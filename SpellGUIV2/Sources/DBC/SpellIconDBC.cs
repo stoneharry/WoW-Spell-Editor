@@ -150,7 +150,7 @@ namespace SpellEditor.Sources.DBC
                     if (++count % 100 == 0)
                         await Task.Delay(10);
 
-                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Render, new Action(() =>
                         {
                             main.IconGrid.Children.Add(image);
                             if (!renderInView)
