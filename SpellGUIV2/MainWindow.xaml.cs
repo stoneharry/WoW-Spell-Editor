@@ -771,7 +771,6 @@ namespace SpellEditor
                     Logger.Error("ERROR: " + e.Message + "\n" + e.InnerException?.Message + "\n" + e);
                     Dispatcher.InvokeAsync(() =>
                     {
-                        controller?.CloseAsync();
                         this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                            $"{SafeTryFindResource("Input_MySQL_Error")}\n{e.Message + "\n" + e.InnerException?.Message}");
                     });
