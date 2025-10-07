@@ -981,7 +981,7 @@ namespace SpellEditor
                         Config.Database = db;
                     }
                 }
-                Config.connectionType = isSqlite ? Config.ConnectionType.SQLite : Config.ConnectionType.MySQL;
+                Config.connectionType = isSqlite ? Config.ConnectionType.SQLite : /*Config.ConnectionType.MySQL*/Config.ConnectionType.MariaDB;
                 Config.IsInit = true;
             }
         }
