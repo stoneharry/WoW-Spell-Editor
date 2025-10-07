@@ -1,5 +1,6 @@
-uint id
-uint name string
+# ScreenEffect.dbc wotlk 3.3.5
+uint Id
+uint Name string
 uint type
 uint colour
 uint screenEdgeSize
