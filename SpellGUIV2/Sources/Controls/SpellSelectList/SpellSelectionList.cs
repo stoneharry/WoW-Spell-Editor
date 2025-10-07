@@ -99,8 +99,8 @@ namespace SpellEditor.Sources.Controls
 
                     const uint pageSize = 5000;
                     uint lowerBounds = 0;
-                    DataRowCollection results = GetSpellNames(lowerBounds, 100, locale);
-                    lowerBounds += 100;
+                    DataRowCollection results = GetSpellNames(lowerBounds, pageSize / 5, locale);
+                    lowerBounds += pageSize / 5;
                     // Edge case of empty table after truncating, need to send a event to the handler
                     if (results != null && results.Count == 0)
                     {
@@ -113,7 +113,6 @@ namespace SpellEditor.Sources.Controls
                         lowerBounds += pageSize;
                     }
                 };
-                worker.RunWorkerAsync();
                 worker.RunWorkerCompleted += (sender, args) =>
                 {
                     if (!(sender is SpellListQueryWorker spellListQueryWorker))
@@ -122,6 +121,7 @@ namespace SpellEditor.Sources.Controls
                     spellListQueryWorker.Watch.Stop();
                     Logger.Info($"Loaded spell selection list contents in {spellListQueryWorker.Watch.ElapsedMilliseconds}ms");
                 };
+                worker.RunWorkerAsync();
             }
         }
 

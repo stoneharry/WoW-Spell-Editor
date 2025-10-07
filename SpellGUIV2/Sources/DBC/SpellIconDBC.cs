@@ -140,6 +140,10 @@ namespace SpellEditor.Sources.DBC
             }
             pathsToAdd = null;
             var renderInView = Config.Config.RenderImagesInView;
+            if (renderInView)
+            {
+                main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
+            }
 
             Task.Run(async () =>
             {
@@ -147,8 +151,8 @@ namespace SpellEditor.Sources.DBC
                 foreach (var image in imagesPool)
                 {
                     // Yield to allow the UI to update
-                    if (++count % 100 == 0)
-                        await Task.Delay(10);
+                    if (!renderInView && (++count % 150 == 0))
+                        await Task.Delay(count < 800 ? 500 : count < 1500 ? 250 : 100);
 
                     main.Dispatcher?.BeginInvoke(DispatcherPriority.Render, new Action(() =>
                         {
@@ -165,11 +169,6 @@ namespace SpellEditor.Sources.DBC
                     );
                 }
             });
-
-            if (renderInView)
-            {
-                main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
-            }
         }
 
         private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -183,7 +182,7 @@ namespace SpellEditor.Sources.DBC
                 if (container != null)
                 {
                     var offset = VisualTreeHelper.GetOffset(container);
-                    var bounds = new Rect(offset.X, offset.Y, container.ActualWidth, container.ActualHeight);
+                    var bounds = new Rect(offset.X, offset.Y - 300, container.ActualWidth, container.ActualHeight + 300);
 
                     var image = container as Image;
                     var source = image.Source;

@@ -29,11 +29,13 @@ namespace SpellEditor.Sources.Database
         {
             try
             {
-                _connection?.Close();
-            }
-            finally
-            {
+                if (_connection?.State != ConnectionState.Closed)
+                    _connection?.Close();
                 _connection?.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // NOOP, object already disposed
             }
         }
 
