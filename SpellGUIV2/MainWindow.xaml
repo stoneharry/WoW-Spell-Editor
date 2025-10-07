@@ -21,6 +21,7 @@
             <Style TargetType="c2:ListContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
             <Style TargetType="c2:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
             <Style TargetType="c:SpellSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
+            <Style TargetType="c:GemSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
@@ -1309,6 +1310,70 @@
                     </TabItem>
                 </TabControl>
             </TabItem>
+          <TabItem Name="GemTab" Header="Gems">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="AUTO"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="AUTO"/>
+                <ColumnDefinition Width="AUTO"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+              </Grid.ColumnDefinitions>
+              <Label Content="Filter by Name:" Margin="5" Grid.Row="0" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="FilterGemNames" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="0" Grid.Column="3"/>
+              <Label Content="Filter by Colour:" Margin="5" Grid.Row="1" Grid.Column="2"/>
+              <c2:ThreadSafeComboBox x:Name="FilterGemBox" Margin="5" Width="180" Grid.Row="1" Grid.Column="3" HorizontalAlignment="LEFT"/>
+              <Label Content="Filter by Discoverable:" Margin="5" Grid.Row="2" Grid.Column="2"/>
+              <c2:ThreadSafeComboBox x:Name="FilterGemDisc" Margin="5" Width="180" Grid.Row="2" Grid.Column="3" HorizontalAlignment="LEFT"/>
+              <c:GemSelectionList x:Name="SelectGemList"
+                 Margin="10,10,0,10"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 Width="400"
+                 Focusable="False"
+                 Grid.Row="0"
+                 Grid.RowSpan="14"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"/>
+              <Label Content="Selected Gem:" Margin="5" Grid.Row="3" Grid.Column="2"/>
+              <Label x:Name="SelectedGemIdTxt" Content="0" Margin="5" Grid.Row="3" Grid.Column="3"/>
+              <Button Name="SameGemChangesBtn" Content="Save Gem Changes" Grid.Row="4" Grid.Column="2" Margin="5,10,5,10" IsEnabled="false"/>
+              <Button Name="DuplicateGemBtn" Content="Duplicate to New Gem" Grid.Row="4" Grid.Column="3" Margin="5,10,5,10" IsEnabled="false"/>
+              <Button Name="DeleteGemBtn" Content="Delete Selected Gem" Grid.Row="4" Grid.Column="4" Margin="5,10,5,10" IsEnabled="false"/>
+              <Label Content="Enchantment Name:" Margin="5" Grid.Row="5" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemEnchantNameTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="5" Grid.Column="3"/>
+              <Label Content="Gem Type:" Margin="5" Grid.Row="6" Grid.Column="2"/>
+              <c2:ThreadSafeComboBox x:Name="GemTypeBox" Margin="5" Width="180" Grid.Row="6" Grid.Column="3" HorizontalAlignment="LEFT" IsEnabled="false"/>
+              <Label Content="Gem Item Id:" Margin="5" Grid.Row="7" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemItemIdTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="7" Grid.Column="3"/>
+              <Label Content="Trigger Spell:" Margin="5" Grid.Row="8" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTriggerSpellTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="8" Grid.Column="3"/>
+              <Label Content="Temp Learn Spell:" Margin="5" Grid.Row="9" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemTempLearnSpellTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="9" Grid.Column="3"/>
+              <Label Content="SkillDiscovery SpellId:" Margin="5" Grid.Row="10" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="SkillDiscSpellIdTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="10" Grid.Column="3" IsReadOnly="true"/>
+              <Button Name="GenerateDiscoveryBtn" Content="Generate Discovery Data" Grid.Row="10" Grid.Column="4" IsEnabled="false"/>
+              <Label Content="AchievementId / CriteriaId:" Margin="5" Grid.Row="11" Grid.Column="2"/>
+              <c2:ThreadSafeTextBox x:Name="GemAchievementIdTxt" HorizontalAlignment="Left" Margin="5" Width="180" TextWrapping="NoWrap" Grid.Row="11" Grid.Column="3" IsReadOnly="true"/>
+            </Grid>
+          </TabItem>
         </TabControl>
     </Grid>
     <controls:MetroWindow.RightWindowCommands>
@@ -1321,26 +1386,6 @@
             <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="TruncateTable" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="InsertANewRecord" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butInsertANewRecord}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="DeleteARecord" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butDeleteARecord}" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Name="SaveSpellChanges" Click="Button_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
             <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
