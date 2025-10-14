@@ -129,7 +129,7 @@ namespace SpellEditor.Sources.DBC
             {
                 var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
                 loadCount = page.Count;
-                page.AddRange(results);
+                results.AddRange(page);
 
                 lowerBounds += pageSize;
 
