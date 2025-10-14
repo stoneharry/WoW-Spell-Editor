@@ -181,7 +181,7 @@ namespace SpellEditor
         private void MpqClick(object sender, RoutedEventArgs e)
         {
             var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
-            archiveName = archiveName.EndsWith(".mpq") ? archiveName : archiveName + ".mpq";
+            archiveName = archiveName.ToLower().EndsWith(".mpq") ? archiveName : archiveName + ".MPQ";
             _MpqArchiveName = archiveName;
             ClickHandler(false);
         }
