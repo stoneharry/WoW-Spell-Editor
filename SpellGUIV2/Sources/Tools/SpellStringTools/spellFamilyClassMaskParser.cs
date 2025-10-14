@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Windows.Controls;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Database;
@@ -48,7 +49,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
                         {
                             for (uint i = 0; i < 32; i++)
                             {
-                                uint Mask = (uint)Math.Pow(2, i);
+                                uint Mask = 1u << (int)i;
 
                                 if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
                                 {

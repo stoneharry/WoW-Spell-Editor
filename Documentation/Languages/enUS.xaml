@@ -30,9 +30,9 @@
     <system:String x:Key="Effects">Effects</system:String>
     <system:String x:Key="Effects1">Effects 1</system:String>
     <system:String x:Key="Effects2">Effects 2</system:String>
-    <system:String x:Key="SpellEffects1">Spell Effects 1</system:String>
-    <system:String x:Key="SpellEffects2">Spell Effects 2</system:String>
-    <system:String x:Key="SpellEffects3">Spell Effects 3</system:String>
+    <system:String x:Key="SpellEffects1">Spell Effect 1</system:String>
+    <system:String x:Key="SpellEffects2">Spell Effect 2</system:String>
+    <system:String x:Key="SpellEffects3">Spell Effect 3</system:String>
     <system:String x:Key="Items">Items</system:String>
     <system:String x:Key="Flags">Flags</system:String>
     <system:String x:Key="Icon">Icon</system:String>
@@ -128,6 +128,22 @@
     <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
     <system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
     <system:String x:Key="filterClassMaskSpells">Filter Target Spells:</system:String>
+	<system:String x:Key="labSpellSchoolMask">Effect School Types :</system:String>
+	<system:String x:Key="labSpellStatType">Effect Stat Type :</system:String>
+	<system:String x:Key="labSpellStealthType">Effect Stealth Type :</system:String>
+	<system:String x:Key="labSpellInvisType">Effect Invisibility Type :</system:String>
+	<system:String x:Key="labSpellPowerType">Effect Power Type:</system:String>
+	<system:String x:Key="labSpellDispelType">Effect Dispel Type :</system:String>
+	<system:String x:Key="labSpellCreatureType">Effect Creature Type :</system:String>
+	<system:String x:Key="labSpellLockType">Effect Lock Type :</system:String>
+	<system:String x:Key="labSpellLanguType">Effect Language Type :</system:String>
+	<system:String x:Key="labSpellMechanicType">Effect Mechanic Type :</system:String>
+	<system:String x:Key="labSpellAuraModType">What to modify ? :</system:String>
+	<system:String x:Key="labSpellRatingType">Effect Rating Type :</system:String>
+	<system:String x:Key="labSpellRuneType">Effect Rune Type :</system:String>
+	<system:String x:Key="labSpellScreenEffect">Effect Screen Effect :</system:String>
+	<system:String x:Key="labSpellPhaseMask">Effect Phase Mask :</system:String>
+	<system:String x:Key="labSpellAuraStateType">Effect Aura State Type :</system:String>
     <system:String x:Key="labItemTool1">Totem 1:</system:String>
     <system:String x:Key="labItemTool2">Totem 2:</system:String>
     <system:String x:Key="labReagent1">Reagent 1:</system:String>
@@ -673,6 +689,20 @@
         Unknown 2 |
         Health Above 75%
     </system:String>
+	<system:String x:Key="invisibility_strings">
+		0 - General (Classes and creatures) |
+		1 - Invisibility 1 |
+		2 - Invisibility 2 |
+		3 - Invisibility 3 |
+		4 - Invisibility 4 |
+		5 - Invisibility 5 |
+		6 - Drunk Special |
+		7 - Invisibility 7 |
+		8 - Invisibility 8 |
+		9 - Invisibility 9 |
+		10 - Invisibility 10 |
+		11 - Invisibility 11
+	</system:String>
     <system:String x:Key="target_aura_state_strings">
         None |
         Healthless 20% |
@@ -714,7 +744,7 @@
         Quiver |
         Relic
     </system:String>
-    <system:String x:Key="school_strings">
+    <system:String x:Key="power_type_strings">
         Mana |
         Rage |
         Focus |
@@ -730,6 +760,89 @@
         Wrath |
         Health
     </system:String>
+	<system:String x:Key="power_types">
+		0 - Mana |
+		1 - Rage |
+		2 - Focus |
+		3 - Energy |
+		4 - Happiness |
+		5 - Rune |
+		6 - Runic Power
+	</system:String>
+	<system:String x:Key="skinning_types">
+		0 - Skinning |
+		1 - Herbalism |
+		2 - Minning |
+		3 - Engineering
+	</system:String>
+	<system:String x:Key="power_types_mask">
+		1 - Mana |
+		2 - Rage |
+		3 - Focus |
+		4 - Energy |
+		5 - Happiness |
+		6 - Rune |
+		7 - Runic Power
+	</system:String>
+	<system:String x:Key="stat_names">
+		0 - Strength |
+		1 - Agility |
+		2 - Stamina |
+		3 - Intellect |
+		4 - Spirit |
+		-1 - All
+	</system:String>
+	<system:String x:Key="combat_results">
+		0 - Evade |
+		1 - Miss |
+		2 - Dodge |
+		3 - Block |
+		4 - Parry |
+		5 - Glancing |
+		6 - Crit |
+		7 - Crushing |
+		8 - Normal
+	</system:String>
+	<system:String x:Key="combat_ratings">
+		1 - Weapon skill |
+		2 - Defense Rating |
+		3 - Dodge Rating |
+		4 - Parry Rating |
+		5 - Shield Block Rating |
+		6 - Melee Hit Rating |
+		7 - Ranged Hit Rating |
+		8 - Spell Hit Rating |
+		9 - Melee Critical Strike Rating |
+		10 - Ranged Critical Strike Rating |
+		11 - Spell Critical Strike Rating |
+		12 - Melee hit taken |
+		13 - Ranged hit taken |
+		14 - Spell hit taken |
+		15 - Melee crit taken |
+		16 - Ranged crit taken |
+		17 - Spell crit taken |
+		18 - Melee haste |
+		19 - Ranged haste |
+		20 - Spell haste |
+		21 - Main-hand weapon skill |
+		22 - Off-hand weapon skill |
+		23 - Ranged weapon skill |
+		24 - Expertise |
+		25 - Armor penetration
+	</system:String>
+	<system:String x:Key="school_names">
+		1 - Physical |
+		2 - Holy |
+		3 - Fire |
+		4 - Nature |
+		5 - Frost |
+		6 - Shadow |
+		7 - Arcane
+	</system:String>
+	<system:String x:Key="stealth_types">
+		0 - General |
+		1 - Traps
+	</system:String>
     <system:String x:Key="damage_prevention_types">
         None |
         Magic |
@@ -739,6 +852,83 @@
         Silence |
         Pacify
     </system:String>
+	<system:String x:Key="destructible_states_names">
+		0 - Intact |
+		1 - Damaged |
+		2 - Destroyed |
+		3 - Rebuilding
+	</system:String>
+	<system:String x:Key="what_to_mod_1">
+		0 - Damage |
+		1 - Duration |
+		2 - Threat |
+		3 - Effect1 |
+		4 - Charges |
+		5 - Range |
+		6 - Radius |
+		7 - Crit chance |
+		8 - All effects |
+		9 - Not lose cast time |
+		10 - Cast time |
+		11 - CD |
+		12 - Effect2 |
+		13 - Ignore armor |
+		14 - Power cost |
+		15 - Crit damage bonus |
+		16 - Resist miss chance |
+		17 - Jump targets |
+		18 - Chance of success |
+		19 - Amplitude |
+		20 - Dmg multiplier |
+		21 - Global Cooldown(GCD) |
+		22 - Damages Over Time (DOT) |
+		23 - Effect3 |
+		24 - Bonus multiplier |
+		25 - Unknown/Unused |
+		26 - Procs Per Minute(PPM) |
+		27 - Value multipler |
+		28 - Resist dispel chance |
+		29 - Crit damage bonus 2(UNUSED) |
+		30 - Spell cost refund on fail
+	</system:String>
+	<system:String x:Key="activate_object_actions_names">
+		0 - NONE |
+		1 - Animate Custom 0 |
+		2 - Animate Custom 1 |
+		3 - Animate Custom 2 |
+		4 - Animate Custom 3 |
+		5 - Disturb |
+		6 - Unlock |
+		7 - Lock |
+		8 - Open |
+		9 - Open and Unlock |
+		10 - Close |
+		11 - Toggle Open |
+		12 - Destroy |
+		13 - Rebuild |
+		14 - Creation |
+		15 - Despawn |
+		16 - MakeInert |
+		17 - MakeActive |
+		18 - Close and Lock |
+		19 - Use Art Kit 0 |
+		20 - Use Art Kit 1 |
+		21 - Use Art Kit 2 |
+		22 - Use Art Kit 3
+	</system:String>
+	<system:String x:Key="Creature_immunities_mask">
+		1 - Root, snare |
+		2 - AC: Taunt / TC: Confuse |
+		3 - AC: Polymorph,Disorient,Confuse / TC: Confuse |
+		4 - Interrupt(AC) |
+		5 - Transform(AC) |
+		6 - Incapacitate(AC) |
+		7 - Slows |
+		8 - AC:Charms / TC: Disarm |
+		9 - ??Unknown |
+		10 - Fear |
+		11 - Stun
+		</system:String>
     <system:String x:Key="target_strings">
         None |
         Unused 1 |
@@ -763,7 +953,326 @@
         Unused 20 |
         Passenger
     </system:String>
-    <system:String x:Key="spell_aura_effect_names">
+	<system:String x:Key="spell_aura_effect_names">
+		None |
+		Bind Sight |
+		Mod Possess |
+		Periodic Damage |
+		Dummy |
+		Mod Confuse |
+		Mod Charm |
+		Mod Fear |
+		Periodic Heal |
+		Mod Attack Speed |
+		Mod Threat |
+		Taunt |
+		Stun |
+		Mod Damage Done |
+		Mod Damage Taken |
+		Damage Shield |
+		Mod Stealth |
+		Mod Detect Stealth |
+		Mod Invisibility |
+		Mod Invisibility Detection |
+		OBS Mod Health |
+		OBS Mod Power |
+		Mod Resistance |
+		Periodic Trigger |
+		Periodic Energize |
+		Pacify |
+		Root |
+		Silence |
+		Reflect Spells % |
+		Mod Stat |
+		Mod Skill |
+		Mod Speed |
+		Mod Speed Mounted |
+		Mod Speed Slow |
+		Mod Increase Health |
+		Mod Increase Energy |
+		Shapeshift |
+		Immune Effect |
+		Immune State |
+		Immune School |
+		Immune Damage |
+		Immune Dispel Type |
+		Proc Trigger Spell |
+		Proc Trigger Damage |
+		Track Creatures |
+		Track Resources |
+		Unused_46 |
+		Mod Parry Percent |
+		Unknown 48 |
+		Mod Dodge Percent |
+		Mod Critical Healing Amount |
+		Mod Block Percent |
+		Mod Weapon Crit Percent |
+		Periodic Leech |
+		Mod Hit Chance |
+		Mod Spell Hit Chance |
+		Transform |
+		Mod Spell Crit Chance |
+		Mod Speed Swim |
+		Mod Creature Dmg Done |
+		Pacify &amp; Silence |
+		Mod Scale |
+		Periodic Health Funnel |
+		Unused_63 |
+		Periodic Mana Leech |
+		Haste - Spells |
+		Feign Death |
+		Disarm |
+		Mod Stalked |
+		School Absorb |
+		Extra Attacks |
+		Mod School Spell Crit Chance |
+		Mod School Power Cost % |
+		Mod School Power Cost |
+		Reflect School Spells % |
+		Mod Language |
+		Far Sight |
+		Immune Mechanic |
+		Mounted |
+		Mod Dmg % |
+		Mod Stat % |
+		Split Damage % |
+		Water Breathing |
+		Mod Base Resistance |
+		Mod Health Regen |
+		Mod Power Regen |
+		Create Death Item |
+		Mod Dmg % Taken |
+		Mod Health Regen Percent |
+		Periodic Damage Percent |
+		Unused_92 |
+		Mod Detect Range |
+		Prevent Fleeing |
+		Mod Uninteractible |
+		Interrupt Regen |
+		Ghost |
+		Spell Magnet |
+		Mana Shield |
+		Mod Skill Talent |
+		Mod Attack Power |
+		Auras Visible |
+		Mod Resistance % |
+		Mod  Attack Power Versus Creature |
+		Mod Total Threat (Fade) |
+		Water Walk |
+		Feather Fall |
+		Hover |
+		Add Flat Modifier |
+		Add % Modifier |
+		Add Class Target Trigger |
+		Mod Power Regen % |
+		Add Class Caster Hit Trigger |
+		Override Class Scripts |
+		Mod Ranged Dmg Taken |
+		Mod Ranged % Dmg Taken |
+		Mod Healing |
+		Regen During Combat |
+		Mod Mechanic Resistance |
+		Mod Healing % |
+		Unused_119 |
+		Untrackable |
+		Empathy (Lore, whatever) |
+		Mod Offhand Dmg % |
+		Mod Target Resistance |
+		Mod Ranged Attack Power |
+		Mod Melee Dmg Taken |
+		Mod Melee % Dmg Taken |
+		Rngd Atk Pwr Attckr Bonus |
+		Mod Possess Pet |
+		Mod Speed Always |
+		Mod Mounted Speed Always |
+		Mod  Ranged Attack Power Versus Creature |
+		Mod Increase Energy % |
+		Mod Max Health % |
+		Mod Interrupted Mana Regen |
+		Mod Healing Done |
+		Mod Healing Done % |
+		Mod Total Stat % |
+		Haste - Melee |
+		Force Reaction |
+		Haste - Ranged |
+		Haste - Ranged (Ammo Only) |
+		Mod Base Resistance % |
+		Mod Resistance Exclusive |
+		Safe Fall |
+		Pet Talent Points |
+		Allow Taming Pet Type |
+		Add Creature Immunity |
+		Retain Combo Points |
+		Reduce Pushback |
+		Mod Shield Block Value % |
+		Track Stealthed |
+		Mod Detected Range |
+		Split Damage Flat |
+		Stealth Level Modifier |
+		Mod Water Breathing |
+		Mod Reputation Gain |
+		Mod Pet Damage |
+		Mod Shield Block Value |
+		No PVP Credit |
+		Mod AOE Avoidance |
+		Health Regen During Combat |
+		Power Burn |
+		Mod Crit Damage Bonus |
+		Unused_164 |
+		Unused_165 |
+		Mod Attack Power % |
+		Mod Ranged Attack Power % |
+		Mod Dmg Versus Creature |
+		Mod Crit % Versus Creature |
+		Detect Amore |
+		Mod Speed % (Doesn't stack) |
+		Mod Mounted Speed % (Doesn't stack) |
+		Unused_173 |
+		Mod Spell Damage By Stat % |
+		Mod Spell Healing By Stat % |
+		Spirit Of Redemption |
+		AOE Charm |
+		Mod Debuff Resistance |
+		Mod Attacker Spell Crit Chance |
+		Mod Spell Damage Versus Creature |
+		Unused_181 |
+		Mod Resistance By Stat % |
+		Mod Critical Hit Threat % |
+		Mod Attacker Melee Hit Chance |
+		Mod Attacker Ranged Hit Chance |
+		Mod Attacker Spell Hit Chance |
+		Mod Attacker Melee Crit Chance |
+		Mod Attacker Ranged CritChance |
+		Mod Rating |
+		Mod Faction Reputation Gain |
+		Use Normal Movement Speed |
+		Mod Melee/Ranged Haste |
+		Mod Haste % |
+		Absorb School Damage |
+		Ignore School Absorb |
+		Mod Cooldown |
+		Mod Attacker Crit Chance |
+		Unused_198 |
+		Mod Spell % Hit Chance |
+		Mod XP % |
+		Allow Flying |
+		Ignore Combat result |
+		Mod Melee Crit Dmg Taken % |
+		Mod Ranged Crit Dmg Taken % |
+		Mod School Crit Dmg Taken % |
+		Increase Vehicle Flight Speed |
+		Increase Mount Flight Speed |
+		Increase Flight Speed |
+		Increase All Mounts Flight Speeds |
+		Increase All Vehicles Speeds |
+		Mod Flight Speed (Doesn't stack) |
+		Mod Ranged Attack Power By Stat % |
+		Mod Rage From Dmg Dealt |
+		Unused_214 |
+		Arena Preparation |
+		Mod Spell Haste |
+		Mod Melee Haste 2 |
+		Mod Ranged Haste |
+		Mod Mana Regen By Stat % |
+		Mod Rating By Stat % |
+		Detaunt (Ignore enemy) |
+		Unused_222 |
+		Raid Proc From Charge |
+		Unused_222 |
+		Raid Proc From Charge With Value |
+		Periodic Dummy |
+		Periodic Trigger Spell With Value |
+		Detect Stealth |
+		Mod AOE Damage Avoidance |
+		Unused_230 |
+		Proc Triggers Spell With Value |
+		Mod Mechanic Duration |
+		Change Model For All Humanoids (Client) |
+		Mod Mechanic Duration (Doesn't Stack) |
+		Mod Dispel Resist |
+		Control Vehicle |
+		Mod Spell Damage By Attack Power |
+		Mod Spell Healing By Attack Power |
+		Mod Scale |
+		Mod Expertise |
+		Force Moving Forward |
+		Unused_242 |
+		Mod Faction |
+		Comprehend Language |
+		Mod Aura Duration By Dispel Type |
+		Mod Aura Duration By Dispel Type (Doesn't Stack) |
+		Clone Caster |
+		Mod Combat Result Chance |
+		Convert Rune |
+		Increase Health 2 |
+		Mod Enemy Dodge Chance |
+		Slow All Speeds |
+		Mod Critical Block Chance |
+		Disarm Offhand |
+		Mod Mechanic Damage Taken % |
+		No Reagent Use |
+		Mod Target Resist By Spell Class |
+		Unused_258 |
+		Mod Perioding Healing % |
+		Screen Effect |
+		Phase |
+		Abiltiy Ignores Aura State |
+		Can't Use Other Abilities |
+		Unused_264 |
+		Unused_265 |
+		Unused_266 |
+		Immune Aura School |
+		Mod Attack Power By Stat % |
+		Ignore Target Resist |
+		Ability Ignores Target Resist |
+		Unused_270 |
+		Ignore Melee Reset |
+		X-Ray |
+		Abiltiy Consumes No Ammo |
+		Mod Ignore Shapeshift |
+		Unused_276 |
+		Unused_277 |
+		Disarm Ranged |
+		Initialize Images |
+		Mod Armor Penetration % |
+		Mod Honor Gain % |
+		Mod Base health % |
+		Mod healing Received % |
+		Linked |
+		Mod Attack Power By Armor |
+		Ability Periodic Can Crit |
+		Deflect Spells |
+		Ignore Hit Direction |
+		Unused_289 |
+		Mod Crit % |
+		Mod Quest XP % |
+		Open Stable |
+		Override Spells |
+		Prevent Regenerating Power |
+		Unused_295 |
+		Set Vehicle ID |
+		Block Spell Family |
+		Strangulate |
+		Unused_299 |
+		Share % Damage |
+		Aborb School Healing |
+		Unused_302 |
+		Mod Dmg Done Versus Aura State |
+		Fake Inebriate |
+		Mod Minimum Speed |
+		Unused_306 |
+		Unused_307 |
+		Mod Caster Crit Chance |
+		Unused_309 |
+		Mod Creature AOE Dmg Avoidance |
+		Unused_309 |
+		Unused_309 |
+		Unused_309 |
+		Prevent Resurrection |
+		Underwater Walking |
+		Periodic Haste
+	</system:String>
+    <system:String x:Key="spell_aura_effect_names_tooltips">
         SPELL_AURA_NONE |
         SPELL_AURA_BIND_SIGHT |
         SPELL_AURA_MOD_POSSESS |
@@ -1082,7 +1591,174 @@
         SPELL_AURA_UNDERWATER_WALKING |
         SPELL_AURA_PERIODIC_HASTE
     </system:String>
-    <system:String x:Key="spell_effect_names">
+	<system:String x:Key="spell_effect_names_clear">
+	None |
+	Instakill |
+	School Damage |
+	Dummy |
+	Portal Teleport (unused) |
+	Teleport Units |
+	Apply Aura |
+	Environmental Damage |
+	Power Drain |
+	Health Leech |
+	Heal |
+	Bind |
+	Portal |
+	Ritual Base (unused) |
+	Ritual Specialize (unused) |
+	Ritual Activate Portal (unused) |
+	Quest Complete |
+	Weapon Damage + (noschool) |
+	Resurrect |
+	Extra Attacks |
+	Dodge |
+	Evade |
+	Parry |
+	Block |
+	Create Item |
+	Weapon |
+	Defense |
+	Persistent Area Aura |
+	Summon |
+	Leap |
+	Energize |
+	Weapon % Dmg |
+	Trigger Missile |
+	Open Lock |
+	Change Item |
+	Apply Area Aura |
+	Learn Spell |
+	Spell Defense |
+	Dispel |
+	Language |
+	Dual Wield |
+	Summon Wild Wotlk: JUMP |
+	Summon Guardian Wotlk: Jump dest |
+	teleport units face caster |
+	Skill Step |
+	WOTLK : Add honor |
+	Spawn (clientside) |
+	Spell Cast UI / trade skill |
+	Stealth |
+	Detect |
+	Summon Object |
+	Force Critical Hit |
+	Guarantee Hit |
+	Enchant Item Permanent |
+	Enchant Item Temporary |
+	Tame Creature |
+	Summon Pet |
+	Learn Pet Spell |
+	Weapon Damage + |
+	Open Lock (Item) |
+	Proficiency |
+	Send Event |
+	Power Burn |
+	Threat |
+	Trigger Spell |
+	Health Funnel WOTLK : apply area aura raid |
+	Power Funnel WOTLK : create/charge mana gem |
+	Heal Max Health |
+	Interrupt Cast |
+	Distract |
+	Pull |
+	Pickpocket |
+	Add Farsight |
+	Summon Possessed |
+	Summon Totem WOTLK : apply glyph |
+	Heal Mechanical |
+	Summon Object (Wild) |
+	Script Effect |
+	Attack |
+	Sanctuary |
+	Add Combo Points |
+	Create House |
+	Bind Sight |
+	Duel |
+	Stuck |
+	Summon Player |
+	Activate Object |
+	Summon Totem (slot 1) WOTLK : Gobject damage |
+	Summon Totem (slot 2) WOTLK : Gobject repair |
+	Summon Totem (slot 3) WOTLK : Set gobject destruction state |
+	Summon Totem (slot 4) WOTLK : Kill credit |
+	Threat (All) |
+	Enchant Held Item |
+	Summon Phantasm, WOTLK : force deselect |
+	Self Resurrect |
+	Skinning |
+	Charge |
+	Summon Critter, WOTLK : Cast button |
+	Knock Back |
+	Disenchant |
+	Inebriate |
+	Feed Pet |
+	Dismiss Pet |
+	Reputation |
+	Summon Object (slot 1) |
+	Summon Object (slot 2) |
+	Summon Object (slot 3) |
+	Summon Object (slot 4) |
+	Dispel Mechanic |
+	Summon Dead Pet |
+	Destroy All Totems |
+	Durability Damage |
+	Summon Demon |
+	Resurrect (Flat) |
+	Attack Me |
+	Durability Dmg Pct(%) |
+	Skin Player Corpse (remove insigna) |
+	Spirit Heal |
+	Skill professions |
+	Apply Area Aura Pet   |
+	Teleport Graveyard   |
+	Normalized Weapon Dmg   |
+	Unused   |
+	Sned Taxi   |
+	Pull Towards   |
+	Modify Threat %   |
+	Steal Beneficail Buff   |
+	Prospecting   |
+	Apply Area Aura Friend   |
+	Apply Area Aura Enemy   |
+	Redirct Threat   |
+	Player Notification   |
+	Play Music   |
+	Unlearn Specialization   |
+	Kill Credit   |
+	Call Pet   |
+	Heal %   |
+	Energize %   |
+	Leap Back   |
+	Clear Quest   |
+	Force Cast   |
+	Force Cast With Value   |
+	Trigger Spell With Value   |
+	Apply Area Aura Owner   |
+	Knock Back Destination   |
+	Pull Towards Destination (black hole effect)   |
+	Activate Rune   |
+	Quest Fail   |
+	Trigger Missile Spell With Value   |
+	Charge Destination   |
+	Start Quest   |
+	Trigger Spell 2 (validate Summon?)   |
+	Summon RAF Friend   |
+	Create Tamed Pet   |
+	Discover Taxi   |
+	Titan Grip   |
+	Enchant Item Prismatic   |
+	Create Item 2   |
+	Milling   |
+	Allow Rename Pet   |
+	???   |
+	Talent Spec Count   |
+	Activate Talent Spec   |
+	Unused   |
+	Remove Aura
+	</system:String>
+	<system:String x:Key="spell_effect_names">
 		NONE |
 		INSTAKILL |
 		SCHOOL_DAMAGE |
@@ -1283,6 +1959,293 @@
         Sapped |
         Enraged
     </system:String>
+	<system:String x:Key="spell_family_strings">
+		None/Generic |
+		Events/Hollidays |
+		Unused |
+		Mage |
+		Warrior |
+		Warlock |
+		Priest |
+		Druid |
+		Rogue |
+		Hunter |
+		Paladin |
+		Shaman |
+		UNUSED |
+		Potion |
+		UNUSED |
+		Death Knight |
+		UNUSED |
+		Pet |
+		Your Custom Family1
+	</system:String>
+	<system:String x:Key="category_strings">
+		0 - None |
+		1 - Default |
+		2 - Direct Damage - Spell |
+		4 - Item - Combat Consumable (Potion) |
+		11 - Item - Food |
+		12 - Healing - Spell |
+		17 - Quick Buff (Resist) - Spell |
+		18 - Damage Over Time - Spell |
+		19 - Quick Damage - Spell |
+		20 - Invulnerability (Other) |
+		21 - Quick Buff - Spell |
+		22 - Quick Debuff - Spell |
+		23 - Summoning |
+		24 - Item - Combat Consumable (Aggressive) |
+		25 - Quick Heal - Spell |
+		26 - Resurrection (Full) |
+		27 - Item - Scroll |
+		28 - Item - Quick Buff |
+		29 - Item - Debuff |
+		30 - Item - Healing |
+		31 - Conjure (Short) |
+		32 - Stun |
+		33 - Mez |
+		34 - Root |
+		35 - Direct Damage (AE) - Spell |
+		36 - Debuff - Spell |
+		37 - Invulnerability |
+		38 - Aura |
+		39 - Shapeshift |
+		40 - Melee (Generic) |
+		41 - Critical |
+		42 - Snare |
+		43 - Shout |
+		44 - Speed |
+		45 - Totem (Stoneclaw) |
+		46 - Healing (Group) - Spell |
+		47 - Combat States |
+		49 - Direct Damage (AE) - Ability |
+		50 - Direct Damage (AE-Cone) - Ability |
+		51 - Quick Debuff (DPS) - Spell |
+		52 - Quick Debuff (DR) - Spell |
+		54 - Quick Buff (DR) - Spell |
+		55 - Quick Buff (DPS) - Spell |
+		56 - Instant Heal - Spell |
+		57 - Quick Heal (Group) - Spell |
+		58 - Instant Heal (Group) - Spell |
+		59 - Item - Drink |
+		60 - Invulnerability (Temp) |
+		61 - Energize (Group) - Spell |
+		62 - Energize - Spell |
+		63 - Big Direct Damage - Spell |
+		64 - Minimap Special |
+		65 - Melee (Special) |
+		66 - Dodge Maneuver |
+		67 - Block Maneuver |
+		68 - Parry Maneuver |
+		72 - Direct Damage (AE-Persistent) Spell |
+		73 - Martial Arts (Generic) |
+		74 - Martial Arts (Special) |
+		75 - Detect |
+		76 - Shoot/Throw |
+		77 - Trade - Herbalism |
+		78 - Trade - Mining |
+		79 - Item - Potion (Non-Combat) |
+		82 - Taunt/Detaunt |
+		83 - Taming |
+		84 - Taunt (AE) |
+		85 - Direct Damage (AE-Chain) - Ability |
+		86 - Pet |
+		87 - Conjure (Long) |
+		88 - Silence |
+		89 - Portal |
+		93 - Charm |
+		94 - Item - Summoning |
+		95 - Racial Ability |
+		96 - Racial Ability 2 |
+		97 - Secondary - Survival |
+		98 - Big Direct Damage - Spell (2) |
+		99 - Instant Spell |
+		100 - Item - Mana Gem |
+		101 - Felhunter |
+		102 - Item - Long Buff |
+		103 - Item - Epic |
+		104 - Totem (Healing) |
+		105 - Totem (Serpent) |
+		106 - Totem (Slowing) |
+		107 - Totem (Mana) |
+		108 - Totem (Invisibility) |
+		109 - Melee (Disarm) |
+		132 - Discipline |
+		133 - Global |
+		150 - Item - Bandage |
+		170 - Finishing Move (Weapon-scaled) |
+		190 - Banish |
+		230 - Totem (Grounding) |
+		250 - Blast Wave |
+		270 - Kidney Shot |
+		290 - Pyroblast |
+		310 - Transmute - Alchemy |
+		330 - Mount |
+		350 - Inner Rage |
+		351 - Ranged Weapon |
+		371 - Lightning Shield |
+		391 - Quest - Felcurse |
+		411 - Trap (Frost) |
+		431 - Holy Nova |
+		451 - Holy Fire |
+		471 - Ice Barrier |
+		511 - Astral Recall |
+		531 - Nature's Grasp |
+		551 - Aura of the Pious |
+		571 - Hurricane |
+		591 - Totem (Mana Tide) |
+		611 - Wings of Hope |
+		631 - Soul Fire |
+		633 - Death Coil |
+		634 - Howl of Terror |
+		651 - Shadowburn |
+		671 - Desperate Prayer |
+		672 - Conflagrate |
+		691 - Devouring Plague |
+		731 - Summon Infernal |
+		751 - Tree Form |
+		791 - Item - Salt Shaker |
+		811 - Divine Intervention |
+		831 - Soulstone |
+		851 - Restoration |
+		871 - Shadowmeld |
+		891 - Whirlwind |
+		892 - Holy Shock |
+		911 - Distracting Shot |
+		931 - Holy Shield |
+		932 - Consecration |
+		951 - PvP Battlefield Item - LONG (30 mins) |
+		971 - Mortal Strike |
+		991 - Item - SnowMaster |
+		1011 - Frenzied Healing |
+		1031 - Item - Half Hour |
+		1051 - Item - Jumper Cables |
+		1071 - Item - Hatch Jubling |
+		1091 - Battlegrounds Recall |
+		1111 - Wyvern Sting |
+		1131 - Hammer of Vengeance |
+		1132 - Intimidation |
+		1133 - Faerie Fire (Feral) |
+		1134 - Riposte |
+		1135 - Counterattack |
+		1136 - Holiday - Firework Rockets |
+		1137 - Holiday - Firecracker |
+		1138 - RC Weapons |
+		1139 - Item - Quest (10 minutes) |
+		1140 - Item - Quest (1 min) |
+		1141 - Item - Burst Trinket |
+		1142 - Holiday - Valentine Perfume/Cologne |
+		1143 - Item - Target Dummy |
+		1144 - Priest Racial |
+		1145 - Lightwell |
+		1146 - Item - Enchanting Rod |
+		1147 - Revive Champion |
+		1148 - Spellstone |
+		1149 - Quest - 1 Hour |
+		1150 - ShadowThunderstrike |
+		1151 - Talent - DPS |
+		1152 - Creature Special |
+		1153 - Item - Combat Consumable (Non-Aggressive) |
+		1154 - Jewelcrafting - Cut Jewel |
+		1155 - Arathi Basin Trinket |
+		1156 - Reincarnation |
+		1157 - Item - Quest (10 sec) |
+		1158 - Intercept |
+		1159 - Creature Special 2 |
+		1160 - Item - Priest Epic Staff |
+		1161 - Reincarnation |
+		1162 - Invisibility |
+		1163 - Chess Cooldown, Move |
+		1164 - Quest - Azuremyst Mount |
+		1165 - Pain Spike |
+		1166 - PvP Trinket/WOTF |
+		1167 - Quest - Throw Boulder |
+		1168 - Smoke Flare |
+		1169 - Shadow Word: Death |
+		1170 - Quest - Aerial Assault |
+		1171 - Kill Command |
+		1172 - Swift Shot |
+		1173 - Arcane Shot |
+		1174 - Enchanting |
+		1175 - Viper Sting |
+		1176 - Hearthstone |
+		1177 - Ritual of Souls/Refreshment |
+		1178 - Stealth Start |
+		1179 - Curse of Doom |
+		1180 - Goblin Rocket Helm |
+		1181 - Prayer of Mending |
+		1182 - PvP Class Trinkets |
+		1183 - Item - Netherwing Whelp |
+		1184 - Zone Flask - Blade's Edge |
+		1185 - Zone Flask - Shattrath |
+		1186 - Hand of Sacrifice |
+		1187 - Blind |
+		1188 - Chastise |
+		1189 - Arcane Barrage |
+		1190 - Item - PvP Health Increase |
+		1191 - Shatter Shield |
+		1192 - Starshards |
+		1193 - Item - Repair Bot |
+		1194 - Zone Buff - Sunwell |
+		1195 - Earth Shield |
+		1196 - Death Strike |
+		1197 - Holiday - Snowball |
+		1198 - Transmute - Alchemy (Metals) |
+		1199 - Transmute - Alchemy (Unused) |
+		1200 - Transmute - Alchemy (Gems) |
+		1201 - Shockwave |
+		1202 - Nature's Swiftness (Shaman) |
+		1203 - Item - Speed |
+		1204 - Circle of Healing |
+		1205 - Feral Charge |
+		1206 - Shadowstep |
+		1207 - Blood Strike |
+		1208 - Berserk |
+		1209 - Shield Slam |
+		1210 - Judgement |
+		1211 - Heroic Leap |
+		1212 - Teleport Dalaran - Epic Ring |
+		1213 - Item - Tracking |
+		1214 - Living Bomb |
+		1215 - Dragon's Breath |
+		1216 - Item - Engineering Enchant |
+		1217 - Typhoon |
+		1218 - Starfall |
+		1219 - Charge |
+		1221 - Deep Freeze |
+		1222 - Haunt |
+		1223 - Thunderstorm |
+		1224 - Lava Burst |
+		1225 - Chaos Bolt |
+		1226 - Kill Shot |
+		1227 - Bomber - Damage Control |
+		1228 - Riptide |
+		1229 - Item - Scroll of Recall |
+		1230 - Penance |
+		1231 - Concussive Shot |
+		1232 - Item - Darkmoon Tarot Cards |
+		1233 - Windfury Weapon |
+		1234 - Holiday - Thanksgiving Table |
+		1235 - Icecrown Bomber - Switch Seats |
+		1236 - Darkmoon - Test of Strength |
+		1237 - Wild Growth |
+		1238 - Tracking |
+		1239 - Tracking |
+		1240 - Corpse Explosion |
+		1241 - Cower |
+		1242 - AP/POM |
+		1243 - Power Word: Barrier |
+		1244 - Tournament - Mounted Melee |
+		1245 - Raise Dead |
+		1246 - Tournament - Banner |
+		1247 - Froststorm Breath |
+		1248 - Howling Blast |
+		1249 - Trap (Nature) |
+		1250 - Trap (Fire) |
+		1251 - Temporary Health |
+		1252 - Goblin Rocket Belt |
+		1253 - Horn of Winter
+	</system:String>
     <system:String x:Key="interrupt_strings">
         None |
         On Movement |
