@@ -175,6 +175,7 @@
     <system:String x:Key="butImportExportWindowImport">导入</system:String>
     <system:String x:Key="butImportExportWindowExport">导出</system:String>
     <system:String x:Key="ImportExportWindowTitle">导入和导出</system:String>
+	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">多语言</system:String>
     <!--#endregion-->
 

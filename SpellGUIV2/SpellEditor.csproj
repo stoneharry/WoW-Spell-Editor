@@ -165,6 +165,9 @@
     <Compile Include="ConfigWindow.xaml.cs">
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LogBookWindow.xaml.cs">
+      <DependentUpon>LogBookWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImportExportWindow.xaml.cs">
       <DependentUpon>ImportExportWindow.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,7 @@
     <Compile Include="Sources\Config\Config.cs" />
     <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
     <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
+    <Compile Include="Sources\Controls\SpellSelectList\SpellLogRecord.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionEntry.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionList.cs" />
     <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />
@@ -242,6 +246,10 @@
     <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
     <Compile Include="Sources\VersionControl\WoWVersionManager.cs" />
     <Page Include="ConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LogBookWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

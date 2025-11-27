@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MySql.Data.MySqlClient;
@@ -28,6 +29,7 @@ using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
@@ -657,6 +659,36 @@ namespace SpellEditor
             window.Height += 40;
             window.Width /= 2;
             _ImportExportWindow = window;
+        }
+
+        private LogBookWindow _LogBookWindow;
+
+        private void LogBookWindowButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (_LogBookWindow != null && _LogBookWindow.IsVisible)
+            {
+                _LogBookWindow.Visibility = Visibility.Visible;
+                _LogBookWindow.Show();
+                return;
+            }
+            var window = new LogBookWindow(UpdateSelectionFromLogBook);
+            window.Show();
+            _LogBookWindow = window;
+        }
+
+        private void UpdateLogBookEntry(StackPanel panel)
+        {
+            if (_LogBookWindow == null)
+            {
+                _LogBookWindow = new LogBookWindow(UpdateSelectionFromLogBook)
+                {
+                    Visibility = Visibility.Hidden
+                };
+                _LogBookWindow.Show();
+                _LogBookWindow.UpdateLayout();
+            }
+            
+            _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
         }
 
         #endregion
@@ -3874,8 +3906,23 @@ namespace SpellEditor
                         string name = block.Text;
                         selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
                         UpdateMainWindow();
+                        UpdateLogBookEntry(box.SelectedItem as SpellSelectionEntry);
                         return;
                     }
+                }
+            }
+        }
+
+        public void UpdateSelectionFromLogBook(SpellLogRecord entry)
+        {
+            var selectedId = uint.Parse(entry.SpellLogName.Substring(1, entry.SpellLogName.IndexOf(' ', 1)));
+            foreach (var item in SelectSpell.Items)
+            {
+                var compare = item as SpellSelectionEntry;
+                if (selectedId == compare.GetSpellId())
+                {
+                    SelectSpell.SelectedItem = compare;
+                    break;
                 }
             }
         }
