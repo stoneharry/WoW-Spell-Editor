@@ -25,6 +25,8 @@ namespace SpellEditor
 
         private readonly ObservableCollection<SpellLogRecord> _logRecords = new ObservableCollection<SpellLogRecord>();
 
+        private Window _main;
+
         public LogBookWindow(Action<SpellLogRecord> selectSpellAction)
         {
             InitializeComponent();
@@ -32,20 +34,50 @@ namespace SpellEditor
             LogBookList.ItemsSource = _logRecords;
 
             WindowStartupLocation = WindowStartupLocation.Manual;
-
             Height = 400;
             Width = 300;
 
-            // Get main window dimensions and position
-            var main = Application.Current.MainWindow;
-            double mainRight = main.Left + main.Width;
-            double mainBottom = main.Top + main.Height;
+            _main = Application.Current.MainWindow;
+            PositionRelativeToMain();
 
-            // Position the log book at bottom-right
-            Left = mainRight - Width;
-            Top = mainBottom - Height;
+            _main.LocationChanged += MainWindowMoved;
+            Closed += LogBookWindow_Closed;
+            IsVisibleChanged += LogBookWindow_IsVisibleChanged;
 
             Topmost = true;
+
+            Owner = _main;
+        }
+
+        private void LogBookWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue == true)
+            {
+                // Window is now visible → position it and start following main window
+                PositionRelativeToMain();
+                _main.LocationChanged += MainWindowMoved;
+            }
+            else
+            {
+                // Window is hidden → stop following (prevents memory leak)
+                _main.LocationChanged -= MainWindowMoved;
+            }
+        }
+
+        private void LogBookWindow_Closed(object sender, EventArgs e)
+        {
+            _main.LocationChanged -= MainWindowMoved;
+        }
+
+        private void MainWindowMoved(object sender, EventArgs e)
+        {
+            PositionRelativeToMain();
+        }
+
+        private void PositionRelativeToMain()
+        {
+            Left = _main.Left + _main.Width - Width;
+            Top = _main.Top + _main.Height - Height;
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
