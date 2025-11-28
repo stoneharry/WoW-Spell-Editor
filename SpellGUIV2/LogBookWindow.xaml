@@ -8,7 +8,6 @@
         Title="{DynamicResource butLogBook}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
-        Loaded="_Loaded"
         BorderBrush="#1585B5"
         BorderThickness="2"
         Width="{Binding ActualWidth, ElementName=MainTabControl, Mode=OneWay}"
@@ -18,6 +17,7 @@
             <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
             <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
             <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+            <local:PinIconConverter x:Key="PinIconConverter"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.Flyouts>
@@ -42,7 +42,26 @@
         <ListBox Name="LogBookList" Grid.Row="1" SelectionChanged="LogBookList_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type local:SpellLogRecord}">
-                    <local:SpellSelectionEntry SpellName="{Binding SpellLogName}" SpellIcon="{Binding SpellLogIcon}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+
+                        <local:SpellSelectionEntry 
+                            SpellName="{Binding SpellLogName}" 
+                            SpellIcon="{Binding SpellLogIcon}" />
+
+                        <Button Grid.Column="1"
+                            Content="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
+                            FontSize="14"
+                            Padding="2"
+                            Margin="-8,0,8,0"
+                            Width="24"
+                            Height="24"
+                            Command="{Binding DataContext.TogglePinCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                            CommandParameter="{Binding}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 using MahApps.Metro.Controls;
@@ -27,6 +28,8 @@ namespace SpellEditor
 
         private Window _main;
 
+        public ICommand TogglePinCommand { get; }
+
         public LogBookWindow(Action<SpellLogRecord> selectSpellAction)
         {
             InitializeComponent();
@@ -47,6 +50,17 @@ namespace SpellEditor
             Topmost = true;
 
             Owner = _main;
+
+            TogglePinCommand = new RelayCommand(TogglePin);
+            DataContext = this;
+        }
+        private void TogglePin(object obj)
+        {
+            if (obj is SpellLogRecord rec)
+            {
+                rec.IsPinned = !rec.IsPinned;
+                ReorderLog();
+            }
         }
 
         private void LogBookWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -95,26 +109,18 @@ namespace SpellEditor
         public void RecordLogEntry(SpellSelectionEntry entry)
         {
             if (entry == null)
-                throw new ArgumentNullException("LogBook: Expected StackPanel to be a SpellSelectionEntry, got null");
+                throw new ArgumentNullException("LogBook: entry cannot be null");
 
             if (!int.TryParse(MaxEntriesBox.Text, out int max))
-                // If less than 0 then infinite
-                max = max < 0 ? 
-                    9999999 : 
-                    // If more than 0 use the value
-                    max > 0 ? 
-                        max : 
-                        // If 0, use default constant
-                        _MaxLogBookRecords;
+                max = max <= 0 ? _MaxLogBookRecords : max;
 
-            // If already in the log book, bring it to the most recent by removing and readding
             var record = new SpellLogRecord
             {
                 SpellLogName = entry.GetSpellText(),
-                SpellLogIcon = entry.GetIconId().ToString(),
+                SpellLogIcon = entry.GetIconId().ToString()
             };
 
-            // check duplicates
+            // Remove duplicates
             var selectedId = entry.GetSpellId();
             var existing = _logRecords.FirstOrDefault(r =>
             {
@@ -123,13 +129,37 @@ namespace SpellEditor
             });
             if (existing != null)
             {
+                record.IsPinned = existing.IsPinned;
                 _logRecords.Remove(existing);
             }
 
             _logRecords.Insert(0, record);
 
+            ReorderLog();
+
+            // Trim non-pinned items to max
             while (_logRecords.Count > max)
-                _logRecords.RemoveAt(_logRecords.Count - 1);
+            {
+                // Find last non-pinned item
+                var lastNonPinned = _logRecords.LastOrDefault(r => !r.IsPinned);
+                if (lastNonPinned != null)
+                    _logRecords.Remove(lastNonPinned);
+                else
+                    break; // all remaining items are pinned, stop removing
+            }
+        }
+
+        private void ReorderLog()
+        {
+            // Preserve non-pinned order
+            var reordered = _logRecords
+                .Where(r => r.IsPinned)
+                .Concat(_logRecords.Where(r => !r.IsPinned))
+                .ToList();
+
+            _logRecords.Clear();
+            foreach (var r in reordered)
+                _logRecords.Add(r);
         }
 
         private void LogBookList_SelectionChanged(object sender, SelectionChangedEventArgs e)
