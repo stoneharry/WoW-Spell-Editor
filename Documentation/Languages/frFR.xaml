@@ -660,29 +660,31 @@
 		Familier non combattant |
 		Nuage de gaz
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
-		Aucun |
-		Défense |
-		Santé en dessous de 20% |
-		Berserk |
-		Jugement |
-		Parade du chasseur |
-		Ivresse de la victoire |
-		Inconnu 1 |
-		Santé en dessous de 35% |
-		Enrager |
-		Inconnu 2 |
-		Santé supérieure à 75%
-    </system:String>
-    <system:String x:Key="target_aura_state_strings">
-		Aucun |
-		Santé en dessous de 20% |
-		Berserking |
-		Santé en dessous de 35% |
-		Conflagration |
-		Prompte guérison |
-		Poison mortel |
-		Saignement
+    <system:String x:Key="aura_state_strings">
+        None |
+        Defense |
+        Healthless 20 Percent |
+        Berserking |
+        Frozen |
+        Judgement |
+        Unknown6 |
+        Hunter Parry |
+        Unknown8 |
+        Unknown9 |
+        Warrior Victory Rush |
+        Unknown11 |
+        Faerie Fire |
+        Healthless 35 Percent |
+        Conflagrate |
+        Swiftmend |
+        Deadly Poison |
+        Enrage |
+        Bleeding |
+        Parry |
+        Unknown20 |
+        Unknown21 |
+        Unknown22 |
+        Health Above 75 Percent
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
 		Non-équipé |
