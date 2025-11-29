@@ -175,11 +175,11 @@ namespace SpellEditor
             Logger.Info($"Starting WoW Spell Editor - {DateTime.Now.ToString()}");
             Logger.Info("######################################################");
 
-            VerifyStaticData();
-            
             // Config must be initialised fast
             Config.Init();
             InitializeComponent();
+
+            VerifyStaticData();
 
             // store effects Ui elements in arrays for easy access
             spellEffectTypeBoxes = new[] { SpellEffect1, SpellEffect2, SpellEffect3 };
@@ -193,7 +193,6 @@ namespace SpellEditor
             miscValueDynamicContentsA = new[] { MiscValueA1DynamicContent, MiscValueA2DynamicContent, MiscValueA3DynamicContent };
             miscValueLabelB = new[] { LabMiscValueB1, LabMiscValueB2, LabMiscValueB3 };
             miscValueDynamicContentsB = new[] { MiscValueB1DynamicContent, MiscValueB2DynamicContent, MiscValueB3DynamicContent };
-
         }
 
         ~MainWindow()
@@ -780,9 +779,10 @@ namespace SpellEditor
             }
             var window = new ConfigWindow(adapter is MySQL ? 
                 ConfigWindow.DatabaseIdentifier.MySQL : ConfigWindow.DatabaseIdentifier.SQLite);
+            // window.ShowDialog();
             window.Show();
-            window.Width *= 0.6;
-            window.Height *= 0.7;
+            window.Width *= 0.7;
+            window.Height *= 0.8;
             ConfigWindowInstance = window;
         }
         #endregion
@@ -1809,17 +1809,18 @@ namespace SpellEditor
                     row["EffectItemType1"] = uint.Parse(ItemType1.Text);
                     row["EffectItemType2"] = uint.Parse(ItemType2.Text);
                     row["EffectItemType3"] = uint.Parse(ItemType3.Text);
-                    // row["EffectMiscValue1"] = int.Parse(MiscValueA1.Text);
+
                     row["EffectMiscValue1"] = GetMiscValue(1, 1);
                     row["EffectMiscValue2"] = GetMiscValue(2, 1);
                     row["EffectMiscValue3"] = GetMiscValue(3, 1);
-                    if (isTbcOrGreater)
+
+                    if (isTbcOrGreater) // miscvalueB
                     {
-                        // row["EffectMiscValueB1"] = int.Parse(MiscValueB1.Text);
                         row["EffectMiscValueB1"] = GetMiscValue(1, 2);
                         row["EffectMiscValueB2"] = GetMiscValue(2, 2);
                         row["EffectMiscValueB3"] = GetMiscValue(3, 2);
                     }
+
                     row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
                     row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
                     row["EffectTriggerSpell3"] = uint.Parse(TriggerSpell3.Text);
@@ -2286,7 +2287,27 @@ namespace SpellEditor
             ////
             ///
 
-            // no spell effect, we're done, everythnig disabled
+            // if custom musc values fields is disabled or unsupported
+            if (!Config.DynamicMiscValueFields || !WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                // just enable every fields
+                effectMultipleValueBoxes[effectIndex - 1].IsEnabled = true;
+                effectAuraNameBoxes[effectIndex - 1].IsEnabled = true;
+                effectChainTargetBoxes[effectIndex - 1].IsEnabled = true;
+                effectItemTypeBoxes[effectIndex - 1].IsEnabled = true;
+                effectTriggerSpellBoxes[effectIndex - 1].IsEnabled = true;
+                effectAmplitudeBoxes[effectIndex - 1].IsEnabled = true;
+
+                DynamicContentA.IsEnabled = true;
+                if (WoWVersionManager.IsTbcOrGreaterSelected)
+                    DynamicContentB.IsEnabled = true;
+
+                DynamicContentA.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                DynamicContentB.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                return;
+            }
+
+            // no spell effect, we're done, everything disabled
             if (spellEffectType == (int)spellEffectTypes.NONE)
             {
                 DynamicContentA.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
@@ -2378,7 +2399,10 @@ namespace SpellEditor
             for (int misc_value_idx = 0; misc_value_idx < 2; misc_value_idx++)
             {
                 if (WoWVersionManager.IsTbcOrGreaterSelected == false && misc_value_idx == 1)
+                {
+                    DynamicContentB.IsEnabled = false;
                     continue;
+                }
 
                 MiscValueType currMiscValue;
                 ContentControl currContentControl;
