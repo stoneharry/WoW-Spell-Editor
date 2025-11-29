@@ -1328,6 +1328,11 @@
                     <TextBlock Text="{DynamicResource butLogBook}" VerticalAlignment="Center"/>
                 </StackPanel>
              </Button>
+             <Button Name="OpenAIButton" Click="OpenAIButtonClick">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="OpenAI" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <Button Name="TruncateTable" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>

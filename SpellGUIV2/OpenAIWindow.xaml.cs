@@ -1,0 +1,239 @@
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Threading;
+using MahApps.Metro.Controls;
+using NLog;
+using SpellEditor.Sources.AI;
+
+namespace SpellEditor
+{
+    public partial class OpenAIWindow : MetroWindow
+    {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private readonly MainWindow _mainWindow;
+        private OpenAIClient _client;
+        private AiSpellResult _lastResult;
+
+        public OpenAIWindow(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
+
+            InitializeComponent();
+        }
+
+        private void _Loaded(object sender, RoutedEventArgs e)
+        {
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+
+            try
+            {
+                // For now: read API key from environment variable.
+                var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY", EnvironmentVariableTarget.User)
+                          ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY", EnvironmentVariableTarget.Machine)
+                          ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+                if (string.IsNullOrWhiteSpace(apiKey))
+                {
+                    StatusTextBlock.Text = "Set OPENAI_API_KEY environment variable to use the AI tool.";
+                    GenerateButton.IsEnabled = false;
+                    ApplyButton.IsEnabled = false;
+                    return;
+                }
+
+                _client = new OpenAIClient(apiKey);
+                StatusTextBlock.Text = "Ready. Describe the spell you want.";
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to initialize OpenAI client.");
+                StatusTextBlock.Text = "Failed to initialize OpenAI client. See log.";
+                GenerateButton.IsEnabled = false;
+                ApplyButton.IsEnabled = false;
+            }
+        }
+
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            Logger.Error(e.Exception, "Unhandled exception in OpenAI window.");
+            File.WriteAllText("error.txt", e.Exception.ToString(), Encoding.GetEncoding(0));
+            e.Handled = true;
+        }
+
+        private async void GenerateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_client == null)
+            {
+                StatusTextBlock.Text = "OpenAI client not initialized.";
+                return;
+            }
+
+            var prompt = PromptTextBox.Text;
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                StatusTextBlock.Text = "Enter a description for the spell.";
+                return;
+            }
+
+            try
+            {
+                GenerateButton.IsEnabled = false;
+                ApplyButton.IsEnabled = false;
+                StatusTextBlock.Text = "Contacting OpenAI...";
+
+                string currentName = "";
+                uint currentId = 0;
+
+                if (RadioModifyExisting.IsChecked == true)
+                {
+                    currentName = _mainWindow.GetSpellNameById(_mainWindow.selectedID);
+                    currentId = _mainWindow.selectedID;
+                }
+
+                var result = await _client.GenerateSpellAsync(prompt, currentName, currentId);
+                _lastResult = result;
+
+                DisplayJson(result.RawContent ?? string.Empty);
+
+                if (result.Definition != null)
+                {
+                    SummaryNameTextBlock.Text = result.Definition.Name ?? "(unchanged)";
+                    SummaryDescriptionTextBlock.Text = result.Definition.Description ?? "(unchanged)";
+                    SummaryRangeTextBlock.Text = result.Definition.RangeYards?.ToString() ?? "(unchanged)";
+                    SummaryDamageTextBlock.Text = result.Definition.DirectDamage?.ToString() ?? "(unchanged)";
+
+                    ApplyButton.IsEnabled = true;
+                }
+                else
+                {
+                    SummaryNameTextBlock.Text = "Failed to parse JSON.";
+                    SummaryDescriptionTextBlock.Text = string.Empty;
+                    SummaryRangeTextBlock.Text = string.Empty;
+                    SummaryDamageTextBlock.Text = string.Empty;
+                    ApplyButton.IsEnabled = false;
+                }
+
+                StatusTextBlock.Text = "Response received. Review and click 'Apply Changes' if happy.";
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Error during OpenAI spell generation.");
+                StatusTextBlock.Text = "Error: " + ex.Message;
+                ApplyButton.IsEnabled = false;
+            }
+            finally
+            {
+                GenerateButton.IsEnabled = true;
+            }
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_lastResult == null || _lastResult.Definition == null)
+            {
+                StatusTextBlock.Text = "Nothing to apply.";
+                return;
+            }
+
+            try
+            {
+                if (RadioModifyExisting.IsChecked == true)
+                {
+                    _mainWindow.ModifyExistingSpellFromAi(_lastResult.Definition);
+                    StatusTextBlock.Text = "Existing spell updated.";
+                }
+                else if (RadioCreateNew.IsChecked == true)
+                {
+                    var newId = _mainWindow.CreateNewSpellFromAi(_lastResult.Definition);
+                    StatusTextBlock.Text = $"New spell created with ID {newId}.";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusTextBlock.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _client?.Dispose();
+        }
+
+        private string FormatJson(string json)
+        {
+            try
+            {
+                // Parse → pretty print
+                var parsed = Newtonsoft.Json.Linq.JToken.Parse(json);
+                return parsed.ToString(Newtonsoft.Json.Formatting.Indented);
+            }
+            catch
+            {
+                // If parse fails, return unmodified
+                return json;
+            }
+        }
+
+        private void DisplayJson(string json)
+        {
+            json = FormatJson(json);
+            JsonOutputBox.Document.Blocks.Clear();
+
+            // Create a single paragraph
+            Paragraph paragraph = new Paragraph();
+            paragraph.Margin = new Thickness(0);
+
+            // Regex-based tokenizer (strings, numbers, braces, colons, commas)
+            var tokens = Regex.Matches(
+                json,
+                "\".*?\"|\\d+|\\{|\\}|\\[|\\]|:|,|\\s+"
+            );
+
+            foreach (Match token in tokens)
+            {
+                string text = token.Value;
+                Run run = new Run(text);
+
+                // Apply color rules
+                if (text.StartsWith("\"") && text.EndsWith("\""))
+                {
+                    run.Foreground = Brushes.Orange;          // JSON strings
+                }
+                else if (Regex.IsMatch(text, "^\\d+$"))
+                {
+                    run.Foreground = Brushes.LightGreen;      // Numbers
+                }
+                else if (text == "{" || text == "}" || text == "[" || text == "]")
+                {
+                    run.Foreground = Brushes.CadetBlue;       // Braces
+                }
+                else if (text == ":")
+                {
+                    run.Foreground = Brushes.Gray;            // colon
+                }
+                else if (text == ",")
+                {
+                    run.Foreground = Brushes.White;           // comma
+                }
+                else
+                {
+                    run.Foreground = Brushes.White;           // whitespace or other
+                }
+
+                paragraph.Inlines.Add(run);
+            }
+
+            JsonOutputBox.Document.Blocks.Add(paragraph);
+        }
+    }
+}

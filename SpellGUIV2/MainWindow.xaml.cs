@@ -24,6 +24,7 @@ using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using SpellEditor.Sources.AI;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
@@ -665,7 +666,7 @@ namespace SpellEditor
 
         private void LogBookWindowButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_LogBookWindow != null && _LogBookWindow.IsVisible)
+            if (_LogBookWindow != null)
             {
                 _LogBookWindow.Visibility = Visibility.Visible;
                 _LogBookWindow.Show();
@@ -689,6 +690,78 @@ namespace SpellEditor
             }
             
             _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
+        }
+
+        private OpenAIWindow OpenAIWindow;
+        private AIController _AIController;
+
+        private void OpenAIButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (OpenAIWindow != null && OpenAIWindow.IsLoaded)
+            {
+                OpenAIWindow.Visibility = Visibility.Visible;
+                OpenAIWindow.Activate();
+                return;
+            }
+
+            _AIController = new AIController(GetDBAdapter());
+            OpenAIWindow = new OpenAIWindow(this);
+            OpenAIWindow.Show();
+        }
+
+        public void ReloadCurrentSpellFromDatabase()
+        {
+            try
+            {
+                updating = true;
+                // Silent progress updater
+                loadSpell(_ => { });
+            }
+            finally
+            {
+                updating = false;
+            }
+        }
+
+        public void ApplyAiSpellDefinition(AiSpellDefinition def)
+        {
+            _AIController.ApplyAiSpellDefinition(def, selectedID);
+
+            // Refresh editor UI
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void LoadSpecificSpell(uint id)
+        {
+            selectedID = id;
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void ModifyExistingSpellFromAi(AiSpellDefinition def)
+        {
+            if (selectedID == 0)
+                throw new Exception("No spell selected to modify.");
+
+            var query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'";
+            using (var table = adapter.Query(query))
+            {
+                if (table.Rows.Count == 0)
+                    throw new Exception("Spell not found: ID " + selectedID);
+
+                var row = table.Rows[0];
+                _AIController.ApplyAiDefinitionToRow(row, def);
+                GetDBAdapter().CommitChanges(query, table);
+
+                ReloadCurrentSpellFromDatabase();
+                SelectSpell.UpdateSpell(row);
+            }
+        }
+
+        public uint CreateNewSpellFromAi(AiSpellDefinition def)
+        {
+            var newId = _AIController.CreateNewSpellFromAi(def);
+            // TODO
+            return newId;
         }
 
         #endregion
