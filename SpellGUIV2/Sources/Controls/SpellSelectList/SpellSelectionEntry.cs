@@ -257,5 +257,22 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             entry.IsSpellListEntryVisibileChanged(entry._Image,
                 new DependencyPropertyChangedEventArgs(UIElement.IsVisibleProperty, false, true));
         }
+
+        public void ForceRefreshIcon()
+        {
+            // Step 1: make icon appear "invisible" to the loader
+            _Image.Source = null;
+
+            // Step 2: mark it dirty so loader always executes
+            _Dirty = true;
+
+            // Step 3: manually trigger loader logic exactly as IsVisibleChanged would
+            IsSpellListEntryVisibileChanged(
+                _Image,
+                new DependencyPropertyChangedEventArgs(
+                    UIElement.IsVisibleProperty, false, true
+                )
+            );
+        }
     }
 }

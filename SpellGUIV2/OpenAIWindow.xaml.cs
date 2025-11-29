@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using NLog;
 using SpellEditor.Sources.AI;
+using SpellEditor.Sources.BLP;
 
 namespace SpellEditor
 {
@@ -79,6 +80,7 @@ namespace SpellEditor
                 return;
             }
 
+            ShowSpinner(true);
             try
             {
                 GenerateButton.IsEnabled = false;
@@ -105,6 +107,7 @@ namespace SpellEditor
                     SummaryDescriptionTextBlock.Text = result.Definition.Description ?? "(unchanged)";
                     SummaryRangeTextBlock.Text = result.Definition.RangeYards?.ToString() ?? "(unchanged)";
                     SummaryDamageTextBlock.Text = result.Definition.DirectDamage?.ToString() ?? "(unchanged)";
+                    UpdateIconPreview(result.Definition);
 
                     ApplyButton.IsEnabled = true;
                 }
@@ -128,8 +131,46 @@ namespace SpellEditor
             finally
             {
                 GenerateButton.IsEnabled = true;
+                ShowSpinner(false);
             }
         }
+
+        private void UpdateIconPreview(AiSpellDefinition def)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(def.Icon))
+                {
+                    SummaryIconImage.Source = null;
+                    return;
+                }
+
+                // Use any icon ID already chosen, or pick one and remember it
+                uint iconId = def.IconId ?? AiSpellMapper.PickBestIconId(def.Icon);
+                def.IconId = iconId;
+
+                if (iconId == 0)
+                {
+                    SummaryIconImage.Source = null;
+                    return;
+                }
+
+                var iconDbc = Sources.DBC.DBCManager
+                    .GetInstance()
+                    .FindDbcForBinding("SpellIcon") as Sources.DBC.SpellIconDBC;
+                if (iconDbc == null)
+                    return;
+
+                string iconName = iconDbc.GetIconPath(iconId) + ".blp";
+                SummaryIconImage.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(iconName);
+            }
+            catch
+            {
+                SummaryIconImage.Source = null;
+            }
+        }
+
+
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -234,6 +275,14 @@ namespace SpellEditor
             }
 
             JsonOutputBox.Document.Blocks.Add(paragraph);
+        }
+
+        private void ShowSpinner(bool show)
+        {
+            LoadingSpinner.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            PromptTextBox.IsEnabled = !show;
+            GenerateButton.IsEnabled = !show;
+            ApplyButton.IsEnabled = !show;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -32,24 +33,9 @@ namespace SpellEditor.Sources.AI
         {
             Logger.Info("Sending OpenAI request for spell generation...");
 
-            string systemPrompt = @"
-You are a spell designer for World of Warcraft: Wrath of the Lich King (3.3.5a).
-
-Output ONLY a JSON object matching this class:
-
-class AiSpellDefinition
-{
-  string Name;
-  string Description;
-  float? RangeYards;
-  int? DirectDamage;
-}
-
-Rules:
-- Do NOT wrap JSON in backticks.
-- Do NOT add comments.
-- Only output that JSON object.
-";
+            var systemPrompt = LoadSystemPromptFromFileOrDefault();
+            if (systemPrompt == null)
+                throw new Exception("No AI-Prompt.txt file found.");
 
             StringBuilder input = new StringBuilder();
 
@@ -110,6 +96,25 @@ Rules:
             };
         }
 
+        private string LoadSystemPromptFromFileOrDefault()
+        {
+            try
+            {
+                string exeDir = AppDomain.CurrentDomain.BaseDirectory;
+                string promptPath = Path.Combine(exeDir, "AI-Prompt.txt");
+
+                if (File.Exists(promptPath))
+                {
+                    Logger.Info("Loading AI system prompt from file: " + promptPath);
+                    return File.ReadAllText(promptPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to load AI-Prompt.txt.");
+            }
+            return null;
+        }
 
         public void Dispose()
         {

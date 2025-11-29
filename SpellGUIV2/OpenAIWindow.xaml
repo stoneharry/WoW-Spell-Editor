@@ -107,6 +107,20 @@
                 <ColumnDefinition Width="*" MinWidth="300"/>
             </Grid.ColumnDefinitions>
 
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid x:Name="LoadingSpinner" Visibility="Collapsed">
+                    <ProgressBar 
+                        IsIndeterminate="True"
+                        Width="200"
+                        Height="20"
+                        Margin="10"/>
+                                <TextBlock 
+                        Text="Generating spell..."
+                        HorizontalAlignment="Center"
+                        Margin="0,35,0,0"/>
+                </Grid>
+            </StackPanel>
+
             <!-- LEFT: Raw JSON -->
             <Border Grid.Column="0"
                     BorderBrush="#444"
@@ -138,6 +152,16 @@
                     Margin="10,0,0,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="10">
+
+                        <TextBlock Text="Icon Preview:"
+                            FontWeight="Bold"/>
+
+                        <Image x:Name="SummaryIconImage"
+                           Width="48"
+                           Height="48"
+                           Margin="1"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Left"/>
 
                         <TextBlock Text="Name:" FontWeight="Bold" FontSize="14"/>
                         <TextBlock x:Name="SummaryNameTextBlock"

@@ -350,8 +350,8 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
-            string[] school_strings = SafeTryFindResource("school_strings").Split('|');
-            foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
+            string[] power_type_strings = SafeTryFindResource("power_type_strings").Split('|');
+            foreach (string schoolString in power_type_strings) { PowerType.Items.Add(schoolString); }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
@@ -617,6 +617,8 @@ namespace SpellEditor
                 FilterAuraCombo.SelectionChanged += FilterAuraCombo_SelectionChanged;
                 FilterSpellTargetA.SelectionChanged += FilterSpellTargetA_SelectionChanged;
                 FilterSpellTargetB.SelectionChanged += FilterSpellTargetB_SelectionChanged;
+
+                SpellDbcEnumProvider.Initialize();
             }
 
             catch (Exception ex)
@@ -739,21 +741,40 @@ namespace SpellEditor
 
         public void ModifyExistingSpellFromAi(AiSpellDefinition def)
         {
+            if (def == null)
+                throw new ArgumentNullException(nameof(def));
             if (selectedID == 0)
-                throw new Exception("No spell selected to modify.");
+                throw new InvalidOperationException("No spell selected.");
 
-            var query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'";
+            var query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1";
             using (var table = adapter.Query(query))
             {
                 if (table.Rows.Count == 0)
-                    throw new Exception("Spell not found: ID " + selectedID);
+                    throw new Exception("Spell not found: " + selectedID);
 
                 var row = table.Rows[0];
-                _AIController.ApplyAiDefinitionToRow(row, def);
-                GetDBAdapter().CommitChanges(query, table);
+
+                AiSpellMapper.ApplyDefinitionToRow(def, row);
+                adapter.CommitChanges(query, table);
+            }
+            // MUST reload DataRow after commit:
+            using (var table = adapter.Query(query))
+            {
+                var refreshedRow = table.Rows[0];
 
                 ReloadCurrentSpellFromDatabase();
-                SelectSpell.UpdateSpell(row);
+
+                // Update selection list
+                SelectSpell.UpdateSpell(refreshedRow);
+                foreach (var item in SelectSpell.Items)
+                {
+                    if (item is SpellSelectionEntry entry &&
+                        entry.GetSpellId() == selectedID)
+                    {
+                        entry.ForceRefreshIcon();
+                        break;
+                    }
+                }
             }
         }
 

@@ -101,7 +101,7 @@ namespace SpellEditor.Sources.AI
             return newId;
         }
 
-        private uint FindNextAvailableSpellId()
+        public uint FindNextAvailableSpellId()
         {
             var table = adapter.Query("SELECT MAX(ID) AS MaxId FROM `spell`");
             uint maxId = Convert.ToUInt32(table.Rows[0]["MaxId"]);
