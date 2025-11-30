@@ -52,6 +52,7 @@ namespace SpellEditor
                 }
 
                 _client = new OpenAIClient(apiKey);
+                UpdateMode();
                 StatusTextBlock.Text = "Ready. Describe the spell you want.";
             }
             catch (Exception ex)
@@ -95,14 +96,12 @@ namespace SpellEditor
                 bool useSimilar = UseSimilarSpellsCheckBox.IsChecked == true;
                 int maxExamples = SimilarSpellCountCombo.SelectedIndex + 1;
                 List<AiSimilarSpellSummary> similar = null;
-                string currentName = "";
-                uint currentId = 0;
+                string currentName = _mainWindow.GetSpellNameById(_mainWindow.selectedID);
+                uint currentId = _mainWindow.selectedID;
 
                 if (useSimilar)
                 {
                     StatusTextBlock.Text = "Finding similar spells...";
-                    currentName = _mainWindow.GetSpellNameById(_mainWindow.selectedID);
-                    currentId = _mainWindow.selectedID;
                     similar = AiSimilarSpellFinder.FindSimilarSpells(prompt, maxExamples);
                     SimilarSpellsTextBox.Text = FormatSimilarSpellsForDisplay(similar);
                     SimilarSpellsExpander.IsExpanded = true;
@@ -116,10 +115,9 @@ namespace SpellEditor
                 if (IsAskQuestionMode)
                 {
                     // Plain chat mode
-                    var answer = await _client.AskQuestionAsync(prompt, similar);
-                    DisplayJson("");
-                    SummaryNameTextBlock.Text = answer;
-                    SummaryDescriptionTextBlock.Text = "";
+                    var answer = await _client.AskQuestionAsync(prompt, currentName, currentId, similar);
+                    QuestionAnswerBox.Document.Blocks.Clear();
+                    QuestionAnswerBox.AppendText(answer);
                     ApplyButton.IsEnabled = false;
                     return;
                 }
@@ -315,10 +313,36 @@ namespace SpellEditor
 
         private void ShowSpinner(bool show)
         {
-            LoadingSpinner.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            if (!IsAskQuestionMode)
+                LoadingSpinner.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            else
+                LoadingSpinner2.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             PromptTextBox.IsEnabled = !show;
             GenerateButton.IsEnabled = !show;
             ApplyButton.IsEnabled = !show;
+        }
+
+        private void ModeRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateMode();
+        }
+
+
+        private void UpdateMode()
+        {
+            if (RadioAskQuestion == null)
+                return;
+
+            bool ask = RadioAskQuestion.IsChecked != null && RadioAskQuestion.IsChecked == true;
+
+            OutputContainer.Visibility = ask ? Visibility.Collapsed : Visibility.Visible;
+            QuestionContainer.Visibility = ask ? Visibility.Visible : Visibility.Collapsed;
+
+            AIPromptLabel.Text = ask ?
+                "Ask your question:" :
+                "Describe the spell you want to create or modify:";
+
+            ApplyButton.IsEnabled = !ask;
         }
 
         private string FormatSimilarSpellsForDisplay(List<AiSimilarSpellSummary> list)

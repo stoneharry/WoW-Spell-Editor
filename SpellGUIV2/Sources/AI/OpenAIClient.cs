@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ControlzEx.Standard;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
@@ -142,42 +143,83 @@ namespace SpellEditor.Sources.AI
             return null;
         }
 
-        public async Task<string> AskQuestionAsync(string userPrompt, List<AiSimilarSpellSummary> similar)
+        public async Task<string> AskQuestionAsync(
+            string userPrompt,
+            string currentSpellName,
+            uint currentSpellId,
+            List<AiSimilarSpellSummary> similarSpells)
         {
             var sb = new StringBuilder();
 
-            if (similar != null && similar.Count > 0)
+            sb.AppendLine("You are a WoW 3.3.5a spell designer and technical assistant.");
+            sb.AppendLine("Answer the user's question in plain English.");
+            sb.AppendLine("Do NOT output JSON. Do NOT use backticks or Markdown code blocks.");
+            sb.AppendLine("You may use bullet lists and short headings, but keep it readable.");
+            sb.AppendLine();
+
+            // Optional: insert similar spells section
+            if (similarSpells != null && similarSpells.Count > 0)
             {
-                sb.AppendLine("Similar spells for context:");
-                foreach (var s in similar)
+                sb.AppendLine("Here are some similar existing spells from the game as examples.");
+                sb.AppendLine("These are NOT to be edited; they are only reference for style, scale, and mechanics.");
+                sb.AppendLine();
+
+                int index = 1;
+                foreach (var s in similarSpells)
                 {
-                    sb.AppendLine(s.SummaryText);
+                    sb.AppendLine("=== Similar Spell " + index + " ===");
+                    sb.AppendLine(s.SummaryText.TrimEnd());
                     sb.AppendLine();
+                    index++;
                 }
+
+                sb.AppendLine("End of existing examples.");
+                sb.AppendLine();
             }
 
+            sb.AppendLine("Current editor context:");
+            sb.AppendLine("Selected spell name: " + (currentSpellName ?? "(none)"));
+            sb.AppendLine("Selected spell ID: " + currentSpellId);
+            sb.AppendLine();
             sb.AppendLine("User question:");
-            sb.AppendLine(userPrompt);
+            sb.AppendLine(userPrompt ?? string.Empty);
 
-            var body = new
+            string bodyJson = JsonConvert.SerializeObject(new
             {
                 model = _aiModel,
                 input = new object[]
                 {
-                    new { role="system", content="You are a WoW spell design expert. Answer clearly." },
-                    new { role="user", content = sb.ToString() }
-                }
-            };
+                    new {
+                        role = "user",
+                        content = sb.ToString()
+                    }
+                },
+                temperature = 0.4
+            });
 
-            var jsonBody = JsonConvert.SerializeObject(body);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+            Logger.Info("Sending OpenAI request for AskQuestionAsync...");
 
-            var response = await _http.PostAsync("responses", content);
-            var text = await response.Content.ReadAsStringAsync();
+            var response = await _http.PostAsync(
+                "responses",
+                new StringContent(bodyJson, Encoding.UTF8, "application/json")
+            ).ConfigureAwait(false);
 
-            var parsed = JObject.Parse(text);
-            return parsed["output"]?[0]?["content"]?[0]?["text"]?.ToString()
-                   ?? "(no response)";
+            string responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Logger.Error("OpenAI error (AskQuestionAsync): {0}", responseText);
+                throw new Exception(responseText);
+            }
+
+            var parsed = JObject.Parse(responseText);
+            string content =
+                parsed["output"]?[0]?["content"]?[0]?["text"]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(content))
+                throw new Exception("OpenAI AskQuestionAsync result did not contain output content.");
+
+            return content.Trim();
         }
 
         public void Dispose()

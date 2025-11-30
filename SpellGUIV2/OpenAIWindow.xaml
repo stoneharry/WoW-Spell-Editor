@@ -39,19 +39,23 @@
             <RadioButton x:Name="RadioModifyExisting"
                  Content="Modify Selected Spell"
                  IsChecked="True"
-                 Margin="0,0,10,4"/>
+                 Margin="0,0,10,4"
+                 Checked="ModeRadio_Checked"/>
 
             <RadioButton x:Name="RadioCreateNew"
                  Content="Create New Spell"
-                 Margin="0,0,10,4"/>
+                 Margin="0,0,10,4"
+                 Checked="ModeRadio_Checked"/>
 
             <RadioButton x:Name="RadioAskQuestion"
                  Content="Ask a Question"
-                 Margin="0,0,10,4"/>
+                 Margin="0,0,10,4"
+                 Checked="ModeRadio_Checked"/>
 
             <RadioButton x:Name="RadioBalanceSpell"
                  Content="Balance This Spell"
-                 Margin="0,0,10,4"/>
+                 Margin="0,0,10,4"
+                 Checked="ModeRadio_Checked"/>
         </StackPanel>
 
         <!-- Row 1: Similar spells options -->
@@ -77,6 +81,7 @@
 
         <!-- Row 2: Prompt Label -->
         <TextBlock Grid.Row="2"
+                   x:Name="AIPromptLabel"
                    FontSize="16"
                    Text="Describe the spell you want to create or modify:"
                    FontWeight="Bold"
@@ -147,95 +152,147 @@
                     Click="CloseButton_Click"/>
         </StackPanel>
 
-        <!-- Row 6: Output Area with Splitter -->
+        <!-- Row 6: Output Area -->
         <Grid Grid.Row="6">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="300"/>
-                <ColumnDefinition Width="6"/>
-                <!-- splitter -->
-                <ColumnDefinition Width="*" MinWidth="300"/>
-            </Grid.ColumnDefinitions>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid x:Name="LoadingSpinner" Visibility="Collapsed">
-                    <ProgressBar 
-                        IsIndeterminate="True"
-                        Width="200"
-                        Height="20"
-                        Margin="10"/>
-                                <TextBlock 
-                        Text="Generating spell..."
-                        HorizontalAlignment="Center"
-                        Margin="0,35,0,0"/>
-                </Grid>
-            </StackPanel>
+            <!-- TWO EXCLUSIVE MODES:
+                 1. OutputContainer (JSON + Summary)
+                 2. QuestionContainer (Ask mode)
+            -->
 
-            <!-- LEFT: Raw JSON -->
-            <Border Grid.Column="0"
-                    BorderBrush="#444"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Margin="0,0,10,0">
-                <RichTextBox x:Name="JsonOutputBox"
-                     FontFamily="Consolas"
-                     FontSize="13"
-                     BorderThickness="0"
-                     Background="Transparent"
-                     VerticalScrollBarVisibility="Auto"
-                     HorizontalScrollBarVisibility="Auto"
-                     IsDocumentEnabled="True"
-                     IsReadOnly="True"/>
-            </Border>
+            <!-- NORMAL MODE OUTPUT (Modify / Create / Balance) -->
+            <Grid x:Name="OutputContainer" Visibility="Visible">
 
-            <GridSplitter Grid.Column="1"
-                          Width="6"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          Background="#666"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="300"/>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="*" MinWidth="300"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- RIGHT: Parsed Summary -->
-            <Border Grid.Column="2"
-                    BorderBrush="#444"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Margin="10,0,0,0">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="10">
+                <!-- Loading Spinner -->
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Grid x:Name="LoadingSpinner"
+                          Visibility="Collapsed">
+                        <ProgressBar IsIndeterminate="True"
+                                     Width="200"
+                                     Height="20"
+                                     Margin="10"/>
+                        <TextBlock Text="Generating spell..."
+                                   HorizontalAlignment="Center"
+                                   Margin="0,35,0,0"/>
+                    </Grid>
+                </StackPanel>
 
-                        <TextBlock Text="Icon Preview:"
-                            FontWeight="Bold"/>
+                <!-- LEFT: JSON OUTPUT -->
+                <Border x:Name="JsonOutputBorder"
+                                Grid.Column="0"
+                                BorderBrush="#444"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Margin="0,0,10,0">
 
-                        <Image x:Name="SummaryIconImage"
-                           Width="48"
-                           Height="48"
-                           Margin="1"
-                           Stretch="Uniform"
-                           HorizontalAlignment="Left"/>
+                    <RichTextBox x:Name="JsonOutputBox"
+                                 FontFamily="Consolas"
+                                 FontSize="13"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 IsReadOnly="True"/>
+                </Border>
 
-                        <TextBlock Text="Name:" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock x:Name="SummaryNameTextBlock"
-                                   FontSize="14"
-                                   Margin="0,0,0,10"
-                                   TextWrapping="Wrap"/>
+                <!-- Middle Splitter -->
+                <GridSplitter Grid.Column="1"
+                              Width="6"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="#666"
+                              x:Name="OutputSplitter"/>
 
-                        <TextBlock Text="Description:" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock x:Name="SummaryDescriptionTextBlock"
-                                   FontSize="14"
-                                   Margin="0,0,0,10"
-                                   TextWrapping="Wrap"/>
+                <!-- RIGHT: Parsed Summary -->
+                <Border x:Name="SummaryBorder"
+                            Grid.Column="2"
+                            BorderBrush="#444"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Margin="10,0,0,0">
 
-                        <TextBlock Text="Range (yards):" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock x:Name="SummaryRangeTextBlock"
-                                   FontSize="14"
-                                   Margin="0,0,0,10"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                        <TextBlock Text="Direct Damage:" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock x:Name="SummaryDamageTextBlock"
-                                   FontSize="14"
-                                   Margin="0,0,0,10"/>
+                        <StackPanel Margin="10">
 
+                            <TextBlock Text="Icon Preview:" FontWeight="Bold"/>
+                            <Image x:Name="SummaryIconImage"
+                                Width="48"
+                                Height="48"
+                                Margin="1"
+                                Stretch="Uniform"
+                                HorizontalAlignment="Left"/>
+
+                            <TextBlock Text="Name:" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock x:Name="SummaryNameTextBlock"
+                                    FontSize="14"
+                                    Margin="0,0,0,10"
+                                    TextWrapping="Wrap"/>
+
+                            <TextBlock Text="Description:" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock x:Name="SummaryDescriptionTextBlock"
+                                    FontSize="14"
+                                    Margin="0,0,0,10"
+                                    TextWrapping="Wrap"/>
+
+                            <TextBlock Text="Range (yards):" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock x:Name="SummaryRangeTextBlock"
+                                    FontSize="14"
+                                    Margin="0,0,0,10"/>
+
+                            <TextBlock Text="Direct Damage:" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock x:Name="SummaryDamageTextBlock"
+                                    FontSize="14"
+                                    Margin="0,0,0,10"/>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                </Border>
+
+            </Grid>
+
+
+            <!-- ASK-A-QUESTION MODE OUTPUT -->
+            <Border x:Name="QuestionContainer"
+                        Visibility="Collapsed"
+                        BorderBrush="#444"
+                        BorderThickness="1"
+                        CornerRadius="4">
+
+                <Grid>
+                    <!-- Loading Spinner -->
+                    <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <Grid x:Name="LoadingSpinner2"
+                          Visibility="Collapsed">
+                            <ProgressBar IsIndeterminate="True"
+                                     Width="200"
+                                     Height="20"
+                                     Margin="10"/>
+                            <TextBlock Text="Answering question..."
+                                   HorizontalAlignment="Center"
+                                   Margin="0,35,0,0"/>
+                        </Grid>
                     </StackPanel>
-                </ScrollViewer>
+
+                    <ScrollViewer>
+                        <RichTextBox x:Name="QuestionAnswerBox"
+                                    FontSize="14"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    VerticalScrollBarVisibility="Auto"
+                                    IsReadOnly="True"/>
+                    </ScrollViewer>
+                </Grid>
             </Border>
         </Grid>
 
