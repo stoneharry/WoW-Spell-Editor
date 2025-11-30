@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -342,7 +343,8 @@ namespace SpellEditor
                 "Ask your question:" :
                 "Describe the spell you want to create or modify:";
 
-            ApplyButton.IsEnabled = !ask;
+            ApplyButton.IsEnabled = !ask && !IsBalanceMode;
+            GenerateButton.IsEnabled = !IsBalanceMode;
         }
 
         private string FormatSimilarSpellsForDisplay(List<AiSimilarSpellSummary> list)

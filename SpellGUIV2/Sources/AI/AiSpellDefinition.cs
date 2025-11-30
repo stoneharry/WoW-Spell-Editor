@@ -71,7 +71,7 @@ namespace SpellEditor.Sources.AI
         /// Lets us reuse the same icon for preview + DB write.
         /// </summary>
         public uint? IconId { get; set; }
-
+        public int? VisualId { get; set; }
         public string VisualName { get; set; }
 
 
@@ -88,37 +88,28 @@ namespace SpellEditor.Sources.AI
     /// <summary>
     /// A single high-level effect that maps to Effect1/Effect2/Effect3.
     /// </summary>
-    public class AiEffectDefinition
+    public sealed class AiEffectDefinition
     {
-        /// <summary>
-        /// Damage, Heal, ApplyAura, PeriodicDamage, PeriodicHeal, Stun, Root, Slow, Knockback, etc.
-        /// </summary>
-        public string Type { get; set; }
+        public string Type { get; set; }               // e.g. "Damage", "Heal", "ApplyAura", "Stun", "Summon"
+        public string Aura { get; set; }               // e.g. "PeriodicDamage", "ModStun", "ModRoot"
 
-        /// <summary>
-        /// Aura type used only for ApplyAura effects.
-        /// Examples: PeriodicDamage, ModDecreaseSpeed, ModStun.
-        /// </summary>
-        public string Aura { get; set; }
+        public float? BasePoints { get; set; }         // Raw effect amount (spell.dbc stores BasePoints+1)
+        public float? DieSides { get; set; }           // Optional random range (die sides)
+        public float? DamagePerSecond { get; set; }    // For DoTs/HoTs
+        public float? AmplitudeSeconds { get; set; }   // Tick interval for periodic effects
+        public float? RadiusYards { get; set; }        // AoE radius
 
-        /// <summary>
-        /// BasePoints (DBC stores BasePoints = actual - 1)
-        /// </summary>
-        public float? BasePoints { get; set; }
+        public string Target { get; set; }             // "Self", "Enemy", "Friendly", "Area", etc.
 
-        /// <summary> Optional dice variance </summary>
-        public float? DieSides { get; set; }
+        public int? MiscValue { get; set; }            // Maps to EffectMiscValueN when set
+        public int? MiscValueB { get; set; }           // Maps to EffectMiscValueBN when set
 
-        /// <summary> Tick interval in seconds (mapped to EffectAmplitudeX in ms) </summary>
-        public float? AmplitudeSeconds { get; set; }
+        public int? TriggerSpellId { get; set; }       // EffectTriggerSpellN
+        public int? CreatureId { get; set; }           // Summon creature / kill credit, etc. (goes via MiscValue when appropriate)
 
-        /// <summary> Optional DPS helper → BasePoints derived via DPS * Amplitude </summary>
-        public float? DamagePerSecond { get; set; }
-
-        /// <summary> Enemy, Friendly, Self, Area, Cone, Chain </summary>
-        public string Target { get; set; }
-
-        /// <summary> Optional effect-specific radius override </summary>
-        public float? RadiusYards { get; set; }
+        public int? ChainTargets { get; set; }         // EffectChainTargetN
+        public float? WeaponDamagePercent { get; set; } // Optional helper; you can map into multipliers if desired
+        public float? ValueMultiplier { get; set; }    // EffectMultipleValueN
+        public float? DamageMultiplier { get; set; }   // EffectDamageMultiplierN
     }
 }

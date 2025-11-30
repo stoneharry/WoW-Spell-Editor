@@ -371,6 +371,12 @@ namespace SpellEditor.Sources.AI
                 {
                     Id = id,
                     Name = name,
+                    SchoolMask = SafeUInt(row, "SchoolMask"),
+                    Mechanic = SafeUInt(row, "Mechanic"),
+                    PowerType = SafeUInt(row, "PowerType"),
+                    Visual1 = SafeUInt(row, "SpellVisual1"),
+                    Visual2 = SafeUInt(row, "SpellVisual2"),
+                    Effects = ExtractEffectSummaries(row),
                     SummaryText = sb.ToString()
                 };
             }
@@ -379,6 +385,25 @@ namespace SpellEditor.Sources.AI
                 Logger.Warn(ex, "BuildSemanticSummary failed");
                 return null;
             }
+        }
+
+        private static List<string> ExtractEffectSummaries(DataRow row)
+        {
+            var list = new List<string>();
+
+            for (int i = 1; i <= 3; i++)
+            {
+                if (!row.Table.Columns.Contains($"Effect{i}"))
+                    continue;
+
+                var eff = row[$"Effect{i}"]?.ToString();
+                var aura = row[$"EffectApplyAuraName{i}"]?.ToString();
+
+                if (!string.IsNullOrWhiteSpace(eff) || !string.IsNullOrWhiteSpace(aura))
+                    list.Add($"Slot {i}: Effect={eff}, Aura={aura}");
+            }
+
+            return list;
         }
 
         private static string MapSchoolMaskToName(uint mask)
@@ -477,5 +502,41 @@ namespace SpellEditor.Sources.AI
                     return auraId == 0 ? "" : "Aura(" + auraId + ")";
             }
         }
+
+        /// <summary>
+        /// Given a list of similar spells and the AI definition, choose a good
+        /// SpellVisualKit ID to use as a template.
+        /// Currently:
+        ///   - prefers any non-zero visual from similar spells
+        ///   - returns the first one in order of similarity
+        /// You can refine this later (e.g. by school or icon hint).
+        /// </summary>
+        public static uint? PickBestVisualIdFromSimilar(
+            IList<AiSimilarSpellSummary> similarSpells,
+            AiSpellDefinition def)
+        {
+            if (similarSpells == null || similarSpells.Count == 0)
+                return null;
+
+            // Collect candidate visuals in similarity order, removing duplicates.
+            var candidates = new List<uint>();
+
+            foreach (var s in similarSpells)
+            {
+                if (s.Visual1.HasValue && s.Visual1.Value != 0 && !candidates.Contains(s.Visual1.Value))
+                    candidates.Add(s.Visual1.Value);
+
+                if (s.Visual2.HasValue && s.Visual2.Value != 0 && !candidates.Contains(s.Visual2.Value))
+                    candidates.Add(s.Visual2.Value);
+            }
+
+            if (candidates.Count == 0)
+                return null;
+
+            // TODO: later, refine by matching def.School/Icon, etc.
+            // For now, just pick the first valid candidate (best-ranked similar spell).
+            return candidates[0];
+        }
+
     }
 }

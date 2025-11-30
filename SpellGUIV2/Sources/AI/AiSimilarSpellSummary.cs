@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SpellEditor.Sources.AI
 {
@@ -10,11 +11,21 @@ namespace SpellEditor.Sources.AI
     {
         public uint Id { get; set; }
         public string Name { get; set; }
+
+        // --- NEW OPTIONAL FIELDS (fully safe) ---
+        public uint? SchoolMask { get; set; }
+        public uint? Mechanic { get; set; }
+        public uint? PowerType { get; set; }
+        public uint? Visual1 { get; set; }
+        public uint? Visual2 { get; set; }
+
+        // Raw effect/aura preview (optional)
+        public List<string> Effects { get; set; } = new List<string>();
+
         public string SummaryText { get; set; }
 
         public override string ToString()
-        {
-            return SummaryText ?? (Name ?? string.Empty);
-        }
+            => SummaryText ?? Name ?? string.Empty;
     }
+
 }

@@ -47,24 +47,20 @@ namespace SpellEditor.Sources.AI
         {
             if (!string.IsNullOrWhiteSpace(def.Name) && row.Table.Columns.Contains("SpellName0"))
                 row["SpellName0"] = def.Name;
-            else
-                row["SpellName0"] = "";
 
             if (!string.IsNullOrWhiteSpace(def.Description) && row.Table.Columns.Contains("SpellDescription0"))
                 row["SpellDescription0"] = def.Description;
-            else
-                row["SpellDescription0"] = "";  // FIXED from 0 to ""
 
             if (!string.IsNullOrWhiteSpace(def.ClassFamily) && row.Table.Columns.Contains("SpellFamilyName"))
                 row["SpellFamilyName"] = MapClassFamily(def.ClassFamily);
-            else
-                row["SpellFamilyName"] = 0;
 
-            if (def.Rank.HasValue && row.Table.Columns.Contains("SpellDescription2"))
+            // TODO: Implement SpellRank0 and SpellTooltip0
+            if (def.Rank.HasValue && row.Table.Columns.Contains("SpellRank0"))
             {
                 // Optional rank mapping
             }
         }
+
 
         private static uint MapClassFamily(string family)
         {
@@ -94,18 +90,12 @@ namespace SpellEditor.Sources.AI
         {
             if (!string.IsNullOrWhiteSpace(def.School) && row.Table.Columns.Contains("SchoolMask"))
                 row["SchoolMask"] = MapSchool(def.School);
-            else
-                row["SchoolMask"] = 0;
 
             if (!string.IsNullOrWhiteSpace(def.Mechanic) && row.Table.Columns.Contains("Mechanic"))
                 row["Mechanic"] = MapMechanic(def.Mechanic);
-            else
-                row["Mechanic"] = 0;
 
             if (!string.IsNullOrWhiteSpace(def.DispelType) && row.Table.Columns.Contains("Dispel"))
                 row["Dispel"] = MapDispel(def.DispelType);
-            else
-                row["Dispel"] = 0;
         }
 
         private static uint MapSchool(string school)
@@ -166,6 +156,14 @@ namespace SpellEditor.Sources.AI
                 if (idx.HasValue)
                     row["CastingTimeIndex"] = idx.Value;
             }
+            else if (def.IsInstant == true && row.Table.Columns.Contains("CastingTimeIndex"))
+            {
+                // If explicitly marked instant and no explicit cast time provided,
+                // snap to the closest 0-second cast time entry.
+                var idx = FindBestCastTimeIndex(0f);
+                if (idx.HasValue)
+                    row["CastingTimeIndex"] = idx.Value;
+            }
 
             if (def.CooldownSeconds.HasValue && row.Table.Columns.Contains("CategoryRecoveryTime"))
                 row["CategoryRecoveryTime"] = (int)(def.CooldownSeconds.Value * 1000f);
@@ -183,6 +181,14 @@ namespace SpellEditor.Sources.AI
             if (def.DurationSeconds.HasValue && row.Table.Columns.Contains("DurationIndex"))
             {
                 var idx = FindBestDurationIndex(def.DurationSeconds.Value);
+                if (idx.HasValue)
+                    row["DurationIndex"] = idx.Value;
+            }
+            else if (def.IsChanneled == true && def.ChannelTimeSeconds.HasValue && row.Table.Columns.Contains("DurationIndex"))
+            {
+                // If no explicit DurationSeconds but a channel time is specified,
+                // map the channel length to a duration entry.
+                var idx = FindBestDurationIndex(def.ChannelTimeSeconds.Value);
                 if (idx.HasValue)
                     row["DurationIndex"] = idx.Value;
             }
@@ -265,9 +271,6 @@ namespace SpellEditor.Sources.AI
         }
 
         // POWER COST --------------------------------------------------------
-
-        // POWER COST --------------------------------------------------------
-
         private static void ApplyPower(AiSpellDefinition def, DataRow row)
         {
             // 1) POWER TYPE: use enum map from enUS.xaml when possible
@@ -376,6 +379,22 @@ namespace SpellEditor.Sources.AI
             {
                 row["ManaCostPercentage"] = def.PowerCostPercentage.Value;
             }
+
+            // 3) RUNE COST (Death Knight) – reuse existing SpellRuneCost rows only.
+            if ((def.RuneCostBlood ?? 0) > 0 ||
+                (def.RuneCostFrost ?? 0) > 0 ||
+                (def.RuneCostUnholy ?? 0) > 0)
+            {
+                int blood = def.RuneCostBlood ?? 0;
+                int frost = def.RuneCostFrost ?? 0;
+                int unholy = def.RuneCostUnholy ?? 0;
+
+                var runeId = FindBestRuneCostId(blood, frost, unholy);
+                if (runeId.HasValue && row.Table.Columns.Contains("RuneCost"))
+                {
+                    row["RuneCost"] = (int)runeId.Value;
+                }
+            }
         }
 
 
@@ -384,43 +403,95 @@ namespace SpellEditor.Sources.AI
         private static void ApplyTargeting(AiSpellDefinition def, DataRow row)
         {
             // Targeting handled per-effect
+
+            // Optional high-level cap on targets hit (e.g. Chain Lightning jumps).
+            if (def.MaxTargets.HasValue && row.Table.Columns.Contains("MaximumAffectedTargets"))
+            {
+                var maxTargets = (int)Math.Max(0, Math.Round(def.MaxTargets.Value));
+                row["MaximumAffectedTargets"] = maxTargets;
+            }
         }
 
         private static void MapTarget(string target, out uint a, out uint b)
         {
-            AiEnumRegistry.Initialize();
-
             a = 0;
             b = 0;
 
             if (string.IsNullOrWhiteSpace(target))
                 return;
 
-            if (AiEnumRegistry.TargetNameToId.TryGetValue(target.Trim(), out uint id))
-            {
-                a = id;
-                return;
-            }
+            string t = target.Trim().ToLowerInvariant();
 
-            // fallback shorthand
-            switch (target.ToLower())
+            switch (t)
             {
-                case "enemy": a = 6; break;
-                case "friendly": a = 21; break;
-                case "self": a = 1; break;
+                case "self":
+                    a = 1; b = 0;       // TARGET_UNIT_CASTER
+                    break;
+
+                case "enemy":
+                    a = 6; b = 0;       // TARGET_UNIT_TARGET_ENEMY
+                    break;
+
+                case "friendly":
+                    a = 21; b = 0;      // TARGET_UNIT_TARGET_ALLY
+                    break;
+
+                case "area":
+                case "aoe":
+                case "radius":
+                case "area around caster":
+                    a = 7;  // TARGET_SRC_CASTER
+                    b = 16; // TARGET_DEST_DEST
+                    break;
+
+                case "ground":
+                case "ground-target":
+                case "place":
+                case "location":
+                    a = 1; // TARGET_UNIT_CASTER
+                    b = 16; // TARGET_DEST_DEST (location)
+                    break;
+
+                case "cone":
+                    a = 1; // TARGET_UNIT_CASTER
+                    b = 22; // TARGET_DEST_CASTER_FRONT
+                    break;
+
+                case "chain":
+                    a = 45; // chain start
+                    b = 6;  // next unit
+                    break;
+
+                case "enemy area":
+                    a = 6;  // target enemy
+                    b = 16; // destination
+                    break;
+
+                case "friendly area":
+                    a = 21;
+                    b = 16;
+                    break;
+
+                default:
+                    a = 6;
+                    b = 0;
+                    break;
             }
         }
-
-        // EFFECTS (1–3) -----------------------------------------------------
-
         private static void ApplyEffects(AiSpellDefinition def, DataRow row)
         {
+            // ------------------------------------------------------------
+            // 1) Build working effect list from definition or fallbacks
+            // ------------------------------------------------------------
             var effects = new List<AiEffectDefinition>();
-            if (def.Effects != null)
-                effects.AddRange(def.Effects);
 
-            if (effects.Count == 0)
+            if (def.Effects != null && def.Effects.Count > 0)
             {
+                effects.AddRange(def.Effects);
+            }
+            else
+            {
+                // Fallback: direct damage
                 if (def.DirectDamage.HasValue)
                 {
                     effects.Add(new AiEffectDefinition
@@ -430,75 +501,368 @@ namespace SpellEditor.Sources.AI
                     });
                 }
 
+                // Fallback: DoT
                 if (def.PeriodicDamage.HasValue)
                 {
+                    float dps = def.PeriodicDamage.Value;
+
+                    float amplitudeSeconds =
+                        def.PeriodicIntervalOverrideSeconds
+                        ?? def.PeriodicIntervalSeconds
+                        ?? (def.DurationSeconds.HasValue && def.DurationSeconds.Value >= 3.0f
+                                ? Math.Max(1.0f, def.DurationSeconds.Value / 5.0f)
+                                : 1.0f);
+
                     effects.Add(new AiEffectDefinition
                     {
                         Type = "ApplyAura",
                         Aura = "PeriodicDamage",
-                        DamagePerSecond = def.PeriodicDamage.Value,
-                        AmplitudeSeconds = def.PeriodicIntervalSeconds ?? 1.0f
+                        DamagePerSecond = dps,
+                        AmplitudeSeconds = amplitudeSeconds
                     });
                 }
             }
 
-            for (int i = 0; i < 3; ++i)
+            // ------------------------------------------------------------
+            // 2) Clear all effect slots (avoid leftover values)
+            // ------------------------------------------------------------
+            for (int slot = 1; slot <= 3; ++slot)
             {
-                if (i >= effects.Count)
-                    break;
+                SafeSet(row, $"Effect{slot}", 0);
+                SafeSet(row, $"EffectApplyAuraName{slot}", 0);
+                SafeSet(row, $"EffectBasePoints{slot}", 0);
+                SafeSet(row, $"EffectDieSides{slot}", 0);
+                SafeSet(row, $"EffectAmplitude{slot}", 0);
+                SafeSet(row, $"EffectRadiusIndex{slot}", 0);
+                SafeSet(row, $"EffectImplicitTargetA{slot}", 0);
+                SafeSet(row, $"EffectImplicitTargetB{slot}", 0);
+                SafeSet(row, $"EffectMiscValue{slot}", 0);
+                SafeSet(row, $"EffectMiscValueB{slot}", 0);
+                SafeSet(row, $"EffectTriggerSpell{slot}", 0);
+                SafeSet(row, $"EffectChainTarget{slot}", 0);
+                SafeSet(row, $"EffectMultipleValue{slot}", 0f);
+                SafeSet(row, $"EffectDamageMultiplier{slot}", 0f);
+            }
 
+            // ------------------------------------------------------------
+            // 3) Apply up to 3 effects
+            // ------------------------------------------------------------
+            int count = Math.Min(3, effects.Count);
+
+            for (int i = 0; i < count; ++i)
+            {
                 int slot = i + 1;
-                var eff = effects[i];
+                AiEffectDefinition eff = effects[i];
 
-                string effectCol = $"Effect{slot}";
-                if (row.Table.Columns.Contains(effectCol))
-                    row[effectCol] = MapEffectType(eff.Type, eff.Aura);
-
-                string auraCol = $"EffectApplyAuraName{slot}";
-                if (row.Table.Columns.Contains(auraCol))
-                    row[auraCol] = MapAura(eff.Aura);
-
-                string baseCol = $"EffectBasePoints{slot}";
-                if (row.Table.Columns.Contains(baseCol))
+                // --------------------------------------------------------
+                // AURA INFERENCE (if effect type is known CC)
+                // --------------------------------------------------------
+                if (eff.Aura == null && !string.IsNullOrWhiteSpace(eff.Type))
                 {
-                    int basePoints = 0;
-
-                    if (eff.BasePoints.HasValue)
-                        basePoints = (int)Math.Round(eff.BasePoints.Value) - 1;
-                    else if (eff.DamagePerSecond.HasValue && eff.AmplitudeSeconds.HasValue)
-                        basePoints = (int)Math.Round(eff.DamagePerSecond.Value * eff.AmplitudeSeconds.Value) - 1;
-
-                    if (basePoints < 0) basePoints = 0;
-                    row[baseCol] = basePoints;
+                    switch (eff.Type.Trim().ToLowerInvariant())
+                    {
+                        case "stun": eff.Aura = "ModStun"; break;
+                        case "root": eff.Aura = "ModRoot"; break;
+                        case "slow": eff.Aura = "ModDecreaseSpeed"; break;
+                        case "silence": eff.Aura = "ModSilence"; break;
+                        case "fear": eff.Aura = "ModFear"; break;
+                        case "charm": eff.Aura = "ModCharm"; break;
+                    }
                 }
 
-                string dieCol = $"EffectDieSides{slot}";
-                if (row.Table.Columns.Contains(dieCol) && eff.DieSides.HasValue)
-                    row[dieCol] = (int)Math.Round(eff.DieSides.Value);
+                // --------------------------------------------------------
+                // EFFECT TYPE (EffectN)
+                // --------------------------------------------------------
+                uint effectId = MapEffectType(eff.Type, eff.Aura);
+                SafeSet(row, $"Effect{slot}", effectId);
 
-                string ampCol = $"EffectAmplitude{slot}";
-                if (row.Table.Columns.Contains(ampCol) && eff.AmplitudeSeconds.HasValue)
-                    row[ampCol] = (int)(eff.AmplitudeSeconds.Value * 1000f);
-
-                string radCol = $"EffectRadiusIndex{slot}";
-                float? radiusYards = eff.RadiusYards ?? def.RadiusYards;
-                if (row.Table.Columns.Contains(radCol) && radiusYards.HasValue)
+                // Weapon damage override
+                if (eff.WeaponDamagePercent.HasValue)
                 {
-                    var idx = FindBestRadiusIndex(radiusYards.Value);
+                    SafeSet(row, $"Effect{slot}", 1); // SPELL_EFFECT_WEAPON_DAMAGE
+                }
+
+                // --------------------------------------------------------
+                // AURA NAME (EffectApplyAuraNameN)
+                // --------------------------------------------------------
+                uint auraId = MapAura(eff.Aura);
+                SafeSet(row, $"EffectApplyAuraName{slot}", auraId);
+
+                // --------------------------------------------------------
+                // BASE POINTS
+                // --------------------------------------------------------
+                int basePoints = 0;
+
+                if (eff.BasePoints.HasValue)
+                {
+                    basePoints = (int)Math.Round(eff.BasePoints.Value) - 1;
+                }
+                else if (eff.DamagePerSecond.HasValue && eff.AmplitudeSeconds.HasValue)
+                {
+                    basePoints = (int)Math.Round(eff.DamagePerSecond.Value * eff.AmplitudeSeconds.Value) - 1;
+                }
+
+                if (basePoints < 0) basePoints = 0;
+                SafeSet(row, $"EffectBasePoints{slot}", basePoints);
+
+                // --------------------------------------------------------
+                // DIE SIDES
+                // --------------------------------------------------------
+                if (eff.DieSides.HasValue)
+                    SafeSet(row, $"EffectDieSides{slot}", (int)Math.Round(eff.DieSides.Value));
+
+                // --------------------------------------------------------
+                // PERIODIC AMPLITUDE
+                // --------------------------------------------------------
+                float? ampSec = eff.AmplitudeSeconds ?? def.PeriodicIntervalOverrideSeconds;
+                if (ampSec.HasValue)
+                    SafeSet(row, $"EffectAmplitude{slot}", (int)(ampSec.Value * 1000f));
+
+                // --------------------------------------------------------
+                // RADIUS
+                // --------------------------------------------------------
+                float? radius = eff.RadiusYards ?? def.RadiusYards;
+                if (radius.HasValue)
+                {
+                    uint? idx = FindBestRadiusIndex(radius.Value);
                     if (idx.HasValue)
-                        row[radCol] = idx.Value;
+                        SafeSet(row, $"EffectRadiusIndex{slot}", idx.Value);
                 }
 
-                string aCol = $"EffectImplicitTargetA{slot}";
-                string bCol = $"EffectImplicitTargetB{slot}";
-                if (row.Table.Columns.Contains(aCol))
+                // --------------------------------------------------------
+                // TARGETING — uses ResolveEffectTarget FIX
+                // --------------------------------------------------------
+                string target = ResolveEffectTarget(eff, def);
+                if (!string.IsNullOrWhiteSpace(target))
                 {
-                    MapTarget(eff.Target, out uint a, out uint b);
-                    row[aCol] = a;
-                    if (row.Table.Columns.Contains(bCol))
-                        row[bCol] = b;
+                    MapTarget(target, out uint targA, out uint targB);
+                    SafeSet(row, $"EffectImplicitTargetA{slot}", targA);
+                    SafeSet(row, $"EffectImplicitTargetB{slot}", targB);
+                }
+
+                // --------------------------------------------------------
+                // MISC VALUES
+                // --------------------------------------------------------
+                int? misc = ComputeEffectMiscValue(def, eff);
+                if (misc.HasValue)
+                    SafeSet(row, $"EffectMiscValue{slot}", misc.Value);
+
+                int? miscB = ComputeEffectMiscValueB(def, eff);
+                if (miscB.HasValue)
+                    SafeSet(row, $"EffectMiscValueB{slot}", miscB.Value);
+
+                // --------------------------------------------------------
+                // TRIGGER SPELL
+                // --------------------------------------------------------
+                if (eff.TriggerSpellId.HasValue)
+                    SafeSet(row, $"EffectTriggerSpell{slot}", eff.TriggerSpellId.Value);
+
+                // --------------------------------------------------------
+                // CHAIN TARGETS
+                // --------------------------------------------------------
+                if (eff.ChainTargets.HasValue)
+                    SafeSet(row, $"EffectChainTarget{slot}", eff.ChainTargets.Value);
+
+                // --------------------------------------------------------
+                // MULTIPLIERS
+                // --------------------------------------------------------
+                if (eff.ValueMultiplier.HasValue)
+                    SafeSet(row, $"EffectMultipleValue{slot}", eff.ValueMultiplier.Value);
+
+                // Damage multiplier
+                if (eff.DamageMultiplier.HasValue)
+                    SafeSet(row, $"EffectDamageMultiplier{slot}", eff.DamageMultiplier.Value);
+
+                // Weapon damage percent → damage multiplier
+                if (eff.WeaponDamagePercent.HasValue)
+                {
+                    float dmgMult = eff.WeaponDamagePercent.Value / 100f;
+                    SafeSet(row, $"EffectDamageMultiplier{slot}", dmgMult);
+                }
+
+                // --------------------------------------------------------
+                // SUMMON HANDLING
+                // --------------------------------------------------------
+                if (eff.Type != null
+                    && eff.Type.Trim().Equals("summon", StringComparison.OrdinalIgnoreCase)
+                    && eff.CreatureId.HasValue)
+                {
+                    SafeSet(row, $"Effect{slot}", 28); // SPELL_EFFECT_SUMMON
+                    SafeSet(row, $"EffectMiscValue{slot}", eff.CreatureId.Value);
                 }
             }
+        }
+
+        /// <summary>
+        /// Heuristically populate EffectMiscValueN based on existing high-level
+        /// info (School, PowerType, Aura, Type), but FIRST honor any explicit
+        /// AiEffectDefinition.MiscValue / CreatureId provided by the AI.
+        /// 
+        /// This is intentionally conservative: we only handle cases where
+        /// SpellEffects.cpp / SpellAuraEffects.cpp clearly use MiscValue and
+        /// we can infer it from the data we already have.
+        /// </summary>
+        private static int? ComputeEffectMiscValue(AiSpellDefinition def, AiEffectDefinition eff)
+        {
+            // 1) Explicit override
+            if (eff.MiscValue.HasValue)
+                return eff.MiscValue.Value;
+
+            // 2) Summon creature ID
+            if (!string.IsNullOrWhiteSpace(eff.Type) &&
+                eff.Type.Trim().Equals("summon", StringComparison.OrdinalIgnoreCase) &&
+                eff.CreatureId.HasValue)
+            {
+                return eff.CreatureId.Value;
+            }
+
+            string t = eff.Type?.Trim().ToLowerInvariant();
+            string aura = eff.Aura?.Trim().ToLowerInvariant();
+
+            // 3) Power drain / energize / leech
+            if (t == "drainmana" || t == "energize" ||
+                t == "leechmana" || t == "drainhealth" || t == "leechhealth")
+            {
+                return MapPowerTypeToMisc(def.PowerType);
+            }
+
+            // 4) Periodic leech based on aura
+            if (aura == "periodicleech" || t == "periodicleech")
+                return MapPowerTypeToMisc(def.PowerType);
+
+            // 5) Periodic damage / school-based auras
+            if (aura == "periodicdamage" || aura == "schooldamage" || aura == "schoolabsorb")
+            {
+                return (int)MapSchool(def.School);
+            }
+
+            // 6) Stat modifications
+            if (aura != null && aura.StartsWith("modstat"))
+                return -1; // "all stats"
+
+            // 7) Unknown → no misc
+            return null;
+        }
+
+        /// <summary>
+        /// EffectMiscValueBN:
+        ///  - If the AI explicitly sets MiscValueB, we copy it directly.
+        ///  - Otherwise we currently do not infer anything automatically; this
+        ///    keeps behaviour conservative and avoids guessing IDs.
+        /// 
+        /// You can extend this later (e.g. chain jumps, SummonPropertiesId, etc.)
+        /// once you're happy with the pipeline.
+        /// </summary>
+        private static int? ComputeEffectMiscValueB(AiSpellDefinition def, AiEffectDefinition eff)
+        {
+            if (eff.MiscValueB.HasValue)
+                return eff.MiscValueB.Value;
+
+            string t = eff.Type?.Trim().ToLowerInvariant();
+            string aura = eff.Aura?.Trim().ToLowerInvariant();
+
+            // 1) Drains / leeches power type secondary
+            if (t == "drainmana" || t == "leechmana" || t == "energize")
+                return MapPowerTypeToMisc(def.PowerType);
+
+            // 2) No B value needed
+            return null;
+        }
+
+
+        /// <summary>
+        /// Map the high-level PowerType string ("Mana", "Rage", etc.) to the
+        /// numeric Powers enum used by the DBC (EffectMiscValue).
+        /// 
+        /// We rely on SpellDbcEnumProvider.PowerTypeNameToId so this stays
+        /// in sync with the editor's main enum mappings.
+        /// </summary>
+        private static int? MapPowerTypeToMisc(string powerType)
+        {
+            if (string.IsNullOrWhiteSpace(powerType))
+                return null;
+
+            SpellDbcEnumProvider.Initialize();
+
+            uint id;
+            if (SpellDbcEnumProvider.PowerTypeNameToId != null &&
+                SpellDbcEnumProvider.PowerTypeNameToId.TryGetValue(powerType.Trim(), out id))
+            {
+                return (int)id;
+            }
+
+            // Fallback: very defensive hard-coded mapping if the XAML mappings
+            // don't contain the exact label the AI used.
+            string t = powerType.Trim().ToLowerInvariant();
+            switch (t)
+            {
+                case "mana": return 0;
+                case "rage": return 1;
+                case "focus": return 2;
+                case "energy": return 3;
+                case "happiness": return 4;
+                case "runes":
+                case "rune": return 5;
+                case "runicpower":
+                case "runic power": return 6;
+                case "health":
+                case "hp": return 0; // health-based costs usually modelled differently; keep safe
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Decide which semantic target string to use for a specific effect.
+        /// Priority:
+        ///   1) Effect.Target (per-effect override)
+        ///   2) def.TargetType (top-level)
+        ///   3) Heuristic based on effect type and whether it is AoE
+        /// </summary>
+        private static string ResolveEffectTarget(AiEffectDefinition eff, AiSpellDefinition def)
+        {
+            // 1) Explicit effect-level override
+            if (!string.IsNullOrWhiteSpace(eff.Target))
+                return eff.Target.Trim();
+
+            // 2) Spell-level override
+            if (!string.IsNullOrWhiteSpace(def.TargetType))
+                return def.TargetType.Trim();
+
+            string type = eff.Type?.Trim().ToLowerInvariant();
+            string aura = eff.Aura?.Trim().ToLowerInvariant();
+
+            // 3) AoE → use Area
+            if (eff.RadiusYards.HasValue || def.RadiusYards.HasValue)
+                return "Area";
+
+            // 4) Control → default to Enemy
+            if (type == "stun" || type == "root" || type == "slow" || type == "silence" ||
+                type == "fear" || type == "charm" || type == "disarm" || type == "knockback")
+                return "Enemy";
+
+            // 5) Healing
+            if (type == "heal" || type == "periodicheal" || aura == "periodicheal")
+                return "Friendly";
+
+            // 6) Direct or periodic damage
+            if (type == "damage" || type == "periodicdamage" || aura == "periodicdamage")
+                return "Enemy";
+
+            // 7) Drain / Leech
+            if (type?.StartsWith("drain") == true || type?.StartsWith("leech") == true)
+                return "Enemy";
+
+            // 8) Summons do not strictly need target; default Enemy for offensive summons
+            if (type == "summon")
+                return "Self";
+
+            // 9) Energy / resource gains → self
+            if (type == "energize")
+                return "Self";
+
+            // Fallback
+            return "Enemy";
         }
 
         private static uint MapEffectType(string type, string aura)
@@ -506,44 +870,85 @@ namespace SpellEditor.Sources.AI
             AiEnumRegistry.Initialize();
             AiSemanticRegistry.EnsureInitialized();
 
-            // If we have an explicit aura (stun, periodic, etc.) then we normally
-            // want APPLY_AURA as the Effect type.
+            // Null → fallback
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                // If there's an aura, it's APPLY_AURA
+                if (!string.IsNullOrWhiteSpace(aura))
+                    return 6; // SPELL_EFFECT_APPLY_AURA
+
+                return 2; // SCHOOL_DAMAGE fallback
+            }
+
+            string t = type.Trim().ToLowerInvariant();
             uint id;
+
+            // ------------------------------------------------------------
+            // 1) Semantic registry first (your master alias system)
+            // ------------------------------------------------------------
             if (AiSemanticRegistry.TryResolveEffectId(type, aura, out id))
                 return id;
 
-            if (!string.IsNullOrWhiteSpace(type) &&
-                AiEnumRegistry.EffectNameToId.TryGetValue(type.Trim(), out id))
+            // ------------------------------------------------------------
+            // 2) Weapon Damage explicit handling
+            // ------------------------------------------------------------
+            if (t == "weapondamage" || t == "applyweapondamage" || t == "meleedamage" || t == "swingdamage")
+                return 1; // SPELL_EFFECT_WEAPON_DAMAGE
+
+            // ------------------------------------------------------------
+            // 3) Summon
+            // ------------------------------------------------------------
+            if (t == "summon")
+                return 28; // SPELL_EFFECT_SUMMON
+
+            // ------------------------------------------------------------
+            // 4) Interrupt
+            // ------------------------------------------------------------
+            if (t == "interrupt")
+                return 19; // SPELL_EFFECT_INTERRUPT_CAST
+
+            // ------------------------------------------------------------
+            // 5) Threat
+            // ------------------------------------------------------------
+            if (t == "threat")
+                return 5; // SPELL_EFFECT_THREAT
+
+            // ------------------------------------------------------------
+            // 6) Default effect-name resolution from client enums
+            // ------------------------------------------------------------
+            if (AiEnumRegistry.EffectNameToId.TryGetValue(type.Trim(), out id))
                 return id;
 
-            // Automatic inference for DoTs / HoTs
+            // ------------------------------------------------------------
+            // 7) Aura present → default APPLY_AURA
+            // ------------------------------------------------------------
             if (!string.IsNullOrWhiteSpace(aura))
-            {
-                if (aura.ToLower().Contains("periodic"))
-                {
-                    // "Apply Aura" in WotLK = Effect 6
-                    return 6;
-                }
-            }
+                return 6; // SPELL_EFFECT_APPLY_AURA
 
-            // Fallback generic damage effect
-            return 2; // SCHOOL_DAMAGE
+            // ------------------------------------------------------------
+            // 8) Final fallback → SCHOOL_DAMAGE
+            // ------------------------------------------------------------
+            return 2; // SPELL_EFFECT_SCHOOL_DAMAGE
         }
         private static uint MapAura(string aura)
         {
             AiEnumRegistry.Initialize();
             AiSemanticRegistry.EnsureInitialized();
 
-            uint id;
-            if (AiSemanticRegistry.TryResolveAuraId(aura, out id))
-                return id;
-
             if (string.IsNullOrWhiteSpace(aura))
                 return 0;
 
+            uint id;
+
+            // 1) semantic registry
+            if (AiSemanticRegistry.TryResolveAuraId(aura, out id))
+                return id;
+
+            // 2) direct lookup
             if (AiEnumRegistry.AuraNameToId.TryGetValue(aura.Trim(), out id))
                 return id;
 
+            // 3) not found → no aura
             return 0;
         }
 
@@ -572,6 +977,50 @@ namespace SpellEditor.Sources.AI
             }
             return id;
         }
+
+
+        private static uint? FindBestRuneCostId(int blood, int frost, int unholy)
+        {
+            var dbc = DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost") as SpellRuneCost;
+            if (dbc == null)
+                return null;
+
+            var boxes = dbc.GetAllBoxes();
+            if (boxes == null || boxes.Count == 0)
+                return null;
+
+            foreach (var box in boxes)
+            {
+                // ID 0 is the default/no-cost row; skip it when searching.
+                if (box.ID == 0)
+                    continue;
+
+                var name = box.Name ?? string.Empty;
+
+                // Name format: "Cost {r1}, {r2}, {r3} Gain {runepowerGain} ID {id}"
+                var idxCost = name.IndexOf("Cost ", StringComparison.OrdinalIgnoreCase);
+                if (idxCost < 0)
+                    continue;
+
+                var afterCost = name.Substring(idxCost + "Cost ".Length);
+                var idxGain = afterCost.IndexOf("Gain", StringComparison.OrdinalIgnoreCase);
+                var costsPart = idxGain >= 0 ? afterCost.Substring(0, idxGain) : afterCost;
+
+                var tokens = costsPart.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (tokens.Length < 3)
+                    continue;
+
+                if (!int.TryParse(tokens[0], out var c1)) continue;
+                if (!int.TryParse(tokens[1], out var c2)) continue;
+                if (!int.TryParse(tokens[2], out var c3)) continue;
+
+                if (c1 == blood && c2 == frost && c3 == unholy)
+                    return (uint)box.ID;
+            }
+
+            return null;
+        }
+
 
         // ATTRIBUTES / FLAGS -----------------------------------------------
 
@@ -735,7 +1184,7 @@ namespace SpellEditor.Sources.AI
 
         private static void ApplyVisual(AiSpellDefinition def, DataRow row)
         {
-            if (!row.Table.Columns.Contains("SpellVisual"))
+            if (!row.Table.Columns.Contains("SpellVisual1"))
                 return;
 
             if (string.IsNullOrWhiteSpace(def.VisualName))
@@ -744,6 +1193,11 @@ namespace SpellEditor.Sources.AI
             uint visualId = PickBestVisualId(def.VisualName);
             if (visualId != 0)
                 row["SpellVisual1"] = (int)visualId;
+
+            if (def.VisualId.HasValue && row.Table.Columns.Contains("SpellVisual1"))
+            {
+                row["SpellVisual1"] = def.VisualId.Value;
+            }
         }
 
         private static uint PickBestVisualId(string hint)
@@ -797,5 +1251,10 @@ namespace SpellEditor.Sources.AI
             return 0;
         }
 
+        private static void SafeSet(DataRow row, string col, object value)
+        {
+            if (row.Table.Columns.Contains(col))
+                row[col] = value;
+        }
     }
 }

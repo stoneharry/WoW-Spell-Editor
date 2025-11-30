@@ -161,6 +161,78 @@ namespace SpellEditor.Sources.AI
             {
                 EffectNameToId[NormalizeKey("Knockback")] = id;
             }
+
+            // --------------------------------------------------------------------
+            // NEW ALIASES – wired to actual SpellEffect handlers in SpellEffects.cpp
+            // --------------------------------------------------------------------
+
+            // THREAT (EffectModifyThreatPercent / SpellEffect THREAT)
+            if (TryLookupEffect("THREAT", out id))
+            {
+                EffectNameToId[NormalizeKey("Threat")] = id;
+            }
+
+            // WEAPON_DAMAGE / WEAPON_DAMAGE_NOSCHOOL / WEAPON_PERCENT_DAMAGE
+            // Used for "ApplyWeaponDamage" semantic type
+            if (TryLookupEffect("WEAPON_DAMAGE", out id) ||
+                TryLookupEffect("WEAPON_DAMAGE_NOSCHOOL", out id) ||
+                TryLookupEffect("WEAPON_PERCENT_DAMAGE", out id))
+            {
+                EffectNameToId[NormalizeKey("ApplyWeaponDamage")] = id;
+                EffectNameToId[NormalizeKey("WeaponStrike")] = id;
+            }
+
+            // SUMMON – generic summon creature/totem semantics
+            if (TryLookupEffect("SUMMON", out id))
+            {
+                EffectNameToId[NormalizeKey("Summon")] = id;
+                EffectNameToId[NormalizeKey("SummonCreature")] = id;
+            }
+
+            // INTERRUPT – EffectInterruptCast in SpellEffects.cpp
+            if (TryLookupEffect("INTERRUPT_CAST", out id) || TryLookupEffect("INTERRUPT", out id))
+            {
+                EffectNameToId[NormalizeKey("Interrupt")] = id;
+            }
+
+            // DRAIN / LEECH helpers – these are aura-based mechanically,
+            // but we allow semantic effect types to map to the correct effect entry.
+            if (TryLookupEffect("DAMAGE_FROM_MAX_HEALTH_PCT", out id) ||
+                TryLookupEffect("HEALTH_LEECH", out id))
+            {
+                EffectNameToId[NormalizeKey("DrainHealth")] = id;
+                EffectNameToId[NormalizeKey("LeechHealth")] = id;
+            }
+
+            if (TryLookupEffect("POWER_DRAIN", out id) ||
+                TryLookupEffect("POWER_LEECH", out id))
+            {
+                EffectNameToId[NormalizeKey("DrainMana")] = id;
+                EffectNameToId[NormalizeKey("LeechMana")] = id;
+            }
+
+            // RESURRECT – self/full resurrect helpers
+            if (TryLookupEffect("RESURRECT", out id) ||
+                TryLookupEffect("RESURRECT_NEW", out id) ||
+                TryLookupEffect("SELF_RESURRECT", out id))
+            {
+                EffectNameToId[NormalizeKey("Resurrect")] = id;
+                EffectNameToId[NormalizeKey("SelfResurrect")] = id;
+            }
+
+            // OPEN_LOCK – lockpicking / chest / door
+            if (TryLookupEffect("OPEN_LOCK", out id))
+            {
+                EffectNameToId[NormalizeKey("OpenLock")] = id;
+            }
+
+            // ENCHANT_ITEM / ENCHANT_ITEM_TEMPORARY – weapon enchants
+            if (TryLookupEffect("ENCHANT_ITEM", out id) ||
+                TryLookupEffect("ENCHANT_ITEM_TEMPORARY", out id))
+            {
+                EffectNameToId[NormalizeKey("EnchantItem")] = id;
+                EffectNameToId[NormalizeKey("WeaponEnchant")] = id;
+            }
         }
 
         private static void RegisterAuraAliases()
@@ -203,6 +275,232 @@ namespace SpellEditor.Sources.AI
             {
                 AuraNameToId[NormalizeKey("Root")] = id;
                 AuraNameToId[NormalizeKey("ModRoot")] = id;
+            }
+
+            // --------------------------------------------------------------------
+            // NEW AURA ALIASES – align with AI-Prompt aura names and SpellAuraEffects.cpp
+            // --------------------------------------------------------------------
+
+            // MOVEMENT / CONTROL --------------------------------------------------
+
+            // FEAR
+            if (TryLookupAura("Fear", out id) || TryLookupAura("Mod Fear", out id))
+            {
+                AuraNameToId[NormalizeKey("ModFear")] = id;
+            }
+
+            // CHARM
+            if (TryLookupAura("Charm", out id) || TryLookupAura("Mod Charm", out id))
+            {
+                AuraNameToId[NormalizeKey("ModCharm")] = id;
+            }
+
+            // CONFUSE / DISORIENT
+            if (TryLookupAura("Confuse", out id) || TryLookupAura("Mod Confuse", out id) ||
+                TryLookupAura("Disorient", out id))
+            {
+                AuraNameToId[NormalizeKey("ModConfuse")] = id;
+            }
+
+            // PACIFY (can’t attack)
+            if (TryLookupAura("Pacify", out id) || TryLookupAura("Mod Pacify", out id))
+            {
+                AuraNameToId[NormalizeKey("ModPacify")] = id;
+            }
+
+            // SILENCE
+            if (TryLookupAura("Silence", out id) || TryLookupAura("Mod Silence", out id) ||
+                TryLookupAura("Silenced", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSilence")] = id;
+            }
+
+            // MOVEMENT SPEED UP
+            if (TryLookupAura("Mod Increase Speed", out id) || TryLookupAura("Increase Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseSpeed")] = id;
+            }
+
+            // COMBAT ADJUSTMENT ---------------------------------------------------
+
+            if (TryLookupAura("Mod Threat", out id))
+            {
+                AuraNameToId[NormalizeKey("ModThreat")] = id;
+            }
+
+            if (TryLookupAura("Mod Taunt", out id) || TryLookupAura("Taunt", out id))
+            {
+                AuraNameToId[NormalizeKey("ModTaunt")] = id;
+            }
+
+            if (TryLookupAura("Mod Damage Done", out id))
+            {
+                AuraNameToId[NormalizeKey("ModDamageDone")] = id;
+            }
+
+            if (TryLookupAura("Mod Damage Taken", out id))
+            {
+                AuraNameToId[NormalizeKey("ModDamageTaken")] = id;
+            }
+
+            if (TryLookupAura("Mod Attack Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModAttackPower")] = id;
+            }
+
+            if (TryLookupAura("Mod Ranged Attack Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRangedAttackPower")] = id;
+            }
+
+            if (TryLookupAura("Mod Spell Power", out id) ||
+                TryLookupAura("Mod Spell Damage Done", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSpellPower")] = id;
+            }
+
+            if (TryLookupAura("Mod Armor", out id))
+            {
+                AuraNameToId[NormalizeKey("ModArmor")] = id;
+            }
+
+            if (TryLookupAura("Mod Resistance", out id))
+            {
+                AuraNameToId[NormalizeKey("ModResistance")] = id;
+            }
+
+            if (TryLookupAura("Mod Crit Chance", out id) ||
+                TryLookupAura("Mod Crit %", out id))
+            {
+                AuraNameToId[NormalizeKey("ModCritChance")] = id;
+            }
+
+            if (TryLookupAura("Mod Haste", out id) ||
+                TryLookupAura("Mod Melee Haste", out id) ||
+                TryLookupAura("Mod Ranged Haste", out id) ||
+                TryLookupAura("Mod Casting Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModHaste")] = id;
+            }
+
+            if (TryLookupAura("Mod Hit Chance", out id) ||
+                TryLookupAura("Mod Hit %", out id))
+            {
+                AuraNameToId[NormalizeKey("ModHitChance")] = id;
+            }
+
+            // RESOURCE & REGEN ----------------------------------------------------
+
+            if (TryLookupAura("Mod Mana Regen", out id) ||
+                TryLookupAura("Mod Power Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("ModManaRegen")] = id;
+                AuraNameToId[NormalizeKey("ModPowerRegen")] = id;
+            }
+
+            if (TryLookupAura("Mod Health Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("ModHealthRegen")] = id;
+            }
+
+            if (TryLookupAura("Mod Max Health", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMaxHealth")] = id;
+            }
+
+            if (TryLookupAura("Mod Max Power", out id) ||
+                TryLookupAura("Mod Max Mana", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMaxMana")] = id;
+            }
+
+            // ABSORPTION / SHIELDS -----------------------------------------------
+
+            if (TryLookupAura("Damage Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("DamageShield")] = id;
+            }
+
+            if (TryLookupAura("School Absorb", out id) ||
+                TryLookupAura("Absorb School", out id))
+            {
+                AuraNameToId[NormalizeKey("SchoolAbsorb")] = id;
+            }
+
+            if (TryLookupAura("Total Absorb", out id) ||
+                TryLookupAura("Absorb All", out id))
+            {
+                AuraNameToId[NormalizeKey("TotalAbsorb")] = id;
+            }
+
+            if (TryLookupAura("Mana Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("ManaShield")] = id;
+            }
+
+            // MISC BUFF / DEBUFF --------------------------------------------------
+
+            if (TryLookupAura("Mod Stat", out id) ||
+                TryLookupAura("Mod All Stats", out id))
+            {
+                AuraNameToId[NormalizeKey("ModStat")] = id;
+            }
+
+            if (TryLookupAura("Mod Skill", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSkill")] = id;
+            }
+
+            if (TryLookupAura("Mod Stealth", out id) ||
+                TryLookupAura("Stealth", out id))
+            {
+                AuraNameToId[NormalizeKey("ModStealth")] = id;
+            }
+
+            if (TryLookupAura("Mod Invisibility", out id) ||
+                TryLookupAura("Invisibility", out id))
+            {
+                AuraNameToId[NormalizeKey("ModInvisibility")] = id;
+            }
+
+            if (TryLookupAura("Mod Scale", out id))
+            {
+                AuraNameToId[NormalizeKey("ModScale")] = id;
+            }
+
+            if (TryLookupAura("Mounted Speed", out id) ||
+                TryLookupAura("Mod Mounted Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMountSpeed")] = id;
+            }
+
+            if (TryLookupAura("Water Breathing", out id))
+            {
+                AuraNameToId[NormalizeKey("WaterBreathing")] = id;
+            }
+
+            if (TryLookupAura("Water Walking", out id) ||
+                TryLookupAura("Water Walk", out id))
+            {
+                AuraNameToId[NormalizeKey("WaterWalking")] = id;
+            }
+
+            if (TryLookupAura("Feather Fall", out id) ||
+                TryLookupAura("Levitate", out id) ||
+                TryLookupAura("Slow Fall", out id))
+            {
+                AuraNameToId[NormalizeKey("Levitate")] = id;
+            }
+
+            if (TryLookupAura("Feign Death", out id))
+            {
+                AuraNameToId[NormalizeKey("FeignDeath")] = id;
+            }
+
+            if (TryLookupAura("Mod Aggro Radius", out id) ||
+                TryLookupAura("Mod Aggro Range", out id))
+            {
+                AuraNameToId[NormalizeKey("ModAggroRadius")] = id;
             }
         }
 
