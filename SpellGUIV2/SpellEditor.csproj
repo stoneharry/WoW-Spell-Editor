@@ -181,6 +181,8 @@
     <Compile Include="Sources\AI\AIController.cs" />
     <Compile Include="Sources\AI\AiEnumRegistry.cs" />
     <Compile Include="Sources\AI\AISemanticRegistry.cs" />
+    <Compile Include="Sources\AI\AiSimilarSpellFinder.cs" />
+    <Compile Include="Sources\AI\AiSimilarSpellSummary.cs" />
     <Compile Include="Sources\AI\AiSpellDefinition.cs" />
     <Compile Include="Sources\AI\AiSpellMapper.cs" />
     <Compile Include="Sources\AI\AiSpellResult.cs" />

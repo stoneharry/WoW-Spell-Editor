@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -29,7 +30,11 @@ namespace SpellEditor.Sources.AI
             };
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
         }
-        public async Task<AiSpellResult> GenerateSpellAsync(string userPrompt, string currentSpellName, uint currentSpellId)
+        public async Task<AiSpellResult> GenerateSpellAsync(
+            string userPrompt,
+            string currentSpellName,
+            uint currentSpellId,
+            List<AiSimilarSpellSummary> similarSpells = null)
         {
             Logger.Info("Sending OpenAI request for spell generation...");
 
@@ -45,6 +50,27 @@ namespace SpellEditor.Sources.AI
             input.AppendLine($"Name: {currentSpellName}");
             input.AppendLine($"ID: {currentSpellId}");
             input.AppendLine();
+
+            // Optional: insert similar spells section
+            if (similarSpells != null && similarSpells.Count > 0)
+            {
+                input.AppendLine("Here are some similar existing spells from the game as examples.");
+                input.AppendLine("These are NOT to be edited; they are only reference for style, scale, and mechanics.");
+                input.AppendLine();
+
+                int index = 1;
+                foreach (var s in similarSpells)
+                {
+                    input.AppendLine("=== Similar Spell " + index + " ===");
+                    input.AppendLine(s.SummaryText.TrimEnd());
+                    input.AppendLine();
+                    index++;
+                }
+
+                input.AppendLine("End of existing examples.");
+                input.AppendLine();
+            }
+
             input.AppendLine("User request:");
             input.AppendLine(userPrompt);
 
@@ -114,6 +140,44 @@ namespace SpellEditor.Sources.AI
                 Logger.Warn(ex, "Failed to load AI-Prompt.txt.");
             }
             return null;
+        }
+
+        public async Task<string> AskQuestionAsync(string userPrompt, List<AiSimilarSpellSummary> similar)
+        {
+            var sb = new StringBuilder();
+
+            if (similar != null && similar.Count > 0)
+            {
+                sb.AppendLine("Similar spells for context:");
+                foreach (var s in similar)
+                {
+                    sb.AppendLine(s.SummaryText);
+                    sb.AppendLine();
+                }
+            }
+
+            sb.AppendLine("User question:");
+            sb.AppendLine(userPrompt);
+
+            var body = new
+            {
+                model = _aiModel,
+                input = new object[]
+                {
+                    new { role="system", content="You are a WoW spell design expert. Answer clearly." },
+                    new { role="user", content = sb.ToString() }
+                }
+            };
+
+            var jsonBody = JsonConvert.SerializeObject(body);
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await _http.PostAsync("responses", content);
+            var text = await response.Content.ReadAsStringAsync();
+
+            var parsed = JObject.Parse(text);
+            return parsed["output"]?[0]?["content"]?[0]?["text"]?.ToString()
+                   ?? "(no response)";
         }
 
         public void Dispose()

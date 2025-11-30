@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,6 +21,10 @@ namespace SpellEditor
         private readonly MainWindow _mainWindow;
         private OpenAIClient _client;
         private AiSpellResult _lastResult;
+
+        private bool IsAskQuestionMode => RadioAskQuestion.IsChecked == null ? false : RadioAskQuestion.IsChecked.Value;
+        private bool IsBalanceMode => RadioBalanceSpell.IsChecked == null ?  false : RadioBalanceSpell.IsChecked.Value;
+
 
         public OpenAIWindow(MainWindow mainWindow)
         {
@@ -85,18 +90,49 @@ namespace SpellEditor
             {
                 GenerateButton.IsEnabled = false;
                 ApplyButton.IsEnabled = false;
-                StatusTextBlock.Text = "Contacting OpenAI...";
+                StatusTextBlock.Text = "Starting...";
 
+                bool useSimilar = UseSimilarSpellsCheckBox.IsChecked == true;
+                int maxExamples = SimilarSpellCountCombo.SelectedIndex + 1;
+                List<AiSimilarSpellSummary> similar = null;
                 string currentName = "";
                 uint currentId = 0;
 
-                if (RadioModifyExisting.IsChecked == true)
+                if (useSimilar)
                 {
+                    StatusTextBlock.Text = "Finding similar spells...";
                     currentName = _mainWindow.GetSpellNameById(_mainWindow.selectedID);
                     currentId = _mainWindow.selectedID;
+                    similar = AiSimilarSpellFinder.FindSimilarSpells(prompt, maxExamples);
+                    SimilarSpellsTextBox.Text = FormatSimilarSpellsForDisplay(similar);
+                    SimilarSpellsExpander.IsExpanded = true;
+                }
+                else
+                {
+                    SimilarSpellsTextBox.Text = "Similar spell examples disabled.";
+                    SimilarSpellsExpander.IsExpanded = false;
                 }
 
-                var result = await _client.GenerateSpellAsync(prompt, currentName, currentId);
+                if (IsAskQuestionMode)
+                {
+                    // Plain chat mode
+                    var answer = await _client.AskQuestionAsync(prompt, similar);
+                    DisplayJson("");
+                    SummaryNameTextBlock.Text = answer;
+                    SummaryDescriptionTextBlock.Text = "";
+                    ApplyButton.IsEnabled = false;
+                    return;
+                }
+
+                if (IsBalanceMode)
+                {
+                    // TODO
+                    ApplyButton.IsEnabled = false;
+                    return;
+                }
+
+                StatusTextBlock.Text = "Running AI algorithm...";
+                var result = await _client.GenerateSpellAsync(prompt, currentName, currentId, similar);
                 _lastResult = result;
 
                 DisplayJson(result.RawContent ?? string.Empty);
@@ -283,6 +319,25 @@ namespace SpellEditor
             PromptTextBox.IsEnabled = !show;
             GenerateButton.IsEnabled = !show;
             ApplyButton.IsEnabled = !show;
+        }
+
+        private string FormatSimilarSpellsForDisplay(List<AiSimilarSpellSummary> list)
+        {
+            if (list == null || list.Count == 0)
+                return "No similar spells found or disabled.";
+
+            var sb = new StringBuilder();
+
+            int index = 1;
+            foreach (var s in list)
+            {
+                sb.AppendLine("=== Similar Spell " + index + " ===");
+                sb.AppendLine(s.SummaryText.Trim());
+                sb.AppendLine();
+                index++;
+            }
+
+            return sb.ToString();
         }
     }
 }

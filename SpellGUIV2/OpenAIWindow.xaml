@@ -17,9 +17,13 @@
             <RowDefinition Height="Auto"/>
             <!-- Mode selection -->
             <RowDefinition Height="Auto"/>
+            <!-- Similar spells config -->
+            <RowDefinition Height="Auto"/>
             <!-- Prompt label -->
             <RowDefinition Height="3*"/>
             <!-- Prompt area -->
+            <RowDefinition Height="Auto"/>
+            <!-- Similar spells output -->
             <RowDefinition Height="Auto"/>
             <!-- Buttons -->
             <RowDefinition Height="6*"/>
@@ -33,25 +37,53 @@
                     Orientation="Horizontal"
                     Margin="0,0,0,10">
             <RadioButton x:Name="RadioModifyExisting"
-                         Content="Modify Selected Spell"
-                         IsChecked="True"
-                         Margin="0,0,30,0"
-                         FontSize="14"/>
+                 Content="Modify Selected Spell"
+                 IsChecked="True"
+                 Margin="0,0,10,4"/>
 
             <RadioButton x:Name="RadioCreateNew"
-                         Content="Create New Spell"
-                         FontSize="14"/>
+                 Content="Create New Spell"
+                 Margin="0,0,10,4"/>
+
+            <RadioButton x:Name="RadioAskQuestion"
+                 Content="Ask a Question"
+                 Margin="0,0,10,4"/>
+
+            <RadioButton x:Name="RadioBalanceSpell"
+                 Content="Balance This Spell"
+                 Margin="0,0,10,4"/>
         </StackPanel>
 
-        <!-- Row 1: Prompt Label -->
-        <TextBlock Grid.Row="1"
+        <!-- Row 1: Similar spells options -->
+        <StackPanel Grid.Row="1" Margin="0,10,0,10">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <CheckBox x:Name="UseSimilarSpellsCheckBox"
+                  Content="Use Similar Spells"
+                  IsChecked="True"
+                  Margin="0,0,15,0"/>
+
+                <TextBlock Text="Max Examples:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox x:Name="SimilarSpellCountCombo"
+                  Width="50"
+                  SelectedIndex="2">
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                    <ComboBoxItem>5</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Row 2: Prompt Label -->
+        <TextBlock Grid.Row="2"
                    FontSize="16"
                    Text="Describe the spell you want to create or modify:"
                    FontWeight="Bold"
                    Margin="0,0,0,5"/>
 
-        <!-- Row 2: Prompt Box -->
-        <Border Grid.Row="2"
+        <!-- Row 3: Prompt Box -->
+        <Border Grid.Row="3"
                 BorderBrush="#555"
                 BorderThickness="1"
                 CornerRadius="4"
@@ -68,8 +100,25 @@
             </ScrollViewer>
         </Border>
 
-        <!-- Row 3: Buttons -->
-        <StackPanel Grid.Row="3"
+        <!-- Row 4: Collapsible panel for showing similar spells used -->
+        <Expander x:Name="SimilarSpellsExpander"
+          Header="Similar Spells Used"
+          Grid.Row="4"
+          Margin="0,0,0,10"
+          IsExpanded="False">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180">
+                <TextBox x:Name="SimilarSpellsTextBox"
+                 FontFamily="Consolas"
+                 FontSize="12"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 Padding="5"
+                 BorderThickness="0"/>
+            </ScrollViewer>
+        </Expander>
+
+        <!-- Row 5: Buttons -->
+        <StackPanel Grid.Row="5"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,10,0,10">
@@ -98,8 +147,8 @@
                     Click="CloseButton_Click"/>
         </StackPanel>
 
-        <!-- Row 4: Output Area with Splitter -->
-        <Grid Grid.Row="4">
+        <!-- Row 6: Output Area with Splitter -->
+        <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="300"/>
                 <ColumnDefinition Width="6"/>
@@ -190,8 +239,8 @@
             </Border>
         </Grid>
 
-        <!-- Row 5: Status Bar -->
-        <StatusBar Grid.Row="5" Margin="0,10,0,0">
+        <!-- Row 7: Status Bar -->
+        <StatusBar Grid.Row="7" Margin="0,10,0,0">
             <StatusBarItem>
                 <TextBlock x:Name="StatusTextBlock"
                            FontSize="14"
