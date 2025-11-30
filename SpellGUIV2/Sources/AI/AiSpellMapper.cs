@@ -41,6 +41,68 @@ namespace SpellEditor.Sources.AI
             row.EndEdit();
         }
 
+        /// <summary>
+        /// Maps human-readable mechanic-name strings into WoW Mechanic enum IDs
+        /// for use in EffectMiscValue for mechanic-based auras.
+        /// </summary>
+        private static readonly Dictionary<string, int> MechanicMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "charm",        1 },
+            { "disorient",    2 },
+            { "disarm",       3 },
+            { "distract",     4 },
+            { "fear",         5 },
+            { "grip",         6 },
+            { "root",         7 },
+            { "silence",      8 },
+            { "sleep",        9 },
+            { "snare",        10 },
+            { "stun",         11 },
+            { "freeze",       12 },
+            { "knockback",    13 },
+            { "bleed",        15 },
+            { "bandage",      16 },
+            { "polymorph",    17 },
+            { "banish",       18 },
+            { "shield",       19 },
+            { "shackle",      20 },
+            { "mount",        21 },
+            { "invisibility", 22 },
+            { "interrupt",    24 },
+            { "daze",         27 },
+            { "sap",          28 },
+            { "charge",       31 }
+        };
+
+        /// <summary>
+        /// Maps user-friendly proc keywords to WotLK ProcFlags
+        /// stored in EffectMiscValueB for proc auras.
+        /// </summary>
+        private static readonly Dictionary<string, uint> ProcFlagMap = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "hittaken",      0x00000001 }, // PROC_FLAG_TAKEN_MELEE_HIT
+            { "crittaken",     0x00000002 }, // PROC_FLAG_TAKEN_MELEE_CRIT
+            { "miss",          0x00000004 }, // PROC_FLAG_TAKEN_MELEE_MISS
+            { "dodge",         0x00000008 }, // PROC_FLAG_TAKEN_MELEE_DODGE
+            { "parry",         0x00000010 }, // PROC_FLAG_TAKEN_MELEE_PARRY
+            { "block",         0x00000020 }, // PROC_FLAG_TAKEN_MELEE_BLOCK
+            { "hit",           0x00000040 }, // PROC_FLAG_MELEE_HIT
+            { "crit",          0x00000080 }, // PROC_FLAG_MELEE_CRIT
+
+            { "rangedhit",     0x00000100 }, // PROC_FLAG_RANGED_HIT
+            { "rangedcrit",    0x00000200 }, // PROC_FLAG_RANGED_CRIT
+
+            { "spellhit",      0x00000400 }, // PROC_FLAG_SPELL_HIT
+            { "spellcrit",     0x00000800 }, // PROC_FLAG_SPELL_CRIT
+
+            { "periodic",      0x00001000 }, // PROC_FLAG_PERIODIC_DAMAGE
+            { "heal",          0x00002000 }, // PROC_FLAG_PERIODIC_HEAL
+            { "cast",          0x00004000 }, // PROC_FLAG_DONE_SPELL_CAST
+
+            { "taken",         0x00008000 }, // PROC_FLAG_TAKEN_DAMAGE
+            { "done",          0x00010000 }, // PROC_FLAG_DONE_DAMAGE
+        };
+
         // BASIC INFO --------------------------------------------------------
 
         private static void ApplyBasicInfo(AiSpellDefinition def, DataRow row)
@@ -555,18 +617,833 @@ namespace SpellEditor.Sources.AI
                 AiEffectDefinition eff = effects[i];
 
                 // --------------------------------------------------------
-                // AURA INFERENCE (if effect type is known CC)
+                // AURA INFERENCE (if effect type is known aura-like)
                 // --------------------------------------------------------
                 if (eff.Aura == null && !string.IsNullOrWhiteSpace(eff.Type))
                 {
-                    switch (eff.Type.Trim().ToLowerInvariant())
+                    string typeLower = eff.Type.Trim().ToLowerInvariant();
+                    switch (typeLower)
                     {
-                        case "stun": eff.Aura = "ModStun"; break;
-                        case "root": eff.Aura = "ModRoot"; break;
-                        case "slow": eff.Aura = "ModDecreaseSpeed"; break;
-                        case "silence": eff.Aura = "ModSilence"; break;
-                        case "fear": eff.Aura = "ModFear"; break;
-                        case "charm": eff.Aura = "ModCharm"; break;
+                        // Hard CC
+                        case "stun":
+                            eff.Aura = "ModStun";
+                            break;
+                        case "root":
+                        case "immobilize":
+                            eff.Aura = "ModRoot";
+                            break;
+                        case "slow":
+                            eff.Aura = "ModDecreaseSpeed";
+                            break;
+                        case "silence":
+                            eff.Aura = "ModSilence";
+                            break;
+                        case "fear":
+                            eff.Aura = "ModFear";
+                            break;
+                        case "charm":
+                            eff.Aura = "ModCharm";
+                            break;
+
+                        // Periodic helpers
+                        case "periodicdamage":
+                        case "dot":
+                            eff.Aura = "PeriodicDamage";
+                            break;
+
+                        case "periodicheal":
+                        case "hot":
+                            eff.Aura = "PeriodicHeal";
+                            break;
+
+                        // Generic buff / debuff
+                        case "buff":
+                            eff.Aura = "ModStat";          // generic stat buff
+                            break;
+                        case "debuff":
+                            eff.Aura = "ModDamageTaken";   // generic debuff
+                            break;
+
+                        // Shields / absorbs
+                        case "absorb":
+                        case "absorbdamage":
+                            eff.Aura = "SchoolAbsorb";
+                            break;
+                        case "damageshield":
+                            eff.Aura = "DamageShield";
+                            break;
+                        case "manashield":
+                            eff.Aura = "ManaShield";
+                            break;
+
+                        // Primary stats / rating-style helpers
+                        case "modstat":
+                        case "modstrength":
+                        case "modagility":
+                        case "modstamina":
+                        case "modintellect":
+                        case "modspirit":
+                            eff.Aura = "ModStat";
+                            break;
+
+                        case "modattackpower":
+                            eff.Aura = "ModAttackPower";
+                            break;
+                        case "modrangedattackpower":
+                            eff.Aura = "ModRangedAttackPower";
+                            break;
+                        case "modspellpower":
+                            eff.Aura = "ModSpellPower";
+                            break;
+                        case "modarmor":
+                            eff.Aura = "ModArmor";
+                            break;
+                        case "modresistance":
+                            eff.Aura = "ModResistance";
+                            break;
+                        case "moddamagedone":
+                            eff.Aura = "ModDamageDone";
+                            break;
+                        case "moddamagetaken":
+                            eff.Aura = "ModDamageTaken";
+                            break;
+                        case "modcritchance":
+                            eff.Aura = "ModCritChance";
+                            break;
+                        case "modhaste":
+                            eff.Aura = "ModHaste";
+                            break;
+                        case "modhit":
+                        case "modhitchance":
+                            eff.Aura = "ModHitChance";
+                            break;
+
+                        // Regen helpers
+                        case "modmanaregen":
+                            eff.Aura = "ModManaRegen";
+                            break;
+                        case "modhealthregen":
+                            eff.Aura = "ModHealthRegen";
+                            break;
+
+                        // Movement speed
+                        case "modincreasespeed":
+                        case "speedincrease":
+                            eff.Aura = "ModIncreaseSpeed";
+                            break;
+                        case "moddecreasespeed":
+                        case "speeddecrease":
+                            eff.Aura = "ModDecreaseSpeed";
+                            break;
+
+                        // --- combat ratings & extended buffs ---
+
+                        // Combat ratings (defensive)
+                        case "moddodgepercent":
+                            eff.Aura = "ModDodgePercent";
+                            break;
+                        case "modparrypercent":
+                            eff.Aura = "ModParryPercent";
+                            break;
+                        case "modblockpercent":
+                            eff.Aura = "ModBlockPercent";
+                            break;
+                        case "modblockvalue":
+                            eff.Aura = "ModBlockValue";
+                            break;
+
+                        // Offensive ratings
+                        case "modarmorpenetration":
+                            eff.Aura = "ModArmorPenetration";
+                            break;
+                        case "modexpertise":
+                            eff.Aura = "ModExpertise";
+                            break;
+
+                        // Damage / healing bonuses
+                        case "modspelldamagedone":
+                            eff.Aura = "ModSpellDamageDone";
+                            break;
+                        case "moddamagepercentdone":
+                            eff.Aura = "ModDamagePercentDone";
+                            break;
+                        case "modhealingdone":
+                            eff.Aura = "ModHealingDone";
+                            break;
+                        case "modhealingtakenpct":
+                            eff.Aura = "ModHealingTakenPct";
+                            break;
+                        case "moddamagetakenpct":
+                            eff.Aura = "ModDamageTakenPct";
+                            break;
+
+                        // Utility / movement / misc
+                        case "modswimspeed":
+                            eff.Aura = "ModSwimSpeed";
+                            break;
+                        case "modflightspeed":
+                            eff.Aura = "ModFlightSpeed";
+                            break;
+                        case "modmountedspeedpct":
+                        case "modmountspeed":
+                            eff.Aura = "ModMountedSpeedPct";
+                            break;
+                        case "waterbreathing":
+                            eff.Aura = "WaterBreathing";
+                            break;
+                        case "waterwalking":
+                            eff.Aura = "WaterWalking";
+                            break;
+                        case "levitate":
+                            eff.Aura = "Levitate";
+                            break;
+                        case "feigndeath":
+                            eff.Aura = "FeignDeath";
+                            break;
+
+                        // Mechanic immunities / mechanic modifiers
+                        case "stunimmune":
+                            eff.Aura = "ModMechanicImmune";
+                            eff.MiscValue = MechanicMap["stun"];
+                            break;
+
+                        case "fearimmune":
+                            eff.Aura = "ModMechanicImmune";
+                            eff.MiscValue = MechanicMap["fear"];
+                            break;
+
+                        case "rootimmune":
+                            eff.Aura = "ModMechanicImmune";
+                            eff.MiscValue = MechanicMap["root"];
+                            break;
+
+                        case "silenceimmune":
+                            eff.Aura = "ModMechanicImmune";
+                            eff.MiscValue = MechanicMap["silence"];
+                            break;
+
+                        case "knockbackimmune":
+                            eff.Aura = "ModMechanicImmune";
+                            eff.MiscValue = MechanicMap["knockback"];
+                            break;
+
+                        // Duration modifiers
+                        case "stunduration":
+                            eff.Aura = "ModMechanicDuration";
+                            eff.MiscValue = MechanicMap["stun"];
+                            break;
+
+                        case "fearduration":
+                            eff.Aura = "ModMechanicDuration";
+                            eff.MiscValue = MechanicMap["fear"];
+                            break;
+
+                        case "rootduration":
+                            eff.Aura = "ModMechanicDuration";
+                            eff.MiscValue = MechanicMap["root"];
+                            break;
+
+                        // Damage taken modifiers by mechanic
+                        case "damagefromstun":
+                            eff.Aura = "ModMechanicDamageTaken";
+                            eff.MiscValue = MechanicMap["stun"];
+                            break;
+
+                        case "damagefromfear":
+                            eff.Aura = "ModMechanicDamageTaken";
+                            eff.MiscValue = MechanicMap["fear"];
+                            break;
+
+                        // --------------------------------------------------------
+                        // DAMAGE REDIRECTION / SPLIT DAMAGE
+                        // --------------------------------------------------------
+                        case "splitdamage":
+                        case "redirectdamage":
+                            // Base aura: redirect damage (SPELL_AURA_SPLIT_DAMAGE_PCT = 73)
+                            // No conflict with existing auras; your code will auto-apply APPLY_AURA effect.
+                            eff.Aura = "SplitDamagePct";
+
+                            // If the AI specifies a school, we let ComputeEffectMiscValue map it.
+                            // If not, default to FullMask.
+                            if (!eff.MiscValue.HasValue)
+                                eff.MiscValue = 127; // SpellSchoolMask.All
+
+                            break;
+
+                        // --------------------------------------------------------
+                        // GROUP / RAID BUFFS
+                        // --------------------------------------------------------
+                        case "increasehealthpercent":
+                        case "incmaxhealthpct":
+                            eff.Aura = "ModIncreaseHealthPercent";
+                            break;
+
+                        case "increasemaxhealth":
+                            eff.Aura = "ModIncreaseMaxHealth";
+                            break;
+
+                        case "increasemana":
+                        case "increasemaxmana":
+                            eff.Aura = "ModIncreaseMaxPower";
+                            eff.MiscValue = 0;
+                            break;
+
+                        case "increaseenergy":
+                            eff.Aura = "ModIncreaseMaxPower";
+                            eff.MiscValue = 3;
+                            break;
+
+                        case "increasespirit":
+                            eff.Aura = "ModStat";
+                            eff.MiscValue = 4;
+                            break;
+
+                        case "increasestamina":
+                            eff.Aura = "ModStat";
+                            eff.MiscValue =2;
+                            break;
+
+                        case "increaseintellect":
+                            eff.Aura = "ModStat";
+                            eff.MiscValue = 3;
+                            break;
+
+                        case "increaseagility":
+                            eff.Aura = "ModStat";
+                            eff.MiscValue = 1;
+                            break;
+
+                        case "increasestrength":
+                            eff.Aura = "ModStat";
+                            eff.MiscValue = 0;
+                            break;
+
+
+                        // --------------------------------------------------------
+                        // PROC AURAS (AI Type → aura + proc mask)
+                        // --------------------------------------------------------
+                        case "proconhit":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["hit"];
+                            break;
+
+                        case "proconcrit":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["crit"];
+                            break;
+
+                        case "procondodge":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["dodge"];
+                            break;
+
+                        case "proconparry":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["parry"];
+                            break;
+
+                        case "proconblock":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["block"];
+                            break;
+
+                        case "proconspellhit":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["spellhit"];
+                            break;
+
+                        case "proconspellcrit":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["spellcrit"];
+                            break;
+
+                        case "proconhittaken":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["hittaken"];
+                            break;
+
+                        case "proconcrittaken":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["crittaken"];
+                            break;
+
+                        case "proconperiodic":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["periodic"];
+                            break;
+
+                        case "proconcast":
+                            eff.Aura = "ProcTriggerSpell";
+                            eff.MiscValueB = (int)ProcFlagMap["cast"];
+                            break;
+
+                        // --------------------------------------------------------
+                        // DISPEL (DispelType-based removal)
+                        // --------------------------------------------------------
+                        case "dispelmagic":
+                            eff.Type = "Dispel";
+                            eff.MiscValue = 1; // Magic
+                            break;
+
+                        case "dispelcurse":
+                            eff.Type = "Dispel";
+                            eff.MiscValue = 2; // Curse
+                            break;
+
+                        case "dispeldisease":
+                            eff.Type = "Dispel";
+                            eff.MiscValue = 3; // Disease
+                            break;
+
+                        case "dispelpoison":
+                            eff.Type = "Dispel";
+                            eff.MiscValue = 4; // Poison
+                            break;
+
+                        case "dispelenrage":
+                            eff.Type = "Dispel";
+                            eff.MiscValue = 7; // Enrage (WotLK uses 7)
+                            break;
+
+                        // --------------------------------------------------------
+                        // DISPEL MECHANIC (removes specific CC categories)
+                        // --------------------------------------------------------
+                        case "dispelstun":
+                            eff.Type = "DispelMechanic";
+                            eff.MiscValue = MechanicMap["stun"];
+                            break;
+
+                        case "dispelfear":
+                            eff.Type = "DispelMechanic";
+                            eff.MiscValue = MechanicMap["fear"];
+                            break;
+
+                        case "dispelroot":
+                            eff.Type = "DispelMechanic";
+                            eff.MiscValue = MechanicMap["root"];
+                            break;
+
+                        case "dispelsilence":
+                            eff.Type = "DispelMechanic";
+                            eff.MiscValue = MechanicMap["silence"];
+                            break;
+
+                        case "dispelsnare":
+                            eff.Type = "DispelMechanic";
+                            eff.MiscValue = MechanicMap["snare"];
+                            break;
+
+                        // --------------------------------------------------------
+                        // SCHOOL IMMUNITY AURAS
+                        // --------------------------------------------------------
+                        case "immunefire":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Fire");
+                            break;
+
+                        case "immunefrost":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Frost");
+                            break;
+
+                        case "immunenature":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Nature");
+                            break;
+
+                        case "immuneholy":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Holy");
+                            break;
+
+                        case "immuneshadow":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Shadow");
+                            break;
+
+                        case "immunearcane":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Arcane");
+                            break;
+
+                        case "immunephysical":
+                            eff.Aura = "ModSchoolImmunity";
+                            eff.MiscValue = (int)MapSchool("Physical");
+                            break;
+
+                        // --------------------------------------------------------
+                        // TriggerSpell aura helpers (Type-level hinting)
+                        // --------------------------------------------------------
+                        case "triggerspell":
+                        case "trigger":
+                        case "cast":
+                            // Usually paired with TriggerSpellId
+                            eff.Type = "TriggerSpell";
+                            // No aura needed (effect does the work)
+                            break;
+
+                        // --------------------------------------------------------
+                        // Dummy behavior helpers
+                        // --------------------------------------------------------
+                        case "dummy":
+                        case "script":
+                        case "vehicle":
+                            eff.Type = "Dummy";
+                            // no aura, effect = DUMMY
+                            break;
+
+                        case "triggerfire":
+                            eff.Type = "TriggerSpell";
+                            break;
+
+                        // --------------------------------------------------------
+                        // AREA AURA INFERENCE
+                        // --------------------------------------------------------
+                        case "areaauraparty":
+                            eff.Type = "AreaAuraParty";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            // Aura must be provided explicitly by the AI OR via registry
+                            break;
+
+                        case "areaaurafriend":
+                            eff.Type = "AreaAuraFriend";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            break;
+
+                        case "areaauraenemy":
+                            eff.Type = "AreaAuraEnemy";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            break;
+
+                        case "areaaurapet":
+                            eff.Type = "AreaAuraPet";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            break;
+
+                        case "areaauraowner":
+                            eff.Type = "AreaAuraOwner";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            break;
+
+                        case "areaauraraid":
+                            eff.Type = "AreaAuraRaid";
+                            if (string.IsNullOrWhiteSpace(eff.Target))
+                                eff.Target = "Area";
+                            break;
+
+                        // --------------------------------------------------------
+                        // THREAT AURAS
+                        // --------------------------------------------------------
+                        case "modthreat":
+                            eff.Aura = "ModThreat";
+                            break;
+
+                        case "modthreatpct":
+                            eff.Aura = "ModThreatPercent";
+                            break;
+
+                        // --------------------------------------------------------
+                        // PUSHBACK / CASTING PROTECTION
+                        // --------------------------------------------------------
+                        case "pushbackreduction":
+                            eff.Aura = "ModPushback";
+                            break;
+
+                        case "interruptresist":
+                            eff.Aura = "ModCastingSpeedNotStack";
+                            break;
+
+                        // --------------------------------------------------------
+                        // SPELL REFLECTION
+                        // --------------------------------------------------------
+                        case "reflectspell":
+                            eff.Aura = "ModSpellReflection";
+                            eff.MiscValue = 127; // SpellSchoolMask.All;
+                            break;
+
+                        case "reflectschool":
+                            eff.Aura = "ModSpellReflection";
+                            // MiscValue derived from School
+                            break;
+
+                        // --------------------------------------------------------
+                        // POWER BURN / PERIODIC LEECH
+                        // --------------------------------------------------------
+                        case "periodicleech":
+                            eff.Aura = "PeriodicLeech";
+                            break;
+
+                        case "powerburn":
+                            eff.Aura = "PeriodicPowerBurn";
+                            break;
+
+                        // --------------------------------------------------------
+                        // STEALTH / INVISIBILITY
+                        // --------------------------------------------------------
+                        case "stealth":
+                            eff.Aura = "ModStealth";
+                            break;
+
+                        case "stealthlevel":
+                            eff.Aura = "ModStealthLevel";
+                            break;
+
+                        case "detect":
+                            eff.Aura = "ModDetect";
+                            break;
+
+                        case "invisible":
+                            eff.Aura = "ModInvisibility";
+                            break;
+
+                        case "invisibilitydetect":
+                            eff.Aura = "ModInvisibilityDetection";
+                            break;
+
+                        // --------------------------------------------------------
+                        // TRACKING + SHAPESHIFT
+                        // --------------------------------------------------------
+                        case "trackcreatures":
+                            eff.Aura = "TrackCreatures";
+                            break;
+
+                        case "trackresources":
+                            eff.Aura = "TrackResources";
+                            break;
+
+                        case "shapeshift":
+                            eff.Aura = "ModShapeshift";
+                            break;
+
+                        // --------------------------------------------------------
+                        // TALENT DAMAGE MODIFIERS
+                        // --------------------------------------------------------
+                        case "modcritdamage":
+                            eff.Aura = "ModCritDamageBonus";
+                            break;
+
+                        case "modspellcritdamage":
+                            eff.Aura = "ModSpellCritDamageBonus";
+                            break;
+
+                        case "modoffhanddamagepct":
+                            eff.Aura = "ModOffhandDamagePercent";
+                            break;
+
+                        // --------------------------------------------------------
+                        // WEAPON SKILL
+                        // --------------------------------------------------------
+                        case "modweaponskill":
+                            eff.Aura = "ModWeaponSkill";
+                            break;
+
+                        case "modweaponcritpercent":
+                            eff.Aura = "ModWeaponCriticalPercent";
+                            break;
+
+                        // --------------------------------------------------------
+                        // PET / VEHICLE CONTROL
+                        // --------------------------------------------------------
+                        case "controlpet":
+                            eff.Aura = "ControlPet";
+                            break;
+
+                        case "modpetdamage":
+                            eff.Aura = "ModPetDamageDone";
+                            break;
+
+                        case "modpetspeed":
+                            eff.Aura = "ModVehicleSpeed";
+                            break;
+
+                        case "modpetpower":
+                            eff.Aura = "ModVehiclePower";
+                            break;
+
+                        // --------------------------------------------------------
+                        // ENRAGE / RAGE GENERATION
+                        // --------------------------------------------------------
+                        case "enrage":
+                            eff.Aura = "ModRageFromDamageTaken";
+                            break;
+
+                        case "modragegeneration":
+                            eff.Aura = "ModRageGeneration";
+                            break;
+
+                        // --------------------------------------------------------
+                        // MAX HEALTH / POWER MODS
+                        // --------------------------------------------------------
+                        case "increasehealthflat":
+                            eff.Aura = "IncreaseMaxHealth";
+                            break;
+
+                        case "increasemanaflat":
+                            eff.Aura = "IncreaseMaxPower";
+                            eff.MiscValue = 0;
+                            break;
+
+                        // --------------------------------------------------------
+                        // PROC AURAS – EXTENDED SET
+                        // --------------------------------------------------------
+                        case "proctriggerdamage":
+                            eff.Aura = "ProcTriggerDamage";
+                            break;
+
+                        case "proctriggerspellwithvalue":
+                            eff.Aura = "ProcTriggerSpellWithValue";
+                            break;
+
+                        case "procevent":
+                            eff.Aura = "ProcEvent";
+                            break;
+
+                        case "proccopy":
+                        case "proctriggerspellcopy":
+                            eff.Aura = "ProcTriggerSpellCopy";
+                            break;
+
+                        // --------------------------------------------------------
+                        // TALENT / CREATURE FAMILY DAMAGE MODIFIERS
+                        // --------------------------------------------------------
+                        case "moddamagevscreature":
+                            eff.Aura = "ModDamageDoneVersusCreature";
+                            break;
+
+                        case "modcritvscreature":
+                            eff.Aura = "ModCritPercentVersusCreature";
+                            break;
+
+                        case "modspelldamagevscreature":
+                            eff.Aura = "ModSpellDamageVersusCreature";
+                            break;
+
+                        case "modrangedap":
+                            eff.Aura = "ModRangedAttackPower";
+                            break;
+
+                        case "modrangedappct":
+                            eff.Aura = "ModRangedAttackPowerPercent";
+                            break;
+
+                        // --------------------------------------------------------
+                        // DAMAGE SHIELD (DIRECT / SCHOOL-BASED)
+                        // --------------------------------------------------------
+                        case "damageshieldschool":
+                            eff.Aura = "DamageShieldSchool";
+                            // School mask via ComputeEffectMiscValue
+                            break;
+
+                        case "procdamageshield":
+                            eff.Aura = "ProcDamageShield";
+                            break;
+
+                        // --------------------------------------------------------
+                        // VEHICLE / POSSESSION / TOTEM HANDLERS
+                        // --------------------------------------------------------
+                        case "controlvehicle":
+                            eff.Aura = "ControlVehicle";
+                            break;
+
+                        case "ridevehicle":
+                            eff.Aura = "RideVehicle";
+                            break;
+
+                        case "possess":
+                            eff.Aura = "Possess";
+                            break;
+
+                        case "totemearth":
+                            eff.Aura = "TotemEffectEarth";
+                            break;
+
+                        case "totemair":
+                            eff.Aura = "TotemEffectAir";
+                            break;
+
+                        case "totemfire":
+                            eff.Aura = "TotemEffectFire";
+                            break;
+
+                        case "totemwater":
+                            eff.Aura = "TotemEffectWater";
+                            break;
+
+                        // --------------------------------------------------------
+                        // HEAL OVER TIME / INTERRUPT / CAST PROTECTION AURAS
+                        // --------------------------------------------------------
+                        case "interruptregen":
+                            eff.Aura = "InterruptRegen";
+                            break;
+
+                        case "intervalheal":
+                            eff.Aura = "PeriodicIntervalHeal";
+                            break;
+
+                        // --------------------------------------------------------
+                        // TELEPORT + MOVEMENT AURAS
+                        // --------------------------------------------------------
+                        case "teleportaura":
+                            eff.Aura = "ModTeleport";
+                            break;
+
+                        case "slowfall":
+                            eff.Aura = "FeatherFall";
+                            break;
+
+                        // --------------------------------------------------------
+                        // IMMUNITY / SANCTUARY
+                        // --------------------------------------------------------
+                        case "sanctuary":
+                            eff.Aura = "Sanctuary";
+                            break;
+
+                        // --------------------------------------------------------
+                        // PERSISTENT AREA AURAS
+                        // --------------------------------------------------------
+                        case "persistentareaaura":
+                        case "groundaoe":
+                            // Aura applied by persistent area effect (Blizzard-like)
+                            eff.Aura = "PeriodicDummy";
+                            break;
+
+                        // --------------------------------------------------------
+                        // SCRIPT-RELATED AURAS
+                        // --------------------------------------------------------
+                        case "scriptaura":
+                        case "scriptstate":
+                            eff.Aura = "PeriodicTriggerSpell";
+                            break;
+
+                        // --------------------------------------------------------
+                        // ENCHANTING / ITEM BUFF AURAS
+                        // --------------------------------------------------------
+                        case "itemenchant":
+                        case "enchantbuff":
+                            eff.Aura = "EnchantItemTemp";
+                            break;
+
+                        // --------------------------------------------------------
+                        // SKINNING / HARVEST AURAS
+                        // --------------------------------------------------------
+                        case "harvest":
+                        case "skinningaura":
+                            eff.Aura = "ModSkinning";
+                            break;
+
+                        // --------------------------------------------------------
+                        // DISMISS / CONTROL AURAS
+                        // --------------------------------------------------------
+                        case "dismisspet":
+                        case "unsummonpet":
+                            eff.Aura = "DismissPet";
+                            break;
+
                     }
                 }
 
@@ -690,6 +1567,14 @@ namespace SpellEditor.Sources.AI
                     SafeSet(row, $"Effect{slot}", 28); // SPELL_EFFECT_SUMMON
                     SafeSet(row, $"EffectMiscValue{slot}", eff.CreatureId.Value);
                 }
+
+                // Persistent area effects sometimes need an amplitude.
+                // If it's a periodic aura without amplitude, default to 1000ms.
+                if (eff.Type != null && eff.Type.Contains("persistent"))
+                {
+                    if (!ampSec.HasValue)
+                        SafeSet(row, $"EffectAmplitude{slot}", 1000);
+                }
             }
         }
 
@@ -697,50 +1582,203 @@ namespace SpellEditor.Sources.AI
         /// Heuristically populate EffectMiscValueN based on existing high-level
         /// info (School, PowerType, Aura, Type), but FIRST honor any explicit
         /// AiEffectDefinition.MiscValue / CreatureId provided by the AI.
-        /// 
+        ///
         /// This is intentionally conservative: we only handle cases where
         /// SpellEffects.cpp / SpellAuraEffects.cpp clearly use MiscValue and
         /// we can infer it from the data we already have.
         /// </summary>
         private static int? ComputeEffectMiscValue(AiSpellDefinition def, AiEffectDefinition eff)
         {
-            // 1) Explicit override
-            if (eff.MiscValue.HasValue)
+            // 0) Explicit overrides from AI definition -----------------------------
+            if (eff != null)
+            {
+                // If the AI explicitly set MiscValue, use it as-is.
+                if (eff.MiscValue.HasValue)
+                    return eff.MiscValue.Value;
+
+                // Summon / kill-credit style effects: allow CreatureId to drive MiscValue.
+                // For example:
+                //  - SPELL_EFFECT_SUMMON / SPELL_EFFECT_SUMMON_TYPE / etc.
+                //  - SPELL_EFFECT_KILL_CREDIT (misc = creature entry)
+                if (eff.CreatureId.HasValue)
+                    return eff.CreatureId.Value;
+            }
+
+            string aura = eff?.Aura ?? string.Empty;
+            string type = eff?.Type ?? string.Empty;
+
+            string auraLower = aura.Trim().ToLowerInvariant();
+            string typeLower = type.Trim().ToLowerInvariant();
+
+            // 1) Power-type based effects / auras:
+            //    - SPELL_EFFECT_ENERGIZE / POWER_DRAIN / POWER_LEECH-style
+            //    - SPELL_AURA_PERIODIC_ENERGIZE / PERIODIC_*_LEECH
+            //    These use MiscValue as a Powers enum.
+            if (!string.IsNullOrWhiteSpace(def.PowerType))
+            {
+                bool isPowerEffect =
+                    typeLower == "energize" ||
+                    typeLower == "powerburn" ||
+                    typeLower == "drainmana" ||
+                    typeLower == "leechmana" ||
+                    typeLower == "drainhealth" ||
+                    typeLower == "leechhealth";
+
+                bool isPowerAura =
+                    auraLower == "periodicenergize" ||
+                    auraLower == "periodicmanaleech" ||
+                    auraLower == "periodichealthleech" ||
+                    auraLower == "periodicleech" ||
+                    auraLower == "powerburn" ||
+                    auraLower == "obsmodpower";
+
+                if (isPowerEffect || isPowerAura)
+                {
+                    var powerMisc = MapPowerTypeToMisc(def.PowerType);
+                    if (powerMisc.HasValue)
+                        return powerMisc.Value;
+                }
+            }
+
+            // 2) Stat auras: primary stats and "all stats"
+            //    MiscValue is a Stats enum index:
+            //      0 = STR, 1 = AGI, 2 = STA, 3 = INT, 4 = SPI, -1 = all stats
+            if (!string.IsNullOrEmpty(auraLower))
+            {
+                switch (auraLower)
+                {
+                    case "modstrength": return 0; // STAT_STRENGTH
+                    case "modagility": return 1; // STAT_AGILITY
+                    case "modstamina": return 2; // STAT_STAMINA
+                    case "modintellect": return 3; // STAT_INTELLECT
+                    case "modspirit": return 4; // STAT_SPIRIT
+                }
+
+                if (auraLower == "modstat" || auraLower == "modtotalstatpercentage")
+                    return -1; // all stats
+            }
+
+            // 3) School-mask based auras: use the spell's SchoolMask as MiscValue.
+            //    These use MiscValue as a SpellSchoolMask in SpellAuraEffects.cpp:
+            //      - ModSchoolMaskDamage / ModSchoolMaskResistance
+            //      - DamageShield / SchoolAbsorb / Absorb* / TotalAbsorb / PeriodicAbsorb
+            //      - Some resistance auras using school masks
+            //      - ModSpellDamageDone / ModDamagePercentDone (school-based bonuses)
+            if (!string.IsNullOrWhiteSpace(def.School) && !string.IsNullOrEmpty(auraLower))
+            {
+                bool isSchoolDamageOrAbsorb =
+                    auraLower == "periodicdamage" ||
+                    auraLower == "schooldamage" ||
+                    auraLower == "schoolabsorb" ||
+                    auraLower == "periodicabsorb" ||
+                    auraLower == "absorbdamage" ||
+                    auraLower == "absorbmagic" ||
+                    auraLower == "absorbschool" ||
+                    auraLower == "damageshield" ||
+                    auraLower == "totalabsorb" ||
+                    auraLower == "modschoolmaskdamage" ||
+                    auraLower == "modschoolmaskresistance" ||
+                    auraLower == "modspelldamagedone" ||
+                    auraLower == "moddamagepercentdone";
+
+                bool isSchoolResist =
+                    auraLower == "modresistance" ||
+                    auraLower == "modbaseresistance" ||
+                    auraLower == "modresistanceexclusive" ||
+                    auraLower == "modbaseresistancepct";
+
+                if (isSchoolDamageOrAbsorb || isSchoolResist)
+                    return (int)MapSchool(def.School);
+            }
+
+            // -----------------------------------------------------------
+            // 4) Mechanic-based auras
+            // -----------------------------------------------------------
+
+            if (!string.IsNullOrEmpty(auraLower))
+            {
+                if (auraLower == "modmechanicimmune" ||
+                    auraLower == "modmechanicduration" ||
+                    auraLower == "modmechanicdamagetaken")
+                {
+                    // If eff.MiscValue was explicitly set by inference, use that.
+                    if (eff.MiscValue.HasValue)
+                        return eff.MiscValue.Value;
+
+                    // Otherwise, attempt to auto-map based on Type
+                    // ("stun", "fear", "root", "silence", etc)
+                    if (!string.IsNullOrEmpty(typeLower))
+                    {
+                        foreach (var kvp in MechanicMap)
+                        {
+                            if (typeLower.Contains(kvp.Key))
+                                return kvp.Value;
+                        }
+                    }
+
+                    // No mechanic could be inferred → return null
+                    return null;
+                }
+            }
+
+            // -----------------------------------------------------------
+            // 5) Dispel (Effect = DISPEL)
+            //     MiscValue = DispelType (Magic/Curse/Disease/Poison/Enrage)
+            // -----------------------------------------------------------
+            if (typeLower == "dispel" && eff.MiscValue.HasValue)
+            {
                 return eff.MiscValue.Value;
-
-            // 2) Summon creature ID
-            if (!string.IsNullOrWhiteSpace(eff.Type) &&
-                eff.Type.Trim().Equals("summon", StringComparison.OrdinalIgnoreCase) &&
-                eff.CreatureId.HasValue)
-            {
-                return eff.CreatureId.Value;
             }
 
-            string t = eff.Type?.Trim().ToLowerInvariant();
-            string aura = eff.Aura?.Trim().ToLowerInvariant();
+            // -----------------------------------------------------------
+            // 6) DispelMechanic (Effect = DISPEL_MECHANIC)
+            //     MiscValue = MechanicID
+            // -----------------------------------------------------------
+            if (typeLower == "dispelmechanic" && eff.MiscValue.HasValue)
+            {
+                return eff.MiscValue.Value;
+            }
 
-            // 3) Power drain / energize / leech
-            if (t == "drainmana" || t == "energize" ||
-                t == "leechmana" || t == "drainhealth" || t == "leechhealth")
+            // -----------------------------------------------------------
+            // 7) School Immunity (ModSchoolImmunity)
+            //     MiscValue = school mask
+            // -----------------------------------------------------------
+            if (auraLower == "modschoolimmunity")
+            {
+                // If manually provided (via inference above), use it.
+                if (eff.MiscValue.HasValue)
+                    return eff.MiscValue.Value;
+
+                // If not provided, attempt to derive from spell School
+                if (!string.IsNullOrWhiteSpace(def.School))
+                    return (int)MapSchool(def.School);
+            }
+
+            // -----------------------------------------------------------
+            // 8) Damage redirection (SplitDamagePct)
+            //     MiscValue = SchoolMask to redirect
+            // -----------------------------------------------------------
+            if (auraLower == "splitdamagepct")
+            {
+                // If inference already set a value, use it
+                if (eff.MiscValue.HasValue)
+                    return eff.MiscValue.Value;
+
+                // Otherwise derive from spell's School if present
+                if (!string.IsNullOrWhiteSpace(def.School))
+                    return (int)MapSchool(def.School);
+
+                // Default: ALL schools
+                return 127; // SpellSchoolMask.All
+            }
+
+            if (auraLower == "periodicpowerburn")
             {
                 return MapPowerTypeToMisc(def.PowerType);
             }
 
-            // 4) Periodic leech based on aura
-            if (aura == "periodicleech" || t == "periodicleech")
-                return MapPowerTypeToMisc(def.PowerType);
 
-            // 5) Periodic damage / school-based auras
-            if (aura == "periodicdamage" || aura == "schooldamage" || aura == "schoolabsorb")
-            {
-                return (int)MapSchool(def.School);
-            }
-
-            // 6) Stat modifications
-            if (aura != null && aura.StartsWith("modstat"))
-                return -1; // "all stats"
-
-            // 7) Unknown → no misc
+            // Unknown, no misc
             return null;
         }
 
@@ -755,20 +1793,61 @@ namespace SpellEditor.Sources.AI
         /// </summary>
         private static int? ComputeEffectMiscValueB(AiSpellDefinition def, AiEffectDefinition eff)
         {
+            // --------------------------------------------------------------------
+            // 0) Explicit override from the AI (always wins)
+            // --------------------------------------------------------------------
             if (eff.MiscValueB.HasValue)
                 return eff.MiscValueB.Value;
 
-            string t = eff.Type?.Trim().ToLowerInvariant();
-            string aura = eff.Aura?.Trim().ToLowerInvariant();
+            string typeLower = eff.Type?.Trim().ToLowerInvariant() ?? "";
+            string auraLower = eff.Aura?.Trim().ToLowerInvariant() ?? "";
 
-            // 1) Drains / leeches power type secondary
-            if (t == "drainmana" || t == "leechmana" || t == "energize")
+            // --------------------------------------------------------------------
+            // 1) PROC AURAS (ProcTriggerSpell)
+            //     → EffectMiscValueB = ProcFlag mask
+            // --------------------------------------------------------------------
+            if (auraLower == "proctriggerspell")
+            {
+                // If TYPE inference already set a proc flag into MiscValueB, keep it.
+                foreach (var kvp in ProcFlagMap)
+                {
+                    if (typeLower.Contains(kvp.Key))
+                        return (int)kvp.Value;
+                }
+
+                // No inference possible → silently return null
+                return null;
+            }
+
+            // --------------------------------------------------------------------
+            // 2) POWER DRAINS / LEECHES / ENERGIZE
+            //     Some of these effects historically use both MiscValue and MiscValueB
+            //     as the PowerType (ex: drain mana = power 0).
+            // --------------------------------------------------------------------
+            if (typeLower == "drainmana" ||
+                typeLower == "leechmana" ||
+                typeLower == "energize" ||
+                typeLower == "drainhealth" ||
+                typeLower == "leechhealth")
+            {
+                // Return power-type as MiscValueB
                 return MapPowerTypeToMisc(def.PowerType);
+            }
 
-            // 2) No B value needed
+            // periodic power effects (auras)
+            if (auraLower == "periodicenergize" ||
+                auraLower == "periodicmanaleech" ||
+                auraLower == "periodicleech" ||
+                auraLower == "obsmodpower")
+            {
+                return MapPowerTypeToMisc(def.PowerType);
+            }
+
+            // --------------------------------------------------------------------
+            // 3) Nothing else requires MiscValueB
+            // --------------------------------------------------------------------
             return null;
         }
-
 
         /// <summary>
         /// Map the high-level PowerType string ("Mana", "Rage", etc.) to the
@@ -870,21 +1949,22 @@ namespace SpellEditor.Sources.AI
             AiEnumRegistry.Initialize();
             AiSemanticRegistry.EnsureInitialized();
 
-            // Null → fallback
+            // Null / empty → simple fallbacks
             if (string.IsNullOrWhiteSpace(type))
             {
                 // If there's an aura, it's APPLY_AURA
                 if (!string.IsNullOrWhiteSpace(aura))
                     return 6; // SPELL_EFFECT_APPLY_AURA
 
-                return 2; // SCHOOL_DAMAGE fallback
+                // Otherwise assume generic SCHOOL_DAMAGE
+                return 2; // SPELL_EFFECT_SCHOOL_DAMAGE
             }
 
             string t = type.Trim().ToLowerInvariant();
             uint id;
 
             // ------------------------------------------------------------
-            // 1) Semantic registry first (your master alias system)
+            // 1) Semantic registry first (master alias system)
             // ------------------------------------------------------------
             if (AiSemanticRegistry.TryResolveEffectId(type, aura, out id))
                 return id;
@@ -892,44 +1972,466 @@ namespace SpellEditor.Sources.AI
             // ------------------------------------------------------------
             // 2) Weapon Damage explicit handling
             // ------------------------------------------------------------
-            if (t == "weapondamage" || t == "applyweapondamage" || t == "meleedamage" || t == "swingdamage")
+            if (t == "weapondamage" ||
+                t == "applyweapondamage" ||
+                t == "meleedamage" ||
+                t == "swingdamage")
+            {
                 return 1; // SPELL_EFFECT_WEAPON_DAMAGE
+            }
 
             // ------------------------------------------------------------
-            // 3) Summon
+            // 3) Summon family
+            //    We try to hit the enum names if they exist, otherwise
+            //    fall back to the generic SUMMON (28).
             // ------------------------------------------------------------
-            if (t == "summon")
-                return 28; // SPELL_EFFECT_SUMMON
+
+            // Generic summon (creature/guardian/etc.)
+            if (t == "summon" || t == "summoncreature" || t == "summonunit")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28; // SPELL_EFFECT_SUMMON (safe WotLK value)
+            }
+
+            // Pet / demon
+            if (t == "summonpet" || t == "callpet" || t == "summondemon")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_PET", out id))
+                    return id;
+
+                // Fallback: generic summon
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28;
+            }
+
+            // Guardian / companion
+            if (t == "summonguardian" || t == "summoncompanion")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_GUARDIAN", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28;
+            }
+
+            // Wild summon (temporary guardian in many DBs)
+            if (t == "summonwild" || t == "summonwildguardian")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_WILD", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_GUARDIAN", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28;
+            }
+
+            // Totems – use SLOT1-4 variants when explicitly requested
+            if (t == "summontotem" || t == "summontotem1")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_TOTEM_SLOT1", out id))
+                    return id;
+            }
+
+            if (t == "summontotem2")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_TOTEM_SLOT2", out id))
+                    return id;
+            }
+
+            if (t == "summontotem3")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_TOTEM_SLOT3", out id))
+                    return id;
+            }
+
+            if (t == "summontotem4")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_TOTEM_SLOT4", out id))
+                    return id;
+            }
+
+            // Generic "totem" alias → try slot 1, then generic SUMMON
+            if (t == "totem")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_TOTEM_SLOT1", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28;
+            }
+
+            // Vehicles
+            if (t == "summonvehicle" || t == "vehicle")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_VEHICLE", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON", out id))
+                    return id;
+
+                return 28;
+            }
 
             // ------------------------------------------------------------
-            // 4) Interrupt
+            // 4) Teleports / Blink
             // ------------------------------------------------------------
-            if (t == "interrupt")
-                return 19; // SPELL_EFFECT_INTERRUPT_CAST
+            if (t == "teleport" ||
+                t == "teleportself" ||
+                t == "teleporttarget" ||
+                t == "blink")
+            {
+                // Standard WotLK effect name is TELEPORT_UNITS
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_UNITS", out id))
+                    return id;
+            }
 
             // ------------------------------------------------------------
-            // 5) Threat
+            // 5) Interrupt
             // ------------------------------------------------------------
-            if (t == "threat")
+            if (t == "interrupt" || t == "interruptcast")
+            {
+                // If the DB enum exists, prefer that
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("INTERRUPT_CAST", out id))
+                    return id;
+
+                return 19; // SPELL_EFFECT_INTERRUPT_CAST (known WotLK value)
+            }
+
+            // ------------------------------------------------------------
+            // 6) Threat
+            // ------------------------------------------------------------
+            if (t == "threat" || t == "addthreat" || t == "modthreat")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("THREAT", out id))
+                    return id;
+
                 return 5; // SPELL_EFFECT_THREAT
+            }
 
             // ------------------------------------------------------------
-            // 6) Default effect-name resolution from client enums
+            // 7) Kill credit (quest helpers)
+            // ------------------------------------------------------------
+            if (t == "killcredit" || t == "killcreditpersonal" || t == "credit")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("KILL_CREDIT", out id))
+                    return id;
+
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("KILL_CREDIT2", out id))
+                    return id;
+            }
+
+            // ------------------------------------------------------------
+            // 8) Open Lock / chest interaction
+            // ------------------------------------------------------------
+            if (t == "openlock" || t == "unlock" || t == "picklock")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("OPEN_LOCK", out id))
+                    return id;
+            }
+
+            // Jump movement
+            if (t == "jump" || t == "jumpforward")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP", out id))
+                    return id;
+            }
+
+            // Jump to destination (often teleport-like)
+            if (t == "jumpdest" || t == "jumpdestination")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP_DEST", out id))
+                    return id;
+            }
+
+            // Teleport Player / Teleport Graveyard
+            if (t == "teleportplayer")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_PLAYER", out id))
+                    return id;
+            }
+
+            if (t == "teleportgraveyard" || t == "graveteleport")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_GRAVEYARD", out id))
+                    return id;
+            }
+
+            // Bind location
+            if (t == "bind" || t == "sethearth" || t == "bindlocation")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("BIND", out id))
+                    return id;
+            }
+
+            // Self-resurrect
+            if (t == "selfres" || t == "selfresurrect")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SELF_RESURRECT", out id))
+                    return id;
+            }
+
+            // Script Effect (non-dummy)
+            if (t == "scripteffect" || t == "scriptspecial")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SCRIPT_EFFECT", out id))
+                    return id;
+            }
+
+            // ------------------------------------------------------------
+            // Niche and advanced EFFECT types
+            // ------------------------------------------------------------
+
+            // Charge (Warrior charge/intercept)
+            if (t == "charge" || t == "chargemove" || t == "intercept")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CHARGE", out id))
+                    return id;
+            }
+
+            // Charge destination movement (Death Grip jump)
+            if (t == "chargedest" || t == "chargejump")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CHARGE_DEST", out id))
+                    return id;
+            }
+
+            // Jump / JumpDest
+            if (t == "jump" || t == "jumpforward")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP", out id))
+                    return id;
+            }
+            if (t == "jumpdest" || t == "jumpdestination")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP_DEST", out id))
+                    return id;
+            }
+
+            // TeleportPlayer
+            if (t == "teleportplayer")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_PLAYER", out id))
+                    return id;
+            }
+
+            // TeleportGraveyard
+            if (t == "teleportgraveyard" || t == "graveteleport")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_GRAVEYARD", out id))
+                    return id;
+            }
+
+            // Persistent Area Aura (e.g. Blizzard, Rain of Fire)
+            if (t == "persistentarea" || t == "persistentareaaura")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("PERSISTENT_AREA_AURA", out id))
+                    return id;
+            }
+
+            // ScriptEffect (server executes SpellScript effect)
+            if (t == "scripteffect" || t == "script")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SCRIPT_EFFECT", out id))
+                    return id;
+            }
+
+            // Create Item
+            if (t == "createitem" || t == "makeitem")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CREATE_ITEM", out id))
+                    return id;
+            }
+
+            // Enchant Item
+            if (t == "enchantitem" || t == "applyenchant")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("ENCHANT_ITEM", out id))
+                    return id;
+            }
+
+            // Skinning
+            if (t == "skinning")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SKINNING", out id))
+                    return id;
+            }
+
+            // Dismiss pet
+            if (t == "dismisspet" || t == "unsummonpet")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("DISMISS_PET", out id))
+                    return id;
+            }
+
+            // Instakill
+            if (t == "instakill" || t == "kill" || t == "slay")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("INSTAKILL", out id))
+                    return id;
+            }
+
+            // Summon Object / Object Slot
+            if (t == "summonobject")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_OBJECT", out id))
+                    return id;
+            }
+            if (t == "summonobjectslot" || t == "summonobjectslots")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_OBJECT_SLOT", out id))
+                    return id;
+            }
+
+            // Activate Object
+            if (t == "activateobject")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("ACTIVATE_OBJECT", out id))
+                    return id;
+            }
+
+            // ------------------------------------------------------------
+            // Niche and advanced EFFECT types
+            // ------------------------------------------------------------
+
+            // Charge (Warrior charge/intercept)
+            if (t == "charge" || t == "chargemove" || t == "intercept")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CHARGE", out id))
+                    return id;
+            }
+
+            // Charge destination movement (Death Grip jump)
+            if (t == "chargedest" || t == "chargejump")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CHARGE_DEST", out id))
+                    return id;
+            }
+
+            // Jump / JumpDest
+            if (t == "jump" || t == "jumpforward")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP", out id))
+                    return id;
+            }
+            if (t == "jumpdest" || t == "jumpdestination")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("JUMP_DEST", out id))
+                    return id;
+            }
+
+            // TeleportPlayer
+            if (t == "teleportplayer")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_PLAYER", out id))
+                    return id;
+            }
+
+            // TeleportGraveyard
+            if (t == "teleportgraveyard" || t == "graveteleport")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("TELEPORT_GRAVEYARD", out id))
+                    return id;
+            }
+
+            // Persistent Area Aura (e.g. Blizzard, Rain of Fire)
+            if (t == "persistentarea" || t == "persistentareaaura")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("PERSISTENT_AREA_AURA", out id))
+                    return id;
+            }
+
+            // ScriptEffect (server executes SpellScript effect)
+            if (t == "scripteffect" || t == "script")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SCRIPT_EFFECT", out id))
+                    return id;
+            }
+
+            // Create Item
+            if (t == "createitem" || t == "makeitem")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("CREATE_ITEM", out id))
+                    return id;
+            }
+
+            // Enchant Item
+            if (t == "enchantitem" || t == "applyenchant")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("ENCHANT_ITEM", out id))
+                    return id;
+            }
+
+            // Skinning
+            if (t == "skinning")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SKINNING", out id))
+                    return id;
+            }
+
+            // Dismiss pet
+            if (t == "dismisspet" || t == "unsummonpet")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("DISMISS_PET", out id))
+                    return id;
+            }
+
+            // Instakill
+            if (t == "instakill" || t == "kill" || t == "slay")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("INSTAKILL", out id))
+                    return id;
+            }
+
+            // Summon Object / Object Slot
+            if (t == "summonobject")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_OBJECT", out id))
+                    return id;
+            }
+            if (t == "summonobjectslot" || t == "summonobjectslots")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("SUMMON_OBJECT_SLOT", out id))
+                    return id;
+            }
+
+            // Activate Object
+            if (t == "activateobject")
+            {
+                if (AiEnumRegistry.EffectNameToId.TryGetValue("ACTIVATE_OBJECT", out id))
+                    return id;
+            }
+
+            // ------------------------------------------------------------
+            // 9) Default effect-name resolution from client enums
+            //    (accept raw names like "SCHOOL_DAMAGE", "APPLY_AURA", etc.)
             // ------------------------------------------------------------
             if (AiEnumRegistry.EffectNameToId.TryGetValue(type.Trim(), out id))
                 return id;
 
             // ------------------------------------------------------------
-            // 7) Aura present → default APPLY_AURA
+            // 10) Aura present → default APPLY_AURA
             // ------------------------------------------------------------
             if (!string.IsNullOrWhiteSpace(aura))
                 return 6; // SPELL_EFFECT_APPLY_AURA
 
             // ------------------------------------------------------------
-            // 8) Final fallback → SCHOOL_DAMAGE
+            // 11) Final fallback → SCHOOL_DAMAGE
             // ------------------------------------------------------------
             return 2; // SPELL_EFFECT_SCHOOL_DAMAGE
         }
+
         private static uint MapAura(string aura)
         {
             AiEnumRegistry.Initialize();
@@ -1116,69 +2618,90 @@ namespace SpellEditor.Sources.AI
                 if (iconDbc == null || iconDbc.Lookups == null)
                     return 0;
 
-                string h = hint.ToLower().Trim();
-                const double temperature = 0.6;
+                string h = hint.ToLowerInvariant().Trim();
 
-                var weightedList = new List<Tuple<uint, double>>();
+                double best = double.MinValue;
+                uint bestId = 0;
 
                 foreach (var icon in iconDbc.Lookups)
                 {
-                    string name = icon.Name.ToLowerInvariant();
-                    int score = 0;
+                    if (string.IsNullOrWhiteSpace(icon.Name))
+                        continue;
 
-                    if (name.Contains(h))
-                        score += 100;
+                    string iconName = icon.Name.ToLowerInvariant();
 
-                    if ((h.Contains("frost") || h.Contains("ice") || h.Contains("cold")) &&
-                        (name.Contains("frost") || name.Contains("ice") || name.Contains("blue")))
-                        score += 60;
+                    double score = SimpleSubstringScore(iconName, h);
 
-                    if ((h.Contains("fire") || h.Contains("flame") || h.Contains("burn")) &&
-                        (name.Contains("fire") || name.Contains("flame") || name.Contains("red")))
-                        score += 60;
-
-                    if ((h.Contains("shadow") || h.Contains("void")) &&
-                        (name.Contains("shadow") || name.Contains("purple")))
-                        score += 50;
-
-                    if (h.Contains("holy") || h.Contains("light"))
-                        if (name.Contains("holy") || name.Contains("yellow"))
-                            score += 50;
-
-                    if (h.Contains("heal"))
-                        if (name.Contains("green") || name.Contains("holy"))
-                            score += 40;
-
-                    double weight = Math.Exp(score / temperature);
-                    weightedList.Add(Tuple.Create((uint)icon.ID, weight));
+                    if (score > best)
+                    {
+                        best = score;
+                        bestId = icon.ID;
+                    }
                 }
 
-                double total = weightedList.Sum(w => w.Item2);
-                if (total <= 0)
-                    return 0;
-
-                // Deterministic RNG based on hint string, so preview & apply agree
-                int seed = hint.GetHashCode();
-                var rng = new Random(seed);
-
-                double roll = rng.NextDouble() * total;
-                double cum = 0;
-
-                foreach (var pair in weightedList)
-                {
-                    cum += pair.Item2;
-                    if (roll <= cum)
-                        return pair.Item1;
-                }
-
-                return weightedList.Last().Item1;
+                return bestId;
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Warn(ex, "PickBestIconId failed");
                 return 0;
             }
         }
+
+        private static double SimpleSubstringScore(string iconName, string hint)
+        {
+            if (string.IsNullOrWhiteSpace(iconName) || string.IsNullOrWhiteSpace(hint))
+                return 0.0;
+
+            string name = iconName.ToLowerInvariant();
+            string h = hint.ToLowerInvariant();
+
+            double score = 0;
+
+            // 1) Full phrase match (rare but high-value)
+            if (name.Contains(h))
+                score += 50;
+
+            // 2) Token match
+            var tokens = h.Split(new[] { ' ', '-', '_', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var token in tokens)
+            {
+                if (token.Length <= 1)
+                    continue;
+
+                if (name.Contains(token))
+                    score += 20;
+
+                // Small partial token match boost
+                foreach (var part in SplitToken(token))
+                {
+                    if (name.Contains(part))
+                        score += 8;
+                }
+            }
+
+            return score;
+        }
+
+        private static IEnumerable<string> SplitToken(string token)
+        {
+            // Break complex words like "firestrike" into fire + strike
+            var parts = new List<string>();
+
+            for (int i = 1; i < token.Length - 1; i++)
+            {
+                var left = token.Substring(0, i);
+                var right = token.Substring(i);
+
+                if (left.Length >= 3)
+                    parts.Add(left);
+
+                if (right.Length >= 3)
+                    parts.Add(right);
+            }
+
+            return parts;
+        }
+
 
         // VISUAL ---------------------------------------------------------------------------------
 

@@ -255,6 +255,28 @@ namespace SpellEditor.Sources.AI
                 AuraNameToId[NormalizeKey("HealOverTime")] = id;
             }
 
+            // PERIODIC_MANA_LEECH
+            if (TryLookupAura("Periodic Mana Leech", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicManaLeech")] = id;
+                AuraNameToId[NormalizeKey("ManaLeech")] = id;
+                AuraNameToId[NormalizeKey("PeriodicManaDrain")] = id;
+            }
+
+            // PERIODIC_HEALTH_LEECH
+            if (TryLookupAura("Periodic Health Leech", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicHealthLeech")] = id;
+                AuraNameToId[NormalizeKey("HealthLeech")] = id;
+                AuraNameToId[NormalizeKey("LifeLeech")] = id;
+            }
+
+            // PERIODIC_ABSORB (if present in enUS.xaml – safe no-op if not)
+            if (TryLookupAura("Periodic Absorb", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicAbsorb")] = id;
+            }
+
             // MOD_STUN
             if (TryLookupAura("Stun", out id) || TryLookupAura("Mod Stun", out id))
             {
@@ -280,6 +302,182 @@ namespace SpellEditor.Sources.AI
             // --------------------------------------------------------------------
             // NEW AURA ALIASES – align with AI-Prompt aura names and SpellAuraEffects.cpp
             // --------------------------------------------------------------------
+            // --------------------------------------------------------------------
+            // EXTENDED WOTLK AURA SUPPORT (NON-SCRIPTED, FULLY DBC-SAFE)
+            // --------------------------------------------------------------------
+
+            //
+            // 1) Combat ratings & avoidance
+            //
+            if (TryLookupAura("Mod Dodge Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModDodgePercent")] = id;
+            }
+            if (TryLookupAura("Mod Parry Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModParryPercent")] = id;
+            }
+            if (TryLookupAura("Mod Block Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModBlockPercent")] = id;
+            }
+            if (TryLookupAura("Mod Critical Chance", out id) ||
+                TryLookupAura("Mod Crit Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModCritPercent")] = id;
+            }
+            if (TryLookupAura("Mod Spell Crit Chance", out id) ||
+                TryLookupAura("Mod Spell Crit Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSpellCritChance")] = id;
+            }
+            if (TryLookupAura("Mod Expertise", out id))
+            {
+                AuraNameToId[NormalizeKey("ModExpertise")] = id;
+            }
+            if (TryLookupAura("Mod Armor Penetration", out id))
+            {
+                AuraNameToId[NormalizeKey("ModArmorPenetration")] = id;
+            }
+
+            //
+            // 2) Damage, healing & spell bonuses
+            //
+            if (TryLookupAura("Mod Damage Percent Done", out id))
+            {
+                AuraNameToId[NormalizeKey("ModDamagePercentDone")] = id;
+            }
+            if (TryLookupAura("Mod Healing Done", out id))
+            {
+                AuraNameToId[NormalizeKey("ModHealingDone")] = id;
+            }
+            if (TryLookupAura("Mod Spell Damage Done", out id) ||
+                TryLookupAura("Mod Spell Damage Done School", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSpellDamageDone")] = id;
+            }
+            if (TryLookupAura("Periodic Trigger Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerDamage")] = id;
+            }
+
+            //
+            // 3) School-based resistances
+            //
+            string[] schools =
+            {
+    "Holy", "Fire", "Nature", "Frost", "Shadow", "Arcane"
+};
+            foreach (var s in schools)
+            {
+                if (TryLookupAura($"Mod {s} Resistance", out id))
+                    AuraNameToId[NormalizeKey($"Mod{s}Resistance")] = id;
+            }
+
+            //
+            // 4) Proc Auras
+            //
+            if (TryLookupAura("Proc Trigger Spell", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpell")] = id;
+            }
+            if (TryLookupAura("Proc Trigger Miss", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerMiss")] = id;
+            }
+            if (TryLookupAura("Proc Trigger Critical", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerCritical")] = id;
+            }
+            if (TryLookupAura("Proc Trigger Periodic", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerPeriodic")] = id;
+            }
+
+            //
+            // 5) Power and resource regeneration auras
+            //
+            if (TryLookupAura("Mod Rage Generation", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRageRegen")] = id;
+            }
+            if (TryLookupAura("Mod Energy Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("ModEnergyRegen")] = id;
+            }
+            if (TryLookupAura("Mod Runic Power Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRunicPowerRegen")] = id;
+            }
+            if (TryLookupAura("Mod Runes Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRuneRegen")] = id;
+            }
+
+            //
+            // 6) Defense, mitigation & reductions
+            //
+            if (TryLookupAura("Mod Damage Taken Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModDamageTakenPct")] = id;
+            }
+            if (TryLookupAura("Mod Healing Taken Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModHealingTakenPct")] = id;
+            }
+            if (TryLookupAura("Mod Block Value", out id))
+            {
+                AuraNameToId[NormalizeKey("ModBlockValue")] = id;
+            }
+
+            //
+            // 7) Utility & movement
+            //
+            if (TryLookupAura("Mod Swim Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSwimSpeed")] = id;
+            }
+            if (TryLookupAura("Mod Flight Speed", out id) ||
+                TryLookupAura("Flight Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModFlightSpeed")] = id;
+            }
+            if (TryLookupAura("Mod Stealth Detect", out id))
+            {
+                AuraNameToId[NormalizeKey("ModStealthDetect")] = id;
+            }
+            if (TryLookupAura("Mod Invisibility Detect", out id))
+            {
+                AuraNameToId[NormalizeKey("ModInvisibilityDetect")] = id;
+            }
+            if (TryLookupAura("Mod Mounted Speed Percent", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMountedSpeedPct")] = id;
+            }
+            if (TryLookupAura("Mod Jump", out id))
+            {
+                AuraNameToId[NormalizeKey("ModJump")] = id;
+            }
+
+            //
+            // 8) Absorbs & shields
+            //
+            if (TryLookupAura("Absorb Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("AbsorbDamage")] = id;
+            }
+            if (TryLookupAura("Absorb Magic", out id))
+            {
+                AuraNameToId[NormalizeKey("AbsorbMagic")] = id;
+            }
+            if (TryLookupAura("Absorb School", out id))
+            {
+                AuraNameToId[NormalizeKey("AbsorbSchool")] = id;
+            }
+            if (TryLookupAura("Periodic Absorb", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicAbsorb")] = id;
+            }
 
             // MOVEMENT / CONTROL --------------------------------------------------
 

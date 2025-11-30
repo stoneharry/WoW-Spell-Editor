@@ -47,13 +47,13 @@
                  Margin="0,0,10,4"
                  Checked="ModeRadio_Checked"/>
 
-            <RadioButton x:Name="RadioAskQuestion"
-                 Content="Ask a Question"
+            <RadioButton x:Name="RadioBalanceSpell"
+                 Content="Balance Selected Spell"
                  Margin="0,0,10,4"
                  Checked="ModeRadio_Checked"/>
 
-            <RadioButton x:Name="RadioBalanceSpell"
-                 Content="Balance This Spell"
+            <RadioButton x:Name="RadioAskQuestion"
+                 Content="Ask a Question"
                  Margin="0,0,10,4"
                  Checked="ModeRadio_Checked"/>
         </StackPanel>
