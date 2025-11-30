@@ -24,6 +24,8 @@ namespace SpellEditor.Sources.AI
             if (row == null)
                 throw new ArgumentNullException(nameof(row));
 
+            AiEnumRegistry.Initialize();
+
             row.BeginEdit();
 
             ApplyBasicInfo(def, row);
@@ -386,21 +388,26 @@ namespace SpellEditor.Sources.AI
 
         private static void MapTarget(string target, out uint a, out uint b)
         {
+            AiEnumRegistry.Initialize();
+
             a = 0;
             b = 0;
 
             if (string.IsNullOrWhiteSpace(target))
                 return;
 
-            switch (target.Trim().ToLowerInvariant())
+            if (AiEnumRegistry.TargetNameToId.TryGetValue(target.Trim(), out uint id))
             {
-                case "self": a = 1; break;
+                a = id;
+                return;
+            }
+
+            // fallback shorthand
+            switch (target.ToLower())
+            {
                 case "enemy": a = 6; break;
                 case "friendly": a = 21; break;
-                case "area": a = 7; break;
-                case "cone": a = 15; break;
-                case "chain": a = 45; break;
-                default: a = 6; break;
+                case "self": a = 1; break;
             }
         }
 
@@ -496,74 +503,46 @@ namespace SpellEditor.Sources.AI
 
         private static uint MapEffectType(string type, string aura)
         {
-            if (string.IsNullOrWhiteSpace(type))
-            {
-                // Infer from aura when possible
-                if (!string.IsNullOrWhiteSpace(aura))
-                {
-                    var lowerAura = aura.Trim().ToLowerInvariant();
-                    if (lowerAura.Contains("periodicdamage"))
-                        return 6; // APPLY_AURA + periodic damage aura
-                    if (lowerAura.Contains("periodicheal"))
-                        return 6; // APPLY_AURA + periodic heal aura
-                    if (lowerAura.Contains("stun") || lowerAura.Contains("root") || lowerAura.Contains("decreasespeed"))
-                        return 6; // APPLY_AURA crowd-control
-                }
+            AiEnumRegistry.Initialize();
+            AiSemanticRegistry.EnsureInitialized();
 
-                // Default: SCHOOL_DAMAGE
-                return 2;
+            // If we have an explicit aura (stun, periodic, etc.) then we normally
+            // want APPLY_AURA as the Effect type.
+            uint id;
+            if (AiSemanticRegistry.TryResolveEffectId(type, aura, out id))
+                return id;
+
+            if (!string.IsNullOrWhiteSpace(type) &&
+                AiEnumRegistry.EffectNameToId.TryGetValue(type.Trim(), out id))
+                return id;
+
+            // Automatic inference for DoTs / HoTs
+            if (!string.IsNullOrWhiteSpace(aura))
+            {
+                if (aura.ToLower().Contains("periodic"))
+                {
+                    // "Apply Aura" in WotLK = Effect 6
+                    return 6;
+                }
             }
 
-            var t = type.Trim().ToLowerInvariant();
-
-            // Anything explicitly "ApplyAura" is, well, APPLY_AURA
-            if (t == "applyaura" || t == "apply_aura")
-                return 6;
-
-            // Periodic helpers -> implemented as APPLY_AURA + periodic aura
-            if (t == "periodicdamage" || t == "periodic_damage" || t == "dot")
-                return 6;
-            if (t == "periodicheal" || t == "periodic_heal" || t == "hot")
-                return 6;
-
-            // Crowd control helpers – always done as auras
-            if (t == "stun" || t == "root" || t == "slow" || t == "silence" || t == "fear")
-                return 6;
-
-            // Direct effects
-            if (t == "damage" || t == "schooldamage")
-                return 2;   // SCHOOL_DAMAGE
-            if (t == "heal")
-                return 10;  // HEAL
-
-            // Safe default
-            return 2;
+            // Fallback generic damage effect
+            return 2; // SCHOOL_DAMAGE
         }
-
         private static uint MapAura(string aura)
         {
+            AiEnumRegistry.Initialize();
+            AiSemanticRegistry.EnsureInitialized();
+
+            uint id;
+            if (AiSemanticRegistry.TryResolveAuraId(aura, out id))
+                return id;
+
             if (string.IsNullOrWhiteSpace(aura))
                 return 0;
 
-            var a = aura.Trim().ToLowerInvariant();
-
-            // Periodic auras
-            if (a == "periodicdamage" || a == "periodic_damage" || a == "dot")
-                return 3;   // SPELL_AURA_PERIODIC_DAMAGE
-            if (a == "periodicheal" || a == "periodic_heal" || a == "hot")
-                return 8;   // SPELL_AURA_PERIODIC_HEAL
-
-            // Movement / CC
-            if (a == "moddecreasespeed" || a == "slow" || a == "snare")
-                return 11;  // SPELL_AURA_MOD_DECREASE_SPEED
-            if (a == "modstun" || a == "stun")
-                return 12;  // SPELL_AURA_MOD_STUN
-            if (a == "modroot" || a == "root")
-                return 7;   // SPELL_AURA_MOD_ROOT
-            if (a == "modsilence" || a == "silence")
-                return 27;  // SPELL_AURA_MOD_SILENCE (WotLK)
-
-            // You can keep extending this block with more aura names as needed.
+            if (AiEnumRegistry.AuraNameToId.TryGetValue(aura.Trim(), out id))
+                return id;
 
             return 0;
         }
