@@ -28,8 +28,8 @@
     <system:String x:Key="labSpellIngameDescription">Spell Ingame Description:</system:String>
     <system:String x:Key="Base">Base</system:String>
     <system:String x:Key="Effects">Effects</system:String>
-    <system:String x:Key="Effects1">Effects 1</system:String>
-    <system:String x:Key="Effects2">Effects 2</system:String>
+    <system:String x:Key="Effects1">Targets/Procs</system:String>
+    <system:String x:Key="Effects2">Effects</system:String>
     <system:String x:Key="SpellEffects1">Spell Effect 1</system:String>
     <system:String x:Key="SpellEffects2">Spell Effect 2</system:String>
     <system:String x:Key="SpellEffects3">Spell Effect 3</system:String>
