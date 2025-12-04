@@ -75,6 +75,110 @@ namespace SpellEditor.Sources.AI
         public string VisualName { get; set; }
 
 
+        // PROC / TRIGGERING -------------------------------------------------
+
+        /// <summary>Raw ProcFlags bitmask. If set, written directly to ProcFlags.</summary>
+        public uint? ProcFlags { get; set; }
+
+        /// <summary>Proc chance in percent (0–100). Maps to ProcChance.</summary>
+        public int? ProcChance { get; set; }
+
+        /// <summary>Maximum number of procs before the aura is removed.</summary>
+        public int? ProcCharges { get; set; }
+
+        /// <summary>Internal proc cooldown in seconds (ProcCooldown, ms in DBC).</summary>
+        public float? ProcCooldownSeconds { get; set; }
+
+
+        // INTERRUPT / PUSHBACK ---------------------------------------------
+
+        /// <summary>SpellInterruptFlags bitmask (InterruptFlags column).</summary>
+        public uint? InterruptFlags { get; set; }
+
+        /// <summary>AuraInterruptFlags bitmask.</summary>
+        public uint? AuraInterruptFlags { get; set; }
+
+        /// <summary>ChannelInterruptFlags bitmask.</summary>
+        public uint? ChannelInterruptFlags { get; set; }
+
+
+        // CATEGORY / RECOVERY ----------------------------------------------
+
+        /// <summary>Spell's category (Category column).</summary>
+        public int? CategoryId { get; set; }
+
+        /// <summary>CategoryRecoveryTime (seconds, mapped to ms).</summary>
+        public float? CategoryCooldownSeconds { get; set; }
+
+        /// <summary>StartRecoveryCategory (e.g. shared recovery groups).</summary>
+        public int? StartRecoveryCategory { get; set; }
+
+        /// <summary>StartRecoveryTime in seconds (mapped to ms).</summary>
+        public float? StartRecoveryTimeSeconds { get; set; }
+
+
+        // REAGENTS / TOTEMS -------------------------------------------------
+
+        /// <summary>
+        /// Up to 8 reagent entries. Each maps into Reagent1–8 / ReagentCount1–8.
+        /// </summary>
+        public List<AiReagentDefinition> Reagents { get; set; } = new List<AiReagentDefinition>();
+
+        /// <summary>Optional totems (Totem1 / Totem2). Use raw item IDs.</summary>
+        public List<int> Totems { get; set; } = new List<int>();
+
+        /// <summary>Optional totem categories (TotemCategory1 / TotemCategory2).</summary>
+        public List<int> TotemCategories { get; set; } = new List<int>();
+
+
+        // EQUIPMENT / FORMS / AREA -----------------------------------------
+
+        /// <summary>Required equipped item class (EquippedItemClass).</summary>
+        public int? EquippedItemClass { get; set; }
+
+        /// <summary>EquippedItemSubClassMask (bitmask).</summary>
+        public int? EquippedItemSubClassMask { get; set; }
+
+        /// <summary>EquippedItemInventoryTypeMask (bitmask).</summary>
+        public int? EquippedItemInventoryTypeMask { get; set; }
+
+        /// <summary>Allowed shapeshift forms mask (Stances / ShapeshiftMask).</summary>
+        public uint? ShapeshiftMask { get; set; }
+
+        /// <summary>Disallowed shapeshift forms mask (StancesNot / ShapeshiftExcludeMask).</summary>
+        public uint? ShapeshiftExcludeMask { get; set; }
+
+        /// <summary>Stance bar order (stance button index, if used).</summary>
+        public int? StanceBarOrder { get; set; }
+
+        /// <summary>AreaGroupId restriction (AreaGroupId column).</summary>
+        public int? AreaGroupId { get; set; }
+
+
+        // MOVEMENT / MISSILE / MISC ----------------------------------------
+
+        /// <summary>Projectile or missile spell ID (SpellMissileID).</summary>
+        public int? MissileId { get; set; }
+
+        /// <summary>Missile travel speed (Speed column).</summary>
+        public float? Speed { get; set; }
+
+        /// <summary>SpellFocusObject (e.g. blacksmith anvil).</summary>
+        public int? SpellFocusObject { get; set; }
+
+        /// <summary>Required spell ID to cast (RequiresSpellFocus / prerequisite spells etc.).</summary>
+        public int? RequiresSpell { get; set; }
+
+        /// <summary>FacingCasterFlags bitmask.</summary>
+        public uint? FacingCasterFlags { get; set; }
+
+        /// <summary>DamageClass (e.g. Melee, Ranged, Magic).</summary>
+        public int? DamageClass { get; set; }
+
+        /// <summary>PreventionType (e.g. silence, pacify, etc.).</summary>
+        public int? PreventionType { get; set; }
+
+
         // EFFECTS -----------------------------------------------------------
 
         /// <summary>
@@ -105,11 +209,28 @@ namespace SpellEditor.Sources.AI
         public int? MiscValueB { get; set; }           // Maps to EffectMiscValueBN when set
 
         public int? TriggerSpellId { get; set; }       // EffectTriggerSpellN
-        public int? CreatureId { get; set; }           // Summon creature / kill credit, etc. (goes via MiscValue when appropriate)
+        public int? CreatureId { get; set; }           // Summon creature / kill credit, etc.
 
         public int? ChainTargets { get; set; }         // EffectChainTargetN
-        public float? WeaponDamagePercent { get; set; } // Optional helper; you can map into multipliers if desired
+        public float? WeaponDamagePercent { get; set; } // Convenience helper → EffectDamageMultiplierN
         public float? ValueMultiplier { get; set; }    // EffectMultipleValueN
         public float? DamageMultiplier { get; set; }   // EffectDamageMultiplierN
+    }
+
+    /// <summary>
+    /// Simple reagent descriptor → maps to Reagent1–8 / ReagentCount1–8.
+    /// </summary>
+    public sealed class AiReagentDefinition
+    {
+        /// <summary>Item entry ID.</summary>
+        public int ItemId { get; set; }
+
+        /// <summary>Stack count required.</summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// Optional fixed slot index (0–7). If omitted, mapper fills from slot 0 upward.
+        /// </summary>
+        public int? Slot { get; set; }
     }
 }

@@ -23,8 +23,6 @@
             <RowDefinition Height="3*"/>
             <!-- Prompt area -->
             <RowDefinition Height="Auto"/>
-            <!-- Similar spells output -->
-            <RowDefinition Height="Auto"/>
             <!-- Buttons -->
             <RowDefinition Height="6*"/>
             <!-- Output area -->
@@ -89,41 +87,51 @@
 
         <!-- Row 3: Prompt Box -->
         <Border Grid.Row="3"
-                BorderBrush="#555"
-                BorderThickness="1"
-                CornerRadius="4"
-                Padding="4"
-                Margin="0,5,0,10">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBox x:Name="PromptTextBox"
-                         AcceptsReturn="True"
-                         VerticalScrollBarVisibility="Auto"
+        BorderBrush="#555"
+        BorderThickness="1"
+        CornerRadius="4"
+        Padding="4"
+        Margin="0,5,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!-- Main area -->
+                    <ColumnDefinition Width="300" />
+                    <!-- Narrow right side -->
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0">
+                    <TextBox x:Name="PromptTextBox"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto"
+                     TextWrapping="Wrap"
+                     FontSize="14"
+                     BorderThickness="0"
+                     Background="Transparent"/>
+                </ScrollViewer>
+
+                <!-- RIGHT SIDE: Similar Spells -->
+                <Expander x:Name="SimilarSpellsExpander"
+                  Header="Similar Spells Used"
+                  Grid.Column="1"
+                  Margin="10,0,0,10"
+                  IsExpanded="False">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180">
+                        <TextBox x:Name="SimilarSpellsTextBox"
+                         FontFamily="Consolas"
+                         FontSize="12"
+                         IsReadOnly="True"
                          TextWrapping="Wrap"
-                         FontSize="14"
-                         BorderThickness="0"
-                         Background="Transparent"/>
-            </ScrollViewer>
+                         Padding="5"
+                         BorderThickness="0"/>
+                    </ScrollViewer>
+                </Expander>
+            </Grid>
         </Border>
 
-        <!-- Row 4: Collapsible panel for showing similar spells used -->
-        <Expander x:Name="SimilarSpellsExpander"
-          Header="Similar Spells Used"
-          Grid.Row="4"
-          Margin="0,0,0,10"
-          IsExpanded="False">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180">
-                <TextBox x:Name="SimilarSpellsTextBox"
-                 FontFamily="Consolas"
-                 FontSize="12"
-                 IsReadOnly="True"
-                 TextWrapping="Wrap"
-                 Padding="5"
-                 BorderThickness="0"/>
-            </ScrollViewer>
-        </Expander>
 
-        <!-- Row 5: Buttons -->
-        <StackPanel Grid.Row="5"
+        <!-- Row 4: Buttons -->
+        <StackPanel Grid.Row="4"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,10,0,10">
@@ -152,8 +160,8 @@
                     Click="CloseButton_Click"/>
         </StackPanel>
 
-        <!-- Row 6: Output Area -->
-        <Grid Grid.Row="6">
+        <!-- Row 5: Output Area -->
+        <Grid Grid.Row="5">
 
             <!-- TWO EXCLUSIVE MODES:
                  1. OutputContainer (JSON + Summary)
@@ -168,21 +176,6 @@
                     <ColumnDefinition Width="6"/>
                     <ColumnDefinition Width="*" MinWidth="300"/>
                 </Grid.ColumnDefinitions>
-
-                <!-- Loading Spinner -->
-                <StackPanel HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                    <Grid x:Name="LoadingSpinner"
-                          Visibility="Collapsed">
-                        <ProgressBar IsIndeterminate="True"
-                                     Width="200"
-                                     Height="20"
-                                     Margin="10"/>
-                        <TextBlock Text="Generating spell..."
-                                   HorizontalAlignment="Center"
-                                   Margin="0,35,0,0"/>
-                    </Grid>
-                </StackPanel>
 
                 <!-- LEFT: JSON OUTPUT -->
                 <Border x:Name="JsonOutputBorder"
@@ -304,6 +297,34 @@
                            Text="Ready."/>
             </StatusBarItem>
         </StatusBar>
+
+        <!-- Full-UI Loading Spinner Overlay -->
+        <!-- Full-UI Loading Spinner Overlay -->
+        <Grid x:Name="LoadingSpinner"
+              Background="#80000000"
+              Panel.ZIndex="9999"
+              Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="350" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="500" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Vertical"
+                Margin="0">
+                <ProgressBar IsIndeterminate="True"
+                     Width="260"
+                     Height="22"
+                     Margin="0,0,0,8"/>
+                <TextBlock Text="Working..."
+                   Foreground="White"
+                   FontSize="16"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,0"/>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </controls:MetroWindow>

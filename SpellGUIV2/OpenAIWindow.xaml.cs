@@ -117,8 +117,18 @@ namespace SpellEditor
                 {
                     // Plain chat mode
                     var answer = await _client.AskQuestionAsync(prompt, currentName, currentId, similar);
+                    // Update rich text box, need to manually handle line breaks to avoid extra spacing
                     QuestionAnswerBox.Document.Blocks.Clear();
-                    QuestionAnswerBox.AppendText(answer);
+                    Paragraph p = new Paragraph
+                    {
+                        Margin = new Thickness(0)
+                    };
+                    foreach (string line in answer.Split('\n'))
+                    {
+                        p.Inlines.Add(new Run(line));
+                        p.Inlines.Add(new LineBreak());
+                    }
+                    QuestionAnswerBox.Document.Blocks.Add(p);
                     ApplyButton.IsEnabled = false;
                     return;
                 }

@@ -28,6 +28,8 @@ namespace SpellEditor.Sources.AI
 
             row.BeginEdit();
 
+            row.BeginEdit();
+
             ApplyBasicInfo(def, row);
             ApplySchoolMechanicDispel(def, row);
             ApplyAttributes(def, row);
@@ -37,6 +39,10 @@ namespace SpellEditor.Sources.AI
             ApplyEffects(def, row);
             ApplyIcon(def, row);
             ApplyVisual(def, row);
+            ApplyAdvancedSimpleFields(def, row);
+
+            row.EndEdit();
+
 
             row.EndEdit();
         }
@@ -2772,6 +2778,190 @@ namespace SpellEditor.Sources.AI
             }
             */
             return 0;
+        }
+
+        // ADVANCED SIMPLE FIELDS (PROC / INTERRUPT / CATEGORY / REAGENTS / ETC.) -------------
+
+        /// <summary>
+        /// Writes all the "simple" remaining spell.dbc columns that we expose directly
+        /// on AiSpellDefinition. This never guesses values – it only writes if the AI
+        /// actually set a property, so existing behaviour is unchanged.
+        /// </summary>
+        private static void ApplyAdvancedSimpleFields(AiSpellDefinition def, DataRow row)
+        {
+            if (def == null || row == null)
+                return;
+
+            // PROC -----------------------------------------------------------------------
+            if (def.ProcFlags.HasValue && row.Table.Columns.Contains("ProcFlags"))
+                SafeSet(row, "ProcFlags", def.ProcFlags.Value);
+
+            if (def.ProcChance.HasValue && row.Table.Columns.Contains("ProcChance"))
+                SafeSet(row, "ProcChance", def.ProcChance.Value);
+
+            if (def.ProcCharges.HasValue && row.Table.Columns.Contains("ProcCharges"))
+                SafeSet(row, "ProcCharges", def.ProcCharges.Value);
+
+            if (def.ProcCooldownSeconds.HasValue && row.Table.Columns.Contains("ProcCooldown"))
+                SafeSet(row, "ProcCooldown", (int)(def.ProcCooldownSeconds.Value * 1000f));
+
+
+            // INTERRUPT FLAGS ------------------------------------------------------------
+            if (def.InterruptFlags.HasValue && row.Table.Columns.Contains("InterruptFlags"))
+                SafeSet(row, "InterruptFlags", def.InterruptFlags.Value);
+
+            if (def.AuraInterruptFlags.HasValue && row.Table.Columns.Contains("AuraInterruptFlags"))
+                SafeSet(row, "AuraInterruptFlags", def.AuraInterruptFlags.Value);
+
+            if (def.ChannelInterruptFlags.HasValue && row.Table.Columns.Contains("ChannelInterruptFlags"))
+                SafeSet(row, "ChannelInterruptFlags", def.ChannelInterruptFlags.Value);
+
+
+            // CATEGORY / RECOVERY --------------------------------------------------------
+            if (def.CategoryId.HasValue && row.Table.Columns.Contains("Category"))
+                SafeSet(row, "Category", def.CategoryId.Value);
+
+            if (def.CategoryCooldownSeconds.HasValue && row.Table.Columns.Contains("CategoryRecoveryTime"))
+                SafeSet(row, "CategoryRecoveryTime", (int)(def.CategoryCooldownSeconds.Value * 1000f));
+
+            if (def.StartRecoveryCategory.HasValue && row.Table.Columns.Contains("StartRecoveryCategory"))
+                SafeSet(row, "StartRecoveryCategory", def.StartRecoveryCategory.Value);
+
+            if (def.StartRecoveryTimeSeconds.HasValue && row.Table.Columns.Contains("StartRecoveryTime"))
+                SafeSet(row, "StartRecoveryTime", (int)(def.StartRecoveryTimeSeconds.Value * 1000f));
+
+
+            // REAGENTS ------------------------------------------------------------------
+            if (row.Table.Columns.Contains("Reagent1"))
+            {
+                // Clear existing reagents/counts to avoid stale data when AI sets fewer.
+                for (int slot = 1; slot <= 8; ++slot)
+                {
+                    SafeSet(row, $"Reagent{slot}", 0);
+                    SafeSet(row, $"ReagentCount{slot}", 0);
+                }
+
+                if (def.Reagents != null && def.Reagents.Count > 0)
+                {
+                    // First, place any reagents with explicit Slot.
+                    var usedSlots = new HashSet<int>();
+                    foreach (var r in def.Reagents)
+                    {
+                        if (!r.Slot.HasValue)
+                            continue;
+
+                        int s = r.Slot.Value;
+                        if (s < 0 || s > 7)
+                            continue;
+
+                        int dbcIndex = s + 1;
+                        SafeSet(row, $"Reagent{dbcIndex}", r.ItemId);
+                        SafeSet(row, $"ReagentCount{dbcIndex}", r.Count);
+                        usedSlots.Add(s);
+                    }
+
+                    // Then fill remaining from the front.
+                    int nextFree = 0;
+                    foreach (var r in def.Reagents)
+                    {
+                        if (r.Slot.HasValue)
+                            continue;
+
+                        while (nextFree < 8 && usedSlots.Contains(nextFree))
+                            nextFree++;
+
+                        if (nextFree >= 8)
+                            break;
+
+                        int dbcIndex = nextFree + 1;
+                        SafeSet(row, $"Reagent{dbcIndex}", r.ItemId);
+                        SafeSet(row, $"ReagentCount{dbcIndex}", r.Count);
+                        usedSlots.Add(nextFree);
+                        nextFree++;
+                    }
+                }
+            }
+
+            // TOTEMS / TOTEM CATEGORIES -------------------------------------------------
+            if (row.Table.Columns.Contains("Totem1"))
+            {
+                SafeSet(row, "Totem1", 0);
+                SafeSet(row, "Totem2", 0);
+
+                if (def.Totems != null && def.Totems.Count > 0)
+                {
+                    if (def.Totems.Count >= 1)
+                        SafeSet(row, "Totem1", def.Totems[0]);
+                    if (def.Totems.Count >= 2)
+                        SafeSet(row, "Totem2", def.Totems[1]);
+                }
+            }
+
+            if (row.Table.Columns.Contains("TotemCategory1"))
+            {
+                SafeSet(row, "TotemCategory1", 0);
+                SafeSet(row, "TotemCategory2", 0);
+
+                if (def.TotemCategories != null && def.TotemCategories.Count > 0)
+                {
+                    if (def.TotemCategories.Count >= 1)
+                        SafeSet(row, "TotemCategory1", def.TotemCategories[0]);
+                    if (def.TotemCategories.Count >= 2)
+                        SafeSet(row, "TotemCategory2", def.TotemCategories[1]);
+                }
+            }
+
+
+            // EQUIPMENT REQUIREMENTS -----------------------------------------------------
+            if (def.EquippedItemClass.HasValue && row.Table.Columns.Contains("EquippedItemClass"))
+                SafeSet(row, "EquippedItemClass", def.EquippedItemClass.Value);
+
+            if (def.EquippedItemSubClassMask.HasValue && row.Table.Columns.Contains("EquippedItemSubClassMask"))
+                SafeSet(row, "EquippedItemSubClassMask", def.EquippedItemSubClassMask.Value);
+
+            if (def.EquippedItemInventoryTypeMask.HasValue && row.Table.Columns.Contains("EquippedItemInventoryTypeMask"))
+                SafeSet(row, "EquippedItemInventoryTypeMask", def.EquippedItemInventoryTypeMask.Value);
+
+
+            // SHAPESHIFT / STANCES ------------------------------------------------------
+            if (def.ShapeshiftMask.HasValue && row.Table.Columns.Contains("Stances"))
+                SafeSet(row, "Stances", def.ShapeshiftMask.Value);
+
+            if (def.ShapeshiftExcludeMask.HasValue && row.Table.Columns.Contains("StancesNot"))
+                SafeSet(row, "StancesNot", def.ShapeshiftExcludeMask.Value);
+
+            if (def.StanceBarOrder.HasValue && row.Table.Columns.Contains("StanceBarOrder"))
+                SafeSet(row, "StanceBarOrder", def.StanceBarOrder.Value);
+
+
+            // AREA GROUP / FOCUS --------------------------------------------------------
+            if (def.AreaGroupId.HasValue && row.Table.Columns.Contains("AreaGroupId"))
+                SafeSet(row, "AreaGroupId", def.AreaGroupId.Value);
+
+            if (def.SpellFocusObject.HasValue && row.Table.Columns.Contains("RequiresSpellFocus"))
+                SafeSet(row, "RequiresSpellFocus", def.SpellFocusObject.Value);
+
+            if (def.RequiresSpell.HasValue && row.Table.Columns.Contains("RequiresSpell"))
+                SafeSet(row, "RequiresSpell", def.RequiresSpell.Value);
+
+
+            // MISSILE / SPEED -----------------------------------------------------------
+            if (def.MissileId.HasValue && row.Table.Columns.Contains("SpellMissileID"))
+                SafeSet(row, "SpellMissileID", def.MissileId.Value);
+
+            if (def.Speed.HasValue && row.Table.Columns.Contains("Speed"))
+                SafeSet(row, "Speed", def.Speed.Value);
+
+
+            // FACING / DAMAGE CLASS / PREVENTION ---------------------------------------
+            if (def.FacingCasterFlags.HasValue && row.Table.Columns.Contains("FacingCasterFlags"))
+                SafeSet(row, "FacingCasterFlags", def.FacingCasterFlags.Value);
+
+            if (def.DamageClass.HasValue && row.Table.Columns.Contains("DmgClass"))
+                SafeSet(row, "DmgClass", def.DamageClass.Value);
+
+            if (def.PreventionType.HasValue && row.Table.Columns.Contains("PreventionType"))
+                SafeSet(row, "PreventionType", def.PreventionType.Value);
         }
 
         private static void SafeSet(DataRow row, string col, object value)
