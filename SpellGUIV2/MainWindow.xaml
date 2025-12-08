@@ -411,7 +411,7 @@
                     <Label Content="{DynamicResource labManaCost%}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="4"/>
                     <c2:ThreadSafeTextBox x:Name="ManaCostPercent" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyName}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="4"/>
-                    <c2:ThreadSafeTextBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="5"/>
+                    <c2:FilteredComboBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" LostFocus="FilteredComboBox_LostFocus" Grid.Row="6" Grid.Column="5" ToolTip="You can add entries by editing the SpellFamilies/Definitions.json file."/>
                     <Label Content="{DynamicResource labSpellFamilyFlags}" Margin="5,5,5,5" Grid.Row="7" Grid.Column="4"/>
                     <c2:ThreadSafeTextBox x:Name="SpellFamilyFlags" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="7" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellFamilyFlags1}" Margin="5,5,5,5" Grid.Row="8" Grid.Column="4"/>

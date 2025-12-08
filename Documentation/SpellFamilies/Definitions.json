@@ -1,0 +1,97 @@
+[
+  {
+    "Id": 0,
+    "Name": "Default",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 1,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 2,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 3,
+    "Name": "Mage",
+    "DefinitionFile": "FamilyMage"
+  },
+  {
+    "Id": 4,
+    "Name": "Warrior",
+    "DefinitionFile": "FamilyWarrior"
+  },
+  {
+    "Id": 5,
+    "Name": "Warlock",
+    "DefinitionFile": "FamilyWarlock"
+  },
+  {
+    "Id": 6,
+    "Name": "Priest",
+    "DefinitionFile": "FamilyPriest"
+  },
+  {
+    "Id": 7,
+    "Name": "Druid",
+    "DefinitionFile": "FamilyDruid"
+  },
+  {
+    "Id": 8,
+    "Name": "Rogue",
+    "DefinitionFile": "FamilyRogue"
+  },
+  {
+    "Id": 9,
+    "Name": "Hunter",
+    "DefinitionFile": "FamilyHunter"
+  },
+  {
+    "Id": 10,
+    "Name": "Paladin",
+    "DefinitionFile": "FamilyPaladin"
+  },
+  {
+    "Id": 11,
+    "Name": "Shaman",
+    "DefinitionFile": "FamilyShaman"
+  },
+  {
+    "Id": 12,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 13,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 14,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 15,
+    "Name": "Death Knight",
+    "DefinitionFile": "FamilyDeathKnight"
+  },
+  {
+    "Id": 16,
+    "Name": "",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 17,
+    "Name": "Pet",
+    "DefinitionFile": ""
+  },
+  {
+    "Id": 18,
+    "Name": "",
+    "DefinitionFile": ""
+  }
+]

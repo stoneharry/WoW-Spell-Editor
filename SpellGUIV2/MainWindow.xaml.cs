@@ -30,6 +30,7 @@ using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Controls.SpellFamilyNames;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
@@ -178,6 +179,8 @@ namespace SpellEditor
             // Config must be initialised fast
             Config.Init();
             InitializeComponent();
+
+            SpellFamilyNames.Init();
 
             VerifyStaticData();
 
@@ -462,14 +465,6 @@ namespace SpellEditor
             Mechanic1.Items.Clear();
             Mechanic2.Items.Clear();
             Mechanic3.Items.Clear();
-            // TODO DBC instead
-            // string[] mechanic_names = SafeTryFindResource("mechanic_names").Split('|');
-            // foreach (string mechanicName in mechanic_names)
-            // {
-            //     Mechanic1.Items.Add(mechanicName);
-            //     Mechanic2.Items.Add(mechanicName);
-            //     Mechanic3.Items.Add(mechanicName);
-            // }
 
             if (TargetA1.Items.Count == 0)
             {
@@ -554,7 +549,12 @@ namespace SpellEditor
                 S7.Content = "Unused";
             }
             S7.IsEnabled = WoWVersionManager.IsTbcOrGreaterSelected;
+
+            SpellFamilyName.Items.Clear();
+            SpellFamilyName.ItemsSource = SpellFamilyNames.familyNamesitemSource;
+            SpellFamilyName.SelectedIndex = 0;
         }
+
         #endregion
 
         #region Loaded
@@ -1845,16 +1845,20 @@ namespace SpellEditor
                     row["StartRecoveryCategory"] = uint.Parse(StartRecoveryCategory.Text);
                     row["StartRecoveryTime"] = uint.Parse(StartRecoveryTime.Text);
                     row["MaximumTargetLevel"] = uint.Parse(MaxTargetsLevel.Text);
+
                     // Before WOTLK there are only two flags, we misnamed them in WOTLK as the last flag handles A3/B3/C3 of the affecting spells
+                    // row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
+                    // row["SpellFamilyName"] = (uint)GetNumberPrefixFromText(SpellFamilyName.Text);
+                    row["SpellFamilyName"] = SpellFamilyName.GetNumberPrefixFromText();
+                    // or
+                    // row["SpellFamilyName"] = (uint)((ComboBoxItem)SpellFamilyName.SelectedItem).Tag;
                     if (!isWotlkOrGreater)
                     {
-                        row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
                         row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags.Text);
                         row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags1.Text);
                     }
                     else
                     {
-                        row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
                         row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
                         row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
                         row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
@@ -3497,10 +3501,11 @@ namespace SpellEditor
                 }
                 // MiscValueB1.IsEnabled = isTbcOrGreater;
 
+                uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+                AddFamilyIfNotExists(familyName);
+                SpellFamilyName.SetTextFromIndex(familyName);
                 if (!isWotlkOrGreater)
                 {
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
@@ -3519,8 +3524,6 @@ namespace SpellEditor
                     SpellMask23.ThreadSafeText = row["EffectSpellClassMaskC2"].ToString();
                     SpellMask33.ThreadSafeText = row["EffectSpellClassMaskC3"].ToString();
 
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
@@ -4741,6 +4744,32 @@ namespace SpellEditor
         }
         #endregion
 
+        private void AddFamilyIfNotExists(uint familyId)
+        {
+            // add a family name to the combobox and data if it's missing
+
+            bool exists = SpellFamilyNames.familyNames.ContainsKey((int)familyId);
+
+            bool empty = true;
+            if (exists)
+                empty = string.IsNullOrEmpty(SpellFamilyNames.familyNames[(int)familyId]);
+
+            if (exists && !empty)
+                return;
+
+            if (!exists)
+                SpellFamilyNames.familyNames.Add((int)familyId, "Unknown");
+            else
+                SpellFamilyNames.familyNames[(int)familyId] = "Unknown";
+
+            // refresh item source
+            SpellFamilyNames.GenerateItemSource();
+            SpellFamilyName.ItemsSource = null;
+            SpellFamilyName.ItemsSource = SpellFamilyNames.familyNamesitemSource;
+
+
+        }
+
         private void UpdateSpellMaskCheckBox(uint mask, ThreadSafeComboBox comBox)
         {
             for (int i = 0; i < 32; i++)
@@ -5508,7 +5537,7 @@ namespace SpellEditor
             };
 
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, uint.Parse(SpellFamilyName.Text), GetDBAdapter(), masks)));
+                spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, SpellFamilyName.GetNumberPrefixFromText(), GetDBAdapter(), masks)));
         }
 
         /*
