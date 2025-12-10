@@ -42,7 +42,8 @@ using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor
 {
-    partial class MainWindow
+    public partial class MainWindow : MetroWindow
+
     {
         #region Boxes
         private readonly Dictionary<int, ThreadSafeTextBox> stringObjectMap = new Dictionary<int, ThreadSafeTextBox>();
