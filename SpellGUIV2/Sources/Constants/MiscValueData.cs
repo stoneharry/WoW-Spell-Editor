@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
-using SpellEditor.Sources.DBC;
 using System.Windows.Forms;
+using SpellEditor.Sources.DBC;
 
 namespace SpellEditor.Sources.Constants
 {
@@ -710,6 +711,46 @@ namespace SpellEditor.Sources.Constants
             { MiscValueType.JumpChargeParams, new MiscValueTypeData(ControlType.TextBox, RessourceType.None) },
 
         };
+
+        public static void VerifyData()
+        {
+            // Enforces implementing all known effects
+            foreach (spellEffectTypes effect in Enum.GetValues(typeof(spellEffectTypes)))
+            {
+                if (effect != spellEffectTypes.NONE)
+                    Debug.Assert(MiscValueConstants.spellEffectsData.ContainsKey(effect), $"Spell Effect {effect} doesn't have data in spellEffectsData");
+            }
+
+            // foreach (var aura in MiscValueConstants.auraMiscValues)
+            // {
+            // 
+            // }
+
+            foreach (MiscValueType miscvalue in Enum.GetValues(typeof(MiscValueType)))
+            {
+                if (miscvalue != MiscValueType.None && miscvalue != MiscValueType.UNKNOWN)
+                    Debug.Assert(MiscValueConstants.MiscValueTypesData.ContainsKey(miscvalue), $"Misc value {miscvalue} doesn't have data in MiscValueTypesData");
+
+            }
+
+            foreach (var miscvaluedata in MiscValueConstants.MiscValueTypesData)
+            {
+                if (miscvaluedata.Value.RessourceType == RessourceType.None && miscvaluedata.Value.ControlType != ControlType.TextBox)
+                    throw new Exception("found ressource type none in a non textbox control");
+
+                // verify data mapping definitions exists
+                if (miscvaluedata.Value.RessourceType == RessourceType.StringList)
+                {
+                    Debug.Assert(MiscValueConstants.miscValueMappedStringsRessource.ContainsKey(miscvaluedata.Key),
+                        $"Misc value {miscvaluedata.Key.ToString()} doesn't have data in miscValueMappedStringsRessource");
+                }
+                else if (miscvaluedata.Value.RessourceType == RessourceType.DBC)
+                {
+                    Debug.Assert(MiscValueConstants.miscValueMappedDbcRessource.ContainsKey(miscvaluedata.Key),
+                        $"Misc value {miscvaluedata.Key.ToString()} doesn't have data in miscValueMappedDbcRessource");
+                }
+            }
+        }
 
     };
 
