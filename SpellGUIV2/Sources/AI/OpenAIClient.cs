@@ -35,13 +35,14 @@ namespace SpellEditor.Sources.AI
             string userPrompt,
             string currentSpellName,
             uint currentSpellId,
+            bool isModifySpell,
             List<AiSimilarSpellSummary> similarSpells = null)
         {
             Logger.Info("Sending OpenAI request for spell generation...");
 
-            var systemPrompt = LoadSystemPromptFromFileOrDefault();
+            var systemPrompt = LoadSystemPromptFromFileOrDefault(isModifySpell);
             if (systemPrompt == null)
-                throw new Exception("No AI-Prompt.txt file found.");
+                throw new Exception("Misisng AI folder prompt file");
 
             StringBuilder input = new StringBuilder();
 
@@ -123,12 +124,13 @@ namespace SpellEditor.Sources.AI
             };
         }
 
-        private string LoadSystemPromptFromFileOrDefault()
+        private string LoadSystemPromptFromFileOrDefault(bool isModifySpell)
         {
+            string promptPath = "";
             try
             {
                 string exeDir = AppDomain.CurrentDomain.BaseDirectory;
-                string promptPath = Path.Combine(exeDir, "AI-Prompt.txt");
+                promptPath = Path.Combine(exeDir, "AI", $"AI-Prompt{(isModifySpell ? "-Mod" : "-Gen")}.txt");
 
                 if (File.Exists(promptPath))
                 {
@@ -138,7 +140,7 @@ namespace SpellEditor.Sources.AI
             }
             catch (Exception ex)
             {
-                Logger.Warn(ex, "Failed to load AI-Prompt.txt.");
+                Logger.Warn(ex, "Failed to load: " + promptPath);
             }
             return null;
         }

@@ -9,9 +9,15 @@ namespace SpellEditor.Sources.AI
     public class AiSpellDefinition
     {
         // BASIC INFO --------------------------------------------------------
-
         public string Name { get; set; }
         public string Description { get; set; }
+
+        /// <summary>
+        /// Optional short tooltip line (maps to SpellTooltip0).
+        /// If omitted, the client will fall back to the description,
+        /// just like many stock spells do.
+        /// </summary>
+        public string Tooltip { get; set; }
 
         /// <summary> Fire, Frost, Arcane, Nature, Shadow, Holy, Physical </summary>
         public string School { get; set; }
@@ -60,6 +66,24 @@ namespace SpellEditor.Sources.AI
         public int? RuneCostUnholy { get; set; }
 
 
+        // LEVELS / SCALING --------------------------------------------------
+
+        /// <summary>BaseLevel column – minimum caster level for full effect.</summary>
+        public int? BaseLevel { get; set; }
+
+        /// <summary>MaxLevel column – maximum caster level for full effect.</summary>
+        public int? MaxLevel { get; set; }
+
+        /// <summary>SpellLevel column – "recommended" or design level.</summary>
+        public int? SpellLevel { get; set; }
+
+        /// <summary>SpellDifficultyId – used to link difficulty/variant rows.</summary>
+        public int? SpellDifficultyId { get; set; }
+
+        /// <summary>Maximum stack count for auras (StackAmount column).</summary>
+        public int? MaxStacks { get; set; }
+
+
         // FAMILY / VISUALS -------------------------------------------------
 
         public string ClassFamily { get; set; }          // e.g. Mage, Warrior
@@ -77,7 +101,7 @@ namespace SpellEditor.Sources.AI
 
         // PROC / TRIGGERING -------------------------------------------------
 
-        /// <summary>Raw ProcFlags bitmask. If set, written directly to ProcFlags.</summary>
+        /// <summary>Raw ProcFlags bitmask. Maps to ProcFlags column.</summary>
         public uint? ProcFlags { get; set; }
 
         /// <summary>Proc chance in percent (0–100). Maps to ProcChance.</summary>
@@ -86,8 +110,14 @@ namespace SpellEditor.Sources.AI
         /// <summary>Maximum number of procs before the aura is removed.</summary>
         public int? ProcCharges { get; set; }
 
-        /// <summary>Internal proc cooldown in seconds (ProcCooldown, ms in DBC).</summary>
+        /// <summary>Internal proc cooldown in seconds (ProcCooldown ms in DBC).</summary>
         public float? ProcCooldownSeconds { get; set; }
+
+        /// <summary>
+        /// If set, the spell row replaces another spell (ReplacesSpellId column,
+        /// if present in the user's DBC schema).
+        /// </summary>
+        public int? ReplacesSpellId { get; set; }
 
 
         // INTERRUPT / PUSHBACK ---------------------------------------------
@@ -107,13 +137,10 @@ namespace SpellEditor.Sources.AI
         /// <summary>Spell's category (Category column).</summary>
         public int? CategoryId { get; set; }
 
-        /// <summary>CategoryRecoveryTime (seconds, mapped to ms).</summary>
-        public float? CategoryCooldownSeconds { get; set; }
-
-        /// <summary>StartRecoveryCategory (e.g. shared recovery groups).</summary>
+        /// <summary>Shared cooldown category (StartRecoveryCategory column).</summary>
         public int? StartRecoveryCategory { get; set; }
 
-        /// <summary>StartRecoveryTime in seconds (mapped to ms).</summary>
+        /// <summary>Shared cooldown duration in seconds (StartRecoveryTime column).</summary>
         public float? StartRecoveryTimeSeconds { get; set; }
 
 
@@ -163,20 +190,51 @@ namespace SpellEditor.Sources.AI
         /// <summary>Missile travel speed (Speed column).</summary>
         public float? Speed { get; set; }
 
-        /// <summary>SpellFocusObject (e.g. blacksmith anvil).</summary>
+        /// <summary>SpellFocusObject (RequiresSpellFocus column).</summary>
         public int? SpellFocusObject { get; set; }
-
-        /// <summary>Required spell ID to cast (RequiresSpellFocus / prerequisite spells etc.).</summary>
-        public int? RequiresSpell { get; set; }
 
         /// <summary>FacingCasterFlags bitmask.</summary>
         public uint? FacingCasterFlags { get; set; }
 
-        /// <summary>DamageClass (e.g. Melee, Ranged, Magic).</summary>
+        /// <summary>DamageClass (DmgClass column – melee, ranged, magic).</summary>
         public int? DamageClass { get; set; }
 
-        /// <summary>PreventionType (e.g. silence, pacify, etc.).</summary>
+        /// <summary>PreventionType (PreventionType column).</summary>
         public int? PreventionType { get; set; }
+
+
+        // AURA / STATE REQUIREMENTS ----------------------------------------
+
+        /// <summary>Required caster aura (CasterAuraSpell column).</summary>
+        public int? RequiredCasterAuraId { get; set; }
+
+        /// <summary>Required target aura.</summary>
+        public int? RequiredTargetAuraId { get; set; }
+
+        /// <summary>Caster aura that must NOT be present.</summary>
+        public int? ExcludedCasterAuraId { get; set; }
+
+        /// <summary>Target aura that must NOT be present.</summary>
+        public int? ExcludedTargetAuraId { get; set; }
+
+        /// <summary>Required caster aura state (CasterAuraState).</summary>
+        public int? RequiredCasterAuraState { get; set; }
+
+        /// <summary>Required target aura state.</summary>
+        public int? RequiredTargetAuraState { get; set; }
+
+        /// <summary>Forbidden caster aura state (CasterAuraStateNot).</summary>
+        public int? ForbiddenCasterAuraState { get; set; }
+
+        /// <summary>Forbidden target aura state (TargetAuraStateNot).</summary>
+        public int? ForbiddenTargetAuraState { get; set; }
+
+        /// <summary>Required aura vision (RequiredAuraVision).</summary>
+        public int? RequiredAuraVision { get; set; }
+
+        /// <summary>Minimum faction/reputation requirements (MinFactionId / MinReputation).</summary>
+        public int? MinFactionId { get; set; }
+        public int? MinReputation { get; set; }
 
 
         // EFFECTS -----------------------------------------------------------
@@ -209,10 +267,10 @@ namespace SpellEditor.Sources.AI
         public int? MiscValueB { get; set; }           // Maps to EffectMiscValueBN when set
 
         public int? TriggerSpellId { get; set; }       // EffectTriggerSpellN
-        public int? CreatureId { get; set; }           // Summon creature / kill credit, etc.
+        public int? CreatureId { get; set; }           // Summon creature / kill credit, etc. (goes via MiscValue when appropriate)
 
         public int? ChainTargets { get; set; }         // EffectChainTargetN
-        public float? WeaponDamagePercent { get; set; } // Convenience helper → EffectDamageMultiplierN
+        public float? WeaponDamagePercent { get; set; } // Optional helper; you can map into multipliers if desired
         public float? ValueMultiplier { get; set; }    // EffectMultipleValueN
         public float? DamageMultiplier { get; set; }   // EffectDamageMultiplierN
     }

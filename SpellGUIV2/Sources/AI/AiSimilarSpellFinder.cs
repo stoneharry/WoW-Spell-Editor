@@ -33,12 +33,11 @@ namespace SpellEditor.Sources.AI
             if (tokens.Count == 0)
                 return new List<AiSimilarSpellSummary>();
 
-            var result = new List<AiSimilarSpellSummary>();
-
             try
             {
                 using (var adapter = AdapterFactory.Instance.GetAdapter(false))
                 {
+                    Logger.Info("Retrieving minimal spell data...");
                     var all = adapter.Query(@"
                         SELECT
                             `ID`,
@@ -55,104 +54,36 @@ namespace SpellEditor.Sources.AI
                         FROM `spell`
                     ");
 
-                    var scored = new List<Tuple<double, DataRow>>();
-
-                    foreach (DataRow row in all.Rows)
-                    {
-                        double score = ComputePromptSimilarity(tokens, row);
-                        if (score > 0)
-                            scored.Add(Tuple.Create(score, row));
-                    }
-
-                    foreach (var tuple in scored
-                        .OrderByDescending(t => t.Item1)
-                        .Take(maxExamples))
-                    {
-                        var summary = BuildSemanticSummary(tuple.Item2);
-                        if (summary != null)
-                            result.Add(summary);
-                    }
+                    Logger.Info("Parsing and returning spell data...");
+                    return all.Rows
+                       .Cast<DataRow>()
+                       .AsParallel()
+                       .Select(row => new
+                       {
+                           Row = row,
+                           Score = ComputePromptSimilarity(tokens, row)
+                       })
+                       .Where(x => x.Score > 0)
+                       .OrderByDescending(x => x.Score)
+                       .Take(maxExamples)
+                       .Select(tuple =>
+                       {
+                           return BuildSemanticSummary(tuple.Row);
+                       })
+                       .Where(sum => sum != null)
+                       .ToList();
                 }
-
             }
             catch (Exception ex)
             {
                 Logger.Warn(ex, "AiSimilarSpellFinder.FindSimilarSpells failed");
             }
-
-            return result;
+            return new List<AiSimilarSpellSummary>();
         }
 
-        public static List<AiSimilarSpellSummary> FindSimilarSpellsFromPrompt(
-            string prompt,
-            int maxExamples = 3)
-        {
-            if (string.IsNullOrWhiteSpace(prompt))
-                return new List<AiSimilarSpellSummary>();
-
-            // Extract semantic keywords from the prompt.
-            var tokens = ExtractPromptKeywords(prompt);
-            if (tokens.Count == 0)
-                return new List<AiSimilarSpellSummary>();
-
-            var result = new List<AiSimilarSpellSummary>();
-
-            try
-            {
-                using (var adapter = AdapterFactory.Instance.GetAdapter(false))
-                {
-                    var all = adapter.Query("SELECT * FROM `spell`");
-
-                    var scored = new List<Tuple<double, DataRow>>();
-
-                    foreach (DataRow row in all.Rows)
-                    {
-                        double score = ComputePromptSimilarity(tokens, row);
-                        if (score > 0)
-                            scored.Add(Tuple.Create(score, row));
-                    }
-
-                    foreach (var tuple in scored
-                        .OrderByDescending(t => t.Item1)
-                        .Take(maxExamples))
-                    {
-                        var summary = BuildSemanticSummary(tuple.Item2);
-                        if (summary != null)
-                            result.Add(summary);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn(ex, "FindSimilarSpellsFromPrompt failed");
-            }
-
-            return result;
-        }
-
-        private static HashSet<string> ExtractPromptKeywords(string prompt)
-        {
-            var t = prompt.ToLowerInvariant();
-
-            var set = new HashSet<string>();
-
-            string[] possible = {
-        "fire","frost","arcane","shadow","nature","holy","physical",
-        "dot","hot","heal","damage","periodic","aoe","area","radius",
-        "cone","chain","projectile","melee","instant","cast","channel",
-        "stun","root","slow","silence","fear","charm","interrupt",
-        "poison","disease","curse","magic",
-        "mage","priest","shaman","warrior","druid","paladin","rogue","hunter","warlock","deathknight"
-    };
-
-            foreach (var word in possible)
-            {
-                if (t.Contains(word))
-                    set.Add(word);
-            }
-
-            return set;
-        }
+        private static HashSet<string> ExtractPromptKeywords(string prompt) => 
+            new HashSet<string>(prompt.ToLowerInvariant().Split(' '));
+        
 
         private static double ComputePromptSimilarity(HashSet<string> tokens, DataRow row)
         {
@@ -344,8 +275,7 @@ namespace SpellEditor.Sources.AI
                     int basePoints = 0;
                     if (row.Table.Columns.Contains("EffectBasePoints" + i))
                     {
-                        int bp;
-                        if (int.TryParse(row["EffectBasePoints" + i].ToString(), out bp))
+                        if (int.TryParse(row["EffectBasePoints" + i].ToString(), out int bp))
                             basePoints = bp + 1; // DBC stores BasePoints, real is +1
                     }
 

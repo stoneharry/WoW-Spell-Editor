@@ -780,8 +780,14 @@ namespace SpellEditor
 
         public uint CreateNewSpellFromAi(AiSpellDefinition def)
         {
+            // Get new ID
             var newId = _AIController.CreateNewSpellFromAi(def);
-            // TODO
+            // Copy selected to new ID
+            SelectSpell.AddNewSpell(selectedID, newId);
+            // Select new ID just in case
+            selectedID = newId;
+            // Apply AI mod to the new one
+            ModifyExistingSpellFromAi(def);
             return newId;
         }
 

@@ -25,6 +25,8 @@ namespace SpellEditor
 
         private bool IsAskQuestionMode => RadioAskQuestion.IsChecked == null ? false : RadioAskQuestion.IsChecked.Value;
         private bool IsBalanceMode => RadioBalanceSpell.IsChecked == null ?  false : RadioBalanceSpell.IsChecked.Value;
+        private bool IsModifySpell => RadioModifyExisting.IsChecked == null ? false : RadioModifyExisting.IsChecked.Value;
+        private bool IsNewSpell => RadioCreateNew.IsChecked == null ? false : RadioCreateNew.IsChecked.Value;
 
 
         public OpenAIWindow(MainWindow mainWindow)
@@ -55,6 +57,9 @@ namespace SpellEditor
                 _client = new OpenAIClient(apiKey);
                 UpdateMode();
                 StatusTextBlock.Text = "Ready. Describe the spell you want.";
+
+                // TODO: Implement balance spell functionality
+                RadioBalanceSpell.IsEnabled = false;
             }
             catch (Exception ex)
             {
@@ -130,6 +135,7 @@ namespace SpellEditor
                     }
                     QuestionAnswerBox.Document.Blocks.Add(p);
                     ApplyButton.IsEnabled = false;
+                    // END
                     return;
                 }
 
@@ -141,7 +147,7 @@ namespace SpellEditor
                 }
 
                 StatusTextBlock.Text = "Running AI algorithm...";
-                var result = await _client.GenerateSpellAsync(prompt, currentName, currentId, similar);
+                var result = await _client.GenerateSpellAsync(prompt, currentName, currentId, IsModifySpell, similar);
                 _lastResult = result;
 
                 DisplayJson(result.RawContent ?? string.Empty);
@@ -276,8 +282,10 @@ namespace SpellEditor
             JsonOutputBox.Document.Blocks.Clear();
 
             // Create a single paragraph
-            Paragraph paragraph = new Paragraph();
-            paragraph.Margin = new Thickness(0);
+            Paragraph paragraph = new Paragraph
+            {
+                Margin = new Thickness(0)
+            };
 
             // Regex-based tokenizer (strings, numbers, braces, colons, commas)
             var tokens = Regex.Matches(

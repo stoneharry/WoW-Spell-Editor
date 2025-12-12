@@ -111,6 +111,8 @@ namespace SpellEditor.Sources.AI
 
         // BASIC INFO --------------------------------------------------------
 
+        // BASIC INFO --------------------------------------------------------
+
         private static void ApplyBasicInfo(AiSpellDefinition def, DataRow row)
         {
             if (!string.IsNullOrWhiteSpace(def.Name) && row.Table.Columns.Contains("SpellName0"))
@@ -122,13 +124,38 @@ namespace SpellEditor.Sources.AI
             if (!string.IsNullOrWhiteSpace(def.ClassFamily) && row.Table.Columns.Contains("SpellFamilyName"))
                 row["SpellFamilyName"] = MapClassFamily(def.ClassFamily);
 
-            // TODO: Implement SpellRank0 and SpellTooltip0
+            // RANK (SpellRank0)
+            //
+            // WotLK Spell.dbc stores rank as a localized string array. The first column
+            // in your binding is SpellRank0, so we format your numeric Rank into the
+            // classic "Rank X" string.
+            //
+            // If you ever want full manual control, you can extend AiSpellDefinition
+            // with a string RankText and prefer that here. For now we keep it simple.
             if (def.Rank.HasValue && row.Table.Columns.Contains("SpellRank0"))
             {
-                // Optional rank mapping
+                int rank = def.Rank.Value;
+                if (rank > 0)
+                {
+                    row["SpellRank0"] = $"Rank {rank}";
+                }
+                else
+                {
+                    // Non-positive or zero rank → clear / leave empty
+                    row["SpellRank0"] = string.Empty;
+                }
+            }
+
+            // TOOLTIP (SpellTooltip0)
+            //
+            // This is the short tooltip line shown in the client. Many vanilla/WotLK
+            // spells just reuse the description, but exposing it separately gives the
+            // AI full spell.dbc coverage.
+            if (!string.IsNullOrWhiteSpace(def.Tooltip) && row.Table.Columns.Contains("SpellTooltip0"))
+            {
+                row["SpellTooltip0"] = def.Tooltip;
             }
         }
-
 
         private static uint MapClassFamily(string family)
         {
@@ -549,11 +576,29 @@ namespace SpellEditor.Sources.AI
         private static void ApplyEffects(AiSpellDefinition def, DataRow row)
         {
             // ------------------------------------------------------------
+            // 0) If the AI definition does not specify ANY effect-related
+            //    info, do NOT touch the existing spell effects.
+            //    This makes "patch" style updates safe (e.g. only changing
+            //    stacks or duration).
+            // ------------------------------------------------------------
+            bool hasExplicitEffects = def.Effects != null && def.Effects.Count > 0;
+            bool hasFallbackEffects =
+                def.DirectDamage.HasValue ||
+                def.PeriodicDamage.HasValue;
+
+            if (!hasExplicitEffects && !hasFallbackEffects)
+            {
+                // No semantic effect info in this definition – leave the
+                // existing Effect1/2/3 columns exactly as they are.
+                return;
+            }
+
+            // ------------------------------------------------------------
             // 1) Build working effect list from definition or fallbacks
             // ------------------------------------------------------------
             var effects = new List<AiEffectDefinition>();
 
-            if (def.Effects != null && def.Effects.Count > 0)
+            if (hasExplicitEffects)
             {
                 effects.AddRange(def.Effects);
             }
@@ -2783,16 +2828,33 @@ namespace SpellEditor.Sources.AI
         // ADVANCED SIMPLE FIELDS (PROC / INTERRUPT / CATEGORY / REAGENTS / ETC.) -------------
 
         /// <summary>
-        /// Writes all the "simple" remaining spell.dbc columns that we expose directly
-        /// on AiSpellDefinition. This never guesses values – it only writes if the AI
-        /// actually set a property, so existing behaviour is unchanged.
+        /// Writes remaining simple scalar spell.dbc columns that we expose directly on
+        /// AiSpellDefinition. This never "guesses" values – it only writes when the AI
+        /// actually populated a property, so existing behaviour is unchanged.
         /// </summary>
         private static void ApplyAdvancedSimpleFields(AiSpellDefinition def, DataRow row)
         {
             if (def == null || row == null)
                 return;
 
-            // PROC -----------------------------------------------------------------------
+            // LEVEL / SCALING ---------------------------------------------------------
+            if (def.BaseLevel.HasValue && row.Table.Columns.Contains("BaseLevel"))
+                SafeSet(row, "BaseLevel", def.BaseLevel.Value);
+
+            if (def.MaxLevel.HasValue && row.Table.Columns.Contains("MaxLevel"))
+                SafeSet(row, "MaxLevel", def.MaxLevel.Value);
+
+            if (def.SpellLevel.HasValue && row.Table.Columns.Contains("SpellLevel"))
+                SafeSet(row, "SpellLevel", def.SpellLevel.Value);
+
+            if (def.SpellDifficultyId.HasValue && row.Table.Columns.Contains("SpellDifficultyId"))
+                SafeSet(row, "SpellDifficultyId", def.SpellDifficultyId.Value);
+
+            if (def.MaxStacks.HasValue && row.Table.Columns.Contains("StackAmount"))
+                SafeSet(row, "StackAmount", def.MaxStacks.Value);
+
+
+            // PROC -------------------------------------------------------------------
             if (def.ProcFlags.HasValue && row.Table.Columns.Contains("ProcFlags"))
                 SafeSet(row, "ProcFlags", def.ProcFlags.Value);
 
@@ -2805,8 +2867,11 @@ namespace SpellEditor.Sources.AI
             if (def.ProcCooldownSeconds.HasValue && row.Table.Columns.Contains("ProcCooldown"))
                 SafeSet(row, "ProcCooldown", (int)(def.ProcCooldownSeconds.Value * 1000f));
 
+            if (def.ReplacesSpellId.HasValue && row.Table.Columns.Contains("ReplacesSpellId"))
+                SafeSet(row, "ReplacesSpellId", def.ReplacesSpellId.Value);
 
-            // INTERRUPT FLAGS ------------------------------------------------------------
+
+            // INTERRUPT FLAGS ---------------------------------------------------------
             if (def.InterruptFlags.HasValue && row.Table.Columns.Contains("InterruptFlags"))
                 SafeSet(row, "InterruptFlags", def.InterruptFlags.Value);
 
@@ -2817,12 +2882,9 @@ namespace SpellEditor.Sources.AI
                 SafeSet(row, "ChannelInterruptFlags", def.ChannelInterruptFlags.Value);
 
 
-            // CATEGORY / RECOVERY --------------------------------------------------------
+            // CATEGORY / SHARED RECOVERY ---------------------------------------------
             if (def.CategoryId.HasValue && row.Table.Columns.Contains("Category"))
                 SafeSet(row, "Category", def.CategoryId.Value);
-
-            if (def.CategoryCooldownSeconds.HasValue && row.Table.Columns.Contains("CategoryRecoveryTime"))
-                SafeSet(row, "CategoryRecoveryTime", (int)(def.CategoryCooldownSeconds.Value * 1000f));
 
             if (def.StartRecoveryCategory.HasValue && row.Table.Columns.Contains("StartRecoveryCategory"))
                 SafeSet(row, "StartRecoveryCategory", def.StartRecoveryCategory.Value);
@@ -2831,88 +2893,77 @@ namespace SpellEditor.Sources.AI
                 SafeSet(row, "StartRecoveryTime", (int)(def.StartRecoveryTimeSeconds.Value * 1000f));
 
 
-            // REAGENTS ------------------------------------------------------------------
-            if (row.Table.Columns.Contains("Reagent1"))
+            // REAGENTS ----------------------------------------------------------------
+            if (def.Reagents != null && def.Reagents.Count > 0 && row.Table.Columns.Contains("Reagent1"))
             {
-                // Clear existing reagents/counts to avoid stale data when AI sets fewer.
-                for (int slot = 1; slot <= 8; ++slot)
+                // Only touch the slots we actually use, to avoid wiping existing data
+                // if the AI leaves Reagents empty.
+                foreach (var r in def.Reagents)
                 {
-                    SafeSet(row, $"Reagent{slot}", 0);
-                    SafeSet(row, $"ReagentCount{slot}", 0);
-                }
+                    int slotIndex = r.Slot ?? -1;
 
-                if (def.Reagents != null && def.Reagents.Count > 0)
-                {
-                    // First, place any reagents with explicit Slot.
-                    var usedSlots = new HashSet<int>();
-                    foreach (var r in def.Reagents)
+                    if (slotIndex < 0 || slotIndex > 7)
                     {
-                        if (!r.Slot.HasValue)
-                            continue;
+                        // Find first "empty" slot (ReagentX == 0) from 0..7
+                        for (int s = 0; s < 8; ++s)
+                        {
+                            string colItem = $"Reagent{s + 1}";
+                            string colCount = $"ReagentCount{s + 1}";
+                            if (!row.Table.Columns.Contains(colItem) || !row.Table.Columns.Contains(colCount))
+                                continue;
 
-                        int s = r.Slot.Value;
-                        if (s < 0 || s > 7)
-                            continue;
+                            int current = 0;
+                            try
+                            {
+                                object curVal = row[colItem];
+                                if (curVal != null && curVal != System.DBNull.Value)
+                                    current = System.Convert.ToInt32(curVal);
+                            }
+                            catch
+                            {
+                                current = 0;
+                            }
 
-                        int dbcIndex = s + 1;
-                        SafeSet(row, $"Reagent{dbcIndex}", r.ItemId);
-                        SafeSet(row, $"ReagentCount{dbcIndex}", r.Count);
-                        usedSlots.Add(s);
+                            if (current == 0)
+                            {
+                                slotIndex = s;
+                                break;
+                            }
+                        }
                     }
 
-                    // Then fill remaining from the front.
-                    int nextFree = 0;
-                    foreach (var r in def.Reagents)
-                    {
-                        if (r.Slot.HasValue)
-                            continue;
+                    if (slotIndex < 0 || slotIndex > 7)
+                        continue;
 
-                        while (nextFree < 8 && usedSlots.Contains(nextFree))
-                            nextFree++;
-
-                        if (nextFree >= 8)
-                            break;
-
-                        int dbcIndex = nextFree + 1;
-                        SafeSet(row, $"Reagent{dbcIndex}", r.ItemId);
-                        SafeSet(row, $"ReagentCount{dbcIndex}", r.Count);
-                        usedSlots.Add(nextFree);
-                        nextFree++;
-                    }
+                    string itemCol = $"Reagent{slotIndex + 1}";
+                    string countCol = $"ReagentCount{slotIndex + 1}";
+                    if (row.Table.Columns.Contains(itemCol))
+                        SafeSet(row, itemCol, r.ItemId);
+                    if (row.Table.Columns.Contains(countCol))
+                        SafeSet(row, countCol, r.Count);
                 }
             }
 
-            // TOTEMS / TOTEM CATEGORIES -------------------------------------------------
-            if (row.Table.Columns.Contains("Totem1"))
+
+            // TOTEMS / TOTEM CATEGORIES -----------------------------------------------
+            if (def.Totems != null && def.Totems.Count > 0 && row.Table.Columns.Contains("Totem1"))
             {
-                SafeSet(row, "Totem1", 0);
-                SafeSet(row, "Totem2", 0);
-
-                if (def.Totems != null && def.Totems.Count > 0)
-                {
-                    if (def.Totems.Count >= 1)
-                        SafeSet(row, "Totem1", def.Totems[0]);
-                    if (def.Totems.Count >= 2)
-                        SafeSet(row, "Totem2", def.Totems[1]);
-                }
+                if (def.Totems.Count >= 1)
+                    SafeSet(row, "Totem1", def.Totems[0]);
+                if (def.Totems.Count >= 2 && row.Table.Columns.Contains("Totem2"))
+                    SafeSet(row, "Totem2", def.Totems[1]);
             }
 
-            if (row.Table.Columns.Contains("TotemCategory1"))
+            if (def.TotemCategories != null && def.TotemCategories.Count > 0 && row.Table.Columns.Contains("TotemCategory1"))
             {
-                SafeSet(row, "TotemCategory1", 0);
-                SafeSet(row, "TotemCategory2", 0);
-
-                if (def.TotemCategories != null && def.TotemCategories.Count > 0)
-                {
-                    if (def.TotemCategories.Count >= 1)
-                        SafeSet(row, "TotemCategory1", def.TotemCategories[0]);
-                    if (def.TotemCategories.Count >= 2)
-                        SafeSet(row, "TotemCategory2", def.TotemCategories[1]);
-                }
+                if (def.TotemCategories.Count >= 1)
+                    SafeSet(row, "TotemCategory1", def.TotemCategories[0]);
+                if (def.TotemCategories.Count >= 2 && row.Table.Columns.Contains("TotemCategory2"))
+                    SafeSet(row, "TotemCategory2", def.TotemCategories[1]);
             }
 
 
-            // EQUIPMENT REQUIREMENTS -----------------------------------------------------
+            // EQUIPMENT REQUIREMENTS ---------------------------------------------------
             if (def.EquippedItemClass.HasValue && row.Table.Columns.Contains("EquippedItemClass"))
                 SafeSet(row, "EquippedItemClass", def.EquippedItemClass.Value);
 
@@ -2923,7 +2974,7 @@ namespace SpellEditor.Sources.AI
                 SafeSet(row, "EquippedItemInventoryTypeMask", def.EquippedItemInventoryTypeMask.Value);
 
 
-            // SHAPESHIFT / STANCES ------------------------------------------------------
+            // SHAPESHIFT / STANCES ----------------------------------------------------
             if (def.ShapeshiftMask.HasValue && row.Table.Columns.Contains("Stances"))
                 SafeSet(row, "Stances", def.ShapeshiftMask.Value);
 
@@ -2934,18 +2985,15 @@ namespace SpellEditor.Sources.AI
                 SafeSet(row, "StanceBarOrder", def.StanceBarOrder.Value);
 
 
-            // AREA GROUP / FOCUS --------------------------------------------------------
+            // AREA GROUP / FOCUS ------------------------------------------------------
             if (def.AreaGroupId.HasValue && row.Table.Columns.Contains("AreaGroupId"))
                 SafeSet(row, "AreaGroupId", def.AreaGroupId.Value);
 
             if (def.SpellFocusObject.HasValue && row.Table.Columns.Contains("RequiresSpellFocus"))
                 SafeSet(row, "RequiresSpellFocus", def.SpellFocusObject.Value);
 
-            if (def.RequiresSpell.HasValue && row.Table.Columns.Contains("RequiresSpell"))
-                SafeSet(row, "RequiresSpell", def.RequiresSpell.Value);
 
-
-            // MISSILE / SPEED -----------------------------------------------------------
+            // MISSILE / SPEED ---------------------------------------------------------
             if (def.MissileId.HasValue && row.Table.Columns.Contains("SpellMissileID"))
                 SafeSet(row, "SpellMissileID", def.MissileId.Value);
 
@@ -2953,7 +3001,7 @@ namespace SpellEditor.Sources.AI
                 SafeSet(row, "Speed", def.Speed.Value);
 
 
-            // FACING / DAMAGE CLASS / PREVENTION ---------------------------------------
+            // FACING / DAMAGE CLASS / PREVENTION -------------------------------------
             if (def.FacingCasterFlags.HasValue && row.Table.Columns.Contains("FacingCasterFlags"))
                 SafeSet(row, "FacingCasterFlags", def.FacingCasterFlags.Value);
 
@@ -2962,6 +3010,41 @@ namespace SpellEditor.Sources.AI
 
             if (def.PreventionType.HasValue && row.Table.Columns.Contains("PreventionType"))
                 SafeSet(row, "PreventionType", def.PreventionType.Value);
+
+
+            // AURA / STATE REQUIREMENTS ----------------------------------------------
+            if (def.RequiredCasterAuraId.HasValue && row.Table.Columns.Contains("CasterAuraSpell"))
+                SafeSet(row, "CasterAuraSpell", def.RequiredCasterAuraId.Value);
+
+            if (def.RequiredTargetAuraId.HasValue && row.Table.Columns.Contains("TargetAuraSpell"))
+                SafeSet(row, "TargetAuraSpell", def.RequiredTargetAuraId.Value);
+
+            if (def.ExcludedCasterAuraId.HasValue && row.Table.Columns.Contains("ExcludeCasterAuraSpell"))
+                SafeSet(row, "ExcludeCasterAuraSpell", def.ExcludedCasterAuraId.Value);
+
+            if (def.ExcludedTargetAuraId.HasValue && row.Table.Columns.Contains("ExcludeTargetAuraSpell"))
+                SafeSet(row, "ExcludeTargetAuraSpell", def.ExcludedTargetAuraId.Value);
+
+            if (def.RequiredCasterAuraState.HasValue && row.Table.Columns.Contains("CasterAuraState"))
+                SafeSet(row, "CasterAuraState", def.RequiredCasterAuraState.Value);
+
+            if (def.RequiredTargetAuraState.HasValue && row.Table.Columns.Contains("TargetAuraState"))
+                SafeSet(row, "TargetAuraState", def.RequiredTargetAuraState.Value);
+
+            if (def.ForbiddenCasterAuraState.HasValue && row.Table.Columns.Contains("CasterAuraStateNot"))
+                SafeSet(row, "CasterAuraStateNot", def.ForbiddenCasterAuraState.Value);
+
+            if (def.ForbiddenTargetAuraState.HasValue && row.Table.Columns.Contains("TargetAuraStateNot"))
+                SafeSet(row, "TargetAuraStateNot", def.ForbiddenTargetAuraState.Value);
+
+            if (def.RequiredAuraVision.HasValue && row.Table.Columns.Contains("RequiredAuraVision"))
+                SafeSet(row, "RequiredAuraVision", def.RequiredAuraVision.Value);
+
+            if (def.MinFactionId.HasValue && row.Table.Columns.Contains("MinFactionId"))
+                SafeSet(row, "MinFactionId", def.MinFactionId.Value);
+
+            if (def.MinReputation.HasValue && row.Table.Columns.Contains("MinReputation"))
+                SafeSet(row, "MinReputation", def.MinReputation.Value);
         }
 
         private static void SafeSet(DataRow row, string col, object value)

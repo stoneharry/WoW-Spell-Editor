@@ -233,6 +233,406 @@ namespace SpellEditor.Sources.AI
                 EffectNameToId[NormalizeKey("EnchantItem")] = id;
                 EffectNameToId[NormalizeKey("WeaponEnchant")] = id;
             }
+
+            // ---------------------------------------------------------------------
+            // TELEPORT / MOVEMENT UTILITY
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("TELEPORT_UNITS", out id))
+            {
+                EffectNameToId[NormalizeKey("Teleport")] = id;
+                EffectNameToId[NormalizeKey("Blink")] = id;
+                EffectNameToId[NormalizeKey("TeleportSelf")] = id;
+                EffectNameToId[NormalizeKey("TeleportTarget")] = id;
+            }
+
+            if (TryLookupEffect("TELEPORT_PLAYER", out id))
+            {
+                EffectNameToId[NormalizeKey("TeleportPlayer")] = id;
+            }
+
+            if (TryLookupEffect("TELEPORT_GRAVEYARD", out id))
+            {
+                EffectNameToId[NormalizeKey("TeleportGraveyard")] = id;
+            }
+
+            if (TryLookupEffect("JUMP", out id))
+            {
+                EffectNameToId[NormalizeKey("Jump")] = id;
+                EffectNameToId[NormalizeKey("JumpForward")] = id;
+            }
+
+            if (TryLookupEffect("JUMP_DEST", out id))
+            {
+                EffectNameToId[NormalizeKey("JumpDest")] = id;
+            }
+
+            if (TryLookupEffect("CHARGE", out id))
+            {
+                EffectNameToId[NormalizeKey("Charge")] = id;
+            }
+
+            if (TryLookupEffect("CHARGE_DEST", out id))
+            {
+                EffectNameToId[NormalizeKey("ChargeDest")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PERSISTENT AREA AURAS / SCRIPT EFFECTS
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("PERSISTENT_AREA_AURA", out id))
+            {
+                EffectNameToId[NormalizeKey("PersistentArea")] = id;
+                EffectNameToId[NormalizeKey("PersistentAreaAura")] = id;
+                EffectNameToId[NormalizeKey("GroundAura")] = id;
+                EffectNameToId[NormalizeKey("AreaTrigger")] = id;
+            }
+
+            if (TryLookupEffect("SCRIPT_EFFECT", out id))
+            {
+                EffectNameToId[NormalizeKey("ScriptEffect")] = id;
+                EffectNameToId[NormalizeKey("Script")] = id;
+                EffectNameToId[NormalizeKey("CustomEffect")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PET / CREATURE / KILL EFFECTS
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("DISMISS_PET", out id))
+            {
+                EffectNameToId[NormalizeKey("DismissPet")] = id;
+                EffectNameToId[NormalizeKey("UnsummonPet")] = id;
+            }
+
+            if (TryLookupEffect("INSTAKILL", out id))
+            {
+                EffectNameToId[NormalizeKey("Instakill")] = id;
+                EffectNameToId[NormalizeKey("Kill")] = id;
+                EffectNameToId[NormalizeKey("Slay")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // GAMEOBJECT / INTERACTION
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("SUMMON_OBJECT", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObject")] = id;
+            }
+
+            if (TryLookupEffect("SUMMON_OBJECT_SLOT", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObjectSlot")] = id;
+                EffectNameToId[NormalizeKey("SummonObjectSlots")] = id;
+            }
+
+            if (TryLookupEffect("OPEN_LOCK", out id))
+            {
+                EffectNameToId[NormalizeKey("OpenLock")] = id;
+                EffectNameToId[NormalizeKey("Unlock")] = id;
+                EffectNameToId[NormalizeKey("PickLock")] = id;
+            }
+
+            if (TryLookupEffect("ACTIVATE_OBJECT", out id))
+            {
+                EffectNameToId[NormalizeKey("ActivateObject")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // AREA AURA (APPLY_AREA_AURA_*) helpers – used by AiSpellMapper
+            // ---------------------------------------------------------------------
+            // Note: AiSpellMapper sets eff.Type = "AreaAuraParty" / "AreaAuraFriend"
+            // etc. These aliases let TryResolveEffectId handle them directly.
+            if (TryLookupEffect("APPLY_AREA_AURA_PARTY", out id) ||
+                TryLookupEffect("Apply Area Aura Party", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraParty")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_FRIEND", out id) ||
+                TryLookupEffect("Apply Area Aura Friend", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraFriend")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_ENEMY", out id) ||
+                TryLookupEffect("Apply Area Aura Enemy", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraEnemy")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_PET", out id) ||
+                TryLookupEffect("Apply Area Aura Pet", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraPet")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_OWNER", out id) ||
+                TryLookupEffect("Apply Area Aura Owner", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraOwner")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_RAID", out id) ||
+                TryLookupEffect("Apply Area Aura Raid", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraRaid")] = id;
+            }
+
+
+            // ---------------------------------------------------------------------
+            // KILL CREDIT helpers – mirror AiSpellMapper's manual handling
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("KILL_CREDIT", out id) ||
+                TryLookupEffect("KILL_CREDIT2", out id))
+            {
+                // Generic catch-all
+                EffectNameToId[NormalizeKey("KillCredit")] = id;
+                EffectNameToId[NormalizeKey("KillCreditPersonal")] = id;
+                EffectNameToId[NormalizeKey("Credit")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // BIND / SELF-RESURRECT helpers
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("BIND", out id) || TryLookupEffect("Bind", out id))
+            {
+                EffectNameToId[NormalizeKey("Bind")] = id;
+                EffectNameToId[NormalizeKey("BindLocation")] = id;
+                EffectNameToId[NormalizeKey("SetHearth")] = id;
+            }
+
+            if (TryLookupEffect("SELF_RESURRECT", out id) ||
+                TryLookupEffect("Self Resurrect", out id))
+            {
+                EffectNameToId[NormalizeKey("SelfResurrect")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // CREATE / ENCHANT ITEM helpers (already partly handled, but align with
+            // AiSpellMapper's extra AI type strings)
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("CREATE_ITEM", out id) ||
+                TryLookupEffect("Create Item", out id))
+            {
+                EffectNameToId[NormalizeKey("CreateItem")] = id;
+                EffectNameToId[NormalizeKey("MakeItem")] = id;
+            }
+
+            if (TryLookupEffect("ENCHANT_ITEM", out id) ||
+                TryLookupEffect("Enchant Item", out id))
+            {
+                EffectNameToId[NormalizeKey("EnchantItem")] = id;
+                EffectNameToId[NormalizeKey("ApplyEnchant")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // SKINNING / DISMISS PET / INSTAKILL – align with AiSpellMapper
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("SKINNING", out id) || TryLookupEffect("Skinning", out id))
+            {
+                EffectNameToId[NormalizeKey("Skinning")] = id;
+            }
+
+            if (TryLookupEffect("DISMISS_PET", out id) ||
+                TryLookupEffect("Dismiss Pet", out id))
+            {
+                EffectNameToId[NormalizeKey("DismissPet")] = id;
+                EffectNameToId[NormalizeKey("UnsummonPet")] = id;
+            }
+
+            if (TryLookupEffect("INSTAKILL", out id) ||
+                TryLookupEffect("Instakill", out id))
+            {
+                EffectNameToId[NormalizeKey("Instakill")] = id;
+                EffectNameToId[NormalizeKey("Kill")] = id;
+                EffectNameToId[NormalizeKey("Slay")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // SUMMON helpers – complement your existing Summon aliases
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("SUMMON_VEHICLE", out id) ||
+                TryLookupEffect("Summon Vehicle", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonVehicle")] = id;
+                EffectNameToId[NormalizeKey("Vehicle")] = id;
+            }
+
+            if (TryLookupEffect("SUMMON_TOTEM", out id) ||
+                TryLookupEffect("Summon Totem", out id) ||
+                TryLookupEffect("SUMMON_TOTEM_SLOT1", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonTotem")] = id;
+                EffectNameToId[NormalizeKey("SummonTotemSlot1")] = id;
+            }
+
+            // Summon Object helpers (if not already covered above)
+            if (TryLookupEffect("SUMMON_OBJECT", out id) ||
+                TryLookupEffect("Summon Object", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObject")] = id;
+            }
+
+            if (TryLookupEffect("SUMMON_OBJECT_SLOT", out id) ||
+                TryLookupEffect("Summon Object Slot", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObjectSlot")] = id;
+                EffectNameToId[NormalizeKey("SummonObjectSlots")] = id;
+            }
+
+            if (TryLookupEffect("ACTIVATE_OBJECT", out id) ||
+                TryLookupEffect("Activate Object", out id))
+            {
+                EffectNameToId[NormalizeKey("ActivateObject")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // AREA AURA (APPLY_AREA_AURA_*) helpers – used by AiSpellMapper
+            // ---------------------------------------------------------------------
+            // Note: AiSpellMapper sets eff.Type = "AreaAuraParty" / "AreaAuraFriend"
+            // etc. These aliases let TryResolveEffectId handle them directly.
+            if (TryLookupEffect("APPLY_AREA_AURA_PARTY", out id) ||
+                TryLookupEffect("Apply Area Aura Party", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraParty")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_FRIEND", out id) ||
+                TryLookupEffect("Apply Area Aura Friend", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraFriend")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_ENEMY", out id) ||
+                TryLookupEffect("Apply Area Aura Enemy", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraEnemy")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_PET", out id) ||
+                TryLookupEffect("Apply Area Aura Pet", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraPet")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_OWNER", out id) ||
+                TryLookupEffect("Apply Area Aura Owner", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraOwner")] = id;
+            }
+
+            if (TryLookupEffect("APPLY_AREA_AURA_RAID", out id) ||
+                TryLookupEffect("Apply Area Aura Raid", out id))
+            {
+                EffectNameToId[NormalizeKey("AreaAuraRaid")] = id;
+            }
+
+
+            // ---------------------------------------------------------------------
+            // KILL CREDIT helpers – mirror AiSpellMapper's manual handling
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("KILL_CREDIT", out id) ||
+                TryLookupEffect("KILL_CREDIT2", out id))
+            {
+                // Generic catch-all
+                EffectNameToId[NormalizeKey("KillCredit")] = id;
+                EffectNameToId[NormalizeKey("KillCreditPersonal")] = id;
+                EffectNameToId[NormalizeKey("Credit")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // BIND / SELF-RESURRECT helpers
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("BIND", out id) || TryLookupEffect("Bind", out id))
+            {
+                EffectNameToId[NormalizeKey("Bind")] = id;
+                EffectNameToId[NormalizeKey("BindLocation")] = id;
+                EffectNameToId[NormalizeKey("SetHearth")] = id;
+            }
+
+            if (TryLookupEffect("SELF_RESURRECT", out id) ||
+                TryLookupEffect("Self Resurrect", out id))
+            {
+                EffectNameToId[NormalizeKey("SelfResurrect")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // CREATE / ENCHANT ITEM helpers (already partly handled, but align with
+            // AiSpellMapper's extra AI type strings)
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("CREATE_ITEM", out id) ||
+                TryLookupEffect("Create Item", out id))
+            {
+                EffectNameToId[NormalizeKey("CreateItem")] = id;
+                EffectNameToId[NormalizeKey("MakeItem")] = id;
+            }
+
+            if (TryLookupEffect("ENCHANT_ITEM", out id) ||
+                TryLookupEffect("Enchant Item", out id))
+            {
+                EffectNameToId[NormalizeKey("EnchantItem")] = id;
+                EffectNameToId[NormalizeKey("ApplyEnchant")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // SKINNING / DISMISS PET / INSTAKILL – align with AiSpellMapper
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("SKINNING", out id) || TryLookupEffect("Skinning", out id))
+            {
+                EffectNameToId[NormalizeKey("Skinning")] = id;
+            }
+
+            if (TryLookupEffect("DISMISS_PET", out id) ||
+                TryLookupEffect("Dismiss Pet", out id))
+            {
+                EffectNameToId[NormalizeKey("DismissPet")] = id;
+                EffectNameToId[NormalizeKey("UnsummonPet")] = id;
+            }
+
+            if (TryLookupEffect("INSTAKILL", out id) ||
+                TryLookupEffect("Instakill", out id))
+            {
+                EffectNameToId[NormalizeKey("Instakill")] = id;
+                EffectNameToId[NormalizeKey("Kill")] = id;
+                EffectNameToId[NormalizeKey("Slay")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // SUMMON helpers – complement your existing Summon aliases
+            // ---------------------------------------------------------------------
+            if (TryLookupEffect("SUMMON_VEHICLE", out id) ||
+                TryLookupEffect("Summon Vehicle", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonVehicle")] = id;
+                EffectNameToId[NormalizeKey("Vehicle")] = id;
+            }
+
+            if (TryLookupEffect("SUMMON_TOTEM", out id) ||
+                TryLookupEffect("Summon Totem", out id) ||
+                TryLookupEffect("SUMMON_TOTEM_SLOT1", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonTotem")] = id;
+                EffectNameToId[NormalizeKey("SummonTotemSlot1")] = id;
+            }
+
+            // Summon Object helpers (if not already covered above)
+            if (TryLookupEffect("SUMMON_OBJECT", out id) ||
+                TryLookupEffect("Summon Object", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObject")] = id;
+            }
+
+            if (TryLookupEffect("SUMMON_OBJECT_SLOT", out id) ||
+                TryLookupEffect("Summon Object Slot", out id))
+            {
+                EffectNameToId[NormalizeKey("SummonObjectSlot")] = id;
+                EffectNameToId[NormalizeKey("SummonObjectSlots")] = id;
+            }
+
+            if (TryLookupEffect("ACTIVATE_OBJECT", out id) ||
+                TryLookupEffect("Activate Object", out id))
+            {
+                EffectNameToId[NormalizeKey("ActivateObject")] = id;
+            }
         }
 
         private static void RegisterAuraAliases()
@@ -366,8 +766,8 @@ namespace SpellEditor.Sources.AI
             //
             string[] schools =
             {
-    "Holy", "Fire", "Nature", "Frost", "Shadow", "Arcane"
-};
+                "Holy", "Fire", "Nature", "Frost", "Shadow", "Arcane"
+            };
             foreach (var s in schools)
             {
                 if (TryLookupAura($"Mod {s} Resistance", out id))
@@ -700,6 +1100,638 @@ namespace SpellEditor.Sources.AI
             {
                 AuraNameToId[NormalizeKey("ModAggroRadius")] = id;
             }
+
+            // ---------------------------------------------------------------------
+            // SCHOOL ABSORB / SHIELD / DAMAGE BONUSES
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("School Absorb", out id))
+            {
+                AuraNameToId[NormalizeKey("SchoolAbsorb")] = id;
+                AuraNameToId[NormalizeKey("PeriodicAbsorb")] = id;
+                AuraNameToId[NormalizeKey("AbsorbShield")] = id;
+            }
+
+            if (TryLookupAura("Damage Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("DamageShield")] = id;
+            }
+
+            if (TryLookupAura("Mod Spell Damage Done", out id))
+            {
+                AuraNameToId[NormalizeKey("SpellDamageBuff")] = id;
+                AuraNameToId[NormalizeKey("DamageBuff")] = id;
+            }
+
+            if (TryLookupAura("Mod Spell Healing Done", out id))
+            {
+                AuraNameToId[NormalizeKey("HealingBuff")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // SCHOOL IMMUNITIES
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mod School Immunity", out id))
+            {
+                AuraNameToId[NormalizeKey("SchoolImmunity")] = id;
+                AuraNameToId[NormalizeKey("ElementalImmunity")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // MECHANIC IMMUNITIES / DURATION / DAMAGE TAKEN
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mechanic Immunity", out id))
+            {
+                AuraNameToId[NormalizeKey("MechanicImmune")] = id;
+            }
+
+            if (TryLookupAura("Mechanic Duration Mod", out id))
+            {
+                AuraNameToId[NormalizeKey("MechanicDurationMod")] = id;
+            }
+
+            if (TryLookupAura("Mod Mechanic Damage Taken", out id))
+            {
+                AuraNameToId[NormalizeKey("MechanicDamageTakenMod")] = id;
+            }
+
+            // ----------------------------
+            // Shields / Absorbs
+            // ----------------------------
+            if (TryLookupAura("School Absorb", out id))
+            {
+                AuraNameToId[NormalizeKey("SchoolAbsorb")] = id;
+                AuraNameToId[NormalizeKey("Absorb")] = id;
+                AuraNameToId[NormalizeKey("Shield")] = id;
+            }
+
+            if (TryLookupAura("Damage Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("DamageShield")] = id;
+            }
+
+            if (TryLookupAura("Mana Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("ManaShield")] = id;
+            }
+
+            if (TryLookupAura("Split Damage Pct", out id))
+            {
+                AuraNameToId[NormalizeKey("SplitDamagePct")] = id;
+                AuraNameToId[NormalizeKey("RedirectDamage")] = id;
+            }
+
+            // ----------------------------
+            // Stat Buffs / Rating Auras
+            // ----------------------------
+            string[] statAuras = new[]
+            {
+                "Mod Stat", "Mod Attack Power", "Mod Ranged Attack Power", "Mod Spell Power",
+                "Mod Armor", "Mod Resistance", "Mod Damage Done", "Mod Damage Taken",
+                "Mod Crit Chance", "Mod Haste", "Mod Hit Chance", "Mod Mana Regen",
+                "Mod Health Regen", "Mod Increase Speed", "Mod Dodge Percent",
+                "Mod Parry Percent", "Mod Block Percent", "Mod Block Value",
+                "Mod Armor Penetration", "Mod Expertise", "Mod Spell Damage Done",
+                "Mod Damage Percent Done", "Mod Healing Done", "Mod Healing Taken Percent",
+                "Mod Damage Taken Percent"
+            };
+
+            foreach (var name in statAuras)
+            {
+                if (TryLookupAura(name, out id))
+                    AuraNameToId[NormalizeKey(name)] = id;
+            }
+
+            // ----------------------------
+            // Proc Auras
+            // ----------------------------
+            string[] procAuras = new[]
+            {
+                "Proc Trigger Spell", "Proc Trigger Miss", "Proc Trigger Critical",
+                "Proc Trigger Periodic", "Proc Trigger Spell With Value",
+                "Periodic Trigger Damage"
+            };
+
+            foreach (var name in procAuras)
+            {
+                if (TryLookupAura(name, out id))
+                    AuraNameToId[NormalizeKey(name.Replace(" ", ""))] = id;
+            }
+
+            // ----------------------------
+            // Mechanic Immunity / Duration
+            // ----------------------------
+            if (TryLookupAura("Mod Mechanic Immune", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMechanicImmune")] = id;
+            }
+
+            if (TryLookupAura("Mod Mechanic Duration", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMechanicDuration")] = id;
+            }
+
+            if (TryLookupAura("Mod Mechanic Damage Taken", out id))
+            {
+                AuraNameToId[NormalizeKey("ModMechanicDamageTaken")] = id;
+            }
+
+            // ----------------------------
+            // School Immunity
+            // ----------------------------
+            if (TryLookupAura("Mod School Immunity", out id))
+            {
+                AuraNameToId[NormalizeKey("ModSchoolImmunity")] = id;
+            }
+
+            // ----------------------------
+            // Movement / Utility
+            // ----------------------------
+            string[] utility = new[]
+            {
+                "Mod Swim Speed", "Mod Flight Speed", "Mod Mounted Speed Percent",
+                "Water Breathing", "Water Walking", "Levitate", "Feign Death"
+            };
+
+            foreach (var name in utility)
+            {
+                if (TryLookupAura(name, out id))
+                    AuraNameToId[NormalizeKey(name.Replace(" ", ""))] = id;
+            }
+
+            // ----------------------------
+            // Stealth / Detection
+            // ----------------------------
+            string[] stealth = new[]
+            {
+                "Mod Stealth", "Mod Stealth Level", "Mod Detect",
+                "Mod Invisibility", "Mod Invisibility Detection"
+            };
+
+            foreach (var name in stealth)
+            {
+                if (TryLookupAura(name, out id))
+                    AuraNameToId[NormalizeKey(name.Replace(" ", ""))] = id;
+            }
+
+            // ----------------------------
+            // Tracking / Shapeshift
+            // ----------------------------
+            if (TryLookupAura("Track Creatures", out id))
+                AuraNameToId[NormalizeKey("TrackCreatures")] = id;
+
+            if (TryLookupAura("Track Resources", out id))
+                AuraNameToId[NormalizeKey("TrackResources")] = id;
+
+            if (TryLookupAura("Mod Shapeshift", out id))
+                AuraNameToId[NormalizeKey("ModShapeshift")] = id;
+
+            // ----------------------------
+            // Weapons / Offhand / Crit
+            // ----------------------------
+            if (TryLookupAura("Mod Weapon Skill", out id))
+                AuraNameToId[NormalizeKey("ModWeaponSkill")] = id;
+
+            if (TryLookupAura("Mod Weapon Critical Percent", out id))
+                AuraNameToId[NormalizeKey("ModWeaponCriticalPercent")] = id;
+
+            if (TryLookupAura("Mod Offhand Damage Percent", out id))
+                AuraNameToId[NormalizeKey("ModOffhandDamagePercent")] = id;
+
+            // ----------------------------
+            // Pet / Vehicle
+            // ----------------------------
+            if (TryLookupAura("Control Pet", out id))
+                AuraNameToId[NormalizeKey("ControlPet")] = id;
+
+            if (TryLookupAura("Mod Pet Damage Done", out id))
+                AuraNameToId[NormalizeKey("ModPetDamageDone")] = id;
+
+            if (TryLookupAura("Mod Vehicle Speed", out id))
+                AuraNameToId[NormalizeKey("ModVehicleSpeed")] = id;
+
+            if (TryLookupAura("Mod Vehicle Power", out id))
+                AuraNameToId[NormalizeKey("ModVehiclePower")] = id;
+
+            // ----------------------------
+            // Max Health / Power
+            // ----------------------------
+            if (TryLookupAura("Mod Increase Health Percent", out id))
+                AuraNameToId[NormalizeKey("ModIncreaseHealthPercent")] = id;
+
+            if (TryLookupAura("Mod Increase Max Health", out id))
+                AuraNameToId[NormalizeKey("ModIncreaseMaxHealth")] = id;
+
+            if (TryLookupAura("Increase Max Health", out id))
+                AuraNameToId[NormalizeKey("IncreaseMaxHealth")] = id;
+
+            if (TryLookupAura("Increase Max Power", out id))
+                AuraNameToId[NormalizeKey("IncreaseMaxPower")] = id;
+
+            // ---------------------------------------------------------------------
+            // MAX HEALTH / POWER – high-level helpers used by AiSpellMapper
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mod Increase Health Percent", out id) ||
+                TryLookupAura("Increase Health %", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseHealthPercent")] = id;
+                AuraNameToId[NormalizeKey("IncreaseHealthPercent")] = id;
+            }
+
+            if (TryLookupAura("Mod Increase Health", out id) ||
+                TryLookupAura("Increase Health", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseMaxHealth")] = id;
+                AuraNameToId[NormalizeKey("IncreaseMaxHealth")] = id;
+            }
+
+            if (TryLookupAura("Mod Increase Power", out id) ||
+                TryLookupAura("Increase Power", out id) ||
+                TryLookupAura("Mod Increase Max Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseMaxPower")] = id;
+                AuraNameToId[NormalizeKey("IncreaseMaxPower")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PERIODIC LEECH / POWER BURN – unify several AI spell types
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Periodic Mana Leech", out id) ||
+                TryLookupAura("Periodic Health Leech", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicLeech")] = id;
+                AuraNameToId[NormalizeKey("PeriodicManaLeech")] = id;
+                AuraNameToId[NormalizeKey("PeriodicHealthLeech")] = id;
+            }
+
+            if (TryLookupAura("Periodic Power Burn", out id) ||
+                TryLookupAura("Periodic PowerBurn", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicPowerBurn")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // INTERRUPT / PUSHBACK / CASTING PROTECTION
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Interrupt Regeneration", out id) ||
+                TryLookupAura("Interrupt Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("InterruptRegen")] = id;
+            }
+
+            if (TryLookupAura("Mod Casting Speed Not Stack", out id) ||
+                TryLookupAura("Mod Casting Speed (Not Stack)", out id))
+            {
+                AuraNameToId[NormalizeKey("ModCastingSpeedNotStack")] = id;
+            }
+
+            if (TryLookupAura("Mod Pushback", out id) ||
+                TryLookupAura("Mod Spell Pushback", out id))
+            {
+                AuraNameToId[NormalizeKey("ModPushback")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PROC AURAS – extended set
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Proc Trigger Spell", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpell")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Spell With Value", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpellWithValue")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerDamage")] = id;
+            }
+
+            if (TryLookupAura("Proc Event", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcEvent")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Spell Copy", out id) ||
+                TryLookupAura("Proc Trigger Spell (Copy)", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpellCopy")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // DAMAGE SHIELD (DIRECT + SCHOOL VARIANTS)
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Damage Shield School", out id))
+            {
+                AuraNameToId[NormalizeKey("DamageShieldSchool")] = id;
+            }
+
+            if (TryLookupAura("Proc Damage Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcDamageShield")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // VEHICLE / POSSESSION / PET CONTROL – aura side
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Control Vehicle", out id))
+            {
+                AuraNameToId[NormalizeKey("ControlVehicle")] = id;
+            }
+
+            if (TryLookupAura("Ride Vehicle", out id))
+            {
+                AuraNameToId[NormalizeKey("RideVehicle")] = id;
+            }
+
+            if (TryLookupAura("Possess", out id))
+            {
+                AuraNameToId[NormalizeKey("Possess")] = id;
+            }
+
+            if (TryLookupAura("Control Pet", out id))
+            {
+                AuraNameToId[NormalizeKey("ControlPet")] = id;
+            }
+
+            if (TryLookupAura("Mod Pet Damage Done", out id) ||
+                TryLookupAura("Mod Pet Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("ModPetDamageDone")] = id;
+            }
+
+            if (TryLookupAura("Mod Vehicle Speed", out id) ||
+                TryLookupAura("Mod Pet Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModVehicleSpeed")] = id;
+            }
+
+            if (TryLookupAura("Mod Vehicle Power", out id) ||
+                TryLookupAura("Mod Pet Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModVehiclePower")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // ENRAGE / RAGE GENERATION
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mod Rage From Damage Taken", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRageFromDamageTaken")] = id;
+            }
+
+            if (TryLookupAura("Mod Rage Generation", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRageGeneration")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // TOTEM EFFECT HELPERS
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Totem Effect Earth", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectEarth")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Air", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectAir")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Fire", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectFire")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Water", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectWater")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // ENCHANT / SANCTUARY / INTERVAL HEAL – misc helpers
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Enchant Item Temp", out id) ||
+                TryLookupAura("Enchant Item Temporary", out id))
+            {
+                AuraNameToId[NormalizeKey("EnchantItemTemp")] = id;
+            }
+
+            if (TryLookupAura("Sanctuary", out id))
+            {
+                AuraNameToId[NormalizeKey("Sanctuary")] = id;
+            }
+
+            // PeriodicIntervalHeal: use same ID as Periodic Heal if no dedicated aura
+            if (TryLookupAura("Periodic Heal", out id) ||
+                TryLookupAura("PeriodicHealing", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicIntervalHeal")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // MAX HEALTH / POWER – high-level helpers used by AiSpellMapper
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mod Increase Health Percent", out id) ||
+                TryLookupAura("Increase Health %", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseHealthPercent")] = id;
+                AuraNameToId[NormalizeKey("IncreaseHealthPercent")] = id;
+            }
+
+            if (TryLookupAura("Mod Increase Health", out id) ||
+                TryLookupAura("Increase Health", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseMaxHealth")] = id;
+                AuraNameToId[NormalizeKey("IncreaseMaxHealth")] = id;
+            }
+
+            if (TryLookupAura("Mod Increase Power", out id) ||
+                TryLookupAura("Increase Power", out id) ||
+                TryLookupAura("Mod Increase Max Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModIncreaseMaxPower")] = id;
+                AuraNameToId[NormalizeKey("IncreaseMaxPower")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PERIODIC LEECH / POWER BURN – unify several AI spell types
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Periodic Mana Leech", out id) ||
+                TryLookupAura("Periodic Health Leech", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicLeech")] = id;
+                AuraNameToId[NormalizeKey("PeriodicManaLeech")] = id;
+                AuraNameToId[NormalizeKey("PeriodicHealthLeech")] = id;
+            }
+
+            if (TryLookupAura("Periodic Power Burn", out id) ||
+                TryLookupAura("Periodic PowerBurn", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicPowerBurn")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // INTERRUPT / PUSHBACK / CASTING PROTECTION
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Interrupt Regeneration", out id) ||
+                TryLookupAura("Interrupt Regen", out id))
+            {
+                AuraNameToId[NormalizeKey("InterruptRegen")] = id;
+            }
+
+            if (TryLookupAura("Mod Casting Speed Not Stack", out id) ||
+                TryLookupAura("Mod Casting Speed (Not Stack)", out id))
+            {
+                AuraNameToId[NormalizeKey("ModCastingSpeedNotStack")] = id;
+            }
+
+            if (TryLookupAura("Mod Pushback", out id) ||
+                TryLookupAura("Mod Spell Pushback", out id))
+            {
+                AuraNameToId[NormalizeKey("ModPushback")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // PROC AURAS – extended set
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Proc Trigger Spell", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpell")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Spell With Value", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpellWithValue")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerDamage")] = id;
+            }
+
+            if (TryLookupAura("Proc Event", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcEvent")] = id;
+            }
+
+            if (TryLookupAura("Proc Trigger Spell Copy", out id) ||
+                TryLookupAura("Proc Trigger Spell (Copy)", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcTriggerSpellCopy")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // DAMAGE SHIELD (DIRECT + SCHOOL VARIANTS)
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Damage Shield School", out id))
+            {
+                AuraNameToId[NormalizeKey("DamageShieldSchool")] = id;
+            }
+
+            if (TryLookupAura("Proc Damage Shield", out id))
+            {
+                AuraNameToId[NormalizeKey("ProcDamageShield")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // VEHICLE / POSSESSION / PET CONTROL – aura side
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Control Vehicle", out id))
+            {
+                AuraNameToId[NormalizeKey("ControlVehicle")] = id;
+            }
+
+            if (TryLookupAura("Ride Vehicle", out id))
+            {
+                AuraNameToId[NormalizeKey("RideVehicle")] = id;
+            }
+
+            if (TryLookupAura("Possess", out id))
+            {
+                AuraNameToId[NormalizeKey("Possess")] = id;
+            }
+
+            if (TryLookupAura("Control Pet", out id))
+            {
+                AuraNameToId[NormalizeKey("ControlPet")] = id;
+            }
+
+            if (TryLookupAura("Mod Pet Damage Done", out id) ||
+                TryLookupAura("Mod Pet Damage", out id))
+            {
+                AuraNameToId[NormalizeKey("ModPetDamageDone")] = id;
+            }
+
+            if (TryLookupAura("Mod Vehicle Speed", out id) ||
+                TryLookupAura("Mod Pet Speed", out id))
+            {
+                AuraNameToId[NormalizeKey("ModVehicleSpeed")] = id;
+            }
+
+            if (TryLookupAura("Mod Vehicle Power", out id) ||
+                TryLookupAura("Mod Pet Power", out id))
+            {
+                AuraNameToId[NormalizeKey("ModVehiclePower")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // ENRAGE / RAGE GENERATION
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Mod Rage From Damage Taken", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRageFromDamageTaken")] = id;
+            }
+
+            if (TryLookupAura("Mod Rage Generation", out id))
+            {
+                AuraNameToId[NormalizeKey("ModRageGeneration")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // TOTEM EFFECT HELPERS
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Totem Effect Earth", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectEarth")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Air", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectAir")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Fire", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectFire")] = id;
+            }
+
+            if (TryLookupAura("Totem Effect Water", out id))
+            {
+                AuraNameToId[NormalizeKey("TotemEffectWater")] = id;
+            }
+
+            // ---------------------------------------------------------------------
+            // ENCHANT / SANCTUARY / INTERVAL HEAL – misc helpers
+            // ---------------------------------------------------------------------
+            if (TryLookupAura("Enchant Item Temp", out id) ||
+                TryLookupAura("Enchant Item Temporary", out id))
+            {
+                AuraNameToId[NormalizeKey("EnchantItemTemp")] = id;
+            }
+
+            if (TryLookupAura("Sanctuary", out id))
+            {
+                AuraNameToId[NormalizeKey("Sanctuary")] = id;
+            }
+
+            // PeriodicIntervalHeal: use same ID as Periodic Heal if no dedicated aura
+            if (TryLookupAura("Periodic Heal", out id) ||
+                TryLookupAura("PeriodicHealing", out id))
+            {
+                AuraNameToId[NormalizeKey("PeriodicIntervalHeal")] = id;
+            }
         }
 
         private static bool TryLookupEffect(string key, out uint id)
@@ -834,6 +1866,11 @@ namespace SpellEditor.Sources.AI
             if (lower == "root")
             {
                 if (TryLookupAura("Rooted", out id) || TryLookupAura("Root", out id))
+                    return true;
+            }
+            if (lower == "shield" || lower == "absorb")
+            {
+                if (TryLookupAura("School Absorb", out id))
                     return true;
             }
 
