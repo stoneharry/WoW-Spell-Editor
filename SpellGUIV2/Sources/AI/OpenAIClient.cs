@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,6 +74,8 @@ namespace SpellEditor.Sources.AI
                 input.AppendLine();
             }
 
+            AppendModifyPromptText(ref input, currentSpellId);
+
             input.AppendLine("User request:");
             input.AppendLine(userPrompt);
 
@@ -122,6 +125,31 @@ namespace SpellEditor.Sources.AI
                 RawContent = msg,
                 Definition = definition
             };
+        }
+
+        private void AppendModifyPromptText(ref StringBuilder input, uint currentSpellId)
+        {
+            using (var adapter = AdapterFactory.Instance.GetAdapter(false))
+            {
+                using (var query = adapter.Query("SELECT * FROM spell WHERE id = " + currentSpellId))
+                {
+                    var snapshot = AiSpellSemanticExtractor.Extract(query.Rows[0]);
+                    input.AppendLine("=== MODIFYING SPELL ====");
+                    input.AppendLine("Treat this snapshot as the existing spell state.");
+                    input.AppendLine("Only output fields you want to change.");
+                    input.AppendLine("Do NOT repeat unchanged values.");
+                    var snapshotJson = JsonConvert.SerializeObject(
+                        snapshot,
+                        Formatting.Indented,
+                        new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore,
+                            DefaultValueHandling = DefaultValueHandling.Ignore
+                        });
+                    input.AppendLine(snapshotJson);
+                    input.AppendLine();
+                }
+            }
         }
 
         private string LoadSystemPromptFromFileOrDefault(bool isModifySpell)
