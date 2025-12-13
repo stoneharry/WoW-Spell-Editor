@@ -87,11 +87,11 @@ namespace SpellEditor.Sources.DBC
         public void UpdateMainWindowIcons(double margin)
         {
             // adapter.query below caused unhandled exception with main.selectedID as 0.
-            if (adapter == null || main.selectedID == 0 || main.IconGrid.Children.Count > 0)
+            if (adapter == null)
                 return;
 
             // Convert to background worker here
-            Task.Run(() =>
+            /*Task.Run(() =>
             {
                 var container = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID));
                 if (container == null || container.Rows.Count == 0)
@@ -102,9 +102,27 @@ namespace SpellEditor.Sources.DBC
                 uint iconInt = uint.Parse(res[0].ToString());
                 uint iconActiveInt = uint.Parse(res[1].ToString());
                 // Update currently selected icon, we don't currently handle ActiveIconID
-                main.Dispatcher?.BeginInvoke(DispatcherPriority.Normal, new Action(
-                    () => main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(GetIconPath(iconInt) + ".blp")));
-            });
+                main.Dispatcher?.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                { 
+                    main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(GetIconPath(iconInt) + ".blp");
+
+                    main.CurrentIcon.ToolTip = iconInt + " - " + GetIconPath(iconInt) + ".blp";
+                }));
+            });*/
+
+            if (main.selectedID > 0)
+            {
+                string iconPath = GetIconPath(main.selectedIconID) + ".blp";
+
+                main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(iconPath);
+
+                main.CurrentIcon.ToolTip = main.selectedIconID + " - " + iconPath;
+            }
+
+            Logger.Info($"Icons child count {main.IconGrid.Children.Count}");
+
+            if (main.IconGrid.Children.Count > 0)
+                return;
 
             // Load all icons available if we have not already
             var watch = new Stopwatch();
@@ -135,8 +153,9 @@ namespace SpellEditor.Sources.DBC
                     ToolTip = entry.ID + " - " + entry.Name + ".blp"
                 };
                 image.MouseDown += ImageDown;
-                imagesPool.Add(image);
+                imagesPool.Add(image); 
             }
+
             pathsToAdd = null;
             var renderInView = Config.Config.RenderImagesInView;
             if (renderInView)
@@ -144,14 +163,14 @@ namespace SpellEditor.Sources.DBC
                 main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
             }
 
-            Task.Run(async () =>
+            Task.Run(/*async*/ () =>
             {
-                var count = 0u;
+                //var count = 0u;
                 foreach (var image in imagesPool)
                 {
                     // Yield to allow the UI to update
-                    if (!renderInView && (++count % 150 == 0))
-                        await Task.Delay(count < 800 ? 500 : count < 1500 ? 250 : 100);
+                    //if (!renderInView && (++count % 150 == 0))
+                    //    await Task.Delay(/*count < 800 ? 500 : count < 1500 ? 250 :*/ 100);
 
                     main.Dispatcher?.BeginInvoke(DispatcherPriority.Render, new Action(() =>
                         {
@@ -160,7 +179,7 @@ namespace SpellEditor.Sources.DBC
                             {
                                 image.IsVisibleChanged += IsImageVisibleChanged;
                                 // Need to manually fire the event if the image was already visible (this fires async to the image loading)
-                                if (image.IsVisible)
+                                //if (image.IsVisible)
                                     IsImageVisibleChanged(image, new DependencyPropertyChangedEventArgs(
                                         UIElement.IsVisibleProperty, false, true));
                             }
@@ -172,6 +191,8 @@ namespace SpellEditor.Sources.DBC
 
         private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            
+
             ScrollViewer sv = (ScrollViewer)sender;
             Rect svViewportBounds = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
 
@@ -238,6 +259,8 @@ namespace SpellEditor.Sources.DBC
                 }
             }
             main.newIconID = ID;
+
+            main.NewIcon.ToolTip = image.ToolTip;
         }
 
         public string GetIconPath(uint iconId)

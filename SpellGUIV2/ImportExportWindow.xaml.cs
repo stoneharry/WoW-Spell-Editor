@@ -1,6 +1,14 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using NLog;
+using SpellEditor.Sources.Binding;
+using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Database;
+using SpellEditor.Sources.DBC;
+using SpellEditor.Sources.Tools.MPQ;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,16 +20,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-
-using MahApps.Metro.Controls;
-
-using NLog;
-
-using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.Config;
-using SpellEditor.Sources.Database;
-using SpellEditor.Sources.DBC;
-using SpellEditor.Sources.Tools.MPQ;
 using Binding = SpellEditor.Sources.Binding.Binding;
 
 namespace SpellEditor
@@ -36,14 +34,21 @@ namespace SpellEditor
         private Action _PopulateSelectSpell;
         private Action<Action<string>> _ReloadData;
         private readonly string _SpellBindingName = "Spell";
+        private MainWindow main;
 
-        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData)
+        public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData, MainWindow mainWindow)
         {
             _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
             _PopulateSelectSpell = populateSelectSpell;
             _ReloadData = reloadData;
             InitializeComponent();
+            main = mainWindow;
+        }
+
+        public ImportExportWindow(IDatabaseAdapter adapter)
+        {
+            _Adapter = adapter;
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -244,6 +249,10 @@ namespace SpellEditor
 
             Task.Run(() =>
             {
+                var watch = new Stopwatch();
+                var loadedDBC = new Stopwatch();
+                var importExport = new Stopwatch();
+                watch.Start();
                 var bag = new ConcurrentBag<Task>();
                 var adapters = new List<IDatabaseAdapter>();
                 var adapterIndex = 0;
@@ -255,9 +264,21 @@ namespace SpellEditor
                     {
                         bindingList.Remove(_SpellBindingName);
                         // Load data
+
+                        loadedDBC.Start();
                         var abstractDbc = GetDBC(_SpellBindingName, isImport);
+                        loadedDBC.Stop();
                         // Perform operation using existing adapter
-                        StartImportExport(abstractDbc, _Adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        
+                        if (abstractDbc != null)
+                        {
+                            StartImportExport(abstractDbc, _Adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        }    
+                        else
+                        {
+                            Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{_SpellBindingName}.dbc");
+                            ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{_SpellBindingName}.dbc");
+                        }
                     }
 
                     // Spawn adapters
@@ -279,7 +300,13 @@ namespace SpellEditor
                             }
 
                             // Perform operation
-                            StartImportExport(abstractDbc, adapter, bindingName, isImport, ref bag, ref barLookup, useType);
+                            if (abstractDbc != null)
+                                StartImportExport(abstractDbc, adapter, bindingName, isImport, ref bag, ref barLookup, useType);
+                            else
+                            {
+                                Logger.Info($"ERROR: Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                                ShowFlyoutMessage($"Failed to load {Config.DbcDirectory}\\{bindingName}.dbc");
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -289,6 +316,7 @@ namespace SpellEditor
                     });
 
                     // Wait for all tasks to complete
+                    importExport.Start();
                     List<Task> allTasks = bag.ToList();
                     Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
                     while (allTasks.Count > 0)
@@ -306,6 +334,7 @@ namespace SpellEditor
                         }
                         Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
                     }
+                    importExport.Stop();
                 }
                 finally
                 {
@@ -349,6 +378,15 @@ namespace SpellEditor
                         Close();
                     }));
                 }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                watch.Stop();
+                Logger.Info($"finished doImportExport in {watch.ElapsedMilliseconds}ms");
+                Logger.Info($"finished loading dbc {loadedDBC.ElapsedMilliseconds}ms");
+                Logger.Info($"finished tasks {importExport.ElapsedMilliseconds}ms");
             });
         }
 
@@ -361,7 +399,7 @@ namespace SpellEditor
             {
                 try
                 {
-                    abstractDbc = new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc");
+                    abstractDbc = isImport ? new GenericDbc($"{Config.DbcDirectory}\\{bindingName}.dbc") : new GenericDbc();
                 }
                 catch (Exception exception)
                 {
@@ -379,7 +417,7 @@ namespace SpellEditor
         {
             var task = isImport ?
                 dbc.ImportTo(adapter, SetProgress, "ID", bindingName, useType) :
-                dbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType);
+                dbc.ExportTo(adapter, SetProgress, "ID", bindingName, useType, useType == ImportExportType.DBC && bindingName == _SpellBindingName ? main.GetBodyData() : null);
 
             _TaskLookup.TryAdd(task.Id, barLookup[bindingName]);
             bag.Add(task);

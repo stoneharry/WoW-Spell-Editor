@@ -179,3 +179,5 @@ FakesAssemblies/
 
 #Ignore '.vs' directory
 .vs/
+
+*.driveupload*

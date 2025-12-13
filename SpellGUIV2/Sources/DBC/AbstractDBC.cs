@@ -3,6 +3,7 @@
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
+using SpellEditor.Sources.Config;
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -109,36 +111,42 @@ namespace SpellEditor.Sources.DBC
             return StorageFactory.Instance.GetStorageAdapter(_type).Import(adapter, this, UpdateProgress, IdKey, bindingName);
         }
 
-        public Task ExportTo(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, ImportExportType _type)
+        public Task ExportTo(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, ImportExportType _type, DBCBodyToSerialize spellBody = null)
         {
-            return StorageFactory.Instance.GetStorageAdapter(_type).Export(adapter, this, updateProgress, IdKey, bindingName);
+            return spellBody != null ? StorageFactory.Instance.GetStorageAdapter(_type).Export(adapter, this, updateProgress, IdKey, bindingName, spellBody) : StorageFactory.Instance.GetStorageAdapter(_type).Export(adapter, this, updateProgress, IdKey, bindingName);
         }
 
-        public List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
+        public List<Dictionary<string, object>> LoadRecords(IDatabaseAdapter adapter, string bindingName, string orderClause, MainWindow.UpdateProgressFunc updateProgress, bool updatingOne = false)
         {
-            const int pageSize = 2500;
-            int totalCount;
-            using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName.ToLower()}`"))
+            const int pageSize = 1000;
+            int totalCount = 1;
+            if (!updatingOne)
             {
-                totalCount = int.Parse(queryData.Rows[0][0].ToString());
+                using (var queryData = adapter.Query($"SELECT COUNT(*) FROM `{bindingName.ToLower()}`"))
+                {
+                    totalCount = int.Parse(queryData.Rows[0][0].ToString());
+                }
             }
-            int lowerBounds = 0;
-            int loadCount;
+                
+            int loaded = 0;
             var results = new List<Dictionary<string, object>>(totalCount);
-            do
+
+            using (var data = adapter.Query($"SELECT * FROM `{bindingName.ToLower()}`{orderClause}"))
             {
-                var page = LoadRecordPage(lowerBounds, pageSize, adapter, bindingName, orderClause);
-                loadCount = page.Count;
-                results.AddRange(page);
+                foreach (DataRow row in data.Rows)
+                {
+                    results.Add(ConvertDataRowToDictionary(row));
 
-                lowerBounds += pageSize;
-
-                // Visual studio says these casts are redundant but it does not work without them
-                double percent = ((double)Math.Min(totalCount, lowerBounds) / (double)totalCount);
-                // Report 0 .. 0.8 only
-                updateProgress(percent * 0.8);
+                    loaded++;
+                    if (loaded % pageSize == 0)
+                    {
+                        // Visual studio says these casts are redundant but it does not work without them
+                        double percent = ((double)Math.Min(totalCount, loaded) / (double)totalCount);
+                        // Report 0 .. 0.8 only
+                        updateProgress(percent * 0.8);
+                    }
+                } 
             }
-            while (loadCount > 0);
 
             return results;
         }
@@ -158,7 +166,7 @@ namespace SpellEditor.Sources.DBC
 
         public void SaveDbcFile(MainWindow.UpdateProgressFunc updateProgress, DBCBodyToSerialize body, Binding.Binding binding)
         {
-            string path = $"Export/{binding.Name}.dbc";
+            string path = $"{Config.Config.ExportDirectory}/{binding.Name}.dbc";
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             if (File.Exists(path))
                 File.Delete(path);
@@ -240,7 +248,6 @@ namespace SpellEditor.Sources.DBC
                 }
             }
         }
-
         protected string GetAllLocaleStringsForField(string fieldName, Dictionary<string, object> record)
         {
             uint numLocales = WoWVersionManager.GetInstance().SelectedVersion().NumLocales;

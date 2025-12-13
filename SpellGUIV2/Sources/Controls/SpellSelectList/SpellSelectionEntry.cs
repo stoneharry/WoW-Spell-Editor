@@ -59,7 +59,10 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             uint.TryParse(row["id"].ToString(), out _SpellId);
             _Text.Text = BuildText(row, language);
             uint.TryParse(row["SpellIconID"].ToString(), out uint iconId);
-            _Image.ToolTip = iconId.ToString();
+            var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
+            if (loadIcons != null)
+                _Image.ToolTip = iconId.ToString() + " - " + loadIcons.GetIconPath(iconId) + ".blp";
+
             _Dirty = true;
         }
 
@@ -76,7 +79,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             var iconStr = _Image.ToolTip.ToString();
             if (iconStr.Length == 0)
                 return 0u;
-            return uint.Parse(iconStr);
+            return uint.Parse(iconStr.Substring(0, iconStr.IndexOf('-')).Trim());
         }
 
         public uint GetDuplicateSpellId() => _DuplicateIdBox == null ? 0 : uint.Parse(_DuplicateIdBox.Text);
@@ -108,8 +111,9 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             if (loadIcons != null)
             {
                 _Dirty = false;
-                var iconId = uint.Parse(image.ToolTip.ToString());
-                var filePath = loadIcons.GetIconPath(iconId) + ".blp";
+                //var iconId = uint.Parse(image.ToolTip.ToString());
+                //var filePath = loadIcons.GetIconPath(iconId) + ".blp";
+                var filePath = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
                 image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
             }
             // Load context menu

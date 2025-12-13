@@ -71,10 +71,23 @@ namespace SpellEditor.Sources.Controls
             using (var adapter = AdapterFactory.Instance.GetAdapter(false))
             {
                 var newLocale = LocaleManager.Instance.GetLocale(adapter);
-                if (newLocale != _Language && (newLocale != -1 || _Language == -1))
+                string oldName = "SpellName" + _Language;
+                string newName = "SpellName" + newLocale;
+
+                if (newLocale != _Language && oldName != newName && (newLocale != -1 || _Language == -1))
                 {
-                    _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
-                    SetLanguage(newLocale);
+                    if (_Table.Columns.Contains(newName))
+                    {
+                        // Temporarily rename newName column to avoid conflict
+                        _Table.Columns[newName].ColumnName = "__temp__";
+                    }
+
+                    _Table.Columns[oldName].ColumnName = newName;
+
+                    if (_Table.Columns.Contains("__temp__"))
+                    {
+                        _Table.Columns["__temp__"].ColumnName = oldName;
+                    }
                 }
 
                 var selectSpellWatch = new Stopwatch();
