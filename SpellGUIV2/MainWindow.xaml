@@ -506,7 +506,7 @@
                                 <StackPanel Name="TargetEditorGrid"/>
                             </ScrollViewer>
                             <Label Content="{DynamicResource labProcs}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="590,18,0,0"/>
-                            <ScrollViewer Margin="456,49,400,38">
+                            <ScrollViewer Margin="456,49,400,-36">
                                 <StackPanel Name="ProcEditorGrid"/>
                             </ScrollViewer>
                             <Label Content="{DynamicResource labProcCharges}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="900,160,0,0"/>

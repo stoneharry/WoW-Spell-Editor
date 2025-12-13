@@ -680,45 +680,31 @@
 		Familier non combattant |
 		Nuage de gaz
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         Aucun |
-    	Défense |
-    	Sans santé 20% |
-    	Berseking |
-    	Jugement |
-    	Parade du lanceur |
-    	Victoire imminente |
-    	Inconnu 11 |
-    	Sans santé 35% |
-    	Enragé |
-    	Inconnu 22 |
-    	Santé au-dessus de 75%
-    </system:String>
-    <system:String x:Key="target_aura_state_strings">
-        Aucun |
-    	Sans santé 20% |
-    	Berseking |
-    	Sans santé 35% |
-    	Conflagration |
-    	Rétablissement rapide |
-    	Poison mortel |
-    	Saignement
-    </system:String>
-    <system:String x:Key="caster_aura_state_strings_not">
-        Aucun |
-    	Sans santé 20% |
-    	Gelé |
-    	Inconnu 7 |
-    	Feu stellaire |
-    	Inconnu 20
-    </system:String>
-    <system:String x:Key="target_aura_state_strings_not">
-        Aucun |
-   		Gelé |
-   		Inconnu 8 |
-   		Inconnu 11 |
-   		Feu stellaire |
-   		Inconnu 22
+		Défense |
+		Vie inférieure à 20% |
+		Furie berserker |
+		Gelé |
+		Jugement |
+		Inconnu 6 |
+		Parade du chasseur |
+		Inconnu 8 |
+		Inconnu 9 |
+		Ruée victorieuse du guerrier |
+		Inconnu 11 |
+		Lucioles |
+		Vie inférieure à 35% |
+		Conflagration |
+		Rétablissement rapide |
+		Poison mortel |
+		Enrager |
+		Saignement |
+		Parade |
+		Inconnu 20 |
+		Inconnu 21 |
+		Inconnu 22 |
+		Vie supérieure à 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
 		Non-équipé |

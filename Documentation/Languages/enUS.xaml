@@ -694,31 +694,31 @@
         Unknown 22 |
         Health Above 75%
     </system:String>
-    <system:String x:Key="target_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         None |
-        Healthless 20% |    
+        Defense |
+        Healthless 20% |
         Berserking |
+        Frozen |
+        Judgement |
+        Unknown6 |
+        Hunter Parry |
+        Unknown8 |
+        Unknown9 |
+        Warrior Victory Rush |
+        Unknown11 |
+        Faerie Fire |
         Healthless 35% |
         Conflagrate |
         Swiftmend |
         Deadly Poison |
-        Bleeding
-    </system:String>
-    <system:String x:Key="caster_aura_state_strings_not">
-        None |
-        Healthless 20% |
-        Frozen |
-        Unknown 7 |
-        Faerie Fire |
-        Unknown 20
-    </system:String>
-    <system:String x:Key="target_aura_state_strings_not">
-        None |
-        Frozen |
-        Unknown 8 |
-        Unknown 11 |
-        Faerie Fire |
-        Unknown 22
+        Enrage |
+        Bleeding |
+        Parry |
+        Unknown20 |
+        Unknown21 |
+        Unknown22 |
+        Health Above 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         Non-Equip |

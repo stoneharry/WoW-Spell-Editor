@@ -680,45 +680,31 @@
         非战斗宠物 |
         Gas Cloud
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         无 |
         防御 |
         生命值低于 20% |
         狂暴 |
+        冻结 |
         审判 |
+        未知 6 |
         猎人招架 |
-        胜利冲击 |
+        未知 8 |
+        未知 9 |
+        战士胜利冲击 |
         未知 11 |
+        精灵之火 |
         生命值低于 35% |
-        激怒 |
-        未知 22 |
-        生命值高于 75%
-    </system:String>
-    <system:String x:Key="target_aura_state_strings">
-        无 |
-        生命值低于 20% |
-        狂暴 |
-        生命值低于 35% |
-        火焰吞噬 |
+        燃烧 |
         迅捷治愈 |
         致命毒药 |
-        流血
-    </system:String>
-    <system:String x:Key="caster_aura_state_strings_not">
-        无 |
-        生命值低于 20% |
-        冰冻 |
-        未知 7 |
-        精灵之火 |
-        未知 20
-    </system:String>
-    <system:String x:Key="target_aura_state_strings_not">
-        无 |
-        冰冻 |
-        未知 8 |
-        未知 11 |
-        精灵之火 |
-        未知 22
+        激怒 |
+        流血 |
+        招架 |
+        未知 20 |
+        未知 21 |
+        未知 22 |
+        生命值高于 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         非装备 |

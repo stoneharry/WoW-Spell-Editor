@@ -351,20 +351,17 @@ namespace SpellEditor
             }
 
             CasterAuraState.Items.Clear();
-            string[] caster_aura_state_strings = SafeTryFindResource("caster_aura_state_strings").Split('|');
-            foreach (string casterAuraState in caster_aura_state_strings) { CasterAuraState.Items.Add(casterAuraState); }
-
             TargetAuraState.Items.Clear();
-            string[] target_aura_state_strings = SafeTryFindResource("target_aura_state_strings").Split('|');
-            foreach (string targetAuraState in target_aura_state_strings) { TargetAuraState.Items.Add(targetAuraState); }
-
             CasterAuraStateNot.Items.Clear();
-            string[] caster_aura_state_strings_not = SafeTryFindResource("caster_aura_state_strings_not").Split('|');
-            foreach (string casterAuraStateNot in caster_aura_state_strings_not) { CasterAuraStateNot.Items.Add(casterAuraStateNot); }
-
             TargetAuraStateNot.Items.Clear();
-            string[] target_aura_state_strings_not = SafeTryFindResource("target_aura_state_strings_not").Split('|');
-            foreach (string targetAuraStateNot in target_aura_state_strings_not) { TargetAuraStateNot.Items.Add(targetAuraStateNot); }
+            string[] aura_state_strings = SafeTryFindResource("aura_state_strings").Split('|');
+            foreach (string casterAuraState in aura_state_strings) 
+            { 
+                CasterAuraState.Items.Add(casterAuraState);
+                TargetAuraState.Items.Add(casterAuraState);
+                CasterAuraStateNot.Items.Add(casterAuraState);
+                TargetAuraStateNot.Items.Add(casterAuraState);
+            }
 
             EquippedItemInventoryTypeGrid.Children.Clear();
             equippedItemInventoryTypeMaskBoxes.Clear();
@@ -1538,117 +1535,10 @@ namespace SpellEditor
                     {
                         row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (uint)0x1 : (uint)0x0;
 
-                        switch (CasterAuraState.SelectedIndex)
-                        {
-                            case 0: // None
-                                row["CasterAuraState"] = 0;
-                                break;
-                            case 1: // Defense
-                                row["CasterAuraState"] = 1;
-                                break;
-                            case 2: // Healthless 20%
-                                row["CasterAuraState"] = 2;
-                                break;
-                            case 3: // Berserking
-                                row["CasterAuraState"] = 3;
-                                break;
-                            case 4: // Judgement
-                                row["CasterAuraState"] = 5;
-                                break;
-                            case 5: // Hunter Parry
-                                row["CasterAuraState"] = 7;
-                                break;
-                            case 6: // Victory Rush
-                                row["CasterAuraState"] = 10;
-                                break;
-                            case 7: // Unknown 11
-                                row["CasterAuraState"] = 11;
-                                break;
-                            case 8: // Healthless 35%
-                                row["CasterAuraState"] = 13;
-                                break;
-                            case 9: // Enrage
-                                row["CasterAuraState"] = 17;
-                                break;
-                            case 10: // Unknown 22
-                                row["CasterAuraState"] = 22;
-                                break;
-                            case 11: // Health Above 75%
-                                row["CasterAuraState"] = 23;
-                                break;
-                        }
-
-                        switch (TargetAuraState.SelectedIndex)
-                        {
-                            case 0: // None
-                                row["TargetAuraState"] = 0;
-                                break;
-                            case 1: // Healthless 20%
-                                row["TargetAuraState"] = 2;
-                                break;
-                            case 2: // Berserking
-                                row["TargetAuraState"] = 3;
-                                break;
-                            case 3: // Healthless 35%
-                                row["TargetAuraState"] = 13;
-                                break;
-                            case 4: // Conflagrate
-                                row["TargetAuraState"] = 14;
-                                break;
-                            case 5: // Swiftmend
-                                row["TargetAuraState"] = 15;
-                                break;
-                            case 6: // Deadly Poison
-                                row["TargetAuraState"] = 16;
-                                break;
-                            case 7: // Bleeding
-                                row["TargetAuraState"] = 18;
-                                break;
-                        }
-
-                        switch (CasterAuraStateNot.SelectedIndex)
-                        {
-                            case 0: // None
-                                row["CasterAuraStateNot"] = 0;
-                                break;
-                            case 1: // Healthless 20%
-                                row["CasterAuraStateNot"] = 2;
-                                break;
-                            case 2: // Frozen
-                                row["CasterAuraStateNot"] = 4;
-                                break;
-                            case 3: // Unknown 7
-                                row["CasterAuraStateNot"] = 7;
-                                break;
-                            case 4: // Faerie Fire
-                                row["CasterAuraStateNot"] = 12;
-                                break;
-                            case 5: // Unknown 20
-                                row["CasterAuraStateNot"] = 20;
-                                break;
-                        }
-
-                        switch (TargetAuraStateNot.SelectedIndex)
-                        {
-                            case 0: // None
-                                row["TargetAuraStateNot"] = 0;
-                                break;
-                            case 1: // Frozen
-                                row["CasterAuraStateNot"] = 4;
-                                break;
-                            case 2: // Unknown 8
-                                row["TargetAuraStateNot"] = 8;
-                                break;
-                            case 3: // Unknown 11
-                                row["TargetAuraStateNot"] = 11;
-                                break;
-                            case 4: // Faerie Fire
-                                row["TargetAuraStateNot"] = 12;
-                                break;
-                            case 5: // Unknown 22
-                                row["TargetAuraStateNot"] = 22;
-                                break;
-                        }
+                        row["CasterAuraState"] = CasterAuraState.SelectedIndex;
+                        row["TargetAuraState"] = TargetAuraState.SelectedIndex;
+                        row["CasterAuraStateNot"] = CasterAuraStateNot.SelectedIndex;
+                        row["TargetAuraStateNot"] = TargetAuraStateNot.SelectedIndex;
                     }
 
                     row["RecoveryTime"] = uint.Parse(RecoveryTime.Text);
@@ -2418,117 +2308,10 @@ namespace SpellEditor
                             var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
                             Range.ThreadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(row["RangeIndex"].ToString()));
 
-                            switch (uint.Parse(row["CasterAuraState"].ToString()))
-                            {
-                                case 0: // None
-                                    CasterAuraState.ThreadSafeIndex = 0;
-                                    break;
-                                case 1: // Defense
-                                    CasterAuraState.ThreadSafeIndex = 1;
-                                    break;
-                                case 2: // Healthless 20%
-                                    CasterAuraState.ThreadSafeIndex = 2;
-                                    break;
-                                case 3: // Berserking
-                                    CasterAuraState.ThreadSafeIndex = 3;
-                                    break;
-                                case 5: // Judgement
-                                    CasterAuraState.ThreadSafeIndex = 4;
-                                    break;
-                                case 7: // Hunter Parry
-                                    CasterAuraState.ThreadSafeIndex = 5;
-                                    break;
-                                case 10: // Victory Rush
-                                    CasterAuraState.ThreadSafeIndex = 6;
-                                    break;
-                                case 11: // Unknown 1
-                                    CasterAuraState.ThreadSafeIndex = 7;
-                                    break;
-                                case 13: // Healthless 35%
-                                    CasterAuraState.ThreadSafeIndex = 8;
-                                    break;
-                                case 17: // Enrage
-                                    CasterAuraState.ThreadSafeIndex = 9;
-                                    break;
-                                case 22: // Unknown 2
-                                    CasterAuraState.ThreadSafeIndex = 10;
-                                    break;
-                                case 23: // Health Above 75%
-                                    CasterAuraState.ThreadSafeIndex = 11;
-                                    break;
-                            }
-
-                            switch (uint.Parse(row["TargetAuraState"].ToString()))
-                            {
-                                case 0: // None
-                                    TargetAuraState.ThreadSafeIndex = 0;
-                                    break;
-                                case 2: // Healthless 20%
-                                    TargetAuraState.ThreadSafeIndex = 1;
-                                    break;
-                                case 3: // Berserking
-                                    TargetAuraState.ThreadSafeIndex = 2;
-                                    break;
-                                case 13: // Healthless 35%
-                                    TargetAuraState.ThreadSafeIndex = 3;
-                                    break;
-                                case 14: // Conflagrate
-                                    TargetAuraState.ThreadSafeIndex = 4;
-                                    break;
-                                case 15: // Swiftmend
-                                    TargetAuraState.ThreadSafeIndex = 5;
-                                    break;
-                                case 16: // Deadly Poison
-                                    TargetAuraState.ThreadSafeIndex = 6;
-                                    break;
-                                case 18: // Bleeding
-                                    TargetAuraState.ThreadSafeIndex = 7;
-                                    break;
-                            }
-
-                            switch (uint.Parse(row["CasterAuraStateNot"].ToString()))
-                            {
-                                case 0: // None
-                                    CasterAuraStateNot.ThreadSafeIndex = 0;
-                                    break;
-                                case 1: // Healthless 20%
-                                    CasterAuraStateNot.ThreadSafeIndex = 1;
-                                    break;
-                                case 2: // Frozen
-                                    CasterAuraStateNot.ThreadSafeIndex = 2;
-                                    break;
-                                case 3: // Unknown 7
-                                    CasterAuraStateNot.ThreadSafeIndex = 3;
-                                    break;
-                                case 4: // Faerie Fire
-                                    CasterAuraStateNot.ThreadSafeIndex = 4;
-                                    break;
-                                case 5: // Unknown 20
-                                    CasterAuraStateNot.ThreadSafeIndex = 5;
-                                    break;
-                            }
-
-                            switch (uint.Parse(row["TargetAuraStateNot"].ToString()))
-                            {
-                                case 0: // None
-                                    TargetAuraStateNot.ThreadSafeIndex = 0;
-                                    break;
-                                case 1: // Frozen
-                                    TargetAuraStateNot.ThreadSafeIndex = 1;
-                                    break;
-                                case 2: // Unknown 8
-                                    TargetAuraStateNot.ThreadSafeIndex = 2;
-                                    break;
-                                case 3: // Unknown 11
-                                    TargetAuraStateNot.ThreadSafeIndex = 3;
-                                    break;
-                                case 4: // Faerie Fire
-                                    TargetAuraStateNot.ThreadSafeIndex = 4;
-                                    break;
-                                case 5: // Unknown 22
-                                    TargetAuraStateNot.ThreadSafeIndex = 5;
-                                    break;
-                            }
+                            CasterAuraState.ThreadSafeIndex = uint.Parse(row["CasterAuraState"].ToString());
+                            TargetAuraState.ThreadSafeIndex = uint.Parse(row["TargetAuraState"].ToString());
+                            CasterAuraStateNot.ThreadSafeIndex = uint.Parse(row["CasterAuraStateNot"].ToString());
+                            TargetAuraStateNot.ThreadSafeIndex = uint.Parse(row["TargetAuraStateNot"].ToString());
 
                             MaximumLevel.ThreadSafeText = uint.Parse(row["MaximumLevel"].ToString());
                             BaseLevel.ThreadSafeText = uint.Parse(row["BaseLevel"].ToString());
