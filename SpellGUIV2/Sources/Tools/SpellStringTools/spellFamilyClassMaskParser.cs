@@ -73,55 +73,61 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
         }
 
-        public void UpdateSpellList(MainWindow window, uint spellId = 0)
+        public void UpdateSpellList(uint spellId, uint oldFamilyName, uint[] OldSpellFamilyFlag, uint FamilyName, uint[] SpellFamilyFlag)
         {
-            if (window.selectedID == 0)
-                return;
-
             if (spellId == 0)
-                spellId = window.selectedID;
-
-            var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
-
-            uint SpellFamilyName = uint.Parse(window.SpellFamilyName.Text);
-
-            if (SpellFamilyName == 0)
                 return;
 
-            uint[] SpellFamilyFlag;
-            if (isWotlkOrGreater)
+            if (oldFamilyName > 0)
             {
-                SpellFamilyFlag = new uint[] { uint.Parse(window.SpellFamilyFlags.Text), uint.Parse(window.SpellFamilyFlags1.Text), uint.Parse(window.SpellFamilyFlags2.Text) };
-            }
-            else
-            {
-                SpellFamilyFlag = new uint[] { uint.Parse(window.SpellFamilyFlags.Text), uint.Parse(window.SpellFamilyFlags1.Text) };
-            }
-
-            for (uint MaskIndex = 0; MaskIndex < (isWotlkOrGreater ? 3 : 2); MaskIndex++)
-            {
-                if (SpellFamilyFlag[MaskIndex] != 0)
+                for (uint maskIndex = 0; maskIndex < OldSpellFamilyFlag.Length; maskIndex++)
                 {
+                    uint value = OldSpellFamilyFlag[maskIndex];
+                    if (value == 0)
+                        continue;
+
                     for (uint i = 0; i < 32; i++)
                     {
-                        uint Mask = (uint)Math.Pow(2, i);
-
-                        if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
+                        uint mask = (uint)Math.Pow(2, i);
+                        if ((value & mask) != 0)
                         {
-                            if (SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
-                                SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
-
-                            SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(spellId);
+                            var list = SpellFamilyClassMaskStore[oldFamilyName, maskIndex, i];
+                            if (list != null)
+                            {
+                                list.Remove(spellId);
+                                if (list.Count == 0)
+                                    SpellFamilyClassMaskStore[oldFamilyName, maskIndex, i] = null;
+                            }
                         }
                     }
                 }
             }
+            
+            if (FamilyName > 0)
+            {
+                for (uint maskIndex = 0; maskIndex < SpellFamilyFlag.Length; maskIndex++)
+                {
+                    uint flags = SpellFamilyFlag[maskIndex];
+                    if (flags == 0)
+                        continue;
+
+                    for (uint i = 0; i < 32; i++)
+                    {
+                        uint mask = (uint)Math.Pow(2, i);
+                        if ((flags & mask) != 0)
+                        {
+                            if (SpellFamilyClassMaskStore[FamilyName, maskIndex, i] == null)
+                                SpellFamilyClassMaskStore[FamilyName, maskIndex, i] = new ArrayList();
+
+                            SpellFamilyClassMaskStore[FamilyName, maskIndex, i].Add(spellId);
+                        }
+                    }
+                }
+            } 
         }
 
         public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName, bool isWotlkOrGreater, IDatabaseAdapter adapter, List<uint> masks)
         {
-            UpdateSpellList(window);
-
             UpdateSpellFamilyClassMask(window, window.SpellMask11, familyName, 0);
             UpdateSpellFamilyClassMask(window, window.SpellMask21, familyName, 1);
             UpdateSpellFamilyClassMask(window, window.SpellMask31, familyName, 2);

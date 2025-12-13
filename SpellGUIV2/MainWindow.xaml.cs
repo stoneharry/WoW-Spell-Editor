@@ -1356,6 +1356,15 @@ namespace SpellEditor
                         uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
                         uint.Parse(row["EffectSpellClassMaskC3"].ToString())
                     };
+                    uint[] OldSpellFamilyFlag; 
+                    if (isWotlkOrGreater)
+                    {
+                        OldSpellFamilyFlag = new uint[] { uint.Parse(row["SpellFamilyFlags"].ToString()), uint.Parse(row["SpellFamilyFlags1"].ToString()), uint.Parse(row["SpellFamilyFlags2"].ToString()) };
+                    }
+                    else
+                    {
+                        OldSpellFamilyFlag = new uint[] { uint.Parse(row["SpellFamilyFlags"].ToString()), uint.Parse(row["SpellFamilyFlags1"].ToString()) };
+                    }
 
                     uint maskk = 0;
                     uint flagg = 1;
@@ -1866,7 +1875,7 @@ namespace SpellEditor
                     SelectSpell.UpdateSpell(row);
 
                     LoadBodyData();
-                    SaveSpellMasks(oldFamilyName, oldMasks);
+                    SaveSpellMasks(oldFamilyName, oldMasks, OldSpellFamilyFlag);
                 }
                 catch (Exception ex)
                 {
@@ -1910,7 +1919,7 @@ namespace SpellEditor
             }
         }
 
-        private void SaveSpellMasks(uint oldFamilyName, List<uint> oldMasks)
+        private void SaveSpellMasks(uint oldFamilyName, List<uint> oldMasks, uint[] OldSpellFamilyFlag)
         {
             uint familyName = uint.Parse(SpellFamilyName.Text);
             bool same = familyName == oldFamilyName;
@@ -1927,6 +1936,19 @@ namespace SpellEditor
                 uint.Parse(SpellMask23.Text),
                 uint.Parse(SpellMask33.Text)
             };
+
+            uint[] SpellFamilyFlag;
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                SpellFamilyFlag = new uint[] { uint.Parse(SpellFamilyFlags.Text), uint.Parse(SpellFamilyFlags1.Text), uint.Parse(SpellFamilyFlags2.Text) };
+            }
+            else
+            {
+                SpellFamilyFlag = new uint[] { uint.Parse(SpellFamilyFlags.Text), uint.Parse(SpellFamilyFlags1.Text) };
+            }
+
+            if (!same || !SpellFamilyFlag.SequenceEqual(OldSpellFamilyFlag))
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellList(selectedID, oldFamilyName, OldSpellFamilyFlag, familyName, SpellFamilyFlag)));
 
             if (same)
                 same = masks.SequenceEqual(oldMasks);
