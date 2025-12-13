@@ -986,6 +986,8 @@ namespace SpellEditor
             await controller.CloseAsync();
             LoadBodyData();
             PopulateSelectSpell();
+
+            Contain_SpellPriority = adapter.Query("SHOW COLUMNS FROM `spell` LIKE 'SpellPriority'").Rows.Count > 0;
         }
 
         private void FocusLanguage()
@@ -2138,27 +2140,6 @@ namespace SpellEditor
             }
             SelectSpell.PopulateSelectSpell();
             FocusLanguage();
-
-            /*if (spellRows.Count == 0)
-            {
-                using (var result = adapter.Query($"SELECT * FROM `spell`"))
-                {
-                    var rows = result.Rows;
-
-                    Contain_SpellPriority = result.Columns.Contains("SpellPriority");
-
-                    foreach (DataRow row in rows)
-                    {
-                        uint id = uint.Parse(row["ID"].ToString());
-
-                        if (!spellRows.ContainsKey(id))
-                            spellRows.Add(id, row);
-                    }
-                    spellRows.Add(1, null);
-                }
-
-                Logger.Info($"spellRows loaded");
-            }*/
 
             prepareIconEditor();
         }
