@@ -91,8 +91,8 @@
 
 	<system:String x:Key="labCasterAuraSpell">Sort d’aura du lanceur :</system:String>
     <system:String x:Key="labTargetAuraSpell">Sort d’aura de la cible :</system:String>
-    <system:String x:Key="labExcludeCasterAuraSpell">Exclure le sort d’aura du lanceur :</system:String>
-    <system:String x:Key="labExcludeTargetAuraSpell">Exclure le sort d’aura du lanceur :</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">Sort d’aura du lanceur Exclure:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">Sort d’aura de la cible Exclure:</system:String>
 
     <system:String x:Key="labStanceBarOrder">Ordre de la barre de posture :</system:String>
     <system:String x:Key="labPowerDisplayId">ID d’affichage de la ressource :</system:String>
@@ -174,12 +174,19 @@
     <system:String x:Key="labAttributesEx6">Attributs Ex6 :</system:String>
     <system:String x:Key="labAttributesEx7">Attributs Ex7 :</system:String>
     <system:String x:Key="labCreatureType">Type de créature :</system:String>
-    <system:String x:Key="labStances">Postures :</system:String>
-	<system:String x:Key="labStancesNot">Exclure Postures:</system:String>
+
+    <system:String x:Key="labStances">Postures requises :</system:String>
+	<system:String x:Key="labStancesNot">Incantation impossible dans ces postures :</system:String>
+
     <system:String x:Key="labCurrentIcon">Icône actuelle :</system:String>
+	<system:String x:Key="labActiveIcon">Icône d’action:</system:String>
+
     <system:String x:Key="labNewIcon">Nouvelle icône :</system:String>
     <system:String x:Key="labFiltericons">Filtre d'icônes :</system:String>
-    <system:String x:Key="butSaveIcon">Confirmer</system:String>
+
+	<system:String x:Key="butSaveSpellIcon">Sauver icône sort</system:String>
+    <system:String x:Key="butSaveActiveIcon">Sauver icône action</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur &amp; la hauteur de l'icône (en pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Importer/Exporter</system:String>
     <system:String x:Key="butTruncateTable">Table tronquée</system:String>
@@ -192,10 +199,14 @@
 	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingue</system:String>
 
-	<system:String x:Key="resetEffects">Réinit. effet</system:String>
-    <system:String x:Key="copyEffect1">Copier l’effet 1</system:String>
-    <system:String x:Key="copyEffect2">Copier l’effet 2</system:String>
-    <system:String x:Key="copyEffect3">Copier l’effet 3</system:String>
+	<system:String x:Key="copyEffect">Copier l’effet</system:String>
+	<system:String x:Key="pasteEffect">Coller l’effet</system:String>
+	<system:String x:Key="clearEffect">Effacer l’effet</system:String>
+	<system:String x:Key="resetEffect">Réinitialiser l’effet</system:String>
+	<system:String x:Key="cloneEffect1">Cloner l’effet 1</system:String>
+	<system:String x:Key="cloneEffect2">Cloner l’effet 2</system:String>
+	<system:String x:Key="cloneEffect3">Cloner l’effet 3</system:String>
+
 
     <!--#endregion-->
 

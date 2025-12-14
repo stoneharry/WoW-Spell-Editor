@@ -569,9 +569,12 @@
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                         <Label Content="{DynamicResource spellMasks}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="445,315,0,0"/>
-                                        <Button Name="ResetEffect1" Content="{DynamicResource resetEffects}" Tag="1,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect1_CopyEffect2" Content="{DynamicResource copyEffect2}" Tag="1,2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect1_CopyEffect3" Content="{DynamicResource copyEffect3}" Tag="1,3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="CopyEffect1" Content="{DynamicResource copyEffect}" Tag="4,1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="PasteEffect1" Content="{DynamicResource pasteEffect}" Tag="1,6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ClearEffect1" Content="{DynamicResource clearEffect}" Tag="1,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ResetEffect1" Content="{DynamicResource resetEffect}" Tag="1,5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect1_CloneEffect2" Content="{DynamicResource cloneEffect2}" Tag="1,2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect1_CloneEffect3" Content="{DynamicResource cloneEffect3}" Tag="1,3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects2}">
@@ -625,9 +628,12 @@
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                         <Label Content="{DynamicResource spellMasks}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="445,315,0,0"/>
-                                        <Button Name="ResetEffect2" Content="{DynamicResource resetEffects}" Tag="2,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect2_CopyEffect1" Content="{DynamicResource copyEffect1}" Tag="2,1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect2_CopyEffect3" Content="{DynamicResource copyEffect3}" Tag="2,3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="CopyEffect2" Content="{DynamicResource copyEffect}" Tag="4,2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="PasteEffect2" Content="{DynamicResource pasteEffect}" Tag="2,6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ClearEffect2" Content="{DynamicResource clearEffect}" Tag="2,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ResetEffect2" Content="{DynamicResource resetEffect}" Tag="2,5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect2_CloneEffect1" Content="{DynamicResource cloneEffect1}" Tag="2,1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect2_CloneEffect3" Content="{DynamicResource cloneEffect3}" Tag="2,3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="{DynamicResource SpellEffects3}">
@@ -681,9 +687,12 @@
                                         <Label Content="{DynamicResource filterClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="929,45,0,0" RenderTransformOrigin="0.6,3.9"/>
                                         <c2:ThreadSafeTextBox x:Name="FilterClassMaskSpells3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1076,45,0,0" Width="153" TextWrapping="Wrap" TextChanged="FilterClassMaskSpells_TextChanged"/>
                                         <Label Content="{DynamicResource spellMasks}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="445,315,0,0"/>
-                                        <Button Name="ResetEffect3" Content="{DynamicResource resetEffects}" Tag="3,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect3_CopyEffect1" Content="{DynamicResource copyEffect1}" Tag="3,1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
-                                        <Button Name="Effect3_CopyEffect2" Content="{DynamicResource copyEffect2}" Tag="3,2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-38,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="CopyEffect3" Content="{DynamicResource copyEffect}" Tag="4,3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="PasteEffect3" Content="{DynamicResource pasteEffect}" Tag="3,6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ClearEffect3" Content="{DynamicResource clearEffect}" Tag="3,4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-45,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="ResetEffect3" Content="{DynamicResource resetEffect}" Tag="3,5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="815,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect3_CloneEffect1" Content="{DynamicResource cloneEffect1}" Tag="3,1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="605,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
+                                        <Button Name="Effect3_CloneEffect2" Content="{DynamicResource cloneEffect2}" Tag="3,2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="710,-10,0,0" Height="30" Width="100" Click="CopyOrResetSpellEffectButton_Click" Grid.Row="0" Grid.Column="6"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>
@@ -894,24 +903,27 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="AUTO"/>
-                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="140"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Name="ResetSpellIconID" Content="{DynamicResource butResetSpellIconID}" Margin="10" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="0"/>
-                    <Button Name="ResetActiveIconID" Content="{DynamicResource butResetActiveIconID}" Margin="10" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="1"/>
-                    <Button Name="SaveIcon" Content="{DynamicResource butSaveIcon}" HorizontalAlignment="Right" Margin="5" Height="30" Width="100" Click="Button_Click" Grid.Row="0" Grid.Column="6"/>
-                    <Label Content="{DynamicResource labCurrentIcon}" Margin="5" Grid.Row="1" Grid.Column="0"/>
-                    <Image Name="CurrentIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="1"/>
-                    <Label Content="{DynamicResource labNewIcon}" Margin="5" Grid.Row="1" Grid.Column="2"/>
-                    <Image Name="NewIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="3"/>
-                    <Label Content="{DynamicResource labFiltericons}" Margin="5" Grid.Row="1" Grid.Column="4"/>
-                    <c2:ThreadSafeTextBox x:Name="FilterIcons" Margin="5" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                    <Slider x:Name="slider" Margin="20,10,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE"
+                    <Button Name="ResetSpellIconID" Content="{DynamicResource butResetSpellIconID}" Margin="20,0,0,0" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="0"/>
+                    <Button Name="ResetActiveIconID" Content="{DynamicResource butResetActiveIconID}" Margin="10,0,0,0" Height="30" Width="120" Click="Button_Click" Grid.Row="0" Grid.Column="1"/>
+                    <Button Name="SaveSpellIcon" Content="{DynamicResource butSaveSpellIcon}" HorizontalAlignment="Right" Margin="0,0,10,0" Height="30" Width="105" Click="Button_Click" Grid.Row="0" Grid.Column="6"/>
+                    <Button Name="SaveActiveIcon" Content="{DynamicResource butSaveActiveIcon}" HorizontalAlignment="Right" Margin="0,0,135,0" Height="30" Width="105" Click="Button_Click" Grid.Row="0" Grid.Column="6"/>
+                    <Label Content="{DynamicResource labCurrentIcon}" Margin="20,10,0,0" Grid.Row="1" Grid.Column="0"/>
+                    <Image Name="CurrentIcon" Margin="0,10,-124,0" Height="64" Width="64" Grid.Row="1" Grid.Column="0"/>
+                    <Label Content="{DynamicResource labActiveIcon}" Margin="32,10,-40,0" Grid.Row="1" Grid.Column="1"/>
+                    <Image Name="ActionIcon" Margin="-97,10,5,0" Height="64" Width="64" Grid.Row="1" Grid.Column="2"/>
+                    <Label Content="{DynamicResource labNewIcon}" Margin="55,10,0,0" Grid.Row="1" Grid.Column="2"/>
+                    <Image Name="NewIcon" Margin="18,10,5,0" Height="64" Width="64" Grid.Row="1" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labFiltericons}" Margin="10" Grid.Row="1" Grid.Column="4"/>
+                    <c2:ThreadSafeTextBox x:Name="FilterIcons" Margin="10" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                    <Slider x:Name="slider" Margin="20,15,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE"
                             ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" 
                             Focusable="False" Grid.Row="1" Grid.Column="6"/>
                     <ScrollViewer Name="IconScrollViewer" Margin="10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" >

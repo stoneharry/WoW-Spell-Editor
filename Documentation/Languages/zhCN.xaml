@@ -174,12 +174,19 @@
     <system:String x:Key="labAttributesEx6">属性 Ex6:</system:String>
     <system:String x:Key="labAttributesEx7">属性 Ex7:</system:String>
     <system:String x:Key="labCreatureType">生物类型:</system:String>
-    <system:String x:Key="labStances">姿态:</system:String>
-    <system:String x:Key="labStancesNot">排除的姿态:</system:String>
+
+    <system:String x:Key="labStances">需要的姿态:</system:String>
+    <system:String x:Key="labStancesNot">无法在这些姿态下施放:</system:String>
+
     <system:String x:Key="labCurrentIcon">当前图标:</system:String>
+    <system:String x:Key="labActiveIcon">动作图标:</system:String>
+
     <system:String x:Key="labNewIcon">新图标:</system:String>
     <system:String x:Key="labFiltericons">过滤图标:</system:String>
-    <system:String x:Key="butSaveIcon">确认</system:String>
+
+    <system:String x:Key="butSaveSpellIcon">保存法术图标</system:String>
+    <system:String x:Key="butSaveActiveIcon">保存动作图标</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">控制图标的宽度和高度(像素)</system:String>
     <system:String x:Key="butImportExportDBC">导入/导出</system:String>
     <system:String x:Key="butTruncateTable">清空表格</system:String>
@@ -192,10 +199,14 @@
 	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">多语言</system:String>
 
-    <system:String x:Key="resetEffects">重置效果</system:String>
-    <system:String x:Key="copyEffect1">复制效果 1</system:String>
-    <system:String x:Key="copyEffect2">复制效果 2</system:String>
-    <system:String x:Key="copyEffect3">复制效果 3</system:String>
+    <system:String x:Key="copyEffect">复制效果</system:String>
+    <system:String x:Key="pasteEffect">粘贴效果</system:String>
+    <system:String x:Key="clearEffect">清除效果</system:String>
+    <system:String x:Key="resetEffect">重置效果</system:String>
+    <system:String x:Key="cloneEffect1">克隆效果 1</system:String>
+    <system:String x:Key="cloneEffect2">克隆效果 2</system:String>
+    <system:String x:Key="cloneEffect3">克隆效果 3</system:String>
+
 
     <!--#endregion-->
 

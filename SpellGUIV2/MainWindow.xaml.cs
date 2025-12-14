@@ -38,13 +38,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using System.Windows.Controls.Primitives;
+using static SpellEditor.Sources.DBC.AbstractDBC;
 
 namespace SpellEditor
 {
@@ -85,8 +86,9 @@ namespace SpellEditor
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
         private bool Contain_SpellPriority = true;
         public DBCBodyToSerialize spellBody = new DBCBodyToSerialize();
-        private DataTable selectedDataTable;
+        public DataTable selectedDataTable;
         private PartialLoad loadStage = PartialLoad.Null;
+        private Dictionary<string, object> copiedEffect;
 
         private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
         private readonly List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
@@ -730,9 +732,13 @@ namespace SpellEditor
                 {
                     Visibility = Visibility.Hidden
                 };
-                _LogBookWindow.Show();
-                _LogBookWindow.UpdateLayout();
+                //_LogBookWindow.Show();
+                //_LogBookWindow.UpdateLayout();
             }
+
+            // fuck that shit kek
+            if (_LogBookWindow.Visibility == Visibility.Hidden)
+                return;      
             
             _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
         }
@@ -1867,6 +1873,25 @@ namespace SpellEditor
                     row["StanceBarOrder"] = uint.Parse(StanceBarOrder.Text);
                     row["PowerDisplayId"] = uint.Parse(PowerDisplayId.Text);
 
+                    // just so that reset is updated
+                    if (Config.CacheSpellBody && spellBody != null && spellBody.Records != null)
+                    {
+                        row["EffectRadiusIndex1"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex1"];
+                        row["EffectRadiusIndex2"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex2"];
+                        row["EffectRadiusIndex3"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex3"];
+                    }
+                    else
+                    {
+                        // if caching is disabled
+                        using (var data = adapter.Query($"SELECT EffectRadiusIndex1, EffectRadiusIndex2, EffectRadiusIndex3 FROM `spell` WHERE `ID` = {selectedID} LIMIT 1"))
+                        if (data.Rows.Count > 0)
+                        {
+                            row["EffectRadiusIndex1"] = data.Rows[0]["EffectRadiusIndex1"];
+                            row["EffectRadiusIndex2"] = data.Rows[0]["EffectRadiusIndex2"];
+                            row["EffectRadiusIndex3"] = data.Rows[0]["EffectRadiusIndex3"];
+                        }
+                    }
+
                     row.EndEdit();
                     adapter.CommitChanges(query, q.GetChanges());
 
@@ -1885,37 +1910,27 @@ namespace SpellEditor
                 return;
             }
 
-            if (sender == SaveIcon)
+            if (sender == SaveSpellIcon || sender == ResetSpellIconID)
             {
-                MetroDialogSettings settings = new MetroDialogSettings
-                {
-                    AffirmativeButtonText = SafeTryFindResource("Yes"),
-                    NegativeButtonText = SafeTryFindResource("No")
-                };
+                var newIcon = sender == ResetSpellIconID ? 1 : newIconID;
 
-
-                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("SaveIcon"), style, settings);
-
-                string column = null;
-                if (spellOrActive == MessageDialogResult.Affirmative)
-                    column = "SpellIconID";
-                else if (spellOrActive == MessageDialogResult.Negative)
-                    column = "ActiveIconID";
-                adapter.Execute($"UPDATE `{"spell"}` SET `{column}` = '{newIconID}' WHERE `ID` = '{selectedID}'");
-                RefreshCurrentIcon();
+                adapter.Execute($"UPDATE `{"spell"}` SET `SpellIconID` = '{newIcon}' WHERE `ID` = '{selectedID}'");
+                RefreshCurrentIcon(newIcon);
                 prepareIconEditor();
+                LoadBodyData();
                 return;
             }
 
-            if (sender == ResetSpellIconID)
+            if (sender == SaveActiveIcon || sender == ResetActiveIconID)
             {
-                adapter.Execute($"UPDATE `{"spell"}` SET `{"SpellIconID"}` = '{1}' WHERE `ID` = '{selectedID}'");
+                var newIcon = sender == ResetActiveIconID ? 0 : newIconID;
+
+                adapter.Execute($"UPDATE `{"spell"}` SET `ActiveIconID` = '{newIcon}' WHERE `ID` = '{selectedID}'");
+
+                selectedDataTable.Rows[0]["ActiveIconID"] = newIcon;
+                prepareIconEditor();
+                LoadBodyData();
                 return;
-            }
-            if (sender == ResetActiveIconID)
-            {
-                adapter.Execute($"UPDATE `{"spell"}` SET `{"ActiveIconID"}` = '{0}' WHERE `ID` = '{selectedID}'");
             }
         }
 
@@ -1950,10 +1965,7 @@ namespace SpellEditor
             if (!same || !SpellFamilyFlag.SequenceEqual(OldSpellFamilyFlag))
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellList(selectedID, oldFamilyName, OldSpellFamilyFlag, familyName, SpellFamilyFlag)));
 
-            if (same)
-                same = masks.SequenceEqual(oldMasks);
-
-            if (!same)
+            if (!same || !masks.SequenceEqual(oldMasks))
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, WoWVersionManager.IsWotlkOrGreaterSelected, GetDBAdapter(), masks)));
 
             Logger.Info($"SaveSpellMasks {same}");
@@ -1975,7 +1987,7 @@ namespace SpellEditor
         }
         private void LoadBodyData()
         {
-            if (!Config.CacheSpellBody)
+            if (!Config.CacheSpellBody || saving)
                 return;
 
             var dbc = new GenericDbc();
@@ -2058,26 +2070,6 @@ namespace SpellEditor
         #endregion
 
         #region NewIconClick & UpdateMainWindow
-        private async void NewIconClick(object sender, RoutedEventArgs e)
-        {
-            if (adapter == null) { return; }
-
-            MetroDialogSettings settings = new MetroDialogSettings
-            {
-                AffirmativeButtonText = SafeTryFindResource("SpellIconID"),
-                NegativeButtonText = SafeTryFindResource("ActiveIconID")
-            };
-
-            const MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String4"), style, settings);
-
-            string column = null;
-            if (spellOrActive == MessageDialogResult.Affirmative)
-                column = "SpellIconID";
-            else if (spellOrActive == MessageDialogResult.Negative)
-                column = "ActiveIconID";
-            adapter.Execute($"UPDATE `{"spell"}` SET `{column}` = '{newIconID}' WHERE `ID` = '{selectedID}'");
-        }
 
         private async void UpdateMainWindow()
         {
@@ -2953,86 +2945,138 @@ namespace SpellEditor
             }
         }
 
+        private void CopyOrReset_Helper(string key, int type, object value)
+        {
+            switch(type)
+            {
+                case 1:
+                    {
+                        copiedEffect[key] = value;
+                    }
+                break;
+                case 4:
+                case 2:
+                    {
+                        if (type == 4)
+                            ((FilteredComboBox)FindName(key)).ThreadSafeText = value;
+                        else
+                            ((ThreadSafeTextBox)FindName(key)).ThreadSafeText = value;
+                    }
+                break;
+                case 3:
+                    {
+                        ((ThreadSafeComboBox)FindName(key)).ThreadSafeIndex = value;
+                    }
+                break;
+            }
+        }
+
         private void CopyOrResetSpellEffectButton_Click(object sender, RoutedEventArgs e)
         {
             var btn = (Button)sender;
             var parts = btn.Tag.ToString().Split(',');
 
-            int set = int.Parse(parts[0]);
-            int get = int.Parse(parts[1]);
+            var set = int.Parse(parts[0]);
+            var get = int.Parse(parts[1]);
 
-            var reset = get == 4;
+            var clear = get == 4;
+            var reset = get == 5;
+            var paste = get == 6;
+            var copy = set == 4;
+            var row = selectedDataTable.Rows[0];
 
-            //Logger.Info($"copy effect clicked set={set} get={get}");
+            if (paste && copiedEffect == null)
+                return;
+
+            if (copy && copiedEffect == null)
+                copiedEffect = new Dictionary<string, object>(23);
+
+            if (reset)
+                get = set;
+
+            // this is ugly but gets the job done
 
             try
             {
-                var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
-                var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
-
-                if (reset)
-                    ((FilteredComboBox)FindName($"SpellEffect{set}")).SetTextFromIndex(0);
+                if (clear || reset)
+                    ((FilteredComboBox)FindName($"SpellEffect{set}")).SetTextFromIndex(reset ? uint.Parse(row[$"Effect{get}"].ToString()) : 0);
                 else
-                    ((FilteredComboBox)FindName($"SpellEffect{set}")).ThreadSafeText = ((FilteredComboBox)FindName($"SpellEffect{get}")).Text;
+                    CopyOrReset_Helper(copy ? "SpellEffect" : $"SpellEffect{set}", copy ? 1 : 4, paste ? copiedEffect["SpellEffect"] : ((FilteredComboBox)FindName($"SpellEffect{get}")).Text);
 
-                ((ThreadSafeTextBox)FindName($"DieSides{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"DieSides{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"BasePointsPerLevel{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"BasePointsPerLevel{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"BasePoints{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"BasePoints{get}")).Text;
+                CopyOrReset_Helper(copy ? "DieSides" : $"DieSides{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["DieSides"] : reset ? row[$"EffectDieSides{get}"].ToString() : ((ThreadSafeTextBox)FindName($"DieSides{get}")).Text);
+                CopyOrReset_Helper(copy ? "BasePointsPerLevel" : $"BasePointsPerLevel{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["BasePointsPerLevel"] : reset ? row[$"EffectRealPointsPerLevel{get}"].ToString() : ((ThreadSafeTextBox)FindName($"BasePointsPerLevel{get}")).Text);
+                CopyOrReset_Helper(copy ? "BasePoints" : $"BasePoints{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["BasePoints"] : reset ? row[$"EffectBasePoints{get}"].ToString() : ((ThreadSafeTextBox)FindName($"BasePoints{get}")).Text);
 
-                ((ThreadSafeComboBox)FindName($"Mechanic{set}")).ThreadSafeIndex = reset ? 0 : ((ThreadSafeComboBox)FindName($"Mechanic{get}")).SelectedIndex;
-                ((ThreadSafeComboBox)FindName($"TargetA{set}")).ThreadSafeIndex = reset ? 0 : ((ThreadSafeComboBox)FindName($"TargetA{get}")).SelectedIndex;
-                ((ThreadSafeComboBox)FindName($"TargetB{set}")).ThreadSafeIndex = reset ? 0 : ((ThreadSafeComboBox)FindName($"TargetB{get}")).SelectedIndex;
+                CopyOrReset_Helper(copy ? "Mechanic" : $"Mechanic{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["Mechanic"] : reset ? row[$"EffectMechanic{get}"] : ((ThreadSafeComboBox)FindName($"Mechanic{get}")).SelectedIndex);
+                CopyOrReset_Helper(copy ? "TargetA" : $"TargetA{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["TargetA"] : reset ? row[$"EffectImplicitTargetA{get}"] : ((ThreadSafeComboBox)FindName($"TargetA{get}")).SelectedIndex);
+                CopyOrReset_Helper(copy ? "TargetB" : $"TargetB{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["TargetB"] : reset ? row[$"EffectImplicitTargetB{get}"] : ((ThreadSafeComboBox)FindName($"TargetB{get}")).SelectedIndex);
 
-                ((ThreadSafeComboBox)FindName($"RadiusIndex{set}")).ThreadSafeIndex = reset ? 0 : ((ThreadSafeComboBox)FindName($"RadiusIndex{get}")).SelectedIndex;
+                CopyOrReset_Helper(copy ? "RadiusIndex" : $"RadiusIndex{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["RadiusIndex"] : reset ? ((SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).UpdateRadiusIndexes(uint.Parse(row[$"EffectRadiusIndex{get}"].ToString())) : ((ThreadSafeComboBox)FindName($"RadiusIndex{get}")).SelectedIndex);
 
-                if (reset)
-                    ((FilteredComboBox)FindName($"ApplyAuraName{set}")).SetTextFromIndex(0);
+                if (clear || reset)
+                    ((FilteredComboBox)FindName($"ApplyAuraName{set}")).SetTextFromIndex(reset ? uint.Parse(row[$"EffectApplyAuraName{get}"].ToString()) : 0);
                 else
-                    ((FilteredComboBox)FindName($"ApplyAuraName{set}")).ThreadSafeText = ((FilteredComboBox)FindName($"ApplyAuraName{get}")).Text;
+                    CopyOrReset_Helper(copy ? "ApplyAuraName" : $"ApplyAuraName{set}", copy ? 1 : 4, paste ? copiedEffect["ApplyAuraName"] : ((FilteredComboBox)FindName($"ApplyAuraName{get}")).Text);
 
-                ((ThreadSafeTextBox)FindName($"Amplitude{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"Amplitude{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"MultipleValue{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"MultipleValue{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"ChainTarget{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"ChainTarget{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"ItemType{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"ItemType{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"MiscValueA{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"MiscValueA{get}")).Text;
+                CopyOrReset_Helper(copy ? "Amplitude" : $"Amplitude{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["Amplitude"] : reset ? row[$"EffectAmplitude{get}"].ToString() : ((ThreadSafeTextBox)FindName($"Amplitude{get}")).Text);
+                CopyOrReset_Helper(copy ? "MultipleValue" : $"MultipleValue{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MultipleValue"] : reset ? row[$"EffectMultipleValue{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MultipleValue{get}")).Text);
+                CopyOrReset_Helper(copy ? "ChainTarget" : $"ChainTarget{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["ChainTarget"] : reset ? row[$"EffectChainTarget{get}"].ToString() : ((ThreadSafeTextBox)FindName($"ChainTarget{get}")).Text);
+                CopyOrReset_Helper(copy ? "ItemType" : $"ItemType{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["ItemType"] : reset ? row[$"EffectItemType{get}"].ToString() : ((ThreadSafeTextBox)FindName($"ItemType{get}")).Text);
+                CopyOrReset_Helper(copy ? "MiscValueA" : $"MiscValueA{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MiscValueA"] : reset ? row[$"EffectMiscValue{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MiscValueA{get}")).Text);
 
-                if (isTbcOrGreater)
-                    ((ThreadSafeTextBox)FindName($"MiscValueB{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"MiscValueB{get}")).Text;
+                if (WoWVersionManager.IsTbcOrGreaterSelected)
+                    CopyOrReset_Helper(copy ? "MiscValueB" : $"MiscValueB{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MiscValueB"] : reset ? row[$"EffectMiscValueB{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MiscValueB{get}")).Text);
 
-                ((ThreadSafeTextBox)FindName($"MiscValueB{set}")).IsEnabled = isTbcOrGreater;
-                ((ThreadSafeTextBox)FindName($"TriggerSpell{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"TriggerSpell{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"PointsPerComboPoint{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"PointsPerComboPoint{get}")).Text;
-                ((ThreadSafeTextBox)FindName($"EffectDamageMultiplier{set}")).ThreadSafeText = reset ? "1" : ((ThreadSafeTextBox)FindName($"EffectDamageMultiplier{get}")).Text;
+                CopyOrReset_Helper(copy ? "TriggerSpell" : $"TriggerSpell{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["TriggerSpell"] : reset ? row[$"EffectTriggerSpell{get}"].ToString() : ((ThreadSafeTextBox)FindName($"TriggerSpell{get}")).Text);
+                CopyOrReset_Helper(copy ? "PointsPerComboPoint" : $"PointsPerComboPoint{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["PointsPerComboPoint"] : reset ? row[$"EffectPointsPerComboPoint{get}"].ToString() : ((ThreadSafeTextBox)FindName($"PointsPerComboPoint{get}")).Text);
+                CopyOrReset_Helper(copy ? "EffectDamageMultiplier" : $"EffectDamageMultiplier{set}", copy ? 1 : 2, clear ? "1" : paste ? copiedEffect["EffectDamageMultiplier"] : reset ? row[$"EffectDamageMultiplier{get}"].ToString() : ((ThreadSafeTextBox)FindName($"EffectDamageMultiplier{get}")).Text);
 
-                if (isWotlkOrGreater)
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
                 {
-                    ((ThreadSafeTextBox)FindName($"EffectBonusMultiplier{set}")).ThreadSafeText = reset ? "0" : ((ThreadSafeTextBox)FindName($"EffectBonusMultiplier{get}")).Text;
+                    CopyOrReset_Helper(copy ? "EffectBonusMultiplier" : $"EffectBonusMultiplier{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["EffectBonusMultiplier"] : reset ? row[$"EffectBonusMultiplier{get}"].ToString() : ((ThreadSafeTextBox)FindName($"EffectBonusMultiplier{get}")).Text);
 
-                    var setSpellMask1 = ((ThreadSafeComboBox)FindName($"SpellMask1{set}"));
-                    var setSpellMask2 = ((ThreadSafeComboBox)FindName($"SpellMask2{set}"));
-                    var setSpellMask3 = ((ThreadSafeComboBox)FindName($"SpellMask3{set}"));
+                    string getSpellMask1Text = clear ? "0" : paste ? copiedEffect["SpellMask1"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}1"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask1{get}")).Text;
+                    string getSpellMask2Text = clear ? "0" : paste ? copiedEffect["SpellMask2"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}2"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask2{get}")).Text;
+                    string getSpellMask3Text = clear ? "0" : paste ? copiedEffect["SpellMask3"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}3"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask3{get}")).Text;
 
-                    var getSpellMask1Text = reset ? "0" : ((ThreadSafeComboBox)FindName($"SpellMask1{get}")).Text;
-                    var getSpellMask2Text = reset ? "0" : ((ThreadSafeComboBox)FindName($"SpellMask2{get}")).Text;
-                    var getSpellMask3Text = reset ? "0" : ((ThreadSafeComboBox)FindName($"SpellMask3{get}")).Text;
-
-                    setSpellMask1.ThreadSafeText = getSpellMask1Text;
-                    setSpellMask2.ThreadSafeText = getSpellMask2Text;
-                    setSpellMask3.ThreadSafeText = getSpellMask3Text;
-
-                    var masks = new List<uint>
+                    if (copy)
                     {
-                        uint.Parse(getSpellMask1Text),
-                        uint.Parse(getSpellMask2Text),
-                        uint.Parse(getSpellMask3Text)
-                    };
+                        CopyOrReset_Helper("SpellMask1", 1, getSpellMask1Text);
+                        CopyOrReset_Helper("SpellMask2", 1, getSpellMask2Text);
+                        CopyOrReset_Helper("SpellMask3", 1, getSpellMask3Text);
+                    }
+                    else 
+                    {
+                        var setSpellMask1 = ((ThreadSafeComboBox)FindName($"SpellMask1{set}"));
+                        var setSpellMask2 = ((ThreadSafeComboBox)FindName($"SpellMask2{set}"));
+                        var setSpellMask3 = ((ThreadSafeComboBox)FindName($"SpellMask3{set}"));
 
-                    UpdateSpellMaskCheckBox(masks[0], setSpellMask1);
-                    UpdateSpellMaskCheckBox(masks[1], setSpellMask2);
-                    UpdateSpellMaskCheckBox(masks[2], setSpellMask3);
-                }    
+                        setSpellMask1.ThreadSafeText = getSpellMask1Text;
+                        setSpellMask2.ThreadSafeText = getSpellMask2Text;
+                        setSpellMask3.ThreadSafeText = getSpellMask3Text;
 
-                ((ThreadSafeTextBox)FindName($"EffectBonusMultiplier{set}")).IsEnabled = isWotlkOrGreater;
+                        var masks = new List<uint>
+                        {
+                            uint.Parse(getSpellMask1Text),
+                            uint.Parse(getSpellMask2Text),
+                            uint.Parse(getSpellMask3Text)
+                        };
+
+                        UpdateSpellMaskCheckBox(masks[0], setSpellMask1);
+                        UpdateSpellMaskCheckBox(masks[1], setSpellMask2);
+                        UpdateSpellMaskCheckBox(masks[2], setSpellMask3);
+                    }  
+                }
+
+                if (copy)
+                {
+                    for (int i = 1; i < 4; ++i)
+                    {
+                        ((Button)FindName($"PasteEffect{i}")).ToolTip = $"Paste effect {get} from spellID {selectedID}";
+                    }
+
+                    ShowFlyoutMessage($"Copied effect {get} from spellID {selectedID}");
+                }
             }
             catch (Exception error)
             {
@@ -4071,6 +4115,7 @@ namespace SpellEditor
             SpellVisual1.Text = newId.ToString();
             GetDBAdapter().Execute($"UPDATE spell SET SpellVisual1 = {newId} WHERE ID = {selectedID}");
             UpdateSpellVisualTab(newId, 0);
+            LoadBodyData();
             ShowFlyoutMessage($"Created new SpellVisual record {newId}.");
         }
 
@@ -4148,11 +4193,11 @@ namespace SpellEditor
 
         }
 
-        public void RefreshCurrentIcon()
+        public void RefreshCurrentIcon(uint newIcon)
         {
-            selectedIconID = newIconID;
+            selectedIconID = newIcon;
             var row = selectedDataTable.Rows[0];
-            row["SpellIconID"] = newIconID;
+            row["SpellIconID"] = newIcon;
             SelectSpell.UpdateSpell(row);
         }
 
@@ -4448,6 +4493,8 @@ namespace SpellEditor
                     }
                 }
             }
+
+            LoadBodyData(); // make sure this shit is updated if some retard changes spell without saving
         }
 
         public void UpdateItemSubClass(long classId)

@@ -91,8 +91,8 @@
 
     <system:String x:Key="labCasterAuraSpell">Caster Aura Spell:</system:String>
     <system:String x:Key="labTargetAuraSpell">Target Aura Spell:</system:String>
-    <system:String x:Key="labExcludeCasterAuraSpell">Exclude Caster Aura Spell:</system:String>
-    <system:String x:Key="labExcludeTargetAuraSpell">Exclude Target Aura Spell:</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">Caster Aura Spell Not:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">Target Aura Spell Not:</system:String>
 
     <system:String x:Key="labStanceBarOrder">Stance Bar Order:</system:String>
     <system:String x:Key="labPowerDisplayId">Power Display Id:</system:String>
@@ -174,12 +174,19 @@
     <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
     <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
     <system:String x:Key="labCreatureType">Creature Type:</system:String>
-    <system:String x:Key="labStances">Stances:</system:String>
-    <system:String x:Key="labStancesNot">Excluded Stances:</system:String>
+
+    <system:String x:Key="labStances">Required Stances:</system:String>
+    <system:String x:Key="labStancesNot">Not Castable In Stances:</system:String>
+
     <system:String x:Key="labCurrentIcon">Current Icon:</system:String>
+    <system:String x:Key="labActiveIcon">Active Icon:</system:String>
+
     <system:String x:Key="labNewIcon">New Icon:</system:String>
     <system:String x:Key="labFiltericons">Filter icons:</system:String>
-    <system:String x:Key="butSaveIcon">Confirm</system:String>
+
+    <system:String x:Key="butSaveSpellIcon">Save Spell Icon</system:String>
+    <system:String x:Key="butSaveActiveIcon">Save Active Icon</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">Controls icon width &amp; height (pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Import/Export</system:String>
     <system:String x:Key="butTruncateTable">Drop Tables</system:String>
@@ -194,10 +201,13 @@
 	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
 
-    <system:String x:Key="resetEffects">Reset Effect</system:String>
-    <system:String x:Key="copyEffect1">Copy Effect 1</system:String>
-    <system:String x:Key="copyEffect2">Copy Effect 2</system:String>
-    <system:String x:Key="copyEffect3">Copy Effect 3</system:String>
+    <system:String x:Key="copyEffect">Copy Effect</system:String>
+    <system:String x:Key="pasteEffect">Paste Effect</system:String>
+    <system:String x:Key="clearEffect">Clear Effect</system:String>
+    <system:String x:Key="resetEffect">Reset Effect</system:String>
+    <system:String x:Key="cloneEffect1">Clone Effect 1</system:String>
+    <system:String x:Key="cloneEffect2">Clone Effect 2</system:String>
+    <system:String x:Key="cloneEffect3">Clone Effect 3</system:String>
 
     <!--#endregion-->
 

@@ -80,6 +80,7 @@ namespace SpellEditor
 
         private void LogBookWindow_Closed(object sender, EventArgs e)
         {
+            Visibility = Visibility.Hidden;
             _main.LocationChanged -= MainWindowMoved;
         }
 

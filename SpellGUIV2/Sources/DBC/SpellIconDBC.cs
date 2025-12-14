@@ -117,6 +117,14 @@ namespace SpellEditor.Sources.DBC
                 main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(iconPath);
 
                 main.CurrentIcon.ToolTip = main.selectedIconID + " - " + iconPath;
+
+                var actionIcon = (uint)main.selectedDataTable.Rows[0]["ActiveIconID"];
+
+                iconPath = GetIconPath(actionIcon) + ".blp";
+
+                main.ActionIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(iconPath);
+
+                main.ActionIcon.ToolTip = actionIcon + " - " + iconPath;
             }
 
             Logger.Info($"Icons child count {main.IconGrid.Children.Count}");
