@@ -690,20 +690,6 @@
         Non-combat Pet |
         Gas Cloud
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
-        None |
-        Defense |
-        Healthless 20% |
-        Berserking |
-        Judgement |
-        Hunter Parry |
-        Victory Rush |
-        Unknown 11 |
-        Healthless 35% |
-        Enrage |
-        Unknown 22 |
-        Health Above 75%
-    </system:String>
     <system:String x:Key="aura_state_strings">
         None |
         Defense |
