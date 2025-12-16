@@ -10,6 +10,7 @@ namespace SpellEditor.Sources.DBC
         public List<Dictionary<string, object>> Records;
         public Dictionary<int, int> OffsetStorage;
         public Dictionary<int, string> ReverseStorage;
+        public Dictionary<uint, int> SpellToIndex;
 
         // Returns new header stringBlockOffset
         public int GenerateStringOffsetsMap(Binding.Binding binding)
@@ -39,6 +40,29 @@ namespace SpellEditor.Sources.DBC
                 }
             }
             return stringBlockOffset;
+        }
+
+        public void BuildSpellToIndex()
+        {
+            SpellToIndex = new Dictionary<uint, int>(Records.Count);
+
+            for (int i = 0; i < Records.Count; i++)
+            {
+                var record = Records[i];
+
+                if (!record.TryGetValue("ID", out var spellId))
+                    continue;
+
+                if (spellId == null)
+                    continue;
+
+                SpellToIndex[(uint)spellId] = i;
+            }
+        }
+
+        public int GetIndexFromSpell(uint spellId)
+        {
+            return SpellToIndex[spellId];
         }
     }
 }

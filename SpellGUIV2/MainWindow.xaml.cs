@@ -79,7 +79,6 @@ namespace SpellEditor
         private IDatabaseAdapter adapter;
         public uint selectedID;
         public uint selectedIconID;
-        public int selectedRowIndex;
         public uint newIconID = 1;
         private bool updating;
         private bool saving;
@@ -1876,9 +1875,9 @@ namespace SpellEditor
                     // just so that reset is updated
                     if (Config.CacheSpellBody && spellBody != null && spellBody.Records != null)
                     {
-                        row["EffectRadiusIndex1"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex1"];
-                        row["EffectRadiusIndex2"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex2"];
-                        row["EffectRadiusIndex3"] = spellBody.Records[selectedRowIndex]["EffectRadiusIndex3"];
+                        row["EffectRadiusIndex1"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex1"];
+                        row["EffectRadiusIndex2"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex2"];
+                        row["EffectRadiusIndex3"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex3"];
                     }
                     else
                     {
@@ -1994,26 +1993,32 @@ namespace SpellEditor
 
             if (spellBody.Records != null)
             {
-                spellBody.Records[selectedRowIndex] = dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {selectedID} LIMIT 1", NothingHere, true)[0];
+                //spellBody.Records[spellBody.GetIndexFromSpell(selectedID)].TryGetValue("ID", out var spell);
+                //Logger.Info($"spell {(uint)spell} {spellBody.GetIndexFromSpell(selectedID)}");
+
+                spellBody.Records[spellBody.GetIndexFromSpell(selectedID)] = dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {selectedID} LIMIT 1", NothingHere, true)[0];
             }
             else
             {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
                 saving = true;
                 Task.Run(() =>
                 {
                     var watch = new Stopwatch();
                     watch.Start();
 
-                    spellBody.Records = dbc.LoadRecords(adapter, "Spell", "", NothingHere);
+                    spellBody.Records = dbc.LoadRecords(adapter, "Spell", " ORDER BY `ID`", NothingHere);
+
+                    spellBody.BuildSpellToIndex();
 
                     watch.Stop();
                     Logger.Info($"Loaded spellbody records in {watch.ElapsedMilliseconds}ms");
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+
                     saving = false;
-                });
+                });  
             }     
         }
 
@@ -2257,6 +2262,8 @@ namespace SpellEditor
             {
                 return;
             }
+
+            updating = true;
 
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
@@ -2904,6 +2911,8 @@ namespace SpellEditor
             {
                 HandleErrorMessage(string.Format("{0}\n\n{1}", "", e, e.InnerException));
             }
+
+            updating = false;
         }
 
         #region VisualTab
@@ -3072,10 +3081,10 @@ namespace SpellEditor
                 {
                     for (int i = 1; i < 4; ++i)
                     {
-                        ((Button)FindName($"PasteEffect{i}")).ToolTip = $"Paste effect {get} from spellID {selectedID}";
+                        ((Button)FindName($"PasteEffect{i}")).ToolTip = $"Paste effect {get} from spell {selectedID}";
                     }
 
-                    ShowFlyoutMessage($"Copied effect {get} from spellID {selectedID}");
+                    ShowFlyoutMessage($"Copied effect {get} from spell {selectedID}");
                 }
             }
             catch (Exception error)
@@ -4215,8 +4224,6 @@ namespace SpellEditor
                 return;
 
             ListBox box = (ListBox)sender;
-
-            selectedRowIndex = box.SelectedIndex;
 
             StackPanel panel = (StackPanel) box.SelectedItem;
             using (var enumerator = panel.GetChildObjects().GetEnumerator())
