@@ -387,10 +387,7 @@
   <Import Project="..\packages\Fody.6.9.2\build\Fody.targets" Condition="Exists('..\packages\Fody.6.9.2\build\Fody.targets')" />
   <Import Project="..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.6.0.0\build\Costura.Fody.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>@echo off
-if not exist "$(TargetDir)Libraries" mkdir "$(TargetDir)Libraries"
-
-rem ---- Remove unwanted XML doc files, keep config.xml ----
+    <PostBuildEvent>rem ---- Remove unwanted XML doc files, keep config.xml ----
 for %25%25f in ("$(TargetDir)*.xml") do (
     if /I not "%25%25~nxf"=="config.xml" (
         del "%25%25f"
