@@ -17,7 +17,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
         public static Dictionary<int, string> familyNames = new Dictionary<int, string>();
         private static Dictionary<int, string> definitionFiles = new Dictionary<int, string>();
 
-        private static Dictionary<int, Dictionary<int, string>> familyFlagsNames = new Dictionary<int, Dictionary<int, string>>();
+        public static readonly Dictionary<int, Dictionary<int, string>> familyFlagsNames = new Dictionary<int, Dictionary<int, string>>();
 
         // hack for UI because filteredcombobox currently only works properly with itemsource, not items added from code
         public static List<string> familyNamesitemSource = new List<string>(); 

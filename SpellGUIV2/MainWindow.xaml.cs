@@ -93,6 +93,9 @@ namespace SpellEditor
         private Label[] miscValueLabelB;
         private ContentControl[] miscValueDynamicContentsB;
 
+        public uint[] familyFlagsA = new uint[3]; // 1st effect
+        public uint[] familyFlagsB = new uint[3];
+        public uint[] familyFlagsC = new uint[3];
         #endregion
 
         public IDatabaseAdapter GetDBAdapter()
@@ -590,32 +593,6 @@ namespace SpellEditor
                 spellTooltipGenFields.Add(SpellTooltipGen8);
 
                 RefreshAllUIElements();
-
-                for (int i = 0; i < 32; ++i)
-                {
-                    uint mask = 1u << i;
-
-                    SpellMask11.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask12.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask13.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask21.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask22.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask23.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask31.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask32.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask33.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                }
-
-                foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask21.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask22.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask23.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask31.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-
                 LoadAllData();
 
                 FilterSpellEffectCombo.SelectionChanged += FilterSpellEffectCombo_SelectionChanged;
@@ -628,22 +605,6 @@ namespace SpellEditor
             {
                 HandleErrorMessage(ex.Message);
             }
-        }
-
-        private void HandspellFamilyClassMask_Checked(object obj, RoutedEventArgs e)
-        {
-            ThreadSafeComboBox father = (ThreadSafeComboBox)((ThreadSafeCheckBox)obj).Parent;
-
-            uint Mask = 0;
-            for (uint i = 0; i < 32; i++)
-            {
-                ThreadSafeCheckBox cb = (ThreadSafeCheckBox)father.Items.GetItemAt((int)i);
-                if (cb.IsChecked == true)
-                    Mask |= (1u << (int)i);
-            }
-            father.Text = Mask.ToString();
-
-            SpellMask_SelectionChanged(father, null);
         }
 
         private void RefreshMaskComboboxText(ThreadSafeComboBox combobox)
@@ -1062,6 +1023,7 @@ namespace SpellEditor
         {
             if (!Config.IsInit)
             {
+# if !DEBUG
                 var settings = new MetroDialogSettings
                 {
                     AffirmativeButtonText = "SQLite",
@@ -1074,6 +1036,11 @@ namespace SpellEditor
                     SafeTryFindResource("Welcome"),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
+#else
+
+                bool isSqlite = false;
+#endif
+
 
                 if (!isSqlite)
                 {
@@ -1103,7 +1070,7 @@ namespace SpellEditor
                 Config.IsInit = true;
             }
         }
-        #endregion
+#endregion
 
         #region KeyHandlers
         private volatile bool imageLoadEventRunning;
@@ -1795,15 +1762,18 @@ namespace SpellEditor
                     row["EffectPointsPerComboPoint3"] = float.Parse(PointsPerComboPoint3.Text);
                     if (isWotlkOrGreater)
                     {
-                        row["EffectSpellClassMaskA1"] = uint.Parse(SpellMask11.Text);
-                        row["EffectSpellClassMaskA2"] = uint.Parse(SpellMask21.Text);
-                        row["EffectSpellClassMaskA3"] = uint.Parse(SpellMask31.Text);
-                        row["EffectSpellClassMaskB1"] = uint.Parse(SpellMask12.Text);
-                        row["EffectSpellClassMaskB2"] = uint.Parse(SpellMask22.Text);
-                        row["EffectSpellClassMaskB3"] = uint.Parse(SpellMask32.Text);
-                        row["EffectSpellClassMaskC1"] = uint.Parse(SpellMask13.Text);
-                        row["EffectSpellClassMaskC2"] = uint.Parse(SpellMask23.Text);
-                        row["EffectSpellClassMaskC3"] = uint.Parse(SpellMask33.Text);
+                        // row["EffectSpellClassMaskA1"] = uint.Parse(SpellMask11.Text);
+                        // row["EffectSpellClassMaskA2"] = uint.Parse(SpellMask21.Text);
+                        // row["EffectSpellClassMaskA3"] = uint.Parse(SpellMask31.Text);
+                        row["EffectSpellClassMaskA1"] = familyFlagsA[0];
+                        row["EffectSpellClassMaskA2"] = familyFlagsA[1];
+                        row["EffectSpellClassMaskA3"] = familyFlagsA[2];
+                        row["EffectSpellClassMaskB1"] = familyFlagsB[0];
+                        row["EffectSpellClassMaskB2"] = familyFlagsB[1];
+                        row["EffectSpellClassMaskB3"] = familyFlagsB[2];
+                        row["EffectSpellClassMaskC1"] = familyFlagsC[0];
+                        row["EffectSpellClassMaskC2"] = familyFlagsC[1];
+                        row["EffectSpellClassMaskC3"] = familyFlagsC[2];
                     }
                     row["SpellVisual1"] = uint.Parse(SpellVisual1.Text);
                     row["SpellVisual2"] = uint.Parse(SpellVisual2.Text);
@@ -2290,7 +2260,7 @@ namespace SpellEditor
 
             MiscValuePair miscValues;
             bool hasMiscValues = false;
-            bool isAura = false;
+            // bool isAura = false;
 
             bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spellEffectType, out spellEffectData);
             if (!hasData && spellEffectType != (int)spellEffectTypes.NONE)
@@ -2302,7 +2272,7 @@ namespace SpellEditor
             if (spellEffectData.usesAura)
             {
                 // get miscvalue from aura instead of effect
-                isAura = true;
+                // isAura = true;
                 hasMiscValues = MiscValueConstants.auraMiscValues.TryGetValue(auraType, out miscValues);
             }
             else // get misc values from effect. // TODO : get more data from aura : multiplevalue, spelltrigger etc
@@ -3465,7 +3435,6 @@ namespace SpellEditor
                     SetMiscValue(2, 2, int.Parse(row["EffectMiscValueB2"].ToString()));
                     SetMiscValue(3, 2, int.Parse(row["EffectMiscValueB3"].ToString()));
                 }
-                // MiscValueB1.IsEnabled = isTbcOrGreater;
 
                 uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
                 AddFamilyIfNotExists(familyName);
@@ -3474,54 +3443,28 @@ namespace SpellEditor
                 {
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
-
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, adapter, null)));
                 }
                 else
                 {
-                    SpellMask11.ThreadSafeText = row["EffectSpellClassMaskA1"].ToString();
-                    SpellMask21.ThreadSafeText = row["EffectSpellClassMaskA2"].ToString();
-                    SpellMask31.ThreadSafeText = row["EffectSpellClassMaskA3"].ToString();
-                    SpellMask12.ThreadSafeText = row["EffectSpellClassMaskB1"].ToString();
-                    SpellMask22.ThreadSafeText = row["EffectSpellClassMaskB2"].ToString();
-                    SpellMask32.ThreadSafeText = row["EffectSpellClassMaskB3"].ToString();
-                    SpellMask13.ThreadSafeText = row["EffectSpellClassMaskC1"].ToString();
-                    SpellMask23.ThreadSafeText = row["EffectSpellClassMaskC2"].ToString();
-                    SpellMask33.ThreadSafeText = row["EffectSpellClassMaskC3"].ToString();
+                    familyFlagsA[0] = (uint)row["EffectSpellClassMaskA1"];
+                    familyFlagsA[1] = (uint)row["EffectSpellClassMaskA2"];
+                    familyFlagsA[2] = (uint)row["EffectSpellClassMaskA3"];
+                    familyFlagsB[0] = (uint)row["EffectSpellClassMaskB1"];
+                    familyFlagsB[1] = (uint)row["EffectSpellClassMaskB2"];
+                    familyFlagsB[2] = (uint)row["EffectSpellClassMaskB3"];
+                    familyFlagsC[0] = (uint)row["EffectSpellClassMaskC1"];
+                    familyFlagsC[1] = (uint)row["EffectSpellClassMaskC2"];
+                    familyFlagsC[2] = (uint)row["EffectSpellClassMaskC3"];
 
                     SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
                     SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
                     SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
 
-                    var masks = new List<uint>
-                    {
-                        uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC3"].ToString())
-                    };
-
-                    UpdateSpellMaskCheckBox(masks[0], SpellMask11);
-                    UpdateSpellMaskCheckBox(masks[1], SpellMask21);
-                    UpdateSpellMaskCheckBox(masks[2], SpellMask31);
-                    UpdateSpellMaskCheckBox(masks[3], SpellMask12);
-                    UpdateSpellMaskCheckBox(masks[4], SpellMask22);
-                    UpdateSpellMaskCheckBox(masks[5], SpellMask32);
-                    UpdateSpellMaskCheckBox(masks[6], SpellMask13);
-                    UpdateSpellMaskCheckBox(masks[7], SpellMask23);
-                    UpdateSpellMaskCheckBox(masks[8], SpellMask33);
-
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
+                    // update effects family lists
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                        spellFamilyClassMaskParser.UpdateAllEffectFamiliesLists(this, familyName, adapter)));
                 }
                 SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
-                ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
 
                 SpellVisual1.ThreadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
@@ -3616,9 +3559,14 @@ namespace SpellEditor
                 SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
                 Difficulty.IsEnabled = isWotlkOrGreater;
 
-                FilterClassMaskSpells1.IsEnabled = isWotlkOrGreater;
-                FilterClassMaskSpells2.IsEnabled = isWotlkOrGreater;
-                FilterClassMaskSpells3.IsEnabled = isWotlkOrGreater;
+
+                EffectSpellFamiliesList1.IsEnabled = isWotlkOrGreater;
+                EffectSpellFamiliesList2.IsEnabled = isWotlkOrGreater;
+                EffectSpellFamiliesList3.IsEnabled = isWotlkOrGreater;
+
+                EffectSpellsFamiliesButton1.IsEnabled = isWotlkOrGreater;
+                EffectSpellsFamiliesButton2.IsEnabled = isWotlkOrGreater;
+                EffectSpellsFamiliesButton3.IsEnabled = isWotlkOrGreater;
             }
             catch (Exception e)
             {
@@ -4736,31 +4684,6 @@ namespace SpellEditor
 
         }
 
-        private void UpdateSpellMaskCheckBox(uint mask, ThreadSafeComboBox comBox)
-        {
-            for (int i = 0; i < 32; i++)
-            {
-                uint maskPow = (1u << i);
-
-                ThreadSafeCheckBox safeCheckBox = (ThreadSafeCheckBox)comBox.Items.GetItemAt(i);
-
-                safeCheckBox.ThreadSafeChecked = (mask & maskPow) != 0;
-            }
-        }
-
-        private void ToggleAllSpellMaskCheckBoxes(bool enabled)
-        {
-            SpellMask11.IsEnabled = enabled;
-            SpellMask12.IsEnabled = enabled;
-            SpellMask13.IsEnabled = enabled;
-            SpellMask21.IsEnabled = enabled;
-            SpellMask22.IsEnabled = enabled;
-            SpellMask23.IsEnabled = enabled;
-            SpellMask31.IsEnabled = enabled;
-            SpellMask32.IsEnabled = enabled;
-            SpellMask33.IsEnabled = enabled;
-        }
-
         private void GenerateSpellEffectHeader(int effectIdx /* 1 -3*/)
         {
             // test display spell effect under the tab
@@ -4786,10 +4709,10 @@ namespace SpellEditor
             }
 
             string spell_effect_name = effect_combobox.Items.GetItemAt(0) as string;
-            bool no_effect = true;
+            // bool no_effect = true;
             if (effect_combobox.SelectedItem != null && effect_combobox.SelectedIndex != 0)
             {
-                no_effect = false;
+                // no_effect = false;
                 spell_effect_name = effect_combobox.SelectedItem as string;
             }
             // remove the Id prefix
@@ -5478,65 +5401,6 @@ namespace SpellEditor
             view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
         }
 
-        private void SpellMask_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
-                return;
-
-            if (sender is ComboBox comboBox)
-            {
-                if (!comboBox.Name.Contains("SpellMask"))
-                    return;
-            }
-
-            var masks = new List<uint>
-            {
-                uint.Parse(SpellMask11.Text),
-                uint.Parse(SpellMask21.Text),
-                uint.Parse(SpellMask31.Text),
-                uint.Parse(SpellMask21.Text),
-                uint.Parse(SpellMask22.Text),
-                uint.Parse(SpellMask23.Text),
-                uint.Parse(SpellMask31.Text),
-                uint.Parse(SpellMask32.Text),
-                uint.Parse(SpellMask33.Text)
-            };
-
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                spellFamilyClassMaskParser.UpdateSpellEffectMasksSelected(this, SpellFamilyName.GetNumberPrefixFromText(), GetDBAdapter(), masks)));
-        }
-
-        /*
-        private void RefreshComboBoxMaskText(ThreadSafeComboBox comboBox)
-        {
-            uint Mask = 0;
-            for (uint i = 0; i < 32; i++)
-            {
-                ThreadSafeCheckBox cb = (ThreadSafeCheckBox)comboBox.Items.GetItemAt((int)i);
-                if (cb.IsChecked == true)
-                    Mask |= (1u << (int)i);
-            }
-            comboBox.Text = Mask.ToString();
-        }*/
-
-        private void SpellMask_DropDownClosed(object sender, EventArgs e)
-        {
-            // recalc to ensure text is right, same code as HandspellFamilyClassMask_Checked for checkboxes
-            if (sender is ThreadSafeComboBox comboBox)
-            {
-                uint Mask = 0;
-                for (uint i = 0; i < 32; i++)
-                {
-                    ThreadSafeCheckBox cb = (ThreadSafeCheckBox)comboBox.Items.GetItemAt((int)i);
-                    if (cb.IsChecked == true)
-                        Mask |= (1u << (int)i);
-                }
-                comboBox.Text = Mask.ToString();
-
-                SpellMask_SelectionChanged(sender, null);
-            }
-        }
-
         private void MiscValueMask_DropDownClosed(object sender, EventArgs e)
         {
             // recalc to ensure text is right, same code as HandspellFamilyClassMask_Checked for checkboxes
@@ -5545,26 +5409,6 @@ namespace SpellEditor
                 // can't use the same code as spellmask
                 RefreshMaskComboboxText(comboBox);
             }
-        }
-
-        private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ListBox targetBox;
-            if (sender == FilterClassMaskSpells1)
-                targetBox = EffectTargetSpellsList1;
-            else if (sender == FilterClassMaskSpells2)
-                targetBox = EffectTargetSpellsList2;
-            else if (sender == FilterClassMaskSpells3)
-                targetBox = EffectTargetSpellsList3;
-            else
-            {
-                Logger.Error($"Unable to find target box to Class Mask Filter: {sender}");
-                return;
-            }
-            var filterBox = sender as ThreadSafeTextBox;
-            var input = filterBox.Text.ToLower();
-            ICollectionView view = CollectionViewSource.GetDefaultView(targetBox.Items);
-            view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
         }
 
         private string SafeTryFindResource(object key)
@@ -5583,11 +5427,31 @@ namespace SpellEditor
                 else if (comboBox.SelectedItem == null)
                 {
                     comboBox.SelectedIndex = 0; // reset it. TODO : reset to last index if possible
-                    // comboBox.Text = comboBox.SelectedItem?.ToString();
                     comboBox.SetTextFromIndex(0);
                 }
 
             }
+        }
+
+        private async void EditFamiliesButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO effect index 1-3
+            int effectid = 0;
+
+            if (sender == EffectSpellsFamiliesButton2)
+                effectid = 1;
+            else if (sender == EffectSpellsFamiliesButton3)
+                effectid = 2;
+
+                uint[][] allfamilies = { familyFlagsA, familyFlagsB, familyFlagsC };
+            uint[] familyFlags = allfamilies[effectid];
+
+            uint familyId = SpellFamilyName.GetNumberPrefixFromText();
+
+            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlags, familyId, this, (uint)effectid);
+            spellFamiliesWindow.Owner = this;
+
+            spellFamiliesWindow.ShowDialog();
         }
     }
 }
