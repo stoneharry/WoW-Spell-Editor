@@ -348,14 +348,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Costura32\StormLib.dll" />
-    <EmbeddedResource Include="Costura64\StormLib.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Costura32\SQLite.Interop.dll" />
-    <EmbeddedResource Include="Costura64\SQLite.Interop.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.8 %28x86 et x64%29</ProductName>
@@ -386,24 +378,6 @@
   <PropertyGroup>
     <PostBuildEvent>@echo off
 if not exist "$(TargetDir)Libraries" mkdir "$(TargetDir)Libraries"
-
-rem ---- Move all DLLs except app DLL ----
-for %25%25f in ("$(TargetDir)*.dll") do (
-    if /I not "%25%25~nxf"=="SpellEditor.exe" (
-        move "%25%25f" "$(TargetDir)Libraries\"
-    )
-)
-
-rem ---- Move all PDBs except app PDB ----
-for %25%25f in ("$(TargetDir)*.pdb") do (
-    if /I not "%25%25~nxf"=="SpellEditor.pdb" (
-        move "%25%25f" "$(TargetDir)Libraries\"
-    )
-)
-
-for %25%25f in ("$(TargetDir)*.dll.config") do (
-    move "%25%25f" "$(TargetDir)Libraries\"
-)
 
 rem ---- Remove unwanted XML doc files, keep config.xml ----
 for %25%25f in ("$(TargetDir)*.xml") do (
