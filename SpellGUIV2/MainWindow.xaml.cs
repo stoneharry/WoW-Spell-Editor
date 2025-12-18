@@ -85,7 +85,7 @@ namespace SpellEditor
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
         private bool Contain_SpellPriority = true;
         public DBCBodyToSerialize spellBody = new DBCBodyToSerialize();
-        public DataTable selectedDataTable;
+        public DataRow selectedDataRow;
         private PartialLoad loadStage = PartialLoad.Null;
         private Dictionary<string, object> copiedEffect;
 
@@ -1331,12 +1331,8 @@ namespace SpellEditor
                 if (saving)
                     return;
 
-                var q = selectedDataTable;
-                if (q == null)
-                    return;
-
                 string query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1";
-                //var q = adapter.Query(query);
+                var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
 
@@ -1872,25 +1868,6 @@ namespace SpellEditor
                     row["StanceBarOrder"] = uint.Parse(StanceBarOrder.Text);
                     row["PowerDisplayId"] = uint.Parse(PowerDisplayId.Text);
 
-                    // just so that reset is updated
-                    if (Config.CacheSpellBody && spellBody != null && spellBody.Records != null)
-                    {
-                        row["EffectRadiusIndex1"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex1"];
-                        row["EffectRadiusIndex2"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex2"];
-                        row["EffectRadiusIndex3"] = spellBody.Records[spellBody.GetIndexFromSpell(selectedID)]["EffectRadiusIndex3"];
-                    }
-                    else
-                    {
-                        // if caching is disabled
-                        using (var data = adapter.Query($"SELECT EffectRadiusIndex1, EffectRadiusIndex2, EffectRadiusIndex3 FROM `spell` WHERE `ID` = {selectedID} LIMIT 1"))
-                        if (data.Rows.Count > 0)
-                        {
-                            row["EffectRadiusIndex1"] = data.Rows[0]["EffectRadiusIndex1"];
-                            row["EffectRadiusIndex2"] = data.Rows[0]["EffectRadiusIndex2"];
-                            row["EffectRadiusIndex3"] = data.Rows[0]["EffectRadiusIndex3"];
-                        }
-                    }
-
                     row.EndEdit();
                     adapter.CommitChanges(query, q.GetChanges());
 
@@ -1926,7 +1903,7 @@ namespace SpellEditor
 
                 adapter.Execute($"UPDATE `{"spell"}` SET `ActiveIconID` = '{newIcon}' WHERE `ID` = '{selectedID}'");
 
-                selectedDataTable.Rows[0]["ActiveIconID"] = newIcon;
+                selectedDataRow["ActiveIconID"] = newIcon;
                 prepareIconEditor();
                 LoadBodyData();
                 return;
@@ -2210,7 +2187,7 @@ namespace SpellEditor
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID);
 
 
-            selectedDataTable = data;
+            selectedDataRow = data.Rows[0];
 
             loadStage = PartialLoad.Null;
 
@@ -2226,7 +2203,7 @@ namespace SpellEditor
             }
 
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
-            var row = selectedDataTable.Rows[0];
+            var row = selectedDataRow;
 
             if (!isWotlkOrGreater)
             {
@@ -2268,7 +2245,7 @@ namespace SpellEditor
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
             var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
-            var row = selectedDataTable.Rows[0];
+            var row = selectedDataRow;
             uint mask = 0;
 
             try
@@ -2992,7 +2969,7 @@ namespace SpellEditor
             var reset = get == 5;
             var paste = get == 6;
             var copy = set == 4;
-            var row = selectedDataTable.Rows[0];
+            var row = selectedDataRow;
 
             if (paste && copiedEffect == null)
                 return;
@@ -4205,7 +4182,7 @@ namespace SpellEditor
         public void RefreshCurrentIcon(uint newIcon)
         {
             selectedIconID = newIcon;
-            var row = selectedDataTable.Rows[0];
+            var row = selectedDataRow;
             row["SpellIconID"] = newIcon;
             SelectSpell.UpdateSpell(row);
         }

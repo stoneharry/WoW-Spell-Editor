@@ -118,7 +118,7 @@ namespace SpellEditor.Sources.DBC
 
                 main.CurrentIcon.ToolTip = main.selectedIconID + " - " + iconPath;
 
-                var actionIcon = (uint)main.selectedDataTable.Rows[0]["ActiveIconID"];
+                var actionIcon = (uint)main.selectedDataRow["ActiveIconID"];
 
                 iconPath = GetIconPath(actionIcon) + ".blp";
 
