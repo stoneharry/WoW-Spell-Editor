@@ -211,6 +211,7 @@
       <DependentUpon>SpellFamiliesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Controls\SpellFamilyNames\SpellFamilyNames.cs" />
+	<Compile Include="Sources\Controls\SpellSelectList\SpellLogRecord.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionEntry.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionList.cs" />
     <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />

@@ -32,6 +32,7 @@ using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellFamilyNames;
+using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Controls.Visual;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
