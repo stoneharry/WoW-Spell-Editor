@@ -93,6 +93,14 @@ namespace SpellEditor
         private Label[] miscValueLabelB;
         private ContentControl[] miscValueDynamicContentsB;
 
+        // store current misc value data type so we don't have to reverse it to access.
+        private ControlType miscvalueA1data = ControlType.TextBox;
+        private ControlType miscvalueB1data = ControlType.TextBox;
+        private ControlType miscvalueA2data = ControlType.TextBox;
+        private ControlType miscvalueB2data = ControlType.TextBox;
+        private ControlType miscvalueA3data = ControlType.TextBox;
+        private ControlType miscvalueB3data = ControlType.TextBox;
+
         public uint[] familyFlagsBase = new uint[3]; // base
 
         public uint[] familyFlagsA = new uint[3]; // 1st effect
@@ -1025,6 +1033,7 @@ namespace SpellEditor
         {
             if (!Config.IsInit)
             {
+                // for easier development so I don't have to deal with the sql selection popup on startup
 # if !DEBUG
                 var settings = new MetroDialogSettings
                 {
@@ -2120,17 +2129,6 @@ namespace SpellEditor
         #endregion
 
         #region LoadSpell (load spell god-function)
-
-
-        // store current misc value data type so we don't have to reverse it to access.
-        private ControlType miscvalueA1data = ControlType.TextBox;
-        private ControlType miscvalueB1data = ControlType.TextBox;
-        private ControlType miscvalueA2data = ControlType.TextBox;
-        private ControlType miscvalueB2data = ControlType.TextBox;
-        private ControlType miscvalueA3data = ControlType.TextBox;
-        private ControlType miscvalueB3data = ControlType.TextBox;
-
-
         private int GetNumberPrefixFromText(string text)
         {
             text = text.TrimStart();
@@ -2179,6 +2177,7 @@ namespace SpellEditor
             return false;
         }
 
+        #region DynamicMiscValues
         // refreshes the UI to load the right miscvalue ui control, but doesn't load its value
         private void SetupMiscValueControl(int effectIndex /* 1 to 3 */, int spellEffectType, int auraType, int miscValue = 0)
         {
@@ -2889,6 +2888,7 @@ namespace SpellEditor
             return misc_value;
         }
 
+        #endregion
         private void loadSpell(UpdateTextFunc updateProgress)
         {
             _currentVisualController = null;
@@ -5469,6 +5469,26 @@ namespace SpellEditor
             spellFamiliesWindow.Owner = this;
 
             spellFamiliesWindow.ShowDialog();
+        }
+
+        private void ComboBox_familyname_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!Config.IsInit)
+                return;
+
+            var combo = (ComboBox)sender;
+            string text = combo.SelectedItem?.ToString();
+
+            uint familyName = SpellFamilyName.GetNumberPrefixFromText(text);
+
+            // update base listbox
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                spellFamilyClassMaskParser.UpdateAllEffectFamiliesLists(this, familyName, adapter)));
+
+            // update base family lists
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(this, familyName, adapter)));
+
         }
     }
 }

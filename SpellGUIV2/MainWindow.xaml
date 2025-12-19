@@ -399,8 +399,8 @@
                     <c2:ThreadSafeTextBox x:Name="PerSecondPerLevel" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="4" Grid.Column="5"/>
                     <Label Content="{DynamicResource labManaCost%}" Margin="5,5,5,5" Grid.Row="5" Grid.Column="4"/>
                     <c2:ThreadSafeTextBox x:Name="ManaCostPercent" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="5" Grid.Column="5"/>
-                    <Label Content="{DynamicResource labSpellFamilyName}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="4"/>
-                    <c2:FilteredComboBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" LostFocus="FilteredComboBox_LostFocus" Grid.Row="6" Grid.Column="5" ToolTip="You can add entries by editing the SpellFamilies/Definitions.json file."/>
+                    <Label Content="{DynamicResource labSpellFamilyName}" Margin="5,5,5,5" Grid.Row="9" Grid.Column="4"/>
+                    <c2:FilteredComboBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_familyname_SelectionChanged" LostFocus="FilteredComboBox_LostFocus" Grid.Row="9" Grid.Column="5" ToolTip="You can add entries by editing the SpellFamilies/Definitions.json file."/>
                     
                     <Label Content="{DynamicResource labSpellFamilyFlags}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="4"/>
                     <ListBox x:Name="BaseSpellFamiliesList" Margin="5,5,5,0" BorderThickness="1" Grid.Row="10" Grid.Column="5" Grid.RowSpan="4"/>
@@ -422,8 +422,8 @@
                     <c2:ThreadSafeComboBox x:Name="PreventionType" Margin="5,5,5,5" Width="150" Grid.Row="7" Grid.Column="5"/>
                     <Label Content="{DynamicResource labSpellDamageType}" Margin="5,5,5,5" Grid.Row="8" Grid.Column="4"/>
                     <c2:ThreadSafeComboBox x:Name="SpellDamageType" Margin="5,5,5,5" Width="150" Grid.Row="8" Grid.Column="5"/>
-                    <Label Content="{DynamicResource labRequiresSpellFocus}" Margin="5,5,5,5" Grid.Row="9" Grid.Column="4"/>
-                    <c2:ThreadSafeComboBox x:Name="RequiresSpellFocus" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="9" Grid.Column="5"/>
+                    <Label Content="{DynamicResource labRequiresSpellFocus}" Margin="5,5,5,5" Grid.Row="6" Grid.Column="4"/>
+                    <c2:ThreadSafeComboBox x:Name="RequiresSpellFocus" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="6" Grid.Column="5"/>
                     <Label Content="{DynamicResource labRuneCost}" Margin="5,5,5,5" Grid.Row="13" Grid.Column="0"/>
                     <c2:ThreadSafeComboBox x:Name="RuneCost" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="1"/>
                     <Label Content="{DynamicResource labSpellDescriptionVariables}" Margin="5,5,5,5" Grid.Row="13" Grid.Column="2"/>
