@@ -83,7 +83,6 @@ namespace SpellEditor
         private bool updating;
         private bool saving;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
-        private bool Contain_SpellPriority = true;
         public DBCBodyToSerialize spellBody = new DBCBodyToSerialize();
         public DataRow selectedDataRow;
         private PartialLoad loadStage = PartialLoad.Null;
@@ -909,9 +908,9 @@ namespace SpellEditor
             try
             {
                 // Initialise select spell list
-                SelectSpell.SetAdapter(GetDBAdapter())
+                /*SelectSpell.SetAdapter(GetDBAdapter())
                     .SetLanguage(GetLanguage())
-                    .Initialise();
+                    .Initialise();*/
 
                 // Populate UI based on DBC data
                 Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
@@ -986,10 +985,9 @@ namespace SpellEditor
                 await createTask;
             }*/
             await controller.CloseAsync();
-            LoadBodyData();
-            PopulateSelectSpell();
 
-            Contain_SpellPriority = adapter.Query("SHOW COLUMNS FROM `spell` LIKE 'SpellPriority'").Rows.Count > 0;
+            if (adapter.Query("SELECT `ID` FROM `spell` LIMIT 1").Rows.Count > 0)
+                PopulateSelectSpell();
         }
 
         private void FocusLanguage()
@@ -1641,7 +1639,7 @@ namespace SpellEditor
                     row["ManaCostPerLevel"] = uint.Parse(ManaCostPerLevel.Text);
                     row["ManaPerSecond"] = uint.Parse(ManaCostPerSecond.Text);
                     row["ManaPerSecondPerLevel"] = uint.Parse(PerSecondPerLevel.Text);
-                    row["SpellPriority"] = !Contain_SpellPriority ? 0 : int.Parse(SpellPriority.Text);
+                    row["SpellPriority"] = !SpellPriority.IsEnabled ? 0 : int.Parse(SpellPriority.Text);
                     row["Speed"] = float.Parse(Speed.Text);
                     row["StackAmount"] = uint.Parse(Stacks.Text);
                     row["Totem1"] = uint.Parse(Totem1.Text);
@@ -2040,14 +2038,19 @@ namespace SpellEditor
                     .SetLanguage(GetLanguage())
                     .Initialise();
             }
+
             if (!SelectSpell.HasAdapter())
             {
                 SelectSpell.SetAdapter(GetDBAdapter());
             }
+            
             SelectSpell.PopulateSelectSpell();
             FocusLanguage();
 
             prepareIconEditor();
+
+            spellBody.Records = null;
+            LoadBodyData();
         }
         #endregion
 
@@ -2329,7 +2332,7 @@ namespace SpellEditor
                             }
                             RuneCost.IsEnabled = isWotlkOrGreater;
 
-                            if (Contain_SpellPriority)
+                            if (row.Table.Columns.Contains("SpellPriority"))
                             {
                                 SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
                                 SpellPriority.IsEnabled = true;
