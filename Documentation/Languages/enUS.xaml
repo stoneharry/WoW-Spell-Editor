@@ -701,6 +701,7 @@
         Unknown21 |
         Unknown22 |
         Health Above 75 Percent
+	</system:String>
 	<system:String x:Key="invisibility_strings">
 		0 - General (Classes and creatures) |
 		1 - Invisibility 1 |
@@ -715,17 +716,6 @@
 		10 - Invisibility 10 |
 		11 - Invisibility 11
 	</system:String>
-        Conflagrate |
-        Swiftmend |
-        Deadly Poison |
-        Enrage |
-        Bleeding |
-        Parry |
-        Unknown20 |
-        Unknown21 |
-        Unknown22 |
-        Health Above 75 Percent
-    </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         Non-Equip |
         Head |
