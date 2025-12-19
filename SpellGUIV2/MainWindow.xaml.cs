@@ -93,6 +93,8 @@ namespace SpellEditor
         private Label[] miscValueLabelB;
         private ContentControl[] miscValueDynamicContentsB;
 
+        public uint[] familyFlagsBase = new uint[3]; // base
+
         public uint[] familyFlagsA = new uint[3]; // 1st effect
         public uint[] familyFlagsB = new uint[3];
         public uint[] familyFlagsC = new uint[3];
@@ -1782,22 +1784,19 @@ namespace SpellEditor
                     row["StartRecoveryTime"] = uint.Parse(StartRecoveryTime.Text);
                     row["MaximumTargetLevel"] = uint.Parse(MaxTargetsLevel.Text);
 
-                    // Before WOTLK there are only two flags, we misnamed them in WOTLK as the last flag handles A3/B3/C3 of the affecting spells
-                    // row["SpellFamilyName"] = uint.Parse(SpellFamilyName.Text);
-                    // row["SpellFamilyName"] = (uint)GetNumberPrefixFromText(SpellFamilyName.Text);
                     row["SpellFamilyName"] = SpellFamilyName.GetNumberPrefixFromText();
-                    // or
-                    // row["SpellFamilyName"] = (uint)((ComboBoxItem)SpellFamilyName.SelectedItem).Tag;
+
                     if (!isWotlkOrGreater)
                     {
-                        row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags.Text);
-                        row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags1.Text);
+                        // Before WOTLK there are only two flags, we misnamed them in WOTLK as the last flag handles A3/B3/C3 of the affecting spells
+                        row["SpellFamilyFlags1"] = familyFlagsBase[0];
+                        row["SpellFamilyFlags2"] = familyFlagsBase[1];
                     }
                     else
                     {
-                        row["SpellFamilyFlags"] = uint.Parse(SpellFamilyFlags.Text);
-                        row["SpellFamilyFlags1"] = uint.Parse(SpellFamilyFlags1.Text);
-                        row["SpellFamilyFlags2"] = uint.Parse(SpellFamilyFlags2.Text);
+                        row["SpellFamilyFlags"] = familyFlagsBase[0];
+                        row["SpellFamilyFlags1"] = familyFlagsBase[1];
+                        row["SpellFamilyFlags2"] = familyFlagsBase[2];
                     }
                     row["MaximumAffectedTargets"] = uint.Parse(MaxTargets.Text);
                     row["DamageClass"] = (uint)SpellDamageType.SelectedIndex;
@@ -3441,11 +3440,14 @@ namespace SpellEditor
                 SpellFamilyName.SetTextFromIndex(familyName);
                 if (!isWotlkOrGreater)
                 {
-                    SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
-                    SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
+                    // vanilla&tbc only have 2 masks (up to 64)
+                    familyFlagsBase[0] = uint.Parse(row["SpellFamilyFlags1"].ToString());
+                    familyFlagsBase[1] = uint.Parse(row["SpellFamilyFlags2"].ToString());
                 }
                 else
                 {
+                    // only wotlk has effect spell class mask fields
+                    // before wotlk, it's handled in item_type for first 32bits, and in database for extra
                     familyFlagsA[0] = (uint)row["EffectSpellClassMaskA1"];
                     familyFlagsA[1] = (uint)row["EffectSpellClassMaskA2"];
                     familyFlagsA[2] = (uint)row["EffectSpellClassMaskA3"];
@@ -3456,15 +3458,17 @@ namespace SpellEditor
                     familyFlagsC[1] = (uint)row["EffectSpellClassMaskC2"];
                     familyFlagsC[2] = (uint)row["EffectSpellClassMaskC3"];
 
-                    SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
-                    SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
-                    SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
+                    familyFlagsBase[0] = uint.Parse(row["SpellFamilyFlags"].ToString());
+                    familyFlagsBase[1] = uint.Parse(row["SpellFamilyFlags1"].ToString());
+                    familyFlagsBase[2] = uint.Parse(row["SpellFamilyFlags2"].ToString());
 
                     // update effects family lists
                     Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                         spellFamilyClassMaskParser.UpdateAllEffectFamiliesLists(this, familyName, adapter)));
                 }
-                SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
+                // update base family lists
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(this, familyName, adapter)));
 
                 SpellVisual1.ThreadSafeText = row["SpellVisual1"].ToString();
                 SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
@@ -5433,9 +5437,8 @@ namespace SpellEditor
             }
         }
 
-        private async void EditFamiliesButton_Click(object sender, RoutedEventArgs e)
+        private async void EditEffectFamiliesButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO effect index 1-3
             int effectid = 0;
 
             if (sender == EffectSpellsFamiliesButton2)
@@ -5443,12 +5446,26 @@ namespace SpellEditor
             else if (sender == EffectSpellsFamiliesButton3)
                 effectid = 2;
 
-                uint[][] allfamilies = { familyFlagsA, familyFlagsB, familyFlagsC };
+            uint[][] allfamilies = { familyFlagsA, familyFlagsB, familyFlagsC };
             uint[] familyFlags = allfamilies[effectid];
 
             uint familyId = SpellFamilyName.GetNumberPrefixFromText();
 
-            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlags, familyId, this, (uint)effectid);
+            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlags, familyId, this, (uint)effectid, false, 3);
+            spellFamiliesWindow.Owner = this;
+
+            spellFamiliesWindow.ShowDialog();
+        }
+
+        private async void EditBaseFamiliesButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.Assert(sender == BaseSpellsFamiliesButton);
+
+            uint familyId = SpellFamilyName.GetNumberPrefixFromText();
+
+            int masks_count = WoWVersionManager.IsWotlkOrGreaterSelected ? 3 : 2;
+
+            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlagsBase, familyId, this, 4u, true, (uint)masks_count);
             spellFamiliesWindow.Owner = this;
 
             spellFamiliesWindow.ShowDialog();

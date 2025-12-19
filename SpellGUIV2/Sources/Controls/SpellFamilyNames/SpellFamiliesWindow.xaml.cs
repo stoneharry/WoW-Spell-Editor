@@ -21,28 +21,43 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
         public List<CheckBox> _maskCheckBoxes = new List<CheckBox>(); // 32 x 3
 
-        private readonly bool[] _family_has_definitions_cache = new bool[96];
+        private readonly bool[] _family_has_definitions_cache = new bool[3 * 32];
 
         private readonly uint[] _original_families_values = new uint[3];
         public readonly uint[] _active_families_values; // reference to the original array in MainWindow
         public MainWindow _mainwindow;
-        private uint _familyId;
+        private readonly uint _familyId;
+        private readonly uint _effectId;
+        private readonly bool _isBaseFamilies; // wheteher it's spell effect families or base
+        public readonly uint _maskCount; // how many family masks there are in array (3 in wotlk, 2 in tbc/vanilla for base, 1 in vanilla for effect item_type
 
-        public uint _effectId;
 
-        public SpellFamiliesWindow(uint[] families, uint familyId, MainWindow mainwindow, uint effectId)
+        public SpellFamiliesWindow(uint[] families, uint familyId, MainWindow mainwindow, uint effectId, bool baseFamilies, uint mask_count)
         {
             _familyId = familyId;
             _active_families_values = families;
             _mainwindow = mainwindow;
-            _original_families_values[0] = _active_families_values[0];
-            _original_families_values[1] = _active_families_values[1];
-            _original_families_values[2] = _active_families_values[2];
+
+            _original_families_values = new uint[mask_count];
+            for (int i = 0; i < mask_count; i++)
+            {
+                _original_families_values[i] = _active_families_values[i];
+            }
+            if (mask_count < 2)
+                _familyMaskControls[1].IsEnabled = false;
+            if (mask_count < 3)
+                _familyMaskControls[2].IsEnabled = false;
+
             _effectId = effectId;
+            _isBaseFamilies = baseFamilies;
+            _maskCount = mask_count;
 
             InitializeComponent();
 
-            this.Title += $" [Effect {effectId}]";
+            if (baseFamilies)
+                Title += " [Base]";
+            else
+                Title += $" [Effect {effectId}]";
 
             CreateFamilyCheckboxes();
 
@@ -57,7 +72,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
             // Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             //     _mainwindow.spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, _familyId, WoWVersionManager.IsWotlkOrGreaterSelected, _mainwindow.GetDBAdapter(), null)));
 
-            for (int category = 0; category < 3; category++)
+            for (int category = 0; category < _maskCount; category++)
             {
                 uint family = family_values[category];
 
@@ -72,36 +87,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                     bool isSet = (family & (1u << i)) != 0;
                     var cb = _maskCheckBoxes[(32 * category) + i];
 
-                    cb.IsChecked = isSet;
-                    // triggers event which handles checkbox style changes
-
-
-                    // avoiding event chaining
-                    /*
-                    cb.Checked -= CheckBoxBitChanged;
-                    cb.Unchecked -= CheckBoxBitChanged;
-                    cb.IsChecked = isSet;
-                    cb.Checked += CheckBoxBitChanged;
-                    cb.Unchecked += CheckBoxBitChanged;
-
-                    var border = VisualTreeHelper.GetParent(cb) as Border;
-                    // set background to green if active
-                    if (isSet)
-                        border.Background = Brushes.DarkGreen;
-                    else
-                    {
-                        var old_color = border.Background;
-                        if (old_color == Brushes.DarkGreen)
-                        {
-                            // figure out color again
-                            int index = (32 * category) + i;
-                            if (_family_has_definitions_cache[index])
-                                border.Background = new SolidColorBrush(Color.FromArgb(30, 0, 120, 215));
-                            else
-                                border.ClearValue(Border.BackgroundProperty);
-                        }
-                    }
-                    */
+                    cb.IsChecked = isSet; // isChecked triggers event which handles checkbox style changes
                 }
             }
         }
@@ -114,7 +100,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
             if (has_definition)
                 definitions = SpellFamilyNames.familyFlagsNames[(int)_familyId];
 
-            for (int category = 0; category < 3; category++)
+            for (int category = 0; category < _maskCount; category++)
             {
                 for (int i = 0; i < 32; i++)
                 {
@@ -349,13 +335,23 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
         // update the listboxes in background
         private void UpdateSpellFamilyClassMaskListbox()
         {
-            // update the spell list listbox
+            // update this window's spell list listbox
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                _mainwindow.spellFamilyClassMaskParser.UpdateEffectTargetSpellsList(this, _familyId, _mainwindow.GetDBAdapter(), (int)_effectId)));
+                _mainwindow.spellFamilyClassMaskParser.UpdateEffectTargetSpellsList(this, _familyId, _mainwindow.GetDBAdapter())));
 
             // update mainwindow families list
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowEffectFamiliesList(this._mainwindow, _familyId, _mainwindow.GetDBAdapter(), (int)_effectId)));
+            if (_isBaseFamilies)
+            {
+                // TODO new function, or pass the listbox as arg
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(this._mainwindow, _familyId, _mainwindow.GetDBAdapter())));
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowEffectFamiliesList(this._mainwindow, _familyId, _mainwindow.GetDBAdapter(), (int)_effectId)));
+            }
+
         }
 
         private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)

@@ -24,7 +24,7 @@
             <common:TextOnlyNumericUpDown ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="{DynamicResource labSpellClassMask3}" HorizontalAlignment="Left" VerticalAlignment="Top" />
             <common:TextOnlyNumericUpDown ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
+            <Label Content="You can rename the families by editing \SpellFamilies\ definitions." HorizontalAlignment="Left" VerticalAlignment="Top" />
         </StackPanel>
 
         <StackPanel Grid.Column="0" Margin="10,49,-10,-10" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -47,7 +47,7 @@
                 >
             <ScrollViewer VerticalScrollBarVisibility="Disabled"
                           HorizontalScrollBarVisibility="Auto"
-                          Padding="8">
+                          Padding="2">
                 <ItemsControl x:Name="MaskList" MinWidth="660" MinHeight="300">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
