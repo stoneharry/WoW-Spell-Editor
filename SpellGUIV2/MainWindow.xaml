@@ -1297,6 +1297,11 @@
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
+            <Button Name="LogBookButton" Click="LogBookWindowButtonClick">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{DynamicResource butLogBook}" VerticalAlignment="Center"/>
+                </StackPanel>
+             </Button>
             <Button Name="TruncateTable" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>

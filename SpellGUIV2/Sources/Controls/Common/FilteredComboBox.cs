@@ -105,6 +105,7 @@ namespace SpellEditor.Sources.Controls.Common
 
         public void SetTextFromIndex(uint index)
         {
+            ClearFilter();
             foreach (var item in Items)
             {
                 var itemText = item.ToString();
@@ -112,12 +113,10 @@ namespace SpellEditor.Sources.Controls.Common
                 if (num == index)
                 {
                     ThreadSafeText = itemText;
-                    ClearFilter();
                     return;
                 }
             }
             ThreadSafeIndex = 0;
-            ClearFilter();
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)

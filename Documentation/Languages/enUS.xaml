@@ -191,6 +191,7 @@
     <system:String x:Key="butImportExportWindowImport">Import</system:String>
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
+	<system:String x:Key="butLogBook">Log Book</system:String>
 	<system:String x:Key="butConfig">Config</system:String>
 	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
@@ -675,20 +676,21 @@
         Non-combat Pet |
         Gas Cloud
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         None |
         Defense |
-        Healthless 20% |
+        Healthless 20 Percent |
         Berserking |
+        Frozen |
         Judgement |
+        Unknown6 |
         Hunter Parry |
-        Victory Rush |
-        Unknown 1 |
-        Healthless 35% |
-        Enrage |
-        Unknown 2 |
-        Health Above 75%
-    </system:String>
+        Unknown8 |
+        Unknown9 |
+        Warrior Victory Rush |
+        Unknown11 |
+        Faerie Fire |
+        Healthless 35 Percent |
 	<system:String x:Key="invisibility_strings">
 		0 - General (Classes and creatures) |
 		1 - Invisibility 1 |
@@ -703,15 +705,16 @@
 		10 - Invisibility 10 |
 		11 - Invisibility 11
 	</system:String>
-    <system:String x:Key="target_aura_state_strings">
-        None |
-        Healthless 20% |
-        Berserking |
-        Healthless 35% |
         Conflagrate |
         Swiftmend |
         Deadly Poison |
-        Bleeding
+        Enrage |
+        Bleeding |
+        Parry |
+        Unknown20 |
+        Unknown21 |
+        Unknown22 |
+        Health Above 75 Percent
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         Non-Equip |

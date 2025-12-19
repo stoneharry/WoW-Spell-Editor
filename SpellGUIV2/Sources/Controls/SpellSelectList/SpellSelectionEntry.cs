@@ -1,7 +1,6 @@
 ﻿using SpellEditor.Sources.BLP;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.DBC;
-using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +40,20 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             _Text = textBlock;
         }
 
+        public SpellSelectionEntry(SpellSelectionEntry copy) : this()
+        {
+            _Text.Text = copy._Text.Text;
+            _Image.ToolTip = copy._Image.ToolTip;
+            _Dirty = true;
+        }
+
+        public SpellSelectionEntry(SpellLogRecord spellLogRecord) : this()
+        {
+            _Text.Text = spellLogRecord.SpellLogName;
+            _Image.ToolTip = spellLogRecord.SpellLogIcon;
+            _Dirty = true;
+        }
+
         public void RefreshEntry(DataRow row, int language)
         {
             uint.TryParse(row["id"].ToString(), out _SpellId);
@@ -50,7 +63,21 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             _Dirty = true;
         }
 
-        public uint GetSpellId() => _SpellId;
+        public uint GetSpellId() => _SpellId > 0 ?
+            _SpellId : 
+            _Text.Text.Length > 0 ?
+                uint.Parse(_Text.Text.Substring(1, _Text.Text.IndexOf(' ', 1))) :
+                0u;
+
+        public string GetSpellText() => _Text.Text;
+
+        public uint GetIconId()
+        {
+            var iconStr = _Image.ToolTip.ToString();
+            if (iconStr.Length == 0)
+                return 0u;
+            return uint.Parse(iconStr);
+        }
 
         public uint GetDuplicateSpellId() => _DuplicateIdBox == null ? 0 : uint.Parse(_DuplicateIdBox.Text);
 
@@ -74,6 +101,8 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 return;
             }
+            if (image.ToolTip == null)
+                return;
             // Try to load icon
             var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
             if (loadIcons != null)
@@ -192,6 +221,41 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             e.Handled = true;
+        }
+
+        public static readonly DependencyProperty SpellNameProperty =
+            DependencyProperty.Register("SpellName", typeof(string), typeof(SpellSelectionEntry),
+            new PropertyMetadata("", OnSpellNameChanged));
+
+        public string SpellName
+        {
+            get => (string)GetValue(SpellNameProperty);
+            set => SetValue(SpellNameProperty, value);
+        }
+
+        private static void OnSpellNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var entry = (SpellSelectionEntry)d;
+            entry._Text.Text = (string)e.NewValue;
+        }
+
+        public static readonly DependencyProperty SpellIconProperty =
+            DependencyProperty.Register("SpellIcon", typeof(string), typeof(SpellSelectionEntry),
+            new PropertyMetadata("", OnSpellIconChanged));
+
+        public string SpellIcon
+        {
+            get => (string)GetValue(SpellIconProperty);
+            set => SetValue(SpellIconProperty, value);
+        }
+
+        private static void OnSpellIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var entry = (SpellSelectionEntry)d;
+            entry._Image.ToolTip = (string)e.NewValue;
+            entry._Dirty = true;
+            entry.IsSpellListEntryVisibileChanged(entry._Image,
+                new DependencyPropertyChangedEventArgs(UIElement.IsVisibleProperty, false, true));
         }
     }
 }

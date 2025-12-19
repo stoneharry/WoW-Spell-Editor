@@ -189,9 +189,14 @@
     <Compile Include="ConfigWindow.xaml.cs">
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LogBookWindow.xaml.cs">
+      <DependentUpon>LogBookWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImportExportWindow.xaml.cs">
       <DependentUpon>ImportExportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />
+    <Compile Include="Sources\Controls\SpellSelectList\RelayCommand.cs" />
     <Compile Include="Sources\Binding\Binding.cs" />
     <Compile Include="Sources\Binding\BindingType.cs" />
     <Compile Include="Sources\Binding\BindingEntry.cs" />
@@ -279,6 +284,10 @@
     <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
     <Compile Include="Sources\VersionControl\WoWVersionManager.cs" />
     <Page Include="ConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LogBookWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
