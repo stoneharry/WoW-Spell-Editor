@@ -5451,7 +5451,7 @@ namespace SpellEditor
 
             uint familyId = SpellFamilyName.GetNumberPrefixFromText();
 
-            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlags, familyId, this, (uint)effectid, false, 3);
+            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlags, familyId, this, (uint)effectid, false, 3, false);
             spellFamiliesWindow.Owner = this;
 
             spellFamiliesWindow.ShowDialog();
@@ -5465,7 +5465,7 @@ namespace SpellEditor
 
             int masks_count = WoWVersionManager.IsWotlkOrGreaterSelected ? 3 : 2;
 
-            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlagsBase, familyId, this, 4u, true, (uint)masks_count);
+            SpellFamiliesWindow spellFamiliesWindow = new SpellFamiliesWindow(familyFlagsBase, familyId, this, 4u, true, (uint)masks_count, true);
             spellFamiliesWindow.Owner = this;
 
             spellFamiliesWindow.ShowDialog();

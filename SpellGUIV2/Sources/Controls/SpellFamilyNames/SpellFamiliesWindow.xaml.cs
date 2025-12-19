@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,6 +13,7 @@ using MahApps.Metro.Controls;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellFamilyNames;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
+using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Controls.SpellFamilyNames
 {
@@ -32,7 +35,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
         public readonly uint _maskCount; // how many family masks there are in array (3 in wotlk, 2 in tbc/vanilla for base, 1 in vanilla for effect item_type
 
 
-        public SpellFamiliesWindow(uint[] families, uint familyId, MainWindow mainwindow, uint effectId, bool baseFamilies, uint mask_count)
+        public SpellFamiliesWindow(uint[] families, uint familyId, MainWindow mainwindow, uint effectId, bool baseFamilies, uint mask_count, bool default_filter_talents)
         {
             _familyId = familyId;
             _active_families_values = families;
@@ -53,6 +56,12 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
             _maskCount = mask_count;
 
             InitializeComponent();
+
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+                FilterTabControl.IsEnabled = false; // WOTLK only, as earlier versions don't have the class mask fields.
+
+            if (default_filter_talents)
+                FilterTabControl.SelectedIndex = 1;
 
             if (baseFamilies)
                 Title += " [Base]";
@@ -137,6 +146,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                         HorizontalAlignment = HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                     };
+                    // cb.ContextMenu = BuildContextMenu(cb);
 
                     var bordered = new Border
                     {
@@ -336,28 +346,68 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
         private void UpdateSpellFamilyClassMaskListbox()
         {
             // update this window's spell list listbox
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                _mainwindow.spellFamilyClassMaskParser.UpdateEffectTargetSpellsList(this, _familyId, _mainwindow.GetDBAdapter())));
+            UpdateSpellsListBox();
 
             // update mainwindow families list
             if (_isBaseFamilies)
             {
                 // TODO new function, or pass the listbox as arg
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(this._mainwindow, _familyId, _mainwindow.GetDBAdapter())));
+                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(_mainwindow, _familyId, _mainwindow.GetDBAdapter())));
             }
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowEffectFamiliesList(this._mainwindow, _familyId, _mainwindow.GetDBAdapter(), (int)_effectId)));
+                    _mainwindow.spellFamilyClassMaskParser.UpdateMainWindowEffectFamiliesList(_mainwindow, _familyId, _mainwindow.GetDBAdapter(), (int)_effectId)));
             }
 
         }
 
+        private void UpdateSpellsListBox()
+        {
+            bool filterduplicates = FilterSpellsDuplicatesCheckbox.IsChecked == true;
+            if (FilterTabControl.SelectedIndex == 0)
+            { // show target spells
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    _mainwindow.spellFamilyClassMaskParser.UpdateEffectTargetSpellsList(this, _familyId, _mainwindow.GetDBAdapter(), filterduplicates)));
+            }
+            else if (FilterTabControl.SelectedIndex == 1)
+            { // show spells that use the families as target from effects (talents)
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    _mainwindow.spellFamilyClassMaskParser.UpdateEffectModifiersSpellsList(this, _familyId, _mainwindow.GetDBAdapter(), filterduplicates)));
+            }
+            ApplyTextBoxSpellsFilter();
+        }
+
+        private ContextMenu BuildContextMenu(CheckBox cb)
+        {
+            // TODO, list of talents/spelsl that target this family
+
+            var menu = new ContextMenu();
+
+            var item = new MenuItem { Header = "Preview Spell Effects" };
+            item.Click += Menu_preview_Click;
+
+            menu.Items.Add(item);
+
+
+            return menu;
+        }
+
+        private void Menu_preview_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var filterBox = sender as ThreadSafeTextBox;
-            var input = filterBox.Text.ToLower();
+            Debug.Assert(sender == FilterClassMaskSpells);
+            ApplyTextBoxSpellsFilter();
+
+        }
+        private void ApplyTextBoxSpellsFilter()
+        {
+            var input = FilterClassMaskSpells.Text.ToLower();
             ICollectionView view = CollectionViewSource.GetDefaultView(EffectTargetSpellsList.Items);
             view.Filter = o => input.Length == 0 ? true : o.ToString().ToLower().Contains(input);
         }
@@ -383,6 +433,15 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                 cb.IsChecked = true;
             }
         }
-    
+
+        private void FilterTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateSpellsListBox();
+        }
+
+        private void FilterSpellsDuplicatesCheckbox_StateChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateSpellsListBox();
+        }
     }
 }
