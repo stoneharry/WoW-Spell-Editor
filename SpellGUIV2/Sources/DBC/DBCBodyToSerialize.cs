@@ -1,4 +1,5 @@
 ﻿using SpellEditor.Sources.Binding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,9 +61,58 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
+        public void RemoveSpell(uint spellId)
+        {
+            if (!SpellToIndex.TryGetValue(spellId, out int removedIndex))
+                return;
+
+            Records.RemoveAt(removedIndex);
+
+            SpellToIndex.Remove(spellId);
+
+            foreach (var key in SpellToIndex.Keys.ToList())
+            {
+                if (SpellToIndex[key] > removedIndex)
+                    SpellToIndex[key]--;
+            }
+        }
+
+        public void AddSpell(uint spellId, Dictionary<string, object> data)
+        {
+            if (SpellToIndex.ContainsKey(spellId))
+                return;
+
+            uint check = spellId;
+            var newIndex = 0;
+
+            while (check > 0)
+            {
+                check--;
+
+                if (SpellToIndex.TryGetValue(check, out int existingIndex))
+                {
+                    newIndex = existingIndex + 1;
+                    break;
+                }
+            }
+
+            foreach (var key in SpellToIndex.Keys.ToList())
+            {
+                if (SpellToIndex[key] >= newIndex)
+                    SpellToIndex[key]++;
+            }
+
+            SpellToIndex[spellId] = newIndex;
+
+            Records.Insert(newIndex, data);
+        }
+
         public int GetIndexFromSpell(uint spellId)
         {
-            return SpellToIndex[spellId];
+            if (!SpellToIndex.TryGetValue(spellId, out int index))
+                return 0;
+
+            return index;
         }
     }
 }

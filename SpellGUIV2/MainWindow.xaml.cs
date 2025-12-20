@@ -1297,9 +1297,6 @@ namespace SpellEditor
                     return;
                 }
 
-                spellBody.Records = null;
-                LoadBodyData();
-
                 ShowFlyoutMessage(string.Format(SafeTryFindResource("CopySpellRecord8"), inputNewRecord));
                 return;
             }
@@ -1317,7 +1314,7 @@ namespace SpellEditor
                 }
 
                 SelectSpell.DeleteSpell(spellID);
-                
+
                 selectedID = 0;
 
                 ShowFlyoutMessage(SafeTryFindResource("DeleteSpellRecord3"));
@@ -1942,7 +1939,7 @@ namespace SpellEditor
             if (!same || !masks.SequenceEqual(oldMasks))
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, WoWVersionManager.IsWotlkOrGreaterSelected, GetDBAdapter(), masks)));
 
-            Logger.Info($"SaveSpellMasks {same}");
+            //Logger.Info($"SaveSpellMasks {same}");
         }
 
         private void NothingHere(double progress, int taskIdOverride = 0) { }
@@ -1953,27 +1950,21 @@ namespace SpellEditor
             {
                 spellBody.Records = null;
                 GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
             }
 
             return !saving && Config.CacheSpellBody ? spellBody : null;
         }
-        private void LoadBodyData()
+        public void LoadBodyData(int type = 0, uint spellId = 0)
         {
             if (!Config.CacheSpellBody || saving)
                 return;
 
+            if (type == 1)
+                spellBody.Records = null;
+
             var dbc = new GenericDbc();
 
-            if (spellBody.Records != null)
-            {
-                //spellBody.Records[spellBody.GetIndexFromSpell(selectedID)].TryGetValue("ID", out var spell);
-                //Logger.Info($"spell {(uint)spell} {spellBody.GetIndexFromSpell(selectedID)}");
-
-                spellBody.Records[spellBody.GetIndexFromSpell(selectedID)] = dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {selectedID} LIMIT 1", NothingHere, true)[0];
-            }
-            else
+            if (spellBody.Records == null)
             {
                 saving = true;
                 Task.Run(() =>
@@ -1989,12 +1980,22 @@ namespace SpellEditor
                     Logger.Info($"Loaded spellbody records in {watch.ElapsedMilliseconds}ms");
 
                     GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                    GC.Collect();
 
                     saving = false;
-                });  
-            }     
+                });
+            }
+            else if (type == 0 && selectedID > 0)
+            {
+                spellBody.Records[spellBody.GetIndexFromSpell(selectedID)] = dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {selectedID} LIMIT 1", NothingHere, true)[0];
+            }
+            else if (type == 2 && spellId > 0)
+            {
+                spellBody.RemoveSpell(spellId);
+            }
+            else if (type == 3 && spellId > 0)
+            {
+                spellBody.AddSpell(spellId, dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {spellId} LIMIT 1", NothingHere, true)[0]);
+            }  
         }
 
         #endregion
@@ -2036,7 +2037,7 @@ namespace SpellEditor
             {
                 SelectSpell.SetAdapter(GetDBAdapter())
                     .SetLanguage(GetLanguage())
-                    .Initialise();
+                    .Initialise(this);
             }
 
             if (!SelectSpell.HasAdapter())
@@ -2049,8 +2050,7 @@ namespace SpellEditor
 
             prepareIconEditor();
 
-            spellBody.Records = null;
-            LoadBodyData();
+            LoadBodyData(1);
         }
         #endregion
 

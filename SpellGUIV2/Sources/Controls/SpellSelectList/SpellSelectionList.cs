@@ -26,13 +26,15 @@ namespace SpellEditor.Sources.Controls
         private IDatabaseAdapter _Adapter;
         private readonly DataTable _Table = new DataTable();
         private bool _initialised = false;
+        private MainWindow _main;
 
-        public void Initialise()
+        public void Initialise(MainWindow main)
         {
             _Table.Columns.Add("id", typeof(uint));
             _Table.Columns.Add("SpellName" + _Language, typeof(string));
             _Table.Columns.Add("Icon", typeof(uint));
             _initialised = true;
+            _main = main;
         }
 
         public bool IsInitialised() => _initialised;
@@ -159,6 +161,8 @@ namespace SpellEditor.Sources.Controls
             }
             // Refresh UI
             RefreshSpellList();
+
+            _main.LoadBodyData(3, copyTo);
         }
 
         public void UpdateSpell(DataRow row)
@@ -197,6 +201,8 @@ namespace SpellEditor.Sources.Controls
             _Table.AcceptChanges();
             // Refresh UI
             RefreshSpellList();
+
+            _main.LoadBodyData(2, spellId);
         }
 
         private void RefreshSpellList()

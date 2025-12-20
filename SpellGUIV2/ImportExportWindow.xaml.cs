@@ -380,8 +380,6 @@ namespace SpellEditor
                 }
 
                 GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
 
                 watch.Stop();
                 Logger.Info($"finished doImportExport in {watch.ElapsedMilliseconds}ms");
