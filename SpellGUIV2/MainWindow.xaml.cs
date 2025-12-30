@@ -3233,6 +3233,7 @@ namespace SpellEditor
                     Button_Click(SaveSpellChanges, null);
                 }
                 _currentVisualController = null;
+                LoadBodyData();
                 UpdateSpellVisualTab(visualId);
                 UpdateMainWindow();
             });
@@ -4149,9 +4150,9 @@ namespace SpellEditor
         #region SelectionChanges
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
             if (updating || adapter == null || !Config.IsInit || e.OriginalSource != MainTabControl)
                 return;
+
             var tab = e.AddedItems[0];
             if (tab == IconTab)
             {
@@ -4159,6 +4160,7 @@ namespace SpellEditor
             }
             else if (tab == VisualTab)
             {
+                LoadPartialUI(PartialLoad.BasePage);
                 var idStr = SpellVisual1.Text;
                 uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
