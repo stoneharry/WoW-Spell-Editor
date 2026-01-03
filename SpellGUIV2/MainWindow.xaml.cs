@@ -739,7 +739,7 @@ namespace SpellEditor
             ReloadCurrentSpellFromDatabase();
         }
 
-        public void ModifyExistingSpellFromAi(AiSpellDefinition def)
+        public void ModifyExistingSpellFromAi(AiSpellDefinition def, bool isModify)
         {
             if (def == null)
                 throw new ArgumentNullException(nameof(def));
@@ -754,7 +754,7 @@ namespace SpellEditor
 
                 var row = table.Rows[0];
 
-                AiSpellMapper.ApplyDefinitionToRow(def, row);
+                AiSpellMapper.ApplyDefinitionToRow(def, row, isModify);
                 adapter.CommitChanges(query, table);
             }
             // MUST reload DataRow after commit:
@@ -787,7 +787,18 @@ namespace SpellEditor
             // Select new ID just in case
             selectedID = newId;
             // Apply AI mod to the new one
-            ModifyExistingSpellFromAi(def);
+            ModifyExistingSpellFromAi(def, false);
+            // Bring the new ID into view
+            var items = SelectSpell.Items;
+            for (int i = items.Count - 1; i >= 0; --i)
+            {
+                SpellSelectionEntry item = items.GetItemAt(i) as SpellSelectionEntry;
+                if (item != null && item.GetSpellId() == newId)
+                {
+                    SelectSpell.ScrollIntoView(item);
+                    break;
+                }
+            }
             return newId;
         }
 

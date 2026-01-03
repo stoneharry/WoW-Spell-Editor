@@ -235,7 +235,7 @@ namespace SpellEditor
             {
                 if (RadioModifyExisting.IsChecked == true)
                 {
-                    _mainWindow.ModifyExistingSpellFromAi(_lastResult.Definition);
+                    _mainWindow.ModifyExistingSpellFromAi(_lastResult.Definition, true);
                     StatusTextBlock.Text = "Existing spell updated.";
                 }
                 else if (RadioCreateNew.IsChecked == true)

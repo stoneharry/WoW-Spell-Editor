@@ -17,7 +17,7 @@ namespace SpellEditor.Sources.AI
 
         // PUBLIC ENTRY ------------------------------------------------------
 
-        public static void ApplyDefinitionToRow(AiSpellDefinition def, DataRow row)
+        public static void ApplyDefinitionToRow(AiSpellDefinition def, DataRow row, bool isModify)
         {
             if (def == null)
                 throw new ArgumentNullException(nameof(def));
@@ -34,7 +34,7 @@ namespace SpellEditor.Sources.AI
             ApplyTiming(def, row);
             ApplyPower(def, row);
             ApplyTargeting(def, row);
-            ApplyEffects(def, row);
+            ApplyEffects(def, row, isModify);
             ApplyIcon(def, row);
             ApplyVisual(def, row);
             ApplyAdvancedSimpleFields(def, row);
@@ -571,7 +571,7 @@ namespace SpellEditor.Sources.AI
                     break;
             }
         }
-        private static void ApplyEffects(AiSpellDefinition def, DataRow row)
+        private static void ApplyEffects(AiSpellDefinition def, DataRow row, bool isModify)
         {
             // ------------------------------------------------------------
             // 0) If the AI definition does not specify ANY effect-related
@@ -637,22 +637,25 @@ namespace SpellEditor.Sources.AI
             // ------------------------------------------------------------
             // 2) Clear all effect slots (avoid leftover values)
             // ------------------------------------------------------------
-            for (int slot = 1; slot <= 3; ++slot)
+            if (!isModify)
             {
-                SafeSet(row, $"Effect{slot}", 0);
-                SafeSet(row, $"EffectApplyAuraName{slot}", 0);
-                SafeSet(row, $"EffectBasePoints{slot}", 0);
-                SafeSet(row, $"EffectDieSides{slot}", 0);
-                SafeSet(row, $"EffectAmplitude{slot}", 0);
-                SafeSet(row, $"EffectRadiusIndex{slot}", 0);
-                SafeSet(row, $"EffectImplicitTargetA{slot}", 0);
-                SafeSet(row, $"EffectImplicitTargetB{slot}", 0);
-                SafeSet(row, $"EffectMiscValue{slot}", 0);
-                SafeSet(row, $"EffectMiscValueB{slot}", 0);
-                SafeSet(row, $"EffectTriggerSpell{slot}", 0);
-                SafeSet(row, $"EffectChainTarget{slot}", 0);
-                SafeSet(row, $"EffectMultipleValue{slot}", 0f);
-                SafeSet(row, $"EffectDamageMultiplier{slot}", 0f);
+                for (int slot = 1; slot <= 3; ++slot)
+                {
+                    SafeSet(row, $"Effect{slot}", 0);
+                    SafeSet(row, $"EffectApplyAuraName{slot}", 0);
+                    SafeSet(row, $"EffectBasePoints{slot}", 0);
+                    SafeSet(row, $"EffectDieSides{slot}", 0);
+                    SafeSet(row, $"EffectAmplitude{slot}", 0);
+                    SafeSet(row, $"EffectRadiusIndex{slot}", 0);
+                    SafeSet(row, $"EffectImplicitTargetA{slot}", 0);
+                    SafeSet(row, $"EffectImplicitTargetB{slot}", 0);
+                    SafeSet(row, $"EffectMiscValue{slot}", 0);
+                    SafeSet(row, $"EffectMiscValueB{slot}", 0);
+                    SafeSet(row, $"EffectTriggerSpell{slot}", 0);
+                    SafeSet(row, $"EffectChainTarget{slot}", 0);
+                    SafeSet(row, $"EffectMultipleValue{slot}", 0f);
+                    SafeSet(row, $"EffectDamageMultiplier{slot}", 0f);
+                }
             }
 
             // ------------------------------------------------------------
@@ -668,7 +671,7 @@ namespace SpellEditor.Sources.AI
                 // --------------------------------------------------------
                 // AURA INFERENCE (if effect type is known aura-like)
                 // --------------------------------------------------------
-                if (eff.Aura == null && !string.IsNullOrWhiteSpace(eff.Type))
+                if (!string.IsNullOrWhiteSpace(eff.Type))
                 {
                     string typeLower = eff.Type.Trim().ToLowerInvariant();
                     switch (typeLower)
@@ -1500,7 +1503,8 @@ namespace SpellEditor.Sources.AI
                 // EFFECT TYPE (EffectN)
                 // --------------------------------------------------------
                 uint effectId = MapEffectType(eff.Type, eff.Aura);
-                SafeSet(row, $"Effect{slot}", effectId);
+                if (effectId != uint.MaxValue)
+                    SafeSet(row, $"Effect{slot}", effectId);
 
                 // Weapon damage override
                 if (eff.WeaponDamagePercent.HasValue)
@@ -1528,8 +1532,10 @@ namespace SpellEditor.Sources.AI
                     basePoints = (int)Math.Round(eff.DamagePerSecond.Value * eff.AmplitudeSeconds.Value) - 1;
                 }
 
-                if (basePoints < 0) basePoints = 0;
-                SafeSet(row, $"EffectBasePoints{slot}", basePoints);
+                if (basePoints < 0)
+                    basePoints = 0;
+                if (eff.BasePoints.HasValue || eff.DamagePerSecond.HasValue)
+                    SafeSet(row, $"EffectBasePoints{slot}", basePoints);
 
                 // --------------------------------------------------------
                 // DIE SIDES
@@ -1558,7 +1564,7 @@ namespace SpellEditor.Sources.AI
                 // --------------------------------------------------------
                 // TARGETING — uses ResolveEffectTarget FIX
                 // --------------------------------------------------------
-                string target = ResolveEffectTarget(eff, def);
+                string target = ResolveEffectTarget(eff, def, isModify);
                 if (!string.IsNullOrWhiteSpace(target))
                 {
                     MapTarget(target, out uint targA, out uint targB);
@@ -1947,7 +1953,7 @@ namespace SpellEditor.Sources.AI
         ///   2) def.TargetType (top-level)
         ///   3) Heuristic based on effect type and whether it is AoE
         /// </summary>
-        private static string ResolveEffectTarget(AiEffectDefinition eff, AiSpellDefinition def)
+        private static string ResolveEffectTarget(AiEffectDefinition eff, AiSpellDefinition def, bool isModify)
         {
             // 1) Explicit effect-level override
             if (!string.IsNullOrWhiteSpace(eff.Target))
@@ -1990,7 +1996,7 @@ namespace SpellEditor.Sources.AI
                 return "Self";
 
             // Fallback
-            return "Enemy";
+            return isModify ? null : "Enemy";
         }
 
         private static uint MapEffectType(string type, string aura)
@@ -2006,7 +2012,7 @@ namespace SpellEditor.Sources.AI
                     return 6; // SPELL_EFFECT_APPLY_AURA
 
                 // Otherwise assume generic SCHOOL_DAMAGE
-                return 2; // SPELL_EFFECT_SCHOOL_DAMAGE
+                return uint.MaxValue; // NA
             }
 
             string t = type.Trim().ToLowerInvariant();

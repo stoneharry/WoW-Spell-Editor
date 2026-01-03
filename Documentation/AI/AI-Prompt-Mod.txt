@@ -118,7 +118,7 @@ AiEffectDefinition {
   int? MiscValueB;          // EffectMiscValueBN – secondary misc
 
   int? TriggerSpellId;      // EffectTriggerSpellN – for procs, triggered spells, dummy effects
-  int? CreatureId;          // Creature/NPC entry for summons, kill credit, etc.
+  int? CreatureId;          // Creature/NPC entry for summons, kill credit, etc. When a creature is summoned, the spell must have a duration set which is used for how long the creature should be summoned for.
 
   int?   ChainTargets;          // EffectChainTargetN – max jumps for chain spells
   float? WeaponDamagePercent;   // For WeaponDamage-type effects (e.g. 100 = 100% weapon damage)
@@ -134,16 +134,18 @@ GLOBAL OUTPUT RULE:
 
 You are MODIFYING an existing spell.
 
-Output a JSON object containing ONLY the AiSpellDefinition fields that should change.
-All omitted fields will be left untouched in the spell.
+A JSON object representing the CURRENT spell state
+("semantic snapshot") is provided above.
 
 Rules:
-- Only include fields the user intends to modify.
-- Do NOT modify unrelated fields.
-- Setting a field to null = leave existing value unchanged.
-- Never generate a full spell unless the user explicitly asks for it.
-- If the user does NOT ask to change effects, NEVER output "Effects" or any DirectDamage/PeriodicDamage fields.
-- Do not infer, modify, or generate any effects unless the user explicitly requests effect changes.
+- Treat the snapshot as the source of truth.
+- When the user asks for relative changes (e.g. "double the damage"),
+  you MUST base your calculation on the values in the snapshot.
+- Only include fields the user explicitly intends to change.
+- Omitted fields MUST remain untouched.
+- Setting a field to null means "do not change it".
+- NEVER regenerate effects unless the user explicitly asks to
+  change damage, healing, or effects.
 
 ---------------------------------------------------------------
 ABSOLUTE FORMAT RULES
@@ -268,8 +270,10 @@ Each entry in "Effects" is an AiEffectDefinition with these fields:
     "ModStat", "ModSchoolMaskDamage", etc.
 
 - BasePoints (number, optional)
-  Raw amount for this effect. The editor will store BasePoints+1
-  in spell.dbc automatically.
+  REAL in-game effect amount (player-facing value).
+  This is NOT the raw spell.dbc value.
+  The editor will automatically convert this to DBC format
+  (EffectBasePoints = BasePoints - 1).
 
 - DieSides (number, optional)
   Random additional amount (e.g. a 3–7 damage effect can be
