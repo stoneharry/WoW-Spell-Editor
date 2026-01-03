@@ -24,6 +24,7 @@ using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using SpellEditor.Sources.AI;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
@@ -349,8 +350,8 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
-            string[] school_strings = SafeTryFindResource("school_strings").Split('|');
-            foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
+            string[] power_type_strings = SafeTryFindResource("power_type_strings").Split('|');
+            foreach (string schoolString in power_type_strings) { PowerType.Items.Add(schoolString); }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
@@ -616,6 +617,8 @@ namespace SpellEditor
                 FilterAuraCombo.SelectionChanged += FilterAuraCombo_SelectionChanged;
                 FilterSpellTargetA.SelectionChanged += FilterSpellTargetA_SelectionChanged;
                 FilterSpellTargetB.SelectionChanged += FilterSpellTargetB_SelectionChanged;
+
+                SpellDbcEnumProvider.Initialize();
             }
 
             catch (Exception ex)
@@ -665,7 +668,7 @@ namespace SpellEditor
 
         private void LogBookWindowButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_LogBookWindow != null && _LogBookWindow.IsVisible)
+            if (_LogBookWindow != null)
             {
                 _LogBookWindow.Visibility = Visibility.Visible;
                 _LogBookWindow.Show();
@@ -689,6 +692,114 @@ namespace SpellEditor
             }
             
             _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
+        }
+
+        private OpenAIWindow OpenAIWindow;
+        private AIController _AIController;
+
+        private void OpenAIButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (OpenAIWindow != null && OpenAIWindow.IsLoaded)
+            {
+                OpenAIWindow.Visibility = Visibility.Visible;
+                OpenAIWindow.Activate();
+                return;
+            }
+
+            _AIController = new AIController(GetDBAdapter());
+            OpenAIWindow = new OpenAIWindow(this);
+            OpenAIWindow.Show();
+        }
+
+        public void ReloadCurrentSpellFromDatabase()
+        {
+            try
+            {
+                updating = true;
+                // Silent progress updater
+                loadSpell(_ => { });
+            }
+            finally
+            {
+                updating = false;
+            }
+        }
+
+        public void ApplyAiSpellDefinition(AiSpellDefinition def)
+        {
+            _AIController.ApplyAiSpellDefinition(def, selectedID);
+
+            // Refresh editor UI
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void LoadSpecificSpell(uint id)
+        {
+            selectedID = id;
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void ModifyExistingSpellFromAi(AiSpellDefinition def, bool isModify)
+        {
+            if (def == null)
+                throw new ArgumentNullException(nameof(def));
+            if (selectedID == 0)
+                throw new InvalidOperationException("No spell selected.");
+
+            var query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1";
+            using (var table = adapter.Query(query))
+            {
+                if (table.Rows.Count == 0)
+                    throw new Exception("Spell not found: " + selectedID);
+
+                var row = table.Rows[0];
+
+                AiSpellMapper.ApplyDefinitionToRow(def, row, isModify);
+                adapter.CommitChanges(query, table);
+            }
+            // MUST reload DataRow after commit:
+            using (var table = adapter.Query(query))
+            {
+                var refreshedRow = table.Rows[0];
+
+                ReloadCurrentSpellFromDatabase();
+
+                // Update selection list
+                SelectSpell.UpdateSpell(refreshedRow);
+                foreach (var item in SelectSpell.Items)
+                {
+                    if (item is SpellSelectionEntry entry &&
+                        entry.GetSpellId() == selectedID)
+                    {
+                        entry.ForceRefreshIcon();
+                        break;
+                    }
+                }
+            }
+        }
+
+        public uint CreateNewSpellFromAi(AiSpellDefinition def)
+        {
+            // Get new ID
+            var newId = _AIController.CreateNewSpellFromAi(def);
+            // Copy selected to new ID
+            SelectSpell.AddNewSpell(selectedID, newId);
+            // Select new ID just in case
+            selectedID = newId;
+            // Apply AI mod to the new one
+            ModifyExistingSpellFromAi(def, false);
+            // Bring the new ID into view
+            var items = SelectSpell.Items;
+            for (int i = items.Count - 1; i >= 0; --i)
+            {
+                SpellSelectionEntry item = items.GetItemAt(i) as SpellSelectionEntry;
+                if (item != null && item.GetSpellId() == newId)
+                {
+                    SelectSpell.ScrollIntoView(item);
+                    break;
+                }
+            }
+            return newId;
         }
 
         #endregion

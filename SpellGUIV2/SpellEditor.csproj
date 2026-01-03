@@ -95,6 +95,9 @@
     <Reference Include="MySql.Data, Version=8.0.29.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.29\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -129,6 +132,7 @@
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\netstandard1.1\System.Memory.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -165,12 +169,26 @@
     <Compile Include="ConfigWindow.xaml.cs">
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenAIWindow.xaml.cs">
+      <DependentUpon>OpenAIWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LogBookWindow.xaml.cs">
       <DependentUpon>LogBookWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImportExportWindow.xaml.cs">
       <DependentUpon>ImportExportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\AI\AIController.cs" />
+    <Compile Include="Sources\AI\AiEnumRegistry.cs" />
+    <Compile Include="Sources\AI\AISemanticRegistry.cs" />
+    <Compile Include="Sources\AI\AiSimilarSpellFinder.cs" />
+    <Compile Include="Sources\AI\AiSimilarSpellSummary.cs" />
+    <Compile Include="Sources\AI\AiSpellDefinition.cs" />
+    <Compile Include="Sources\AI\AiSpellMapper.cs" />
+    <Compile Include="Sources\AI\AiSpellResult.cs" />
+    <Compile Include="Sources\AI\AiSpellSemanticExtractor.cs" />
+    <Compile Include="Sources\AI\OpenAIClient.cs" />
+    <Compile Include="Sources\AI\SpellDbcEnumProvider.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\RelayCommand.cs" />
     <Compile Include="Sources\Binding\Binding.cs" />
@@ -248,6 +266,10 @@
     <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
     <Compile Include="Sources\VersionControl\WoWVersionManager.cs" />
     <Page Include="ConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OpenAIWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
