@@ -28,8 +28,6 @@ namespace SpellEditor.Sources.AI
 
             row.BeginEdit();
 
-            row.BeginEdit();
-
             ApplyBasicInfo(def, row);
             ApplySchoolMechanicDispel(def, row);
             ApplyAttributes(def, row);

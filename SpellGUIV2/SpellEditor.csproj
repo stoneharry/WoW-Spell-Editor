@@ -186,6 +186,7 @@
     <Compile Include="Sources\AI\AiSpellDefinition.cs" />
     <Compile Include="Sources\AI\AiSpellMapper.cs" />
     <Compile Include="Sources\AI\AiSpellResult.cs" />
+    <Compile Include="Sources\AI\AiSpellSemanticExtractor.cs" />
     <Compile Include="Sources\AI\OpenAIClient.cs" />
     <Compile Include="Sources\AI\SpellDbcEnumProvider.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />

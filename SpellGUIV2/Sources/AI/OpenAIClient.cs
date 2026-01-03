@@ -148,6 +148,7 @@ namespace SpellEditor.Sources.AI
                         });
                     input.AppendLine(snapshotJson);
                     input.AppendLine();
+                    Logger.Info("Current spell serialised:\n" + snapshotJson);
                 }
             }
         }
