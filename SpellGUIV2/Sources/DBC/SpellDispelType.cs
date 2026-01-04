@@ -40,6 +40,8 @@ namespace SpellEditor.Sources.DBC
 
         public int UpdateDispelSelection(uint ID)
         {
+            if (Lookups.Count == 0)
+                LoadGraphicUserInterface();
             for (int i = 0; i < Header.RecordCount; ++i)
             {
                 if (ID == Lookups[i].ID)

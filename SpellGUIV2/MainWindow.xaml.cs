@@ -1064,8 +1064,6 @@ namespace SpellEditor
         {
             if (!Config.IsInit)
             {
-                // for easier development so I don't have to deal with the sql selection popup on startup
-# if !DEBUG
                 var settings = new MetroDialogSettings
                 {
                     AffirmativeButtonText = "SQLite",
@@ -1078,12 +1076,6 @@ namespace SpellEditor
                     SafeTryFindResource("Welcome"),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
-#else
-
-                bool isSqlite = false;
-#endif
-
-
                 if (!isSqlite)
                 {
                     if (Config.NeedInitMysql)
@@ -2266,7 +2258,7 @@ namespace SpellEditor
             }
 
             // dev helpers to find possible used fields, ignore auras for now
-            if ((spellEffectData.usesAura == false))
+            /*if ((spellEffectData.usesAura == false))
             {
                 if (spellEffectData.usesMultipleValue == false)
                     Debug.Assert(effectMultipleValueBoxes[effectIndex - 1].Text == "0"
@@ -2281,9 +2273,7 @@ namespace SpellEditor
                     Debug.Assert(effectTriggerSpellBoxes[effectIndex - 1].Text == "0");
                 if (spellEffectData.UsesAmplitude == false)
                     Debug.Assert(effectAmplitudeBoxes[effectIndex - 1].Text == "0");
-            }
-
-
+            }*/
 
             ////
             // misc value Aura specific stuff -------
@@ -3349,15 +3339,15 @@ namespace SpellEditor
                 {
                     // only wotlk has effect spell class mask fields
                     // before wotlk, it's handled in item_type for first 32bits, and in database for extra
-                    familyFlagsA[0] = (uint)row["EffectSpellClassMaskA1"];
-                    familyFlagsA[1] = (uint)row["EffectSpellClassMaskA2"];
-                    familyFlagsA[2] = (uint)row["EffectSpellClassMaskA3"];
-                    familyFlagsB[0] = (uint)row["EffectSpellClassMaskB1"];
-                    familyFlagsB[1] = (uint)row["EffectSpellClassMaskB2"];
-                    familyFlagsB[2] = (uint)row["EffectSpellClassMaskB3"];
-                    familyFlagsC[0] = (uint)row["EffectSpellClassMaskC1"];
-                    familyFlagsC[1] = (uint)row["EffectSpellClassMaskC2"];
-                    familyFlagsC[2] = (uint)row["EffectSpellClassMaskC3"];
+                    familyFlagsA[0] = uint.Parse(row["EffectSpellClassMaskA1"].ToString());
+                    familyFlagsA[1] = uint.Parse(row["EffectSpellClassMaskA2"].ToString());
+                    familyFlagsA[2] = uint.Parse(row["EffectSpellClassMaskA3"].ToString());
+                    familyFlagsB[0] = uint.Parse(row["EffectSpellClassMaskB1"].ToString());
+                    familyFlagsB[1] = uint.Parse(row["EffectSpellClassMaskB2"].ToString());
+                    familyFlagsB[2] = uint.Parse(row["EffectSpellClassMaskB3"].ToString());
+                    familyFlagsC[0] = uint.Parse(row["EffectSpellClassMaskC1"].ToString());
+                    familyFlagsC[1] = uint.Parse(row["EffectSpellClassMaskC2"].ToString());
+                    familyFlagsC[2] = uint.Parse(row["EffectSpellClassMaskC3"].ToString());
 
                     familyFlagsBase[0] = uint.Parse(row["SpellFamilyFlags"].ToString());
                     familyFlagsBase[1] = uint.Parse(row["SpellFamilyFlags1"].ToString());

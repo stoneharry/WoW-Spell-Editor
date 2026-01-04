@@ -73,7 +73,14 @@ namespace SpellEditor.Sources.Controls
                 var newLocale = LocaleManager.Instance.GetLocale(adapter);
                 if (newLocale != _Language && (newLocale != -1 || _Language == -1))
                 {
-                    _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
+                    try
+                    {
+                        _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
+                    }
+                    catch (DuplicateNameException exception)
+                    {
+                        // NOOP
+                    }   
                     SetLanguage(newLocale);
                 }
 
