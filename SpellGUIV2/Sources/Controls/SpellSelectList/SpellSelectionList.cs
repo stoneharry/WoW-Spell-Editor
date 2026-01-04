@@ -54,6 +54,50 @@ namespace SpellEditor.Sources.Controls
 
         public int GetLoadedRowCount() => _Table.Rows.Count;
 
+        public List<uint> GetFirstAvailableSpells(uint startId = 1, uint amount = 1)
+        {
+            List<uint> ids = new List<uint>();
+
+            if (startId < 1) startId = 1;
+            if (amount < 1) amount = 1;
+
+            var table = _Adapter.Query($"SELECT `ID` FROM `spell` WHERE `ID` >= {startId} ORDER BY `ID` ASC");
+
+            uint lastId = 0;
+
+            // only possible if the startId is the last id in the table
+            bool skip = table.Rows.Count == 1;
+
+            foreach (DataRow row in table.Rows)
+            {
+                uint currentId = uint.Parse(row["ID"].ToString());
+                if ((lastId > 0 && ((currentId - lastId) > amount)) || skip)
+                {
+                    if (skip) 
+                        lastId = currentId;
+
+                    for (uint i = 1; i <= amount; ++i)
+                        ids.Add(lastId + i);
+                    break;
+                }
+                else
+                    lastId = currentId;
+            }
+
+            // only possible if the startId is more than the last id in the table so we can just safely add the ids from here
+            if (lastId == 0)
+                for (uint i = 0; i < amount; ++i)
+                    ids.Add(startId + i);
+
+            return ids;
+        }
+
+        public bool HasSpell(uint spellId)
+        {
+            var result = _Table.Select($"id = {spellId}");
+            return result.Length == 1;
+        }
+
         public string GetSpellNameById(uint spellId)
         {
             var result = _Table.Select($"id = {spellId}");
@@ -140,7 +184,7 @@ namespace SpellEditor.Sources.Controls
             }
         }
 
-        public void AddNewSpell(uint copyFrom, uint copyTo)
+        public void AddNewSpell(uint copyFrom, uint copyTo, bool refresh = true)
         {
             // Copy spell in DB
             using (var result = _Adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{copyFrom}' LIMIT 1"))
@@ -160,7 +204,8 @@ namespace SpellEditor.Sources.Controls
                 _Table.AcceptChanges();
             }
             // Refresh UI
-            RefreshSpellList();
+            if (refresh)
+                RefreshSpellList();
 
             _main.LoadBodyData(3, copyTo);
         }

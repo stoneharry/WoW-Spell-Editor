@@ -171,6 +171,9 @@
     <Compile Include="ImportExportWindow.xaml.cs">
       <DependentUpon>ImportExportWindow.xaml</DependentUpon>
     </Compile>
+	<Compile Include="CopySpellDialog.xaml.cs">
+      <DependentUpon>ConfigWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\RelayCommand.cs" />
     <Compile Include="Sources\Binding\Binding.cs" />
@@ -271,6 +274,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+	<Page Include="CopySpellDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

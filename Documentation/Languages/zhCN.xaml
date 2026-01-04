@@ -236,14 +236,17 @@
     <system:String x:Key="Exit" xml:space="preserve">您确定要退出吗?&#x0a;&#x0a;请确保在执行此操作之前已保存，否则将丢失所有进度!</system:String>
     <system:String x:Key="TruncateTable1">您确定要清空表格吗?</system:String>
     <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables used by this program and create them again allowing you to start over.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBC files.</system:String>
-    <system:String x:Key="CopySpellRecord1">复制现有记录?</system:String>
-    <system:String x:Key="CopySpellRecord2">输入要复制的法术ID。</system:String>
-    <system:String x:Key="CopySpellRecord3">错误:输入的法术ID不是整数。</system:String>
-    <system:String x:Key="CopySpellRecord4">输入新的法术ID。</system:String>
-    <system:String x:Key="CopySpellRecord5">错误:输入的法术ID不是整数。</system:String>
-    <system:String x:Key="CopySpellRecord6">错误:该法术ID已经存在。</system:String>
-    <system:String x:Key="CopySpellRecord7">从头开始创建一个新法术目前还没有实现。请复制现有的法术。</system:String>
-    <system:String x:Key="CopySpellRecord8">"成功创建ID为{0}的新法术。</system:String>
+    <system:String x:Key="CopySpellRecord1">复制现有记录</system:String>
+    <system:String x:Key="CopySpellRecord2">请输入要复制的法术 ID：</system:String>
+    <system:String x:Key="CopySpellRecord3">错误：被复制的法术 ID 不是整数或不存在。</system:String>
+    <system:String x:Key="CopySpellRecord4">请输入新的法术 ID：</system:String>
+    <system:String x:Key="CopySpellRecord5">错误：新的法术 ID 不是整数。</system:String>
+    <system:String x:Key="CopySpellRecord6">错误：该法术 ID 已被占用。</system:String>
+    <system:String x:Key="CopySpellRecord7">使用第一个可用的 ID</system:String>
+    <system:String x:Key="CopySpellRecord8">请输入复制数量：</system:String>
+    <system:String x:Key="CopySpellRecord9">错误：复制数量不是整数或数量无效。</system:String>
+    <system:String x:Key="CopySpellRecord10">成功创建 {0} 条新记录，起始 ID 为 {1}。</system:String>
+
     <system:String x:Key="DeleteSpellRecord1">输入要删除的法术ID。</system:String>
     <system:String x:Key="DeleteSpellRecord2">错误:输入的法术ID不是整数。</system:String>
     <system:String x:Key="DeleteSpellRecord3">成功删除法术。</system:String>

@@ -236,14 +236,17 @@
     <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout votre progrès sera perdu !</system:String>
     <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR ?</system:String>
     <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables used by this program and create them again allowing you to start over.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBC files.</system:String>
-    <system:String x:Key="CopySpellRecord1">Copier d'un sort existant ?</system:String>
-    <system:String x:Key="CopySpellRecord2">Entrez l'identifiant du sort pour copier.</system:String>
-    <system:String x:Key="CopySpellRecord3">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
-    <system:String x:Key="CopySpellRecord4">Entrez le nouvel identifiant du sort.</system:String>
-    <system:String x:Key="CopySpellRecord5">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
-    <system:String x:Key="CopySpellRecord6">ERREUR: cet identifiant est déjà pris.</system:String>
-    <system:String x:Key="CopySpellRecord7">La création d'un nouveau sort à partir de rien n'est actuellement pas implémentée. Veuillez copier un sort existant.</system:String>
-    <system:String x:Key="CopySpellRecord8">Nouveau sort créé avec succès sous l’ID {0}.</system:String>
+    <system:String x:Key="CopySpellRecord1">Copier un enregistrement existant</system:String>
+	<system:String x:Key="CopySpellRecord2">Entrez l’ID du sort à copier :</system:String>
+	<system:String x:Key="CopySpellRecord3">ERREUR: L’ID du sort copié n’était pas un entier ou n’existe pas.</system:String>
+	<system:String x:Key="CopySpellRecord4">Entrez le nouvel ID du sort :</system:String>
+	<system:String x:Key="CopySpellRecord5">ERREUR: Le nouvel ID du sort n’était pas un entier.</system:String>
+	<system:String x:Key="CopySpellRecord6">ERREUR: Cet ID de sort est déjà utilisé.</system:String>
+	<system:String x:Key="CopySpellRecord7">Utiliser le premier ID disponible</system:String>
+	<system:String x:Key="CopySpellRecord8">Entrez le nombre de copies :</system:String>
+	<system:String x:Key="CopySpellRecord9">ERREUR: Le nombre de copies n’était pas un entier ou était invalide.</system:String>
+	<system:String x:Key="CopySpellRecord10">Création de {0} nouvel(s) enregistrement(s) à partir de l’ID {1} réussie.</system:String>
+
     <system:String x:Key="DeleteSpellRecord1">Entrez l'identifiant du sort à supprimer.</system:String>
     <system:String x:Key="DeleteSpellRecord2">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>
     <system:String x:Key="DeleteSpellRecord3">Sort supprimé avec succès.</system:String>

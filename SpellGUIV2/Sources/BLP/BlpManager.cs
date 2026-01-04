@@ -64,6 +64,13 @@ namespace SpellEditor.Sources.BLP
                     }
                 }
             }
+            catch (IOException ioEx) when ((ioEx.HResult & 0xFFFF) == 32 || (ioEx.HResult & 0xFFFF) == 33)
+            {
+                // lets not add files in the map that are currently used because these free up next time and loads properly.
+                // this is a hack fix for this issue and cba looking for the real one.
+                // its probably due to some multithreading conflict and tries to use them at the same time.
+                Logger.Info($"[BlpManager] FILE IN USE: {filePath}");
+            }
             catch (Exception e)
             {
                 // Logging full exception is quite costly here

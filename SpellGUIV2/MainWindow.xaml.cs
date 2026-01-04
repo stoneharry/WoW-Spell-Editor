@@ -1214,6 +1214,83 @@ namespace SpellEditor
         #endregion
 
         #region ButtonClicks (and load spell god-function)
+
+        public async Task<(bool success, uint oldId, List<uint> newIds)> ShowCopySpellDialog()
+        {
+            var dialog = new CustomDialog();
+            var view = new CopySpellDialog();
+
+            view.AmountInput.Text = "1";
+
+            if (selectedID > 0)
+                view.OldIdInput.Text = selectedID.ToString();
+
+            dialog.Content = view;
+
+            await this.ShowMetroDialogAsync(dialog);
+
+            var source = new TaskCompletionSource<(bool, uint, List<uint>)>();
+
+            view.OkButton.Click += async (s, e) =>
+            {
+                if (!uint.TryParse(view.OldIdInput.Text, out uint oldId) || !SelectSpell.HasSpell(oldId))
+                {
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord3"));
+                    return;
+                }
+
+                if (!uint.TryParse(view.AmountInput.Text, out uint amount) || amount == 0)
+                {
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord9"));
+                    return;
+                }
+
+                bool useFirstAvailable = view.FirstBox.IsChecked == true;
+
+                uint startId = oldId;
+
+                if (!string.IsNullOrWhiteSpace(view.NewIdInput.Text))
+                {
+                    if (!uint.TryParse(view.NewIdInput.Text, out startId))
+                    {
+                        HandleErrorMessage(SafeTryFindResource("CopySpellRecord5"));
+                        return;
+                    }
+                }
+                else if (!useFirstAvailable)
+                {
+                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord5"));
+                    return;
+                }
+
+
+                List<uint> newIds = useFirstAvailable ? SelectSpell.GetFirstAvailableSpells(startId, amount) : new List<uint>();
+
+                if (!useFirstAvailable)
+                {
+                    if (uint.Parse(adapter.Query($"SELECT COUNT(*) FROM `spell` WHERE `ID` BETWEEN {startId} AND {startId + amount - 1}").Rows[0][0].ToString()) > 0)
+                    {
+                        HandleErrorMessage(SafeTryFindResource("CopySpellRecord6"));
+                        return;
+                    }
+
+                    for (uint i = 0; i < amount; ++i)
+                        newIds.Add(startId + i);
+                }
+
+                await this.HideMetroDialogAsync(dialog);
+                source.SetResult((true, oldId, newIds));
+            };
+
+            view.CancelButton.Click += async (s, e) =>
+            {
+                await this.HideMetroDialogAsync(dialog);
+                source.SetResult((false, 0, new List<uint>()));
+            };
+
+            return await source.Task;
+        }
+
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (adapter == null)
@@ -1245,59 +1322,18 @@ namespace SpellEditor
 
             if (sender == InsertANewRecord)
             {
-                MetroDialogSettings settings = new MetroDialogSettings
-                {
-                    AffirmativeButtonText = SafeTryFindResource("Yes"),
-                    NegativeButtonText = SafeTryFindResource("No")
-                };
+                var result = await ShowCopySpellDialog();
+                if (!result.success) return;
 
+                var oldID = result.oldId;
+                var newIDs = result.newIds;
+                var count = newIDs.Count;
 
-                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult copySpell = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord1"), style, settings);
+                // Copy old spell to new spell
+                for (int i = 0; i < count; ++i)
+                    SelectSpell.AddNewSpell(oldID, newIDs[i], i == (count-1));
 
-                uint oldIDIndex = uint.MaxValue;
-
-                if (copySpell == MessageDialogResult.Affirmative)
-                {
-                    string inputCopySpell = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord2"));
-                    if (inputCopySpell == null) { return; }
-
-                    if (!uint.TryParse(inputCopySpell, out var oldID))
-                    {
-                        HandleErrorMessage(SafeTryFindResource("CopySpellRecord3"));
-                        return;
-                    }
-                    oldIDIndex = oldID;
-                }
-
-                string inputNewRecord = await this.ShowInputAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("CopySpellRecord4"));
-                if (inputNewRecord == null) { return; }
-
-                if (!uint.TryParse(inputNewRecord, out var newID))
-                {
-                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord5"));
-                    return;
-                }
-
-                if (uint.Parse(adapter.Query($"SELECT COUNT(*) FROM `spell` WHERE `ID` = '{newID}'").Rows[0][0].ToString()) > 0)
-                {
-                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord6"));
-                    return;
-                }
-
-                if (oldIDIndex != uint.MaxValue)
-                {
-                    // Copy old spell to new spell
-                    SelectSpell.AddNewSpell(oldIDIndex, newID);
-                }
-                else
-                {
-                    // Create new spell
-                    HandleErrorMessage(SafeTryFindResource("CopySpellRecord7"));
-                    return;
-                }
-
-                ShowFlyoutMessage(string.Format(SafeTryFindResource("CopySpellRecord8"), inputNewRecord));
+                ShowFlyoutMessage(string.Format(SafeTryFindResource("CopySpellRecord10"), count, newIDs[0]));
                 return;
             }
 
@@ -1880,6 +1916,9 @@ namespace SpellEditor
                 }
                 return;
             }
+
+            if (selectedID == 0)
+                return;
 
             if (sender == SaveSpellIcon || sender == ResetSpellIconID)
             {

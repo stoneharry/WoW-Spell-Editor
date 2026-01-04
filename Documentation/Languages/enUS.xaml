@@ -235,14 +235,16 @@
     <system:String x:Key="Exit" xml:space="preserve">Are you sure you want to exit?&#x0a;&#x0a;Make sure you have saved before doing this action or all progress will be lost!</system:String>
     <system:String x:Key="TruncateTable1">ARE YOU SURE?</system:String>
     <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables used by this program and create them again allowing you to start over.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBC files.</system:String>
-    <system:String x:Key="CopySpellRecord1">Copy an existing record?</system:String>
-    <system:String x:Key="CopySpellRecord2">Input the spell ID to copy from.</system:String>
-    <system:String x:Key="CopySpellRecord3">ERROR: Input spell ID was not an integer.</system:String>
-    <system:String x:Key="CopySpellRecord4">Input the new spell ID.</system:String>
-    <system:String x:Key="CopySpellRecord5">ERROR: Input spell ID was not an integer.</system:String>
+    <system:String x:Key="CopySpellRecord1">Copy an existing record</system:String>
+    <system:String x:Key="CopySpellRecord2">Input the spell ID to copy from:</system:String>
+    <system:String x:Key="CopySpellRecord3">ERROR: The copied spell ID was not an integer or it doesn't exist.</system:String>
+    <system:String x:Key="CopySpellRecord4">Input the new spell ID:</system:String>
+    <system:String x:Key="CopySpellRecord5">ERROR: The new spell ID was not an integer.</system:String>
     <system:String x:Key="CopySpellRecord6">ERROR: That spell ID is already taken.</system:String>
-    <system:String x:Key="CopySpellRecord7">Creating a new spell from scratch is currently not implemented. Please copy an existing spell.</system:String>
-    <system:String x:Key="CopySpellRecord8">"Created new record with ID {0} sucessfully.</system:String>
+    <system:String x:Key="CopySpellRecord7">Use first available ID</system:String>
+    <system:String x:Key="CopySpellRecord8">Input how many copies:</system:String>
+    <system:String x:Key="CopySpellRecord9">ERROR: The amount of copies was not an integer or it was an invalid amount.</system:String>
+    <system:String x:Key="CopySpellRecord10">Created {0} new record(s) starting at ID {1} sucessfully.</system:String>
     <system:String x:Key="DeleteSpellRecord1">Input the spell ID to delete.</system:String>
     <system:String x:Key="DeleteSpellRecord2">ERROR: Input spell ID was not an integer.</system:String>
     <system:String x:Key="DeleteSpellRecord3">Deleted record successfully.</system:String>
