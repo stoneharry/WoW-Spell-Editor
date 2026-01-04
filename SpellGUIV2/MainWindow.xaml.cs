@@ -26,6 +26,7 @@ using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+using SpellEditor.Sources.AI;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
@@ -372,8 +373,9 @@ namespace SpellEditor
             }
 
             PowerType.Items.Clear();
-            string[] school_strings = SafeTryFindResource("power_type_strings").Split('|');
-            foreach (string schoolString in school_strings) { PowerType.Items.Add(schoolString); }
+
+            string[] power_type_strings = SafeTryFindResource("power_type_strings").Split('|');
+            foreach (string powerString in power_type_strings) { PowerType.Items.Add(powerString); }
 
             SpellDamageType.Items.Clear();
             PreventionType.Items.Clear();
@@ -611,6 +613,8 @@ namespace SpellEditor
                 FilterAuraCombo.SelectionChanged += FilterAuraCombo_SelectionChanged;
                 FilterSpellTargetA.SelectionChanged += FilterSpellTargetA_SelectionChanged;
                 FilterSpellTargetB.SelectionChanged += FilterSpellTargetB_SelectionChanged;
+
+                SpellDbcEnumProvider.Initialize();
             }
 
             catch (Exception ex)
@@ -708,7 +712,7 @@ namespace SpellEditor
 
         private void LogBookWindowButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_LogBookWindow != null && _LogBookWindow.IsVisible)
+            if (_LogBookWindow != null)
             {
                 _LogBookWindow.Visibility = Visibility.Visible;
                 _LogBookWindow.Show();
@@ -732,6 +736,114 @@ namespace SpellEditor
             }
             
             _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
+        }
+
+        private OpenAIWindow OpenAIWindow;
+        private AIController _AIController;
+
+        private void OpenAIButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (OpenAIWindow != null && OpenAIWindow.IsLoaded)
+            {
+                OpenAIWindow.Visibility = Visibility.Visible;
+                OpenAIWindow.Activate();
+                return;
+            }
+
+            _AIController = new AIController(GetDBAdapter());
+            OpenAIWindow = new OpenAIWindow(this);
+            OpenAIWindow.Show();
+        }
+
+        public void ReloadCurrentSpellFromDatabase()
+        {
+            try
+            {
+                updating = true;
+                // Silent progress updater
+                loadSpell(_ => { });
+            }
+            finally
+            {
+                updating = false;
+            }
+        }
+
+        public void ApplyAiSpellDefinition(AiSpellDefinition def)
+        {
+            _AIController.ApplyAiSpellDefinition(def, selectedID);
+
+            // Refresh editor UI
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void LoadSpecificSpell(uint id)
+        {
+            selectedID = id;
+            ReloadCurrentSpellFromDatabase();
+        }
+
+        public void ModifyExistingSpellFromAi(AiSpellDefinition def, bool isModify)
+        {
+            if (def == null)
+                throw new ArgumentNullException(nameof(def));
+            if (selectedID == 0)
+                throw new InvalidOperationException("No spell selected.");
+
+            var query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1";
+            using (var table = adapter.Query(query))
+            {
+                if (table.Rows.Count == 0)
+                    throw new Exception("Spell not found: " + selectedID);
+
+                var row = table.Rows[0];
+
+                AiSpellMapper.ApplyDefinitionToRow(def, row, isModify);
+                adapter.CommitChanges(query, table);
+            }
+            // MUST reload DataRow after commit:
+            using (var table = adapter.Query(query))
+            {
+                var refreshedRow = table.Rows[0];
+
+                ReloadCurrentSpellFromDatabase();
+
+                // Update selection list
+                SelectSpell.UpdateSpell(refreshedRow);
+                foreach (var item in SelectSpell.Items)
+                {
+                    if (item is SpellSelectionEntry entry &&
+                        entry.GetSpellId() == selectedID)
+                    {
+                        entry.ForceRefreshIcon();
+                        break;
+                    }
+                }
+            }
+        }
+
+        public uint CreateNewSpellFromAi(AiSpellDefinition def)
+        {
+            // Get new ID
+            var newId = _AIController.CreateNewSpellFromAi(def);
+            // Copy selected to new ID
+            SelectSpell.AddNewSpell(selectedID, newId);
+            // Select new ID just in case
+            selectedID = newId;
+            // Apply AI mod to the new one
+            ModifyExistingSpellFromAi(def, false);
+            // Bring the new ID into view
+            var items = SelectSpell.Items;
+            for (int i = items.Count - 1; i >= 0; --i)
+            {
+                SpellSelectionEntry item = items.GetItemAt(i) as SpellSelectionEntry;
+                if (item != null && item.GetSpellId() == newId)
+                {
+                    SelectSpell.ScrollIntoView(item);
+                    break;
+                }
+            }
+            return newId;
         }
 
         #endregion
@@ -1064,8 +1176,6 @@ namespace SpellEditor
         {
             if (!Config.IsInit)
             {
-                // for easier development so I don't have to deal with the sql selection popup on startup
-# if !DEBUG
                 var settings = new MetroDialogSettings
                 {
                     AffirmativeButtonText = "SQLite",
@@ -1078,12 +1188,6 @@ namespace SpellEditor
                     SafeTryFindResource("Welcome"),
                     MessageDialogStyle.AffirmativeAndNegative, settings);
                 bool isSqlite = exitCode == MessageDialogResult.Affirmative;
-#else
-
-                bool isSqlite = false;
-#endif
-
-
                 if (!isSqlite)
                 {
                     if (Config.NeedInitMysql)
@@ -2266,7 +2370,7 @@ namespace SpellEditor
             }
 
             // dev helpers to find possible used fields, ignore auras for now
-            if ((spellEffectData.usesAura == false))
+            /*if ((spellEffectData.usesAura == false))
             {
                 if (spellEffectData.usesMultipleValue == false)
                     Debug.Assert(effectMultipleValueBoxes[effectIndex - 1].Text == "0"
@@ -2281,9 +2385,7 @@ namespace SpellEditor
                     Debug.Assert(effectTriggerSpellBoxes[effectIndex - 1].Text == "0");
                 if (spellEffectData.UsesAmplitude == false)
                     Debug.Assert(effectAmplitudeBoxes[effectIndex - 1].Text == "0");
-            }
-
-
+            }*/
 
             ////
             // misc value Aura specific stuff -------
@@ -3349,15 +3451,15 @@ namespace SpellEditor
                 {
                     // only wotlk has effect spell class mask fields
                     // before wotlk, it's handled in item_type for first 32bits, and in database for extra
-                    familyFlagsA[0] = (uint)row["EffectSpellClassMaskA1"];
-                    familyFlagsA[1] = (uint)row["EffectSpellClassMaskA2"];
-                    familyFlagsA[2] = (uint)row["EffectSpellClassMaskA3"];
-                    familyFlagsB[0] = (uint)row["EffectSpellClassMaskB1"];
-                    familyFlagsB[1] = (uint)row["EffectSpellClassMaskB2"];
-                    familyFlagsB[2] = (uint)row["EffectSpellClassMaskB3"];
-                    familyFlagsC[0] = (uint)row["EffectSpellClassMaskC1"];
-                    familyFlagsC[1] = (uint)row["EffectSpellClassMaskC2"];
-                    familyFlagsC[2] = (uint)row["EffectSpellClassMaskC3"];
+                    familyFlagsA[0] = uint.Parse(row["EffectSpellClassMaskA1"].ToString());
+                    familyFlagsA[1] = uint.Parse(row["EffectSpellClassMaskA2"].ToString());
+                    familyFlagsA[2] = uint.Parse(row["EffectSpellClassMaskA3"].ToString());
+                    familyFlagsB[0] = uint.Parse(row["EffectSpellClassMaskB1"].ToString());
+                    familyFlagsB[1] = uint.Parse(row["EffectSpellClassMaskB2"].ToString());
+                    familyFlagsB[2] = uint.Parse(row["EffectSpellClassMaskB3"].ToString());
+                    familyFlagsC[0] = uint.Parse(row["EffectSpellClassMaskC1"].ToString());
+                    familyFlagsC[1] = uint.Parse(row["EffectSpellClassMaskC2"].ToString());
+                    familyFlagsC[2] = uint.Parse(row["EffectSpellClassMaskC3"].ToString());
 
                     familyFlagsBase[0] = uint.Parse(row["SpellFamilyFlags"].ToString());
                     familyFlagsBase[1] = uint.Parse(row["SpellFamilyFlags1"].ToString());
@@ -5353,7 +5455,7 @@ namespace SpellEditor
             }
         }
 
-        private async void EditEffectFamiliesButton_Click(object sender, RoutedEventArgs e)
+        private void EditEffectFamiliesButton_Click(object sender, RoutedEventArgs e)
         {
             int effectid = 0;
 
@@ -5373,7 +5475,7 @@ namespace SpellEditor
             spellFamiliesWindow.ShowDialog();
         }
 
-        private async void EditBaseFamiliesButton_Click(object sender, RoutedEventArgs e)
+        private void EditBaseFamiliesButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.Assert(sender == BaseSpellsFamiliesButton);
 
