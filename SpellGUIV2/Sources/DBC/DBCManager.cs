@@ -1,4 +1,6 @@
-﻿using SpellEditor.Sources.VersionControl;
+﻿using NLog;
+using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +10,8 @@ namespace SpellEditor.Sources.DBC
 {
     class DBCManager
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private static readonly DBCManager _Instance = new DBCManager();
 
         private ConcurrentDictionary<string, AbstractDBC> _DbcMap = new ConcurrentDictionary<string, AbstractDBC>();
@@ -74,11 +78,19 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                if (_DbcMap.ContainsKey(name))
+                try
                 {
-                    _DbcMap.TryRemove(name, out var oldDbc);
+                    if (_DbcMap.ContainsKey(name))
+                    {
+                        _DbcMap.TryRemove(name, out var oldDbc);
+                    }
+                    return _DbcMap.TryAdd(name, new DBCType());
                 }
-                return _DbcMap.TryAdd(name, new DBCType());
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, $"Failed to load: [{name}.dbc], the program will likely break because of this error.");
+                    throw exception;
+                }
             });
         }
 

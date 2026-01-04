@@ -1120,6 +1120,7 @@ namespace SpellEditor
                 await controller.CloseAsync();
                 await this.ShowMessageAsync(SafeTryFindResource("ERROR"),
                     $"{SafeTryFindResource("LoadDBCFromBinding_Error_1")}\n\n{e}\n{e.InnerException}");
+                Logger.Error(e, $"Failed: {e}");
                 return;
             }
 
