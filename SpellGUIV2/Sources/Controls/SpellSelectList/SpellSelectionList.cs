@@ -77,7 +77,7 @@ namespace SpellEditor.Sources.Controls
                     {
                         _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
                     }
-                    catch (DuplicateNameException exception)
+                    catch (DuplicateNameException /*exception*/)
                     {
                         // NOOP
                     }   

@@ -4,6 +4,7 @@
              xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
              xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Common"
              StartupUri="MainWindow.xaml"
+             Startup="Application_Startup"
              Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>

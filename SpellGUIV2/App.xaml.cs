@@ -10,7 +10,12 @@ namespace SpellEditor
 
         public App()
         {
+        }
 
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            // Required for OpenAI
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
