@@ -1,6 +1,8 @@
 ﻿<Application x:Class="SpellEditor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
+             xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Common"
              StartupUri="MainWindow.xaml"
              Startup="Application_Startup"
              Exit="Application_Exit">
@@ -9,13 +11,22 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Use the enUS.xaml as the default.-->
                 <ResourceDictionary Source="pack://SiteOfOrigin:,,,/Languages/enUS.xaml"/>
+                
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="TabControl" BasedOn="{StaticResource MahApps.Styles.TabControl.AnimatedSingleRow}" />
+
+            <Style TargetType="c2:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c2:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="c2:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+            <Style TargetType="c2:FilteredComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c2:ListContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
+            <Style TargetType="c2:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
+            <Style TargetType="c:SpellSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

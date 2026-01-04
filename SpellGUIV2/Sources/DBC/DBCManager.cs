@@ -37,8 +37,24 @@ namespace SpellEditor.Sources.DBC
                 ForceLoadDbc<SpellRadius>("SpellRadius"),
                 ForceLoadDbc<ItemClass>("ItemClass"),
                 ForceLoadDbc<ItemSubClass>("ItemSubClass"),
-                ForceLoadDbc<AnimationData>("AnimationData")
+                ForceLoadDbc<AnimationData>("AnimationData"),
+                ForceLoadDbc<CreatureType>("CreatureType"),
+                ForceLoadDbc<SpellShapeshiftForm>("SpellShapeshiftForm")
+
             };
+            // used for misc values, don't bother loading now as only wotlk is supported and it is a lot of work to update bindings
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                tasks.Add(ForceLoadDbc<SkillLine>("SkillLine"));
+                tasks.Add(ForceLoadDbc<Languages>("Languages"));
+                // ForceLoadDbc<AnimationData>("CreatureDisplayInfo")
+                tasks.Add(ForceLoadDbc<LockType>("LockType"));
+                tasks.Add(ForceLoadDbc<SkillLineCategory>("SkillLineCategory"));
+                // SpellItemEnchantment
+                // Faction
+                // TaxiPath
+            }
+
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
                 tasks.Add(ForceLoadDbc<TotemCategory>("TotemCategory"));
@@ -47,6 +63,9 @@ namespace SpellEditor.Sources.DBC
             {
                 tasks.Add(ForceLoadDbc<SpellRuneCost>("SpellRuneCost"));
                 tasks.Add(ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables"));
+
+                // tasks.Add(ForceLoadDbc<...>("OverrideSpellData"));
+                tasks.Add(ForceLoadDbc<ScreenEffect>("ScreenEffect"));
             }
             return tasks;
         }

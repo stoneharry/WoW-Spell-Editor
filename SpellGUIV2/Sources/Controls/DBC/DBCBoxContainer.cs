@@ -29,5 +29,11 @@ namespace SpellEditor.Sources.Controls
         {
             return NameLabel ?? new FriendlyLabel() { Content = Name };
         }
+
+        public Label ItemLabelWithId()
+        {
+            string label_text = ID.ToString() + " - " + Name;
+            return NameLabel ?? new FriendlyLabel() { Content = label_text };
+        }
     }
 }

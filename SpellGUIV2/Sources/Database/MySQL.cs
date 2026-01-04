@@ -74,7 +74,8 @@ namespace SpellEditor.Sources.Database
         {
             lock (_syncLock)
             {
-                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                var bindings = BindingManager.GetInstance().GetAllBindings();
+                foreach (var binding in bindings)
                 {
                     using (var cmd = _connection.CreateCommand())
                     {

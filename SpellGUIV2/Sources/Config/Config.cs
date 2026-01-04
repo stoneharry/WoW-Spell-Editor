@@ -125,6 +125,20 @@ namespace SpellEditor.Sources.Config
             }
         }
 
+        public static bool DynamicMiscValueFields
+        {
+            get
+            {
+                var str = GetConfigValue("DynamicMiscValueFields");
+                return "true".Equals(str) || str == string.Empty; ;
+            }
+            set
+            {
+                UpdateConfigValue("DynamicMiscValueFields", value ? "true" : "false");
+                Save();
+            }
+        }
+
         public static string DefaultMpqName
         {
             get { return GetConfigValue("DefaultMpqName"); }

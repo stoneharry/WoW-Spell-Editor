@@ -2,15 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media.Effects;
 using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Controls.SpellFamilyNames;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 {
     public class SpellFamilyClassMaskParser
-    {
+    {        
+        //classMaskStore[spellFamily,MaskIndex,MaskSlot] = spellList
+        public ArrayList[,,] SpellFamilyClassMaskStore;
+
         public SpellFamilyClassMaskParser(IDatabaseAdapter adapter)
         {
             SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
@@ -48,7 +57,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
                         {
                             for (uint i = 0; i < 32; i++)
                             {
-                                uint Mask = (uint)Math.Pow(2, i);
+                                uint Mask = 1u << (int)i;
 
                                 if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
                                 {
@@ -64,43 +73,222 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             }
         }
 
-        //classMaskStore[spellFamily,MaskIndex,MaskSlot] = spellList
-        public ArrayList[,,] SpellFamilyClassMaskStore;
 
         public ArrayList GetSpellList(uint familyName, uint MaskIndex, uint MaskSlot)
         {
             return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
         }
 
-        public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName, bool isWotlkOrGreater, IDatabaseAdapter adapter, List<uint> masks)
+        public void UpdateAllEffectFamiliesLists(MainWindow window, uint familyName, IDatabaseAdapter adapter)
         {
-            UpdateSpellFamilyClassMask(window, window.SpellMask11, familyName, 0);
-            UpdateSpellFamilyClassMask(window, window.SpellMask21, familyName, 1);
-            UpdateSpellFamilyClassMask(window, window.SpellMask31, familyName, 2);
-            UpdateSpellFamilyClassMask(window, window.SpellMask12, familyName, 0);
-            UpdateSpellFamilyClassMask(window, window.SpellMask22, familyName, 1);
-            UpdateSpellFamilyClassMask(window, window.SpellMask32, familyName, 2);
-            if (isWotlkOrGreater)
-            {
-                UpdateSpellFamilyClassMask(window, window.SpellMask13, familyName, 0);
-                UpdateSpellFamilyClassMask(window, window.SpellMask23, familyName, 1);
-                UpdateSpellFamilyClassMask(window, window.SpellMask33, familyName, 2);
-            }
-
-            if (masks != null)
-            {
-                UpdateSpellEffectMasksSelected(window, familyName, adapter, masks);
-            }
+            UpdateMainWindowEffectFamiliesList(window, familyName, adapter, 0);
+            UpdateMainWindowEffectFamiliesList(window, familyName, adapter, 1);
+            UpdateMainWindowEffectFamiliesList(window, familyName, adapter, 2);
         }
 
-        public void UpdateSpellEffectMasksSelected(MainWindow window, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
+        // reimplementation of UpdateSpellEffectTargetList
+        // update spells lists in popup window listbox
+        public void UpdateEffectTargetSpellsList(SpellFamiliesWindow window, uint familyName, IDatabaseAdapter adapter, bool filter_duplicates)
         {
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList1, 0, familyName, adapter, masks);
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList2, 1, familyName, adapter, masks);
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList3, 2, familyName, adapter, masks);
+            string query = string.Format(@"SELECT id, SpellName0 FROM spell WHERE 
+                SpellFamilyName = {0} AND 
+                (
+                    (SpellFamilyFlags & {1}) > 0 OR
+                    (SpellFamilyFlags1 & {2}) > 0 OR
+                    (SpellFamilyFlags2 & {3}) > 0
+                );",
+                familyName,
+                window._active_families_values[0],
+                window._active_families_values[1],
+                window._active_families_values[2]);
+
+            // vanilla/tbc
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                query = string.Format(@"SELECT id, SpellName0 FROM spell WHERE 
+                SpellFamilyName = {0} AND 
+                (
+                    (SpellFamilyFlags1 & {1}) > 0 OR
+                    (SpellFamilyFlags2 & {2}) > 0
+                );",
+                familyName,
+                window._active_families_values[0],
+                window._active_families_values[1]);
+            }
+
+            List<string> unique_spell_names = new List<string>(); // to check for duplicates
+            var newItems = new List<string>();
+            foreach (DataRow row in adapter.Query(query).Rows)
+            {
+                string spell_name = row[1].ToString();
+
+                if (filter_duplicates && unique_spell_names.Contains(spell_name))
+                    continue;
+
+                newItems.Add($"{row[0]} - {row[1]}");
+
+                if (filter_duplicates)
+                    unique_spell_names.Add(spell_name);
+            }
+            // update spell list listbox
+            window.EffectTargetSpellsList.ItemsSource = newItems;
         }
 
-        private void UpdateSpellFamilyClassMask(MainWindow window, ThreadSafeComboBox spellMaskComboBox, uint familyName, uint maskSlot)
+        // Spells that use this family in their effects (mostly talents, item sets)
+        // WOTLK only, as earlier versions don't have the class mask fields.
+        public void UpdateEffectModifiersSpellsList(SpellFamiliesWindow window, uint familyName, IDatabaseAdapter adapter, bool filter_duplicates)
+        {
+            Debug.Assert(WoWVersionManager.IsWotlkOrGreaterSelected);
+
+            string query = string.Format(@"SELECT id, SpellName0 FROM spell WHERE 
+                SpellFamilyName = {0}
+                AND 
+                (
+                    (
+                        (spell.Effect1 > 0 AND (spell.EffectSpellClassMaskA1 & {1}) > 0) OR
+                        (spell.Effect2 > 0 AND (spell.EffectSpellClassMaskB1 & {1}) > 0) OR
+                        (spell.Effect3 > 0 AND (spell.EffectSpellClassMaskC1 & {1}) > 0)
+                    )
+                    OR
+                    (
+                        (spell.Effect1 > 0 AND (spell.EffectSpellClassMaskA2 & {2}) > 0) OR
+                        (spell.Effect2 > 0 AND (spell.EffectSpellClassMaskB2 & {2}) > 0) OR
+                        (spell.Effect3 > 0 AND (spell.EffectSpellClassMaskC2 & {2}) > 0)
+                    )
+                    OR
+                    (
+                        (spell.Effect1 > 0 AND (spell.EffectSpellClassMaskA3 & {3}) > 0) OR
+                        (spell.Effect2 > 0 AND (spell.EffectSpellClassMaskB3 & {3}) > 0) OR
+                        (spell.Effect3 > 0 AND (spell.EffectSpellClassMaskC3 & {3}) > 0)
+                    )
+                );",
+                familyName,
+                window._active_families_values[0],
+                window._active_families_values[1],
+                window._active_families_values[2]);
+
+            List<string> unique_spell_names = new List<string>(); // to check for duplicates
+            var newItems = new List<string>();
+            foreach (DataRow row in adapter.Query(query).Rows)
+            {
+                string spell_name = row[1].ToString();
+
+                if (filter_duplicates && unique_spell_names.Contains(spell_name))
+                    continue;
+
+                newItems.Add($"{row[0]} - {row[1]}");
+
+                if (filter_duplicates)
+                    unique_spell_names.Add(spell_name);
+            }
+            // update spell list listbox
+            window.EffectTargetSpellsList.ItemsSource = newItems;
+        }
+
+        // update families listbox in mainwindow spell effects
+        public void UpdateMainWindowEffectFamiliesList(MainWindow window, uint familyName, IDatabaseAdapter adapter, int effectIndex)
+        {
+            bool has_definition = SpellFamilyNames.familyFlagsNames.ContainsKey((int)familyName);
+            Dictionary<int, string> definitions = new Dictionary<int, string>();
+
+            if (has_definition)
+                definitions = SpellFamilyNames.familyFlagsNames[(int)familyName];
+
+            var newItems = new List<string>();
+            uint[][] allfamilies = { window.familyFlagsA, window.familyFlagsB, window.familyFlagsC };
+            for (int category = 0; category < 3; category++)
+            {
+                uint family = allfamilies[effectIndex][category];
+
+                for (int i = 0; i < 32; i++)
+                {
+                    uint mask = 1u << i;
+
+                    bool isSet = (family & mask) != 0;
+                    if (!isSet)
+                        continue;
+
+                    int dict_index = (32 * category) + i + 1;
+                    string content = "";
+                    if (has_definition && definitions.ContainsKey(dict_index))
+                    {
+                        string data = definitions[dict_index];
+                        if (!string.IsNullOrEmpty(data))
+                        {
+                            content += $"{dict_index} - ";
+                            content += data;
+                        }
+                    }
+
+                    bool bit_has_definition = !string.IsNullOrEmpty(content);
+                    if (!bit_has_definition)
+                        content = $"Fam{category}: 0x{mask:X8} (bit {i})";
+
+                    newItems.Add(content);
+                }
+            }
+
+            if (effectIndex == 0)
+                window.EffectSpellFamiliesList1.ItemsSource = newItems;
+            else if (effectIndex == 1)
+                window.EffectSpellFamiliesList2.ItemsSource = newItems;
+            else if (effectIndex == 2)
+                window.EffectSpellFamiliesList3.ItemsSource = newItems;
+
+        }
+
+
+        // update families listbox in mainwindow base
+        // same thing as UpdateEffectTargetSpellsList() but for base instead of effect. Could merge both to one function.
+        public void UpdateMainWindowBaseFamiliesList(MainWindow window, uint familyName, IDatabaseAdapter adapter)
+        {
+            bool has_definition = SpellFamilyNames.familyFlagsNames.ContainsKey((int)familyName);
+            Dictionary<int, string> definitions = new Dictionary<int, string>();
+
+            if (has_definition)
+                definitions = SpellFamilyNames.familyFlagsNames[(int)familyName];
+
+            // WOTLK has 3 fields in base families, tbc/vanilla only 2.
+            int masks_count = WoWVersionManager.IsWotlkOrGreaterSelected ? 3 : 2;
+
+            var newItems = new List<string>();
+            for (int category = 0; category < masks_count; category++)
+            {
+                uint family = window.familyFlagsBase[category];
+
+                for (int i = 0; i < 32; i++)
+                {
+                    uint mask = 1u << i;
+
+                    bool isSet = (family & mask) != 0;
+                    if (!isSet)
+                        continue;
+
+                    int dict_index = (32 * category) + i + 1;
+                    string content = "";
+                    if (has_definition && definitions.ContainsKey(dict_index))
+                    {
+                        string data = definitions[dict_index];
+                        if (!string.IsNullOrEmpty(data))
+                        {
+                            content += $"{dict_index} - ";
+                            content += data;
+                        }
+                    }
+
+                    bool bit_has_definition = !string.IsNullOrEmpty(content);
+                    if (!bit_has_definition)
+                        content = $"Fam{category}: 0x{mask:X8} (bit {i})";
+
+                    newItems.Add(content);
+                }
+            }
+            window.BaseSpellFamiliesList.ItemsSource = newItems;
+        }
+
+        // currently unused.
+        // now done directly in window initialization CreateFamilyCheckboxes(), could move back to a dispatcher function again
+        private void UpdateSpellFamilyClassMaskTooltips(MainWindow window, ThreadSafeComboBox spellMaskComboBox, uint familyName, uint maskSlot)
         {
             for (uint i = 0; i < 32; i++)
             {
@@ -117,32 +305,6 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
                 }
                 cb.ToolTip = _tooltipStr;
             }
-        }
-
-        private void UpdateSpellEffectTargetList(ListBox list, int effectIndex, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
-        {
-            uint mask1 = masks[0 + (effectIndex * 3)];
-            uint mask2 = masks[1 + (effectIndex * 3)];
-            uint mask3 = masks[2 + (effectIndex * 3)];
-
-            string query = string.Format(@"SELECT id, SpellName0 FROM spell WHERE 
-                SpellFamilyName = {0} AND 
-                (
-                    (SpellFamilyFlags & {1}) > 0 OR
-                    (SpellFamilyFlags1 & {2}) > 0 OR
-                    (SpellFamilyFlags2 & {3}) > 0
-                );",
-                familyName,
-                mask1,
-                mask2,
-                mask3);
-
-            var newItems = new List<string>();
-            foreach (DataRow row in adapter.Query(query).Rows)
-            {
-                newItems.Add($"{row[0]} - {row[1]}");
-            }
-            list.ItemsSource = newItems;
         }
     }
 

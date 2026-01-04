@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Weavers>
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura>
-    <Unmanaged32Assemblies>
-      StormLib
-      SQLite.Interop
-    </Unmanaged32Assemblies>
-    <Unmanaged64Assemblies>
-      StormLib
-      SQLite.Interop
-    </Unmanaged64Assemblies>
   </Costura>
 </Weavers>

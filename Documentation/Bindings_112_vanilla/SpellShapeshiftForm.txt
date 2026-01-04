@@ -1,0 +1,15 @@
+# SpellShapeshiftForm.dbc structure for 3.3.5a 12340
+uint ID
+uint ActionBar
+uint Name1 string
+uint Name2 string
+uint Name3 string
+uint Name4 string
+uint Name5 string
+uint Name6 string
+uint Name7 string
+uint Name8 string
+uint NameFlag
+int CreatureType1
+int CreatureType2
+int CombatRoundTime
