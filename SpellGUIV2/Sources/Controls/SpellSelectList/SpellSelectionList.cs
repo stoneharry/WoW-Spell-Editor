@@ -26,13 +26,15 @@ namespace SpellEditor.Sources.Controls
         private IDatabaseAdapter _Adapter;
         private readonly DataTable _Table = new DataTable();
         private bool _initialised = false;
+        private MainWindow _main;
 
-        public void Initialise()
+        public void Initialise(MainWindow main)
         {
             _Table.Columns.Add("id", typeof(uint));
             _Table.Columns.Add("SpellName" + _Language, typeof(string));
             _Table.Columns.Add("Icon", typeof(uint));
             _initialised = true;
+            _main = main;
         }
 
         public bool IsInitialised() => _initialised;
@@ -71,10 +73,23 @@ namespace SpellEditor.Sources.Controls
             using (var adapter = AdapterFactory.Instance.GetAdapter(false))
             {
                 var newLocale = LocaleManager.Instance.GetLocale(adapter);
-                if (newLocale != _Language && (newLocale != -1 || _Language == -1))
+                string oldName = "SpellName" + _Language;
+                string newName = "SpellName" + newLocale;
+
+                if (newLocale != _Language && oldName != newName && (newLocale != -1 || _Language == -1))
                 {
-                    _Table.Columns["SpellName" + _Language].ColumnName = "SpellName" + newLocale;
-                    SetLanguage(newLocale);
+                    if (_Table.Columns.Contains(newName))
+                    {
+                        // Temporarily rename newName column to avoid conflict
+                        _Table.Columns[newName].ColumnName = "__temp__";
+                    }
+
+                    _Table.Columns[oldName].ColumnName = newName;
+
+                    if (_Table.Columns.Contains("__temp__"))
+                    {
+                        _Table.Columns["__temp__"].ColumnName = oldName;
+                    }
                 }
 
                 var selectSpellWatch = new Stopwatch();
@@ -146,6 +161,8 @@ namespace SpellEditor.Sources.Controls
             }
             // Refresh UI
             RefreshSpellList();
+
+            _main.LoadBodyData(3, copyTo);
         }
 
         public void UpdateSpell(DataRow row)
@@ -184,6 +201,8 @@ namespace SpellEditor.Sources.Controls
             _Table.AcceptChanges();
             // Refresh UI
             RefreshSpellList();
+
+            _main.LoadBodyData(2, spellId);
         }
 
         private void RefreshSpellList()

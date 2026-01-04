@@ -5,6 +5,8 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="{DynamicResource ConfigWindowTitle}"
         WindowStartupLocation="CenterScreen"
+        Height="925"
+        Width="1825"
         Icon="icon.ico"
         Loaded="_Loaded"
         BorderBrush="#1585B5"

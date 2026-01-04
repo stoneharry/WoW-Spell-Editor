@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using NLog;
+using SpellEditor.Sources.Config;
+using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,11 +12,8 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MahApps.Metro.Controls;
-using NLog;
-using SpellEditor.Sources.Config;
-using SpellEditor.Sources.VersionControl;
 using static System.Environment;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using Label = System.Windows.Controls.Label;
@@ -61,9 +62,12 @@ namespace SpellEditor
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Icon config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // Caching config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // MPQ name config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            // Bindings and directory settings, 2 rows
+            // Bindings and directory settings, 3 rows
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
@@ -126,6 +130,8 @@ namespace SpellEditor
             ConfigGrid.Children.Add(versionButton);
 
             currentRow = BuildIconConfig(ConfigGrid, currentRow);
+
+            currentRow = BuildCachingConfig(ConfigGrid, currentRow);
 
             currentRow = BuildMpqConfig(ConfigGrid, currentRow);
 
@@ -344,6 +350,30 @@ namespace SpellEditor
             return currentRow;
         }
 
+        private int BuildCachingConfig(Grid grid, int currentRow)
+        {
+            var label = new Label { Content = "Cache spells:" };
+            label.Margin = new Thickness(10);
+
+            var checkbox = new System.Windows.Controls.CheckBox { };
+            checkbox.Margin = new Thickness(10);
+
+            checkbox.IsChecked = Config.CacheSpellBody;
+            checkbox.Checked += CacheSpellBody_Checked;
+            checkbox.Unchecked += CacheSpellBody_Checked;
+            checkbox.ToolTip = "When this is turned on, spells will be cached in memory making exporting take 1-3 seconds.";
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(checkbox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(checkbox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(checkbox);
+
+            return currentRow;
+        }
+
         private int BuildMpqConfig(Grid grid, int currentRow)
         {
             var label = new Label
@@ -375,12 +405,19 @@ namespace SpellEditor
             Config.RenderImagesInView = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
         }
 
+        private void CacheSpellBody_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.CacheSpellBody = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
+        }
+
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)
         {
             var bindingsLabel = new Label { Content = "Bindings Directory:" };
             var dbcLabel = new Label { Content = "DBC Directory:" };
-            var bindingsDirLabel = new Label { Content = Config.BindingsDirectory };
-            var dbcDirLabel = new Label { Content = Config.DbcDirectory };
+            var exportLabel = new Label { Content = "Export Directory:" };
+            var bindingsDirLabel = new TextBox { Text = Config.BindingsDirectory };
+            var dbcDirLabel = new TextBox { Text = Config.DbcDirectory };
+            var exportDirLabel = new TextBox { Text = Config.ExportDirectory };
             var changeBindingsButton = new ButtonWithLabelRef(bindingsDirLabel, ButtonWithLabelRef.DirButtonType.Bindings)
             {
                 Content = "Change Directory",
@@ -391,18 +428,28 @@ namespace SpellEditor
                 Content = "Change Directory",
                 Foreground = Brushes.Black
             };
+            var changeExportButton = new ButtonWithLabelRef(exportDirLabel, ButtonWithLabelRef.DirButtonType.Export)
+            {
+                Content = "Change Directory",
+                Foreground = Brushes.Black
+            };
 
             bindingsLabel.Margin = new Thickness(10);
             dbcLabel.Margin = new Thickness(10);
+            exportLabel.Margin = new Thickness(10);
             bindingsDirLabel.Margin = new Thickness(10);
             dbcDirLabel.Margin = new Thickness(10);
+            exportDirLabel.Margin = new Thickness(10);
             changeBindingsButton.Margin = new Thickness(10);
             changeDbcButton.Margin = new Thickness(10);
+            changeExportButton.Margin = new Thickness(10);
             changeBindingsButton.MinWidth = 100;
             changeDbcButton.MinWidth = 100;
+            changeExportButton.MinWidth = 100;
 
             changeBindingsButton.Click += OpenDirButton_Click;
             changeDbcButton.Click += OpenDirButton_Click;
+            changeExportButton.Click += OpenDirButton_Click;
 
             Grid.SetRow(bindingsLabel, currentRow);
             Grid.SetColumn(bindingsLabel, 0);
@@ -416,6 +463,12 @@ namespace SpellEditor
             Grid.SetColumn(dbcDirLabel, 1);
             Grid.SetRow(changeDbcButton, currentRow);
             Grid.SetColumn(changeDbcButton, 2);
+            Grid.SetRow(exportLabel, ++currentRow);
+            Grid.SetColumn(exportLabel, 0);
+            Grid.SetRow(exportDirLabel, currentRow);
+            Grid.SetColumn(exportDirLabel, 1);
+            Grid.SetRow(changeExportButton, currentRow);
+            Grid.SetColumn(changeExportButton, 2);
 
             grid.Children.Add(bindingsLabel);
             grid.Children.Add(bindingsDirLabel);
@@ -423,6 +476,9 @@ namespace SpellEditor
             grid.Children.Add(dbcLabel);
             grid.Children.Add(dbcDirLabel);
             grid.Children.Add(changeDbcButton);
+            grid.Children.Add(exportLabel);
+            grid.Children.Add(exportDirLabel);
+            grid.Children.Add(changeExportButton);
 
             return currentRow;
         }
@@ -444,14 +500,6 @@ namespace SpellEditor
                 {
                     var path = dialog.SelectedPath;
                     button.UpdateLabelText(path);
-                    if (button.DbType == ButtonWithLabelRef.DirButtonType.Bindings)
-                    {
-                        Config.BindingsDirectory = path;
-                    }
-                    else if (button.DbType == ButtonWithLabelRef.DirButtonType.Dbc)
-                    {
-                        Config.DbcDirectory = path;
-                    }
                 }
             }
         }
@@ -488,26 +536,44 @@ namespace SpellEditor
 
         private class ButtonWithLabelRef : Button
         {
-            private readonly Label _LabelReference;
+            private readonly TextBox _LabelReference;
             public readonly DirButtonType DbType;
 
-            public ButtonWithLabelRef(Label labelRef, DirButtonType type)
+            public ButtonWithLabelRef(TextBox labelRef, DirButtonType type)
             {
                 _LabelReference = labelRef;
                 DbType = type;
+
+                _LabelReference.TextChanged += (s, e) =>
+                {
+                    var path = labelRef.Text;
+                    if (type == DirButtonType.Bindings)
+                    {
+                        Config.BindingsDirectory = path;
+                    }
+                    else if (type == DirButtonType.Dbc)
+                    {
+                        Config.DbcDirectory = path;
+                    }
+                    else if (type == DirButtonType.Export)
+                    {
+                        Config.ExportDirectory = path;
+                    }
+                };
             }
 
             public void UpdateLabelText(string text)
             {
-                _LabelReference.Content = text;
+                _LabelReference.Text = text;
             }
 
-            public string GetLabelText() => _LabelReference.Content.ToString();
+            public string GetLabelText() => _LabelReference.Text.ToString();
 
             public enum DirButtonType
             {
                 Bindings,
-                Dbc
+                Dbc,
+                Export
             }
         }
 

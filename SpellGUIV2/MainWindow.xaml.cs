@@ -1,25 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Threading;
-using System.Xml.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using NLog;
 using NLog.Config;
 using NLog.Layouts;
@@ -39,6 +21,32 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.SQLite;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.ServiceModel.Channels;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Threading;
+using System.Xml.Linq;
+using static SpellEditor.Sources.DBC.AbstractDBC;
 
 namespace SpellEditor
 {
@@ -55,6 +63,7 @@ namespace SpellEditor
         private readonly List<ThreadSafeCheckBox> attributes6 = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> attributes7 = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> stancesBoxes = new List<ThreadSafeCheckBox>();
+        private readonly List<ThreadSafeCheckBox> stancesNotBoxes = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> targetCreatureTypeBoxes = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> targetBoxes = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> procBoxes = new List<ThreadSafeCheckBox>();
@@ -70,14 +79,31 @@ namespace SpellEditor
 
         private IDatabaseAdapter adapter;
         public uint selectedID;
+        public uint selectedIconID;
         public uint newIconID = 1;
         private bool updating;
+        private bool saving;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
+        public DBCBodyToSerialize spellBody = new DBCBodyToSerialize();
+        public DataRow selectedDataRow;
+        private PartialLoad loadStage = PartialLoad.Null;
+        private Dictionary<string, object> copiedEffect;
 
         private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
         private readonly List<ThreadSafeTextBox> spellTooltipGenFields = new List<ThreadSafeTextBox>();
         public SpellFamilyClassMaskParser spellFamilyClassMaskParser;
         private VisualController _currentVisualController;
+
+        enum PartialLoad
+        {
+            Null = 0,
+            MainPage = 1 << 0,
+            BasePage = 1 << 1,
+            EffectsPage = 1 << 2,
+            ItemsPage = 1 << 3,
+            FlagsPage = 1 << 4, 
+        }
+
         #endregion
 
         public IDatabaseAdapter GetDBAdapter()
@@ -283,17 +309,31 @@ namespace SpellEditor
 
             StancesGrid.Children.Clear();
             stancesBoxes.Clear();
+            StancesNotGrid.Children.Clear();
+            stancesNotBoxes.Clear();
             string[] stances_strings = SafeTryFindResource("stances_strings").Split('|');
             foreach (string stance in stances_strings)
             {
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox
                 {
-                    Content = stance, ToolTip = stance, Margin = new Thickness(0, 5, 0, 0)
+                    Content = stance,
+                    ToolTip = stance,
+                    Margin = new Thickness(0, 5, 0, 0)
+                };
+
+                ThreadSafeCheckBox box2 = new ThreadSafeCheckBox
+                {
+                    Content = stance,
+                    ToolTip = stance,
+                    Margin = new Thickness(0, 5, 0, 0)
                 };
 
 
                 StancesGrid.Children.Add(box);
                 stancesBoxes.Add(box);
+
+                StancesNotGrid.Children.Add(box2);
+                stancesNotBoxes.Add(box2);
             }
 
             TargetCreatureType.Children.Clear();
@@ -312,12 +352,17 @@ namespace SpellEditor
             }
 
             CasterAuraState.Items.Clear();
-            string[] caster_aura_state_strings = SafeTryFindResource("aura_state_strings").Split('|');
-            foreach (string casterAuraState in caster_aura_state_strings) { CasterAuraState.Items.Add(casterAuraState); }
-
             TargetAuraState.Items.Clear();
-            string[] target_aura_state_strings = SafeTryFindResource("aura_state_strings").Split('|');
-            foreach (string targetAuraState in target_aura_state_strings) { TargetAuraState.Items.Add(targetAuraState); }
+            CasterAuraStateNot.Items.Clear();
+            TargetAuraStateNot.Items.Clear();
+            string[] aura_state_strings = SafeTryFindResource("aura_state_strings").Split('|');
+            foreach (string casterAuraState in aura_state_strings) 
+            { 
+                CasterAuraState.Items.Add(casterAuraState);
+                TargetAuraState.Items.Add(casterAuraState);
+                CasterAuraStateNot.Items.Add(casterAuraState);
+                TargetAuraStateNot.Items.Add(casterAuraState);
+            }
 
             EquippedItemInventoryTypeGrid.Children.Clear();
             equippedItemInventoryTypeMaskBoxes.Clear();
@@ -386,14 +431,15 @@ namespace SpellEditor
             ProcEditorGrid.Children.Clear();
             procBoxes.Clear();
             string[] proc_strings = SafeTryFindResource("proc_strings").Split('|');
+            int idx = -1;
             foreach (string procString in proc_strings)
             {
+                uint mask = (uint)Math.Pow(2, idx++);
+
                 ThreadSafeCheckBox box = new ThreadSafeCheckBox
                 {
-                    Content = procString, Margin = new Thickness(0, 5, 0, 0)
+                    Content = mask.ToString() + " -" + (mask == 0 ? " " : "") + procString, Margin = new Thickness(0, 5, 0, 0)
                 };
-
-
 
                 ProcEditorGrid.Children.Add(box);
                 procBoxes.Add(box);
@@ -590,26 +636,26 @@ namespace SpellEditor
                 {
                     uint mask = (uint)Math.Pow(2, i);
 
-                    SpellMask11.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask12.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask13.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask21.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask22.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask23.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask31.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask32.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
-                    SpellMask33.Items.Add(new ThreadSafeCheckBox { Content = "0x" + mask.ToString("x8") });
+                    SpellMask11.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask12.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask13.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask21.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask22.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask23.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask31.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask32.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
+                    SpellMask33.Items.Add(new ThreadSafeCheckBox { Content = mask.ToString() });
                 }
 
-                foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask21.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask22.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask23.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask31.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
-                foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; }
+                foreach (ThreadSafeCheckBox cb in SpellMask11.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask11); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask12.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask12); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask13.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask13); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask21.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask21); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask22.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask22); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask23.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask23); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask31.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask31); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask32.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask32); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
+                foreach (ThreadSafeCheckBox cb in SpellMask33.Items) { cb.Checked += HandspellFamilyClassMask_Checked; cb.Unchecked += HandspellFamilyClassMask_Checked; ToolTipService.SetInitialShowDelay(cb, 0); ToolTipService.SetBetweenShowDelay(cb, 0); ToolTipService.SetPlacementTarget(cb, SpellMask33); ToolTipService.SetPlacement(cb, PlacementMode.Right); ToolTipService.SetHorizontalOffset(cb, 15); }
 
                 LoadAllData();
 
@@ -657,7 +703,7 @@ namespace SpellEditor
                 _ImportExportWindow.Show();
                 return;
             }
-            var window = new ImportExportWindow(adapter, PopulateSelectSpell, LoadAllRequiredDbcs);
+            var window = new ImportExportWindow(adapter, PopulateSelectSpell, LoadAllRequiredDbcs, this);
             window.Show();
             window.Height += 40;
             window.Width /= 2;
@@ -687,9 +733,13 @@ namespace SpellEditor
                 {
                     Visibility = Visibility.Hidden
                 };
-                _LogBookWindow.Show();
-                _LogBookWindow.UpdateLayout();
+                //_LogBookWindow.Show();
+                //_LogBookWindow.UpdateLayout();
             }
+
+            // fuck that shit kek
+            if (_LogBookWindow.Visibility == Visibility.Hidden)
+                return;      
             
             _LogBookWindow.RecordLogEntry(panel as SpellSelectionEntry);
         }
@@ -969,9 +1019,9 @@ namespace SpellEditor
             try
             {
                 // Initialise select spell list
-                SelectSpell.SetAdapter(GetDBAdapter())
+                /*SelectSpell.SetAdapter(GetDBAdapter())
                     .SetLanguage(GetLanguage())
-                    .Initialise();
+                    .Initialise();*/
 
                 // Populate UI based on DBC data
                 Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
@@ -990,9 +1040,13 @@ namespace SpellEditor
                     DBCManager.GetInstance().FindDbcForBinding("SpellRange")).GetAllBoxes());
                 var radiusLabels = ConvertBoxListToLabels(((SpellRadius)
                     DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
+                var radiusLabels2 = ConvertBoxListToLabels(((SpellRadius)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
+                var radiusLabels3 = ConvertBoxListToLabels(((SpellRadius)
+                    DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).GetAllBoxes());
                 RadiusIndex1.ItemsSource = radiusLabels;
-                RadiusIndex2.ItemsSource = radiusLabels;
-                RadiusIndex3.ItemsSource = radiusLabels;
+                RadiusIndex2.ItemsSource = radiusLabels2;
+                RadiusIndex3.ItemsSource = radiusLabels3;
                 EquippedItemClass.ItemsSource = ConvertBoxListToLabels(((ItemClass)
                     DBCManager.GetInstance().FindDbcForBinding("ItemClass")).GetAllBoxes());
                 var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
@@ -1001,8 +1055,10 @@ namespace SpellEditor
                 {
                     var totemLabels = ConvertBoxListToLabels(((TotemCategory)
                         DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
+                    var totemLabels2 = ConvertBoxListToLabels(((TotemCategory)
+                        DBCManager.GetInstance().FindDbcForBinding("TotemCategory")).GetAllBoxes());
                     TotemCategory1.ItemsSource = totemLabels;
-                    TotemCategory2.ItemsSource = totemLabels;
+                    TotemCategory2.ItemsSource = totemLabels2;
                 }
                 if (isWotlkOrGreater)
                 {
@@ -1025,8 +1081,6 @@ namespace SpellEditor
                 VisualSettingsGrid.ContextMenu = new ListContextMenu((item, args) => PasteVisualKitAction(), true);
                 VisualEffectsListGrid.ContextMenu = new ListContextMenu((item, args) => PasteVisualEffectAction(), true);
                 InitialiseSpellVisualEffectList();
-
-                prepareIconEditor();
             }
             catch (Exception e)
             {
@@ -1042,7 +1096,9 @@ namespace SpellEditor
                 await createTask;
             }*/
             await controller.CloseAsync();
-            PopulateSelectSpell();
+
+            if (adapter.Query("SELECT `ID` FROM `spell` LIMIT 1").Rows.Count > 0)
+                PopulateSelectSpell();
         }
 
         private void FocusLanguage()
@@ -1369,7 +1425,7 @@ namespace SpellEditor
                 }
 
                 SelectSpell.DeleteSpell(spellID);
-                
+
                 selectedID = 0;
 
                 ShowFlyoutMessage(SafeTryFindResource("DeleteSpellRecord3"));
@@ -1378,16 +1434,44 @@ namespace SpellEditor
 
             if (sender == SaveSpellChanges)
             {
+                if (saving)
+                    return;
+
                 string query = $"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1";
                 var q = adapter.Query(query);
                 if (q.Rows.Count == 0)
                     return;
+
                 var row = q.Rows[0];
+                LoadWholeUI(); // make sure the whole ui is loaded
+
                 var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
                 var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
                 row.BeginEdit();
                 try
                 {
+                    uint oldFamilyName = (uint)row["SpellFamilyName"];
+                    var oldMasks = new List<uint>
+                    {
+                        uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
+                        uint.Parse(row["EffectSpellClassMaskC3"].ToString())
+                    };
+                    uint[] OldSpellFamilyFlag; 
+                    if (isWotlkOrGreater)
+                    {
+                        OldSpellFamilyFlag = new uint[] { uint.Parse(row["SpellFamilyFlags"].ToString()), uint.Parse(row["SpellFamilyFlags1"].ToString()), uint.Parse(row["SpellFamilyFlags2"].ToString()) };
+                    }
+                    else
+                    {
+                        OldSpellFamilyFlag = new uint[] { uint.Parse(row["SpellFamilyFlags"].ToString()), uint.Parse(row["SpellFamilyFlags1"].ToString()) };
+                    }
 
                     uint maskk = 0;
                     uint flagg = 1;
@@ -1490,6 +1574,25 @@ namespace SpellEditor
 
                             row["Stances"] = mask;
                         }
+
+                        if (stancesNotBoxes[0].IsChecked.Value)
+                        {
+                            row["StancesNot"] = 0;
+                        }
+                        else
+                        {
+                            uint mask = 0;
+                            uint flag = 1;
+
+                            for (int f = 1; f < stancesNotBoxes.Count; ++f)
+                            {
+                                if (stancesNotBoxes[f].IsChecked.Value) { mask += flag; }
+
+                                flag += flag;
+                            }
+
+                            row["StancesNot"] = mask;
+                        }
                     }
 
                     if (isWotlkOrGreater)
@@ -1547,9 +1650,12 @@ namespace SpellEditor
                     if (isTbcOrGreater)
                     {
                         row["FacingCasterFlags"] = FacingFrontFlag.IsChecked.Value ? (uint)0x1 : (uint)0x0;
+
                         row["CasterAuraState"] = CasterAuraState.SelectedIndex;
+                        row["TargetAuraState"] = TargetAuraState.SelectedIndex;
+                        row["CasterAuraStateNot"] = CasterAuraStateNot.SelectedIndex;
+                        row["TargetAuraStateNot"] = TargetAuraStateNot.SelectedIndex;
                     }
-                    row["TargetAuraState"] = TargetAuraState.SelectedIndex;
 
                     row["RecoveryTime"] = uint.Parse(RecoveryTime.Text);
                     row["CategoryRecoveryTime"] = uint.Parse(CategoryRecoveryTime.Text);
@@ -1641,7 +1747,7 @@ namespace SpellEditor
                     row["ManaCostPerLevel"] = uint.Parse(ManaCostPerLevel.Text);
                     row["ManaPerSecond"] = uint.Parse(ManaCostPerSecond.Text);
                     row["ManaPerSecondPerLevel"] = uint.Parse(PerSecondPerLevel.Text);
-                    row["SpellPriority"] = int.Parse(SpellPriority.Text);
+                    row["SpellPriority"] = !SpellPriority.IsEnabled ? 0 : int.Parse(SpellPriority.Text);
                     row["Speed"] = float.Parse(Speed.Text);
                     row["StackAmount"] = uint.Parse(Stacks.Text);
                     row["Totem1"] = uint.Parse(Totem1.Text);
@@ -1860,12 +1966,23 @@ namespace SpellEditor
                     row["SpellToolTipFlags" + suffix] = (uint)(TextFlags.NOT_EMPTY);
                     row["SpellDescriptionFlags" + suffix] = (uint)(TextFlags.NOT_EMPTY);
 
+                    row["CasterAuraSpell"] = uint.Parse(CasterAuraSpell.Text);
+                    row["TargetAuraSpell"] = uint.Parse(TargetAuraSpell.Text);
+                    row["ExcludeCasterAuraSpell"] = uint.Parse(ExcludeCasterAuraSpell.Text);
+                    row["ExcludeTargetAuraSpell"] = uint.Parse(ExcludeTargetAuraSpell.Text);
+
+                    row["StanceBarOrder"] = uint.Parse(StanceBarOrder.Text);
+                    row["PowerDisplayId"] = uint.Parse(PowerDisplayId.Text);
+
                     row.EndEdit();
                     adapter.CommitChanges(query, q.GetChanges());
 
                     ShowFlyoutMessage($"Saved spell {selectedID}.");
 
                     SelectSpell.UpdateSpell(row);
+
+                    LoadBodyData();
+                    SaveSpellMasks(oldFamilyName, oldMasks, OldSpellFamilyFlag);
                 }
                 catch (Exception ex)
                 {
@@ -1875,36 +1992,121 @@ namespace SpellEditor
                 return;
             }
 
-            if (sender == SaveIcon)
+            if (sender == SaveSpellIcon || sender == ResetSpellIconID)
             {
-                MetroDialogSettings settings = new MetroDialogSettings
+                var newIcon = sender == ResetSpellIconID ? 1 : newIconID;
+
+                adapter.Execute($"UPDATE `{"spell"}` SET `SpellIconID` = '{newIcon}' WHERE `ID` = '{selectedID}'");
+                RefreshCurrentIcon(newIcon);
+                prepareIconEditor();
+                LoadBodyData();
+                return;
+            }
+
+            if (sender == SaveActiveIcon || sender == ResetActiveIconID)
+            {
+                var newIcon = sender == ResetActiveIconID ? 0 : newIconID;
+
+                adapter.Execute($"UPDATE `{"spell"}` SET `ActiveIconID` = '{newIcon}' WHERE `ID` = '{selectedID}'");
+
+                selectedDataRow["ActiveIconID"] = newIcon;
+                prepareIconEditor();
+                LoadBodyData();
+                return;
+            }
+        }
+
+        private void SaveSpellMasks(uint oldFamilyName, List<uint> oldMasks, uint[] OldSpellFamilyFlag)
+        {
+            uint familyName = uint.Parse(SpellFamilyName.Text);
+            bool same = familyName == oldFamilyName;
+
+            var masks = new List<uint>
+            {
+                uint.Parse(SpellMask11.Text),
+                uint.Parse(SpellMask21.Text),
+                uint.Parse(SpellMask31.Text),
+                uint.Parse(SpellMask12.Text),
+                uint.Parse(SpellMask22.Text),
+                uint.Parse(SpellMask32.Text),
+                uint.Parse(SpellMask13.Text),
+                uint.Parse(SpellMask23.Text),
+                uint.Parse(SpellMask33.Text)
+            };
+
+            uint[] SpellFamilyFlag;
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                SpellFamilyFlag = new uint[] { uint.Parse(SpellFamilyFlags.Text), uint.Parse(SpellFamilyFlags1.Text), uint.Parse(SpellFamilyFlags2.Text) };
+            }
+            else
+            {
+                SpellFamilyFlag = new uint[] { uint.Parse(SpellFamilyFlags.Text), uint.Parse(SpellFamilyFlags1.Text) };
+            }
+
+            if (!same || !SpellFamilyFlag.SequenceEqual(OldSpellFamilyFlag))
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellList(selectedID, oldFamilyName, OldSpellFamilyFlag, familyName, SpellFamilyFlag)));
+
+            if (!same || !masks.SequenceEqual(oldMasks))
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, WoWVersionManager.IsWotlkOrGreaterSelected, GetDBAdapter(), masks)));
+
+            //Logger.Info($"SaveSpellMasks {same}");
+        }
+
+        private void NothingHere(double progress, int taskIdOverride = 0) { }
+
+        public DBCBodyToSerialize GetBodyData()
+        {
+            if (spellBody.Records != null && !Config.CacheSpellBody)
+            {
+                spellBody.Records = null;
+                GC.Collect();
+            }
+
+            return !saving && Config.CacheSpellBody ? spellBody : null;
+        }
+        public void LoadBodyData(int type = 0, uint spellId = 0)
+        {
+            if (!Config.CacheSpellBody || saving)
+                return;
+
+            if (type == 1)
+                spellBody.Records = null;
+
+            var dbc = new GenericDbc();
+
+            if (spellBody.Records == null)
+            {
+                saving = true;
+                Task.Run(() =>
                 {
-                    AffirmativeButtonText = SafeTryFindResource("Yes"),
-                    NegativeButtonText = SafeTryFindResource("No")
-                };
+                    var watch = new Stopwatch();
+                    watch.Start();
 
+                    spellBody.Records = dbc.LoadRecords(adapter, "Spell", " ORDER BY `ID`", NothingHere);
 
-                MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-                MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("SaveIcon"), style, settings);
+                    spellBody.BuildSpellToIndex();
 
-                string column = null;
-                if (spellOrActive == MessageDialogResult.Affirmative)
-                    column = "SpellIconID";
-                else if (spellOrActive == MessageDialogResult.Negative)
-                    column = "ActiveIconID";
-                adapter.Execute($"UPDATE `{"spell"}` SET `{column}` = '{newIconID}' WHERE `ID` = '{selectedID}'");
-                return;
+                    watch.Stop();
+                    Logger.Info($"Loaded spellbody records in {watch.ElapsedMilliseconds}ms");
+
+                    GC.Collect();
+
+                    saving = false;
+                });
             }
-
-            if (sender == ResetSpellIconID)
+            else if (type == 0 && selectedID > 0)
             {
-                adapter.Execute($"UPDATE `{"spell"}` SET `{"SpellIconID"}` = '{1}' WHERE `ID` = '{selectedID}'");
-                return;
+                spellBody.Records[spellBody.GetIndexFromSpell(selectedID)] = dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {selectedID} LIMIT 1", NothingHere, true)[0];
             }
-            if (sender == ResetActiveIconID)
+            else if (type == 2 && spellId > 0)
             {
-                adapter.Execute($"UPDATE `{"spell"}` SET `{"ActiveIconID"}` = '{0}' WHERE `ID` = '{selectedID}'");
+                spellBody.RemoveSpell(spellId);
             }
+            else if (type == 3 && spellId > 0)
+            {
+                spellBody.AddSpell(spellId, dbc.LoadRecords(adapter, "Spell", $" WHERE `ID` = {spellId} LIMIT 1", NothingHere, true)[0]);
+            }  
         }
 
         #endregion
@@ -1932,8 +2134,8 @@ namespace SpellEditor
         private void prepareIconEditor()
         {
             var loadIcons = (SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon");
-            loadIcons.LoadImages(64);
             loadIcons.updateIconSize(64, new Thickness(16, 0, 0, 0));
+            loadIcons.LoadImages(64);
         }
 
         #endregion
@@ -1946,38 +2148,24 @@ namespace SpellEditor
             {
                 SelectSpell.SetAdapter(GetDBAdapter())
                     .SetLanguage(GetLanguage())
-                    .Initialise();
+                    .Initialise(this);
             }
+
             if (!SelectSpell.HasAdapter())
             {
                 SelectSpell.SetAdapter(GetDBAdapter());
             }
+            
             SelectSpell.PopulateSelectSpell();
             FocusLanguage();
+
+            prepareIconEditor();
+
+            LoadBodyData(1);
         }
         #endregion
 
         #region NewIconClick & UpdateMainWindow
-        private async void NewIconClick(object sender, RoutedEventArgs e)
-        {
-            if (adapter == null) { return; }
-
-            MetroDialogSettings settings = new MetroDialogSettings
-            {
-                AffirmativeButtonText = SafeTryFindResource("SpellIconID"),
-                NegativeButtonText = SafeTryFindResource("ActiveIconID")
-            };
-
-            const MessageDialogStyle style = MessageDialogStyle.AffirmativeAndNegative;
-            MessageDialogResult spellOrActive = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"), SafeTryFindResource("String4"), style, settings);
-
-            string column = null;
-            if (spellOrActive == MessageDialogResult.Affirmative)
-                column = "SpellIconID";
-            else if (spellOrActive == MessageDialogResult.Negative)
-                column = "ActiveIconID";
-            adapter.Execute($"UPDATE `{"spell"}` SET `{column}` = '{newIconID}' WHERE `ID` = '{selectedID}'");
-        }
 
         private async void UpdateMainWindow()
         {
@@ -2106,631 +2294,716 @@ namespace SpellEditor
             _currentVisualController = null;
             adapter.Updating = true;
             updateProgress("Querying MySQL data...");
-            var data = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}'");
+
+            var data = adapter.Query($"SELECT * FROM `spell` WHERE `ID` = '{selectedID}' LIMIT 1");
             var rowResult = data.Rows;
             if (rowResult == null || rowResult.Count != 1)
                 throw new Exception("An error occurred trying to select spell ID: " + selectedID);
-            var row = rowResult[0];
+
+
+            selectedDataRow = data.Rows[0];
+
+            loadStage = PartialLoad.Null;
+
+            LoadPartialUI(PartialLoad.MainPage);
+
+            adapter.Updating = false;
+        }
+        public void LoadSpellFamilyFlags()
+        {
+            if ((loadStage & (PartialLoad.BasePage | PartialLoad.EffectsPage)) != 0)
+            {
+                return;
+            }
+
+            var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
+            var row = selectedDataRow;
+
+            if (!isWotlkOrGreater)
+            {
+                uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+                SpellFamilyName.ThreadSafeText = familyName.ToString();
+                SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
+                SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
+            }
+            else
+            {
+                uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
+                SpellFamilyName.ThreadSafeText = familyName.ToString();
+                SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
+                SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
+                SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
+            }
+            SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
+        }
+        private void LoadWholeUI()
+        {
+            foreach (PartialLoad page in Enum.GetValues(typeof(PartialLoad)))
+            {
+                if (page == PartialLoad.Null)
+                    continue;
+
+                LoadPartialUI(page);
+            }
+        }
+
+        private void LoadPartialUI(PartialLoad page)
+        {
+            if (((loadStage & page) != 0) || selectedID == 0)
+            {
+                return;
+            }
+
+            updating = true;
+
             var numColumns = (int)WoWVersionManager.GetInstance().SelectedVersion().NumLocales;
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
             var isTbcOrGreater = WoWVersionManager.IsTbcOrGreaterSelected;
+            var row = selectedDataRow;
+            uint mask = 0;
+
             try
             {
-                updateProgress("Updating text control's...");
-                int i;
-                var maxColumns = numColumns > spellDescGenFields.Count ? spellDescGenFields.Count : numColumns;
-                for (i = 0; i < maxColumns; ++i)
+                switch (page)
                 {
-                    spellDescGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
-                    spellTooltipGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellTooltip" + i].ToString(), row, this);
-                }
-                for (i = 0; i < maxColumns; ++i)
-                {
-                    stringObjectMap.TryGetValue(i, out var box);
-                    box.ThreadSafeText = row[$"SpellName{i}"];
-                }
-                for (i = 0; i < maxColumns; ++i)
-                {
-                    stringObjectMap.TryGetValue(i + 9, out var box);
-                    box.ThreadSafeText = row[$"SpellRank{i}"];
-                }
-
-                for (i = 0; i < maxColumns; ++i)
-                {
-                    stringObjectMap.TryGetValue(i + 18, out var box);
-                    box.ThreadSafeText = row[$"SpellTooltip{i}"];
-                }
-
-                for (i = 0; i < maxColumns; ++i)
-                {
-                    stringObjectMap.TryGetValue(i + 27, out var box);
-                    box.ThreadSafeText = row[$"SpellDescription{i}"];
-                }
-
-                updateProgress("Updating category & dispel & mechanic...");
-                var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
-                Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(
-                    adapter.Query($"SELECT `Category` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
-                DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(
-                    adapter.Query($"SELECT `Dispel` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                var loadMechanics = (SpellMechanic)DBCManager.GetInstance().FindDbcForBinding("SpellMechanic");
-                MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(
-                    adapter.Query($"SELECT `Mechanic` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                updateProgress("Updating attributes...");
-                uint mask = uint.Parse(row["Attributes"].ToString());
-                uint flagg = 1;
-
-                foreach (ThreadSafeCheckBox attribute0 in attributes0)
-                {
-                    attribute0.ThreadSafeChecked = ((mask & flagg) != 0);
-                    flagg += flagg;
-                }
-
-                mask = uint.Parse(row["AttributesEx"].ToString());
-                flagg = 1;
-
-                foreach (ThreadSafeCheckBox attribute1 in attributes1)
-                {
-                    attribute1.ThreadSafeChecked = ((mask & flagg) != 0);
-                    flagg += flagg;
-                }
-
-                mask = uint.Parse(row["AttributesEx2"].ToString());
-                flagg = 1;
-
-                foreach (ThreadSafeCheckBox attribute2 in attributes2)
-                {
-                    attribute2.ThreadSafeChecked = ((mask & flagg) != 0);
-                    flagg += flagg;
-                }
-
-                mask = uint.Parse(row["AttributesEx3"].ToString());
-                flagg = 1;
-
-                foreach (ThreadSafeCheckBox attribute3 in attributes3)
-                {
-                    attribute3.ThreadSafeChecked = ((mask & flagg) != 0);
-                    flagg += flagg;
-                }
-
-                mask = uint.Parse(row["AttributesEx4"].ToString());
-                flagg = 1;
-
-                foreach (ThreadSafeCheckBox attribute4 in attributes4)
-                {
-                    attribute4.ThreadSafeChecked = ((mask & flagg) != 0);
-                    flagg += flagg;
-                }
-
-                if (isTbcOrGreater)
-                {
-                    mask = uint.Parse(row["AttributesEx5"].ToString());
-                    flagg = 1;
-
-                    foreach (ThreadSafeCheckBox attribute5 in attributes5)
-                    {
-                        attribute5.ThreadSafeChecked = ((mask & flagg) != 0);
-                        flagg += flagg;
-                    }
-
-                    mask = uint.Parse(row["AttributesEx6"].ToString());
-                    flagg = 1;
-
-                    foreach (ThreadSafeCheckBox attribute6 in attributes6)
-                    {
-                        attribute6.ThreadSafeChecked = ((mask & flagg) != 0);
-                        flagg += flagg;
-                    }
-
-                    updateProgress("Updating stances...");
-                    mask = uint.Parse(row["Stances"].ToString());
-                    if (mask == 0)
-                    {
-                        stancesBoxes[0].ThreadSafeChecked = true;
-                        for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].ThreadSafeChecked = false; }
-                    }
-                    else
-                    {
-                        stancesBoxes[0].ThreadSafeChecked = false;
-                        uint flag = 1;
-                        for (int f = 1; f < stancesBoxes.Count; ++f)
+                    case PartialLoad.MainPage:
                         {
-                            stancesBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
-                            flag += flag;
+                            int i;
+                            var maxColumns = numColumns > spellDescGenFields.Count ? spellDescGenFields.Count : numColumns;
+                            for (i = 0; i < maxColumns; ++i)
+                            {
+                                spellDescGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellDescription" + i].ToString(), row, this);
+                                spellTooltipGenFields[i].ThreadSafeText = SpellStringParser.ParseString(row["SpellTooltip" + i].ToString(), row, this);
+                            }
+                            for (i = 0; i < maxColumns; ++i)
+                            {
+                                stringObjectMap.TryGetValue(i, out var box);
+                                box.ThreadSafeText = row[$"SpellName{i}"];
+                            }
+                            for (i = 0; i < maxColumns; ++i)
+                            {
+                                stringObjectMap.TryGetValue(i + 9, out var box);
+                                box.ThreadSafeText = row[$"SpellRank{i}"];
+                            }
+
+                            for (i = 0; i < maxColumns; ++i)
+                            {
+                                stringObjectMap.TryGetValue(i + 18, out var box);
+                                box.ThreadSafeText = row[$"SpellTooltip{i}"];
+                            }
+
+                            for (i = 0; i < maxColumns; ++i)
+                            {
+                                stringObjectMap.TryGetValue(i + 27, out var box);
+                                box.ThreadSafeText = row[$"SpellDescription{i}"];
+                            }  
                         }
-                    }
+                        break;
+
+                    case PartialLoad.BasePage:
+                        {
+                            var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
+                            Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(row["Category"].ToString()));
+
+                            var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
+                            DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(row["Dispel"].ToString()));
+
+                            var loadMechanics = (SpellMechanic)DBCManager.GetInstance().FindDbcForBinding("SpellMechanic");
+                            MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(row["Mechanic"].ToString()));
+
+                            var loadCastTimes = (SpellCastTimes)DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes");
+                            CastTime.ThreadSafeIndex = loadCastTimes.UpdateCastTimeSelection(uint.Parse(row["CastingTimeIndex"].ToString()));
+
+                            var loadDurations = (SpellDuration)DBCManager.GetInstance().FindDbcForBinding("SpellDuration");
+                            Duration.ThreadSafeIndex = loadDurations.UpdateDurationIndexes(uint.Parse(row["DurationIndex"].ToString()));
+
+                            var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
+                            Range.ThreadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(row["RangeIndex"].ToString()));
+
+                            CasterAuraState.ThreadSafeIndex = uint.Parse(row["CasterAuraState"].ToString());
+                            TargetAuraState.ThreadSafeIndex = uint.Parse(row["TargetAuraState"].ToString());
+                            CasterAuraStateNot.ThreadSafeIndex = uint.Parse(row["CasterAuraStateNot"].ToString());
+                            TargetAuraStateNot.ThreadSafeIndex = uint.Parse(row["TargetAuraStateNot"].ToString());
+
+                            MaximumLevel.ThreadSafeText = uint.Parse(row["MaximumLevel"].ToString());
+                            BaseLevel.ThreadSafeText = uint.Parse(row["BaseLevel"].ToString());
+                            SpellLevel.ThreadSafeText = uint.Parse(row["SpellLevel"].ToString());
+
+                            RecoveryTime.ThreadSafeText = uint.Parse(row["RecoveryTime"].ToString());
+                            CategoryRecoveryTime.ThreadSafeText = uint.Parse(row["CategoryRecoveryTime"].ToString());
+
+                            StartRecoveryTime.ThreadSafeText = row["StartRecoveryTime"].ToString();
+                            MaxTargetsLevel.ThreadSafeText = row["MaximumTargetLevel"].ToString();
+                            MaxTargets.ThreadSafeText = row["MaximumAffectedTargets"].ToString();
+
+                            if (isWotlkOrGreater)
+                            {
+                                var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
+                                RuneCost.ThreadSafeIndex = loadRuneCosts.UpdateSpellRuneCostSelection(uint.Parse(row["RuneCostID"].ToString()));
+                            }
+                            RuneCost.IsEnabled = isWotlkOrGreater;
+
+                            if (row.Table.Columns.Contains("SpellPriority"))
+                            {
+                                SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
+                                SpellPriority.IsEnabled = true;
+                            }
+                            else
+                            {
+                                SpellPriority.IsEnabled = false;
+                            }
+
+                            SpellVisual1.ThreadSafeText = row["SpellVisual1"].ToString();
+                            SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
+                            Speed.ThreadSafeText = row["Speed"].ToString();
+
+                            if (isWotlkOrGreater)
+                            {
+                                SpellMissileID.ThreadSafeText = row["SpellMissileID"].ToString();
+
+                                var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
+                                var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
+                                SpellDescriptionVariables.ThreadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
+                                    uint.Parse(row["SpellDescriptionVariableID"].ToString()));
+
+                                Difficulty.ThreadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(row["SpellDifficultyID"].ToString()));
+                            }
+                            SpellMissileID.IsEnabled = isWotlkOrGreater;
+                            SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
+
+                            Stacks.ThreadSafeText = row["StackAmount"].ToString();
+
+                            Difficulty.IsEnabled = isWotlkOrGreater;
+
+                            uint powerType = uint.Parse(row["PowerType"].ToString());
+                            // Manually handle 'Health' power type
+                            if (powerType == (uint.MaxValue - 1))
+                                powerType = 13;
+                            PowerType.ThreadSafeIndex = powerType;
+                            PowerCost.ThreadSafeText = uint.Parse(row["ManaCost"].ToString());
+                            ManaCostPerLevel.ThreadSafeText = uint.Parse(row["ManaCostPerLevel"].ToString());
+                            ManaCostPerSecond.ThreadSafeText = uint.Parse(row["ManaPerSecond"].ToString());
+                            PerSecondPerLevel.ThreadSafeText = uint.Parse(row["ManaPerSecondPerLevel"].ToString());
+
+                            if (isTbcOrGreater)
+                            {
+                                var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
+                                TotemCategory1.ThreadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(uint.Parse(row["TotemCategory1"].ToString()));
+                                TotemCategory2.ThreadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(uint.Parse(row["TotemCategory2"].ToString()));
+                            }
+                            TotemCategory1.IsEnabled = isTbcOrGreater;
+                            TotemCategory2.IsEnabled = isTbcOrGreater;
+
+                            if (isWotlkOrGreater)
+                            {
+                                var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
+                                AreaGroup.ThreadSafeIndex = loadAreaGroups.UpdateAreaGroupSelection(uint.Parse(row["AreaGroupID"].ToString()));
+                            }
+                            AreaGroup.IsEnabled = isWotlkOrGreater;
+
+                            ManaCostPercent.ThreadSafeText = row["ManaCostPercentage"].ToString();
+                            StartRecoveryCategory.ThreadSafeText = row["StartRecoveryCategory"].ToString();
+
+                            LoadSpellFamilyFlags();
+
+                            SpellDamageType.ThreadSafeIndex = int.Parse(row["DamageClass"].ToString());
+                            PreventionType.ThreadSafeIndex = int.Parse(row["PreventionType"].ToString());
+
+                            var loadFocusObjects = (SpellFocusObject)DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject");
+                            RequiresSpellFocus.ThreadSafeIndex = loadFocusObjects.UpdateSpellFocusObjectSelection(uint.Parse(row["RequiresSpellFocus"].ToString()));
+
+                            mask = uint.Parse(row["SchoolMask"].ToString());
+                            if (isTbcOrGreater)
+                            {
+                                S1.ThreadSafeChecked = ((mask & 0x01) != 0);
+                                S2.ThreadSafeChecked = ((mask & 0x02) != 0);
+                                S3.ThreadSafeChecked = ((mask & 0x04) != 0);
+                                S4.ThreadSafeChecked = ((mask & 0x08) != 0);
+                                S5.ThreadSafeChecked = ((mask & 0x10) != 0);
+                                S6.ThreadSafeChecked = ((mask & 0x20) != 0);
+                                S7.ThreadSafeChecked = ((mask & 0x40) != 0);
+                            }
+                            else
+                            {
+                                S1.ThreadSafeChecked = mask == 1;
+                                S2.ThreadSafeChecked = mask == 2;
+                                S3.ThreadSafeChecked = mask == 3;
+                                S4.ThreadSafeChecked = mask == 4;
+                                S5.ThreadSafeChecked = mask == 5;
+                                S6.ThreadSafeChecked = mask == 6;
+                                S7.ThreadSafeChecked = mask == 7;
+                            }
+
+                            if (isTbcOrGreater)
+                            {
+                                mask = uint.Parse(row["FacingCasterFlags"].ToString());
+                                FacingFrontFlag.ThreadSafeChecked = ((mask & 0x1) != 0);
+                            }
+                            FacingFrontFlag.IsEnabled = isTbcOrGreater;
+
+                            CasterAuraSpell.ThreadSafeText = row["CasterAuraSpell"].ToString();
+                            TargetAuraSpell.ThreadSafeText = row["TargetAuraSpell"].ToString();
+                            ExcludeCasterAuraSpell.ThreadSafeText = row["ExcludeCasterAuraSpell"].ToString();
+                            ExcludeTargetAuraSpell.ThreadSafeText = row["ExcludeTargetAuraSpell"].ToString();
+
+                            StanceBarOrder.ThreadSafeText = row["StanceBarOrder"].ToString();
+                            PowerDisplayId.ThreadSafeText = row["PowerDisplayId"].ToString();
+                        }
+                        break;
+
+                    case PartialLoad.EffectsPage:
+                        {
+                            LoadSpellFamilyFlags();
+                            uint familyName = uint.Parse(SpellFamilyName.Text);
+                            if (!isWotlkOrGreater)
+                            {
+                                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                                    spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, adapter, null)));
+                            }
+                            else
+                            {
+                                SpellMask11.ThreadSafeText = row["EffectSpellClassMaskA1"].ToString();
+                                SpellMask21.ThreadSafeText = row["EffectSpellClassMaskA2"].ToString();
+                                SpellMask31.ThreadSafeText = row["EffectSpellClassMaskA3"].ToString();
+                                SpellMask12.ThreadSafeText = row["EffectSpellClassMaskB1"].ToString();
+                                SpellMask22.ThreadSafeText = row["EffectSpellClassMaskB2"].ToString();
+                                SpellMask32.ThreadSafeText = row["EffectSpellClassMaskB3"].ToString();
+                                SpellMask13.ThreadSafeText = row["EffectSpellClassMaskC1"].ToString();
+                                SpellMask23.ThreadSafeText = row["EffectSpellClassMaskC2"].ToString();
+                                SpellMask33.ThreadSafeText = row["EffectSpellClassMaskC3"].ToString();
+
+                                var masks = new List<uint>
+                                {
+                                    uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
+                                    uint.Parse(row["EffectSpellClassMaskC3"].ToString())
+                                };
+
+                                UpdateSpellMaskCheckBox(masks[0], SpellMask11);
+                                UpdateSpellMaskCheckBox(masks[1], SpellMask21);
+                                UpdateSpellMaskCheckBox(masks[2], SpellMask31);
+                                UpdateSpellMaskCheckBox(masks[3], SpellMask12);
+                                UpdateSpellMaskCheckBox(masks[4], SpellMask22);
+                                UpdateSpellMaskCheckBox(masks[5], SpellMask32);
+                                UpdateSpellMaskCheckBox(masks[6], SpellMask13);
+                                UpdateSpellMaskCheckBox(masks[7], SpellMask23);
+                                UpdateSpellMaskCheckBox(masks[8], SpellMask33);
+
+                                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                                    spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
+
+                                ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
+                            }
+
+                            mask = uint.Parse(row["Targets"].ToString());
+                            if (mask == 0)
+                            {
+                                targetBoxes[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                targetBoxes[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < targetBoxes.Count; ++f)
+                                {
+                                    targetBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+
+                            mask = uint.Parse(row["ProcFlags"].ToString());
+                            if (mask == 0)
+                            {
+                                procBoxes[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                procBoxes[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < procBoxes.Count; ++f)
+                                {
+                                    procBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+
+                            ProcChance.ThreadSafeText = uint.Parse(row["ProcChance"].ToString());
+                            ProcCharges.ThreadSafeText = uint.Parse(row["ProcCharges"].ToString());
+
+                            SpellEffect1.SetTextFromIndex(uint.Parse(row["Effect1"].ToString()));
+                            SpellEffect2.SetTextFromIndex(uint.Parse(row["Effect2"].ToString()));
+                            SpellEffect3.SetTextFromIndex(uint.Parse(row["Effect3"].ToString()));
+                            DieSides1.ThreadSafeText = row["EffectDieSides1"].ToString();
+                            DieSides2.ThreadSafeText = row["EffectDieSides2"].ToString();
+                            DieSides3.ThreadSafeText = row["EffectDieSides3"].ToString();
+                            BasePointsPerLevel1.ThreadSafeText = row["EffectRealPointsPerLevel1"].ToString();
+                            BasePointsPerLevel2.ThreadSafeText = row["EffectRealPointsPerLevel2"].ToString();
+                            BasePointsPerLevel3.ThreadSafeText = row["EffectRealPointsPerLevel3"].ToString();
+                            BasePoints1.ThreadSafeText = row["EffectBasePoints1"].ToString();
+                            BasePoints2.ThreadSafeText = row["EffectBasePoints2"].ToString();
+                            BasePoints3.ThreadSafeText = row["EffectBasePoints3"].ToString();
+                            Mechanic1.ThreadSafeIndex = int.Parse(row["EffectMechanic1"].ToString());
+                            Mechanic2.ThreadSafeIndex = int.Parse(row["EffectMechanic2"].ToString());
+                            Mechanic3.ThreadSafeIndex = int.Parse(row["EffectMechanic3"].ToString());
+                            TargetA1.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA1"].ToString());
+                            TargetA2.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA2"].ToString());
+                            TargetA3.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA3"].ToString());
+                            TargetB1.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB1"].ToString());
+                            TargetB2.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB2"].ToString());
+                            TargetB3.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB3"].ToString());
+
+                            var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
+                            RadiusIndex1.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(uint.Parse(row["EffectRadiusIndex1"].ToString()));
+                            RadiusIndex2.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(uint.Parse(row["EffectRadiusIndex2"].ToString()));
+                            RadiusIndex3.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(uint.Parse(row["EffectRadiusIndex3"].ToString()));
+
+                            ApplyAuraName1.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName1"].ToString()));
+                            ApplyAuraName2.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName2"].ToString()));
+                            ApplyAuraName3.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName3"].ToString()));
+                            Amplitude1.ThreadSafeText = row["EffectAmplitude1"].ToString();
+                            Amplitude2.ThreadSafeText = row["EffectAmplitude2"].ToString();
+                            Amplitude3.ThreadSafeText = row["EffectAmplitude3"].ToString();
+                            MultipleValue1.ThreadSafeText = row["EffectMultipleValue1"].ToString();
+                            MultipleValue2.ThreadSafeText = row["EffectMultipleValue2"].ToString();
+                            MultipleValue3.ThreadSafeText = row["EffectMultipleValue3"].ToString();
+                            ChainTarget1.ThreadSafeText = row["EffectChainTarget1"].ToString();
+                            ChainTarget2.ThreadSafeText = row["EffectChainTarget2"].ToString();
+                            ChainTarget3.ThreadSafeText = row["EffectChainTarget3"].ToString();
+                            ItemType1.ThreadSafeText = row["EffectItemType1"].ToString();
+                            ItemType2.ThreadSafeText = row["EffectItemType2"].ToString();
+                            ItemType3.ThreadSafeText = row["EffectItemType3"].ToString();
+                            MiscValueA1.ThreadSafeText = row["EffectMiscValue1"].ToString();
+                            MiscValueA2.ThreadSafeText = row["EffectMiscValue2"].ToString();
+                            MiscValueA3.ThreadSafeText = row["EffectMiscValue3"].ToString();
+                            if (isTbcOrGreater)
+                            {
+                                MiscValueB1.ThreadSafeText = row["EffectMiscValueB1"].ToString();
+                                MiscValueB2.ThreadSafeText = row["EffectMiscValueB2"].ToString();
+                                MiscValueB3.ThreadSafeText = row["EffectMiscValueB3"].ToString();
+                            }
+                            MiscValueB1.IsEnabled = isTbcOrGreater;
+                            MiscValueB2.IsEnabled = isTbcOrGreater;
+                            MiscValueB3.IsEnabled = isTbcOrGreater;
+                            TriggerSpell1.ThreadSafeText = row["EffectTriggerSpell1"].ToString();
+                            TriggerSpell2.ThreadSafeText = row["EffectTriggerSpell2"].ToString();
+                            TriggerSpell3.ThreadSafeText = row["EffectTriggerSpell3"].ToString();
+                            PointsPerComboPoint1.ThreadSafeText = row["EffectPointsPerComboPoint1"].ToString();
+                            PointsPerComboPoint2.ThreadSafeText = row["EffectPointsPerComboPoint2"].ToString();
+                            PointsPerComboPoint3.ThreadSafeText = row["EffectPointsPerComboPoint3"].ToString();
+
+                            EffectDamageMultiplier1.ThreadSafeText = row["EffectDamageMultiplier1"].ToString();
+                            EffectDamageMultiplier2.ThreadSafeText = row["EffectDamageMultiplier2"].ToString();
+                            EffectDamageMultiplier3.ThreadSafeText = row["EffectDamageMultiplier3"].ToString();
+
+                            if (isWotlkOrGreater)
+                            {
+                                EffectBonusMultiplier1.ThreadSafeText = row["EffectBonusMultiplier1"].ToString();
+                                EffectBonusMultiplier2.ThreadSafeText = row["EffectBonusMultiplier2"].ToString();
+                                EffectBonusMultiplier3.ThreadSafeText = row["EffectBonusMultiplier3"].ToString();
+                            }
+                            EffectBonusMultiplier1.IsEnabled = isWotlkOrGreater;
+                            EffectBonusMultiplier2.IsEnabled = isWotlkOrGreater;
+                            EffectBonusMultiplier3.IsEnabled = isWotlkOrGreater;
+
+                            FilterClassMaskSpells1.IsEnabled = isWotlkOrGreater;
+                            FilterClassMaskSpells2.IsEnabled = isWotlkOrGreater;
+                            FilterClassMaskSpells3.IsEnabled = isWotlkOrGreater;
+
+                        }
+                        break;
+
+                    case PartialLoad.ItemsPage:
+                        {
+                            Totem1.ThreadSafeText = row["Totem1"].ToString();
+                            Totem2.ThreadSafeText = row["Totem2"].ToString();
+                            Reagent1.ThreadSafeText = row["Reagent1"].ToString();
+                            Reagent2.ThreadSafeText = row["Reagent2"].ToString();
+                            Reagent3.ThreadSafeText = row["Reagent3"].ToString();
+                            Reagent4.ThreadSafeText = row["Reagent4"].ToString();
+                            Reagent5.ThreadSafeText = row["Reagent5"].ToString();
+                            Reagent6.ThreadSafeText = row["Reagent6"].ToString();
+                            Reagent7.ThreadSafeText = row["Reagent7"].ToString();
+                            Reagent8.ThreadSafeText = row["Reagent8"].ToString();
+                            ReagentCount1.ThreadSafeText = row["ReagentCount1"].ToString();
+                            ReagentCount2.ThreadSafeText = row["ReagentCount2"].ToString();
+                            ReagentCount3.ThreadSafeText = row["ReagentCount3"].ToString();
+                            ReagentCount4.ThreadSafeText = row["ReagentCount4"].ToString();
+                            ReagentCount5.ThreadSafeText = row["ReagentCount5"].ToString();
+                            ReagentCount6.ThreadSafeText = row["ReagentCount6"].ToString();
+                            ReagentCount7.ThreadSafeText = row["ReagentCount7"].ToString();
+                            ReagentCount8.ThreadSafeText = row["ReagentCount8"].ToString();
+
+                            int ID = int.Parse(row["EquippedItemClass"].ToString());
+                            if (ID == -1)
+                            {
+                                EquippedItemClass.ThreadSafeIndex = 0;
+                                //foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes)
+                                //  box.threadSafeChecked = false;
+                                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                                    => EquippedItemInventoryTypeGrid.IsEnabled = false));
+                            }
+                            else if (ID == 2 || ID == 4)
+                            {
+                                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                                    => EquippedItemInventoryTypeGrid.IsEnabled = true));
+                            }
+                            else
+                            {
+                                foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
+                                    box.ThreadSafeChecked = false;
+                                Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
+                                    => EquippedItemInventoryTypeGrid.IsEnabled = false));
+                            }
+                            var loadItemClasses = (ItemClass)DBCManager.GetInstance().FindDbcForBinding("ItemClass");
+                            EquippedItemClass.ThreadSafeIndex = loadItemClasses.UpdateItemClassSelection(ID);
+
+                            UpdateItemSubClass(long.Parse(row["EquippedItemClass"].ToString()));
+
+                            int intMask = int.Parse(row["EquippedItemSubClassMask"].ToString());
+                            if (intMask == 0 || intMask == -1)
+                            {
+                                equippedItemSubClassMaskBoxes[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < equippedItemSubClassMaskBoxes.Count; ++f) { equippedItemSubClassMaskBoxes[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                equippedItemSubClassMaskBoxes[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                foreach (ThreadSafeCheckBox equippedItemSubClassMaskBox in equippedItemSubClassMaskBoxes)
+                                {
+                                    equippedItemSubClassMaskBox.ThreadSafeChecked = ((intMask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+
+                            intMask = int.Parse(row["EquippedItemInventoryTypeMask"].ToString());
+                            if (intMask == 0 || intMask == -1)
+                            {
+                                equippedItemInventoryTypeMaskBoxes[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                equippedItemInventoryTypeMaskBoxes[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                foreach (ThreadSafeCheckBox equippedItemInventoryTypeMaskBox in equippedItemInventoryTypeMaskBoxes)
+                                {
+                                    equippedItemInventoryTypeMaskBox.ThreadSafeChecked = ((intMask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+                        }
+                        break;
+
+                    case PartialLoad.FlagsPage:
+                        {
+                            mask = uint.Parse(row["Attributes"].ToString());
+                            uint flagg = 1;
+
+                            foreach (ThreadSafeCheckBox attribute0 in attributes0)
+                            {
+                                attribute0.ThreadSafeChecked = ((mask & flagg) != 0);
+                                flagg += flagg;
+                            }
+
+                            mask = uint.Parse(row["AttributesEx"].ToString());
+                            flagg = 1;
+
+                            foreach (ThreadSafeCheckBox attribute1 in attributes1)
+                            {
+                                attribute1.ThreadSafeChecked = ((mask & flagg) != 0);
+                                flagg += flagg;
+                            }
+
+                            mask = uint.Parse(row["AttributesEx2"].ToString());
+                            flagg = 1;
+
+                            foreach (ThreadSafeCheckBox attribute2 in attributes2)
+                            {
+                                attribute2.ThreadSafeChecked = ((mask & flagg) != 0);
+                                flagg += flagg;
+                            }
+
+                            mask = uint.Parse(row["AttributesEx3"].ToString());
+                            flagg = 1;
+
+                            foreach (ThreadSafeCheckBox attribute3 in attributes3)
+                            {
+                                attribute3.ThreadSafeChecked = ((mask & flagg) != 0);
+                                flagg += flagg;
+                            }
+
+                            mask = uint.Parse(row["AttributesEx4"].ToString());
+                            flagg = 1;
+
+                            foreach (ThreadSafeCheckBox attribute4 in attributes4)
+                            {
+                                attribute4.ThreadSafeChecked = ((mask & flagg) != 0);
+                                flagg += flagg;
+                            }
+
+                            if (isTbcOrGreater)
+                            {
+                                mask = uint.Parse(row["AttributesEx5"].ToString());
+                                flagg = 1;
+
+                                foreach (ThreadSafeCheckBox attribute5 in attributes5)
+                                {
+                                    attribute5.ThreadSafeChecked = ((mask & flagg) != 0);
+                                    flagg += flagg;
+                                }
+
+                                mask = uint.Parse(row["AttributesEx6"].ToString());
+                                flagg = 1;
+
+                                foreach (ThreadSafeCheckBox attribute6 in attributes6)
+                                {
+                                    attribute6.ThreadSafeChecked = ((mask & flagg) != 0);
+                                    flagg += flagg;
+                                }
+
+                                mask = uint.Parse(row["Stances"].ToString());
+                                if (mask == 0)
+                                {
+                                    stancesBoxes[0].ThreadSafeChecked = true;
+                                    for (int f = 1; f < stancesBoxes.Count; ++f) { stancesBoxes[f].ThreadSafeChecked = false; }
+                                }
+                                else
+                                {
+                                    stancesBoxes[0].ThreadSafeChecked = false;
+                                    uint flag = 1;
+                                    for (int f = 1; f < stancesBoxes.Count; ++f)
+                                    {
+                                        stancesBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                        flag += flag;
+                                    }
+                                }
+
+                                mask = uint.Parse(row["StancesNot"].ToString());
+                                if (mask == 0)
+                                {
+                                    stancesNotBoxes[0].ThreadSafeChecked = true;
+                                    for (int f = 1; f < stancesNotBoxes.Count; ++f) { stancesNotBoxes[f].ThreadSafeChecked = false; }
+                                }
+                                else
+                                {
+                                    stancesNotBoxes[0].ThreadSafeChecked = false;
+                                    uint flag = 1;
+                                    for (int f = 1; f < stancesNotBoxes.Count; ++f)
+                                    {
+                                        stancesNotBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                        flag += flag;
+                                    }
+                                }
+                            }
+                            if (isWotlkOrGreater)
+                            {
+                                mask = uint.Parse(row["AttributesEx7"].ToString());
+                                flagg = 1;
+
+                                foreach (ThreadSafeCheckBox attribute7 in attributes7)
+                                {
+                                    attribute7.ThreadSafeChecked = ((mask & flagg) != 0);
+                                    flagg += flagg;
+                                }
+                            }
+                            attributes5.ForEach(box => box.IsEnabled = isTbcOrGreater);
+                            attributes6.ForEach(box => box.IsEnabled = isTbcOrGreater);
+                            attributes7.ForEach(box => box.IsEnabled = isWotlkOrGreater);
+                            stancesBoxes.ForEach(box => box.IsEnabled = isTbcOrGreater);
+
+                            mask = uint.Parse(row["InterruptFlags"].ToString());
+                            if (mask == 0)
+                            {
+                                interrupts1[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                interrupts1[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < interrupts1.Count; ++f)
+                                {
+                                    interrupts1[f].ThreadSafeChecked = ((mask & flag) != 0);
+
+                                    flag += flag;
+                                }
+                            }
+
+                            mask = uint.Parse(row["AuraInterruptFlags"].ToString());
+                            if (mask == 0)
+                            {
+                                interrupts2[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                interrupts2[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < interrupts2.Count; ++f)
+                                {
+                                    interrupts2[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+
+                            mask = uint.Parse(row["ChannelInterruptFlags"].ToString());
+                            if (mask == 0)
+                            {
+                                interrupts3[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                interrupts3[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < interrupts3.Count; ++f)
+                                {
+                                    interrupts3[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+
+                            mask = uint.Parse(row["TargetCreatureType"].ToString());
+
+                            if (mask == 0)
+                            {
+                                targetCreatureTypeBoxes[0].ThreadSafeChecked = true;
+                                for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].ThreadSafeChecked = false; }
+                            }
+                            else
+                            {
+                                targetCreatureTypeBoxes[0].ThreadSafeChecked = false;
+                                uint flag = 1;
+                                for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
+                                {
+                                    targetCreatureTypeBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
+                                    flag += flag;
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
-                if (isWotlkOrGreater)
-                {
-                    mask = uint.Parse(row["AttributesEx7"].ToString());
-                    flagg = 1;
 
-                    foreach (ThreadSafeCheckBox attribute7 in attributes7)
-                    {
-                        attribute7.ThreadSafeChecked = ((mask & flagg) != 0);
-                        flagg += flagg;
-                    }
-                }
-                attributes5.ForEach(box => box.IsEnabled = isTbcOrGreater);
-                attributes6.ForEach(box => box.IsEnabled = isTbcOrGreater);
-                attributes7.ForEach(box => box.IsEnabled = isWotlkOrGreater);
-                stancesBoxes.ForEach(box => box.IsEnabled = isTbcOrGreater);
-
-                updateProgress("Updating targets...");
-                mask = uint.Parse(row["Targets"].ToString());
-                if (mask == 0)
-                {
-                    targetBoxes[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < targetBoxes.Count; ++f) { targetBoxes[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    targetBoxes[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < targetBoxes.Count; ++f)
-                    {
-                        targetBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-
-                mask = uint.Parse(row["TargetCreatureType"].ToString());
-
-                if (mask == 0)
-                {
-                    targetCreatureTypeBoxes[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f) { targetCreatureTypeBoxes[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    targetCreatureTypeBoxes[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < targetCreatureTypeBoxes.Count; ++f)
-                    {
-                        targetCreatureTypeBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-                updateProgress("Updating spell focus object selection...");
-                var loadFocusObjects = (SpellFocusObject)DBCManager.GetInstance().FindDbcForBinding("SpellFocusObject");
-                RequiresSpellFocus.ThreadSafeIndex = loadFocusObjects.UpdateSpellFocusObjectSelection(uint.Parse(
-                    adapter.Query($"SELECT `RequiresSpellFocus` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                if (isTbcOrGreater)
-                {
-                    mask = uint.Parse(row["FacingCasterFlags"].ToString());
-                    FacingFrontFlag.ThreadSafeChecked = ((mask & 0x1) != 0);
-                }
-                FacingFrontFlag.IsEnabled = isTbcOrGreater;
-
-                updateProgress("Updating caster aura state...");
-                CasterAuraState.ThreadSafeIndex = uint.Parse(row["CasterAuraState"].ToString());
-                TargetAuraState.ThreadSafeIndex = uint.Parse(row["TargetAuraState"].ToString());
-
-                updateProgress("Updating cast time selection...");
-                var loadCastTimes = (SpellCastTimes)DBCManager.GetInstance().FindDbcForBinding("SpellCastTimes");
-                CastTime.ThreadSafeIndex = loadCastTimes.UpdateCastTimeSelection(uint.Parse(adapter.Query(
-                    $"SELECT `CastingTimeIndex` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-                updateProgress("Updating other stuff...");
-                RecoveryTime.ThreadSafeText = uint.Parse(row["RecoveryTime"].ToString());
-                CategoryRecoveryTime.ThreadSafeText = uint.Parse(row["CategoryRecoveryTime"].ToString());
-
-                mask = uint.Parse(row["InterruptFlags"].ToString());
-                if (mask == 0)
-                {
-                    interrupts1[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < interrupts1.Count; ++f) { interrupts1[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    interrupts1[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < interrupts1.Count; ++f)
-                    {
-                        interrupts1[f].ThreadSafeChecked = ((mask & flag) != 0);
-
-                        flag += flag;
-                    }
-                }
-
-                mask = uint.Parse(row["AuraInterruptFlags"].ToString());
-                if (mask == 0)
-                {
-                    interrupts2[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < interrupts2.Count; ++f) { interrupts2[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    interrupts2[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < interrupts2.Count; ++f)
-                    {
-                        interrupts2[f].ThreadSafeChecked = ((mask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-
-                mask = uint.Parse(row["ChannelInterruptFlags"].ToString());
-                if (mask == 0)
-                {
-                    interrupts3[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < interrupts3.Count; ++f) { interrupts3[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    interrupts3[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < interrupts3.Count; ++f)
-                    {
-                        interrupts3[f].ThreadSafeChecked = ((mask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-
-                mask = uint.Parse(row["ProcFlags"].ToString());
-                if (mask == 0)
-                {
-                    procBoxes[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < procBoxes.Count; ++f) { procBoxes[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    procBoxes[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    for (int f = 1; f < procBoxes.Count; ++f)
-                    {
-                        procBoxes[f].ThreadSafeChecked = ((mask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-
-                ProcChance.ThreadSafeText = uint.Parse(row["ProcChance"].ToString());
-                ProcCharges.ThreadSafeText = uint.Parse(row["ProcCharges"].ToString());
-                MaximumLevel.ThreadSafeText = uint.Parse(row["MaximumLevel"].ToString());
-                BaseLevel.ThreadSafeText = uint.Parse(row["BaseLevel"].ToString());
-                SpellLevel.ThreadSafeText = uint.Parse(row["SpellLevel"].ToString());
-
-                var loadDurations = (SpellDuration)DBCManager.GetInstance().FindDbcForBinding("SpellDuration");
-                Duration.ThreadSafeIndex = loadDurations.UpdateDurationIndexes(uint.Parse(adapter.Query(
-                    $"SELECT `DurationIndex` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                uint powerType = uint.Parse(row["PowerType"].ToString());
-                // Manually handle 'Health' power type
-                if (powerType == (uint.MaxValue - 1))
-                    powerType = 13;
-                PowerType.ThreadSafeIndex = powerType;
-                PowerCost.ThreadSafeText = uint.Parse(row["ManaCost"].ToString());
-                ManaCostPerLevel.ThreadSafeText = uint.Parse(row["ManaCostPerLevel"].ToString());
-                ManaCostPerSecond.ThreadSafeText = uint.Parse(row["ManaPerSecond"].ToString());
-                PerSecondPerLevel.ThreadSafeText = uint.Parse(row["ManaPerSecondPerLevel"].ToString());
-                if (data.Columns.Contains("SpellPriority"))
-                {
-                    SpellPriority.ThreadSafeText = int.Parse(row["SpellPriority"].ToString());
-                    SpellPriority.IsEnabled = true;
-                }
-                else
-                {
-                    SpellPriority.IsEnabled = false;
-                }
-                updateProgress("Updating spell range selection...");
-                var loadRanges = (SpellRange)DBCManager.GetInstance().FindDbcForBinding("SpellRange");
-                Range.ThreadSafeIndex = loadRanges.UpdateSpellRangeSelection(uint.Parse(adapter.Query(
-                    $"SELECT `RangeIndex` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                updateProgress("Updating speed, stacks, totems, reagents...");
-                Speed.ThreadSafeText = row["Speed"].ToString();
-                Stacks.ThreadSafeText = row["StackAmount"].ToString();
-                Totem1.ThreadSafeText = row["Totem1"].ToString();
-                Totem2.ThreadSafeText = row["Totem2"].ToString();
-                Reagent1.ThreadSafeText = row["Reagent1"].ToString();
-                Reagent2.ThreadSafeText = row["Reagent2"].ToString();
-                Reagent3.ThreadSafeText = row["Reagent3"].ToString();
-                Reagent4.ThreadSafeText = row["Reagent4"].ToString();
-                Reagent5.ThreadSafeText = row["Reagent5"].ToString();
-                Reagent6.ThreadSafeText = row["Reagent6"].ToString();
-                Reagent7.ThreadSafeText = row["Reagent7"].ToString();
-                Reagent8.ThreadSafeText = row["Reagent8"].ToString();
-                ReagentCount1.ThreadSafeText = row["ReagentCount1"].ToString();
-                ReagentCount2.ThreadSafeText = row["ReagentCount2"].ToString();
-                ReagentCount3.ThreadSafeText = row["ReagentCount3"].ToString();
-                ReagentCount4.ThreadSafeText = row["ReagentCount4"].ToString();
-                ReagentCount5.ThreadSafeText = row["ReagentCount5"].ToString();
-                ReagentCount6.ThreadSafeText = row["ReagentCount6"].ToString();
-                ReagentCount7.ThreadSafeText = row["ReagentCount7"].ToString();
-                ReagentCount8.ThreadSafeText = row["ReagentCount8"].ToString();
-
-                updateProgress("Updating item class selection...");
-                int ID = int.Parse(adapter.Query(
-                    $"SELECT `EquippedItemClass` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString());
-                if (ID == -1)
-                {
-                    EquippedItemClass.ThreadSafeIndex = 0;
-                    //foreach (ThreadSafeCheckBox box in main.equippedItemInventoryTypeMaskBoxes)
-                    //  box.threadSafeChecked = false;
-                    Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
-                        => EquippedItemInventoryTypeGrid.IsEnabled = false));
-                }
-                else if (ID == 2 || ID == 4)
-                {
-                    Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
-                        => EquippedItemInventoryTypeGrid.IsEnabled = true));
-                }
-                else
-                {
-                    foreach (ThreadSafeCheckBox box in equippedItemInventoryTypeMaskBoxes)
-                        box.ThreadSafeChecked = false;
-                    Dispatcher.Invoke(DispatcherPriority.Send, TimeSpan.Zero, new Func<object>(()
-                        => EquippedItemInventoryTypeGrid.IsEnabled = false));
-                }
-                var loadItemClasses = (ItemClass)DBCManager.GetInstance().FindDbcForBinding("ItemClass");
-                EquippedItemClass.ThreadSafeIndex = loadItemClasses.UpdateItemClassSelection(ID);
-
-                UpdateItemSubClass(long.Parse(row["EquippedItemClass"].ToString()));
-
-                updateProgress("Updating item subclass mask...");
-                int intMask = int.Parse(row["EquippedItemSubClassMask"].ToString());
-                if (intMask == 0 || intMask == -1)
-                {
-                    equippedItemSubClassMaskBoxes[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < equippedItemSubClassMaskBoxes.Count; ++f) { equippedItemSubClassMaskBoxes[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    equippedItemSubClassMaskBoxes[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    foreach (ThreadSafeCheckBox equippedItemSubClassMaskBox in equippedItemSubClassMaskBoxes)
-                    {
-                        equippedItemSubClassMaskBox.ThreadSafeChecked = ((intMask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-
-                updateProgress("Updating inventory type...");
-                intMask = int.Parse(row["EquippedItemInventoryTypeMask"].ToString());
-                if (intMask == 0 || intMask == -1)
-                {
-                    equippedItemInventoryTypeMaskBoxes[0].ThreadSafeChecked = true;
-                    for (int f = 1; f < equippedItemInventoryTypeMaskBoxes.Count; ++f) { equippedItemInventoryTypeMaskBoxes[f].ThreadSafeChecked = false; }
-                }
-                else
-                {
-                    equippedItemInventoryTypeMaskBoxes[0].ThreadSafeChecked = false;
-                    uint flag = 1;
-                    foreach (ThreadSafeCheckBox equippedItemInventoryTypeMaskBox in equippedItemInventoryTypeMaskBoxes)
-                    {
-                        equippedItemInventoryTypeMaskBox.ThreadSafeChecked = ((intMask & flag) != 0);
-                        flag += flag;
-                    }
-                }
-                updateProgress("Updating effects 1-3...");
-                SpellEffect1.SetTextFromIndex(uint.Parse(row["Effect1"].ToString()));
-                SpellEffect2.SetTextFromIndex(uint.Parse(row["Effect2"].ToString()));
-                SpellEffect3.SetTextFromIndex(uint.Parse(row["Effect3"].ToString()));
-                DieSides1.ThreadSafeText = row["EffectDieSides1"].ToString();
-                DieSides2.ThreadSafeText = row["EffectDieSides2"].ToString();
-                DieSides3.ThreadSafeText = row["EffectDieSides3"].ToString();
-                BasePointsPerLevel1.ThreadSafeText = row["EffectRealPointsPerLevel1"].ToString();
-                BasePointsPerLevel2.ThreadSafeText = row["EffectRealPointsPerLevel2"].ToString();
-                BasePointsPerLevel3.ThreadSafeText = row["EffectRealPointsPerLevel3"].ToString();
-                BasePoints1.ThreadSafeText = row["EffectBasePoints1"].ToString();
-                BasePoints2.ThreadSafeText = row["EffectBasePoints2"].ToString();
-                BasePoints3.ThreadSafeText = row["EffectBasePoints3"].ToString();
-                Mechanic1.ThreadSafeIndex = int.Parse(row["EffectMechanic1"].ToString());
-                Mechanic2.ThreadSafeIndex = int.Parse(row["EffectMechanic2"].ToString());
-                Mechanic3.ThreadSafeIndex = int.Parse(row["EffectMechanic3"].ToString());
-                TargetA1.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA1"].ToString());
-                TargetA2.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA2"].ToString());
-                TargetA3.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetA3"].ToString());
-                TargetB1.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB1"].ToString());
-                TargetB2.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB2"].ToString());
-                TargetB3.ThreadSafeIndex = uint.Parse(row["EffectImplicitTargetB3"].ToString());
-
-                updateProgress("Updating radius index...");
-                var loadRadiuses = (SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius");
-                var result = adapter.Query($"SELECT `EffectRadiusIndex1`, `EffectRadiusIndex2`, `EffectRadiusIndex3` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0];
-                uint[] IDs = { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()), uint.Parse(result[2].ToString()) };
-                RadiusIndex1.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[0]);
-                RadiusIndex2.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[1]);
-                RadiusIndex3.ThreadSafeIndex = loadRadiuses.UpdateRadiusIndexes(IDs[2]);
-
-                updateProgress("Updating effect 1-3 data...");
-                ApplyAuraName1.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName1"].ToString()));
-                ApplyAuraName2.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName2"].ToString()));
-                ApplyAuraName3.SetTextFromIndex(uint.Parse(row["EffectApplyAuraName3"].ToString()));
-                Amplitude1.ThreadSafeText = row["EffectAmplitude1"].ToString();
-                Amplitude2.ThreadSafeText = row["EffectAmplitude2"].ToString();
-                Amplitude3.ThreadSafeText = row["EffectAmplitude3"].ToString();
-                MultipleValue1.ThreadSafeText = row["EffectMultipleValue1"].ToString();
-                MultipleValue2.ThreadSafeText = row["EffectMultipleValue2"].ToString();
-                MultipleValue3.ThreadSafeText = row["EffectMultipleValue3"].ToString();
-                ChainTarget1.ThreadSafeText = row["EffectChainTarget1"].ToString();
-                ChainTarget2.ThreadSafeText = row["EffectChainTarget2"].ToString();
-                ChainTarget3.ThreadSafeText = row["EffectChainTarget3"].ToString();
-                ItemType1.ThreadSafeText = row["EffectItemType1"].ToString();
-                ItemType2.ThreadSafeText = row["EffectItemType2"].ToString();
-                ItemType3.ThreadSafeText = row["EffectItemType3"].ToString();
-                MiscValueA1.ThreadSafeText = row["EffectMiscValue1"].ToString();
-                MiscValueA2.ThreadSafeText = row["EffectMiscValue2"].ToString();
-                MiscValueA3.ThreadSafeText = row["EffectMiscValue3"].ToString();
-                if (isTbcOrGreater)
-                {
-                    MiscValueB1.ThreadSafeText = row["EffectMiscValueB1"].ToString();
-                    MiscValueB2.ThreadSafeText = row["EffectMiscValueB2"].ToString();
-                    MiscValueB3.ThreadSafeText = row["EffectMiscValueB3"].ToString();
-                }
-                MiscValueB1.IsEnabled = isTbcOrGreater;
-                MiscValueB2.IsEnabled = isTbcOrGreater;
-                MiscValueB3.IsEnabled = isTbcOrGreater;
-                TriggerSpell1.ThreadSafeText = row["EffectTriggerSpell1"].ToString();
-                TriggerSpell2.ThreadSafeText = row["EffectTriggerSpell2"].ToString();
-                TriggerSpell3.ThreadSafeText = row["EffectTriggerSpell3"].ToString();
-                PointsPerComboPoint1.ThreadSafeText = row["EffectPointsPerComboPoint1"].ToString();
-                PointsPerComboPoint2.ThreadSafeText = row["EffectPointsPerComboPoint2"].ToString();
-                PointsPerComboPoint3.ThreadSafeText = row["EffectPointsPerComboPoint3"].ToString();
-
-                if (!isWotlkOrGreater)
-                {
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
-                    SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
-                    SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
-
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser?.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, adapter, null)));
-                }
-                else
-                {
-                    SpellMask11.ThreadSafeText = row["EffectSpellClassMaskA1"].ToString();
-                    SpellMask21.ThreadSafeText = row["EffectSpellClassMaskA2"].ToString();
-                    SpellMask31.ThreadSafeText = row["EffectSpellClassMaskA3"].ToString();
-                    SpellMask12.ThreadSafeText = row["EffectSpellClassMaskB1"].ToString();
-                    SpellMask22.ThreadSafeText = row["EffectSpellClassMaskB2"].ToString();
-                    SpellMask32.ThreadSafeText = row["EffectSpellClassMaskB3"].ToString();
-                    SpellMask13.ThreadSafeText = row["EffectSpellClassMaskC1"].ToString();
-                    SpellMask23.ThreadSafeText = row["EffectSpellClassMaskC2"].ToString();
-                    SpellMask33.ThreadSafeText = row["EffectSpellClassMaskC3"].ToString();
-
-                    uint familyName = uint.Parse(row["SpellFamilyName"].ToString());
-                    SpellFamilyName.ThreadSafeText = familyName.ToString();
-                    SpellFamilyFlags.ThreadSafeText = row["SpellFamilyFlags"].ToString();
-                    SpellFamilyFlags1.ThreadSafeText = row["SpellFamilyFlags1"].ToString();
-                    SpellFamilyFlags2.ThreadSafeText = row["SpellFamilyFlags2"].ToString();
-
-                    var masks = new List<uint>
-                    {
-                        uint.Parse(row["EffectSpellClassMaskA1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskA2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskA3"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskB3"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC1"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC2"].ToString()),
-                        uint.Parse(row["EffectSpellClassMaskC3"].ToString())
-                    };
-
-                    UpdateSpellMaskCheckBox(masks[0], SpellMask11);
-                    UpdateSpellMaskCheckBox(masks[1], SpellMask21);
-                    UpdateSpellMaskCheckBox(masks[2], SpellMask31);
-                    UpdateSpellMaskCheckBox(masks[3], SpellMask12);
-                    UpdateSpellMaskCheckBox(masks[4], SpellMask22);
-                    UpdateSpellMaskCheckBox(masks[5], SpellMask32);
-                    UpdateSpellMaskCheckBox(masks[6], SpellMask13);
-                    UpdateSpellMaskCheckBox(masks[7], SpellMask23);
-                    UpdateSpellMaskCheckBox(masks[8], SpellMask33);
-
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
-                        spellFamilyClassMaskParser.UpdateSpellFamilyClassMask(this, familyName, isWotlkOrGreater, GetDBAdapter(), masks)));
-                }
-                SpellFamilyFlags2.IsEnabled = isWotlkOrGreater;
-                ToggleAllSpellMaskCheckBoxes(isWotlkOrGreater);
-
-                SpellVisual1.ThreadSafeText = row["SpellVisual1"].ToString();
-                SpellVisual2.ThreadSafeText = row["SpellVisual2"].ToString();
-
-                ManaCostPercent.ThreadSafeText = row["ManaCostPercentage"].ToString();
-                StartRecoveryCategory.ThreadSafeText = row["StartRecoveryCategory"].ToString();
-                StartRecoveryTime.ThreadSafeText = row["StartRecoveryTime"].ToString();
-                MaxTargetsLevel.ThreadSafeText = row["MaximumTargetLevel"].ToString();
-                MaxTargets.ThreadSafeText = row["MaximumAffectedTargets"].ToString();
-                SpellDamageType.ThreadSafeIndex = int.Parse(row["DamageClass"].ToString());
-                PreventionType.ThreadSafeIndex = int.Parse(row["PreventionType"].ToString());
-                EffectDamageMultiplier1.ThreadSafeText = row["EffectDamageMultiplier1"].ToString();
-                EffectDamageMultiplier2.ThreadSafeText = row["EffectDamageMultiplier2"].ToString();
-                EffectDamageMultiplier3.ThreadSafeText = row["EffectDamageMultiplier3"].ToString();
-
-                if (isTbcOrGreater)
-                {
-                    updateProgress("Updating totem categories & load area groups...");
-                    var loadTotemCategories = (TotemCategory)DBCManager.GetInstance().FindDbcForBinding("TotemCategory");
-                    result = adapter.Query($"SELECT `TotemCategory1`, `TotemCategory2` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0];
-                    IDs = new[] { uint.Parse(result[0].ToString()), uint.Parse(result[1].ToString()) };
-                    TotemCategory1.ThreadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[0]);
-                    TotemCategory2.ThreadSafeIndex = loadTotemCategories.UpdateTotemCategoriesSelection(IDs[1]);
-                }
-                TotemCategory1.IsEnabled = isTbcOrGreater;
-                TotemCategory2.IsEnabled = isTbcOrGreater;
-                if (isWotlkOrGreater)
-                {
-                    var loadAreaGroups = (AreaGroup)DBCManager.GetInstance().FindDbcForBinding("AreaGroup");
-                    AreaGroup.ThreadSafeIndex = loadAreaGroups.UpdateAreaGroupSelection(uint.Parse(adapter.Query(
-                        $"SELECT `AreaGroupID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-                }
-                AreaGroup.IsEnabled = isWotlkOrGreater;
-
-                updateProgress("Updating school mask...");
-                mask = uint.Parse(row["SchoolMask"].ToString());
-                if (isTbcOrGreater)
-                {
-                    S1.ThreadSafeChecked = ((mask & 0x01) != 0);
-                    S2.ThreadSafeChecked = ((mask & 0x02) != 0);
-                    S3.ThreadSafeChecked = ((mask & 0x04) != 0);
-                    S4.ThreadSafeChecked = ((mask & 0x08) != 0);
-                    S5.ThreadSafeChecked = ((mask & 0x10) != 0);
-                    S6.ThreadSafeChecked = ((mask & 0x20) != 0);
-                    S7.ThreadSafeChecked = ((mask & 0x40) != 0);
-                }
-                else
-                {
-                    S1.ThreadSafeChecked = mask == 1;
-                    S2.ThreadSafeChecked = mask == 2;
-                    S3.ThreadSafeChecked = mask == 3;
-                    S4.ThreadSafeChecked = mask == 4;
-                    S5.ThreadSafeChecked = mask == 5;
-                    S6.ThreadSafeChecked = mask == 6;
-                    S7.ThreadSafeChecked = mask == 7;
-                }
-
-
-                if (isWotlkOrGreater)
-                {
-                    updateProgress("Updating rune costs...");
-                    var loadRuneCosts = (SpellRuneCost)DBCManager.GetInstance().FindDbcForBinding("SpellRuneCost");
-                    RuneCost.ThreadSafeIndex = loadRuneCosts.UpdateSpellRuneCostSelection(uint.Parse(adapter.Query(
-                        $"SELECT `RuneCostID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-                }
-                RuneCost.IsEnabled = isWotlkOrGreater;
-
-                updateProgress("Updating spell missile & effect bonus multiplier...");
-                if (isWotlkOrGreater)
-                {
-                    EffectBonusMultiplier1.ThreadSafeText = row["EffectBonusMultiplier1"].ToString();
-                    EffectBonusMultiplier2.ThreadSafeText = row["EffectBonusMultiplier2"].ToString();
-                    EffectBonusMultiplier3.ThreadSafeText = row["EffectBonusMultiplier3"].ToString();
-                }
-                EffectBonusMultiplier1.IsEnabled = isWotlkOrGreater;
-                EffectBonusMultiplier2.IsEnabled = isWotlkOrGreater;
-                EffectBonusMultiplier3.IsEnabled = isWotlkOrGreater;
-                if (isWotlkOrGreater)
-                {
-                    SpellMissileID.ThreadSafeText = row["SpellMissileID"].ToString();
-
-                    updateProgress("Updating spell description variables & difficulty selection...");
-                    var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
-                    var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
-                    SpellDescriptionVariables.ThreadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
-                        uint.Parse(adapter.Query($"SELECT `SpellDescriptionVariableID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-
-                    Difficulty.ThreadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(adapter.Query(
-                        $"SELECT `SpellDifficultyID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
-                }
-                SpellMissileID.IsEnabled = isWotlkOrGreater;
-                SpellDescriptionVariables.IsEnabled = isWotlkOrGreater;
-                Difficulty.IsEnabled = isWotlkOrGreater;
-
-                FilterClassMaskSpells1.IsEnabled = isWotlkOrGreater;
-                FilterClassMaskSpells2.IsEnabled = isWotlkOrGreater;
-                FilterClassMaskSpells3.IsEnabled = isWotlkOrGreater;
+                loadStage |= page;
             }
             catch (Exception e)
             {
                 HandleErrorMessage(string.Format("{0}\n\n{1}", "", e, e.InnerException));
             }
-            adapter.Updating = false;
+
+            updating = false;
         }
 
         #region VisualTab
@@ -2769,6 +3042,145 @@ namespace SpellEditor
                 UpdateSpellMissileMotionEditor(null);
                 UpdateSpellMotionEditor(0);
                 VisualMissileNewButton.IsEnabled = false;
+            }
+        }
+
+        private void CopyOrReset_Helper(string key, int type, object value)
+        {
+            switch(type)
+            {
+                case 1:
+                    {
+                        copiedEffect[key] = value;
+                    }
+                break;
+                case 4:
+                case 2:
+                    {
+                        if (type == 4)
+                            ((FilteredComboBox)FindName(key)).ThreadSafeText = value;
+                        else
+                            ((ThreadSafeTextBox)FindName(key)).ThreadSafeText = value;
+                    }
+                break;
+                case 3:
+                    {
+                        ((ThreadSafeComboBox)FindName(key)).ThreadSafeIndex = value;
+                    }
+                break;
+            }
+        }
+
+        private void CopyOrResetSpellEffectButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = (Button)sender;
+            var parts = btn.Tag.ToString().Split(',');
+
+            var set = int.Parse(parts[0]);
+            var get = int.Parse(parts[1]);
+
+            var clear = get == 4;
+            var reset = get == 5;
+            var paste = get == 6;
+            var copy = set == 4;
+            var row = selectedDataRow;
+
+            if (paste && copiedEffect == null)
+                return;
+
+            if (copy && copiedEffect == null)
+                copiedEffect = new Dictionary<string, object>(23);
+
+            if (reset)
+                get = set;
+
+            // this is ugly but gets the job done
+
+            try
+            {
+                if (clear || reset)
+                    ((FilteredComboBox)FindName($"SpellEffect{set}")).SetTextFromIndex(reset ? uint.Parse(row[$"Effect{get}"].ToString()) : 0);
+                else
+                    CopyOrReset_Helper(copy ? "SpellEffect" : $"SpellEffect{set}", copy ? 1 : 4, paste ? copiedEffect["SpellEffect"] : ((FilteredComboBox)FindName($"SpellEffect{get}")).Text);
+
+                CopyOrReset_Helper(copy ? "DieSides" : $"DieSides{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["DieSides"] : reset ? row[$"EffectDieSides{get}"].ToString() : ((ThreadSafeTextBox)FindName($"DieSides{get}")).Text);
+                CopyOrReset_Helper(copy ? "BasePointsPerLevel" : $"BasePointsPerLevel{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["BasePointsPerLevel"] : reset ? row[$"EffectRealPointsPerLevel{get}"].ToString() : ((ThreadSafeTextBox)FindName($"BasePointsPerLevel{get}")).Text);
+                CopyOrReset_Helper(copy ? "BasePoints" : $"BasePoints{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["BasePoints"] : reset ? row[$"EffectBasePoints{get}"].ToString() : ((ThreadSafeTextBox)FindName($"BasePoints{get}")).Text);
+
+                CopyOrReset_Helper(copy ? "Mechanic" : $"Mechanic{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["Mechanic"] : reset ? row[$"EffectMechanic{get}"] : ((ThreadSafeComboBox)FindName($"Mechanic{get}")).SelectedIndex);
+                CopyOrReset_Helper(copy ? "TargetA" : $"TargetA{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["TargetA"] : reset ? row[$"EffectImplicitTargetA{get}"] : ((ThreadSafeComboBox)FindName($"TargetA{get}")).SelectedIndex);
+                CopyOrReset_Helper(copy ? "TargetB" : $"TargetB{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["TargetB"] : reset ? row[$"EffectImplicitTargetB{get}"] : ((ThreadSafeComboBox)FindName($"TargetB{get}")).SelectedIndex);
+
+                CopyOrReset_Helper(copy ? "RadiusIndex" : $"RadiusIndex{set}", copy ? 1 : 3, clear ? 0 : paste ? copiedEffect["RadiusIndex"] : reset ? ((SpellRadius)DBCManager.GetInstance().FindDbcForBinding("SpellRadius")).UpdateRadiusIndexes(uint.Parse(row[$"EffectRadiusIndex{get}"].ToString())) : ((ThreadSafeComboBox)FindName($"RadiusIndex{get}")).SelectedIndex);
+
+                if (clear || reset)
+                    ((FilteredComboBox)FindName($"ApplyAuraName{set}")).SetTextFromIndex(reset ? uint.Parse(row[$"EffectApplyAuraName{get}"].ToString()) : 0);
+                else
+                    CopyOrReset_Helper(copy ? "ApplyAuraName" : $"ApplyAuraName{set}", copy ? 1 : 4, paste ? copiedEffect["ApplyAuraName"] : ((FilteredComboBox)FindName($"ApplyAuraName{get}")).Text);
+
+                CopyOrReset_Helper(copy ? "Amplitude" : $"Amplitude{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["Amplitude"] : reset ? row[$"EffectAmplitude{get}"].ToString() : ((ThreadSafeTextBox)FindName($"Amplitude{get}")).Text);
+                CopyOrReset_Helper(copy ? "MultipleValue" : $"MultipleValue{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MultipleValue"] : reset ? row[$"EffectMultipleValue{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MultipleValue{get}")).Text);
+                CopyOrReset_Helper(copy ? "ChainTarget" : $"ChainTarget{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["ChainTarget"] : reset ? row[$"EffectChainTarget{get}"].ToString() : ((ThreadSafeTextBox)FindName($"ChainTarget{get}")).Text);
+                CopyOrReset_Helper(copy ? "ItemType" : $"ItemType{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["ItemType"] : reset ? row[$"EffectItemType{get}"].ToString() : ((ThreadSafeTextBox)FindName($"ItemType{get}")).Text);
+                CopyOrReset_Helper(copy ? "MiscValueA" : $"MiscValueA{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MiscValueA"] : reset ? row[$"EffectMiscValue{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MiscValueA{get}")).Text);
+
+                if (WoWVersionManager.IsTbcOrGreaterSelected)
+                    CopyOrReset_Helper(copy ? "MiscValueB" : $"MiscValueB{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["MiscValueB"] : reset ? row[$"EffectMiscValueB{get}"].ToString() : ((ThreadSafeTextBox)FindName($"MiscValueB{get}")).Text);
+
+                CopyOrReset_Helper(copy ? "TriggerSpell" : $"TriggerSpell{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["TriggerSpell"] : reset ? row[$"EffectTriggerSpell{get}"].ToString() : ((ThreadSafeTextBox)FindName($"TriggerSpell{get}")).Text);
+                CopyOrReset_Helper(copy ? "PointsPerComboPoint" : $"PointsPerComboPoint{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["PointsPerComboPoint"] : reset ? row[$"EffectPointsPerComboPoint{get}"].ToString() : ((ThreadSafeTextBox)FindName($"PointsPerComboPoint{get}")).Text);
+                CopyOrReset_Helper(copy ? "EffectDamageMultiplier" : $"EffectDamageMultiplier{set}", copy ? 1 : 2, clear ? "1" : paste ? copiedEffect["EffectDamageMultiplier"] : reset ? row[$"EffectDamageMultiplier{get}"].ToString() : ((ThreadSafeTextBox)FindName($"EffectDamageMultiplier{get}")).Text);
+
+                if (WoWVersionManager.IsWotlkOrGreaterSelected)
+                {
+                    CopyOrReset_Helper(copy ? "EffectBonusMultiplier" : $"EffectBonusMultiplier{set}", copy ? 1 : 2, clear ? "0" : paste ? copiedEffect["EffectBonusMultiplier"] : reset ? row[$"EffectBonusMultiplier{get}"].ToString() : ((ThreadSafeTextBox)FindName($"EffectBonusMultiplier{get}")).Text);
+
+                    string getSpellMask1Text = clear ? "0" : paste ? copiedEffect["SpellMask1"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}1"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask1{get}")).Text;
+                    string getSpellMask2Text = clear ? "0" : paste ? copiedEffect["SpellMask2"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}2"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask2{get}")).Text;
+                    string getSpellMask3Text = clear ? "0" : paste ? copiedEffect["SpellMask3"].ToString() : reset ? row[$"EffectSpellClassMask{(get == 1 ? "A" : get == 2 ? "B" : "C")}3"].ToString() : ((ThreadSafeComboBox)FindName($"SpellMask3{get}")).Text;
+
+                    if (copy)
+                    {
+                        CopyOrReset_Helper("SpellMask1", 1, getSpellMask1Text);
+                        CopyOrReset_Helper("SpellMask2", 1, getSpellMask2Text);
+                        CopyOrReset_Helper("SpellMask3", 1, getSpellMask3Text);
+                    }
+                    else 
+                    {
+                        var setSpellMask1 = ((ThreadSafeComboBox)FindName($"SpellMask1{set}"));
+                        var setSpellMask2 = ((ThreadSafeComboBox)FindName($"SpellMask2{set}"));
+                        var setSpellMask3 = ((ThreadSafeComboBox)FindName($"SpellMask3{set}"));
+
+                        setSpellMask1.ThreadSafeText = getSpellMask1Text;
+                        setSpellMask2.ThreadSafeText = getSpellMask2Text;
+                        setSpellMask3.ThreadSafeText = getSpellMask3Text;
+
+                        var masks = new List<uint>
+                        {
+                            uint.Parse(getSpellMask1Text),
+                            uint.Parse(getSpellMask2Text),
+                            uint.Parse(getSpellMask3Text)
+                        };
+
+                        UpdateSpellMaskCheckBox(masks[0], setSpellMask1);
+                        UpdateSpellMaskCheckBox(masks[1], setSpellMask2);
+                        UpdateSpellMaskCheckBox(masks[2], setSpellMask3);
+                    }  
+                }
+
+                if (copy)
+                {
+                    for (int i = 1; i < 4; ++i)
+                    {
+                        ((Button)FindName($"PasteEffect{i}")).ToolTip = $"Paste effect {get} from spell {selectedID}";
+                    }
+
+                    ShowFlyoutMessage($"Copied effect {get} from spell {selectedID}");
+                }
+            }
+            catch (Exception error)
+            {
+                HandleErrorMessage(string.Format("{0}\n\n{1}", "", error, error.InnerException));
             }
         }
 
@@ -2932,6 +3344,7 @@ namespace SpellEditor
                     Button_Click(SaveSpellChanges, null);
                 }
                 _currentVisualController = null;
+                LoadBodyData();
                 UpdateSpellVisualTab(visualId);
                 UpdateMainWindow();
             });
@@ -3803,6 +4216,7 @@ namespace SpellEditor
             SpellVisual1.Text = newId.ToString();
             GetDBAdapter().Execute($"UPDATE spell SET SpellVisual1 = {newId} WHERE ID = {selectedID}");
             UpdateSpellVisualTab(newId, 0);
+            LoadBodyData();
             ShowFlyoutMessage($"Created new SpellVisual record {newId}.");
         }
 
@@ -3849,6 +4263,7 @@ namespace SpellEditor
         {
             if (updating || adapter == null || !Config.IsInit || e.OriginalSource != MainTabControl)
                 return;
+
             var tab = e.AddedItems[0];
             if (tab == IconTab)
             {
@@ -3856,10 +4271,36 @@ namespace SpellEditor
             }
             else if (tab == VisualTab)
             {
+                LoadPartialUI(PartialLoad.BasePage);
                 var idStr = SpellVisual1.Text;
                 uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
             }
+            else if (tab == BaseTab)
+            {
+                LoadPartialUI(PartialLoad.BasePage);
+            }
+            else if (tab == EffectsTab)
+            {
+                LoadPartialUI(PartialLoad.EffectsPage);
+            }
+            else if (tab == ItemsTab)
+            {
+                LoadPartialUI(PartialLoad.ItemsPage);
+            }
+            else if (tab == FlagsTab)
+            {
+                LoadPartialUI(PartialLoad.FlagsPage);
+            }
+
+        }
+
+        public void RefreshCurrentIcon(uint newIcon)
+        {
+            selectedIconID = newIcon;
+            var row = selectedDataRow;
+            row["SpellIconID"] = newIcon;
+            SelectSpell.UpdateSpell(row);
         }
 
         private async void SelectSpell_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -3882,10 +4323,19 @@ namespace SpellEditor
             {
                 while (enumerator.MoveNext())
                 {
-                    if (enumerator.Current is TextBlock block)
+                    if (enumerator.Current is Image image)
+                    {
+                        var iconStr = image.ToolTip.ToString();
+                        if (iconStr.Length == 0)
+                            selectedIconID = 0u;
+                        else
+                            selectedIconID = uint.Parse(iconStr.Substring(0, iconStr.IndexOf('-')).Trim());
+                    }
+                    else if (enumerator.Current is TextBlock block)
                     {
                         string name = block.Text;
                         selectedID = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
+
                         UpdateMainWindow();
                         UpdateLogBookEntry(box.SelectedItem as SpellSelectionEntry);
                         return;
@@ -4143,6 +4593,8 @@ namespace SpellEditor
                     }
                 }
             }
+
+            LoadBodyData(); // make sure this shit is updated if some retard changes spell without saving
         }
 
         public void UpdateItemSubClass(long classId)

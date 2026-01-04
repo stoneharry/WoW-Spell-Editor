@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Database;
+using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Controls;
-using SpellEditor.Sources.Controls.Common;
-using SpellEditor.Sources.Database;
-using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 {
@@ -72,6 +73,59 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
         }
 
+        public void UpdateSpellList(uint spellId, uint oldFamilyName, uint[] OldSpellFamilyFlag, uint FamilyName, uint[] SpellFamilyFlag)
+        {
+            if (spellId == 0)
+                return;
+
+            if (oldFamilyName > 0)
+            {
+                for (uint maskIndex = 0; maskIndex < OldSpellFamilyFlag.Length; maskIndex++)
+                {
+                    uint value = OldSpellFamilyFlag[maskIndex];
+                    if (value == 0)
+                        continue;
+
+                    for (uint i = 0; i < 32; i++)
+                    {
+                        uint mask = (uint)Math.Pow(2, i);
+                        if ((value & mask) != 0)
+                        {
+                            var list = SpellFamilyClassMaskStore[oldFamilyName, maskIndex, i];
+                            if (list != null)
+                            {
+                                list.Remove(spellId);
+                                if (list.Count == 0)
+                                    SpellFamilyClassMaskStore[oldFamilyName, maskIndex, i] = null;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (FamilyName > 0)
+            {
+                for (uint maskIndex = 0; maskIndex < SpellFamilyFlag.Length; maskIndex++)
+                {
+                    uint flags = SpellFamilyFlag[maskIndex];
+                    if (flags == 0)
+                        continue;
+
+                    for (uint i = 0; i < 32; i++)
+                    {
+                        uint mask = (uint)Math.Pow(2, i);
+                        if ((flags & mask) != 0)
+                        {
+                            if (SpellFamilyClassMaskStore[FamilyName, maskIndex, i] == null)
+                                SpellFamilyClassMaskStore[FamilyName, maskIndex, i] = new ArrayList();
+
+                            SpellFamilyClassMaskStore[FamilyName, maskIndex, i].Add(spellId);
+                        }
+                    }
+                }
+            } 
+        }
+
         public void UpdateSpellFamilyClassMask(MainWindow window, uint familyName, bool isWotlkOrGreater, IDatabaseAdapter adapter, List<uint> masks)
         {
             UpdateSpellFamilyClassMask(window, window.SpellMask11, familyName, 0);
@@ -93,11 +147,13 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             }
         }
 
-        public void UpdateSpellEffectMasksSelected(MainWindow window, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
+        public async void UpdateSpellEffectMasksSelected(MainWindow window, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
         {
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList1, 0, familyName, adapter, masks);
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList2, 1, familyName, adapter, masks);
-            UpdateSpellEffectTargetList(window.EffectTargetSpellsList3, 2, familyName, adapter, masks);
+            await Task.WhenAll(
+                UpdateSpellEffectTargetList(window.EffectTargetSpellsList1, 0, familyName, adapter, masks),
+                UpdateSpellEffectTargetList(window.EffectTargetSpellsList2, 1, familyName, adapter, masks),
+                UpdateSpellEffectTargetList(window.EffectTargetSpellsList3, 2, familyName, adapter, masks)
+            ); 
         }
 
         private void UpdateSpellFamilyClassMask(MainWindow window, ThreadSafeComboBox spellMaskComboBox, uint familyName, uint maskSlot)
@@ -119,7 +175,7 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
             }
         }
 
-        private void UpdateSpellEffectTargetList(ListBox list, int effectIndex, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
+        private async Task UpdateSpellEffectTargetList(ListBox list, int effectIndex, uint familyName, IDatabaseAdapter adapter, List<uint> masks)
         {
             uint mask1 = masks[0 + (effectIndex * 3)];
             uint mask2 = masks[1 + (effectIndex * 3)];
@@ -137,11 +193,18 @@ namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
                 mask2,
                 mask3);
 
-            var newItems = new List<string>();
-            foreach (DataRow row in adapter.Query(query).Rows)
+            var newItems = await Task.Run(() =>
             {
-                newItems.Add($"{row[0]} - {row[1]}");
-            }
+                var results = new List<string>();
+
+                foreach (DataRow row in adapter.Query(query).Rows)
+                {
+                    results.Add($"{row[0]} - {row[1]}");
+                }
+
+                return results;
+            });
+
             list.ItemsSource = newItems;
         }
     }

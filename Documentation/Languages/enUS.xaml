@@ -51,14 +51,18 @@
     <system:String x:Key="labCastTime">Cast Time:</system:String>
     <system:String x:Key="labDuration">Duration:</system:String>
     <system:String x:Key="labRange">Range:</system:String>
-    <system:String x:Key="labCasterAuraState">Caster Aura State:</system:String>
     <system:String x:Key="labSpellLevel">Spell Level:</system:String>
     <system:String x:Key="labBaseLevel">Base Level:</system:String>
     <system:String x:Key="labMaxLevel">Max Level:</system:String>
     <system:String x:Key="labSpellVisual1">Spell Visual 1:</system:String>
     <system:String x:Key="labSpellVisual2">Spell Visual 2:</system:String>
     <system:String x:Key="labSpeed">Speed:</system:String>
+
+    <system:String x:Key="labCasterAuraState">Caster Aura State:</system:String>
     <system:String x:Key="labTargetAuraState">Target Aura State:</system:String>
+    <system:String x:Key="labCasterAuraStateNot">Caster Aura State Not:</system:String>
+    <system:String x:Key="labTargetAuraStateNot">Target Aura State Not:</system:String>
+    
     <system:String x:Key="labRecoveryTime">Recovery Time:</system:String>
     <system:String x:Key="labCategoryRecoveryTime">Category Recovery Time:</system:String>
     <system:String x:Key="labSpellMissileID">Spell Missile ID:</system:String>
@@ -84,6 +88,15 @@
     <system:String x:Key="labPreventionType">Prevention Type:</system:String>
     <system:String x:Key="labSpellDamageType">Spell Damage Type:</system:String>
     <system:String x:Key="labRequiresSpellFocus">Requires Spell Focus:</system:String>
+
+    <system:String x:Key="labCasterAuraSpell">Caster Aura Spell:</system:String>
+    <system:String x:Key="labTargetAuraSpell">Target Aura Spell:</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">Caster Aura Spell Not:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">Target Aura Spell Not:</system:String>
+
+    <system:String x:Key="labStanceBarOrder">Stance Bar Order:</system:String>
+    <system:String x:Key="labPowerDisplayId">Power Display Id:</system:String>
+
     <system:String x:Key="labRuneCost">Rune Cost:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
 	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
@@ -161,11 +174,19 @@
     <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
     <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
     <system:String x:Key="labCreatureType">Creature Type:</system:String>
-    <system:String x:Key="labStances">Stances:</system:String>
+
+    <system:String x:Key="labStances">Required Stances:</system:String>
+    <system:String x:Key="labStancesNot">Not Castable In Stances:</system:String>
+
     <system:String x:Key="labCurrentIcon">Current Icon:</system:String>
+    <system:String x:Key="labActiveIcon">Active Icon:</system:String>
+
     <system:String x:Key="labNewIcon">New Icon:</system:String>
     <system:String x:Key="labFiltericons">Filter icons:</system:String>
-    <system:String x:Key="butSaveIcon">Confirm</system:String>
+
+    <system:String x:Key="butSaveSpellIcon">Save Spell Icon</system:String>
+    <system:String x:Key="butSaveActiveIcon">Save Active Icon</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">Controls icon width &amp; height (pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Import/Export</system:String>
     <system:String x:Key="butTruncateTable">Drop Tables</system:String>
@@ -175,10 +196,19 @@
     <system:String x:Key="butImportExportWindowImport">Import</system:String>
     <system:String x:Key="butImportExportWindowExport">Export</system:String>
     <system:String x:Key="ImportExportWindowTitle">Import and Export</system:String>
-	<system:String x:Key="butLogBook">Log Book</system:String>
+    <system:String x:Key="butLogBook">Log Book</system:String>
 	<system:String x:Key="butConfig">Config</system:String>
 	<system:String x:Key="ConfigWindowTitle">Configuration Editor</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingual</system:String>
+
+    <system:String x:Key="copyEffect">Copy Effect</system:String>
+    <system:String x:Key="pasteEffect">Paste Effect</system:String>
+    <system:String x:Key="clearEffect">Clear Effect</system:String>
+    <system:String x:Key="resetEffect">Reset Effect</system:String>
+    <system:String x:Key="cloneEffect1">Clone Effect 1</system:String>
+    <system:String x:Key="cloneEffect2">Clone Effect 2</system:String>
+    <system:String x:Key="cloneEffect3">Clone Effect 3</system:String>
+
     <!--#endregion-->
 
     <!--#region code string-->
@@ -663,7 +693,7 @@
     <system:String x:Key="aura_state_strings">
         None |
         Defense |
-        Healthless 20 Percent |
+        Healthless 20% |
         Berserking |
         Frozen |
         Judgement |
@@ -674,7 +704,7 @@
         Warrior Victory Rush |
         Unknown11 |
         Faerie Fire |
-        Healthless 35 Percent |
+        Healthless 35% |
         Conflagrate |
         Swiftmend |
         Deadly Poison |
@@ -684,7 +714,7 @@
         Unknown20 |
         Unknown21 |
         Unknown22 |
-        Health Above 75 Percent
+        Health Above 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         Non-Equip |

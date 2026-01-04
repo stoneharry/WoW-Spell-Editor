@@ -32,7 +32,7 @@ namespace SpellEditor.Sources.Database
                 if (numRows == 0)
                     throw new Exception("No rows to export");
 
-                string path = $"Export/{binding.Name}.csv";
+                string path = $"{Config.Config.ExportDirectory}/{binding.Name}.csv";
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 if (File.Exists(path))
                     File.Delete(path);
@@ -69,6 +69,8 @@ namespace SpellEditor.Sources.Database
                 File.WriteAllText(path, string.Join("\n", toWrite));
             });
         }
+
+        public Task Export(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, DBCBodyToSerialize spellBody) { return null; }
 
         public Task Import(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string idKey, string bindingName)
         {

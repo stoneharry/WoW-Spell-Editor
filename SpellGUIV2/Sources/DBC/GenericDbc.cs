@@ -6,5 +6,6 @@
         {
             ReadDBCFile(path);
         }
+        public GenericDbc() { }
     };
 }

@@ -2,6 +2,7 @@
 using SpellEditor.Sources.VersionControl;
 using System;
 using System.IO;
+using System.Windows.Ink;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -84,6 +85,15 @@ namespace SpellEditor.Sources.Config
                 Save();
             }
         }
+        public static string ExportDirectory
+        {
+            get { return GetConfigValue("ExportDirectory"); }
+            set
+            {
+                UpdateConfigValue("ExportDirectory", value);
+                Save();
+            }
+        }
         public static string Language
         {
             get { return GetConfigValue("Language"); }
@@ -121,6 +131,20 @@ namespace SpellEditor.Sources.Config
             set
             {
                 UpdateConfigValue("RenderImagesInView", value ? "true" : "false");
+                Save();
+            }
+        }
+
+        public static bool CacheSpellBody
+        {
+            get
+            {
+                var str = GetConfigValue("CacheSpellBody");
+                return "true".Equals(str);
+            }
+            set
+            {
+                UpdateConfigValue("CacheSpellBody", value ? "true" : "false");
                 Save();
             }
         }
@@ -209,6 +233,16 @@ namespace SpellEditor.Sources.Config
             if (SqlMapperDirectory.Length == 0)
             {
                 SqlMapperDirectory = Environment.CurrentDirectory + "\\SqlMap\\AzerothCore";
+            }
+
+            if (ExportDirectory.Length == 0)
+            {
+                ExportDirectory = Environment.CurrentDirectory + "\\Export";
+            }
+
+            if (!HasKey("CacheSpellBody"))
+            {
+                CacheSpellBody = true;
             }
         }
 

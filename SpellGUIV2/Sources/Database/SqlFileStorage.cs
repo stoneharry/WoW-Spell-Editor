@@ -81,9 +81,11 @@ namespace SpellEditor.Sources.Database
                     }
                 }
 
-                ExportTableToSql(bindingName, "Export", updateProgress, export.ToString());
+                ExportTableToSql(bindingName, Config.Config.ExportDirectory, updateProgress, export.ToString());
             });
         }
+
+        public Task Export(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, DBCBodyToSerialize spellBody) { return null; }
 
         private string FormatLine(string tableName, StringBuilder line)
         {

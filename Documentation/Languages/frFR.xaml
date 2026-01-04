@@ -51,14 +51,18 @@
     <system:String x:Key="labCastTime">Temps d'incantation :</system:String>
     <system:String x:Key="labDuration">Durée :</system:String>
     <system:String x:Key="labRange">Portée :</system:String>
-    <system:String x:Key="labCasterAuraState">Statut du lanceur :</system:String>
     <system:String x:Key="labSpellLevel">Niveau du sort :</system:String>
     <system:String x:Key="labBaseLevel">Niveau de base du sort :</system:String>
     <system:String x:Key="labMaxLevel">Niveau Max :</system:String>
     <system:String x:Key="labSpellVisual1">Visuel 1 :</system:String>
     <system:String x:Key="labSpellVisual2">Visuel 2 :</system:String>
     <system:String x:Key="labSpeed">Vélocité :</system:String>
+
     <system:String x:Key="labTargetAuraState">Statut de la cible :</system:String>
+	<system:String x:Key="labCasterAuraState">Statut du lanceur :</system:String>
+	<system:String x:Key="labCasterAuraStateNot">Statut du lanceur non :</system:String>
+	<system:String x:Key="labTargetAuraStateNot">Statut de la cible non :</system:String>
+
     <system:String x:Key="labRecoveryTime">Temps de recharge :</system:String>
     <system:String x:Key="labCategoryRecoveryTime">Temps de recharge de la catégorie :</system:String>
     <system:String x:Key="labSpellMissileID">ID du Missile:</system:String>
@@ -84,6 +88,15 @@
     <system:String x:Key="labPreventionType">Type de prévention :</system:String>
     <system:String x:Key="labSpellDamageType">Type de dégâts :</system:String>
     <system:String x:Key="labRequiresSpellFocus">Requiert le Focus :</system:String>
+
+	<system:String x:Key="labCasterAuraSpell">Sort d’aura du lanceur :</system:String>
+    <system:String x:Key="labTargetAuraSpell">Sort d’aura de la cible :</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">Sort d’aura du lanceur Exclure:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">Sort d’aura de la cible Exclure:</system:String>
+
+    <system:String x:Key="labStanceBarOrder">Ordre de la barre de posture :</system:String>
+    <system:String x:Key="labPowerDisplayId">ID d’affichage de la ressource :</system:String>
+
     <system:String x:Key="labRuneCost">Coût runique:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">Variables de la description :</system:String>
 	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
@@ -161,11 +174,19 @@
     <system:String x:Key="labAttributesEx6">Attributs Ex6 :</system:String>
     <system:String x:Key="labAttributesEx7">Attributs Ex7 :</system:String>
     <system:String x:Key="labCreatureType">Type de créature :</system:String>
-    <system:String x:Key="labStances">Postures :</system:String>
+
+    <system:String x:Key="labStances">Postures requises :</system:String>
+	<system:String x:Key="labStancesNot">Incantation impossible dans ces postures :</system:String>
+
     <system:String x:Key="labCurrentIcon">Icône actuelle :</system:String>
+	<system:String x:Key="labActiveIcon">Icône d’action:</system:String>
+
     <system:String x:Key="labNewIcon">Nouvelle icône :</system:String>
     <system:String x:Key="labFiltericons">Filtre d'icônes :</system:String>
-    <system:String x:Key="butSaveIcon">Confirmer</system:String>
+
+	<system:String x:Key="butSaveSpellIcon">Sauver icône sort</system:String>
+    <system:String x:Key="butSaveActiveIcon">Sauver icône action</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur &amp; la hauteur de l'icône (en pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Importer/Exporter</system:String>
     <system:String x:Key="butTruncateTable">Table tronquée</system:String>
@@ -177,6 +198,16 @@
     <system:String x:Key="ImportExportWindowTitle">Importer et exporter</system:String>
 	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">Multilingue</system:String>
+
+	<system:String x:Key="copyEffect">Copier l’effet</system:String>
+	<system:String x:Key="pasteEffect">Coller l’effet</system:String>
+	<system:String x:Key="clearEffect">Effacer l’effet</system:String>
+	<system:String x:Key="resetEffect">Réinitialiser l’effet</system:String>
+	<system:String x:Key="cloneEffect1">Cloner l’effet 1</system:String>
+	<system:String x:Key="cloneEffect2">Cloner l’effet 2</system:String>
+	<system:String x:Key="cloneEffect3">Cloner l’effet 3</system:String>
+
+
     <!--#endregion-->
 
     <!--#region code string-->
@@ -661,30 +692,30 @@
 		Nuage de gaz
     </system:String>
     <system:String x:Key="aura_state_strings">
-        None |
-        Defense |
-        Healthless 20 Percent |
-        Berserking |
-        Frozen |
-        Judgement |
-        Unknown6 |
-        Hunter Parry |
-        Unknown8 |
-        Unknown9 |
-        Warrior Victory Rush |
-        Unknown11 |
-        Faerie Fire |
-        Healthless 35 Percent |
-        Conflagrate |
-        Swiftmend |
-        Deadly Poison |
-        Enrage |
-        Bleeding |
-        Parry |
-        Unknown20 |
-        Unknown21 |
-        Unknown22 |
-        Health Above 75 Percent
+        Aucun |
+		Défense |
+		Vie inférieure à 20% |
+		Furie berserker |
+		Gelé |
+		Jugement |
+		Inconnu 6 |
+		Parade du chasseur |
+		Inconnu 8 |
+		Inconnu 9 |
+		Ruée victorieuse du guerrier |
+		Inconnu 11 |
+		Lucioles |
+		Vie inférieure à 35% |
+		Conflagration |
+		Rétablissement rapide |
+		Poison mortel |
+		Enrager |
+		Saignement |
+		Parade |
+		Inconnu 20 |
+		Inconnu 21 |
+		Inconnu 22 |
+		Vie supérieure à 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
 		Non-équipé |

@@ -50,15 +50,19 @@
     <system:String x:Key="labMechanicType">机制类型:</system:String>
     <system:String x:Key="labCastTime">施法时间:</system:String>
     <system:String x:Key="labDuration">持续时间:</system:String>
-    <system:String x:Key="labRange">施法距离:</system:String>
-    <system:String x:Key="labCasterAuraState">施法者光环状态:</system:String>
+    <system:String x:Key="labRange">施法距离:</system:String>    
     <system:String x:Key="labSpellLevel">法术等级:</system:String>
     <system:String x:Key="labBaseLevel">基础等级:</system:String>
     <system:String x:Key="labMaxLevel">最大等级:</system:String>
     <system:String x:Key="labSpellVisual1">法术视觉效果A:</system:String>
     <system:String x:Key="labSpellVisual2">法术视觉效果B:</system:String>
     <system:String x:Key="labSpeed">光效飞行速度(?):</system:String>
+
+    <system:String x:Key="labCasterAuraState">施法者光环状态:</system:String>
     <system:String x:Key="labTargetAuraState">目标光环状态:</system:String>
+    <system:String x:Key="labCasterAuraStateNot">施法者光环状态（非）:</system:String>
+    <system:String x:Key="labTargetAuraStateNot">目标光环状态（非）:</system:String>
+
     <system:String x:Key="labRecoveryTime">冷却时间:</system:String>
     <system:String x:Key="labCategoryRecoveryTime">类型冷却时间:</system:String>
     <system:String x:Key="labSpellMissileID">法术弹道ID(?):</system:String>
@@ -84,6 +88,15 @@
     <system:String x:Key="labPreventionType">沉默类型:</system:String>
     <system:String x:Key="labSpellDamageType">法术伤害类型:</system:String>
     <system:String x:Key="labRequiresSpellFocus">施法需要对象(区域):</system:String>
+
+    <system:String x:Key="labCasterAuraSpell">施法者光环法术:</system:String>
+    <system:String x:Key="labTargetAuraSpell">目标光环法术:</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">排除施法者光环法术:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">排除目标光环法术:</system:String>
+
+    <system:String x:Key="labStanceBarOrder">姿态栏顺序:</system:String>
+    <system:String x:Key="labPowerDisplayId">能量显示ID:</system:String>
+
     <system:String x:Key="labRuneCost">符文消耗:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">法术变量详细描述:</system:String>
 	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
@@ -161,11 +174,19 @@
     <system:String x:Key="labAttributesEx6">属性 Ex6:</system:String>
     <system:String x:Key="labAttributesEx7">属性 Ex7:</system:String>
     <system:String x:Key="labCreatureType">生物类型:</system:String>
-    <system:String x:Key="labStances">姿态:</system:String>
+
+    <system:String x:Key="labStances">需要的姿态:</system:String>
+    <system:String x:Key="labStancesNot">无法在这些姿态下施放:</system:String>
+
     <system:String x:Key="labCurrentIcon">当前图标:</system:String>
+    <system:String x:Key="labActiveIcon">动作图标:</system:String>
+
     <system:String x:Key="labNewIcon">新图标:</system:String>
     <system:String x:Key="labFiltericons">过滤图标:</system:String>
-    <system:String x:Key="butSaveIcon">确认</system:String>
+
+    <system:String x:Key="butSaveSpellIcon">保存法术图标</system:String>
+    <system:String x:Key="butSaveActiveIcon">保存动作图标</system:String>
+
     <system:String x:Key="sliderChangeIconSizeTooltip">控制图标的宽度和高度(像素)</system:String>
     <system:String x:Key="butImportExportDBC">导入/导出</system:String>
     <system:String x:Key="butTruncateTable">清空表格</system:String>
@@ -177,6 +198,16 @@
     <system:String x:Key="ImportExportWindowTitle">导入和导出</system:String>
 	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">多语言</system:String>
+
+    <system:String x:Key="copyEffect">复制效果</system:String>
+    <system:String x:Key="pasteEffect">粘贴效果</system:String>
+    <system:String x:Key="clearEffect">清除效果</system:String>
+    <system:String x:Key="resetEffect">重置效果</system:String>
+    <system:String x:Key="cloneEffect1">克隆效果 1</system:String>
+    <system:String x:Key="cloneEffect2">克隆效果 2</system:String>
+    <system:String x:Key="cloneEffect3">克隆效果 3</system:String>
+
+
     <!--#endregion-->
 
     <!--#region code string-->
@@ -661,30 +692,30 @@
         Gas Cloud
     </system:String>
     <system:String x:Key="aura_state_strings">
-        None |
-        Defense |
-        Healthless 20 Percent |
-        Berserking |
-        Frozen |
-        Judgement |
-        Unknown6 |
-        Hunter Parry |
-        Unknown8 |
-        Unknown9 |
-        Warrior Victory Rush |
-        Unknown11 |
-        Faerie Fire |
-        Healthless 35 Percent |
-        Conflagrate |
-        Swiftmend |
-        Deadly Poison |
-        Enrage |
-        Bleeding |
-        Parry |
-        Unknown20 |
-        Unknown21 |
-        Unknown22 |
-        Health Above 75 Percent
+        无 |
+        防御 |
+        生命值低于 20% |
+        狂暴 |
+        冻结 |
+        审判 |
+        未知 6 |
+        猎人招架 |
+        未知 8 |
+        未知 9 |
+        战士胜利冲击 |
+        未知 11 |
+        精灵之火 |
+        生命值低于 35% |
+        燃烧 |
+        迅捷治愈 |
+        致命毒药 |
+        激怒 |
+        流血 |
+        招架 |
+        未知 20 |
+        未知 21 |
+        未知 22 |
+        生命值高于 75%
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         非装备 |

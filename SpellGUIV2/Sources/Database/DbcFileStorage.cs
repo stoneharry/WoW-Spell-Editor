@@ -1,9 +1,10 @@
 ﻿using SpellEditor.Sources.Binding;
+using SpellEditor.Sources.DBC;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SpellEditor.Sources.DBC;
 using static SpellEditor.Sources.DBC.AbstractDBC;
 
 namespace SpellEditor.Sources.Database
@@ -26,6 +27,40 @@ namespace SpellEditor.Sources.Database
                 }
 
                 body.Records = dbc.LoadRecords(adapter, bindingName, orderClause, updateProgress);
+                var numRows = body.Records.Count();
+                if (numRows == 0)
+                    throw new Exception("No rows to export");
+
+                dbc.UpdateHeader(new DBCHeader
+                {
+                    FieldCount = (uint)binding.Fields.Count(),
+                    // Magic is always 'WDBC' https://wowdev.wiki/DBC
+                    Magic = 1128416343,
+                    RecordCount = (uint)numRows,
+                    RecordSize = (uint)binding.CalcRecordSize(),
+                    StringBlockSize = body.GenerateStringOffsetsMap(binding)
+                });
+
+                dbc.SaveDbcFile(updateProgress, body, binding);
+            });
+        }
+
+        public Task Export(IDatabaseAdapter adapter, AbstractDBC dbc, MainWindow.UpdateProgressFunc updateProgress, string IdKey, string bindingName, DBCBodyToSerialize body)
+        {
+            return Task.Run(() =>
+            {
+                var binding = BindingManager.GetInstance().FindBinding(bindingName);
+                if (binding == null)
+                    throw new Exception("Binding not found: " + bindingName);
+
+                var orderClause = "";
+                if (binding.OrderOutput)
+                {
+                    orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
+                }
+
+                if (body.Records == null)
+                    body.Records = dbc.LoadRecords(adapter, bindingName, orderClause, updateProgress);
                 var numRows = body.Records.Count();
                 if (numRows == 0)
                     throw new Exception("No rows to export");
