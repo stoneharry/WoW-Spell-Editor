@@ -119,7 +119,14 @@ namespace SpellEditor.Sources.DBC
         {
             foreach (var item in _DbcMap.Values)
             {
-                item.LoadGraphicUserInterface();
+                try
+                {
+                    item.LoadGraphicUserInterface();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Failed to load UI for " + item);
+                }
             }
         }
 

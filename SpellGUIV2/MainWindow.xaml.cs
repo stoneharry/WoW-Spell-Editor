@@ -1057,21 +1057,23 @@ namespace SpellEditor
                     stancesBoxes.Add(box);
                 }
 
-                var creature_type_labels = ConvertBoxListToLabels(((CreatureType)
-                        DBCManager.GetInstance().FindDbcForBinding("CreatureType")).GetAllBoxes());
-                foreach (var creatureType in creature_type_labels)
+                var creatureTypeDbc = DBCManager.GetInstance().FindDbcForBinding("CreatureType");
+                if (creatureTypeDbc != null)
                 {
-                    ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                    var creature_type_labels = ConvertBoxListToLabels(((CreatureType) creatureTypeDbc).GetAllBoxes());
+                    foreach (var creatureType in creature_type_labels)
                     {
-                        Content = creatureType,
-                        ToolTip = creatureType,
-                        Margin = new Thickness(0, 5, 0, 0)
-                    };
+                        ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                        {
+                            Content = creatureType,
+                            ToolTip = creatureType,
+                            Margin = new Thickness(0, 5, 0, 0)
+                        };
 
-                    TargetCreatureType.Children.Add(box);
-                    targetCreatureTypeBoxes.Add(box);
+                        TargetCreatureType.Children.Add(box);
+                        targetCreatureTypeBoxes.Add(box);
+                    }
                 }
-
 
                 var mechanic_names_labels = ConvertBoxListToLabels(((SpellMechanic)
                     DBCManager.GetInstance().FindDbcForBinding("SpellMechanic")).GetAllBoxes());

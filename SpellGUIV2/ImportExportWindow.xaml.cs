@@ -30,7 +30,6 @@ namespace SpellEditor
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IDatabaseAdapter _Adapter;
         private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
@@ -39,7 +38,6 @@ namespace SpellEditor
 
         public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData)
         {
-            _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
             _PopulateSelectSpell = populateSelectSpell;
             _ReloadData = reloadData;
@@ -136,7 +134,11 @@ namespace SpellEditor
             // Populate all contents asynchronously (expensive)
             Task.Run(() => bindings.AsParallel().ForAll(binding =>
             {
-                var numRows = binding.GetNumRowsInTable(_Adapter);
+                int numRows;
+                using (var adapter = AdapterFactory.Instance.GetAdapter(false))
+                {
+                    numRows = binding.GetNumRowsInTable(adapter);
+                }
                 Dispatcher.InvokeAsync(new Action(() =>
                 {
                     // Import
@@ -256,8 +258,10 @@ namespace SpellEditor
                         bindingList.Remove(_SpellBindingName);
                         // Load data
                         var abstractDbc = GetDBC(_SpellBindingName, isImport);
-                        // Perform operation using existing adapter
-                        StartImportExport(abstractDbc, _Adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        using (var adapter = AdapterFactory.Instance.GetAdapter(false))
+                        {
+                            StartImportExport(abstractDbc, adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        }
                     }
 
                     // Spawn adapters

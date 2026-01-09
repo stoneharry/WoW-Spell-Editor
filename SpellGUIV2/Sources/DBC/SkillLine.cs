@@ -27,7 +27,7 @@ namespace SpellEditor.Sources.DBC
             {
                 var record = Body.RecordMaps[i];
 
-                uint id = (uint)record["ID"];
+                uint id = uint.Parse(record["id"].ToString());
                 uint Category = (uint)record["category"];
                 var name = GetAllLocaleStringsForField("name", record);
 

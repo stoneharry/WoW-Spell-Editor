@@ -27,7 +27,7 @@ namespace SpellEditor.Sources.DBC
             {
                 var record = Body.RecordMaps[i];
 
-                uint id = (uint)record["Id"];
+                uint id = uint.Parse(record["id"].ToString());
                 var name = GetStringForField("Name", record);
 
                 Lookups.Add(new DBCBoxContainer(id, name, boxIndex));
