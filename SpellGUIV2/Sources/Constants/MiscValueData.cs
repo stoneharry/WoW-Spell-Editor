@@ -554,7 +554,7 @@ namespace SpellEditor.Sources.Constants
             { 178, new MiscValuePair(MiscValueType.DispelType) },
             { 179, new MiscValuePair(MiscValueType.SchoolsMask) },
             { 180, new MiscValuePair(MiscValueType.CreatureTypesMask) },// TODO : mask ?
-            { 182, new MiscValuePair(MiscValueType.StatType) },// always 1 in wrath, emulators are hardcoded to armor which is incorrect
+            { 182, new MiscValuePair(MiscValueType.SchoolsMask, MiscValueType.StatType) },// always 1 in wrath, emulators are hardcoded to armor which is incorrect
             { 183, new MiscValuePair(MiscValueType.SchoolsMask) },
             { 186, new MiscValuePair(MiscValueType.SchoolsMask) },
             { 189, new MiscValuePair(MiscValueType.CombatRatingMask) },
