@@ -403,7 +403,7 @@
                     <c2:FilteredComboBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_familyname_SelectionChanged" LostFocus="FilteredComboBox_LostFocus" Grid.Row="9" Grid.Column="5" ToolTip="You can add entries by editing the SpellFamilies/Definitions.json file."/>
                     
                     <Label Content="{DynamicResource labSpellFamilyFlags}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="4"/>
-                    <ListBox x:Name="BaseSpellFamiliesList" Margin="5,5,5,0" BorderThickness="1" Grid.Row="10" Grid.Column="5" Grid.RowSpan="4"/>
+                    <ListBox x:Name="BaseSpellFamiliesList" Margin="5,5,5,0" Width="150" BorderThickness="1" Grid.Row="10" Grid.Column="5" Grid.RowSpan="4" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
                     <Button x:Name="BaseSpellsFamiliesButton" Margin="5,5,5,5" Content="Edit Families" Click="EditBaseFamiliesButton_Click" Grid.Row="14" Grid.Column="5"/>
 
                     <Label Content="{DynamicResource labGlobalCooldownTime}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="0"/>

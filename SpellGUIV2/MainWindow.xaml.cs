@@ -5502,7 +5502,11 @@ namespace SpellEditor
             if (!Config.IsInit)
                 return;
 
-            var combo = (ComboBox)sender;
+            var combo = (FilteredComboBox)sender;
+
+            if (combo.SelectedItem == null)
+                return;
+
             string text = combo.SelectedItem?.ToString();
 
             uint familyName = SpellFamilyName.GetNumberPrefixFromText(text);
