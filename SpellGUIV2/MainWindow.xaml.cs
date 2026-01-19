@@ -5048,33 +5048,38 @@ namespace SpellEditor
                 else if (sender == SpellEffect3)
                     effect_id = 2;
 
-                string selectedEffectText = SpellEffect1.SelectedItem as string;
-                int spelleffect_id = (int)SpellEffect1.GetNumberPrefixFromText(selectedEffectText);
+                FilteredComboBox SpellEffectCbBox = sender as FilteredComboBox;
 
-                SpellEffectData spellEffectData = new SpellEffectData();
-                bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spelleffect_id, out spellEffectData);
-                if (!hasData && spelleffect_id != (int)spellEffectTypes.NONE)
-                    throw new NotImplementedException($"Spell Effect {spelleffect_id} does not have data. Report to devs.");
-
-                if (spelleffect_id == (int)spellEffectTypes.NONE)
-                    return;
-
-                if (spellEffectData.usesMultipleValue == false)
-                    effectMultipleValueBoxes[effect_id].ThreadSafeText = "0";
-                if (spellEffectData.usesAura == false)
+                if (SpellEffectCbBox.SelectedItem != null)
                 {
-                    effectAuraNameBoxes[effect_id].SelectionChanged -= ComboBox_SelectionChanged;
-                    effectAuraNameBoxes[effect_id].ThreadSafeIndex = 0;
-                    effectAuraNameBoxes[effect_id].SelectionChanged += ComboBox_SelectionChanged;
+                    string selectedEffectText = SpellEffectCbBox.SelectedItem as string;
+                    int spelleffect_id = (int)SpellEffectCbBox.GetNumberPrefixFromText(selectedEffectText);
+
+                    SpellEffectData spellEffectData = new SpellEffectData();
+                    bool hasData = MiscValueConstants.spellEffectsData.TryGetValue((spellEffectTypes)spelleffect_id, out spellEffectData);
+                    if (!hasData && spelleffect_id != (int)spellEffectTypes.NONE)
+                        throw new NotImplementedException($"Spell Effect {spelleffect_id} does not have data. Report to devs.");
+
+                    if (spelleffect_id == (int)spellEffectTypes.NONE)
+                        return;
+
+                    if (spellEffectData.usesMultipleValue == false)
+                        effectMultipleValueBoxes[effect_id].ThreadSafeText = "0";
+                    if (spellEffectData.usesAura == false)
+                    {
+                        effectAuraNameBoxes[effect_id].SelectionChanged -= ComboBox_SelectionChanged;
+                        effectAuraNameBoxes[effect_id].ThreadSafeIndex = 0;
+                        effectAuraNameBoxes[effect_id].SelectionChanged += ComboBox_SelectionChanged;
+                    }
+                    if (spellEffectData.UsesChainTarget == false)
+                        effectChainTargetBoxes[effect_id].Text = "0";
+                    if (spellEffectData.UsesItemType == false)
+                        effectItemTypeBoxes[effect_id].Text = "0";
+                    if (spellEffectData.UsesSpell == false)
+                        effectTriggerSpellBoxes[effect_id].Text = "0";
+                    if (spellEffectData.UsesAmplitude == false)
+                        effectAmplitudeBoxes[effect_id].Text = "0";
                 }
-                if (spellEffectData.UsesChainTarget == false)
-                    effectChainTargetBoxes[effect_id].Text = "0";
-                if (spellEffectData.UsesItemType == false)
-                    effectItemTypeBoxes[effect_id].Text = "0";
-                if (spellEffectData.UsesSpell == false)
-                    effectTriggerSpellBoxes[effect_id].Text = "0";
-                if (spellEffectData.UsesAmplitude == false)
-                    effectAmplitudeBoxes[effect_id].Text = "0";
             }
 
             // can turn into a reusable fucntion eventually
@@ -5085,7 +5090,7 @@ namespace SpellEditor
                 // TODO : store og value and field instead of resetting?
 
                 // need to get from selected item because control main text might not be updated yet
-                if (SpellEffect1.SelectedItem != null)
+                if (SpellEffect1.SelectedItem != null && ApplyAuraName1.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect1.SelectedItem as string;
                     string selectedAuraText = ApplyAuraName1.SelectedItem as string;
@@ -5106,7 +5111,7 @@ namespace SpellEditor
                 GenerateSpellEffectHeader(2);
 
                 // need to get from selected item because control main text might not be updated yet
-                if (SpellEffect2.SelectedItem != null)
+                if (SpellEffect2.SelectedItem != null && ApplyAuraName2.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect2.SelectedItem as string ?? string.Empty;
                     string selectedAuraText = ApplyAuraName2.SelectedItem as string ?? string.Empty;
@@ -5126,7 +5131,7 @@ namespace SpellEditor
             {
                 GenerateSpellEffectHeader(3);
 
-                if (SpellEffect3.SelectedItem != null)
+                if (SpellEffect3.SelectedItem != null && ApplyAuraName3.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect3.SelectedItem as string;
                     string selectedAuraText = ApplyAuraName3.SelectedItem as string;
