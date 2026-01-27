@@ -32,6 +32,7 @@ using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Constants;
 using SpellEditor.Sources.Controls;
 using SpellEditor.Sources.Controls.Common;
+using SpellEditor.Sources.Controls.ListPickerDialog;
 using SpellEditor.Sources.Controls.SpellFamilyNames;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Controls.Visual;
@@ -89,7 +90,7 @@ namespace SpellEditor
         private FilteredComboBox[] effectAuraNameBoxes;
         private ThreadSafeTextBox[] effectChainTargetBoxes;
         private ThreadSafeTextBox[] effectItemTypeBoxes;
-        private ThreadSafeTextBox[] effectTriggerSpellBoxes;
+        private Button[] effectTriggerSpellBoxes;
         private ThreadSafeTextBox[] effectAmplitudeBoxes;
         private Label[] miscValueLabelA;
         private ContentControl[] miscValueDynamicContentsA;
@@ -109,6 +110,11 @@ namespace SpellEditor
         public uint[] familyFlagsA = new uint[3]; // 1st effect
         public uint[] familyFlagsB = new uint[3];
         public uint[] familyFlagsC = new uint[3];
+
+        private uint[] effectTriggerSpells = new uint[3];
+
+        bool _use_picker_dialogs = true;
+
         #endregion
 
         public IDatabaseAdapter GetDBAdapter()
@@ -1837,9 +1843,15 @@ namespace SpellEditor
                         row["EffectMiscValueB3"] = GetMiscValue(3, 2);
                     }
 
-                    row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
-                    row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
-                    row["EffectTriggerSpell3"] = uint.Parse(TriggerSpell3.Text);
+
+                    // row["EffectTriggerSpell1"] = uint.Parse(TriggerSpell1.Text);
+                    // row["EffectTriggerSpell2"] = uint.Parse(TriggerSpell2.Text);
+                    // row["EffectTriggerSpell3"] = uint.Parse(TriggerSpell3.Text);
+                    // effectTriggerSpells
+                    row["EffectTriggerSpell1"] = effectTriggerSpells[0];
+                    row["EffectTriggerSpell2"] = effectTriggerSpells[1];
+                    row["EffectTriggerSpell3"] = effectTriggerSpells[2];
+
                     row["EffectPointsPerComboPoint1"] = float.Parse(PointsPerComboPoint1.Text);
                     row["EffectPointsPerComboPoint2"] = float.Parse(PointsPerComboPoint2.Text);
                     row["EffectPointsPerComboPoint3"] = float.Parse(PointsPerComboPoint3.Text);
@@ -2247,6 +2259,25 @@ namespace SpellEditor
             }
 
             return false;
+        }
+
+        // id + spell name for control selectors
+        private string GetSpellDescString(uint spellId)
+        {
+            string name = GetSpellNameById(spellId);
+
+            if (string.IsNullOrEmpty(name))
+            {
+                if (spellId == 0)
+                    name = "None";
+                else
+                    name = "(Unknown Spell)";
+            }
+
+
+            string spellstring = $"{spellId} - {name}";
+
+            return spellstring;
         }
 
         #region DynamicMiscValues
@@ -3415,9 +3446,16 @@ namespace SpellEditor
                 ItemType1.ThreadSafeText = row["EffectItemType1"].ToString();
                 ItemType2.ThreadSafeText = row["EffectItemType2"].ToString();
                 ItemType3.ThreadSafeText = row["EffectItemType3"].ToString();
-                TriggerSpell1.ThreadSafeText = row["EffectTriggerSpell1"].ToString();
-                TriggerSpell2.ThreadSafeText = row["EffectTriggerSpell2"].ToString();
-                TriggerSpell3.ThreadSafeText = row["EffectTriggerSpell3"].ToString();
+                // TriggerSpell1.ThreadSafeText = row["EffectTriggerSpell1"].ToString();
+                // TriggerSpell2.ThreadSafeText = row["EffectTriggerSpell2"].ToString();
+                // TriggerSpell3.ThreadSafeText = row["EffectTriggerSpell3"].ToString();
+                effectTriggerSpells[0] = uint.Parse(row["EffectTriggerSpell1"].ToString());
+                effectTriggerSpells[1] = uint.Parse(row["EffectTriggerSpell2"].ToString());
+                effectTriggerSpells[2] = uint.Parse(row["EffectTriggerSpell3"].ToString());
+                TriggerSpell1.Content = GetSpellDescString(effectTriggerSpells[0]);
+                TriggerSpell2.Content = GetSpellDescString(effectTriggerSpells[1]);
+                TriggerSpell3.Content = GetSpellDescString(effectTriggerSpells[2]);
+
                 PointsPerComboPoint1.ThreadSafeText = row["EffectPointsPerComboPoint1"].ToString();
                 PointsPerComboPoint2.ThreadSafeText = row["EffectPointsPerComboPoint2"].ToString();
                 PointsPerComboPoint3.ThreadSafeText = row["EffectPointsPerComboPoint3"].ToString();
@@ -5076,7 +5114,7 @@ namespace SpellEditor
                     if (spellEffectData.UsesItemType == false)
                         effectItemTypeBoxes[effect_id].Text = "0";
                     if (spellEffectData.UsesSpell == false)
-                        effectTriggerSpellBoxes[effect_id].Text = "0";
+                        effectTriggerSpellBoxes[effect_id].Content = "0 - None";
                     if (spellEffectData.UsesAmplitude == false)
                         effectAmplitudeBoxes[effect_id].Text = "0";
                 }
@@ -5519,6 +5557,33 @@ namespace SpellEditor
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 spellFamilyClassMaskParser.UpdateMainWindowBaseFamiliesList(this, familyName, adapter)));
 
+        }
+
+        private void TriggerSpell_Click(object sender, RoutedEventArgs e)
+        {
+            int effect_index = 0;
+
+            if (sender == TriggerSpell2)
+                effect_index = 1;
+            else if (sender == TriggerSpell3)
+                effect_index = 2;
+            else
+                Debug.Assert(sender == TriggerSpell1);
+
+            uint spell_id = effectTriggerSpells[effect_index];
+            string select_text = $"Selecting for Effect#{effect_index} Trigger Spell";
+            var dlg = new SpellPickerDialog(this, spell_id, select_text);
+
+            if (dlg.ShowDialog() == true)
+            {
+                // when closed
+                uint selectedId = dlg.SelectedId;
+                effectTriggerSpells[effect_index] = selectedId;
+
+                string text = GetSpellDescString(selectedId);
+                effectTriggerSpellBoxes[effect_index].Content = text;
+
+            }
         }
     }
 }

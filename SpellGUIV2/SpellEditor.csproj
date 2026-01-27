@@ -213,6 +213,10 @@
     <Compile Include="Sources\AI\AiSpellSemanticExtractor.cs" />
     <Compile Include="Sources\AI\OpenAIClient.cs" />
     <Compile Include="Sources\AI\SpellDbcEnumProvider.cs" />
+    <Compile Include="Sources\Controls\ListPickerDialog\ListPickerDialogBase.xaml.cs">
+      <DependentUpon>ListPickerDialogBase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Controls\ListPickerDialog\SpellPickerDialog.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />
     <Compile Include="Sources\Controls\SpellSelectList\RelayCommand.cs" />
     <Compile Include="Sources\Binding\Binding.cs" />
@@ -330,6 +334,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Sources\Controls\ListPickerDialog\ListPickerDialogBase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sources\Controls\SpellFamilyNames\SpellFamiliesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

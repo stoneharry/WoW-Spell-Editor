@@ -1,0 +1,55 @@
+﻿<controls:MetroWindow x:Class="SpellEditor.Sources.Controls.ListPickerDialog.ListPickerDialogBase"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SpellEditor.Sources.Controls.ListPickerDialog"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:common="clr-namespace:SpellEditor.Sources.Controls.Common"
+        mc:Ignorable="d"
+        Title="ListPickerDialogBase" Height="600" Width="416">
+    
+    <DockPanel Margin="10">
+        <!-- Filters -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Go to Id:" Grid.Column="0"/>
+                <common:TextOnlyNumericUpDown Grid.Column="1"/>
+            </Grid>
+            <TextBox controls:TextBoxHelper.Watermark="Filter..." Margin="0,8,0,0" />
+            <!-- derived classes can add controls here in code -->
+        </StackPanel>
+
+
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"  Margin="0,8,0,0" HorizontalAlignment="Right">
+
+            <GroupBox DockPanel.Dock="Bottom" Header="Manual Selection:" HorizontalAlignment="Left">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <common:TextOnlyNumericUpDown Grid.Column="0"/>
+                    <Button Content="Select Id" Width="80" Click="Select_Button_Click" Grid.Column="1" Margin="5,0,0,0"/>
+                
+                </Grid>
+            </GroupBox>
+            
+            <Button Content="Select None(0)" Width="100" Click="Select_None_Button_Click" Height="28" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30,0,0,0"/>
+            <Button Content="Select" Width="100" Margin="8,0,0,0" Click="Select_Button_Click" Height="28" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+ 
+        </StackPanel>
+        <Label x:Name="SelectionTextLabel" Content="Selecting for X" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,8,0,0"/>
+
+        <!-- This must be LAST -->
+        <!-- <ListView x:Name="listView"/> -->
+        <ContentControl x:Name="ItemsHost" Margin="0,8,0,0"/>
+    </DockPanel>
+</controls:MetroWindow>

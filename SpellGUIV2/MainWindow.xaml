@@ -509,7 +509,7 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Button x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -556,8 +556,8 @@
                                 <c2:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
-                                <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0" />
+                                <Button x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -605,7 +605,7 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Button x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 

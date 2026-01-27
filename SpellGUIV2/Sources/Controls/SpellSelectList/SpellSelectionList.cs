@@ -24,8 +24,10 @@ namespace SpellEditor.Sources.Controls
         private int _ContentsIndex;
         private int _Language;
         private IDatabaseAdapter _Adapter;
-        private readonly DataTable _Table = new DataTable();
+        private DataTable _Table = new DataTable();
+        public DataTable Table { get { return _Table; } }
         private bool _initialised = false;
+        private bool _EnableEdits = true;
 
         public void Initialise()
         {
@@ -132,6 +134,17 @@ namespace SpellEditor.Sources.Controls
             }
         }
 
+        public void PopulateFromOther(SpellSelectionList source)
+        {
+            _EnableEdits = false; // quick way to disable right click options with popup
+
+            LocaleManager.Instance.MarkDirty();
+
+            _Table = source.Table;
+
+            RefreshSpellList();
+        }
+
         public void AddNewSpell(uint copyFrom, uint copyTo)
         {
             // Copy spell in DB
@@ -236,9 +249,12 @@ namespace SpellEditor.Sources.Controls
                 var row = collection[rowIndex];
                 var entry = new SpellSelectionEntry();
                 entry.RefreshEntry(row, _Language);
-                entry.SetCopyClickAction(DuplicateAction);
-                entry.SetDeleteClickAction(DeleteAction);
-                entry.SetPasteClickAction(PasteAction);
+                if (_EnableEdits)
+                {
+                    entry.SetCopyClickAction(DuplicateAction);
+                    entry.SetDeleteClickAction(DeleteAction);
+                    entry.SetPasteClickAction(PasteAction);
+                }
                 newElements.Add(entry);
                 ++_ContentsIndex;
             }
