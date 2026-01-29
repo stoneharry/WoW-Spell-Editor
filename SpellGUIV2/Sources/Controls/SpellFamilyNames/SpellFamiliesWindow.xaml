@@ -19,11 +19,11 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Margin="10,10,-10,-10" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Label Content="{DynamicResource labSpellClassMask1}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:TextOnlyNumericUpDown ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="{DynamicResource labSpellClassMask2}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:TextOnlyNumericUpDown ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="{DynamicResource labSpellClassMask3}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:TextOnlyNumericUpDown ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="You can rename the families by editing \SpellFamilies\ definitions." HorizontalAlignment="Left" VerticalAlignment="Top" />
         </StackPanel>
 

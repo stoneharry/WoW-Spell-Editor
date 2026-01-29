@@ -20,7 +20,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
     public partial class SpellFamiliesWindow : MetroWindow
     {
         // store effects UI stuff in arrays for easy access
-        private readonly TextOnlyNumericUpDown[] _familyMaskControls; // [3]
+        private readonly UIntTextBox[] _familyMaskControls; // [3]
 
         public List<CheckBox> _maskCheckBoxes = new List<CheckBox>(); // 32 x 3
 
@@ -70,7 +70,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
             CreateFamilyCheckboxes();
 
-            _familyMaskControls = new TextOnlyNumericUpDown[3] { SpellMask1, SpellMask2, SpellMask3 }; // must be after InitializeComponent()
+            _familyMaskControls = new UIntTextBox[3] { SpellMask1, SpellMask2, SpellMask3 }; // must be after InitializeComponent()
 
             Load(_active_families_values);
         }

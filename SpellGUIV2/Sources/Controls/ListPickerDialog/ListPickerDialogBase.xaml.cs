@@ -59,5 +59,13 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
             DialogResult = true;
             Close();
         }
+
+        private void Manual_Select_Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SelectedId = ManualIdSelectionBox.UIntValue;
+
+            DialogResult = true;
+            Close();
+        }
     }
 }

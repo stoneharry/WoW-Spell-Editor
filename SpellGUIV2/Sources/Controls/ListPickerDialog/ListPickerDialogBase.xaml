@@ -19,7 +19,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Go to Id:" Grid.Column="0"/>
-                <common:TextOnlyNumericUpDown Grid.Column="1"/>
+                <common:UIntTextBox Grid.Column="1"/>
             </Grid>
             <TextBox controls:TextBoxHelper.Watermark="Filter..." Margin="0,8,0,0" />
             <!-- derived classes can add controls here in code -->
@@ -36,8 +36,8 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <common:TextOnlyNumericUpDown Grid.Column="0"/>
-                    <Button Content="Select Id" Width="80" Click="Select_Button_Click" Grid.Column="1" Margin="5,0,0,0"/>
+                    <common:UIntTextBox x:Name="ManualIdSelectionBox" Grid.Column="0"/>
+                    <Button Content="Select Id" Width="80" Click="Manual_Select_Button_Click" Grid.Column="1" Margin="5,0,0,0"/>
                 
                 </Grid>
             </GroupBox>
