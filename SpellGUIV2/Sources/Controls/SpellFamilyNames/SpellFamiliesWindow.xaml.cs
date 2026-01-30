@@ -365,6 +365,10 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
         private void UpdateSpellsListBox()
         {
+            // checkbox checked in XAML triggers this before tabcontrol is initialized
+            if (FilterTabControl == null)
+                return;
+
             bool filterduplicates = FilterSpellsDuplicatesCheckbox.IsChecked == true;
             if (FilterTabControl.SelectedIndex == 0)
             { // show target spells

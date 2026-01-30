@@ -6,65 +6,97 @@
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="Spell Families Selector"
-        Height="820" Width="1466"
-        MinHeight="400" MinWidth="400"
+        Height="820"
+        MinHeight="400" MinWidth="500"
         WindowStartupLocation="CenterOwner"
         Icon="icon.ico"
         BorderBrush="#1585B5"
         BorderThickness="2">
-    <Grid>
+    <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="10,10,-10,-10" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Label Content="{DynamicResource labSpellClassMask1}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="{DynamicResource labSpellClassMask2}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="{DynamicResource labSpellClassMask3}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="You can rename the families by editing \SpellFamilies\ definitions." HorizontalAlignment="Left" VerticalAlignment="Top" />
-        </StackPanel>
 
-        <StackPanel Grid.Column="0" Margin="10,49,-10,-10" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <TextBox x:Name="FamiliesSearch"
-                 mah:TextBoxHelper.Watermark="Search Family or Spell name..."
-                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="660"
-                 TextChanged="FamiliesSearch_TextChanged"/>
-            <CheckBox Visibility="Collapsed" x:Name="ShowUnusedCheckbox" Content="Show Unused Families" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Button Content="❌ Clear All" HorizontalAlignment="Left" VerticalAlignment="Top" Click="clear_Button_Click" Width="100"/>
-            <Button Content="⟳ Reset" ToolTip="Reset back to original values." HorizontalAlignment="Left" VerticalAlignment="Top" Click="reset_Button_Click" Width="100"/>
-            <Button Content="✔ Enable All" HorizontalAlignment="Left" VerticalAlignment="Top" Click="enable_Button_Click" Width="100"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Margin="0,0,8,0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                <Label Content="{DynamicResource labSpellClassMask1}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="{DynamicResource labSpellClassMask2}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="{DynamicResource labSpellClassMask3}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <common:UIntTextBox ValueChanged="SpellMask_text_ValueChanged" x:Name="SpellMask3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="You can rename the families by editing \SpellFamilies\ definitions." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,10,0" />
+            </StackPanel>
 
-        </StackPanel>
+            <Grid Grid.Row="1" Margin="0,5,8,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
+                <TextBox MinWidth="120" Grid.Column="0" x:Name="FamiliesSearch" mah:TextBoxHelper.Watermark="Search Family or Spell name..." TextChanged="FamiliesSearch_TextChanged"/>
+                <CheckBox Grid.Column="1" Visibility="Collapsed" x:Name="ShowUnusedCheckbox" Content="Show Unused Families"/>
+                <Button Grid.Column="2" Content="❌ Clear All" Width="100" Click="clear_Button_Click"/>
+                <Button Grid.Column="3" Content="⟳ Reset" Width="100" Click="reset_Button_Click"/>
+                <Button Grid.Column="4" Content="✔ Enable All" Width="100" Click="enable_Button_Click"/>
+            </Grid>
 
-        <Border Margin="10,80,94,10"
+            <Border Margin="0,5,8,0"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource MahApps.Brushes.TextBox.Border}"
-                CornerRadius="4"
-                >
-            <ScrollViewer VerticalScrollBarVisibility="Disabled"
-                          HorizontalScrollBarVisibility="Auto"
-                          Padding="2">
-                <ItemsControl x:Name="MaskList" MinWidth="660" MinHeight="300">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel x:Name="CheckboxesPanel" Orientation="Vertical" >
-                            </WrapPanel>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ScrollViewer>
-        </Border>
-        <common:ThreadSafeTextBox x:Name="FilterClassMaskSpells" mah:TextBoxHelper.Watermark="Filter Spells..." VerticalAlignment="Top" HorizontalAlignment="Left" Width="166" TextWrapping="Wrap" Grid.Column="1" Margin="124,15,0,0" TextChanged="FilterClassMaskSpells_TextChanged"/>
-        <mah:MetroTabControl x:Name="FilterTabControl" Grid.Column="1" VerticalAlignment="Top" Margin="0,41,0,0" HorizontalAlignment="Left" Width="290" SelectionChanged="FilterTabControl_SelectionChanged">
-            <TabItem Header="Modifies" Margin="0,0,-22,0">
-            </TabItem>
-            <TabItem Header="Modified By" Margin="22,0,-22,0"/>
-        </mah:MetroTabControl>
-        <ListBox x:Name="EffectTargetSpellsList" HorizontalAlignment="Left" Width="290" Grid.Column="1" Margin="0,85,0,10" BorderThickness="1"/>
-        <common:ThreadSafeCheckBox x:Name="FilterSpellsDuplicatesCheckbox" ToolTip="Filter Spells that have the same name." Unchecked="FilterSpellsDuplicatesCheckbox_StateChanged" Checked="FilterSpellsDuplicatesCheckbox_StateChanged" IsChecked="True" Content="Filter Duplicates" Grid.Column="1" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
+                CornerRadius="4" Grid.Row="2">
+                <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                              HorizontalScrollBarVisibility="Auto"
+                              Padding="2">
+                    <ItemsControl x:Name="MaskList" MinWidth="660" MinHeight="300">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel x:Name="CheckboxesPanel" Orientation="Vertical" >
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+            
+        </Grid>
+        
+
+
+
+        
+
+        
+        <GroupBox Header="Preview Linked Spells" Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <common:ThreadSafeCheckBox x:Name="FilterSpellsDuplicatesCheckbox" ToolTip="Filter Spells that have the same name." Unchecked="FilterSpellsDuplicatesCheckbox_StateChanged" Checked="FilterSpellsDuplicatesCheckbox_StateChanged" IsChecked="True" Content="Filter Duplicates" Grid.Column="1" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
+                <common:ThreadSafeTextBox x:Name="FilterClassMaskSpells" mah:TextBoxHelper.Watermark="Filter Spells..." VerticalAlignment="Top" HorizontalAlignment="Left" Width="166" TextWrapping="Wrap" Grid.Column="0" Margin="124,5,0,0" TextChanged="FilterClassMaskSpells_TextChanged"/>
+                
+                <mah:MetroTabControl x:Name="FilterTabControl" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290" SelectionChanged="FilterTabControl_SelectionChanged" Grid.Row="1" Margin="0,5,0,0">
+                    <TabItem Header="Modifies" Margin="0,0,-22,0">
+                    </TabItem>
+                    <TabItem Header="Modified By" Margin="22,0,-22,0"/>
+                </mah:MetroTabControl>
+                <ListBox x:Name="EffectTargetSpellsList" Grid.Column="0" BorderThickness="1" Grid.Row="2" Margin="0,5,0,0"/>
+            </Grid>
+            
+        </GroupBox>
+
     </Grid>
 </controls:MetroWindow>
