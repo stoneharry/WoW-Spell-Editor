@@ -19,9 +19,9 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Go to Id:" Grid.Column="0"/>
-                <common:UIntTextBox Grid.Column="1"/>
+                <common:UIntTextBox x:Name="NavigateToSpell" KeyDown="_KeyDown" Grid.Column="1"/>
             </Grid>
-            <TextBox controls:TextBoxHelper.Watermark="Filter..." Margin="0,8,0,0" />
+            <TextBox x:Name="FilterSpellNames" controls:TextBoxHelper.Watermark="Filter..." KeyDown="_KeyDown" KeyUp="_KeyUp" Margin="0,8,0,0" />
             <!-- derived classes can add controls here in code -->
         </StackPanel>
 

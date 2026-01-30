@@ -1228,7 +1228,7 @@ namespace SpellEditor
 #endregion
 
         #region KeyHandlers
-        private volatile bool imageLoadEventRunning;
+        private volatile bool imageLoadEventRunning = false;
 
         private void _KeyUp(object sender, KeyEventArgs e)
         {
@@ -1278,7 +1278,7 @@ namespace SpellEditor
                 {
                     TextBox box = (TextBox)sender;
 
-                    int ID = int.Parse(box.Text);
+                    uint ID = uint.Parse(box.Text);
 
                     int count = 0;
                     foreach (StackPanel obj in SelectSpell.Items)
@@ -1286,12 +1286,12 @@ namespace SpellEditor
                         foreach (var item in obj.Children)
                             if (item is TextBlock tb)
                             {
-                                if (int.Parse(tb.Text.Split(' ')[1]) == ID)
+                                if (uint.Parse(tb.Text.Split(' ')[1]) == ID)
                                 {
                                     SelectSpell.SelectedIndex = count;
                                     SelectSpell.ScrollIntoView(obj);
 
-                                    break;
+                                    return;
                                 }
                             }
                         count++;

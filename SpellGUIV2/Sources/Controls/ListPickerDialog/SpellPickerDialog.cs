@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using MahApps.Metro.Controls;
 using SpellEditor.Sources.Controls.SpellSelectList;
 
@@ -15,16 +12,15 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
     public partial class SpellPickerDialog : ListPickerDialogBase
     {
         private readonly SpellSelectionList _selectSpell;
-        private readonly MainWindow _mainWindow;
         private readonly uint _selectedParentId; // selected id from the parent caller control
 
         public SpellPickerDialog(MainWindow mainWindow, uint selectedParentId, string selectionType)
+            : base(mainWindow)
         {
             InitializeComponent();
 
             // Populate Spell List
             _selectSpell = new SpellSelectionList();
-            _mainWindow = mainWindow;
             _selectedParentId = selectedParentId;
 
             Title = "Spell Picker";
@@ -34,9 +30,37 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
             LoadItemsList();
         }
 
-        protected override void FilterFromText(string text)
+        private volatile bool imageLoadEventRunning = false;
+        protected override void FilterFromText(string input)
         {
-            throw new NotImplementedException();
+            if (imageLoadEventRunning)
+                return;
+            imageLoadEventRunning = true;
+
+            var badInput = string.IsNullOrEmpty(input);
+            if (badInput && _selectSpell.GetLoadedRowCount() == _selectSpell.Items.Count)
+            {
+                imageLoadEventRunning = false;
+                return;
+            }
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(_selectSpell.Items);
+            view.Filter = o =>
+            {
+                var panel = (StackPanel)o;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        return input.Length == 0 ? true : block.Text.ToLower().Contains(input);
+                    }
+                }
+                return false;
+            };
+
+            imageLoadEventRunning = false;
         }
 
         protected override uint GetSelectedItemId()
@@ -56,12 +80,27 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
                 }
             }
             return 0;
-            // throw new NotImplementedException("Failed to find item");
         }
 
         protected override void GoToId(uint id)
         {
-            throw new NotImplementedException();
+            int count = 0;
+            foreach (StackPanel obj in _selectSpell.Items)
+            {
+                foreach (var item in obj.Children)
+                    if (item is TextBlock tb)
+                    {
+                        if (uint.Parse(tb.Text.Split(' ')[1]) == id)
+                        {
+                            _selectSpell.SelectedIndex = count;
+                            _selectSpell.ScrollIntoView(obj);
+
+                            return;
+                        }
+                    }
+
+                count++;
+            }
         }
 
         protected override void LoadItemsList()
