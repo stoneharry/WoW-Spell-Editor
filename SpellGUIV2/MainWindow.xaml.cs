@@ -43,6 +43,7 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
+using static SpellEditor.Sources.DBC.AbstractDBC;
 
 namespace SpellEditor
 {
@@ -169,6 +170,7 @@ namespace SpellEditor
             InitializeComponent();
 
             SpellFamilyNames.Init();
+            SpellCategoyNames.LoadCsvToMap();
 
             VerifyStaticData();
 
@@ -429,6 +431,11 @@ namespace SpellEditor
                 procBoxes.Add(box);
             }
 
+            string[] familyComboEntries = SpellFamilyNames.familyNamesitemSource.ToArray();
+            familyComboEntries[0] = "0 - No Filter";
+            FilterFamilyCombo.ItemsSource = SpellFamilyNames.familyNamesitemSource;
+
+
             string[] spell_aura_effect_names = SafeTryFindResource("spell_aura_effect_names").Split('|');
             string[] comboEntries = new string[spell_aura_effect_names.Length];
             for (int i = 0; i < spell_aura_effect_names.Length; ++i)
@@ -438,6 +445,7 @@ namespace SpellEditor
             ApplyAuraName1.ItemsSource = new List<string>(comboEntries);
             ApplyAuraName2.ItemsSource = new List<string>(comboEntries);
             ApplyAuraName3.ItemsSource = new List<string>(comboEntries);
+            comboEntries[0] = "0 - No Filter"; // Replace None by "no fitler", which is actually how the filtering method works currently
             FilterAuraCombo.ItemsSource = new List<string>(comboEntries);
 
             string[] spell_effect_names = SafeTryFindResource("spell_effect_names_clear").Split('|');
@@ -449,6 +457,7 @@ namespace SpellEditor
             SpellEffect1.ItemsSource = new List<string>(comboEntries);
             SpellEffect2.ItemsSource = new List<string>(comboEntries);
             SpellEffect3.ItemsSource = new List<string>(comboEntries);
+            comboEntries[0] = "0 - No Filter";
             FilterSpellEffectCombo.ItemsSource = new List<string>(comboEntries);
 
             Mechanic1.Items.Clear();
@@ -471,6 +480,7 @@ namespace SpellEditor
                 TargetB2.ItemsSource = new List<string>(comboList);
                 TargetA3.ItemsSource = new List<string>(comboList);
                 TargetB3.ItemsSource = new List<string>(comboList);
+                comboList[0] = "0 - No Filter";
                 FilterSpellTargetA.ItemsSource = new List<string>(comboList);
                 FilterSpellTargetB.ItemsSource = new List<string>(comboList);
             }
@@ -615,6 +625,8 @@ namespace SpellEditor
                 RefreshAllUIElements();
                 LoadAllData();
 
+                FilterCategoryCombo.SelectionChanged += FilterCategoryCombo_SelectionChanged;
+                FilterFamilyCombo.SelectionChanged += FilterFamilyCombo_SelectionChanged;
                 FilterSpellEffectCombo.SelectionChanged += FilterSpellEffectCombo_SelectionChanged;
                 FilterAuraCombo.SelectionChanged += FilterAuraCombo_SelectionChanged;
                 FilterSpellTargetA.SelectionChanged += FilterSpellTargetA_SelectionChanged;
@@ -1025,8 +1037,30 @@ namespace SpellEditor
                     .Initialise();
 
                 // Populate UI based on DBC data
-                Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
-                    DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+
+                List<DBCBoxContainer> boxes = ((SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes();
+
+                List<string> category_strings = new List<string>();
+                foreach (DBCBoxContainer box in boxes)
+                {
+                    bool has_value = SpellCategoyNames.NamesMap.TryGetValue((uint)box.ID, out string category_name);
+
+                    if ((uint)box.ID == 0)
+                        category_name = "None";
+                    else if (string.IsNullOrEmpty(category_name))
+                        category_name = "UNKNOWN";
+
+                    category_name = $"{(uint)box.ID} - {category_name}";
+                    category_strings.Add(category_name);
+                }
+
+                // FilterCategoryCombo.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                //     DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                FilterCategoryCombo.ItemsSource = category_strings;
+
+                // Category.ItemsSource = ConvertBoxListToLabels(((SpellCategory)
+                //     DBCManager.GetInstance().FindDbcForBinding("SpellCategory")).GetAllBoxes());
+                Category.ItemsSource = category_strings;
                 DispelType.ItemsSource = ConvertBoxListToLabels(((SpellDispelType)
                     DBCManager.GetInstance().FindDbcForBinding("SpellDispelType")).GetAllBoxes());
                 MechanicType.ItemsSource = ConvertBoxListToLabels(((SpellMechanic)
@@ -3037,17 +3071,20 @@ namespace SpellEditor
                 }
 
                 updateProgress("Updating category & dispel & mechanic...");
-                var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
-                Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(
-                    adapter.Query($"SELECT `Category` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                // var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
+                // Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(
+                //     adapter.Query($"SELECT `Category` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                Category.SetTextFromIndex(uint.Parse(row["Category"].ToString()));
 
                 var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
-                DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(
-                    adapter.Query($"SELECT `Dispel` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                // DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(
+                //     adapter.Query($"SELECT `Dispel` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(row["Dispel"].ToString()));
 
                 var loadMechanics = (SpellMechanic)DBCManager.GetInstance().FindDbcForBinding("SpellMechanic");
-                MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(
-                    adapter.Query($"SELECT `Mechanic` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                // MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(
+                //     adapter.Query($"SELECT `Mechanic` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                MechanicType.SelectedIndex = loadMechanics.UpdateMechanicSelection(uint.Parse(row["Mechanic"].ToString()));
 
                 updateProgress("Updating attributes...");
                 uint mask = uint.Parse(row["Attributes"].ToString());
@@ -4873,15 +4910,17 @@ namespace SpellEditor
 
             if (sender == Category)
             {
-                var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
-                foreach (var dbcBox in loadCategories.Lookups)
-                {
-                    if (dbcBox.ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
-                    {
-                        adapter.Execute($"UPDATE `{"spell"}` SET `{"Category"}` = '{dbcBox.ID}' WHERE `ID` = '{selectedID}'");
-                        break;
-                    }
-                }
+                // var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
+                // foreach (var dbcBox in loadCategories.Lookups)
+                // {
+                //     if (dbcBox.ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                //     {
+                //         adapter.Execute($"UPDATE `{"spell"}` SET `{"Category"}` = '{dbcBox.ID}' WHERE `ID` = '{selectedID}'");
+                //         break;
+                //     }
+                // }
+                // uint categoryId = Category.GetNumberPrefixFromText();
+                // adapter.Execute($"UPDATE `{"spell"}` SET `{"Category"}` = '{categoryId}' WHERE `ID` = '{selectedID}'");
             }
 
             if (sender == DispelType)
@@ -5335,6 +5374,109 @@ namespace SpellEditor
             };
         }
 
+        private void ApplyFilter(HashSet<string> set)
+        {
+
+        }
+
+        private void FilterCategoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterCategoryCombo)
+            {
+                return;
+            }
+            var box = sender as ComboBox;
+            string selected = box.SelectedItem?.ToString() ?? "0";
+
+            // int id = int.Parse(selected);
+            int id = 0;
+
+            // load from dbc row index instead
+            var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
+            foreach (var dbcBox in loadCategories.Lookups)
+            {
+                if (dbcBox.ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
+                {
+                    Debug.Assert(dbcBox.ID == id);
+                    id = (int)dbcBox.ID;
+                }
+            }
+
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the family id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE Category = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
+        }
+
+        private void FilterFamilyCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.OriginalSource != FilterFamilyCombo)
+            {
+                return;
+            }
+            var box = sender as FilteredComboBox;
+            var selected = box.SelectedItem?.ToString() ?? "0 ";
+            var id = int.Parse(selected.Substring(0, selected.IndexOf(' ')));
+            var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
+            // Clear filter if id is 0
+            if (id == 0)
+            {
+                view.Filter = obj => true;
+                return;
+            }
+            // Collect all spell ID's with the family id
+            var matchingSpells = adapter.Query($"SELECT id FROM spell WHERE SpellFamilyName = {id}").Rows;
+            var matchingSpellsSet = new HashSet<string>();
+            foreach (DataRow record in matchingSpells)
+            {
+                matchingSpellsSet.Add(record[0].ToString());
+            }
+            // Apply filter
+            view.Filter = obj =>
+            {
+                var panel = obj as StackPanel;
+                using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!(enumerator.Current is TextBlock block))
+                            continue;
+                        var name = block.Text.TrimStart();
+                        var blockId = name.Substring(0, name.IndexOf(' '));
+                        return matchingSpellsSet.Contains(blockId);
+                    }
+                }
+                return false;
+            };
+        }
+
         private void FilterAuraCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource != FilterAuraCombo)
@@ -5584,6 +5726,12 @@ namespace SpellEditor
                 effectTriggerSpellBoxes[effect_index].Content = text;
 
             }
+        }
+
+        private void Category_SelectionEffectivelyChanged(object sender, SelectionEffectivelyChangedEventArgs e)
+        {
+            uint categoryId = Category.GetNumberPrefixFromText();
+            adapter.Execute($"UPDATE `{"spell"}` SET `{"Category"}` = '{categoryId}' WHERE `ID` = '{selectedID}'");
         }
     }
 }
