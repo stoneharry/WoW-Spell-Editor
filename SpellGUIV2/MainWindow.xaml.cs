@@ -5385,22 +5385,12 @@ namespace SpellEditor
             {
                 return;
             }
-            var box = sender as ComboBox;
-            string selected = box.SelectedItem?.ToString() ?? "0";
+            var box = sender as ThreadSafeComboBox;
+            string selected = box.SelectedItem?.ToString() ?? "0 -";
 
-            // int id = int.Parse(selected);
             int id = 0;
 
-            // load from dbc row index instead
-            var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
-            foreach (var dbcBox in loadCategories.Lookups)
-            {
-                if (dbcBox.ComboBoxIndex == ((ComboBox)sender).SelectedIndex)
-                {
-                    Debug.Assert(dbcBox.ID == id);
-                    id = (int)dbcBox.ID;
-                }
-            }
+            id = GetNumberPrefixFromText(selected);
 
             var view = CollectionViewSource.GetDefaultView(SelectSpell.Items);
             // Clear filter if id is 0
