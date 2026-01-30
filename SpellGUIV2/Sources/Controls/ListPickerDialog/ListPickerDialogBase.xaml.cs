@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro.Controls;
@@ -34,6 +35,9 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
         {
             InitializeComponent();
             _mainWindow = mainWindow;
+
+            Owner = mainWindow;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // ItemsHost.BorderThickness = new Thickness(1);
         }

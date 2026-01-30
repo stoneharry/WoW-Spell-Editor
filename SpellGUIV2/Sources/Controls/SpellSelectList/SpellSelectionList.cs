@@ -142,6 +142,23 @@ namespace SpellEditor.Sources.Controls
 
             _Table = source.Table;
 
+            /*
+            // Test copying from mainwindow list instead of recreating new
+            var newElements = new List<UIElement>();
+            foreach (var item in source.Items)
+            {
+                if (item is SpellSelectionEntry entry)
+                {
+                    // create copy
+                    SpellSelectionEntry new_item = new SpellSelectionEntry(entry);
+                    newElements.Add(entry);
+                }
+            }
+            var newSrc = new List<object>();
+            newSrc.AddRange(newElements);
+            ItemsSource = newSrc;*/
+
+            // if items list is empty, it will create new items from _Table
             RefreshSpellList();
         }
 
