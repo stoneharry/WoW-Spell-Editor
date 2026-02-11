@@ -1,7 +1,7 @@
-﻿using SpellEditor.Sources.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using SpellEditor.Sources.Controls;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -57,9 +57,21 @@ namespace SpellEditor.Sources.DBC
                 var baseDurStr = GetFriendlyDuration(record["BaseDuration"]);
                 var maxDurStr = GetFriendlyDuration(record["MaximumDuration"]);
                 var perLevelStr = record["PerLevel"].ToString();
+
+                string text = $"ID: {id}\nBaseDur: {baseDurStr}";
+                uint.TryParse(record["BaseDuration"].ToString(), out uint basedur);
+                int.TryParse(record["MaximumDuration"].ToString(), out int maxdur);
+
+                if (basedur != maxdur)
+                    text += $"\nMaxDur: {maxDurStr}";
+                int.TryParse(perLevelStr, out int perleveldur);
+                if (perleveldur != 0)
+                    text += $"\nPerLevel: {perLevelStr}";
+
                 var label = new Label
                 {
-                    Content = $"ID: {id}\nBaseDur: {baseDurStr}\nMaxDur: {maxDurStr}\nPerLevel: {perLevelStr}"
+                    // Content = $"ID: {id}\nBaseDur: {baseDurStr}\nMaxDur: {maxDurStr}\nPerLevel: {perLevelStr}"
+                    Content = text
                 };
                 Lookups.Add(new DurationBox(id, label, 0,
                     uint.Parse(record["BaseDuration"].ToString()) +
@@ -87,7 +99,8 @@ namespace SpellEditor.Sources.DBC
             var minutes = time.Minutes > 0 ? $"{time.Minutes}min " : string.Empty;
             var seconds = (time.Seconds > 0 || time.Milliseconds > 0) ? 
                 $"{(time.Milliseconds > 0 ? (time.Seconds + "." + time.Milliseconds.ToString().TrimEnd(trimMillisChars)) : time.Seconds.ToString())}sec" : string.Empty;
-            return (days + hours + minutes + seconds).TrimEnd() + $" - {data}ms";
+            // return (days + hours + minutes + seconds).TrimEnd() + $" - {data}ms";
+            return (days + hours + minutes + seconds).TrimEnd() + $" ({time.TotalSeconds}s)";
         }
 
         public List<DBCBoxContainer> GetAllBoxes()
