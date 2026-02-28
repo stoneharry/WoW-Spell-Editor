@@ -28,6 +28,7 @@ namespace SpellEditor
         private Grid MySQLConfigGrid;
         private Grid SQLiteConfigGrid;
         private DatabaseIdentifier defaultConfigType;
+        private TextBox _MpqNameText;
 
         public ConfigWindow(DatabaseIdentifier defaultConfigToShow)
         {
@@ -58,10 +59,14 @@ namespace SpellEditor
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            // Bindings and directory settings, 2 rows
-            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // misc value fields config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Icon config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // MPQ name config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // Bindings and directory settings, 2 rows
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -122,7 +127,11 @@ namespace SpellEditor
             ConfigGrid.Children.Add(versionLabel);
             ConfigGrid.Children.Add(versionButton);
 
+            currentRow = BuildMiscValueFieldsConfig(ConfigGrid, currentRow);
+
             currentRow = BuildIconConfig(ConfigGrid, currentRow);
+
+            currentRow = BuildMpqConfig(ConfigGrid, currentRow);
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
@@ -297,6 +306,7 @@ namespace SpellEditor
             Config.Pass = button.Pass();
             Config.Port = button.Port();
             Config.Database = button.Database();
+            Config.DefaultMpqName = _MpqNameText.Text;
             ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
@@ -304,6 +314,7 @@ namespace SpellEditor
         {
             var button = sender as SQLiteConfirmButton;
             Config.SQLiteFilename = button.SQLiteFilename();
+            Config.DefaultMpqName = _MpqNameText.Text;
             ShowFlyoutMessage("Saved config.xml - Changes will be loaded on next program startup");
         }
 
@@ -311,6 +322,30 @@ namespace SpellEditor
         {
             Flyout.IsOpen = true;
             FlyoutText.Text = message;
+        }
+
+        private int BuildMiscValueFieldsConfig(Grid grid, int currentRow)
+        {
+            var label = new Label { Content = "Use Dynamic Misc Value Fields:" };
+            label.Margin = new Thickness(10);
+
+            var checkbox = new System.Windows.Controls.CheckBox { };
+            checkbox.Margin = new Thickness(10);
+
+            checkbox.IsChecked = Config.DynamicMiscValueFields;
+            checkbox.Checked += DynamicMiscValueFields_Checked;
+            checkbox.Unchecked += DynamicMiscValueFields_Checked;
+            checkbox.ToolTip = "When this is turned on, MiscValue fields UI will dynamically update based on content type, for example a power selection dropdown for Power auras.";
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(checkbox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(checkbox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(checkbox);
+
+            return currentRow;
         }
 
         private int BuildIconConfig(Grid grid, int currentRow)
@@ -337,9 +372,40 @@ namespace SpellEditor
             return currentRow;
         }
 
+        private int BuildMpqConfig(Grid grid, int currentRow)
+        {
+            var label = new Label
+            {
+                Content = "Default MPQ name for Export:",
+                Margin = new Thickness(10)
+            };
+
+            var textBox = new TextBox
+            {
+                Margin = new Thickness(10),
+                Text = Config.DefaultMpqName
+            };
+            _MpqNameText = textBox;
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(textBox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(textBox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(textBox);
+
+            return currentRow;
+        }
+
         private void RenderIconsInView_Checked(object sender, RoutedEventArgs e)
         {
             Config.RenderImagesInView = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
+        }
+
+        private void DynamicMiscValueFields_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.DynamicMiscValueFields = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
         }
 
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)

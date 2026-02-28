@@ -10,27 +10,29 @@ namespace SpellEditor.Sources.DBC
 
         public SpellCategory()
         {
-
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellCategory.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             int boxIndex = 1;
             Lookups.Add(new DBCBoxContainer(0, "0", 0));
 
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];
-                uint id = (uint) record["ID"];
+                uint id = (uint)record["ID"];
 
                 Lookups.Add(new DBCBoxContainer(id, id.ToString(), boxIndex));
 
                 boxIndex++;
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public List<DBCBoxContainer> GetAllBoxes()

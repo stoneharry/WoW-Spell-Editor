@@ -1,4 +1,5 @@
-uint ID 					
+# 3.3.5 WOTLK SpellItemEnchantment.dbc
+uint ID
 uint charges
 uint SpellDispelType1
 uint SpellDispelType2
@@ -28,7 +29,7 @@ uint sRefName12 string
 uint sRefName13 string
 uint sRefName14 string
 uint sRefName15 string
-uint sRefName16 string
+uint sRefNameFlags
 uint ItemVisuals
 uint Flags
 uint ItemCache

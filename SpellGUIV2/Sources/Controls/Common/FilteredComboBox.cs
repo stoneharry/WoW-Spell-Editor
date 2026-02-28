@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,16 +8,18 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace SpellEditor.Sources.Controls
+namespace SpellEditor.Sources.Controls.Common
 {
     /**
      * A combo box that allows filtering of its values.
      * 
      * Mainly ripped from https://stackoverflow.com/questions/2001842/dynamic-filter-of-wpf-combobox-based-on-text-input
      */
-    public class FilteredComboBox : ComboBox
+    public class FilteredComboBox : ThreadSafeComboBox
     {
         private static readonly TimeSpan RefreshFilterDelay = TimeSpan.FromMilliseconds(1000);
+
+        public static int LastSelectedIndex = 0;
 
         /// <summary>
         /// If true, on lost focus or enter key pressed, checks the text in the combobox. If the text is not present
@@ -72,6 +73,50 @@ namespace SpellEditor.Sources.Controls
             SelectionChanged += (_, __) => shouldTriggerSelectedItemChanged = true;
 
             SelectionEffectivelyChanged += (_, o) => EffectivelySelectedItem = o;
+        }
+
+        public uint GetNumberPrefixFromText(string text = null)
+        {
+            if (SelectedItem == null)
+            {
+                SelectedIndex = 0;
+                SetTextFromIndex(0);
+            }
+
+            text = text != null ? text.TrimStart() : Text.TrimStart();
+            var numStr = "";
+            for (int i = 0; i < text.Length; ++i)
+            {
+                if (char.IsDigit(text[i]))
+                {
+                    numStr += text[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (uint.TryParse(numStr, out var num))
+            {
+                return num;
+            }
+            return 0u;
+        }
+
+        public void SetTextFromIndex(uint index)
+        {
+            ClearFilter();
+            foreach (var item in Items)
+            {
+                var itemText = item.ToString();
+                var num = GetNumberPrefixFromText(itemText);
+                if (num == index)
+                {
+                    ThreadSafeText = itemText;
+                    return;
+                }
+            }
+            ThreadSafeIndex = 0;
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -135,6 +180,10 @@ namespace SpellEditor.Sources.Controls
         private void FilteredComboBox_UserTextChange(object sender, EventArgs e)
         {
             if (TextBoxFreezed) return;
+
+            // todo
+            // LastSelectedIndex = SelectedIndex;
+
             var tb = EditableTextBox;
             if (tb.SelectionStart + tb.SelectionLength == tb.Text.Length)
                 CurrentFilter = tb.Text.Substring(0, tb.SelectionStart).ToLower();

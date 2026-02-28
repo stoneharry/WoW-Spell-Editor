@@ -1,5 +1,4 @@
 ﻿using SpellEditor.Sources.Controls;
-using System;
 using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
@@ -11,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public ItemClass()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\ItemClass.dbc");
- 
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(-1, "None", 0));
             int boxIndex = 1;
             for (uint i = 0; i < Header.RecordCount; ++i)
@@ -23,12 +25,12 @@ namespace SpellEditor.Sources.DBC
                 Lookups.Add(new DBCBoxContainer(id, name, boxIndex));
                 ++boxIndex;
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public List<DBCBoxContainer> GetAllBoxes()

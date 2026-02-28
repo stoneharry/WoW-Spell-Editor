@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace SpellEditor.Sources.Controls
+namespace SpellEditor.Sources.Controls.Common
 {
     public class FriendlyLabel : Label
     {

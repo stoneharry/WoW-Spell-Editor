@@ -9,6 +9,8 @@
     <system:String x:Key="labFilterBtName">根据名字筛选:</system:String>
 	<system:String x:Key="labFilterByEffect">Filter by spell effect:</system:String>
 	<system:String x:Key="labFilterByAura">Filter by spell aura:</system:String>
+    <system:String x:Key="labFilterByTargetA">Filter by Target A:</system:String>
+	<system:String x:Key="labFilterByTargetB">Filter by Target B:</system:String>
     <system:String x:Key="tabEnglish">英语</system:String>
     <system:String x:Key="tabKorean">韩语</system:String>
     <system:String x:Key="tabFrench">法语</system:String>
@@ -39,6 +41,8 @@
     <system:String x:Key="Attributes">属性[第一部分]</system:String>
     <system:String x:Key="Attributes2">属性[第二部分]</system:String>
     <system:String x:Key="Misc">杂项</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDup" xml:space="preserve">Confirm&#x0a;Duplicate</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDel" xml:space="preserve">Confirm&#x0a;Delete</system:String>
     <system:String x:Key="butResetSpellIconID">重设法术图标ID</system:String>
     <system:String x:Key="butResetActiveIconID">重设法术激活时图标ID</system:String>
     <system:String x:Key="labCategory">类别:</system:String>
@@ -82,6 +86,7 @@
     <system:String x:Key="labRequiresSpellFocus">施法需要对象(区域):</system:String>
     <system:String x:Key="labRuneCost">符文消耗:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">法术变量详细描述:</system:String>
+	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
     <system:String x:Key="labSchool">属性类型:</system:String>
     <system:String x:Key="checkboxPhysical">物理</system:String>
     <system:String x:Key="checkboxHoly">神圣</system:String>
@@ -121,6 +126,8 @@
     <system:String x:Key="labEffectBonusMultiplier2" xml:space="preserve">        效果奖励乘数(?):</system:String>
     <system:String x:Key="labDamageMultiplier3" xml:space="preserve">              伤害乘数:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3" xml:space="preserve">        效果奖励乘数(?):</system:String>
+    <system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
+    <system:String x:Key="filterClassMaskSpells">Filter Target Spells:</system:String>
     <system:String x:Key="labItemTool1">Totem 1:</system:String>
     <system:String x:Key="labItemTool2">Totem 2:</system:String>
     <system:String x:Key="labReagent1">消耗物品 1:</system:String>
@@ -168,6 +175,7 @@
     <system:String x:Key="butImportExportWindowImport">导入</system:String>
     <system:String x:Key="butImportExportWindowExport">导出</system:String>
     <system:String x:Key="ImportExportWindowTitle">导入和导出</system:String>
+	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">多语言</system:String>
     <!--#endregion-->
 
@@ -247,6 +255,10 @@
 	<system:String x:Key="VisualKitSoundId">Sound ID</system:String>
 	<system:String x:Key="VisualKitShakeId">Shake ID</system:String>
 	<system:String x:Key="VisualKitFlags">Flags</system:String>
+	<system:String x:Key="VisualEffectMissileList">Missile List (right click to select)</system:String>
+	<system:String x:Key="VisualEffectMissileFilter">Filter Missile List</system:String>
+	<system:String x:Key="VisualMissileSelect">Select missile (saves immediately)</system:String>
+	<system:String x:Key="VisualEffectId">Effect ID</system:String>
 	<system:String x:Key="VisualEffectName">Effect Name</system:String>
 	<system:String x:Key="VisualEffectFilePath">Effect File Path</system:String>
 	<system:String x:Key="VisualEffectSize">Effect Size</system:String>
@@ -262,6 +274,52 @@
 	<system:String x:Key="VisualAttachOffsetPitch">Attachment Offset Pitch</system:String>
 	<system:String x:Key="VisualAttachOffsetRoll">Attachment Offset Roll</system:String>
 	<system:String x:Key="ConvertEffectToAttach">Convert Effect to Attachment</system:String>
+	<system:String x:Key="VisualMissileMotionId">Id</system:String>
+	<system:String x:Key="VisualMissileMotionName">Name</system:String>
+	<system:String x:Key="VisualMissileMotionFlags">Flags</system:String>
+	<system:String x:Key="VisualMissileMotionMissileCount">Missile Count</system:String>
+	<system:String x:Key="VisualMissileMotionScript">Script (Lua)</system:String>
+	<system:String x:Key="VisualHasMissile">Has Missile</system:String>
+	<system:String x:Key="VisualMissileModel">Missile Model</system:String>
+	<system:String x:Key="VisualMissilePathType">Missile Path Type</system:String>
+	<system:String x:Key="VisualMissileDestinationAttachment">Destination Attachment</system:String>
+	<system:String x:Key="VisualMissileSound">Missile Sound</system:String>
+	<system:String x:Key="VisualAnimEventSoundId">Animation Event Sound</system:String>
+	<system:String x:Key="VisualMissileAttachment">Missile Attachment</system:String>
+	<system:String x:Key="VisualMissileFollowGroundHeight">Follow Ground Height</system:String>
+	<system:String x:Key="VisualMissileFollowDropSpeed">Follow Drop Speed</system:String>
+	<system:String x:Key="VisualMissileFollowApproach">Follow Approach</system:String>
+	<system:String x:Key="VisualMissileFollowGroundFlags">Follow Ground Flags</system:String>
+	<system:String x:Key="VisualMissileMotion">Missile Motion</system:String>
+	<system:String x:Key="VisualMissileCastOffsetX">Missile Cast Offset X</system:String>
+	<system:String x:Key="VisualMissileCastOffsetY">Missile Cast Offset Y</system:String>
+	<system:String x:Key="VisualMissileCastOffsetZ">Missile Cast Offset Z</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetX">Missile Impact Offset X</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetY">Missile Impact Offset Y</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetZ">Missile Impact Offset Z</system:String>
+	<system:String x:Key="MissileEntryFlags">Flags</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMin">Default Pitch Min</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMax">Default Pitch Max</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMin">Default Speed Min</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMax">Default Speed Max</system:String>
+	<system:String x:Key="MissileEntryGravity">Gravity</system:String>
+	<system:String x:Key="MissileEntryCollisionRadius">Collision Radius</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMin">Randomise Facing Min</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMax">Randomise Facing Max</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMin">Randomise Pitch Min</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMax">Randomise Pitch Max</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMin">Randomise Speed Min</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMax">Randomise Speed Max</system:String>
+	<system:String x:Key="MissileEntryMaxDuration">Max Duration</system:String>
+	<system:String x:Key="VisualSave">Save</system:String>
+	<system:String x:Key="VisualNew">New</system:String>
+	<system:String x:Key="VisualDelete">Delete</system:String>
+	<system:String x:Key="VisualBase">Base</system:String>
+	<system:String x:Key="VisualMissileModelTab">Missile Model</system:String>
+	<system:String x:Key="VisualKitsAndEffects">Kits &amp; Effects</system:String>
+	<system:String x:Key="VisualMotion">Motion</system:String>
+	<system:String x:Key="VisualScript">Script</system:String>
+	<system:String x:Key="VisualMapBuilder">Map Builder</system:String>
 	<!--#endregion-->
 	
 	<!--#region MapBuilder-->
@@ -407,6 +465,7 @@
         需要魔杖 |
         Unknown 23 |
         需要空手 |
+        Treat as Periodic |
         Can Proc with Triggered |
         Drain Soul |
         Unknown 28 |
@@ -574,6 +633,8 @@
         Test |
         Zombie |
         Metamorphosis |
+		Unknown 1 |
+		Unknown 2 |
         Undead |
         Master Angler |
         Flight (Epic) |
@@ -599,29 +660,31 @@
         非战斗宠物 |
         Gas Cloud
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         None |
         Defense |
-        生命少于 20% |
-        狂暴 |
-        裁决 |
-        猎人招架 |
-        乘胜追击 |
-        Unknown 1 |
-        生命少于 35% |
-        激怒 |
-        Unknown 2 |
-        生命高于 75%
-    </system:String>
-    <system:String x:Key="target_aura_state_strings">
-        None |
-        生命少于 20% |
-        狂暴 |
-        生命少于 35% |
-        点燃 |
-        迅捷治愈 |
-        致命药膏 |
-        流血
+        Healthless 20 Percent |
+        Berserking |
+        Frozen |
+        Judgement |
+        Unknown6 |
+        Hunter Parry |
+        Unknown8 |
+        Unknown9 |
+        Warrior Victory Rush |
+        Unknown11 |
+        Faerie Fire |
+        Healthless 35 Percent |
+        Conflagrate |
+        Swiftmend |
+        Deadly Poison |
+        Enrage |
+        Bleeding |
+        Parry |
+        Unknown20 |
+        Unknown21 |
+        Unknown22 |
+        Health Above 75 Percent
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         非装备 |

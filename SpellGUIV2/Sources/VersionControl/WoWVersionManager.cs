@@ -105,7 +105,11 @@ namespace SpellEditor.Sources.VersionControl
                             "StateDoneKit",
                             "ChannelKit",
                             "InstantAreaKit",
-                            "ImpactAreaKit"
+                            "ImpactAreaKit",
+                            "CasterImpactKit",
+                            "TargetImpactKit",
+                            "MissileTargetingKit",
+                            "PersistentAreaKit"
                         },
                         new string[]
                         {

@@ -5,51 +5,82 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using NLog;
 
 namespace SpellEditor.Sources.Database
 {
-    public class MySQL : IDatabaseAdapter
+    public class MySQL : IDatabaseAdapter, IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
         private Timer _heartbeat;
         public bool Updating { get; set; }
 
-        public MySQL()
+        public MySQL(bool initialiseDatabase)
         {
-            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8;";
+            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8mb4;";
 
-            _connection = new MySqlConnection {ConnectionString = connectionString};
+            _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
-            // Create DB if not exists and use
-            using (var cmd = _connection.CreateCommand())
+
+            if (initialiseDatabase)
             {
-                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
-                cmd.ExecuteNonQuery();
+                // Create DB if not exists and use
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
+                    cmd.ExecuteNonQuery();
+                }
             }
-            // Rather than attempting to recreate the connection on being dropped,
-            //  instead just have a keep alive heartbeat.
+            else
+            {
+                // Use DB
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("USE `{0}`;", Config.Config.Database);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            // Heartbeat keeps the connection alive, otherwise it can be killed by remote for inactivity
             // Object reference needs to be held to prevent garbage collection.
             _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
         }
 
-        ~MySQL()
+        public void Dispose()
         {
-            if (_connection != null && _connection.State != ConnectionState.Closed)
-                _connection.Close();
             _heartbeat?.Dispose();
             _heartbeat = null;
+            if (_connection != null && _connection.State != ConnectionState.Closed)
+            {
+                try
+                {
+                    _connection.Close();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
+                }
+                finally
+                {
+                    _connection.Dispose();
+                }
+            }
         }
 
         public void CreateAllTablesFromBindings()
         {
             lock (_syncLock)
             {
-                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                var bindings = BindingManager.GetInstance().GetAllBindings();
+                foreach (var binding in bindings)
                 {
                     using (var cmd = _connection.CreateCommand())
                     {
-                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
+                        Logger.Trace(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -58,6 +89,7 @@ namespace SpellEditor.Sources.Database
 
         public DataTable Query(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter(query, _connection))
@@ -74,6 +106,7 @@ namespace SpellEditor.Sources.Database
 
         public object QuerySingleValue(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter(query, _connection))
@@ -94,6 +127,7 @@ namespace SpellEditor.Sources.Database
             if (Updating)
                 return;
 
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new MySqlDataAdapter())
@@ -113,6 +147,8 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+
+            Logger.Trace(p);
             lock (_syncLock)
             {
                 using (var cmd = _connection.CreateCommand())
@@ -159,8 +195,8 @@ namespace SpellEditor.Sources.Database
             {
                 str = str.Remove(str.Length - 2, 2);
                 str = str.Append(") ");
-            } 
-            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");   
+            }
+            str.Append("ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;");
             return str.ToString();
         }
 
@@ -176,7 +212,7 @@ namespace SpellEditor.Sources.Database
             return new Timer(
                 (e) => Execute("SELECT 1"),
                 null,
-                TimeSpan.Zero,
+                interval,
                 interval);
         }
     }

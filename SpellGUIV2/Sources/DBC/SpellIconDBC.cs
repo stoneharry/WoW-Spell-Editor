@@ -4,13 +4,18 @@ using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
+using Image = System.Windows.Controls.Image;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -30,15 +35,18 @@ namespace SpellEditor.Sources.DBC
         {
             main = window;
             this.adapter = adapter;
-
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellIcon.dbc");
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
                 var record = Body.RecordMaps[i];
                 uint offset = (uint)record["Name"];
                 if (offset == 0)
                     continue;
-                string name = Reader.LookupStringOffset(offset);
+                string name = LookupStringOffset(offset);
                 uint id = (uint)record["ID"];
 
                 Icon_DBC_Lookup lookup;
@@ -47,12 +55,12 @@ namespace SpellEditor.Sources.DBC
                 lookup.Name = name;
                 Lookups.Add(lookup);
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public void LoadImages(double margin)
@@ -79,73 +87,87 @@ namespace SpellEditor.Sources.DBC
         public void UpdateMainWindowIcons(double margin)
         {
             // adapter.query below caused unhandled exception with main.selectedID as 0.
-            if (adapter == null || main.selectedID == 0)
+            if (adapter == null || main.selectedID == 0 || main.IconGrid.Children.Count > 0)
                 return;
-            
-            // Convert to background worker here
 
-            var container = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID));
-            if (container == null || container.Rows.Count == 0)
+            // Convert to background worker here
+            Task.Run(() =>
             {
-                return;
-            }
-            var res = container.Rows[0];
-            uint iconInt = uint.Parse(res[0].ToString());
-            uint iconActiveInt = uint.Parse(res[1].ToString());
-            // Update currently selected icon, we don't currently handle ActiveIconID
-            main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(GetIconPath(iconInt) + ".blp");
+                var container = adapter.Query(string.Format("SELECT `SpellIconID`,`ActiveIconID` FROM `{0}` WHERE `ID` = '{1}'", "spell", main.selectedID));
+                if (container == null || container.Rows.Count == 0)
+                {
+                    return;
+                }
+                var res = container.Rows[0];
+                uint iconInt = uint.Parse(res[0].ToString());
+                uint iconActiveInt = uint.Parse(res[1].ToString());
+                // Update currently selected icon, we don't currently handle ActiveIconID
+                main.Dispatcher?.BeginInvoke(DispatcherPriority.Normal, new Action(
+                    () => main.CurrentIcon.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(GetIconPath(iconInt) + ".blp")));
+            });
+
             // Load all icons available if we have not already
-            if (main.IconGrid.Children.Count == 0)
-            {
-                var watch = new Stopwatch();
-                watch.Start();
-                LoadAllIcons(margin);
-                watch.Stop();
-                Logger.Info($"Loaded all icons as UI elements in {watch.ElapsedMilliseconds}ms");
-            }
+            var watch = new Stopwatch();
+            watch.Start();
+            LoadAllIcons(margin);
+            watch.Stop();
+            Logger.Info($"Loaded all icons as UI elements in {watch.ElapsedMilliseconds}ms");
         }
 
-        public async void LoadAllIcons(double margin)
+        public void LoadAllIcons(double margin)
         {
-            var pathsToAdd = new List<Icon_DBC_Lookup>();
-            foreach (var entry in Lookups)
+            var pathsToAdd = Lookups.Where(entry =>
             {
                 var path = entry.Name + ".blp";
-                if (File.Exists(path))
-                {
-                    pathsToAdd.Add(entry);
-                }
-            }
+                return File.Exists(path);
+            }).ToList();
             var imagesPool = new List<Image>(pathsToAdd.Count);
-            for (int i = 0; i < pathsToAdd.Count; ++i)
+            foreach (var entry in pathsToAdd)
             {
-                imagesPool.Add(new Image());
-            }
-            for (int i = 0; i < pathsToAdd.Count; ++i)
-            {
-                var entry = pathsToAdd[i];
-                var image = imagesPool[i];
-                image.Width = iconSize == null ? 32 : iconSize.Value;
-                image.Height = iconSize == null ? 32 : iconSize.Value;
-                image.Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value;
-                image.VerticalAlignment = VerticalAlignment.Top;
-                image.HorizontalAlignment = HorizontalAlignment.Left;
-                image.Name = "Index_" + entry.Offset;
-                image.ToolTip = entry.ID + " - " + entry.Name + ".blp";
+                var image = new Image
+                {
+                    Width = iconSize == null ? 32 : iconSize.Value,
+                    Height = iconSize == null ? 32 : iconSize.Value,
+                    Margin = iconMargin == null ? new Thickness(margin, 0, 0, 0) : iconMargin.Value,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Name = "Index_" + entry.Offset,
+                    ToolTip = entry.ID + " - " + entry.Name + ".blp"
+                };
                 image.MouseDown += ImageDown;
+                imagesPool.Add(image);
             }
-            foreach (var image in imagesPool)
-            {
-                main.IconGrid.Children.Add(image);
-            }
-            if (Config.Config.RenderImagesInView)
+            pathsToAdd = null;
+            var renderInView = Config.Config.RenderImagesInView;
+            if (renderInView)
             {
                 main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
             }
-            else
+
+            Task.Run(async () =>
             {
-                imagesPool.ForEach((image) => image.IsVisibleChanged += IsImageVisibleChanged);
-            }
+                var count = 0u;
+                foreach (var image in imagesPool)
+                {
+                    // Yield to allow the UI to update
+                    if (!renderInView && (++count % 150 == 0))
+                        await Task.Delay(count < 800 ? 500 : count < 1500 ? 250 : 100);
+
+                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+                        {
+                            main.IconGrid.Children.Add(image);
+                            if (!renderInView)
+                            {
+                                image.IsVisibleChanged += IsImageVisibleChanged;
+                                // Need to manually fire the event if the image was already visible (this fires async to the image loading)
+                                if (image.IsVisible)
+                                    IsImageVisibleChanged(image, new DependencyPropertyChangedEventArgs(
+                                        UIElement.IsVisibleProperty, false, true));
+                            }
+                        })
+                    );
+                }
+            });
         }
 
         private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -159,7 +181,7 @@ namespace SpellEditor.Sources.DBC
                 if (container != null)
                 {
                     var offset = VisualTreeHelper.GetOffset(container);
-                    var bounds = new Rect(offset.X, offset.Y, container.ActualWidth, container.ActualHeight);
+                    var bounds = new Rect(offset.X, offset.Y - 300, container.ActualWidth, container.ActualHeight + 300);
 
                     var image = container as Image;
                     var source = image.Source;
@@ -180,16 +202,24 @@ namespace SpellEditor.Sources.DBC
             }
         }
 
-        private async void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var image = sender as Image;
             var source = image.Source;
             if (source == null && (bool)e.NewValue)
             {
-                var path = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
-                await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
+                var sourceStr = image.ToolTip.ToString();
+                Task.Run(() =>
+                {
+                    var path = sourceStr.Substring(sourceStr.IndexOf('-') + 2);
+                    // Fetch to get into memory on this thread, then refetch on new thread to use already fetched thread safe
+                    ImageSource newSource = BlpManager.GetInstance().GetImageSourceFromBlpPath(path);
+                    // Important to schedule this with the correct priority. Too lazy = takes forever, too eager = freezes UI briefly
+                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Input, new Action(
+                        () => image.Source = newSource)
+                    );
+                });
             }
-            image.Source = source;
         }
 
         public void ImageDown(object sender, EventArgs e)

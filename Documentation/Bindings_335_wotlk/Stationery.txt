@@ -1,0 +1,5 @@
+# Stationery.dbc structure for 3.3.5a 12340
+uint id
+uint itemId
+uint texture string
+uint flags

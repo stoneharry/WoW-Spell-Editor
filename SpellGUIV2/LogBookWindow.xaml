@@ -1,0 +1,69 @@
+﻿<controls:MetroWindow
+        x:Class="SpellEditor.LogBookWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:c="clr-namespace:SpellEditor.Sources.Controls.Common" 
+        xmlns:local="clr-namespace:SpellEditor.Sources.Controls.SpellSelectList"
+        Title="{DynamicResource butLogBook}"
+        WindowStartupLocation="CenterScreen"
+        Icon="icon.ico"
+        BorderBrush="#1585B5"
+        BorderThickness="2"
+        Width="{Binding ActualWidth, ElementName=MainTabControl, Mode=OneWay}"
+        >
+    <controls:MetroWindow.Resources>
+        <ResourceDictionary>
+            <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
+            <Style TargetType="c:ThreadSafeTextBox" BasedOn="{StaticResource {x:Type TextBox}}"/>
+            <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
+            <local:PinIconConverter x:Key="PinIconConverter"/>
+        </ResourceDictionary>
+    </controls:MetroWindow.Resources>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+    <Grid MinWidth="50" MinHeight="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <Label Content="Max Entries:"/>
+            <TextBox Name="MaxEntriesBox" Width="50" Margin="5,0" Text="9"/>
+            <Button Content="Clear Log" Margin="10,0" Click="ClearLog_Click"/>
+        </StackPanel>
+
+        <ListBox Name="LogBookList" Grid.Row="1" SelectionChanged="LogBookList_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:SpellLogRecord}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+
+                        <local:SpellSelectionEntry 
+                            SpellName="{Binding SpellLogName}" 
+                            SpellIcon="{Binding SpellLogIcon}" />
+
+                        <Button Grid.Column="1"
+                            Content="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
+                            FontSize="14"
+                            Padding="2"
+                            Margin="-8,0,8,0"
+                            Width="24"
+                            Height="24"
+                            Command="{Binding DataContext.TogglePinCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                            CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</controls:MetroWindow>

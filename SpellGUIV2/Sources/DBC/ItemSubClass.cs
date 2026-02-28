@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
 {
@@ -7,14 +6,13 @@ namespace SpellEditor.Sources.DBC
     {
         public Dictionary<string, ItemSubClassLookup> Lookups = new Dictionary<string, ItemSubClassLookup>();
 
-        public ItemSubClassLookup LookupClassAndSubclass(long clazz, uint subclass)
-        {
-            return Lookups.TryGetValue(GetLookupKey(clazz, subclass), out var result) ? result : new ItemSubClassLookup();
-        }
-
         public ItemSubClass()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\ItemSubClass.dbc");
+        }
+
+        public override void LoadGraphicUserInterface()
+        {
 
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
@@ -24,18 +22,22 @@ namespace SpellEditor.Sources.DBC
                 temp.Name = GetAllLocaleStringsForField("displayName", record);
                 Lookups.Add($"{(uint)record["Class"]}-{temp.ID}", temp);
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
-        private string GetLookupKey(long clazz, uint subclass)
+        public ItemSubClassLookup LookupClassAndSubclass(long clazz, uint subclass)
         {
-            return $"{ clazz }-{ subclass }";
+            return Lookups.TryGetValue(GetLookupKey(clazz, subclass), out var result) ? 
+                result : 
+                new ItemSubClassLookup();
         }
+
+        private string GetLookupKey(long clazz, uint subclass) => $"{ clazz }-{ subclass }";
 
         public struct ItemSubClassLookup
         {

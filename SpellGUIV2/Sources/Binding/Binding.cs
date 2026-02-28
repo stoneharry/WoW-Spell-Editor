@@ -85,7 +85,7 @@ namespace SpellEditor.Sources.Binding
         {
             try
             {
-                var table = adapter.Query($"SELECT COUNT(*) FROM `{Name}`");
+                var table = adapter.Query($"SELECT COUNT(*) FROM `{Name.ToLower()}`");
                 if (table.Rows.Count == 1)
                     return int.Parse(table.Rows[0][0].ToString());
                 return 0;
@@ -95,6 +95,11 @@ namespace SpellEditor.Sources.Binding
                 Logger.Info("WARNING: ImportExportWindow triggered: " + e.Message);
                 return -1;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{ Name }${ GetHashCode() }";
         }
     }
 }

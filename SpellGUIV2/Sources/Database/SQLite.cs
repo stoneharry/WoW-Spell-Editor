@@ -4,11 +4,14 @@ using System.Data.SQLite;
 using System.Text;
 using SpellEditor.Sources.Binding;
 using System.Linq;
+using NLog;
 
 namespace SpellEditor.Sources.Database
 {
     public class SQLite : IDatabaseAdapter
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly object _syncLock = new object();
         private readonly SQLiteConnection _connection;
 
@@ -21,7 +24,21 @@ namespace SpellEditor.Sources.Database
             _connection = new SQLiteConnection(connectionString);
             _connection.Open();
         }
-        
+
+        public void Dispose()
+        {
+            try
+            {
+                if (_connection?.State != ConnectionState.Closed)
+                    _connection?.Close();
+                _connection?.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // NOOP, object already disposed
+            }
+        }
+
         // Explitly not handling disposing the connection like MySQL does. SQLite is automatically cleaned up.
 
         public void CreateAllTablesFromBindings()
@@ -32,7 +49,8 @@ namespace SpellEditor.Sources.Database
                 {
                     using (var cmd = _connection.CreateCommand())
                     {
-                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name);
+                        cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
+                        Logger.Trace(cmd.CommandText);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -41,6 +59,7 @@ namespace SpellEditor.Sources.Database
 
         public DataTable Query(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new SQLiteDataAdapter(query, _connection))
@@ -58,6 +77,7 @@ namespace SpellEditor.Sources.Database
 
         public object QuerySingleValue(string query)
         {
+            Logger.Trace(query);
             lock (_syncLock)
             {
                 using (var adapter = new SQLiteDataAdapter(query, _connection))
@@ -69,7 +89,6 @@ namespace SpellEditor.Sources.Database
                         var table = dataSet.Tables[0];
                         return table.Rows.Count > 0 ? table.Rows[0][0] : null;
                     }
-
                 }
             }
         }
@@ -78,6 +97,7 @@ namespace SpellEditor.Sources.Database
         {
             if (Updating)
                 return;
+            Logger.Trace(query);
 
             lock (_syncLock)
             {
@@ -99,6 +119,7 @@ namespace SpellEditor.Sources.Database
             if (Updating)
                 return;
 
+            Logger.Trace(p);
             lock (_syncLock)
             {
                 using (var cmd = _connection.CreateCommand())

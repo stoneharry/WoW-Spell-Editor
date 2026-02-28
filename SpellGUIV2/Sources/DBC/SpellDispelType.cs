@@ -10,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public SpellDispelType()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellDispelType.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             int boxIndex = 0;
             for (uint i = 0; i < Header.RecordCount; ++i)
             {
@@ -22,12 +25,12 @@ namespace SpellEditor.Sources.DBC
 
                 ++boxIndex;
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public List<DBCBoxContainer> GetAllBoxes()
@@ -37,10 +40,8 @@ namespace SpellEditor.Sources.DBC
 
         public int UpdateDispelSelection(uint ID)
         {
-            if (ID == 0)
-            {
-                return 0;
-            }
+            if (Lookups.Count == 0)
+                LoadGraphicUserInterface();
             for (int i = 0; i < Header.RecordCount; ++i)
             {
                 if (ID == Lookups[i].ID)

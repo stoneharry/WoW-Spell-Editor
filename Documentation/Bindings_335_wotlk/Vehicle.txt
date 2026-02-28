@@ -1,0 +1,41 @@
+# Vehicle.dbc structure for 3.3.5a 12340
+uint id
+uint flags
+float turnSpeed
+float pitchSpeed
+float pitchMin
+float pitchMax
+uint seatID1
+uint seatID2
+uint seatID3
+uint seatID4
+uint seatID5
+uint seatID6
+uint seatID7
+uint seatID8
+float mouseLookOffsetPitch
+float cameraFadeDistScalarMin
+float cameraFadeDistScalarMax
+float cameraPitchOffset
+float facingLimitRight
+float facingLimitLeft
+float msslTrgtTurnLingering
+float msslTrgtPitchLingering
+float msslTrgtMouseLingering
+float msslTrgtEndOpacity
+float msslTrgtArcSpeed
+float msslTrgtArcRepeat
+float msslTrgtArcWidth
+float msslTrgtImpactRadius1
+float msslTrgtImpactRadius2
+uint msslTrgtArcTexture string
+uint msslTrgtImpactTexture string
+uint msslTrgtImpactModel1 string
+uint msslTrgtImpactModel2 string
+float cameraYawOffset
+uint uiLocomotionType
+float msslTrgtImpactTexRadius
+uint uiSeatIndicatorType
+int PowerDisplay1
+int PowerDisplay2
+int PowerDisplay3

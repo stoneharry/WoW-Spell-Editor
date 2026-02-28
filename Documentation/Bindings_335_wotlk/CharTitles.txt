@@ -1,0 +1,38 @@
+# CharTitles.dbc struct for 3.3.5 WOTLK
+uint ID
+int unk1
+uint maleTitle1 string
+uint maleTitle2 string
+uint maleTitle3 string
+uint maleTitle4 string
+uint maleTitle5 string
+uint maleTitle6 string
+uint maleTitle7 string
+uint maleTitle8 string
+uint maleTitle9 string
+uint maleTitle10 string
+uint maleTitle11 string
+uint maleTitle12 string
+uint maleTitle13 string
+uint maleTitle14 string
+uint maleTitle15 string
+uint maleTitle16 string
+uint maleTitleFlags
+uint femaleTitle1 string
+uint femaleTitle2 string
+uint femaleTitle3 string
+uint femaleTitle4 string
+uint femaleTitle5 string
+uint femaleTitle6 string
+uint femaleTitle7 string
+uint femaleTitle8 string
+uint femaleTitle9 string
+uint femaleTitle10 string
+uint femaleTitle11 string
+uint femaleTitle12 string
+uint femaleTitle13 string
+uint femaleTitle14 string
+uint femaleTitle15 string
+uint femaleTitle16 string
+uint femaleTitleFlags
+int titleMaskId

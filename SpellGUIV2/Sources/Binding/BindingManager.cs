@@ -11,7 +11,9 @@ namespace SpellEditor.Sources.Binding
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static BindingManager _instance = new BindingManager();
+        private static volatile BindingManager _instance;
+        private static readonly object _lock = new object();
+
         private List<Binding> _bindings;
         
         private BindingManager()
@@ -53,6 +55,15 @@ namespace SpellEditor.Sources.Binding
 
         public static BindingManager GetInstance()
         {
+            if (_instance != null)
+                return _instance;
+
+            lock (_lock)
+            {
+                if (_instance == null)
+                    _instance = new BindingManager();
+            }
+
             return _instance;
         }
 

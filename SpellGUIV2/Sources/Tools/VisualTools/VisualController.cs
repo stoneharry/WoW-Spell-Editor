@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SpellEditor.Sources.Controls;
-using SpellEditor.Sources.Controls.Visual;
+using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Database;
 using SpellEditor.Sources.VersionControl;
 
@@ -12,26 +12,33 @@ namespace SpellEditor.Sources.Tools.VisualTools
     {
         private static VisualKitListEntry _CopiedKitEntry;
         private static VisualEffectListEntry _CopiedEffectEntry;
-        public readonly List<IVisualListEntry> VisualKits;
+        public readonly List<IListEntry> VisualKits;
         public readonly uint VisualId;
+        public uint MissileModel { get; private set; }
+        public uint MissileMotion { get; set; }
         public uint NextLoadAttachmentId;
         public bool CancelNextLoad = false;
 
         public VisualController(uint id, IDatabaseAdapter adapter)
         {
             VisualId = id;
-            VisualKits = GetAllKitEntries(adapter);
+            if (WoWVersionManager.IsTbcOrGreaterSelected)
+            {
+                VisualKits = GetAllKitEntries(adapter);
+            }
         }
 
-        private List<IVisualListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
+        private List<IListEntry> GetAllKitEntries(IDatabaseAdapter adapter)
         {
-            var kitList = new List<IVisualListEntry>();
+            var kitList = new List<IListEntry>();
             var visualResults = adapter.Query("SELECT * FROM spellvisual WHERE ID = " + VisualId);
             if (visualResults == null || visualResults.Rows.Count == 0)
             {
                 return kitList;
             }
             var visualRecord = visualResults.Rows[0];
+            MissileModel = uint.Parse(visualRecord["MissileModel"].ToString());
+            MissileMotion = uint.Parse(visualRecord["MissileMotion"].ToString());
             foreach (var key in WoWVersionManager.GetInstance().LookupKeyResource().KitColumnKeys)
             {
                 var kitIdStr = visualRecord[key].ToString();
@@ -60,7 +67,7 @@ namespace SpellEditor.Sources.Tools.VisualTools
 
         public static VisualEffectListEntry GetCopiedEffectEntry() => _CopiedEffectEntry;
 
-        public List<string> GetAvailableFields(IVisualListEntry item)
+        public List<string> GetAvailableFields(IListEntry item)
         {
             List<string> availableKeys;
             List<string> usedKeys;

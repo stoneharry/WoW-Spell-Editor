@@ -3,13 +3,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
+        xmlns:c="clr-namespace:SpellEditor.Sources.Controls.Common"
         Title="{DynamicResource ImportExportWindowTitle}"
         WindowStartupLocation="CenterScreen"
         Icon="icon.ico"
         Loaded="_Loaded"
         BorderBrush="#1585B5"
-        BorderThickness="2">
+        BorderThickness="2"
+        Width="{Binding ActualWidth, ElementName=MainTabControl, Mode=OneWay}"
+        >
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <Style TargetType="c:ThreadSafeComboBox" BasedOn="{StaticResource {x:Type ComboBox}}"/>
@@ -17,12 +19,20 @@
             <Style TargetType="c:ThreadSafeCheckBox" BasedOn="{StaticResource {x:Type CheckBox}}"/>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
     <Grid>
-        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="TabControl_SelectionChanged">
-        <TabItem Header="{DynamicResource butImportExportWindowImport}">
-            <ScrollViewer>
+        <TabControl Name="MainTabControl" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,10,10" SelectionChanged="MainTabControl_SelectionChanged">
+            <TabItem Header="{DynamicResource butImportExportWindowImport}">
                 <Grid Name="ImportGrid">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                         <ColumnDefinition Width="AUTO"/>
                     </Grid.ColumnDefinitions>
@@ -31,36 +41,47 @@
                         <RowDefinition Height="AUTO"/>
                         <RowDefinition Height="AUTO"/>
                         <RowDefinition Height="AUTO"/>
-                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label Content="The required DBCs are checked by default." Margin="10" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
-                    <Button Content="Import Checked DBC Files" Margin="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Click="ImportClick"/>
-                    <UniformGrid Name="ImportGridDbcs" Columns="1" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"/>
+                    <Button Name="ImportClickBtn" Content="Import Checked DBC Files" Margin="10" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Click="ImportClick"/>
+                    <Label Name="ImportLoadedCount" Margin="5" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+                    <CheckBox Name="ImportSelectAll" Content="Select All" Margin="5" Grid.Row="0" Grid.Column="3" Checked="SelectAllChanged" Unchecked="SelectAllChanged"/>
+                    <Label Content="Import Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                    <ComboBox Name="ImportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="3"/>
+                    <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="4" MinWidth="500">
+                        <UniformGrid Name="ImportGridDbcs" Columns="2"/>
+                    </ScrollViewer>
                 </Grid>
-            </ScrollViewer>
-        </TabItem>
+            </TabItem>
             <TabItem Header="{DynamicResource butImportExportWindowExport}">
-                <ScrollViewer>
-                    <Grid Name="ExportGrid" Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="AUTO"/>
-                            <ColumnDefinition Width="AUTO"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="AUTO"/>
-                            <RowDefinition Height="AUTO"/>
-                            <RowDefinition Height="AUTO"/>
-                            <RowDefinition Height="AUTO"/>
-                            <RowDefinition Height="AUTO"/>
-                        </Grid.RowDefinitions>
-                        <Button Content="{DynamicResource ExportCheckedFiles}" Margin="10" Click="ExportClick" Grid.Row="0" Grid.Column="0"/>
-                        <Button Content="{DynamicResource ExportCheckedFilesMpq}" Margin="10" Click="MpqClick" Grid.Row="0" Grid.Column="1"/>
-                        <Label Content="{DynamicResource ExportMpqName}" HorizontalAlignment="Right" Margin="5" Grid.Row="1" Grid.Column="0"/>
-                        <TextBox Name="ExportMpqNameTxt" Text="patch-4.mpq" Margin="10,5,10,5" Grid.Row="1" Grid.Column="1"/>
-                        <Label Content="{DynamicResource TablesToExport}" Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                        <UniformGrid Name="ExportGridDbcs" Columns="1" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                    </Grid>
-                </ScrollViewer>
+                <Grid Name="ExportGrid" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                        <ColumnDefinition Width="AUTO"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="AUTO"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Name="ExportClickBtn1" Content="{DynamicResource ExportCheckedFiles}" Margin="10" Click="ExportClick" Grid.Row="0" Grid.Column="0"/>
+                    <Button Name="ExportClickBtn2" Content="{DynamicResource ExportCheckedFilesMpq}" Margin="10" Click="MpqClick" Grid.Row="0" Grid.Column="1"/>
+                    <Label Content="{DynamicResource ExportMpqName}" HorizontalAlignment="Right" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Name="ExportMpqNameTxt" Text="patch-4.mpq" Margin="10,5,10,5" Grid.Row="1" Grid.Column="1"/>
+                    <Label Content="{DynamicResource TablesToExport}" Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
+                    <Label Name="ExportLoadedCount" Margin="5" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"/>
+                    <CheckBox Name="ExportSelectAll" Content="Select All" Margin="5" Grid.Row="0" Grid.Column="3" Checked="SelectAllChanged" Unchecked="SelectAllChanged"/>
+                    <Label Content="Export Type:"  Margin="5" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <ComboBox Name="ExportTypeCombo" Margin="5" Grid.Row="1" Grid.Column="3"/>
+                    <ScrollViewer Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="4" MinWidth="500">
+                        <UniformGrid Name="ExportGridDbcs" Columns="2"/>
+                    </ScrollViewer>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

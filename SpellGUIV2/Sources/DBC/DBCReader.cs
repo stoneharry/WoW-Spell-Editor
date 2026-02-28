@@ -2,6 +2,7 @@
 using SpellEditor.Sources.Binding;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,35 +15,18 @@ namespace SpellEditor.Sources.DBC
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private string _filePath;
-        private long _fileSize;
         private long _filePosition;
         private DBCHeader _header;
-        private Dictionary<uint, VirtualStrTableEntry> _stringsMap;
 
         public DBCReader(string filePath)
         {
             _filePath = filePath;
         }
 
-        public string LookupStringOffset(uint offset)
-        {
-            if (_stringsMap == null)
-                return "";
-            if (!_stringsMap.ContainsKey(offset))
-                throw new KeyNotFoundException("A string column points to invalid data, unable to find string offset" +
-                    $" [{offset}]. This is most likely caused by a column being marked as a string where it is not a string.");
-            return _stringsMap[offset].Value;
-        }
-
-        public void CleanStringsMap()
-        {
-            _stringsMap = null;
-        }
-
         /**
          * Reads a DBC record from a given binary reader.
          */
-        private Struct ReadStruct<Struct>(BinaryReader reader, byte[] readBuffer)
+        private Struct ReadStruct<Struct>(byte[] readBuffer)
         {
             Struct structure;
             GCHandle handle;
@@ -69,14 +53,13 @@ namespace SpellEditor.Sources.DBC
             DBCHeader header;
             using (FileStream fileStream = new FileStream(_filePath, FileMode.Open))
             {
-                _fileSize = fileStream.Length;
                 int count = Marshal.SizeOf(typeof(DBCHeader));
                 byte[] readBuffer = new byte[count];
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
                     readBuffer = reader.ReadBytes(count);
                     _filePosition = reader.BaseStream.Position;
-                    header = ReadStruct<DBCHeader>(reader, readBuffer);
+                    header = ReadStruct<DBCHeader>(readBuffer);
                 }
             }
             _header = header;
@@ -88,7 +71,7 @@ namespace SpellEditor.Sources.DBC
          * array of key value pairs inside the body. The key value pairs are
          * column name to column value.
          */
-        public void ReadDBCRecords(DBCBody body, string bindingName)
+        public DBCBody ReadDBCRecords(string bindingName)
         {
             var binding = BindingManager.GetInstance().FindBinding(bindingName);
             if (binding == null)
@@ -98,9 +81,13 @@ namespace SpellEditor.Sources.DBC
             if (_header.FieldCount != binding.CalcFieldCount())
                 throw new Exception($"Binding [{_filePath}] field count does not match the DBC field count; expected [{binding.CalcFieldCount()}] got [{_header.FieldCount}].");
 
-            body.RecordMaps = new Dictionary<string, object>[_header.RecordCount];
+            var body = new DBCBody
+            {
+                RecordMaps = new Dictionary<string, object>[_header.RecordCount]
+            };
             for (int i = 0; i < _header.RecordCount; ++i)
                 body.RecordMaps[i] = new Dictionary<string, object>((int)_header.FieldCount);
+
             using (FileStream fileStream = new FileStream(_filePath, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fileStream))
@@ -147,6 +134,8 @@ namespace SpellEditor.Sources.DBC
                     _filePosition = reader.BaseStream.Position;
                 }
             }
+
+            return body;
         }
 
         /**
@@ -154,46 +143,50 @@ namespace SpellEditor.Sources.DBC
         * The position is saved into the map value so that spell records can
         * reverse lookup strings.
         */
-        public void ReadStringBlock()
+        public Dictionary<uint, VirtualStrTableEntry> ReadStringBlock()
         {
+            // Read string block into memory
             string StringBlock;
             using (FileStream fileStream = new FileStream(_filePath, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
                     reader.BaseStream.Position = _filePosition;
-                    _stringsMap = new Dictionary<uint, VirtualStrTableEntry>();
-
                     StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(_header.StringBlockSize));
-                    string temp = "";
-
-                    uint lastString = 0;
-                    uint counter = 0;
-                    int length = new System.Globalization.StringInfo(StringBlock).LengthInTextElements;
-                    while (counter < length)
-                    {
-                        var t = StringBlock[(int) counter];
-                        if (t == '\0')
-                        {
-                            VirtualStrTableEntry n = new VirtualStrTableEntry();
-
-                            n.Value = temp;
-                            n.NewValue = 0;
-
-                            _stringsMap.Add(lastString, n);
-
-                            lastString += (uint)Encoding.UTF8.GetByteCount(temp) + 1;
-
-                            temp = "";
-                        }
-                        else
-                        {
-                            temp += t;
-                        }
-                        ++counter;
-                    }
                 }
             }
+
+            // create offsets to string entry lookups
+            var stringsMap = new Dictionary<uint, VirtualStrTableEntry>();
+           
+            string strTokens = "";
+            uint strOffset = 0;
+            int strBlockOffset = 0;
+            int strBlockLength = new StringInfo(StringBlock).LengthInTextElements;
+            while (strBlockOffset < strBlockLength)
+            {
+                var token = StringBlock[strBlockOffset];
+                // Read until we hit a string terminator
+                if (token == '\0')
+                {
+                    stringsMap.Add(strOffset, new VirtualStrTableEntry
+                    {
+                        Value = strTokens,
+                        NewValue = 0
+                    });
+
+                    // account for the string terminator char (+ 1)
+                    strOffset += (uint)Encoding.UTF8.GetByteCount(strTokens) + 1;
+                    strTokens = "";
+                }
+                else
+                {
+                    strTokens += token;
+                }
+                ++strBlockOffset;
+            }
+
+            return stringsMap;
         }
     }
 }

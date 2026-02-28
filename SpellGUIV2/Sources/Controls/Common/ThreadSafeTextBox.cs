@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace SpellEditor.Sources.Controls
+namespace SpellEditor.Sources.Controls.Common
 {
     public class ThreadSafeTextBox : TextBox
     {

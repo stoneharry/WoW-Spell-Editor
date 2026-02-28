@@ -7,23 +7,9 @@ namespace SpellEditor.Sources.DBC
 {
     class SpellDBC : AbstractDBC
     {
-        public bool LoadDBCFile(MainWindow window)
+        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName, ImportExportType _type)
         {
-            try
-            {
-                ReadDBCFile(Config.Config.DbcDirectory + "\\Spell.dbc");
-            }
-            catch (Exception ex)
-            {
-                window.HandleErrorMessage(ex.Message);
-                return false;
-            }
-            return true;
-        }
-
-        public Task ImportToSql(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc UpdateProgress, string bindingName)
-        {
-            return ImportToSql(adapter, UpdateProgress, "ID", bindingName);
+            return ImportTo(adapter, UpdateProgress, "ID", bindingName, _type);
         }
 
         public static DataRow GetRecordById(uint id, MainWindow mainWindows)
@@ -34,9 +20,9 @@ namespace SpellEditor.Sources.DBC
             return null;
         }
 
-        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress)
+        public Task Export(IDatabaseAdapter adapter, MainWindow.UpdateProgressFunc updateProgress, ImportExportType _type)
         {
-            return ExportToDbc(adapter, updateProgress, "ID", "Spell");
+            return ExportTo(adapter, updateProgress, "ID", "Spell", _type);
         }
     }
 }

@@ -1,0 +1,5 @@
+# MovieVariation.dbc structure for 3.3.5a WOTLK
+uint ID
+uint MovieID
+# Refers to FileData.dbc and MovieFileData.dbc
+uint FileDataID

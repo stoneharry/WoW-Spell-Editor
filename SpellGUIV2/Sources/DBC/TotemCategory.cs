@@ -1,5 +1,4 @@
 ﻿using SpellEditor.Sources.Controls;
-using System;
 using System.Collections.Generic;
 
 namespace SpellEditor.Sources.DBC
@@ -11,7 +10,10 @@ namespace SpellEditor.Sources.DBC
         public TotemCategory()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\TotemCategory.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             Lookups.Add(new DBCBoxContainer(0, "None", 0));
 
             int boxIndex = 1;
@@ -19,18 +21,18 @@ namespace SpellEditor.Sources.DBC
             {
                 var record = Body.RecordMaps[i];
                 string name = GetAllLocaleStringsForField("Name", record);
-                uint id = (uint) record["ID"];
+                uint id = (uint)record["ID"];
 
                 Lookups.Add(new DBCBoxContainer(id, name, boxIndex));
 
                 ++boxIndex;
             }
-            Reader.CleanStringsMap();
+
             // In this DBC we don't actually need to keep the DBC data now that
             // we have extracted the lookup tables. Nulling it out may help with
             // memory consumption.
-            Reader = null;
-            Body = null;
+            CleanStringsMap();
+            CleanBody();
         }
 
         public List<DBCBoxContainer> GetAllBoxes()

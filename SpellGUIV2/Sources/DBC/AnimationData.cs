@@ -1,5 +1,4 @@
 ﻿using SpellEditor.Sources.Controls;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +11,10 @@ namespace SpellEditor.Sources.DBC
         public AnimationData()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\AnimationData.dbc");
+        }
 
+        public override void LoadGraphicUserInterface()
+        {
             BuildLookups();
         }
 
@@ -23,7 +25,7 @@ namespace SpellEditor.Sources.DBC
             {
                 var id = uint.Parse(record["ID"].ToString());
                 var nameOffset = uint.Parse(record["Name"].ToString());
-                var name = nameOffset > 0 ? Reader.LookupStringOffset(nameOffset) : "";
+                var name = nameOffset > 0 ? LookupStringOffset(nameOffset) : "";
                 var precedingAnimId = uint.Parse(record["FallbackAnimationID"].ToString());
                 if (precedingAnimId > 0)
                 {
@@ -47,7 +49,7 @@ namespace SpellEditor.Sources.DBC
                 return false;
             });
             var nameOffset = uint.Parse(record["Name"].ToString());
-            return nameOffset > 0 ? Reader.LookupStringOffset(nameOffset) : string.Empty;
+            return nameOffset > 0 ? LookupStringOffset(nameOffset) : string.Empty;
         }
 
         public List<DBCBoxContainer> GetAllBoxes()
