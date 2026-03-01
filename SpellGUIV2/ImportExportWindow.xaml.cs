@@ -258,10 +258,9 @@ namespace SpellEditor
                         bindingList.Remove(_SpellBindingName);
                         // Load data
                         var abstractDbc = GetDBC(_SpellBindingName, isImport);
-                        using (var adapter = AdapterFactory.Instance.GetAdapter(false))
-                        {
-                            StartImportExport(abstractDbc, adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
-                        }
+                        var adapter = AdapterFactory.Instance.GetAdapter(false);
+                        StartImportExport(abstractDbc, adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        adapters.Add(adapter);
                     }
 
                     // Spawn adapters
