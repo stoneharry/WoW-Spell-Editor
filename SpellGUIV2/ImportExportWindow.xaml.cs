@@ -248,7 +248,8 @@ namespace SpellEditor
             {
                 var bag = new ConcurrentBag<Task>();
                 var adapters = new List<IDatabaseAdapter>();
-                var adapterIndex = 0;
+                bool isSpellImport = bindingList.Contains(_SpellBindingName);
+                var adapterIndex = isSpellImport ? 1 : 0;
 
                 try
                 {
@@ -278,7 +279,7 @@ namespace SpellEditor
                             var adapter = adapters[adapterIndex];
                             if (++adapterIndex >= adapters.Count)
                             {
-                                adapterIndex = 0;
+                                adapterIndex = isSpellImport ? 1 : 0;
                             }
 
                             // Perform operation
