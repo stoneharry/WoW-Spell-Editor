@@ -34,6 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mirabeau.MySql.Library, Version=4.0.0.110, Culture=neutral, PublicKeyToken=15c121043ee5c025, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlHelper.4.0.0.110\lib\net45\Mirabeau.MySql.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirabeau.Sql, Version=4.0.0.110, Culture=neutral, PublicKeyToken=1d6b773a37774738, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlHelper.4.0.0.110\lib\net45\Mirabeau.Sql.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.7.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.7.9\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpellGUIV2\SpellEditor.csproj">

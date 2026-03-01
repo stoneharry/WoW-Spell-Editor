@@ -14,7 +14,12 @@ namespace SpellEditor.Sources.DBC
 
         public static DataRow GetRecordById(uint id, MainWindow mainWindows)
         {
-            DataRowCollection Result = mainWindows.GetDBAdapter().Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}'", id)).Rows;
+            return GetRecordById(id, mainWindows.GetDBAdapter());
+        }
+
+        public static DataRow GetRecordById(uint id, IDatabaseAdapter adapter)
+        {
+            DataRowCollection Result = adapter.Query(string.Format("SELECT * FROM `spell` WHERE `ID` = '{0}'", id)).Rows;
             if (Result != null && Result.Count == 1)
                 return Result[0];
             return null;

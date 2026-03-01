@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SpellEditor.Sources.Database;
 using SpellEditor.Sources.Tools.SpellStringTools;
 using System;
 using System.Collections.Generic;
@@ -26,14 +27,19 @@ namespace SpellEditor.Sources.SpellStringTools
         public static readonly string TOKEN_REGEX = 
             $"{MODIFY_FORMULA_REGEX }|{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
 
-        protected string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
+        protected string ResolveReference(string reference, DataRow spell, IDatabaseAdapter adapter)
         {
-            return SpellStringReferenceResolver.GetParsedForm(reference, spell, mainWindow);
+            return SpellStringReferenceResolver.GetParsedForm(reference, spell, adapter);
         }
 
         // Parse a string like: "Hello world 1 + 5 + 7 = ${1 + 5 + 7}, 5 / 10.15 - 1 + 0.25 = ${5/10.15-1+0.25} and $/10;17057s1"
         // Can parse references like "$s1"
-        public string ParseString(string str, DataRow spell, MainWindow mainWindow)
+        public string ParseString(string str, DataRow spell, MainWindow window)
+        {
+            return ParseString(str, spell, window.GetDBAdapter());
+        }
+
+        public string ParseString(string str, DataRow spell, IDatabaseAdapter adapter)
         {
             // Replace locale strings first
             foreach (var localeMatch in Regex.Matches(str, LOCALE_STR_REGEX))
@@ -59,7 +65,7 @@ namespace SpellEditor.Sources.SpellStringTools
             foreach (var formula in formulas)
             {
                 Logger.Info(formula + "\t----\t" + "Processing");
-                str = str.Replace(formula, ParseFormula(formula, spell, mainWindow));
+                str = str.Replace(formula, ParseFormula(formula, spell, adapter));
             }
             return str;
         }
@@ -77,10 +83,10 @@ namespace SpellEditor.Sources.SpellStringTools
         }
 
         // Parse a formula string resolving all references and calculating arithmetic
-        private string ParseFormula(string formula, DataRow spell, MainWindow mainWindow)
+        private string ParseFormula(string formula, DataRow spell, IDatabaseAdapter adapter)
         {
             var matches = Regex.Matches(formula, TOKEN_REGEX);
-            var tokens = TokenizeFormulaMatches(matches, spell, mainWindow);
+            var tokens = TokenizeFormulaMatches(matches, spell, adapter);
             // Derive token values
             for (int index = 0; index < tokens.Count; ++index)
             {
@@ -188,7 +194,7 @@ namespace SpellEditor.Sources.SpellStringTools
         }
 
         // Tokenises all the token string matches found in the formula and resolves any references
-        private List<Token> TokenizeFormulaMatches(MatchCollection matches, DataRow spell, MainWindow mainWindow)
+        private List<Token> TokenizeFormulaMatches(MatchCollection matches, DataRow spell, IDatabaseAdapter adapter)
         {
             var tokens = new List<Token>(matches.Count);
             foreach (var currentMatch in matches)
@@ -214,14 +220,14 @@ namespace SpellEditor.Sources.SpellStringTools
                         }
                     case TokenType.REFERENCE:
                         {
-                            token.ResolvedValue = ResolveReference(token.Value, spell, mainWindow);
+                            token.ResolvedValue = ResolveReference(token.Value, spell, adapter);
                             if (token.ResolvedValue != null && !token.ResolvedValue.ToString().StartsWith("$"))
                                 token.Type = TokenType.NUMBER;
                             break;
                         }
                     case TokenType.MODIFY_FORMULA:
                         {
-                            token.ResolvedValue = ResolveModifyFormula(token.Value, spell, mainWindow);
+                            token.ResolvedValue = ResolveModifyFormula(token.Value, spell, adapter);
                             break;
                         }
                     default:

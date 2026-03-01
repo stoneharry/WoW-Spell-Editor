@@ -1,11 +1,16 @@
-﻿using SpellEditor.Sources.Binding;
+﻿using MySql.Data.MySqlClient;
+using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.SpellStringTools;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,16 +42,6 @@ namespace HeadlessExport
             m_Queue.Add(value);
         }
 
-        static int PrioritiseSpellCompareBindings(Binding b1, Binding b2)
-        {
-            if (b1.ToString().Contains("Spell$"))
-                return -1;
-            if (b2.ToString().Contains("Spell$"))
-                return 1;
-            
-            return string.Compare(b1.ToString(), b2.ToString());
-        }
-
         static void Main(string[] args)
         {
             var adapters = new List<IDatabaseAdapter>();
@@ -56,44 +51,79 @@ namespace HeadlessExport
                 Config.Init();
                 Config.connectionType = Config.ConnectionType.MySQL;
 
-                SpawnAdapters(ref adapters);
-                var adapterIndex = 0;
+                SpawnAdapters(ref adapters, 10);
 
-                Console.WriteLine("Reading all bindings...");
-                var bindingManager = BindingManager.GetInstance();
-                Console.WriteLine($"Got {bindingManager.GetAllBindings().Count()} bindings to export");
+                var descriptions = new List<KeyValuePair<string, string>>();
+                var adapter = adapters[1];
 
-                Console.WriteLine("Exporting all DBC files...");
-                var taskList = new List<Task<Stopwatch>>();
-                _TaskNameLookup = new ConcurrentDictionary<int, string>();
-                _TaskProgressLookup = new ConcurrentDictionary<int, int>();
-                _HeadlessDbcLookup = new ConcurrentDictionary<int, HeadlessDbc>();
-                var exportWatch = new Stopwatch();
-                exportWatch.Start();
-                var bindings = bindingManager.GetAllBindings();
-                Array.Sort(bindings, PrioritiseSpellCompareBindings);
-                foreach (var binding in bindings)
+                WriteLine("Getting all spell data...");
+                using (var query = adapter.Query("SELECT * FROM spell"))
                 {
-                    Console.WriteLine($"Exporting {binding.Name} using Adapter{adapterIndex + 1}...");
-                    var adapter = adapters[adapterIndex++];
-                    if (adapterIndex >= adapters.Count)
-                        adapterIndex = 0;
-                    var dbc = new HeadlessDbc();
-                    var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name, ImportExportType.DBC);
-                    _TaskNameLookup.TryAdd(dbc.TaskId, binding.Name);
-                    _TaskNameLookup.TryAdd(task.Id, binding.Name);
-                    _HeadlessDbcLookup.TryAdd(dbc.TaskId, dbc);
-                    taskList.Add(task);
+                    var rows = query.AsEnumerable();
+                    var totalRows = rows.Count();
+                    int progress = 0;
+                    foreach (var row in rows)
+                    {
+                        if (++progress % 100 == 0)
+                        {
+                            int percent = (progress / totalRows) * 100;
+                            WriteLine($"====== Progress: ===== {percent}%");
+                            //controller.SetProgress(percent);
+                        }
+                        var id = row["id"].ToString();
+                        var desc = row["spelldescription0"].ToString();
+                        if (desc.Trim().Length == 0)
+                            continue;
+                        try
+                        {
+                            descriptions.Add(new KeyValuePair<string, string>(id, SpellStringParser.ParseString(desc, row, adapter)));
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLine(ex.ToString() + "\n" + ex.StackTrace);
+                        }
+                    }
                 }
-                Task.WaitAll(taskList.ToArray());
-                exportWatch.Stop();
-                taskList.Sort((x, y) => x.Result.ElapsedMilliseconds.CompareTo(y.Result.ElapsedMilliseconds));
-                taskList.ForEach(task =>
+                var sb = new StringBuilder();
+                var count = 0;
+                sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                foreach (var pair in descriptions)
                 {
-                    var bindingName = _TaskNameLookup.Keys.Contains(task.Id) ? _TaskNameLookup[task.Id] : task.Id.ToString();
-                    Console.WriteLine($" - [{bindingName}]: {Math.Round(task.Result.Elapsed.TotalSeconds, 2)} seconds");
-                });
-                Console.WriteLine($"Finished exporting {taskList.Count()} dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
+
+                    sb.Append($"({pair.Key}, \"{MySqlHelper.EscapeString(pair.Value)}\"), ");
+                    if (++count % 500 == 0)
+                    {
+                        sb = sb.Remove(sb.Length - 2, 2);
+                        try
+                        {
+                            adapter.Execute(sb.ToString());
+                            sb = new StringBuilder();
+                            sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLine("Failed on query:\n" + sb.ToString());
+                            WriteLine(ex.ToString());
+                            sb = new StringBuilder();
+                            sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                        }
+                    }
+                }
+                if (sb.Length > 0)
+                {
+                    sb = sb.Remove(sb.Length - 2, 2);
+                    try
+                    {
+                        adapter.Execute(sb.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLine("Failed on query:\n" + sb.ToString());
+                        WriteLine(ex.ToString());
+                        sb = new StringBuilder();
+                        sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -105,11 +135,10 @@ namespace HeadlessExport
             }
         }
 
-        private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters)
+        private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters, int numConnections)
         {
             var tasks = new List<Task<IDatabaseAdapter>>();
             int numBindings = BindingManager.GetInstance().GetAllBindings().Length;
-            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
             WriteLine($"Spawning {numConnections} adapters...");
             var timer = new Stopwatch();
             timer.Start();
@@ -129,35 +158,6 @@ namespace HeadlessExport
             }
             timer.Stop();
             WriteLine($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
-        }
-
-        public static void SetProgress(double value, int taskId = 0)
-        {
-            int reportValue = Convert.ToInt32(value * 100D);
-            int id = Task.CurrentId.GetValueOrDefault(0);
-            var name = _TaskNameLookup.Keys.Contains(id) ? _TaskNameLookup[id] : string.Empty;
-            if (_TaskProgressLookup.TryGetValue(id, out var savedProgress))
-            {
-                if (reportValue > (savedProgress + 5))
-                {
-                    if (_TaskProgressLookup.TryUpdate(id, reportValue, savedProgress))
-                    {
-                        LogProgress(name, id, reportValue);
-                    }
-                }
-            }
-            else
-            {
-                _TaskProgressLookup.TryAdd(id, reportValue);
-            }
-        }
-
-        public static void LogProgress(string name, int id, int reportValue)
-        {
-            var dbc = _HeadlessDbcLookup.Keys.Contains(id) ? _HeadlessDbcLookup[id] : null;
-            var elapsedStr = dbc != null ? $"{Math.Round(dbc.Timer.Elapsed.TotalSeconds, 2)}s, " : string.Empty;
-            var nameStr = name.Length > 0 ? name : id.ToString();
-            WriteLine($" [{nameStr}] Export: {elapsedStr}{reportValue}%");
         }
     }
 }

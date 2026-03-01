@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SpellEditor.Sources.Database;
 using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.VersionControl;
 using System;
@@ -18,7 +19,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private struct TOKEN_TO_PARSER
         {
             public string TOKEN;
-            public Func<string, DataRow, MainWindow, string> tokenFunc;
+            public Func<string, DataRow, IDatabaseAdapter, string> tokenFunc;
         }
 
         private static TOKEN_TO_PARSER rangeParser = new TOKEN_TO_PARSER()
@@ -637,7 +638,7 @@ namespace SpellEditor.Sources.SpellStringTools
             multiplierHandler
         };
 
-        public static string GetParsedForm(string rawString, DataRow record, MainWindow mainWindow)
+        public static string GetParsedForm(string rawString, DataRow record, IDatabaseAdapter adapter)
         {
             // If a token starts with $ and a number, it references that as a spell id
             var match = Regex.Match(rawString, "\\$\\d+");
@@ -648,7 +649,7 @@ namespace SpellEditor.Sources.SpellStringTools
                     Logger.Info("Failed to parse other spell id: " + rawString);
                     return rawString;
                 }
-                var otherRecord = SpellDBC.GetRecordById(otherId, mainWindow);
+                var otherRecord = SpellDBC.GetRecordById(otherId, adapter);
                 if (otherRecord == null)
                     return rawString;
                 int offset = match.Index + match.Value.Length;
@@ -657,17 +658,17 @@ namespace SpellEditor.Sources.SpellStringTools
                 if (hasPrefix)
                     rawString = "$" + rawString;
                 foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
-                    rawString = parser.tokenFunc(rawString, otherRecord, mainWindow);
+                    rawString = parser.tokenFunc(rawString, otherRecord, adapter);
                 return rawString;
             }
             foreach (TOKEN_TO_PARSER parser in TOKEN_PARSERS)
-                rawString = parser.tokenFunc(rawString, record, mainWindow);
+                rawString = parser.tokenFunc(rawString, record, adapter);
             return rawString;
         }
 
-        public static DataRow GetRecordById(uint spellId, MainWindow mainWindow)
+        public static DataRow GetRecordById(uint spellId, IDatabaseAdapter adapter)
         {
-            return SpellDBC.GetRecordById(spellId, mainWindow);
+            return SpellDBC.GetRecordById(spellId, adapter);
         }
     }
 }
