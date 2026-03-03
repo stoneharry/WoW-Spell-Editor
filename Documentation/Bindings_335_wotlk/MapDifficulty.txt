@@ -2,22 +2,22 @@
 uint ID
 uint Map
 int difficulty
-uint message1
-uint message2
-uint message3
-uint message4
-uint message5
-uint message6
-uint message7
-uint message8
-uint message9
-uint message10
-uint message11
-uint message12
-uint message13
-uint message14
-uint message15
-uint message16
+uint message1 string
+uint message2 string
+uint message3 string
+uint message4 string
+uint message5 string
+uint message6 string
+uint message7 string
+uint message8 string
+uint message9 string
+uint message10 string
+uint message11 string
+uint message12 string
+uint message13 string
+uint message14 string
+uint message15 string
+uint message16 string
 uint messageFlags
 uint raidDurationSeconds
 uint maxPlayers
