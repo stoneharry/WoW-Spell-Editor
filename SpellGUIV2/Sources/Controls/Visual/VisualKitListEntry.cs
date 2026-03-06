@@ -160,8 +160,10 @@ namespace SpellEditor.Sources.Controls
                     continue;
                 }
                 var effectRecord = effectResults.Rows[0];
-                var effectPath = effectRecord["FilePath"].ToString();
+                var effectPath = effectRecord["Name"].ToString();
+                effectPath = $"{kitKey} - {effectPath}";
                 effectPath = effectPath.Length > 70 ? effectPath.Substring(0, 67) + "..." : effectPath;
+
                 effectsFound.Add(" " + effectPath);
             }
             return string.Join("\n", effectsFound);
