@@ -21,12 +21,18 @@ namespace HeadlessExport
 
         private static BlockingCollection<string> m_Queue = new BlockingCollection<string>();
 
+        // Toggle between REPLACING vs INSERT IGNORE. This is pretty legacy and before I made it fully idempotent (finds by matching name in id range)
         private static readonly bool ALWAYS_REPLACE = true;
         private static readonly string EDIT_QUERY_OPERATION = ALWAYS_REPLACE ? "REPLACE" : "INSERT IGNORE";
 
-        private static readonly int _dropChance = 1;
+        // Configure the drop chance. Needs to be converted to a float if we want more precision.
+        private static readonly int _dropChance = 100;
 
-        private static uint[] _npcIdsToParse = new uint[] {
+        // Minimum dungeon level to drop.
+        private static readonly int _requiredDungeonLevel = 50;
+
+        // A list of all NPC IDs to parse.
+        private static readonly uint[] _npcIdsToParse = new uint[] {
             // Blackrock Stronghold
             52309, // Stormfang
             52304, // Magtheridon
@@ -46,7 +52,7 @@ namespace HeadlessExport
             52187, // Doris Orefinger
             // Shadow Hold
             50465, // Xandris
-            50468, // Methisto - TODO: gobject based loot
+            50468, // Methisto - gobject based loot
             50476, // Remaniel
             // Arathor
             52005, // Jack Hawkthorn
@@ -55,7 +61,7 @@ namespace HeadlessExport
             52216, // Ashfang
             52008, // Abigail
             // Fall of Dalaran
-            //50009 // Ashcromb - TODO: this is one of the special IDs we don't want to break
+            50171, // Ashcromb
             50017, // Vipenthor
             50019, // Archmage Koreln
             50039, // Archmage Baratea
@@ -68,8 +74,8 @@ namespace HeadlessExport
             52193, // Gravemind Pete
             // The Crypts
             50054, // Flayer
-            //50058, // Blightworm - TODO: gobject based loot
-            //50061, // Sarah Arello - TODO: gobject based loot
+            50058, // Blightworm - gobject based loot
+            50061, // Sarah Arello - gobject based loot
             50068, // Diodor
             // Valour Keep
             50098, // First Boss
@@ -79,7 +85,16 @@ namespace HeadlessExport
             50236, // Broggok
             50246, // Xannallan
             52046, // Torthridath
-            50255  // Apolalypse Shade
+            50255, // Apolalypse Shade
+            // The Vault
+            60119 // Archmage Tervosh
+        };
+
+        private static readonly uint[] _gobjectGenerateId = new uint[]
+        {
+            50468, // Methisto
+            50058, // Blightworm
+            50061  // Sarah Arello
         };
 
         static Program()
@@ -144,7 +159,9 @@ namespace HeadlessExport
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Build failed: {e.GetType()}: {e.Message}\n{e}");
+                WriteLine($"Build failed: {e.GetType()}: {e.Message}\n{e}");
+                if (e.InnerException != null)
+                    WriteLine($"{e.InnerException.GetType()}: {e.InnerException.Message}\n{e.InnerException}\n");
             }
             finally
             {
@@ -199,6 +216,9 @@ namespace HeadlessExport
                         // Shrink Magtheridon since his model is massive
                         if (npcId == 52304)
                             values.Add("0.08");
+                        // Chrono-Lord Boss from Dalaran
+                        else if (npcId == 50044)
+                            values.Add("0.25");
                         else
                             values.Add("0.4");
                     }
@@ -362,7 +382,7 @@ namespace HeadlessExport
                     if (lootId == npcId)
                     {
                         WriteLine("Inserting new creature loot entry data and hooking up to base npc");
-                        adapter.Execute($"INSERT INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', 50)");
+                        adapter.Execute($"INSERT INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel})");
                         // ! This function is assuming that the creature did not already have a loot table !
                         adapter.Execute($"UPDATE new_world.creature_template SET lootid = {npcId} WHERE entry = {npcId}");
                     }
@@ -374,7 +394,7 @@ namespace HeadlessExport
                             $"SELECT {npcId}, Item, Reference, Chance, QuestRequired, LootMode, GroupId, MinCount, MaxCount, `Comment`, RequiredDungeonLevel " +
                             $"FROM new_world.creature_loot_template WHERE Entry = {lootId}");
                         WriteLine("Inserting new item ID into loot table");
-                        adapter.Execute($"REPLACE INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', 50)");
+                        adapter.Execute($"REPLACE INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel})");
                         WriteLine("Updating creature to use new loot entry");
                         adapter.Execute($"UPDATE new_world.creature_template SET lootid = {npcId} WHERE entry = {npcId}");
                     }
@@ -436,6 +456,46 @@ namespace HeadlessExport
                     $"'Memory of {adapter.EscapeString(creatureName)}', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '16712190', 0, 0, 0, 0, 0)";
                 WriteLine($"Updating achievement_criteria data\n {criteriaQuery}");
                 adapter.Execute(criteriaQuery);
+            }
+
+            // Gameobject_template_loot handling
+            if (_gobjectGenerateId.Contains(npcId))
+            {
+                var gobjectId = 0u;
+                // Find by name
+                using (var query = adapter.Query(
+                    $"SELECT entry FROM new_world.gameobject_template WHERE `name` = '{adapter.EscapeString(creatureName)} Treasure'"))
+                {
+                    if (query.Rows.Count > 0)
+                    {
+                        DataRow row = query.Rows[0];
+                        uint.TryParse(row[0].ToString(), out gobjectId);
+                    }
+                }
+                // Find new ID
+                if (gobjectId == 0u)
+                {
+                    using (var query = adapter.Query("SELECT MAX(entry) FROM new_world.gameobject_template WHERE entry between 50002 and 50200"))
+                    {
+                        DataRow row = query.Rows[0];
+                        gobjectId = uint.Parse(row[0].ToString()) + 1u;
+                    }
+                }
+                // Create gobject
+                var gobjectQuery = $"{EDIT_QUERY_OPERATION} INTO new_world.gameobject_template VALUES ({gobjectId}, 3, 259, " +
+                    $"'{adapter.EscapeString(creatureName)} Treasure', '', '', '', 1, 57, {gobjectId}, 604800000, 0, 0, 0, 0, 0, 0, 0, 0, " +
+                    $"0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0)";
+                // Create loot for object
+                var gLootQuery = $"{EDIT_QUERY_OPERATION} INTO new_world.gameobject_loot_template VALUES " +
+                    $"({gobjectId}, 1, 79998, 100, 0, 1, 0, 1, 1, 'Boss Loot Table - Shards', 0), " +
+                    $"({gobjectId}, 2, 90010, 100, 0, 1, 2, 1, 1, 'Boss Loot Table - Rare Items', 0), " +
+                    $"({gobjectId}, {newItemId}, 0, 1, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel})";
+                WriteLine($"Creating gobject:\n {gobjectQuery}");
+                adapter.Execute(gobjectQuery);
+                WriteLine($"Creating gobject loot:\n {gLootQuery}");
+                adapter.Execute(gLootQuery);
+                WriteLine($"[{npcId}] Removing lootId from creature_template since we created a gobject [{gobjectId}]. This will need to be attached by a script.");
+                adapter.Execute($"UPDATE new_world.creature_template SET lootid = 0 WHERE entry = {npcId}");
             }
 
             // Special Handling
