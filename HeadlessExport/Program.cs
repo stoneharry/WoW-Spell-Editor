@@ -26,7 +26,7 @@ namespace HeadlessExport
         private static readonly string EDIT_QUERY_OPERATION = ALWAYS_REPLACE ? "REPLACE" : "INSERT IGNORE";
 
         // Configure the drop chance. Needs to be converted to a float if we want more precision.
-        private static readonly int _dropChance = 100;
+        private static readonly int _dropChance = 1;
 
         // Minimum dungeon level to drop.
         private static readonly int _requiredDungeonLevel = 50;
@@ -214,11 +214,15 @@ namespace HeadlessExport
                     else if (name.Equals("scale"))
                     {
                         // Shrink Magtheridon since his model is massive
-                        if (npcId == 52304)
+                        if (npcId == 52304u)
                             values.Add("0.08");
                         // Chrono-Lord Boss from Dalaran
-                        else if (npcId == 50044)
+                        else if (npcId == 50044u)
                             values.Add("0.25");
+                        // Blight Worm
+                        else if (npcId == 50058u)
+                            values.Add("0.11");
+                        // Default
                         else
                             values.Add("0.4");
                     }
@@ -489,7 +493,7 @@ namespace HeadlessExport
                 var gLootQuery = $"{EDIT_QUERY_OPERATION} INTO new_world.gameobject_loot_template VALUES " +
                     $"({gobjectId}, 1, 79998, 100, 0, 1, 0, 1, 1, 'Boss Loot Table - Shards', 0), " +
                     $"({gobjectId}, 2, 90010, 100, 0, 1, 2, 1, 1, 'Boss Loot Table - Rare Items', 0), " +
-                    $"({gobjectId}, {newItemId}, 0, 1, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel})";
+                    $"({gobjectId}, {newItemId}, 0, {_dropChance}, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel})";
                 WriteLine($"Creating gobject:\n {gobjectQuery}");
                 adapter.Execute(gobjectQuery);
                 WriteLine($"Creating gobject loot:\n {gLootQuery}");
