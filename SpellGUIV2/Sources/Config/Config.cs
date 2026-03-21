@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using SpellEditor.Sources.VersionControl;
 using System;
 using System.IO;
@@ -145,6 +145,16 @@ namespace SpellEditor.Sources.Config
             set
             {
                 UpdateConfigValue("DefaultMpqName", value);
+                Save();
+            }
+        }
+
+        public static string CustomMpqCopyDirectory
+        {
+            get { return GetConfigValue("CustomMpqCopyDirectory"); }
+            set
+            {
+                UpdateConfigValue("CustomMpqCopyDirectory", value);
                 Save();
             }
         }

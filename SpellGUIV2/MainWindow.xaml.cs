@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -2518,6 +2518,12 @@ namespace SpellEditor
 
                         var labels = ConvertBoxListToLabelsWithIds(dynamicDbcInstance.GetAllBoxes());
 
+                        if (labels == null || labels.Count == 0)
+                        {
+                            currContentControl.Content = new ThreadSafeTextBox { TextWrapping = TextWrapping.Wrap };
+                            continue;
+                        }
+
                         // verify first line has index, expected format : "420 - text"
                         if (!Regex.IsMatch(labels[0].ToString(), @"^\d+ -"))
                             throw new Exception($"DBC ressource for misc value type {currMiscValue.ToString()} (xkey:{ressource_string_name}) doesn't use expected indexing format.");
@@ -3007,8 +3013,8 @@ namespace SpellEditor
 
                 updateProgress("Updating category & dispel & mechanic...");
                 var loadCategories = (SpellCategory)DBCManager.GetInstance().FindDbcForBinding("SpellCategory");
-                Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(
-                    adapter.Query($"SELECT `Category` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                var categoryRows = adapter.Query($"SELECT `Category` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows;
+                Category.ThreadSafeIndex = loadCategories.UpdateCategorySelection(uint.Parse(categoryRows[0][0].ToString()));
 
                 var loadDispels = (SpellDispelType)DBCManager.GetInstance().FindDbcForBinding("SpellDispelType");
                 DispelType.ThreadSafeIndex = loadDispels.UpdateDispelSelection(uint.Parse(
@@ -3559,8 +3565,9 @@ namespace SpellEditor
                     updateProgress("Updating spell description variables & difficulty selection...");
                     var loadDifficulties = (SpellDifficulty)DBCManager.GetInstance().FindDbcForBinding("SpellDifficulty");
                     var loadDescriptionVariables = (SpellDescriptionVariables)DBCManager.GetInstance().FindDbcForBinding("SpellDescriptionVariables");
+                    var descriptionRows = adapter.Query($"SELECT `SpellDescriptionVariableID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows;
                     SpellDescriptionVariables.ThreadSafeIndex = loadDescriptionVariables.UpdateSpellDescriptionVariablesSelection(
-                        uint.Parse(adapter.Query($"SELECT `SpellDescriptionVariableID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));
+                        uint.Parse(descriptionRows[0][0].ToString()));
 
                     Difficulty.ThreadSafeIndex = loadDifficulties.UpdateDifficultySelection(uint.Parse(adapter.Query(
                         $"SELECT `SpellDifficultyID` FROM `{"spell"}` WHERE `ID` = '{selectedID}'").Rows[0][0].ToString()));

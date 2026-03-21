@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellSelectList;
 using SpellEditor.Sources.Database;
