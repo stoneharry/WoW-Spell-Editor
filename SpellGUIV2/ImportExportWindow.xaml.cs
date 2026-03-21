@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,6 +56,7 @@ namespace SpellEditor
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             BuildImportExportTab();
             ExportMpqNameTxt.Text = string.IsNullOrEmpty(Config.DefaultMpqName) ? "patch-4.MPQ" : Config.DefaultMpqName;
+            CustomMpqCopyDirectoryTxt.Text = Config.CustomMpqCopyDirectory ?? string.Empty;
         }
 
         private bool IsDefaultImport(string name)
@@ -185,11 +186,18 @@ namespace SpellEditor
             var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
             archiveName = archiveName.ToLower().EndsWith(".mpq") ? archiveName : archiveName + ".MPQ";
             _MpqArchiveName = archiveName;
+            Config.DefaultMpqName = archiveName;
+            Config.CustomMpqCopyDirectory = CustomMpqCopyDirectoryTxt.Text?.Trim() ?? string.Empty;
             ClickHandler(false);
         }
 
         private void ImportClick(object sender, RoutedEventArgs e) => ClickHandler(true);
-        private void ExportClick(object sender, RoutedEventArgs e) => ClickHandler(false);
+        private void ExportClick(object sender, RoutedEventArgs e)
+        {
+            // Ensure plain export does not trigger MPQ creation.
+            _MpqArchiveName = string.Empty;
+            ClickHandler(false);
+        }
         private void ClickHandler(bool isImport)
         {
             ImportExportType useType;
@@ -239,6 +247,10 @@ namespace SpellEditor
 
         private void doImportExport(bool isImport, List<string> bindingList, ImportExportType useType)
         {
+            // Capture MPQ target name for this run to avoid cross-click state bleed.
+            var mpqArchiveName = _MpqArchiveName;
+            var isMpqExportRun = !isImport && !string.IsNullOrEmpty(mpqArchiveName);
+            var selectedBindingsForRun = new List<string>(bindingList);
             var barLookup = new Dictionary<string, ProgressBar>();
             bindingList.ForEach(bindingName => barLookup.Add(bindingName, LookupProgressBar(bindingName, isImport)));
 
@@ -246,13 +258,13 @@ namespace SpellEditor
 
             Task.Run(() =>
             {
-                var bag = new ConcurrentBag<Task>();
-                var adapters = new List<IDatabaseAdapter>();
-                bool isSpellImport = bindingList.Contains(_SpellBindingName);
-                var adapterIndex = isSpellImport ? 1 : 0;
-
                 try
                 {
+                    var bag = new ConcurrentBag<Task>();
+                    var adapters = new List<IDatabaseAdapter>();
+                    bool isSpellImport = bindingList.Contains(_SpellBindingName);
+                    var adapterIndex = isSpellImport ? 1 : 0;
+
                     // Start spell export immediately if it is selected
                     if (bindingList.Contains(_SpellBindingName))
                     {
@@ -310,47 +322,105 @@ namespace SpellEditor
                         }
                         Dispatcher.InvokeAsync(new Action(() => label.Content = $"Remaining: {allTasks.Count}"));
                     }
-                }
-                finally
-                {
+
                     adapters.ForEach(adapter => adapter.Dispose());
                     adapters.Clear();
-                }
 
-                // Create MPQ if required
-                if (!string.IsNullOrEmpty(_MpqArchiveName))
-                {
-                    var exportList = new List<string>();
-                    Directory.EnumerateFiles("Export")
-                        .Where((dbcFile) => dbcFile.EndsWith(".dbc"))
-                        .ToList()
-                        .ForEach(exportList.Add);
-                    var mpqExport = new MpqExport();
-                    mpqExport.CreateMpqFromDbcFileList(_MpqArchiveName, exportList);
-                }
-
-                // Reset
-                Dispatcher.InvokeAsync(new Action(() =>
-                {
-                    _TaskLookup.Values.ToList().ForEach(bar =>
+                    // Create MPQ if required
+                    if (isMpqExportRun)
                     {
-                        bar.Value = 0;
-                        bar.Visibility = Visibility.Hidden;
-                    });
-                    ImportClickBtn.IsEnabled = true;
-                    ExportClickBtn1.IsEnabled = true;
-                    ExportClickBtn2.IsEnabled = true;
-                    _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
-                }));
+                        var exportList = selectedBindingsForRun
+                            .Select(bindingName => Path.Combine("Export", bindingName + ".dbc"))
+                            .Where(File.Exists)
+                            .ToList();
 
-                // Refresh spell selection list on import
-                if (isImport)
-                {
+                        var mpqExport = new MpqExport();
+                        mpqExport.CreateMpqFromDbcFileList(mpqArchiveName, exportList);
+
+                        var customCopyDirectory = Config.CustomMpqCopyDirectory?.Trim();
+                        if (!string.IsNullOrEmpty(customCopyDirectory))
+                        {
+                            if (!Directory.Exists(customCopyDirectory))
+                            {
+                                ShowFlyoutMessage($"Custom MPQ copy folder does not exist: {customCopyDirectory}");
+                            }
+                            else
+                            {
+                                var sourceMpqPath = Path.Combine("Export", mpqArchiveName);
+                                var destinationMpqPath = Path.Combine(customCopyDirectory, mpqArchiveName);
+                                try
+                                {
+                                    File.Copy(sourceMpqPath, destinationMpqPath, true);
+                                }
+                                catch (Exception exception)
+                                {
+                                    Logger.Info($"ERROR: Failed to copy MPQ to custom folder {customCopyDirectory}: {exception.Message}\n{exception}\n{exception.InnerException}");
+                                    ShowFlyoutMessage($"Failed to copy MPQ to custom folder: {customCopyDirectory}");
+                                }
+                            }
+                        }
+
+                        // MPQ mode should not leave DBC artifacts behind.
+                        foreach (var exportedDbc in exportList)
+                        {
+                            try
+                            {
+                                if (File.Exists(exportedDbc))
+                                {
+                                    File.Delete(exportedDbc);
+                                }
+                            }
+                            catch (Exception exception)
+                            {
+                                Logger.Info($"ERROR: Failed to clean exported DBC artifact {exportedDbc}: {exception.Message}\n{exception}\n{exception.InnerException}");
+                            }
+                        }
+                    }
+                    // Reset
                     Dispatcher.InvokeAsync(new Action(() =>
                     {
-                        _ReloadData.Invoke(null);
-                        _PopulateSelectSpell.Invoke();
-                        Close();
+                        try
+                        {
+                            // Always re-enable buttons even if some progress bars are missing.
+                            ImportClickBtn.IsEnabled = true;
+                            ExportClickBtn1.IsEnabled = true;
+                            ExportClickBtn2.IsEnabled = true;
+
+                            _TaskLookup.Values.ToList().ForEach(bar =>
+                            {
+                                if (bar == null)
+                                    return;
+                                bar.Value = 0;
+                                bar.Visibility = Visibility.Hidden;
+                            });
+                            _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Info($"ERROR: Failed to reset import/export UI state: {exception.Message}\n{exception}\n{exception.InnerException}");
+                        }
+                    }));
+
+                    // Refresh spell selection list on import
+                    if (isImport)
+                    {
+                        Dispatcher.InvokeAsync(new Action(() =>
+                        {
+                            _ReloadData.Invoke(null);
+                            _PopulateSelectSpell.Invoke();
+                            Close();
+                        }));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Info($"ERROR: Import/Export worker failed: {exception.Message}\n{exception}\n{exception.InnerException}");
+                    ShowFlyoutMessage("Import/Export failed. Check log output for details.");
+                    Dispatcher.InvokeAsync(new Action(() =>
+                    {
+                        ImportClickBtn.IsEnabled = true;
+                        ExportClickBtn1.IsEnabled = true;
+                        ExportClickBtn2.IsEnabled = true;
                     }));
                 }
             });
@@ -446,6 +516,30 @@ namespace SpellEditor
                 Flyout.IsOpen = true;
                 FlyoutText.Text = message;
             }));
+        }
+
+        private void CustomMpqCopyBrowseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                var currentPath = CustomMpqCopyDirectoryTxt.Text?.Trim();
+                if (!string.IsNullOrEmpty(currentPath) && Directory.Exists(currentPath))
+                {
+                    dialog.SelectedPath = currentPath;
+                }
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    CustomMpqCopyDirectoryTxt.Text = dialog.SelectedPath;
+                    Config.CustomMpqCopyDirectory = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void CustomMpqCopyDirectoryTxt_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Config.CustomMpqCopyDirectory = CustomMpqCopyDirectoryTxt.Text?.Trim() ?? string.Empty;
         }
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
