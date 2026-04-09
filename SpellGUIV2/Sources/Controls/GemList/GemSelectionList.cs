@@ -311,8 +311,9 @@ namespace SpellEditor.Sources.Controls
                         $"EffectItemType1 = {entry.SpellItemEnchantmentEntry.ItemCache.Id} " +
                         $"WHERE id = {skillSpellId}");
 
-                    // Update category for discovery spell
-                    _Adapter.Execute($"REPLACE INTO {_WorldTableName}.skill_discovery_template VALUES ({skillSpellId}, {entry.GemTypeEntry.SkillDiscoverySpellId}, 0, 100)");
+                    // Update category for discovery spell (DELETE first to avoid duplicates when reqSpell changes)
+                    _Adapter.Execute($"DELETE FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {skillSpellId}");
+                    _Adapter.Execute($"INSERT INTO {_WorldTableName}.skill_discovery_template VALUES ({skillSpellId}, {entry.GemTypeEntry.SkillDiscoverySpellId}, 0, 100)");
 
                     // Insert Skill Line Ability based if it does not exist
                     if (0 == int.Parse(_Adapter.QuerySingleValue(
@@ -320,9 +321,26 @@ namespace SpellEditor.Sources.Controls
                     {
                         var newAbilityId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM skilllineability").ToString()) + 1u;
                         _Adapter.Execute($"INSERT INTO skilllineability VALUES " +
-                            $"({newAbilityId}, {755}, {skillSpellId}, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0)"); // 755 = Jewelcrafting ID
+                            $"({newAbilityId}, {755}, {skillSpellId}, 0, 0, 0, 0, 1, 0, 0, 10, 20, 0, 0)"); // 755 = Jewelcrafting ID
                     }
                 }
+            }
+            else if (((GemTypeEnum)entry.GemTypeEntry.Type) != GemTypeEnum.Purple)
+            {
+                // Generate missing discovery data when saving a non-purple gem that has none
+                var itemId = entry.SpellItemEnchantmentEntry.ItemCache.Id;
+                var template = LookupDiscoveryDataForGemType(entry.GemTypeEntry);
+                var newDiscoverSpellId = uint.Parse(_Adapter.QuerySingleValue("SELECT MAX(ID) FROM spell").ToString()) + 1u;
+                _Adapter.Execute(
+                    $"INSERT INTO spell SELECT {newDiscoverSpellId}, " +
+                    _SpellCopyColumns.Replace("EffectItemType1", itemId.ToString())
+                    .Replace("SpellName0", "\"" + discoverSpellName + "\"") +
+                    $"FROM spell WHERE ID = {template.Id}");
+                _Adapter.Execute(
+                    $"INSERT INTO {_WorldTableName}.skill_discovery_template SELECT {newDiscoverSpellId}, reqSpell, reqSkillValue, chance " +
+                    $"FROM {_WorldTableName}.skill_discovery_template WHERE spellId = {template.Id}");
+                _DiscoveryLookup[itemId] = new SkillDiscovery(newDiscoverSpellId, template.ReqSpell, itemId);
+                ((ThreadSafeTextBox)_Elements[8]).Text = newDiscoverSpellId.ToString();
             }
 
             // Update Skill Line Ability based on gem colour
@@ -331,7 +349,7 @@ namespace SpellEditor.Sources.Controls
             {
                 var newAbilityId = uint.Parse(_Adapter.QuerySingleValue($"SELECT MAX(id) FROM skilllineability").ToString()) + 1u;
                 _Adapter.Execute($"INSERT INTO skilllineability VALUES " +
-                    $"({newAbilityId}, {entry.GemTypeEntry.SkillId}, {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0)");
+                    $"({newAbilityId}, {entry.GemTypeEntry.SkillId}, {entry.SpellItemEnchantmentEntry.TempLearnSpell.Id}, 0, 0, 0, 0, 1, 0, 0, 10, 20, 0, 0)");
             }
             else
             {
@@ -364,7 +382,7 @@ namespace SpellEditor.Sources.Controls
             // Update chest prismatic gem loot
             if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
             {
-                _Adapter.Execute($"REPLACE INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {entry.SpellItemEnchantmentEntry.ItemCache}, 0, 0, 0, 1, 1, 1, 1, \"{discoverSpellName}\", 0)");
+                _Adapter.Execute($"REPLACE INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {entry.SpellItemEnchantmentEntry.ItemCache}, 0, 0, 0, 1, 1, 1, 1, \"{discoverSpellName}\", 0, 0, 0, 0)");
             }
             else
             {
@@ -465,7 +483,7 @@ namespace SpellEditor.Sources.Controls
             // Update chest prismatic gem loot
             if (((GemTypeEnum)entry.GemTypeEntry.Type) == GemTypeEnum.Purple)
             {
-                _Adapter.Execute($"INSERT INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {newItemId}, 0, 0, 0, 1, 1, 1, 1, \"Gem of {input}\", 0)");
+                _Adapter.Execute($"INSERT INTO {_WorldTableName}.reference_loot_template VALUES ({_PrismaticRefLootId}, {newItemId}, 0, 0, 0, 1, 1, 1, 1, \"Gem of {input}\", 0, 0, 0, 0)");
             }
 
             // Achievement
