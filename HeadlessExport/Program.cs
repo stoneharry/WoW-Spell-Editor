@@ -1,5 +1,4 @@
-﻿using SpellEditor.Sources.Binding;
-using SpellEditor.Sources.Config;
+﻿using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
 using System;
 using System.Collections.Concurrent;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,10 +13,6 @@ namespace HeadlessExport
 {
     class Program
     {
-        static ConcurrentDictionary<int, string> _TaskNameLookup;
-        static ConcurrentDictionary<int, int> _TaskProgressLookup;
-        static ConcurrentDictionary<int, HeadlessDbc> _HeadlessDbcLookup;
-
         private static BlockingCollection<string> m_Queue = new BlockingCollection<string>();
 
         // Toggle between REPLACING vs INSERT IGNORE. This is pretty legacy and before I made it fully idempotent (finds by matching name in id range)
@@ -115,16 +109,6 @@ namespace HeadlessExport
             m_Queue.Add(value);
         }
 
-        static int PrioritiseSpellCompareBindings(Binding b1, Binding b2)
-        {
-            if (b1.ToString().Contains("Spell$"))
-                return -1;
-            if (b2.ToString().Contains("Spell$"))
-                return 1;
-            
-            return string.Compare(b1.ToString(), b2.ToString());
-        }
-
         static void Main(string[] args)
         {
             var adapters = new List<IDatabaseAdapter>();
@@ -216,12 +200,21 @@ namespace HeadlessExport
                         // Shrink Magtheridon since his model is massive
                         if (npcId == 52304u)
                             values.Add("0.08");
-                        // Chrono-Lord Boss from Dalaran
-                        else if (npcId == 50044u)
-                            values.Add("0.25");
-                        // Blight Worm
-                        else if (npcId == 50058u)
+                        // Blight Worm or Theodosius or Torthridath or Xannallan
+                        else if (npcId == 50058u || npcId == 50119u || npcId == 52046u || npcId == 50246u)
                             values.Add("0.11");
+                        // Broggok
+                        else if (npcId == 50236u)
+                            values.Add("0.15");
+                        // Vipenthor
+                        else if (npcId == 50017u)
+                            values.Add("0.2");
+                        // Flesh Golem
+                        else if (npcId == 52181u)
+                            values.Add("0.3");
+                        // Chrono-Lord Boss from Dalaran or Karthra'natir
+                        else if (npcId == 50044u || npcId == 80063u)
+                            values.Add("0.25");
                         // Default
                         else
                             values.Add("0.4");
@@ -386,7 +379,7 @@ namespace HeadlessExport
                     if (lootId == npcId)
                     {
                         WriteLine("Inserting new creature loot entry data and hooking up to base npc");
-                        adapter.Execute($"INSERT INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel})");
+                        adapter.Execute($"INSERT INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel}, 0, 0, 0)");
                         // ! This function is assuming that the creature did not already have a loot table !
                         adapter.Execute($"UPDATE new_world.creature_template SET lootid = {npcId} WHERE entry = {npcId}");
                     }
@@ -398,7 +391,7 @@ namespace HeadlessExport
                             $"SELECT {npcId}, Item, Reference, Chance, QuestRequired, LootMode, GroupId, MinCount, MaxCount, `Comment`, RequiredDungeonLevel " +
                             $"FROM new_world.creature_loot_template WHERE Entry = {lootId}");
                         WriteLine("Inserting new item ID into loot table");
-                        adapter.Execute($"REPLACE INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel})");
+                        adapter.Execute($"REPLACE INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel}, 0, 0, 0)");
                         WriteLine("Updating creature to use new loot entry");
                         adapter.Execute($"UPDATE new_world.creature_template SET lootid = {npcId} WHERE entry = {npcId}");
                     }
@@ -491,9 +484,9 @@ namespace HeadlessExport
                     $"0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', 0)";
                 // Create loot for object
                 var gLootQuery = $"{EDIT_QUERY_OPERATION} INTO new_world.gameobject_loot_template VALUES " +
-                    $"({gobjectId}, 1, 79998, 100, 0, 1, 0, 1, 1, 'Boss Loot Table - Shards', 0), " +
-                    $"({gobjectId}, 2, 90010, 100, 0, 1, 2, 1, 1, 'Boss Loot Table - Rare Items', 0), " +
-                    $"({gobjectId}, {newItemId}, 0, {_dropChance}, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel})";
+                    $"({gobjectId}, 1, 79998, 100, 0, 1, 0, 1, 1, 'Boss Loot Table - Shards', 0, 0, 0, 0), " +
+                    $"({gobjectId}, 2, 90010, 100, 0, 1, 2, 1, 1, 'Boss Loot Table - Rare Items', 0, 0, 0, 0), " +
+                    $"({gobjectId}, {newItemId}, 0, {_dropChance}, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel}, 0, 0 , 0)";
                 WriteLine($"Creating gobject:\n {gobjectQuery}");
                 adapter.Execute(gobjectQuery);
                 WriteLine($"Creating gobject loot:\n {gLootQuery}");
@@ -516,8 +509,7 @@ namespace HeadlessExport
         private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters)
         {
             var tasks = new List<Task<IDatabaseAdapter>>();
-            int numBindings = BindingManager.GetInstance().GetAllBindings().Length;
-            int numConnections = Math.Max(numBindings >= 2 ? 2 : 1, numBindings / 10);
+            int numConnections = 4;
             WriteLine($"Spawning {numConnections} adapters...");
             var timer = new Stopwatch();
             timer.Start();
