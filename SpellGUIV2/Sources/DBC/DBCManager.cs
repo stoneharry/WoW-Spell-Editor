@@ -1,4 +1,6 @@
-﻿using SpellEditor.Sources.VersionControl;
+﻿using NLog;
+using SpellEditor.Sources.VersionControl;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +10,8 @@ namespace SpellEditor.Sources.DBC
 {
     class DBCManager
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private static readonly DBCManager _Instance = new DBCManager();
 
         private ConcurrentDictionary<string, AbstractDBC> _DbcMap = new ConcurrentDictionary<string, AbstractDBC>();
@@ -37,8 +41,24 @@ namespace SpellEditor.Sources.DBC
                 ForceLoadDbc<SpellRadius>("SpellRadius"),
                 ForceLoadDbc<ItemClass>("ItemClass"),
                 ForceLoadDbc<ItemSubClass>("ItemSubClass"),
-                ForceLoadDbc<AnimationData>("AnimationData")
+                ForceLoadDbc<AnimationData>("AnimationData"),
+                ForceLoadDbc<CreatureType>("CreatureType"),
+                ForceLoadDbc<SpellShapeshiftForm>("SpellShapeshiftForm")
+
             };
+            // used for misc values, don't bother loading now as only wotlk is supported and it is a lot of work to update bindings
+            if (WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                tasks.Add(ForceLoadDbc<SkillLine>("SkillLine"));
+                tasks.Add(ForceLoadDbc<Languages>("Languages"));
+                // ForceLoadDbc<AnimationData>("CreatureDisplayInfo")
+                tasks.Add(ForceLoadDbc<LockType>("LockType"));
+                tasks.Add(ForceLoadDbc<SkillLineCategory>("SkillLineCategory"));
+                // SpellItemEnchantment
+                // Faction
+                // TaxiPath
+            }
+
             if (WoWVersionManager.IsTbcOrGreaterSelected)
             {
                 tasks.Add(ForceLoadDbc<TotemCategory>("TotemCategory"));
@@ -47,6 +67,9 @@ namespace SpellEditor.Sources.DBC
             {
                 tasks.Add(ForceLoadDbc<SpellRuneCost>("SpellRuneCost"));
                 tasks.Add(ForceLoadDbc<SpellDescriptionVariables>("SpellDescriptionVariables"));
+
+                // tasks.Add(ForceLoadDbc<...>("OverrideSpellData"));
+                tasks.Add(ForceLoadDbc<ScreenEffect>("ScreenEffect"));
             }
             return tasks;
         }
@@ -55,11 +78,19 @@ namespace SpellEditor.Sources.DBC
         {
             return Task.Run(() =>
             {
-                if (_DbcMap.ContainsKey(name))
+                try
                 {
-                    _DbcMap.TryRemove(name, out var oldDbc);
+                    if (_DbcMap.ContainsKey(name))
+                    {
+                        _DbcMap.TryRemove(name, out var oldDbc);
+                    }
+                    return _DbcMap.TryAdd(name, new DBCType());
                 }
-                return _DbcMap.TryAdd(name, new DBCType());
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, $"Failed to load: [{name}.dbc], the program will likely break because of this error.");
+                    throw exception;
+                }
             });
         }
 
@@ -88,7 +119,14 @@ namespace SpellEditor.Sources.DBC
         {
             foreach (var item in _DbcMap.Values)
             {
-                item.LoadGraphicUserInterface();
+                try
+                {
+                    item.LoadGraphicUserInterface();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Failed to load UI for " + item);
+                }
             }
         }
 

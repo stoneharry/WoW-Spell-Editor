@@ -125,7 +125,7 @@ uint SpellVisual1
 uint SpellVisual2
 uint SpellIconID
 uint ActiveIconID
-uint Unknown1
+uint SpellPriority
 uint SpellName0 string
 uint SpellName1 string
 uint SpellName2 string

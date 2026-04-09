@@ -9,7 +9,7 @@ namespace SpellEditor.Sources.DBC
     {
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
-        class DurationBox : DBCBoxContainer
+        public class DurationBox : DBCBoxContainer
         {
             public long baseDuration;
 

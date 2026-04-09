@@ -59,6 +59,8 @@ namespace SpellEditor
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // misc value fields config row
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Icon config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // MPQ name config row
@@ -124,6 +126,8 @@ namespace SpellEditor
             ConfigGrid.Children.Add(databaseButton);
             ConfigGrid.Children.Add(versionLabel);
             ConfigGrid.Children.Add(versionButton);
+
+            currentRow = BuildMiscValueFieldsConfig(ConfigGrid, currentRow);
 
             currentRow = BuildIconConfig(ConfigGrid, currentRow);
 
@@ -320,6 +324,30 @@ namespace SpellEditor
             FlyoutText.Text = message;
         }
 
+        private int BuildMiscValueFieldsConfig(Grid grid, int currentRow)
+        {
+            var label = new Label { Content = "Use Dynamic Misc Value Fields:" };
+            label.Margin = new Thickness(10);
+
+            var checkbox = new System.Windows.Controls.CheckBox { };
+            checkbox.Margin = new Thickness(10);
+
+            checkbox.IsChecked = Config.DynamicMiscValueFields;
+            checkbox.Checked += DynamicMiscValueFields_Checked;
+            checkbox.Unchecked += DynamicMiscValueFields_Checked;
+            checkbox.ToolTip = "When this is turned on, MiscValue fields UI will dynamically update based on content type, for example a power selection dropdown for Power auras.";
+
+            Grid.SetRow(label, currentRow);
+            Grid.SetRow(checkbox, currentRow++);
+            Grid.SetColumn(label, 0);
+            Grid.SetColumn(checkbox, 1);
+
+            grid.Children.Add(label);
+            grid.Children.Add(checkbox);
+
+            return currentRow;
+        }
+
         private int BuildIconConfig(Grid grid, int currentRow)
         {
             var label = new Label { Content = "Render only spell icons in view:" };
@@ -373,6 +401,11 @@ namespace SpellEditor
         private void RenderIconsInView_Checked(object sender, RoutedEventArgs e)
         {
             Config.RenderImagesInView = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
+        }
+
+        private void DynamicMiscValueFields_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.DynamicMiscValueFields = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
         }
 
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)

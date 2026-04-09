@@ -175,6 +175,7 @@
     <system:String x:Key="butImportExportWindowImport">导入</system:String>
     <system:String x:Key="butImportExportWindowExport">导出</system:String>
     <system:String x:Key="ImportExportWindowTitle">导入和导出</system:String>
+	<system:String x:Key="butLogBook">Log Book</system:String>
     <system:String x:Key="butMultilingualSwitch">多语言</system:String>
     <!--#endregion-->
 
@@ -659,29 +660,31 @@
         非战斗宠物 |
         Gas Cloud
     </system:String>
-    <system:String x:Key="caster_aura_state_strings">
+    <system:String x:Key="aura_state_strings">
         None |
         Defense |
-        生命少于 20% |
-        狂暴 |
-        裁决 |
-        猎人招架 |
-        乘胜追击 |
-        Unknown 1 |
-        生命少于 35% |
-        激怒 |
-        Unknown 2 |
-        生命高于 75%
-    </system:String>
-    <system:String x:Key="target_aura_state_strings">
-        None |
-        生命少于 20% |
-        狂暴 |
-        生命少于 35% |
-        点燃 |
-        迅捷治愈 |
-        致命药膏 |
-        流血
+        Healthless 20 Percent |
+        Berserking |
+        Frozen |
+        Judgement |
+        Unknown6 |
+        Hunter Parry |
+        Unknown8 |
+        Unknown9 |
+        Warrior Victory Rush |
+        Unknown11 |
+        Faerie Fire |
+        Healthless 35 Percent |
+        Conflagrate |
+        Swiftmend |
+        Deadly Poison |
+        Enrage |
+        Bleeding |
+        Parry |
+        Unknown20 |
+        Unknown21 |
+        Unknown22 |
+        Health Above 75 Percent
     </system:String>
     <system:String x:Key="equipped_item_inventory_type_mask_strings">
         非装备 |

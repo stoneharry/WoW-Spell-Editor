@@ -20,7 +20,7 @@ namespace SpellEditor.Sources.Database
 
         public MySQL(bool initialiseDatabase)
         {
-            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd={Config.Config.Pass};Charset=utf8mb4;";
+            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";Charset=utf8mb4;";
 
             _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
@@ -74,7 +74,8 @@ namespace SpellEditor.Sources.Database
         {
             lock (_syncLock)
             {
-                foreach (var binding in BindingManager.GetInstance().GetAllBindings())
+                var bindings = BindingManager.GetInstance().GetAllBindings();
+                foreach (var binding in bindings)
                 {
                     using (var cmd = _connection.CreateCommand())
                     {

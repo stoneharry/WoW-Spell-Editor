@@ -30,7 +30,6 @@ namespace SpellEditor
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IDatabaseAdapter _Adapter;
         private ConcurrentDictionary<int, ProgressBar> _TaskLookup;
         private string _MpqArchiveName;
         private Action _PopulateSelectSpell;
@@ -39,7 +38,6 @@ namespace SpellEditor
 
         public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData)
         {
-            _Adapter = adapter;
             _TaskLookup = new ConcurrentDictionary<int, ProgressBar>();
             _PopulateSelectSpell = populateSelectSpell;
             _ReloadData = reloadData;
@@ -136,7 +134,11 @@ namespace SpellEditor
             // Populate all contents asynchronously (expensive)
             Task.Run(() => bindings.AsParallel().ForAll(binding =>
             {
-                var numRows = binding.GetNumRowsInTable(_Adapter);
+                int numRows;
+                using (var adapter = AdapterFactory.Instance.GetAdapter(false))
+                {
+                    numRows = binding.GetNumRowsInTable(adapter);
+                }
                 Dispatcher.InvokeAsync(new Action(() =>
                 {
                     // Import
@@ -181,7 +183,7 @@ namespace SpellEditor
         private void MpqClick(object sender, RoutedEventArgs e)
         {
             var archiveName = ExportMpqNameTxt.Text.Length > 0 ? ExportMpqNameTxt.Text : "empty.mpq";
-            archiveName = archiveName.EndsWith(".mpq") ? archiveName : archiveName + ".mpq";
+            archiveName = archiveName.ToLower().EndsWith(".mpq") ? archiveName : archiveName + ".MPQ";
             _MpqArchiveName = archiveName;
             ClickHandler(false);
         }
@@ -246,7 +248,8 @@ namespace SpellEditor
             {
                 var bag = new ConcurrentBag<Task>();
                 var adapters = new List<IDatabaseAdapter>();
-                var adapterIndex = 0;
+                bool isSpellImport = bindingList.Contains(_SpellBindingName);
+                var adapterIndex = isSpellImport ? 1 : 0;
 
                 try
                 {
@@ -256,8 +259,9 @@ namespace SpellEditor
                         bindingList.Remove(_SpellBindingName);
                         // Load data
                         var abstractDbc = GetDBC(_SpellBindingName, isImport);
-                        // Perform operation using existing adapter
-                        StartImportExport(abstractDbc, _Adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        var adapter = AdapterFactory.Instance.GetAdapter(false);
+                        StartImportExport(abstractDbc, adapter, _SpellBindingName, isImport, ref bag, ref barLookup, useType);
+                        adapters.Add(adapter);
                     }
 
                     // Spawn adapters
@@ -275,7 +279,7 @@ namespace SpellEditor
                             var adapter = adapters[adapterIndex];
                             if (++adapterIndex >= adapters.Count)
                             {
-                                adapterIndex = 0;
+                                adapterIndex = isSpellImport ? 1 : 0;
                             }
 
                             // Perform operation
