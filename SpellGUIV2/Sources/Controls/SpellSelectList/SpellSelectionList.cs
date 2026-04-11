@@ -65,6 +65,10 @@ namespace SpellEditor.Sources.Controls
             if (_Table.Columns.Count == 0)
                 return;
 
+            // Disabled in Gem Editor
+            if (true)
+                return;
+
             // Refresh language
             LocaleManager.Instance.MarkDirty();
 

@@ -548,7 +548,7 @@ namespace SpellEditor
             try
             {
                 var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
-                Title = $"{Title} - {WoWVersionManager.GetInstance().SelectedVersion().Version} - V{version.Substring(0, version.Length - 2)}";
+                Title = $"HoT Gem Editor - {WoWVersionManager.GetInstance().SelectedVersion().Version} - V{version.Substring(0, version.Length - 2)}";
 
                 stringObjectMap.Add(0, SpellName0);
                 stringObjectMap.Add(1, SpellName1);
@@ -1116,6 +1116,20 @@ namespace SpellEditor
                 InitialiseSpellVisualEffectList();
 
                 prepareIconEditor();
+
+                foreach (TabItem item in MainTabControl.Items)
+                {
+                    if (item.Header.ToString().ToLower().Contains("gem"))
+                    {
+                        item.Visibility = Visibility.Visible;
+                        item.IsSelected = true;
+                        item.Focus();
+                    }
+                    else
+                    {
+                        item.Visibility = Visibility.Hidden;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -1187,10 +1201,10 @@ namespace SpellEditor
                     AnimateShow = true,
                     ColorScheme = MetroDialogColorScheme.Accented
                 };
-                MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
-                    SafeTryFindResource("Welcome"),
-                    MessageDialogStyle.AffirmativeAndNegative, settings);
-                bool isSqlite = exitCode == MessageDialogResult.Affirmative;
+                //MessageDialogResult exitCode = await this.ShowMessageAsync(SafeTryFindResource("SpellEditor"),
+                //    SafeTryFindResource("Welcome"),
+                //    MessageDialogStyle.AffirmativeAndNegative, settings);
+                bool isSqlite = false;//exitCode == MessageDialogResult.Affirmative;
                 if (!isSqlite)
                 {
                     if (Config.NeedInitMysql)
@@ -1228,6 +1242,7 @@ namespace SpellEditor
         {
             if (e.Key == Key.Back && (
                 sender == FilterSpellNames || 
+                sender == FilterGemNames ||
                 sender == FilterIcons ||
                 sender == Attributes1Search ||
                 sender == Attributes2Search))
@@ -1259,7 +1274,7 @@ namespace SpellEditor
                 }
                 else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
                 {
-                    Button_Click(SaveSpellChanges, e);
+                    //Button_Click(SaveSpellChanges, e);
                 }
             }
             else if (sender == NavigateToSpell)
@@ -1328,6 +1343,31 @@ namespace SpellEditor
 
                 imageLoadEventRunning = false;
             }
+            else if (sender == FilterGemNames)
+            {
+                if (imageLoadEventRunning)
+                    return;
+                imageLoadEventRunning = true;
+                var input = FilterGemNames.Text.ToLower();
+
+                ICollectionView view = CollectionViewSource.GetDefaultView(SelectGemList.Items);
+                view.Filter = o =>
+                {
+                    var panel = (StackPanel)o;
+                    using (var enumerator = panel.GetChildObjects().GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (!(enumerator.Current is TextBlock block))
+                                continue;
+                            return input.Length == 0 || block.Text.ToLower().Contains(input);
+                        }
+                    }
+                    return false;
+                };
+
+                imageLoadEventRunning = false;
+            }
             else if (sender == FilterIcons)
             {
                 var input = FilterIcons.Text.ToLower();
@@ -1367,7 +1407,7 @@ namespace SpellEditor
                 LoadAllData();
                 return;
             }
-            
+            /*
             if (sender == TruncateTable)
             {
                 MetroDialogSettings settings = new MetroDialogSettings
@@ -2005,6 +2045,7 @@ namespace SpellEditor
             {
                 adapter.Execute($"UPDATE `{"spell"}` SET `{"ActiveIconID"}` = '{0}' WHERE `ID` = '{selectedID}'");
             }
+            */
         }
 
         #endregion
@@ -3781,7 +3822,7 @@ namespace SpellEditor
                     adapter.Execute($"INSERT INTO spellvisual VALUES ({ string.Join(", ", copyParent.ItemArray) })");
                     SpellVisual1.ThreadSafeText = newVisualId.ToString();
                     visualId = newVisualId;
-                    Button_Click(SaveSpellChanges, null);
+                    //Button_Click(SaveSpellChanges, null);
                 }
                 _currentVisualController = null;
                 UpdateSpellVisualTab(visualId);
@@ -4754,6 +4795,29 @@ namespace SpellEditor
                 var idStr = SpellVisual1.Text;
                 uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
+            }
+            else if (tab == GemTab)
+            {
+                if (!SelectGemList.Initialised)
+                {
+                    var elements = new List<UIElement>
+                    {
+                        SameGemChangesBtn,
+                        DuplicateGemBtn,
+                        DeleteGemBtn,
+                        GemItemIdTxt,
+                        GemTriggerSpellTxt,
+                        GemTempLearnSpellTxt,
+                        GemAchievementIdTxt,
+                        GemEnchantNameTxt,
+                        SkillDiscSpellIdTxt,
+                        GemTypeBox,
+                        FilterGemBox,
+                        FilterGemDisc,
+                        GenerateDiscoveryBtn
+                    };
+                    SelectGemList.SetAdapter(GetDBAdapter()).Initialise(SelectedGemIdTxt, elements, ShowFlyoutMessage, this.ShowInputAsync);
+                }
             }
         }
 

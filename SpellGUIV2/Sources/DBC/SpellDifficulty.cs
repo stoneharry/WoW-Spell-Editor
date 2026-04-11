@@ -53,6 +53,10 @@ namespace SpellEditor.Sources.DBC
                 boxIndex++;
             }
 
+            // Disabled in gem editor
+            if (true)
+                return;
+
             // Lazily load tooltips
             /* Seems to point to other spells, for example:
                 Id: 6
