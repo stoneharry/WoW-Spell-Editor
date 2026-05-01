@@ -18,7 +18,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Xml.Linq;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MySql.Data.MySqlClient;
@@ -43,7 +42,6 @@ using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
 using SpellEditor.Sources.VersionControl;
-using static SpellEditor.Sources.DBC.AbstractDBC;
 
 namespace SpellEditor
 {
@@ -724,6 +722,11 @@ namespace SpellEditor
             window.Height += 40;
             window.Width /= 2;
             _ImportExportWindow = window;
+        }
+
+        private void RefreshButtonClick(object sender, RoutedEventArgs e)
+        {
+            PopulateSelectSpell();
         }
 
         private LogBookWindow _LogBookWindow;
@@ -5116,8 +5119,8 @@ namespace SpellEditor
                 }
             }
 
-            // optional cleanup : reset fields unsupported by new spell effect
-            if (sender == SpellEffect1 || sender == SpellEffect2 || sender == SpellEffect3)
+            // optional cleanup : reset fields unsupported by new spell effect (only when dynamic misc values is on)
+            if (Config.DynamicMiscValueFields && (sender == SpellEffect1 || sender == SpellEffect2 || sender == SpellEffect3))
             {
                 int effect_id = 0;
                 if (sender == SpellEffect2)
@@ -5164,8 +5167,6 @@ namespace SpellEditor
             {
                 GenerateSpellEffectHeader(1);
 
-                // TODO : store og value and field instead of resetting?
-
                 // need to get from selected item because control main text might not be updated yet
                 if (Config.DynamicMiscValueFields && SpellEffect1.SelectedItem != null && ApplyAuraName1.SelectedItem != null)
                 {
@@ -5175,11 +5176,11 @@ namespace SpellEditor
                     int spelleffect = (int)SpellEffect1.GetNumberPrefixFromText(selectedEffectText);
                     int auraindex = (int)ApplyAuraName1.GetNumberPrefixFromText(selectedAuraText);
 
+                    int prevMiscA1 = GetMiscValue(1, 1);
+                    int prevMiscB1 = GetMiscValue(1, 2);
                     SetupMiscValueControl(1, spelleffect, auraindex);
-
-                    // reset to 0 for now
-                    SetMiscValue(1, 1, 0, true);
-                    SetMiscValue(1, 2, 0, true);
+                    SetMiscValue(1, 1, prevMiscA1);
+                    SetMiscValue(1, 2, prevMiscB1);
                 }
             }
             // can turn into a reusable fucntion eventually instead of copy pasta
@@ -5196,11 +5197,11 @@ namespace SpellEditor
                     int spelleffect = (int)SpellEffect2.GetNumberPrefixFromText(selectedEffectText);
                     int auraindex = (int)ApplyAuraName2.GetNumberPrefixFromText(selectedAuraText);
 
+                    int prevMiscA2 = GetMiscValue(2, 1);
+                    int prevMiscB2 = GetMiscValue(2, 2);
                     SetupMiscValueControl(2, spelleffect, auraindex);
-
-                    // reset to 0 for now
-                    SetMiscValue(2, 1, 0, true);
-                    SetMiscValue(2, 2, 0, true);
+                    SetMiscValue(2, 1, prevMiscA2);
+                    SetMiscValue(2, 2, prevMiscB2);
                 }
             }
 
@@ -5216,11 +5217,11 @@ namespace SpellEditor
                     int spelleffect = (int)SpellEffect3.GetNumberPrefixFromText(selectedEffectText);
                     int auraindex = (int)ApplyAuraName3.GetNumberPrefixFromText(selectedAuraText);
 
+                    int prevMiscA3 = GetMiscValue(3, 1);
+                    int prevMiscB3 = GetMiscValue(3, 2);
                     SetupMiscValueControl(3, spelleffect, auraindex);
-
-                    // reset to 0 for now
-                    SetMiscValue(3, 1, 0, true);
-                    SetMiscValue(3, 2, 0, true);
+                    SetMiscValue(3, 1, prevMiscA3);
+                    SetMiscValue(3, 2, prevMiscB3);
                 }
             }
         }

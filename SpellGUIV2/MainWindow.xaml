@@ -1300,47 +1300,52 @@
     </Grid>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Name="ConfigButton" Click="ConfigButtonClick">
+            <Button Name="ConfigButton" Click="ConfigButtonClick" ToolTip="Open configuration settings">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butConfig}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
+            <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton" ToolTip="Import or export spell DBC files.">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="LogBookButton" Click="LogBookWindowButtonClick">
+            <Button Name="RefreshButton" Click="RefreshButtonClick" ToolTip="Reload all spells from the database">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+            <Button Name="LogBookButton" Click="LogBookWindowButtonClick" ToolTip="View the selected spell history log">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butLogBook}" VerticalAlignment="Center"/>
                 </StackPanel>
              </Button>
-             <Button Name="OpenAIButton" Click="OpenAIButtonClick">
+             <Button Name="OpenAIButton" Click="OpenAIButtonClick" ToolTip="Open AI-assisted spell generation">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="OpenAI" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="TruncateTable" Click="Button_Click">
+            <Button Name="TruncateTable" Click="Button_Click" ToolTip="Delete all records from the database to allow reimport">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="InsertANewRecord" Click="Button_Click">
+            <Button Name="InsertANewRecord" Click="Button_Click" ToolTip="Insert a new spell record. You can also right click on spells in the list">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butInsertANewRecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="DeleteARecord" Click="Button_Click">
+            <Button Name="DeleteARecord" Click="Button_Click" ToolTip="Delete the selected spell record. You can also right click on spells in the list">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butDeleteARecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="SaveSpellChanges" Click="Button_Click">
+            <Button Name="SaveSpellChanges" Click="Button_Click" ToolTip="Save all changes to the current spell">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
+            <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="Switch display language"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>
