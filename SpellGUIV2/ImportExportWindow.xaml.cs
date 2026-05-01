@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 using MahApps.Metro.Controls;
@@ -35,6 +36,10 @@ namespace SpellEditor
         private Action _PopulateSelectSpell;
         private Action<Action<string>> _ReloadData;
         private readonly string _SpellBindingName = "Spell";
+        private readonly TaskCompletionSource<bool> _fullyLoadedTcs = new TaskCompletionSource<bool>();
+
+        public Task FullyLoadedTask => _fullyLoadedTcs.Task;
+        public void TriggerImport() => ClickHandler(true);
 
         public ImportExportWindow(IDatabaseAdapter adapter, Action populateSelectSpell, Action<Action<string>> reloadData)
         {
@@ -176,8 +181,44 @@ namespace SpellEditor
                     ++loadedCount;
                     ImportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
                     ExportLoadedCount.Content = $"Loaded: {loadedCount} / {totalBindings}";
+                    if (loadedCount == totalBindings)
+                        _fullyLoadedTcs.TrySetResult(true);
                 }));
             }));
+        }
+
+        private void ScrollToShowMost(UIElement grid, List<CheckBox> checkedBoxes)
+        {
+            if (checkedBoxes.Count == 0)
+                return;
+            var scrollViewer = FindParentScrollViewer(grid);
+            if (scrollViewer == null)
+                return;
+            var positions = checkedBoxes
+                .Select(b => b.TranslatePoint(new Point(0, 0), grid).Y)
+                .OrderBy(y => y)
+                .ToList();
+            double viewportHeight = scrollViewer.ViewportHeight;
+            double bestOffset = positions[0];
+            int bestCount = 0;
+            foreach (double startY in positions)
+            {
+                int count = positions.Count(y => y >= startY && y < startY + viewportHeight);
+                if (count > bestCount)
+                {
+                    bestCount = count;
+                    bestOffset = startY;
+                }
+            }
+            scrollViewer.ScrollToVerticalOffset(bestOffset);
+        }
+
+        private ScrollViewer FindParentScrollViewer(DependencyObject child)
+        {
+            var parent = VisualTreeHelper.GetParent(child);
+            while (parent != null && !(parent is ScrollViewer))
+                parent = VisualTreeHelper.GetParent(parent);
+            return parent as ScrollViewer;
         }
 
         private void MpqClick(object sender, RoutedEventArgs e)
@@ -198,22 +239,28 @@ namespace SpellEditor
             else
                 useType = ImportExportType.DBC;
             var bindingNameList = new List<string>();
-            var children = isImport ? ImportGridDbcs.Children : ExportGridDbcs.Children;
+            var grid = isImport ? ImportGridDbcs : ExportGridDbcs;
+            var children = grid.Children;
             var prefix = isImport ? "Import" : "Export";
             bool showBar = false;
+            var checkedBoxes = new List<CheckBox>();
             foreach (var element in children)
             {
                 if (element is CheckBox box)
                 {
                     showBar = box.IsChecked.HasValue && box.IsChecked.Value;
                     if (showBar)
+                    {
                         bindingNameList.Add(box.Name.Substring(0, box.Name.IndexOf(prefix + "CheckBox")));
+                        checkedBoxes.Add(box);
+                    }
                 }
                 else if (element is ProgressBar bar)
                 {
                     bar.Visibility = showBar ? Visibility.Visible : Visibility.Hidden;
                 }
             }
+            ScrollToShowMost(grid, checkedBoxes);
             Logger.Info($"Bindings selected to {prefix.ToLower()}: {string.Join(", ", bindingNameList)}");
 
             // Now we want to disable the UI elements and update the progress bars

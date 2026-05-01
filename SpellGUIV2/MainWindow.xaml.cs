@@ -1176,6 +1176,44 @@ namespace SpellEditor
             }*/
             await controller.CloseAsync();
             PopulateSelectSpell();
+            await CheckAndOfferAutoImport();
+        }
+
+        private async Task CheckAndOfferAutoImport()
+        {
+            try
+            {
+                var count = uint.Parse(adapter.Query("SELECT COUNT(*) FROM `spell`").Rows[0][0].ToString());
+                if (count > 0)
+                    return;
+
+                var settings = new MetroDialogSettings
+                {
+                    AffirmativeButtonText = SafeTryFindResource("Yes"),
+                    NegativeButtonText = SafeTryFindResource("No")
+                };
+                var res = await this.ShowMessageAsync(
+                    "Empty Database",
+                    "The spell database is empty. Would you like to import DBC files now?",
+                    MessageDialogStyle.AffirmativeAndNegative,
+                    settings);
+
+                if (res != MessageDialogResult.Affirmative)
+                    return;
+
+                var window = new ImportExportWindow(adapter, PopulateSelectSpell, LoadAllRequiredDbcs);
+                window.Show();
+                window.Height += 40;
+                window.Width /= 2;
+                _ImportExportWindow = window;
+
+                await window.FullyLoadedTask;
+                window.TriggerImport();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Failed during auto-import check");
+            }
         }
 
         private void FocusLanguage()
@@ -1424,10 +1462,10 @@ namespace SpellEditor
                 if (res == MessageDialogResult.Affirmative)
                 {
                     foreach (var binding in BindingManager.GetInstance().GetAllBindings())
-                        adapter.Execute($"drop table `{binding.Name.ToLower()}`");
-                    adapter.CreateAllTablesFromBindings();
+                        adapter.Execute($"DROP TABLE IF EXISTS `{binding.Name.ToLower()}`");
+                    adapter = null;
                     selectedID = 0;
-                    PopulateSelectSpell();
+                    LoadAllData();
                 }
                 return;
             }
@@ -4883,7 +4921,7 @@ namespace SpellEditor
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (adapter == null || updating)
+            if (adapter == null || updating || selectedID == 0)
                 return;
             if (sender == RequiresSpellFocus)
             {

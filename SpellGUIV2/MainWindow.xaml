@@ -1312,7 +1312,7 @@
             </Button>
             <Button Name="RefreshButton" Click="RefreshButtonClick" ToolTip="Reload all spells from the database">
               <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+                <TextBlock Text="{DynamicResource butRefresh}" VerticalAlignment="Center"/>
               </StackPanel>
             </Button>
             <Button Name="LogBookButton" Click="LogBookWindowButtonClick" ToolTip="View the selected spell history log">
@@ -1325,7 +1325,7 @@
                     <TextBlock Text="OpenAI" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="TruncateTable" Click="Button_Click" ToolTip="Delete all records from the database to allow reimport">
+            <Button Name="TruncateTable" Click="Button_Click" ToolTip="Drop all tables and reinitialize with the correct schema for the selected WoW version">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
                 </StackPanel>

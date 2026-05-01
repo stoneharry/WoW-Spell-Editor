@@ -85,6 +85,8 @@ namespace SpellEditor.Sources.DBC
         public string GetAreaTableName(uint id, Dictionary<uint, AreaTable.AreaTableLookup> areaTableLookups)
         {
             var result = Lookups.Find(entry => entry.ID == id);
+            if (result == null || areaTableLookups == null)
+                return "";
             return areaTableLookups.ContainsKey(id) ? areaTableLookups[id].AreaName : "";
         }
 

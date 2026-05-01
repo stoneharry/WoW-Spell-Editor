@@ -168,6 +168,7 @@
     <system:String x:Key="butSaveIcon">Confirmer</system:String>
     <system:String x:Key="sliderChangeIconSizeTooltip">Contrôle la largeur &amp; la hauteur de l'icône (en pixels)</system:String>
     <system:String x:Key="butImportExportDBC">Importer/Exporter</system:String>
+    <system:String x:Key="butRefresh">Refresh</system:String>
     <system:String x:Key="butTruncateTable">Table tronquée</system:String>
     <system:String x:Key="butInsertANewRecord">Nouveau sort</system:String>
     <system:String x:Key="butDeleteARecord">Supprimer un sort</system:String>
@@ -204,7 +205,7 @@
     <system:String x:Key="Welcome" xml:space="preserve">Bienvenue dans l’éditeur de sorts WoW.&#x0a;&#x0a;Souhaitez-vous utiliser la version locale de l’éditeur (SQLite) ou vous connecter à un serveur (MySQL)?</system:String>
     <system:String x:Key="Exit" xml:space="preserve">Êtes-vous sûr de vouloir quitter?&#x0a;&#x0a;Assurez-vous d’avoir enregistré avant d’effectuer cette action, sinon tout votre progrès sera perdu !</system:String>
     <system:String x:Key="TruncateTable1">ÊTES-VOUS SÛR ?</system:String>
-    <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables used by this program and create them again allowing you to start over.&#x0a;&#x0a;This feature should only be used when you want to reset the tables and import new DBC files.</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">This will drop all SQL tables. The editor will then reinitialize with the correct schema for your selected WoW version.&#x0a;&#x0a;Use this when switching WoW versions to ensure the correct table schema is applied.</system:String>
     <system:String x:Key="CopySpellRecord1">Copier d'un sort existant ?</system:String>
     <system:String x:Key="CopySpellRecord2">Entrez l'identifiant du sort pour copier.</system:String>
     <system:String x:Key="CopySpellRecord3">ERREUR: L'identifiant du sort saisi n'était pas un entier.</system:String>

@@ -31,6 +31,8 @@ namespace SpellEditor.Sources.Controls
 
         public void Initialise()
         {
+            if (_initialised)
+                return;
             _Table.Columns.Add("id", typeof(uint));
             _Table.Columns.Add("SpellName" + _Language, typeof(string));
             _Table.Columns.Add("Icon", typeof(uint));
