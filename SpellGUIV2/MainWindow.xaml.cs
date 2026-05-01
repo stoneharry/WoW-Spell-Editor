@@ -5167,7 +5167,7 @@ namespace SpellEditor
                 // TODO : store og value and field instead of resetting?
 
                 // need to get from selected item because control main text might not be updated yet
-                if (SpellEffect1.SelectedItem != null && ApplyAuraName1.SelectedItem != null)
+                if (Config.DynamicMiscValueFields && SpellEffect1.SelectedItem != null && ApplyAuraName1.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect1.SelectedItem as string;
                     string selectedAuraText = ApplyAuraName1.SelectedItem as string;
@@ -5188,7 +5188,7 @@ namespace SpellEditor
                 GenerateSpellEffectHeader(2);
 
                 // need to get from selected item because control main text might not be updated yet
-                if (SpellEffect2.SelectedItem != null && ApplyAuraName2.SelectedItem != null)
+                if (Config.DynamicMiscValueFields && SpellEffect2.SelectedItem != null && ApplyAuraName2.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect2.SelectedItem as string ?? string.Empty;
                     string selectedAuraText = ApplyAuraName2.SelectedItem as string ?? string.Empty;
@@ -5208,7 +5208,7 @@ namespace SpellEditor
             {
                 GenerateSpellEffectHeader(3);
 
-                if (SpellEffect3.SelectedItem != null && ApplyAuraName3.SelectedItem != null)
+                if (Config.DynamicMiscValueFields && SpellEffect3.SelectedItem != null && ApplyAuraName3.SelectedItem != null)
                 {
                     string selectedEffectText = SpellEffect3.SelectedItem as string;
                     string selectedAuraText = ApplyAuraName3.SelectedItem as string;

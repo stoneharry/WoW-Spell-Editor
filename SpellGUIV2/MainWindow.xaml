@@ -361,7 +361,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labCategory}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="0"/>
-                    <c2:FilteredComboBox x:Name="Category" Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged" SelectionEffectivelyChanged="Category_SelectionEffectivelyChanged" LostFocus="FilteredComboBox_LostFocus"/>
+                    <c2:FilteredComboBox x:Name="Category" ToolTip="Modify SpellCategory.dbc to add new entries. Modify SpellCategoryNames.csv to customize names(SpellEditor only)." Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged" SelectionEffectivelyChanged="Category_SelectionEffectivelyChanged" LostFocus="FilteredComboBox_LostFocus"/>
                     <Label Content="{DynamicResource labDispelType}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0"/>
                     <c2:ThreadSafeComboBox x:Name="DispelType" Margin="5,5,5,5" Width="150" Grid.Row="1" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labMechanicType}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="0"/>
