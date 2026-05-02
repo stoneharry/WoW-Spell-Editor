@@ -1,0 +1,10 @@
+# CharacterFacialHairStyles structure for 3.3.5a 12340
+uint ID
+uint RaceID
+uint SexID
+uint VariationID
+uint geoset1
+uint geoset2
+uint geoset3
+uint geoset4
+uint geoset5
