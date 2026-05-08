@@ -10,6 +10,16 @@ using System.Windows.Threading;
 
 namespace SpellEditor.Sources.Controls.Common
 {
+    public sealed class SelectionEffectivelyChangedEventArgs : EventArgs
+    {
+        public object SelectedItem { get; }
+
+        public SelectionEffectivelyChangedEventArgs(object selectedItem)
+        {
+            SelectedItem = selectedItem;
+        }
+    }
+
     /**
      * A combo box that allows filtering of its values.
      * 
@@ -53,7 +63,8 @@ namespace SpellEditor.Sources.Controls.Common
         /// <summary>
         /// Triggers on lost focus or enter key pressed, if the selected item changed since the last time focus was lost or enter was pressed.
         /// </summary>
-        public event Action<FilteredComboBox, object> SelectionEffectivelyChanged;
+        // public event Action<FilteredComboBox, object> SelectionEffectivelyChanged;
+        public event EventHandler<SelectionEffectivelyChangedEventArgs> SelectionEffectivelyChanged;
 
         public FilteredComboBox()
         {
@@ -70,9 +81,35 @@ namespace SpellEditor.Sources.Controls.Common
                     new TextBoxBaseUserChangeTracker(EditableTextBox).UserTextChanged += FilteredComboBox_UserTextChange;
             };
 
+
             SelectionChanged += (_, __) => shouldTriggerSelectedItemChanged = true;
 
-            SelectionEffectivelyChanged += (_, o) => EffectivelySelectedItem = o;
+            // SelectionEffectivelyChanged += (_, o) => EffectivelySelectedItem = o;
+        }
+
+        private void RaiseSelectionEffectivelyChanged(object selectedItem)
+        {
+            EffectivelySelectedItem = selectedItem;
+            SelectionEffectivelyChanged?.Invoke(
+                this,
+                new SelectionEffectivelyChangedEventArgs(selectedItem)
+            );
+            ForceLeftClip();
+        }
+
+        private void ForceLeftClip()
+        {
+            if (EditableTextBox == null)
+                return;
+
+            EditableTextBox.CaretIndex = 0;
+            EditableTextBox.ScrollToHome();
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            ForceLeftClip();
         }
 
         public uint GetNumberPrefixFromText(string text = null)
@@ -159,7 +196,9 @@ namespace SpellEditor.Sources.Controls.Common
         {
             if (shouldTriggerSelectedItemChanged)
             {
-                SelectionEffectivelyChanged?.Invoke(this, SelectedItem);
+                // SelectionEffectivelyChanged?.Invoke(this, SelectedItem);
+                RaiseSelectionEffectivelyChanged(SelectedItem);
+
                 shouldTriggerSelectedItemChanged = false;
             }
         }
