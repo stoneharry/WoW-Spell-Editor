@@ -81,7 +81,9 @@ namespace HeadlessExport
             52046, // Torthridath
             50255, // Apolalypse Shade
             // The Vault
-            60119 // Archmage Tervosh
+            60119, // Archmage Tervosh
+            // Southport
+            50263
         };
 
         private static readonly uint[] _gobjectGenerateId = new uint[]
@@ -388,7 +390,7 @@ namespace HeadlessExport
                         // We need to copy the existing loot entries to a new loot table
                         WriteLine("Copying over existing loot entries to creature loot ID");
                         adapter.Execute($"REPLACE INTO new_world.creature_loot_template " +
-                            $"SELECT {npcId}, Item, Reference, Chance, QuestRequired, LootMode, GroupId, MinCount, MaxCount, `Comment`, RequiredDungeonLevel " +
+                            $"SELECT {npcId}, Item, Reference, Chance, QuestRequired, LootMode, GroupId, MinCount, MaxCount, `Comment`, RequiredDungeonLevel, MapId, MagicFindChanceCoef, MagicFindAmountCoef " +
                             $"FROM new_world.creature_loot_template WHERE Entry = {lootId}");
                         WriteLine("Inserting new item ID into loot table");
                         adapter.Execute($"REPLACE INTO new_world.creature_loot_template VALUES ({npcId}, {newItemId}, 0, {_dropChance}, 0, 1, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)} (PET)', {_requiredDungeonLevel}, 0, 0, 0)");
@@ -486,7 +488,7 @@ namespace HeadlessExport
                 var gLootQuery = $"{EDIT_QUERY_OPERATION} INTO new_world.gameobject_loot_template VALUES " +
                     $"({gobjectId}, 1, 79998, 100, 0, 1, 0, 1, 1, 'Boss Loot Table - Shards', 0, 0, 0, 0), " +
                     $"({gobjectId}, 2, 90010, 100, 0, 1, 2, 1, 1, 'Boss Loot Table - Rare Items', 0, 0, 0, 0), " +
-                    $"({gobjectId}, {newItemId}, 0, {_dropChance}, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel}, 0, 0 , 0)";
+                    $"({gobjectId}, {newItemId}, 0, {_dropChance}, 0, 0, 0, 1, 1, 'Memory of {adapter.EscapeString(creatureName)}', {_requiredDungeonLevel}, 0, 0, 0)";
                 WriteLine($"Creating gobject:\n {gobjectQuery}");
                 adapter.Execute(gobjectQuery);
                 WriteLine($"Creating gobject loot:\n {gLootQuery}");
