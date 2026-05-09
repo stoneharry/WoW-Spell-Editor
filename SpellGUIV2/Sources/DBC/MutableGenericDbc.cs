@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SpellEditor.Sources.DBC
 {
-    class MutableGenericDbc : AbstractDBC
+    public class MutableGenericDbc : AbstractDBC
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

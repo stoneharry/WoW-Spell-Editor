@@ -1,15 +1,14 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Binding;
 using SpellEditor.Sources.Config;
 using SpellEditor.Sources.Database;
+using SpellEditor.Sources.DBC;
 using SpellEditor.Sources.SpellStringTools;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,112 +17,101 @@ namespace HeadlessExport
 {
     class Program
     {
-        static ConcurrentDictionary<int, string> _TaskNameLookup;
-        static ConcurrentDictionary<int, int> _TaskProgressLookup;
-        static ConcurrentDictionary<int, HeadlessDbc> _HeadlessDbcLookup;
-
-        private static BlockingCollection<string> m_Queue = new BlockingCollection<string>();
+        private static readonly BlockingCollection<string> _logQueue = new BlockingCollection<string>();
 
         static Program()
         {
-            var thread = new Thread(
-              () =>
-              {
-                  while (true) Console.WriteLine(m_Queue.Take());
-              })
+            var thread = new Thread(() => { while (true) Console.WriteLine(_logQueue.Take()); })
             {
                 IsBackground = true
             };
             thread.Start();
         }
 
-        public static void WriteLine(string value)
-        {
-            m_Queue.Add(value);
-        }
+        public static void WriteLine(string value) => _logQueue.Add(value);
 
         static void Main(string[] args)
         {
-            var adapters = new List<IDatabaseAdapter>();
+            IDatabaseAdapter adapter = null;
             try
             {
                 Console.WriteLine("Loading config...");
                 Config.Init();
                 Config.connectionType = Config.ConnectionType.MySQL;
 
-                SpawnAdapters(ref adapters, 10);
+                var watch = new Stopwatch();
+                watch.Start();
 
-                var descriptions = new List<KeyValuePair<string, string>>();
-                var adapter = adapters[1];
+                adapter = AdapterFactory.Instance.GetAdapter(false);
+                WriteLine($"Connected in {Math.Round(watch.Elapsed.TotalSeconds, 2)}s");
 
-                WriteLine("Getting all spell data...");
-                using (var query = adapter.Query("SELECT * FROM spell"))
-                {
-                    var rows = query.AsEnumerable();
-                    var totalRows = rows.Count();
-                    int progress = 0;
-                    foreach (var row in rows)
+                Task.WaitAll(DBCManager.GetInstance().LoadRequiredDbcs().ToArray());
+
+                // Load every spell row once — eliminates all per-spell DB queries
+                WriteLine("Loading all spell rows into memory...");
+                watch.Restart();
+                var allSpells = adapter.Query("SELECT * FROM spell");
+                var resultCache = new ConcurrentDictionary<uint, DataTable>();
+                var cachingAdapter = new CachingDatabaseAdapter(adapter, allSpells, resultCache);
+                var spellRows = allSpells.AsEnumerable();
+                WriteLine($"Loaded {allSpells.Rows.Count} rows in {Math.Round(watch.Elapsed.TotalSeconds, 2)}s");
+
+                // Parse descriptions in parallel — CPU-bound after caching
+                watch.Restart();
+                var parser = new SpellStringParser();
+                var descriptions = new ConcurrentBag<KeyValuePair<string, string>>();
+                int totalRows = allSpells.Rows.Count;
+                int progress = 0;
+
+                Parallel.ForEach(
+                    spellRows,
+                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                    row =>
                     {
-                        if (++progress % 100 == 0)
-                        {
-                            int percent = (progress / totalRows) * 100;
-                            WriteLine($"====== Progress: ===== {percent}%");
-                            //controller.SetProgress(percent);
-                        }
-                        var id = row["id"].ToString();
+                        var current = Interlocked.Increment(ref progress);
+                        if (current % 1000 == 0)
+                            WriteLine($"Progress: {current * 100 / totalRows}%");
+
                         var desc = row["spelldescription0"].ToString();
-                        if (desc.Trim().Length == 0)
-                            continue;
+                        if (desc.Trim().Length == 0) return;
+
+                        var id = row["id"].ToString();
                         try
                         {
-                            descriptions.Add(new KeyValuePair<string, string>(id, SpellStringParser.ParseString(desc, row, adapter)));
+                            descriptions.Add(new KeyValuePair<string, string>(
+                                id, parser.ParseString(desc, row, cachingAdapter)));
                         }
                         catch (Exception ex)
                         {
-                            WriteLine(ex.ToString() + "\n" + ex.StackTrace);
+                            WriteLine($"[{id}] {ex.Message}");
                         }
-                    }
-                }
-                var sb = new StringBuilder();
-                var count = 0;
-                sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
+                    });
+
+                WriteLine($"Parsed {descriptions.Count} descriptions in {Math.Round(watch.Elapsed.TotalSeconds, 2)}s");
+
+                // Write results in batches
+                watch.Restart();
+                const string insertPrefix = "REPLACE INTO new_world.item_spell_gem_desc VALUES ";
+                var sb = new StringBuilder(insertPrefix);
+                int count = 0;
                 foreach (var pair in descriptions)
                 {
-
                     sb.Append($"({pair.Key}, \"{MySqlHelper.EscapeString(pair.Value)}\"), ");
                     if (++count % 500 == 0)
                     {
-                        sb = sb.Remove(sb.Length - 2, 2);
-                        try
-                        {
-                            adapter.Execute(sb.ToString());
-                            sb = new StringBuilder();
-                            sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
-                        }
-                        catch (Exception ex)
-                        {
-                            WriteLine("Failed on query:\n" + sb.ToString());
-                            WriteLine(ex.ToString());
-                            sb = new StringBuilder();
-                            sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
-                        }
+                        sb.Remove(sb.Length - 2, 2);
+                        ExecuteBatch(adapter, sb.ToString());
+                        sb.Clear();
+                        sb.Append(insertPrefix);
                     }
                 }
-                if (sb.Length > 0)
+                if (sb.Length > insertPrefix.Length)
                 {
-                    sb = sb.Remove(sb.Length - 2, 2);
-                    try
-                    {
-                        adapter.Execute(sb.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteLine("Failed on query:\n" + sb.ToString());
-                        WriteLine(ex.ToString());
-                        sb = new StringBuilder();
-                        sb.Append($"REPLACE INTO new_world.item_spell_gem_desc VALUES ");
-                    }
+                    sb.Remove(sb.Length - 2, 2);
+                    ExecuteBatch(adapter, sb.ToString());
                 }
+
+                WriteLine($"Wrote {count} rows in {Math.Round(watch.Elapsed.TotalSeconds, 2)}s");
             }
             catch (Exception e)
             {
@@ -131,33 +119,20 @@ namespace HeadlessExport
             }
             finally
             {
-                adapters.ForEach((adapter) => adapter.Dispose());
+                adapter?.Dispose();
             }
         }
 
-        private static void SpawnAdapters(ref List<IDatabaseAdapter> adapters, int numConnections)
+        private static void ExecuteBatch(IDatabaseAdapter adapter, string sql)
         {
-            var tasks = new List<Task<IDatabaseAdapter>>();
-            int numBindings = BindingManager.GetInstance().GetAllBindings().Length;
-            WriteLine($"Spawning {numConnections} adapters...");
-            var timer = new Stopwatch();
-            timer.Start();
-            for (var i = 0; i < numConnections; ++i)
+            try
             {
-                tasks.Add(Task.Run(() =>
-                {
-                    var adapter = AdapterFactory.Instance.GetAdapter(false);
-                    WriteLine($"Spawned Adapter{Task.CurrentId}");
-                    return adapter;
-                }));
+                adapter.Execute(sql);
             }
-            Task.WaitAll(tasks.ToArray());
-            foreach (var task in tasks)
+            catch (Exception ex)
             {
-                adapters.Add(task.Result);
+                WriteLine($"Batch write failed: {ex.Message}");
             }
-            timer.Stop();
-            WriteLine($"Spawned {numConnections} adapters in {Math.Round(timer.Elapsed.TotalSeconds, 2)} seconds.");
         }
     }
 }

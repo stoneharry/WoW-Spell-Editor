@@ -14,7 +14,7 @@ namespace HeadlessExport
         public async Task<Stopwatch> TimedExportToDBC(IDatabaseAdapter adapter, string IdKey, string bindingName, ImportExportType type)
         {
             Timer = new Stopwatch();
-            var task = ExportTo(adapter, Program.SetProgress, IdKey, bindingName, type);
+            var task = ExportTo(adapter, null, IdKey, bindingName, type);
             TaskId = task.Id;
             Timer.Start();
             await task;

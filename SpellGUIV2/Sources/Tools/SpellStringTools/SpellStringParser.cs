@@ -244,6 +244,11 @@ namespace SpellEditor.Sources.SpellStringTools
 
         private string ResolveModifyFormula(string value, DataRow spell, MainWindow mainWindow)
         {
+            return ResolveModifyFormula(value, spell, mainWindow.GetDBAdapter());
+        }
+
+        private string ResolveModifyFormula(string value, DataRow spell, IDatabaseAdapter adapter)
+        {
             var valueParts = value.Split(';');
             if (valueParts.Length != 2)
             {
@@ -251,7 +256,7 @@ namespace SpellEditor.Sources.SpellStringTools
             }
             var modifier = valueParts[0].Replace('$', ' ').TrimStart();
             var reference = "$" + valueParts[1];
-            var resolvedRef = ResolveReference(reference, spell, mainWindow);
+            var resolvedRef = ResolveReference(reference, spell, adapter);
 
             if (modifier.Length > 0 &&
                 int.TryParse(modifier.Substring(1), out int number) &&

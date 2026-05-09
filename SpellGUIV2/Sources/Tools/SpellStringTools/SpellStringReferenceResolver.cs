@@ -97,19 +97,7 @@ namespace SpellEditor.Sources.SpellStringTools
                         {
                             if (radiusVal == radiusDbc.Lookups[i].ID)
                             {
-                                string item = "";
-                                if (index == 1)
-                                {
-                                    item = mainWindow.RadiusIndex1.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
-                                }
-                                else if (index == 2)
-                                {
-                                    item = mainWindow.RadiusIndex2.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
-                                }
-                                else if (index == 3)
-                                {
-                                    item = mainWindow.RadiusIndex3.Items[radiusDbc.Lookups[i].ComboBoxIndex].ToString();
-                                }
+                                var item = radiusDbc.Lookups[i].Name;
                                 str = str.Replace(token, item.Contains(" ") ? item.Substring(0, item.IndexOf(" ")) : item);
                             }
                         }
@@ -279,9 +267,9 @@ namespace SpellEditor.Sources.SpellStringTools
                         if (entry != null)
                         {
                             string newStr;
-                            int baseDuration = int.Parse(entry["BaseDuration"].ToString());
+                            uint baseDuration = uint.Parse(entry["BaseDuration"].ToString());
                             // Convert duration to seconds
-                            if (baseDuration == -1)
+                            if (baseDuration == uint.MaxValue)
                                 newStr = STR_INFINITE_DUR;
                             else
                             {

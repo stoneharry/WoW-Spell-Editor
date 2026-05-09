@@ -8,7 +8,7 @@ using System.Windows.Documents;
 
 namespace SpellEditor.Sources.DBC
 {
-    class DBCManager
+    public class DBCManager
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
