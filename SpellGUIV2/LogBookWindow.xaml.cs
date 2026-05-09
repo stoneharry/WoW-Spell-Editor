@@ -47,7 +47,7 @@ namespace SpellEditor
             Closed += LogBookWindow_Closed;
             IsVisibleChanged += LogBookWindow_IsVisibleChanged;
 
-            Topmost = true;
+            // Topmost = true;
 
             Owner = _main;
 

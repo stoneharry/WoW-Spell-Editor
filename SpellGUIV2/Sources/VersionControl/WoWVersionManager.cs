@@ -120,7 +120,12 @@ namespace SpellEditor.Sources.VersionControl
                             "RightHandEffect",
                             "BreathEffect",
                             "LeftWeaponEffect",
-                            "RightWeaponEffect"
+                            "RightWeaponEffect",
+                            "SpecialEffect1",
+                            "SpecialEffect2",
+                            "SpecialEffect3",
+                            "WorldEffect"
+
                         });
                 default:
                     throw new Exception($"Unknown version identity [{version.Identity}] generating WoWVersionManager.KeyResource");

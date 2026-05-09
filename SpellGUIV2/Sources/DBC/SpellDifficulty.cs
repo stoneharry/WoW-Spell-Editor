@@ -33,6 +33,8 @@ namespace SpellEditor.Sources.DBC
 
         public override void LoadGraphicUserInterface()
         {
+            if (Body.RecordMaps == null)
+                return;
 
             Lookups.Add(new DBCBoxContainer(0, new Label { Content = "0" }, 0));
 

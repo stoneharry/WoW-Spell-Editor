@@ -41,8 +41,21 @@
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labGoToSpell}" Margin="5" Grid.Row="0" Grid.Column="2"/>
                     <c2:ThreadSafeTextBox x:Name="NavigateToSpell" HorizontalAlignment="Left" Margin="5" Width="100" TextWrapping="Wrap" KeyDown="_KeyDown" Grid.Row="0"  Grid.Column="3"/>
+
+                    
+                    <Label Content="Filter Category" Margin="5" Grid.Row="0" Grid.Column="4"/>
+                    <c2:ThreadSafeComboBox x:Name="FilterCategoryCombo" Margin="5" Width="250" Grid.Row="0" Grid.Column="5"/>
+
+
                     <Label Content="{DynamicResource labFilterBtName}" Margin="5" Grid.Row="1" Grid.Column="2"/>
-                    <c2:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="200" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
+                    <c2:ThreadSafeTextBox x:Name="FilterSpellNames" HorizontalAlignment="Left" Margin="5" Width="250" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp" Grid.Row="1" Grid.Column="3"/>
+
+
+                    <Label Content="Filter by Family" Margin="5" Grid.Row="1" Grid.Column="4"/>
+                    <c2:FilteredComboBox x:Name="FilterFamilyCombo" Margin="5" Width="250" Grid.Row="1" Grid.Column="5"/>
+
+
+
                     <Label Content="{DynamicResource labFilterByEffect}" Margin="5" Grid.Row="2" Grid.Column="2"/>
                     <c2:FilteredComboBox x:Name="FilterSpellEffectCombo" Margin="5" Width="250" Grid.Row="2" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFilterByAura}" Margin="5" Grid.Row="3" Grid.Column="2"/>
@@ -348,7 +361,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="{DynamicResource labCategory}" Margin="5,5,5,5" Grid.Row="0" Grid.Column="0"/>
-                    <c2:ThreadSafeComboBox x:Name="Category" Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
+                    <c2:FilteredComboBox x:Name="Category" ToolTip="Modify SpellCategory.dbc to add new entries. Modify SpellCategoryNames.csv to customize names(SpellEditor only)." Margin="5,5,5,5" Width="150" Grid.Row="0" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged" SelectionEffectivelyChanged="Category_SelectionEffectivelyChanged" LostFocus="FilteredComboBox_LostFocus"/>
                     <Label Content="{DynamicResource labDispelType}" Margin="5,5,5,5" Grid.Row="1" Grid.Column="0"/>
                     <c2:ThreadSafeComboBox x:Name="DispelType" Margin="5,5,5,5" Width="150" Grid.Row="1" Grid.Column="1" SelectionChanged="ComboBox_SelectionChanged"/>
                     <Label Content="{DynamicResource labMechanicType}" Margin="5,5,5,5" Grid.Row="2" Grid.Column="0"/>
@@ -403,7 +416,7 @@
                     <c2:FilteredComboBox x:Name="SpellFamilyName" Margin="5,5,5,5" Width="150" SelectionChanged="ComboBox_familyname_SelectionChanged" LostFocus="FilteredComboBox_LostFocus" Grid.Row="9" Grid.Column="5" ToolTip="You can add entries by editing the SpellFamilies/Definitions.json file."/>
                     
                     <Label Content="{DynamicResource labSpellFamilyFlags}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="4"/>
-                    <ListBox x:Name="BaseSpellFamiliesList" Margin="5,5,5,0" BorderThickness="1" Grid.Row="10" Grid.Column="5" Grid.RowSpan="4"/>
+                    <ListBox x:Name="BaseSpellFamiliesList" Margin="5,5,5,0" Width="150" BorderThickness="1" Grid.Row="10" Grid.Column="5" Grid.RowSpan="4" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
                     <Button x:Name="BaseSpellsFamiliesButton" Margin="5,5,5,5" Content="Edit Families" Click="EditBaseFamiliesButton_Click" Grid.Row="14" Grid.Column="5"/>
 
                     <Label Content="{DynamicResource labGlobalCooldownTime}" Margin="5,5,5,5" Grid.Row="10" Grid.Column="0"/>
@@ -509,7 +522,7 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Button x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -556,8 +569,8 @@
                                 <c2:ThreadSafeTextBox x:Name="ChainTarget2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,382,0,0" Width="300"/>
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
-                                <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0" />
+                                <Button x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -605,7 +618,7 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <c2:ThreadSafeTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" TextWrapping="Wrap"/>
+                                <Button x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -1292,47 +1305,52 @@
                     <TextBlock Text="Debug" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="ConfigButton" Click="ConfigButtonClick">
+            <Button Name="ConfigButton" Click="ConfigButtonClick" ToolTip="Open configuration settings">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butConfig}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton">
+            <Button Name="ImportExportDBC" Click="ImportExportSpellDbcButton" ToolTip="Import or export spell DBC files.">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butImportExportDBC}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="LogBookButton" Click="LogBookWindowButtonClick">
+            <Button Name="RefreshButton" Click="RefreshButtonClick" ToolTip="Reload all spells from the database">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{DynamicResource butRefresh}" VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+            <Button Name="LogBookButton" Click="LogBookWindowButtonClick" ToolTip="View the selected spell history log">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butLogBook}" VerticalAlignment="Center"/>
                 </StackPanel>
              </Button>
-             <Button Name="OpenAIButton" Click="OpenAIButtonClick">
+             <Button Name="OpenAIButton" Click="OpenAIButtonClick" ToolTip="Open AI-assisted spell generation">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="OpenAI" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="TruncateTable" Click="Button_Click">
+            <Button Name="TruncateTable" Click="Button_Click" ToolTip="Drop all tables and reinitialize with the correct schema for the selected WoW version">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butTruncateTable}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="InsertANewRecord" Click="Button_Click">
+            <Button Name="InsertANewRecord" Click="Button_Click" ToolTip="Insert a new spell record. You can also right click on spells in the list">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butInsertANewRecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="DeleteARecord" Click="Button_Click">
+            <Button Name="DeleteARecord" Click="Button_Click" ToolTip="Delete the selected spell record. You can also right click on spells in the list">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butDeleteARecord}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button Name="SaveSpellChanges" Click="Button_Click">
+            <Button Name="SaveSpellChanges" Click="Button_Click" ToolTip="Save all changes to the current spell">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{DynamicResource butSaveSpellChanges}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}"/>
+            <ComboBox Name="MultilingualSwitch" Foreground="White" Initialized="MultilingualSwitch_Initialized" BorderBrush="{x:Null}" Background="{x:Null}" ToolTip="Switch display language"/>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 </controls:MetroWindow>
