@@ -29,6 +29,9 @@ namespace SpellEditor.Sources.DBC
         private double? iconSize = null;
         private Thickness? iconMargin = null;
 
+        private List<Image> _imagesPool;
+        private DispatcherTimer _scrollDebounce;
+
         public List<Icon_DBC_Lookup> Lookups = new List<Icon_DBC_Lookup>();
 
         public SpellIconDBC(MainWindow window, IDatabaseAdapter adapter)
@@ -116,11 +119,7 @@ namespace SpellEditor.Sources.DBC
 
         public void LoadAllIcons(double margin)
         {
-            var pathsToAdd = Lookups.Where(entry =>
-            {
-                var path = entry.Name + ".blp";
-                return File.Exists(path);
-            }).ToList();
+            var pathsToAdd = Lookups.Where(entry => File.Exists(entry.Name + ".blp")).ToList();
             var imagesPool = new List<Image>(pathsToAdd.Count);
             foreach (var entry in pathsToAdd)
             {
@@ -134,91 +133,96 @@ namespace SpellEditor.Sources.DBC
                     Name = "Index_" + entry.Offset,
                     ToolTip = entry.ID + " - " + entry.Name + ".blp"
                 };
+                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
                 image.MouseDown += ImageDown;
                 imagesPool.Add(image);
             }
             pathsToAdd = null;
+            _imagesPool = imagesPool;
+
+            // Add all children in a single pass so WPF coalesces into one layout pass
+            foreach (var image in imagesPool)
+                main.IconGrid.Children.Add(image);
+
             var renderInView = Config.Config.RenderImagesInView;
             if (renderInView)
             {
-                main.IconScrollViewer.ScrollChanged += IconScrollViewer_ScrollChanged;
+                var sv = main.IconScrollViewer;
+                _scrollDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(80) };
+                _scrollDebounce.Tick += (s, e) =>
+                {
+                    _scrollDebounce.Stop();
+                    UpdateVisibleIcons(sv);
+                };
+                sv.ScrollChanged += IconScrollViewer_ScrollChanged;
+                // Defer initial load until layout has completed
+                main.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                    new Action(() => UpdateVisibleIcons(sv)));
             }
-
-            Task.Run(async () =>
+            else
             {
-                var count = 0u;
-                foreach (var image in imagesPool)
+                // Extract paths on the UI thread before handing off to background
+                var imagePaths = imagesPool.Select(img =>
                 {
-                    // Yield to allow the UI to update
-                    if (!renderInView && (++count % 150 == 0))
-                        await Task.Delay(count < 800 ? 500 : count < 1500 ? 250 : 100);
+                    var tip = img.ToolTip.ToString();
+                    return (img, tip.Substring(tip.IndexOf('-') + 2));
+                }).ToList();
 
-                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Render, new Action(() =>
-                        {
-                            main.IconGrid.Children.Add(image);
-                            if (!renderInView)
-                            {
-                                image.IsVisibleChanged += IsImageVisibleChanged;
-                                // Need to manually fire the event if the image was already visible (this fires async to the image loading)
-                                if (image.IsVisible)
-                                    IsImageVisibleChanged(image, new DependencyPropertyChangedEventArgs(
-                                        UIElement.IsVisibleProperty, false, true));
-                            }
-                        })
-                    );
-                }
-            });
-        }
-
-        private async void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            ScrollViewer sv = (ScrollViewer)sender;
-            Rect svViewportBounds = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
-
-            for (int i = 0; i < main.IconGrid.Children.Count; ++i)
-            {
-                var container = main.IconGrid.Children[i] as FrameworkElement;
-                if (container != null)
-                {
-                    var offset = VisualTreeHelper.GetOffset(container);
-                    var bounds = new Rect(offset.X, offset.Y - 300, container.ActualWidth, container.ActualHeight + 300);
-
-                    var image = container as Image;
-                    var source = image.Source;
-                    if (svViewportBounds.IntersectsWith(bounds))
+                // Load in parallel; post each assignment as fire-and-forget so background
+                // threads don't block waiting for the UI thread between images
+                Task.Run(() => Parallel.ForEach(
+                    imagePaths,
+                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                    pair =>
                     {
-                        if (source == null)
-                        {
-                            var path = image.ToolTip.ToString().Substring(image.ToolTip.ToString().IndexOf('-') + 2);
-                            await Task.Factory.StartNew(() => source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path));
-                        }
-                    }
-                    else
-                    {
-                        source = null;
-                    }
-                    image.Source = source;
-                }
+                        var source = BlpManager.GetInstance().GetImageSourceFromBlpPath(pair.Item2);
+                        main.Dispatcher.BeginInvoke(DispatcherPriority.Input,
+                            new Action(() => pair.Item1.Source = source));
+                    }));
             }
         }
 
-        private void IsImageVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void IconScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            var image = sender as Image;
-            var source = image.Source;
-            if (source == null && (bool)e.NewValue)
+            _scrollDebounce.Stop();
+            _scrollDebounce.Start();
+        }
+
+        private void UpdateVisibleIcons(ScrollViewer sv)
+        {
+            if (_imagesPool == null || _imagesPool.Count == 0)
+                return;
+
+            double size = iconSize ?? 32;
+            double leftMargin = iconMargin?.Left ?? 4;
+            double itemWidth = size + leftMargin;
+
+            // Calculate which rows are in view using scroll position and item size
+            int columns = Math.Max(1, (int)(sv.ViewportWidth / itemWidth));
+            int firstRow = Math.Max(0, (int)(sv.VerticalOffset / size) - 1);
+            int lastRow = (int)((sv.VerticalOffset + sv.ViewportHeight) / size) + 1;
+
+            for (int i = 0; i < _imagesPool.Count; i++)
             {
-                var sourceStr = image.ToolTip.ToString();
-                Task.Run(() =>
+                var image = _imagesPool[i];
+                bool inView = (i / columns) >= firstRow && (i / columns) <= lastRow;
+
+                if (inView && image.Source == null)
                 {
-                    var path = sourceStr.Substring(sourceStr.IndexOf('-') + 2);
-                    // Fetch to get into memory on this thread, then refetch on new thread to use already fetched thread safe
-                    ImageSource newSource = BlpManager.GetInstance().GetImageSourceFromBlpPath(path);
-                    // Important to schedule this with the correct priority. Too lazy = takes forever, too eager = freezes UI briefly
-                    main.Dispatcher?.BeginInvoke(DispatcherPriority.Input, new Action(
-                        () => image.Source = newSource)
-                    );
-                });
+                    var capturedImage = image;
+                    var path = image.ToolTip.ToString();
+                    path = path.Substring(path.IndexOf('-') + 2);
+                    Task.Run(() =>
+                    {
+                        var source = BlpManager.GetInstance().GetImageSourceFromBlpPath(path);
+                        main.Dispatcher.BeginInvoke(DispatcherPriority.Input,
+                            new Action(() => capturedImage.Source = source));
+                    });
+                }
+                else if (!inView)
+                {
+                    image.Source = null;
+                }
             }
         }
 

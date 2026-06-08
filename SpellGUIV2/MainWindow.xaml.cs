@@ -76,6 +76,8 @@ namespace SpellEditor
         public uint selectedID;
         public uint newIconID = 1;
         private bool updating;
+        private DispatcherTimer _sliderDebounce;
+        private double _pendingSliderValue;
         private readonly SpellStringParser SpellStringParser = new SpellStringParser();
 
         private readonly List<ThreadSafeTextBox> spellDescGenFields = new List<ThreadSafeTextBox>();
@@ -5309,17 +5311,32 @@ namespace SpellEditor
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (IconGrid == null || !IconGrid.IsInitialized)
-            {
                 return;
-            }
+
             double newSize = e.NewValue / 4;
             var margin = new Thickness(newSize, 0, 0, 0);
             ((SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon"))?.updateIconSize(newSize, margin);
+
+            _pendingSliderValue = e.NewValue;
+            if (_sliderDebounce == null)
+            {
+                _sliderDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+                _sliderDebounce.Tick += SliderDebounce_Tick;
+            }
+            _sliderDebounce.Stop();
+            _sliderDebounce.Start();
+        }
+
+        private void SliderDebounce_Tick(object sender, EventArgs e)
+        {
+            _sliderDebounce.Stop();
+            double newValue = _pendingSliderValue;
+            var margin = new Thickness(newValue / 4, 0, 0, 0);
             foreach (System.Windows.Controls.Image image in IconGrid.Children)
             {
                 image.Margin = margin;
-                image.Width = e.NewValue;
-                image.Height = e.NewValue;
+                image.Width = newValue;
+                image.Height = newValue;
             }
         }
 
