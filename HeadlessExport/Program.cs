@@ -83,7 +83,9 @@ namespace HeadlessExport
             // The Vault
             60119, // Archmage Tervosh
             // Southport
-            50263
+            50263, // William The Arsonist
+            50271, // Captain Stillwater
+            50277 // Commodore Vance Bloodtide
         };
 
         private static readonly uint[] _gobjectGenerateId = new uint[]
