@@ -1,0 +1,9 @@
+# LFGDungeonExpansion structure for 3.3.5a 12340
+uint ID
+uint Lfg_Id
+uint Expansion_Level
+uint Random_Id
+uint Hard_Level_Min
+uint Hard_Level_Max
+uint Target_Level_Min
+uint Target_Level_Max

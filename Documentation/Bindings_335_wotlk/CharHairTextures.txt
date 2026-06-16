@@ -1,0 +1,9 @@
+# CharHairTextures wotlk 3.3.5
+uint Id
+uint RaceID
+uint Gender
+uint Field04
+uint Field05
+uint Field06
+uint Field07
+uint Field08

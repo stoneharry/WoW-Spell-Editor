@@ -1,0 +1,8 @@
+# VocalUISounds structure for 3.3.5a 12340
+uint ID
+uint VocalUIEnum
+uint RaceID
+uint NormalSoundID1
+uint NormalSoundID2
+uint PissedSoundID1
+uint PissedSoundID2

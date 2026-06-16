@@ -1,0 +1,11 @@
+# CharSections wotlk 3.3.5
+uint Id
+uint RaceID
+uint SexID
+uint BaseSection
+uint TextureName1 string
+uint TextureName2 string
+uint TextureName3 string
+uint Flags
+uint VariationIndex
+uint ColorIndex

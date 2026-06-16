@@ -1,0 +1,7 @@
+# SummonProperties structure for 3.3.5a 12340
+uint ID
+uint Control
+uint Faction
+uint Title
+uint Slot
+uint Flags

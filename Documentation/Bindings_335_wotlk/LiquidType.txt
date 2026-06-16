@@ -1,0 +1,46 @@
+# LiquidType structure for 3.3.5a 12340
+uint ID
+uint Name string
+uint Flags
+uint Type
+uint SoundID
+uint SpellID
+float MaxDarkenDepth
+float FogDarkenintensity
+float AmbDarkenintensity
+float DirDarkenintensity
+uint LightID
+float ParticleScale
+uint ParticleMovement
+uint ParticleTexSlots
+uint MaterialID
+uint Texture1 string
+uint Texture2 string
+uint Texture3 string
+uint Texture4 string
+uint Texture5 string
+uint Texture6 string
+uint Color1
+uint Color2
+float Float1
+float Float2
+float Float3
+float Float4
+float Float5
+float Float6
+float Float7
+float Float8
+float Float9
+float Float10
+float Float11
+float Float12
+float Float13
+float Float14
+float Float15
+float Float16
+float Float17
+float Float18
+uint Int1
+uint Int2
+uint Int3
+uint Int4

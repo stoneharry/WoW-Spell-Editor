@@ -1,0 +1,9 @@
+# HelmetGeosetVisData structure for 3.3.5a 12340
+uint ID
+uint HideGeoset1
+uint HideGeoset2
+uint HideGeoset3
+uint HideGeoset4
+uint HideGeoset5
+uint HideGeoset6
+uint HideGeoset7
