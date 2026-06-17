@@ -85,7 +85,8 @@ namespace HeadlessExport
             // Southport
             50263, // William The Arsonist
             50271, // Captain Stillwater
-            50277 // Commodore Vance Bloodtide
+            50277, // Commodore Vance Bloodtide
+            50279 // Karn Timberhorn
         };
 
         private static readonly uint[] _gobjectGenerateId = new uint[]
