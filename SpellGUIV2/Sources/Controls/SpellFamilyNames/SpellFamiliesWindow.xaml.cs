@@ -46,10 +46,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
             {
                 _original_families_values[i] = _active_families_values[i];
             }
-            if (mask_count < 2)
-                _familyMaskControls[1].IsEnabled = false;
-            if (mask_count < 3)
-                _familyMaskControls[2].IsEnabled = false;
+
 
             _effectId = effectId;
             _isBaseFamilies = baseFamilies;
@@ -57,10 +54,21 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
             InitializeComponent();
 
-            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
-                FilterTabControl.IsEnabled = false; // WOTLK only, as earlier versions don't have the class mask fields.
+            _familyMaskControls = new UIntTextBox[3] { SpellMask1, SpellMask2, SpellMask3 }; // must be after InitializeComponent()
 
-            if (default_filter_talents)
+            // 1.12 only has 2 masks in base, 1 in effects through item_type
+            if (mask_count < 2)
+                _familyMaskControls[1].IsEnabled = false;
+            if (mask_count < 3)
+                _familyMaskControls[2].IsEnabled = false;
+
+            if (!WoWVersionManager.IsWotlkOrGreaterSelected)
+            {
+                FilterTabControl.IsEnabled = false; // WOTLK only, as earlier versions don't have the class mask fields.
+                FilterTabControl.SelectedIndex = 0;
+            }
+
+            if (WoWVersionManager.IsWotlkOrGreaterSelected && default_filter_talents)
                 FilterTabControl.SelectedIndex = 1;
 
             if (baseFamilies)
@@ -69,8 +77,6 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                 Title += $" [Effect {effectId}]";
 
             CreateFamilyCheckboxes();
-
-            _familyMaskControls = new UIntTextBox[3] { SpellMask1, SpellMask2, SpellMask3 }; // must be after InitializeComponent()
 
             Load(_active_families_values);
         }
@@ -375,8 +381,10 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     _mainwindow.spellFamilyClassMaskParser.UpdateEffectTargetSpellsList(this, _familyId, _mainwindow.GetDBAdapter(), filterduplicates)));
             }
-            else if (FilterTabControl.SelectedIndex == 1)
+            else if (FilterTabControl.SelectedIndex == 1
+                && WoWVersionManager.IsWotlkOrGreaterSelected)
             { // show spells that use the families as target from effects (talents)
+                // currently only support WOTLK effect classk masks
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     _mainwindow.spellFamilyClassMaskParser.UpdateEffectModifiersSpellsList(this, _familyId, _mainwindow.GetDBAdapter(), filterduplicates)));
             }
