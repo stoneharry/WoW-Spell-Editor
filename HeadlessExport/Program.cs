@@ -86,7 +86,8 @@ namespace HeadlessExport
             50263, // William The Arsonist
             50271, // Captain Stillwater
             50277, // Commodore Vance Bloodtide
-            50279 // Karn Timberhorn
+            50279, // Karn Timberhorn
+            50285  // First Mate Dargan Crowhook
         };
 
         private static readonly uint[] _gobjectGenerateId = new uint[]
