@@ -1,0 +1,11 @@
+# ParticleColor structure for 3.3.5a 12340
+uint ID
+uint Start1
+uint Start2
+uint Start3
+uint Mid1
+uint Mid2
+uint Mid3
+uint End1
+uint End2
+uint End3

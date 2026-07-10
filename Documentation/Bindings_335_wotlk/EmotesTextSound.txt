@@ -1,0 +1,6 @@
+# EmotesTextSound structure for 3.3.5a 12340
+uint ID
+uint EmotesTextID
+uint RaceID
+uint SexID
+uint SoundID

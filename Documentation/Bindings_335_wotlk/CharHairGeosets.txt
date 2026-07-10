@@ -1,0 +1,7 @@
+# CharHairGeosets wotlk 3.3.5
+uint Id
+uint RaceID
+uint Gender
+uint VariationID
+uint GeosetID
+uint Showscalp
