@@ -1,0 +1,2339 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+	<!--#region UI String-->				
+    <system:String x:Key="mainTitle">WoW 주문 에디터</system:String>
+    <system:String x:Key="tabSelectSpell">주문 선택</system:String>
+    <system:String x:Key="labSpellsLoaded">로드된 주문이 없습니다.</system:String>
+    <system:String x:Key="labGoToSpell">주문 ID로 이동:</system:String>
+    <system:String x:Key="labFilterBtName">이름으로 필터링:</system:String>
+	<system:String x:Key="labFilterByEffect">주문 효과로 필터링:</system:String>
+	<system:String x:Key="labFilterByAura">주문 오라로 필터링:</system:String>
+    <system:String x:Key="labFilterByTargetA">대상 A로 필터링:</system:String>
+	<system:String x:Key="labFilterByTargetB">대상 B로 필터링:</system:String>
+    <system:String x:Key="tabEnglish">영어</system:String>
+    <system:String x:Key="tabKorean">한국어</system:String>
+    <system:String x:Key="tabFrench">프랑스어</system:String>
+    <system:String x:Key="tabDeutsch">독일어</system:String>
+    <system:String x:Key="tabChinese">중국어(간체)</system:String>
+    <system:String x:Key="tabTaiwanese">중국어(번체)</system:String>
+    <system:String x:Key="tabMexican">스페인어</system:String>
+    <system:String x:Key="tabPortuguese">포르투갈어</system:String>
+    <system:String x:Key="tabRussian">러시아어</system:String>
+    <system:String x:Key="labSpellName">주문 이름:</system:String>
+    <system:String x:Key="labSpellRank">주문 등급:</system:String>
+    <system:String x:Key="labSpellTooltip">주문 툴팁:</system:String>
+    <system:String x:Key="labSpellIngameTooltip">게임 내 주문 툴팁:</system:String>
+    <system:String x:Key="labSpellDescription">주문 설명:</system:String>
+    <system:String x:Key="labSpellIngameDescription">게임 내 주문 설명:</system:String>
+    <system:String x:Key="Base">기본</system:String>
+    <system:String x:Key="Effects">효과</system:String>
+    <system:String x:Key="Effects1">대상/발동</system:String>
+    <system:String x:Key="Effects2">효과</system:String>
+    <system:String x:Key="SpellEffects1">주문 효과 1</system:String>
+    <system:String x:Key="SpellEffects2">주문 효과 2</system:String>
+    <system:String x:Key="SpellEffects3">주문 효과 3</system:String>
+    <system:String x:Key="Items">아이템</system:String>
+    <system:String x:Key="Flags">플래그</system:String>
+    <system:String x:Key="Icon">아이콘</system:String>
+	<system:String x:Key="Visual">비주얼</system:String>
+    <system:String x:Key="Interrupts">차단</system:String>
+    <system:String x:Key="Attributes">속성</system:String>
+    <system:String x:Key="Attributes2">속성2</system:String>
+    <system:String x:Key="Misc">기타</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDup" xml:space="preserve">복제&#x0a;확인</system:String>
+    <system:String x:Key="SpellSelectListEntryConfirmDel" xml:space="preserve">삭제&#x0a;확인</system:String>
+    <system:String x:Key="butResetSpellIconID">주문 아이콘 ID 초기화</system:String>
+    <system:String x:Key="butResetActiveIconID">활성 아이콘 ID 초기화</system:String>
+    <system:String x:Key="labCategory">카테고리:</system:String>
+    <system:String x:Key="labDispelType">해제 유형:</system:String>
+    <system:String x:Key="labMechanicType">메카닉 유형:</system:String>
+    <system:String x:Key="labCastTime">시전 시간:</system:String>
+    <system:String x:Key="labDuration">지속 시간:</system:String>
+    <system:String x:Key="labRange">사정거리:</system:String>
+    <system:String x:Key="labCasterAuraState">시전자 오라 상태:</system:String>
+    <system:String x:Key="labSpellLevel">주문 레벨:</system:String>
+    <system:String x:Key="labBaseLevel">기본 레벨:</system:String>
+    <system:String x:Key="labMaxLevel">최대 레벨:</system:String>
+    <system:String x:Key="labSpellVisual1">주문 비주얼 1:</system:String>
+    <system:String x:Key="labSpellVisual2">주문 비주얼 2:</system:String>
+    <system:String x:Key="labSpeed">속도:</system:String>
+    <system:String x:Key="labTargetAuraState">대상 오라 상태:</system:String>
+    <system:String x:Key="labRecoveryTime">재사용 대기시간:</system:String>
+    <system:String x:Key="labCategoryRecoveryTime">카테고리 재사용 대기시간:</system:String>
+    <system:String x:Key="labSpellMissileID">주문 미사일 ID:</system:String>
+    <system:String x:Key="labStacks">중첩:</system:String>
+    <system:String x:Key="labDifficulty">난이도:</system:String>
+    <system:String x:Key="labPowerType">자원 유형:</system:String>
+    <system:String x:Key="labGlobalCooldownCategory">글로벌 쿨다운 카테고리:</system:String>
+    <system:String x:Key="labPowerCost">자원 소모량:</system:String>
+    <system:String x:Key="labManaCostPerLevel">레벨당 마나 소모량:</system:String>
+    <system:String x:Key="labManaCostPerSecond">초당 마나 소모량:</system:String>
+    <system:String x:Key="labPerSecondPerLevel">레벨당 초당 소모량:</system:String>
+    <system:String x:Key="labManaCost%">마나 소모 백분율(%):</system:String>
+    <system:String x:Key="labSpellFamilyName">주문 계열 이름:</system:String>
+    <system:String x:Key="labSpellFamilyFlags">주문 계열 플래그:</system:String>
+    <system:String x:Key="labSpellFamilyFlags1">주문 계열 플래그1:</system:String>
+    <system:String x:Key="labSpellFamilyFlags2">주문 계열 플래그2:</system:String>
+    <system:String x:Key="labGlobalCooldownTime">글로벌 쿨다운 시간:</system:String>
+    <system:String x:Key="labMaxTargets">최대 대상 수:</system:String>
+    <system:String x:Key="labMaxTargetsLevel">최대 대상 레벨:</system:String>
+    <system:String x:Key="labTotemCategory1">토템 카테고리 1:</system:String>
+    <system:String x:Key="labTotemCategory2">토템 카테고리 2:</system:String>
+    <system:String x:Key="labAreaGroup">지역 그룹:</system:String>
+    <system:String x:Key="labPreventionType">방지 유형:</system:String>
+    <system:String x:Key="labSpellDamageType">주문 피해 유형:</system:String>
+    <system:String x:Key="labRequiresSpellFocus">요구 주문 집중:</system:String>
+    <system:String x:Key="labRuneCost">룬 소모량:</system:String>
+    <system:String x:Key="labSpellDescriptionVariables">주문 설명 변수:</system:String>
+	<system:String x:Key="labSpellPriority">주문 우선순위:</system:String>
+    <system:String x:Key="labSchool">속성 계열:</system:String>
+    <system:String x:Key="checkboxPhysical">물리</system:String>
+    <system:String x:Key="checkboxHoly">신성</system:String>
+    <system:String x:Key="checkboxFire">화염</system:String>
+    <system:String x:Key="checkboxNature">자연</system:String>
+    <system:String x:Key="checkboxFrost">냉기</system:String>
+    <system:String x:Key="checkboxShadow">암흑</system:String>
+    <system:String x:Key="checkboxArcane">비전</system:String>
+    <system:String x:Key="checkboxFacingFront">정면 바라보기</system:String>
+    <system:String x:Key="labTargets">대상:</system:String>
+    <system:String x:Key="labProcs">발동(Proc):</system:String>
+    <system:String x:Key="labProcCharges">발동 횟수:</system:String>
+    <system:String x:Key="labProcChance">발동 확률:</system:String>
+    <system:String x:Key="labSpellEffect">주문 효과:</system:String>
+    <system:String x:Key="labBasePoints">기본 값(Points):</system:String>
+    <system:String x:Key="labDieSides">주사위 면 수:</system:String>
+    <system:String x:Key="labRealPointsPerLevel">레벨당 실제 증가값:</system:String>
+    <system:String x:Key="labMechanic">메카닉:</system:String>
+    <system:String x:Key="labTargetA">대상 A:</system:String>
+    <system:String x:Key="labTargetB">대상 B:</system:String>
+    <system:String x:Key="labRadius">반경:</system:String>
+    <system:String x:Key="labApplyAuraName">적용 오라 이름:</system:String>
+    <system:String x:Key="labAmplitude">주기/진폭:</system:String>
+    <system:String x:Key="labMultipleValue">다중 값:</system:String>
+    <system:String x:Key="labChainTarget">연쇄 대상:</system:String>
+    <system:String x:Key="labItemType">아이템 유형:</system:String>
+    <system:String x:Key="labTriggerSpell">발동 주문:</system:String>
+    <system:String x:Key="labPointsPerComboPoint">연계 점수당 증가값:</system:String>
+    <system:String x:Key="labMiscValueA">기타 값 A:</system:String>
+    <system:String x:Key="labMiscValueB">기타 값 B:</system:String>
+    <system:String x:Key="labSpellClassMask1">주문 클래스 마스크 1:</system:String>
+    <system:String x:Key="labSpellClassMask2">주문 클래스 마스크 2:</system:String>
+    <system:String x:Key="labSpellClassMask3">주문 클래스 마스크 3:</system:String>
+    <system:String x:Key="labDamageMultiplier1">피해 증폭 계수 1:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier1">효과 보너스 계수 1:</system:String>
+    <system:String x:Key="labDamageMultiplier2">피해 증폭 계수 2:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier2">효과 보너스 계수 2:</system:String>
+    <system:String x:Key="labDamageMultiplier3">피해 증폭 계수 3:</system:String>
+    <system:String x:Key="labEffectBonusMultiplier3">효과 보너스 계수 3:</system:String>
+    <system:String x:Key="targetClassMaskSpells">클래스 마스크 대상 주문:</system:String>
+    <system:String x:Key="filterClassMaskSpells">필터 대상 주문:</system:String>
+	<system:String x:Key="labSpellSchoolMask">효과 속성 계열 유형 :</system:String>
+	<system:String x:Key="labSpellStatType">효과 능력치 유형 :</system:String>
+	<system:String x:Key="labSpellStealthType">효과 은신 유형 :</system:String>
+	<system:String x:Key="labSpellInvisType">효과 투명도 유형 :</system:String>
+	<system:String x:Key="labSpellPowerType">효과 자원 유형:</system:String>
+	<system:String x:Key="labSpellDispelType">효과 해제 유형 :</system:String>
+	<system:String x:Key="labSpellCreatureType">효과 몹/크리처 유형 :</system:String>
+	<system:String x:Key="labSpellLockType">효과 잠금 유형 :</system:String>
+	<system:String x:Key="labSpellLanguType">효과 언어 유형 :</system:String>
+	<system:String x:Key="labSpellMechanicType">효과 메카닉 유형 :</system:String>
+	<system:String x:Key="labSpellAuraModType">수정할 대상? :</system:String>
+	<system:String x:Key="labSpellRatingType">효과 평점(Rating) 유형 :</system:String>
+	<system:String x:Key="labSpellRuneType">효과 룬 유형 :</system:String>
+	<system:String x:Key="labSpellScreenEffect">효과 화면 효과 :</system:String>
+	<system:String x:Key="labSpellPhaseMask">효과 위상 마스크 :</system:String>
+	<system:String x:Key="labSpellAuraStateType">효과 오라 상태 유형 :</system:String>
+    <system:String x:Key="labItemTool1">토템 1:</system:String>
+    <system:String x:Key="labItemTool2">토템 2:</system:String>
+    <system:String x:Key="labReagent1">재료 1:</system:String>
+    <system:String x:Key="labReagent2">재료 2:</system:String>
+    <system:String x:Key="labReagent3">재료 3:</system:String>
+    <system:String x:Key="labReagent4">재료 4:</system:String>
+    <system:String x:Key="labReagent5">재료 5:</system:String>
+    <system:String x:Key="labReagent6">재료 6:</system:String>
+    <system:String x:Key="labReagent7">재료 7:</system:String>
+    <system:String x:Key="labReagent8">재료 8:</system:String>
+    <system:String x:Key="labReagentCount1">재료 개수 1:</system:String>
+    <system:String x:Key="labReagentCount2">재료 개수 2:</system:String>
+    <system:String x:Key="labReagentCount3">재료 개수 3:</system:String>
+    <system:String x:Key="labReagentCount4">재료 개수 4:</system:String>
+    <system:String x:Key="labReagentCount5">재료 개수 5:</system:String>
+    <system:String x:Key="labReagentCount6">재료 개수 6:</system:String>
+    <system:String x:Key="labReagentCount7">재료 개수 7:</system:String>
+    <system:String x:Key="labReagentCount8">재료 개수 8:</system:String>
+    <system:String x:Key="labEquippedItemClass">장착 아이템 분류:</system:String>
+    <system:String x:Key="labEquippedItemInventoryType">장착 아이템 인벤토리 유형:</system:String>
+    <system:String x:Key="labEquippedItemSubClass">장착 아이템 하위 분류:</system:String>
+    <system:String x:Key="labInterruptFlags">차단 플래그:</system:String>
+    <system:String x:Key="labAuraInterruptFlags">오라 해제 플래그:</system:String>
+    <system:String x:Key="labChannelInterruptFlags">채널링(집중) 차단 플래그:</system:String>
+    <system:String x:Key="labAttributes">속성:</system:String>
+    <system:String x:Key="labAttributesEx">속성 Ex:</system:String>
+    <system:String x:Key="labAttributesEx2">속성 Ex2:</system:String>
+    <system:String x:Key="labAttributesEx3">속성 Ex3:</system:String>
+    <system:String x:Key="labAttributesEx4">속성 Ex4:</system:String>
+    <system:String x:Key="labAttributesEx5">속성 Ex5:</system:String>
+    <system:String x:Key="labAttributesEx6">속성 Ex6:</system:String>
+    <system:String x:Key="labAttributesEx7">속성 Ex7:</system:String>
+    <system:String x:Key="labCreatureType">크리처 유형:</system:String>
+    <system:String x:Key="labStances">태세/형상:</system:String>
+    <system:String x:Key="labCurrentIcon">현재 아이콘:</system:String>
+    <system:String x:Key="labNewIcon">새 아이콘:</system:String>
+    <system:String x:Key="labFiltericons">아이콘 필터링:</system:String>
+    <system:String x:Key="butSaveIcon">확인</system:String>
+    <system:String x:Key="sliderChangeIconSizeTooltip">아이콘 너비 및 높이 제어 (픽셀)</system:String>
+    <system:String x:Key="butImportExportDBC">가져오기/내보내기</system:String>
+    <system:String x:Key="butRefresh">새로고침</system:String>
+    <system:String x:Key="butTruncateTable">테이블 삭제(Drop)</system:String>
+    <system:String x:Key="butInsertANewRecord">새 주문 추가</system:String>
+    <system:String x:Key="butDeleteARecord">주문 삭제</system:String>
+    <system:String x:Key="butSaveSpellChanges">주문 변경사항 저장</system:String>
+    <system:String x:Key="butImportExportWindowImport">가져오기</system:String>
+    <system:String x:Key="butImportExportWindowExport">내보내기</system:String>
+    <system:String x:Key="ImportExportWindowTitle">가져오기 및 내보내기</system:String>
+	<system:String x:Key="butLogBook">로그북</system:String>
+	<system:String x:Key="butConfig">설정</system:String>
+	<system:String x:Key="ConfigWindowTitle">설정 에디터</system:String>
+    <system:String x:Key="butMultilingualSwitch">다국어 설정</system:String>
+    <!--#endregion-->
+
+    <!--#region code string-->
+    <system:String x:Key="SpellEditor">주문 에디터</system:String>
+    <system:String x:Key="PleaseWait">잠시만 기다려 주십시오</system:String>
+    <system:String x:Key="PleaseWait_2">DBC 파일을 로드하고 UI 요소를 구성하는 중...</system:String>
+    <system:String x:Key="Yes">예</system:String>
+    <system:String x:Key="None">없음</system:String>
+    <system:String x:Key="No">아니오</system:String>
+    <system:String x:Key="ERROR">오류</system:String>
+    <system:String x:Key="Import/Export">가져오기/내보내기</system:String>
+    <system:String x:Key="ReloadingUI">UI 재로드 중...</system:String>
+    <system:String x:Key="Input_MySQL_Details">MySQL 세부 정보 입력</system:String>
+    <system:String x:Key="Input_MySQL_Details_1">MySQL 호스트 주소 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Details_2">MySQL 사용자 이름 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Details_3">MySQL 비밀번호 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Details_4">MySQL 포트 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Details_5">생성/사용할 MySQL 데이터베이스 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Details_6">생성/사용할 MySQL 테이블 입력:</system:String>
+    <system:String x:Key="Input_MySQL_Error">데이터베이스 연결을 설정하는 중 오류가 발생했습니다:</system:String>
+    <system:String x:Key="Input_MySQL_Error_2">입력된 MySQL 정보가 유효하지 않습니다.</system:String>
+	<system:String x:Key="LoadDBCFromBinding_Error_1">바인딩 기준 코어 DBC 파일 로드에 실패했습니다. 와우 버전, 바인딩 폴더 및 DBC 폴더 설정이 올바른지 확인해 주십시오.</system:String>
+    <system:String x:Key="Welcome" xml:space="preserve">와우 주문 에디터에 오신 것을 환영합니다.&#x0a;&#x0a;에디터의 로컬 버전(SQLite)을 사용하시겠습니까, 아니면 서버(MySQL)에 연결하시겠습니까?</system:String>
+    <system:String x:Key="Exit" xml:space="preserve">정말 종료하시겠습니까?&#x0a;&#x0a;종료하기 전에 저장했는지 확인하십시오. 저장하지 않으면 모든 작업 내용이 소실됩니다!</system:String>
+    <system:String x:Key="TruncateTable1">정말 진행하시겠습니까?</system:String>
+    <system:String x:Key="TruncateTable2" xml:space="preserve">이렇게 하면 모든 SQL 테이블이 삭제(Drop)됩니다. 이후 에디터가 선택한 와우 버전에 맞는 올바른 스키마로 재초기화됩니다.&#x0a;&#x0a;올바른 테이블 스키마가 적용되도록 와우 버전을 전환할 때 이 기능을 사용하십시오.</system:String>
+    <system:String x:Key="CopySpellRecord1">기존 레코드를 복사하시겠습니까?</system:String>
+    <system:String x:Key="CopySpellRecord2">복사할 원본 주문 ID를 입력하십시오.</system:String>
+    <system:String x:Key="CopySpellRecord3">오류: 입력된 주문 ID가 정수가 아닙니다.</system:String>
+    <system:String x:Key="CopySpellRecord4">새로운 주문 ID를 입력하십시오.</system:String>
+    <system:String x:Key="CopySpellRecord5">오류: 입력된 주문 ID가 정수가 아닙니다.</system:String>
+    <system:String x:Key="CopySpellRecord6">오류: 해당 주문 ID는 이미 사용 중입니다.</system:String>
+    <system:String x:Key="CopySpellRecord7">아무것도 없는 상태에서 새 주문을 생성하는 기능은 현재 구현되지 않았습니다. 기존 주문을 복사해 주십시오.</system:String>
+    <system:String x:Key="CopySpellRecord8">ID {0}번으로 새 레코드가 성공적으로 생성되었습니다.</system:String>
+    <system:String x:Key="DeleteSpellRecord1">삭제할 주문 ID를 입력하십시오.</system:String>
+    <system:String x:Key="DeleteSpellRecord2">오류: 입력된 주문 ID가 정수가 아닙니다.</system:String>
+    <system:String x:Key="DeleteSpellRecord3">레코드를 성공적으로 삭제했습니다.</system:String>
+    <system:String xml:space="preserve" x:Key="SaveIcon">주문 아이콘 ID는 '예',&#10;활성 아이콘 ID는 '아니오'를 선택하십시오.</system:String>
+    <system:String x:Key="no_spells_loaded">로드된 주문 없음</system:String>
+    <system:String x:Key="Highest_Spell_ID">로드된 가장 높은 주문 ID: {0}</system:String>
+    <system:String x:Key="SpellIconID">주문 아이콘 ID</system:String>
+    <system:String x:Key="ActiveIconID">활성 아이콘 ID</system:String>
+    <system:String x:Key="UpdateMainWindow1">잠시만 기다려 주십시오...</system:String>
+    <system:String x:Key="UpdateMainWindow2">주문 로드 중: {0} .\n\n첫 번째 주문을 로드할 때는 시간이 다소 걸리지만, 그 이후에는 매우 빠르게 작동합니다.</system:String>
+    <system:String x:Key="String1">가져오기/내보내기 설정을 구성하는 동안 일시 중지됨...</system:String>
+    <system:String x:Key="String2">설정을 로드하거나 생성할 수 없습니다. 치명적인 오류입니다.</system:String>
+    <system:String x:Key="String3">설정 파일을 생성하는 중 예외가 발생했습니다.</system:String>
+    <system:String x:Key="String4">주문 아이콘 ID를 변경할지 활성 아이콘 ID를 변경할지 선택하십시오.</system:String>
+    <system:String x:Key="String5">한 번에 하나의 주문만 선택할 수 있습니다.</system:String>
+	<system:String x:Key="ExportCheckedFiles">체크된 항목을 DBC 파일로 내보내기</system:String>
+	<system:String x:Key="ExportCheckedFilesMpq">체크된 항목을 MPQ로 내보내기</system:String>
+	<system:String x:Key="ExportMpqName">MPQ 이름:</system:String>
+	<system:String x:Key="TablesToExport">내보낼 SQL 테이블을 선택하십시오.</system:String>
+	
+	<!--#region visual tab -->
+	<system:String xml:space="preserve" x:Key="VisualDeleteListEntryConfirm">삭제 확인:&#10;이 변경 사항은&#10;즉시 저장됩니다</system:String>
+	<system:String x:Key="VisualCancelListEntry">취소</system:String>
+	<system:String x:Key="VisualConfirmListEntry">붙여넣기 확인</system:String>
+	<system:String x:Key="VisualCancelContextMenu">취소</system:String>
+	<system:String x:Key="VisualCopyContextMenu">복사</system:String>
+	<system:String x:Key="VisualPasteContextMenu">붙여넣기</system:String>
+	<system:String x:Key="VisualDeleteContextMenu">삭제</system:String>
+	<system:String x:Key="VisualTabSelectedId">선택된 비주얼 ID</system:String>
+	<system:String xml:space="preserve" x:Key="VisualTabInstructions">이 값들을 확인하고 편집하려면 주문 비주얼 DBC 파일을 가져와야 합니다.&#10;수정 내용을 반영하려면 반드시 내보내기를 해야 합니다.</system:String>
+	<system:String x:Key="VisualTabSaveChanges">비주얼 수정사항 저장</system:String>
+	<system:String x:Key="VisualTabKitsHeader">비주얼 키트 (작업을 수행하려면 행을 우클릭하십시오)</system:String>
+	<system:String x:Key="VisualTabEffectsHeader">비주얼 키트 효과 및 부착물 (작업을 수행하려면 행을 우클릭하십시오)</system:String>
+	<system:String x:Key="VisualKitStartAnimId">시작 애니메이션 ID</system:String>
+	<system:String x:Key="VisualKitAnimationId">애니메이션 ID</system:String>
+	<system:String x:Key="VisualKitSpecialEffects1">특수 효과 1</system:String>
+	<system:String x:Key="VisualKitSpecialEffects2">특수 효과 2</system:String>
+	<system:String x:Key="VisualKitSpecialEffects3">특수 효과 3</system:String>
+	<system:String x:Key="VisualKitWorldEffect">월드 효과</system:String>
+	<system:String x:Key="VisualKitSoundId">사운드 ID</system:String>
+	<system:String x:Key="VisualKitShakeId">진동(Shake) ID</system:String>
+	<system:String x:Key="VisualKitFlags">플래그</system:String>
+	<system:String x:Key="VisualEffectMissileList">미사일 목록 (우클릭하여 선택)</system:String>
+	<system:String x:Key="VisualEffectMissileFilter">미사일 목록 필터링</system:String>
+	<system:String x:Key="VisualMissileSelect">미사일 선택 (즉시 저장됨)</system:String>
+	<system:String x:Key="VisualEffectId">효과 ID</system:String>
+	<system:String x:Key="VisualEffectName">효과 이름</system:String>
+	<system:String x:Key="VisualEffectFilePath">효과 파일 경로</system:String>
+	<system:String x:Key="VisualEffectSize">효과 크기</system:String>
+	<system:String x:Key="VisualEffectAreaEffectSize">지역 효과 크기</system:String>
+	<system:String x:Key="VisualEffectScale">효과 스케일</system:String>
+	<system:String x:Key="VisualEffectMinScale">효과 최소 허용 스케일</system:String>
+	<system:String x:Key="VisualEffectMaxScale">효과 최대 허용 스케일</system:String>
+	<system:String x:Key="VisualAttachAttachId">부착물 ID</system:String>
+	<system:String x:Key="VisualAttachOffsetX">부착물 오프셋 X</system:String>
+	<system:String x:Key="VisualAttachOffsetY">부착물 오프셋 Y</system:String>
+	<system:String x:Key="VisualAttachOffsetZ">부착물 오프셋 Z</system:String>
+	<system:String x:Key="VisualAttachOffsetYaw">부착물 오프셋 요(Yaw)</system:String>
+	<system:String x:Key="VisualAttachOffsetPitch">부착물 오프셋 피치(Pitch)</system:String>
+	<system:String x:Key="VisualAttachOffsetRoll">부착물 오프셋 롤(Roll)</system:String>
+	<system:String x:Key="ConvertEffectToAttach">효과를 부착물로 변환</system:String>
+	<system:String x:Key="VisualMissileMotionId">ID</system:String>
+	<system:String x:Key="VisualMissileMotionName">이름</system:String>
+	<system:String x:Key="VisualMissileMotionFlags">플래그</system:String>
+	<system:String x:Key="VisualMissileMotionMissileCount">미사일 개수</system:String>
+	<system:String x:Key="VisualMissileMotionScript">스크립트 (Lua)</system:String>
+	<system:String x:Key="VisualHasMissile">미사일 있음</system:String>
+	<system:String x:Key="VisualMissileModel">미사일 모델</system:String>
+	<system:String x:Key="VisualMissilePathType">미사일 경로 유형</system:String>
+	<system:String x:Key="VisualMissileDestinationAttachment">목적지 부착 지점</system:String>
+	<system:String x:Key="VisualMissileSound">미사일 사운드</system:String>
+	<system:String x:Key="VisualAnimEventSoundId">애니메이션 이벤트 사운드</system:String>
+	<system:String x:Key="VisualMissileAttachment">미사일 부착 지점</system:String>
+	<system:String x:Key="VisualMissileFollowGroundHeight">지면 추적 높이</system:String>
+	<system:String x:Key="VisualMissileFollowDropSpeed">지면 추적 하강 속도</system:String>
+	<system:String x:Key="VisualMissileFollowApproach">지면 추적 접근방식</system:String>
+	<system:String x:Key="VisualMissileFollowGroundFlags">지면 추적 플래그</system:String>
+	<system:String x:Key="VisualMissileMotion">미사일 모션</system:String>
+	<system:String x:Key="VisualMissileCastOffsetX">미사일 발사 오프셋 X</system:String>
+	<system:String x:Key="VisualMissileCastOffsetY">미사일 발사 오프셋 Y</system:String>
+	<system:String x:Key="VisualMissileCastOffsetZ">미사일 발사 오프셋 Z</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetX">미사일 충격 오프셋 X</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetY">미사일 충격 오프셋 Y</system:String>
+	<system:String x:Key="VisualMissileImpactOffsetZ">미사일 충격 오프셋 Z</system:String>
+	<system:String x:Key="MissileEntryFlags">플래그</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMin">기본 피치 최소값</system:String>
+	<system:String x:Key="MissileEntryDefaultPitchMax">기본 피치 최대값</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMin">기본 속도 최소값</system:String>
+	<system:String x:Key="MissileEntryDefaultSpeedMax">기본 속도 최대값</system:String>
+	<system:String x:Key="MissileEntryGravity">중력</system:String>
+	<system:String x:Key="MissileEntryCollisionRadius">충돌 반경</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMin">무작위 방향 최소값</system:String>
+	<system:String x:Key="MissileEntryRandomiseFacingMax">무작위 방향 최대값</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMin">무작위 피치 최소값</system:String>
+	<system:String x:Key="MissileEntryRandomisePitchMax">무작위 피치 최대값</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMin">무작위 속도 최소값</system:String>
+	<system:String x:Key="MissileEntryRandomiseSpeedMax">무작위 속도 최대값</system:String>
+	<system:String x:Key="MissileEntryMaxDuration">최대 지속 시간</system:String>
+	<system:String x:Key="VisualSave">저장</system:String>
+	<system:String x:Key="VisualNew">새로 만들기</system:String>
+	<system:String x:Key="VisualDelete">삭제</system:String>
+	<system:String x:Key="VisualBase">기본</system:String>
+	<system:String x:Key="VisualMissileModelTab">미사일 모델</system:String>
+	<system:String x:Key="VisualKitsAndEffects">키트 및 효과</system:String>
+	<system:String x:Key="VisualMotion">모션</system:String>
+	<system:String x:Key="VisualScript">스크립트</system:String>
+	<system:String x:Key="VisualMapBuilder">맵 빌더</system:String>
+	<!--#endregion-->
+	
+	<!--#region MapBuilder-->
+	<system:String x:Key="MapBuilderDescription">이 도구는 CreatureDisplayInfo.dbc 및 CreatureModelData.dbc 파일을 사용합니다. 또한 모든 M2 주문 모델이 포함된 SPELLS 디렉토리가 있어야 합니다.</system:String>
+	<system:String x:Key="MapBuilderDbStartingId">데이터베이스 시작 ID</system:String>
+	<system:String x:Key="MapBuilderMapId">지도 ID</system:String>
+	<system:String x:Key="MapBuilderTopLeftCoord">지도 좌측 상단 좌표 X, Y</system:String>
+	<system:String x:Key="MapBuilderBottomRightCoord">지도 우측 하단 좌표 X, Y</system:String>
+	<system:String x:Key="MapBuilderCoordZ">지도 좌표 Z</system:String>
+	<system:String x:Key="MapBuilderCellSize">셀 크기</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreature">Creature.sql 쿼리 템플릿</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreatureModelInfo">Creature_Model_Info.sql 쿼리 템플릿</system:String>
+	<system:String x:Key="MapBuilderDbQueryCreatureTemplate">Creature_Template.sql 쿼리 템플릿</system:String>
+	<system:String x:Key="MapBuilderGenerateBtn">생성</system:String>
+	<!--#endregion-->
+	
+	<!--#region some array of strings-->
+    <system:String x:Key="attFlags_strings">
+		발동 실패 시 횟수 차감 |
+		원거리 슬롯 사용 |
+		다음 무기 공격 시 (피해 없음) |
+		면역으로 인한 빗맞침 로그 미기록 |
+		능력(Ability) 플래그 |
+		전문 기술 |
+		지지 효과 (패시브) |
+		표시 안 함 (마법책, 오라 아이콘, 전투 로그) |
+		로그 미기록 |
+		장착 중인 아이템만 적용 |
+		다음 무기 공격 시 |
+		착용자 발동 효과 트리거 시전 |
+		서버 전용 |
+		PvP에서 아이템 주문 허용 |
+		실내 전용 |
+		실외 전용 |
+		변신 상태 아닐 때만 가능 |
+		은신 상태에서만 가능 |
+		무기를 집어넣지 않음 |
+		레벨에 비례해 주문 피해 증가 |
+		자동 공격 전투 해제 |
+		회피, 무기 막기, 방어 불가 |
+		시전 중 대상 추적 |
+		죽은 상태에서 시전 가능 |
+		탈것에 탄 상태에서 시전 가능 |
+		오라가 사라진 후 재사용 대기시간 시작 |
+		부정적 효과 (디버프 오라) |
+		앉은 상태에서 시전 가능 |
+		전투 중 사용 불가 |
+		무적 상태에 영향받지 않음 |
+		피해 입을 시 해제 가능 |
+		오라 취소 불가
+    </system:String>
+    <system:String x:Key="attFlagsEx_strings">
+        소환수 먼저 해제 |
+        모든 자원 소모 |
+        채널링(집중) 주문 |
+        주문 리디렉션(소격 등) 불가 |
+        숙련도 증가 없음 |
+        은신 중 시전 허용 |
+        자신에게 채널링(집중) |
+        주문 반사 불가 |
+        전투 중인 대상 지정 불가 |
+        전투 개시 (자동 공격 활성화) |
+        위협 수준 생성 안 함 |
+        고유 오라 |
+        실패 시 은신 해제 |
+        야수 눈빛 (Far Sight) |
+        채널링 중 대상 추적 |
+        면역 상태일 때 오라 제거 |
+        적대적 및 아군 효과에 면역 |
+        자동 시전 안 함 (AI) |
+        애니메이션 방지 |
+        자신을 대상으로 지정 불가 |
+        마무리 일격 - 피해 |
+        빗맞았을 때만 위협 수준 생성 |
+        마무리 일격 - 지속 시간 |
+        소유자의 죽음 무시 |
+        특수 숙련도 상승 |
+        전투 종료 후에도 오라 유지 |
+        모든 대상 필요 |
+        빗맞춤 시 자원 소모 감소 |
+        오라 바에서 숨김 |
+        채널링 바에 이름 표시 |
+        회피 시 주문 활성화 / 방어 시 연계 점수 획득 |
+        습득 시 시전
+    </system:String>
+    <system:String x:Key="attFlagsEx1_strings">
+        죽은 유닛 또는 시체 대상 지정 가능 |
+        변신 UI 없음 |
+        시야(LoS) 무시 |
+        저레벨 버프 허용 |
+        태세 바에 표시 / 변신 바 사용 |
+        자동 반복 |
+        선점되지 않은(Untapped) 대상 필요 |
+        주문 실패 보고 안 함 |
+        고급 전투 로그에 포함 |
+        항상 유닛으로 시전 |
+        특수 길들이기 플래그 |
+        초당 대상 자원 소모 없음 |
+        시전자로부터 연쇄 |
+        투기장에서 마법부여 유지 |
+        투명 상태에서 허용 |
+        시전 중 획득한 경우 소모 안 함 |
+        활성화된 소환수 없음 |
+        전투 타이머 초기화 안 함 |
+        죽은 소환수 필요 / 시전 대기 중 점프 불가 |
+        변신 필요 없음 |
+        시전 후 전투 개시 (자동 공격 활성화) |
+        모든 대상 면역 시 실패 |
+        초기 위협 수준 없음 |
+        실패 시 발동 대기시간 적용 |
+        소유자 숙련도로 아이템 시전 |
+        마나 재생을 막지 않음 |
+        속성 계열 면역 무시 |
+        무기 숙련 무시 |
+        행동(Action)이 아님 |
+        치명타 발동 불가 |
+        지속적인 위협 수준 생성 |
+        아이템 시전 상태 유지
+    </system:String>
+    <system:String x:Key="attFlagsEx2_strings">
+        PvP 활성화 |
+        발동 장비 요구사항 없음 |
+        시전 바 텍스트 없음 |
+        방어 가능한 주문 / 완전히 방어됨 |
+        부활 대기시간 무시 |
+        내구도 감소 없음 |
+        회피/경감 불가 |
+        다른 시전자의 오라 중첩 가능 |
+        플레이어만 대상 가능 |
+        발동 효과(Proc)가 아님 |
+        주무기 필요 |
+        전장 전용 |
+        유령 상태인 플레이어만 대상 가능 |
+        채널링 바 숨김 |
+        공격대 필터에서 숨김 |
+        일반 원거리 공격 (자동 사격) |
+        시전자의 발동 효과 억제 |
+        대상의 발동 효과 억제 |
+        빗맞춤 불가 |
+        발동 효과 비활성화 / 즉시 대상 발동 효과 |
+        죽어도 유지 |
+        실외에서만 발동 |
+        시전 시 자동 반복 취소 (본서버: 대상 기립 트리거 안 함) |
+        피해 기록 없음 |
+        보조무기 필요 |
+        주기적인 효과(Periodic)로 취급 |
+        발동 효과로 인해 다시 발동 가능 |
+        시전자에게만 발동 |
+        시전자 및 대상 제한 무시 |
+        시전자 보정치 무시 |
+        사정거리 표시 안 함 |
+        광역 면역 대상에게 적용 안 됨
+    </system:String>
+	<system:String x:Key="attFlagsEx3_strings">
+        모든 저항 무시 |
+        시전자에게만 발동 |
+        오프라인 상태에서도 주기적 효과 지속 |
+        이로운 효과로 인한 위협 수준 없음 |
+        해로운 효과로 인한 위협 수준 없음 |
+        클라이언트 대상 지정 허용 |
+        훔치기 불가 |
+        시전 중 시전 허용 / 트리거됨 |
+        고정 피해 / 입는 피해 보정치 무시 |
+        이벤트로 활성화 / 사용 가능 시 전투 피드백 출력 |
+        주문 대 추가 비용 / 무기 속도별 비용 보정 |
+        부분 면역 없음 |
+        이로운 효과 (버프 오라) |
+        시전자 로그 미기록 |
+        피해를 입어도 오라가 해제되지 않음 / 반격 피해 발동 |
+        마법책에 표시 안 함 |
+        투기장에서 사용 불가 |
+        투기장에서 사용 가능 |
+        튕기는 연쇄 미사일 |
+        앉은 상태에서 발동 허용 |
+        자신에게 시전 시 자원 체크 안 함 / 오라가 튕기지 않음 |
+        투기장 입장 허용 |
+        발동 시 무기 휘두르기 애니메이션 억제 |
+        무기 발동 효과 억제 |
+        자동 원거리 전투 |
+        소환수 스케일링 / 주인의 주문력,전투력 비례 |
+        비행 가능 지역에서만 사용 가능 |
+        시전 바 강제 표시 |
+        전투 타이머 무시 |
+       	오라가 튕겨 나갈 때 주문 실패 |
+        더 이상 사용되지 않음 (Obsolete) |
+        주문에 정의된 방향(Facing) 사용
+    </system:String>
+    <system:String x:Key="attFlagsEx4_strings">
+        채널링(집중) 중 행동 허용 |
+        오라 활성화 시 재료 소모 없음 |
+        투기장 입장 시 제거 |
+        기절 상태에서 시전 허용 |
+        채널링 트리거 |
+        단일 대상 주문 / N개 제한 |
+        광역 효과 PvP 체크 무시 |
+        플레이어에게 적용 불가 |
+        플레이어가 제어하는 NPC에게 적용 불가 |
+        오라 적용 시 즉시 주기적 효과 시작 / 최초 주기 추가 |
+        지속 시간 표시 안 함 |
+        대상의 대상을 대상으로 지정 허용 / 암시적 대상 지정 |
+        근접 연쇄 대상 지정 (쪼개기/클리브) |
+        주문 가속이 주기적 효과(지속시간)에 영향 |
+        정신 지배 상태에서 사용 불가 |
+        광역 효과로 취급 (다수의 대상에게 고통 유발) |
+        요구 장착 아이템 외에도 오라 영향 적용 |
+        공포(도망치는) 상태에서 시전 허용 |
+        방황(혼란) 상태에서 시전 허용 |
+        AI가 대상을 바라보지 않음 / 시전 중 회전 안 함 |
+        탈것에서 내릴 때 소환수 자동 재소환 시도 안 함 |
+        대상 요구사항 무시 |
+        하찮은(Trivial) 대상에게 적용 불가 |
+        부분 저항 없음 |
+        시전자 요구사항 무시 |
+        항상 시야(LoS) 확보됨 |
+        항상 광역 시야(AoE LoS) 확보됨 |
+        시전자 오라 아이콘 없음 |
+        대상 오라 아이콘 없음 |
+      	시전자당 고유 오라 |
+        항상 지면 텍스처 표시 |
+        근접 적중 평점 추가 / 광역 도발
+    </system:String>
+    <system:String x:Key="attFlagsEx5_strings">
+        툴팁에 재사용 대기시간 표시 안 함 |
+        투기장에서 재사용 대기시간 초기화 안 함 |
+        공격이 아님 / 시전자 오라 무시 |
+        면역 상태인 아군 플레이어 지원 가능 / 면역 플래그 무시 지원 |
+        주문 시전 시간 보정 비율 무시 |
+        자원(마나 등)을 소모하지 않음 |
+        시전 시 화면에 전투 텍스트 출력 |
+        무기 발동 효과(착용 발동)인 오라 |
+        군중 제어(메즈)된 대상에게 연쇄되지 않음 |
+        정신 지배된 대상에게 허용 |
+        오라 로그 미기록 |
+        공격대 인스턴스 던전에서 사용 불가 |
+        탈것/차량 탑승 중 시전 허용 |
+        은신 상태 대상 가능 / 위상 변화(Phase Shift) 무시 |
+        AI 핵심 원거리 공격 |
+        시전 밀림(Pushback) 없음 |
+        점프 패싱(길찾기) 없음 |
+        시전 중 장비 장착 허용 |
+        제어자(Controller)로부터 발생 |
+        시전 중 전투 타이머 지연 |
+        시전자에게만 오라 아이콘 표시 (최대 10개) |
+        전투 텍스트로 메카닉 정보 표시 |
+        피해 흡수량을 무시할 수 없음 |
+        즉시 선점(Tap)됨 |
+        대상을 지정할 수 없는 유닛 대상 지정 가능 |
+        즉시 시전 주문인 경우 평타 타이머를 초기화하지 않음 |
+        탈것/차량 면역 카테고리 |
+        치유량 보정치 무시 |
+        전투 개시(Initiates Combat) 플래그가 있어도 대상을 자동 선택하지 않음 |
+        시전자 피해 보정치 무시 |
+        연동된 효과 포인트(Effect Points) 비활성화 |
+        카테고리 쿨다운 보정 무시
+    </system:String>
+    <system:String x:Key="attFlagsEx6_strings">
+        주문 반사 허용 / 죽은 척 하기 |
+        대상 지속 시간 보정 없음 |
+        죽은 상태에서 오라 비활성화 |
+        치트 주문 / 디버그 주문 |
+        공격대 버프로 취급 |
+        다중 시전 가능 (토템 등) |
+        주문 시전 밀림을 유발하지 않음 |
+        탈것/차량 제어 종료 준비 |
+        호드 전용 |
+        얼라이언스 전용 |
+        마법 해제 시 중첩 횟수 차감 |
+        차단 유발 가능 (플레이어가 아닌 대상만 차단) |
+        침묵 유발 가능 |
+        UI에 차단 불가로 표시 안 함 |
+        재소환 시 다시 시전 (시체 되살리기 등) |
+        주문 시작 시 평타 타이머 초기화 |
+        습득 전까지 마법책에만 표시 (보조 자원 회복) |
+        PvP 처치 로그 미기록 |
+        유닛에게 돌진(Charge) 시 공격 |
+        유닛 대상에게 주문 실패 보고 (지역 텔레포트) |
+        기절, 공포, 혼란 상태에서 클라이언트 실패 처리 안 함 (점멸, 천상의 보호막, 얼음 방패 등) |
+        로딩 중에도 재사용 대기시간 유지 |
+        극지 비행 요구사항 무시 |
+        공격 회비 불가 |
+        공격 무기 막기 불가 |
+        공격 빗맞춤 불가 |
+        NPC 광역기로 취급 |
+        부활 불가 오라 우회 |
+        PvP 점수판에 집계 안 됨 / 통합 공격대 버프 |
+        반사 시 방어만 수행 |
+        대상의 억제된 발동 효과로부터 발동 가능 |
+        항상 시전 로그 기록 / 클라이언트 인디케이터 표시
+    </system:String>
+    <system:String x:Key="stances_strings">
+        없음 |
+        표범 변신 |
+        생명의 나무 형상 |
+        치타 변신 |
+        바다표범 변신 |
+        곰 변신 |
+        주변 환경 |
+        구울 |
+        광포한 곰 변신 |
+        스티브의 구울 |
+        타론자 해골 |
+        힘의 시험 |
+        BLB 플레이어 |
+        어둠의 춤 |
+        크리처 곰 |
+        크리처 표범 |
+        늑대 정령 |
+        전투 태세 |
+        방어 태세 |
+        광태 태세 |
+        테스트 |
+        좀비 |
+        탈태 |
+		알 수 없음 1 |
+		알 수 없음 2 |
+        언데드 |
+        낚시 명인 |
+        비행 형태 (빠른) |
+        어둠의 형상 |
+        비행 형태 (일반) |
+        은신 |
+        조드 변신 (달빛야수) |
+        구원의 영혼
+    </system:String>
+    <system:String x:Key="creature_type_strings">
+        없음 |
+        야수 |
+        용족 |
+        악마 |
+        정령 |
+        거인 |
+        언데드 |
+        인간형 |
+        소동물 |
+        기계 |
+        지정되지 않음 |
+        토템 |
+        애완동물 (비전투용) |
+        가스 구름
+    </system:String>
+    <system:String x:Key="aura_state_strings">
+        없음 |
+        방어 |
+        생명력 20% 이하 |
+        광폭화 |
+        빙결됨 |
+        심판 |
+        알수없음6 |
+        사냥꾼 무기 막기 |
+        알수없음8 |
+        알수없음9 |
+        전사 연승 보너스 (승리의 돌격) |
+        알수없음11 |
+        요정의 불꽃 |
+        생명력 35% 이하 |
+        점화 |
+        신속한 치유 |
+        치명적인 독 |
+        분노함 (Enrage) |
+        출혈 중 |
+        무기 막기 |
+        알수없음20 |
+        알수없음21 |
+        알수없음22 |
+        생명력 75% 이상
+	</system:String>
+	<system:String x:Key="invisibility_strings">
+		0 - 일반 (직업 및 크리처) |
+		1 - 투명도 1 |
+		2 - 투명도 2 |
+		3 - 투명도 3 |
+		4 - 투명도 4 |
+		5 - 투명도 5 |
+		6 - 만취 특수 효과 |
+		7 - 투명도 7 |
+		8 - 투명도 8 |
+		9 - 투명도 9 |
+		10 - 투명도 10 |
+		11 - 투명도 11
+	</system:String>
+    <system:String x:Key="equipped_item_inventory_type_mask_strings">
+        장착 불가 |
+        머리 |
+        목 |
+        어깨 |
+        셔츠 |
+        가슴 |
+        허리 |
+        다리 |
+        발 |
+        손목 |
+        손 |
+        손가락 |
+        장신구 |
+        무기 (한손) |
+        방패 |
+        원거리 |
+        등 |
+        양손 무기 |
+        가방 |
+        휘장 |
+        로브 |
+        주무기 |
+        보조무기 |
+        들고 있는 아이템 |
+        탄약 |
+        투척 무기 |
+        원거리 (우측) |
+        화살통 |
+        성물
+    </system:String>
+    <system:String x:Key="power_type_strings">
+        마나 |
+        분노 |
+        집중 |
+        기력 |
+        만족도 |
+        룬 |
+        룬 마력 |
+        증기 |
+        황철석 |
+        열기 |
+        진흙 |
+        피 |
+        분노 (Wrath) |
+        생명력
+    </system:String>
+	<system:String x:Key="power_types">
+		0 - 마나 |
+		1 - 분노 |
+		2 - 집중 |
+		3 - 기력 |
+		4 - 만족도 |
+		5 - 룬 |
+		6 - 룬 마력
+	</system:String>
+	<system:String x:Key="skinning_types">
+		0 - 무도킹 (채집) |
+		1 - 약초채집 |
+		2 - 채광 |
+		3 - 기계공학
+	</system:String>
+	<system:String x:Key="power_types_mask">
+		1 - 마나 |
+		2 - 분노 |
+		3 - 집중 |
+		4 - 기력 |
+		5 - 만족도 |
+		6 - 룬 |
+		7 - 룬 마력
+	</system:String>
+	<system:String x:Key="stat_names">
+		0 - 힘 |
+		1 - 민첩성 |
+		2 - 체력 |
+		3 - 지능 |
+		4 - 정신력 |
+		-1 - 모든 능력치
+	</system:String>
+	<system:String x:Key="combat_results">
+		0 - 피함 (Evade) |
+		1 - 빗맞춤 (Miss) |
+		2 - 회피 (Dodge) |
+		3 - 방어 (Block) |
+		4 - 무기 막기 (Parry) |
+		5 - 빗겨맞기 (Glancing) |
+		6 - 치명타 (Crit) |
+		7 - 강타 (Crushing) |
+		8 - 일반 적중
+	</system:String>
+	<system:String x:Key="combat_ratings">
+		1 - 무기 숙련도 |
+		2 - 방어 숙련도 평점 |
+		3 - 회피 숙련도 평점 |
+		4 - 무기 막기 숙련도 평점 |
+		5 - 방패 막기 숙련도 평점 |
+		6 - 근접 적중 평점 |
+		7 - 원거리 적중 평점 |
+		8 - 주문 적중 평점 |
+		9 - 근접 극대화 평점 |
+		10 - 원거리 극대화 평점 |
+		11 - 주문 극대화 평점 |
+		12 - 근접 피격 경감 |
+		13 - 원거리 피격 경감 |
+		14 - 주문 피격 경감 |
+		15 - 근접 피격 극대화 방어 |
+		16 - 원거리 피격 극대화 방어 |
+		17 - 주문 피격 극대화 방어 |
+		18 - 근접 가속 평점 |
+		19 - 원거리 가속 평점 |
+		20 - 주문 가속 평점 |
+		21 - 주무기 숙련도 |
+		22 - 보조무기 숙련도 |
+		23 - 원거리 무기 숙련도 |
+		24 - 숙련 평점 (Expertise) |
+		25 - 방어구 관통 평점
+	</system:String>
+	<system:String x:Key="school_names">
+		1 - 물리 |
+		2 - 신성 |
+		3 - 화염 |
+		4 - 자연 |
+		5 - 냉기 |
+		6 - 암흑 |
+		7 - 비전
+	</system:String>
+	<system:String x:Key="stealth_types">
+		0 - 일반 은신 |
+		1 - 덫 숨기기
+	</system:String>
+    <system:String x:Key="damage_prevention_types">
+        없음 |
+        마법 |
+        근접 공격 |
+        원거리 공격 |
+        없음 |
+        침묵 |
+        행동 불가 (Pacify)
+    </system:String>
+	<system:String x:Key="destructible_states_names">
+		0 - 온전함 |
+		1 - 피해 입음 |
+		2 - 파괴됨 |
+		3 - 재건 중
+	</system:String>
+	<system:String x:Key="what_to_mod_1">
+		0 - 피해량 |
+		1 - 지속 시간 |
+		2 - 위협 수준 |
+		3 - 효과1 |
+		4 - 사용 횟수 (Charges) |
+		5 - 사정거리 |
+		6 - 반경 |
+		7 - 극대화 확률 |
+		8 - 모든 효과 |
+		9 - 시전 시간 지연 방지 |
+		10 - 시전 시간 |
+		11 - 재사용 대기시간 |
+		12 - 효과2 |
+		13 - 방어구 무시 |
+		14 - 자원 소모량 |
+		15 - 극대화 피해 보너스 |
+		16 - 저항/빗맞춤 확률 |
+		17 - 연쇄 대상 수 |
+		18 - 성공 확률 |
+		19 - 주기/진폭 (Amplitude) |
+		20 - 피해 증폭 계수 |
+		21 - 글로벌 쿨다운 (GCD) |
+		22 - 지속 피해 (DOT) |
+		23 - 효과3 |
+		24 - 보너스 계수 |
+		25 - 알 수 없음/미사용 |
+		26 - 분당 발동 횟수 (PPM) |
+		27 - 값 계수 (Value) |
+		28 - 마법해제 저항 확률 |
+		29 - 극대화 피해 보너스 2 (미사용) |
+		30 - 실패 시 주문 비용 반환
+	</system:String>
+	<system:String x:Key="activate_object_actions_names">
+		0 - 없음 |
+		1 - 사용자 지정 애니메이션 0 |
+		2 - 사용자 지정 애니메이션 1 |
+		3 - 사용자 지정 애니메이션 2 |
+		4 - 사용자 지정 애니메이션 3 |
+		5 - 방해/방해 공작 |
+		6 - 잠금 해제 |
+		7 - 잠금 |
+		8 - 열기 |
+		9 - 열기 및 잠금 해제 |
+		10 - 닫기 |
+		11 - 토글 열기 |
+		12 - 파괴 |
+		13 - 재건 |
+		14 - 창조/생성 |
+		15 - 사라짐 (Despawn) |
+		16 - 비활성화 (MakeInert) |
+		17 - 활성화 (MakeActive) |
+		18 - 닫기 및 잠금 |
+		19 - 아트 키트 0 사용 |
+		20 - 아트 키트 1 사용 |
+		21 - 아트 키트 2 사용 |
+		22 - 아트 키트 3 사용
+	</system:String>
+	<system:String x:Key="Creature_immunities_mask">
+		1 - 이동 불가, 감속 |
+		2 - 공격 시: 도발 / 피격 시: 혼란 |
+		3 - 공격 시: 변이,방향감각상실,혼란 / 피격 시: 혼란 |
+		4 - 시전 차단 (공격 시) |
+		5 - 변신 (공격 시) |
+		6 - 무력화 (공격 시) |
+		7 - 감속 효과 |
+		8 - 공격 시: 매혹 / 피격 시: 무기 해제 |
+		9 - ?? 알 수 없음 |
+		10 - 공포 |
+		11 - 기절
+		</system:String>
+    <system:String x:Key="target_strings">
+        없음 |
+        미사용 1 |
+        유닛 |
+        공격대 유닛 |
+        파티 유닛 |
+        아이템 마법부여 |
+        빈 광역 시작 위치 |
+        대상 광역 목적지 위치 |
+        적 |
+        아군 |
+        적의 시체 |
+        죽은 유닛 |
+        게임오브젝트 |
+        거래 아이템 |
+        문자열 |
+        게임오브젝트 아이템 |
+        아군의 시체 |
+        미니펫/동반자 소환수 |
+        문양 |
+        목적지 대상 |
+        미사용 20 |
+        탑승객
+    </system:String>
+	<system:String x:Key="spell_aura_effect_names">
+		없음 |
+		시야 공유 |
+		정신 지배 수정 |
+		주기적인 피해 (DoT) |
+		더미 (Dummy) |
+		혼란 수정 |
+		매혹 수정 |
+		공포 수정 |
+		주기적인 치유 (HoT) |
+		공격 속도 수정 |
+		위협 수준 수정 |
+		도발 |
+		기절 |
+		주는 피해 수정 |
+		받는 피해 수정 |
+		피해 반사 보호막 |
+		은신 수정 |
+		은신 감지 수정 |
+		투명화 수정 |
+		투명화 감지 수정 |
+		구버전 생명력 수정 |
+		구버전 자원 수정 |
+		저항력 수정 |
+		주기적인 트리거 |
+		주기적인 자원 회복 |
+		행동 불가 (Pacify) |
+		이동 불가 (Root) |
+		침묵 |
+		주문 반사 확률(%) |
+		능력치 수정 |
+		숙련도 수정 |
+		이동 속도 수정 |
+		탈것 이동 속도 수정 |
+		감속 수정 |
+		최대 생명력 증가 수정 |
+		최대 기력 증가 수정 |
+		변신 |
+		효과 면역 |
+		상태 면역 |
+		속성 계열 면역 |
+		피해 면역 |
+		해제 유형 면역 |
+		발동 트리거 주문 |
+		발동 트리거 피해 |
+		추적: 크리처/몹 |
+		추적: 자원/채집물 |
+		미사용_46 |
+		무기 막기 확률 수정(%) |
+		알 수 없음 48 |
+		회피 확률 수정(%) |
+		치유 극대화 효과 수정 |
+		방패 막기 확률 수정(%) |
+		무기 극대화 확률 수정(%) |
+		주기적인 생명력 흡수 |
+		적중 확률 수정 |
+		주문 적중 확률 수정 |
+		외형 변형 |
+		주문 극대화 확률 수정 |
+		수영 속도 수정 |
+		크리처에게 주는 피해 수정 |
+		행동 불가 및 침묵 |
+		크기(스케일) 수정 |
+		주기적인 생명력 이전 |
+		미사용_63 |
+		주기적인 마나 흡수 |
+		주문 가속 |
+		죽은 척 하기 |
+		무기 해제 |
+		추적 대상 수정 |
+		속성 피해 흡수 보호막 |
+		추가 공격 기회 |
+		계열 주문 극대화 확률 수정 |
+		계열 자원 소모량 % 수정 |
+		계열 자원 소모량 수정 |
+		계열 주문 반사 확률(%) |
+		언어 수정 |
+		야수 눈빛 (Far Sight) |
+		메카닉 면역 |
+		탈것 탑승 상태 |
+		주는 피해 % 수정 |
+		능력치 % 수정 |
+		피해 분산 % |
+		수중 호흡 |
+		기본 저항력 수정 |
+		생명력 재생 수정 |
+		자원 재생 수정 |
+		사망 시 아이템 생성 |
+		받는 피해 % 수정 |
+		생명력 재생 % 수정 |
+		주기적인 피해 % 수정 |
+		미사용_92 |
+		감지 범위 수정 |
+		도망 방지 |
+		상호작용 불가 수정 |
+		재생 중단 |
+		유령 상태 |
+		주문 자석 (끌어당김) |
+		마나 보호막 |
+		특성 숙련도 수정 |
+		전투력 수정 |
+		오라 표시 가능 |
+		저항력 % 수정 |
+		크리처에 대한 근접 전투력 수정 |
+		총 위협 수준 수정 (소실) |
+		수면 보행 |
+		공중 부양 |
+		공중 부양/호버링 |
+		수치 증가 보정치 추가 |
+		백분율(%) 보정치 추가 |
+		클래스 대상 트리거 추가 |
+		자원 재생 % 수정 |
+		클래스 시전자 적중 트리거 추가 |
+		클래스 스크립트 오버라이드 |
+		받는 원거리 피해 수정 |
+		받는 원거리 피해 % 수정 |
+		치유량 수정 |
+		전투 중 재생 증가 |
+		메카닉 저항력 수정 |
+		치유량 % 수정 |
+		미사용_119 |
+		추적 불가능 상태 |
+		감정 이목 (Empathy) |
+		보조무기 피해 % 수정 |
+		대상 저항력 수정 |
+		원거리 전투력 수정 |
+		받는 근접 피해 수정 |
+		받는 근접 피해 % 수정 |
+		공격자 원거리 전투력 보너스 수정 |
+		소환수 정신 지배 |
+		항상 이동 속도 증가 |
+		항상 탈것 이동 속도 증가 |
+		크리처에 대한 원거리 전투력 수정 |
+		기력 최대치 % 증가 수정 |
+		최대 생명력 % 수정 |
+		중단된 마나 재생 수정 |
+		치유량 보정 수정 |
+		치유량 보정 % 수정 |
+		총 능력치 % 수정 |
+		근접 가속 |
+		평판 반응 강제 변경 |
+		원거리 가속 |
+		원거리 가속 (탄약만 적용) |
+		기본 저항력 % 수정 |
+		독점적 저항력 수정 |
+		안전 낙하 |
+		소환수 특성 점수 |
+		길들이기 가능한 야수 유형 허용 |
+		크리처 면역 추가 |
+		연계 점수 유지 |
+		시전 밀림 감소 |
+		방패 막기 수치 % 수정 |
+		은신 중인 대상 추적 |
+		감지된 범위 수정 |
+		피해 고정 수치 분산 |
+		은신 레벨 보정치 |
+		수중 호흡 수정 |
+		평판 획득량 수정 |
+		소환수 피해 수정 |
+		방패 막기 수치 수정 |
+		PvP 점수 미집계 |
+		광역 효과 회피(경감) 수정 |
+		전투 중 생명력 재생 |
+		자원 태우기 (파워 번) |
+		극대화 피해 보너스 수정 |
+		미사용_164 |
+		미사용_165 |
+		전투력 % 수정 |
+		원거리 전투력 % 수정 |
+		크리처에 대한 피해 수정 |
+		크리처에 대한 극대화 % 수정 |
+		아모레(Amore) 감지 |
+		이동 속도 % 수정 (중첩 불가) |
+		탈것 이동 속도 % 수정 (중첩 불가) |
+		미사용_173 |
+		능력치 비례 주문 공격력 % 수정 |
+		능력치 비례 주문 치유량 % 수정 |
+		구원의 영혼 |
+		광역 매혹 |
+		디버프 저항력 수정 |
+		공격자 주문 극대화 확률 수정 |
+		크리처에 대한 고정 주문 피해 수정 |
+		미사용_181 |
+		능력치 비례 저항력 % 수정 |
+		치명타 위협 수준 % 수정 |
+		공격자 근접 적중 확률 수정 |
+		공격자 원거리 적중 확률 수정 |
+		공격자 주문 적중 확률 수정 |
+		공격자 근접 극대화 확률 수정 |
+		공격자 원거리 극대화 확률 수정 |
+		평점(Rating) 수정 |
+		진영 평판 획득량 수정 |
+		일반 이동 속도 사용 |
+		근접/원거리 가속 수정 |
+		가속 % 수정 |
+		계열 마법 피해 흡수 |
+		계열 마법 흡수 무시 |
+		재사용 대기시간 수정 |
+		공격자 극대화 확률 수정 |
+		미사용_198 |
+		주문 적중 백분율(%) 확률 수정 |
+		경험치 % 수정 |
+		비행 허용 |
+		전투 결과 무시 |
+		받는 근접 치명타 피해 % 수정 |
+		받는 원거리 치명타 피해 % 수정 |
+		받는 계열 치명타 피해 % 수정 |
+		차량 비행 속도 증가 |
+		탈것 비행 속도 증가 |
+		비행 속도 증가 |
+		모든 탈것 비행 속도 증가 |
+		모든 차량 속도 증가 |
+		비행 속도 수정 (중첩 불가) |
+		능력치 비례 원거리 전투력 % 수정 |
+		입힌 피해 비례 분노 획득 수정 |
+		미사용_214 |
+		투기장 준비 상태 |
+		주문 가속 수정 |
+		근접 가속 2 수정 |
+		원거리 가속 수정 |
+		능력치 비례 마나 재생 % 수정 |
+		능력치 비례 평점 % 수정 |
+		적대감 소실 (적 무시) |
+		미사용_222 |
+		횟수(Charge) 기반 공격대 발동 효과 |
+		미사용_224 |
+		특정 수치 기반 공격대 발동 효과 |
+		주기적인 더미 (Periodic Dummy) |
+		특정 수치 기반 주기적 트리거 주문 |
+		은신 감지 |
+		광역 피해 감소(회피) 수정 |
+		미사용_230 |
+		특정 수치 기반 발동 트리거 주문 |
+		메카닉 지속 시간 수정 |
+		모든 인간형 외형 변경 (클라이언트) |
+		메카닉 지속 시간 수정 (중첩 불가) |
+		마법해제 저항 수정 |
+		차량/탈것 제어 |
+		전투력 비례 주문 공격력 수정 |
+		전투력 비례 주문 치유량 수정 |
+		크기(스케일) 수정 2 |
+		숙련 평점 수정 |
+		강제 전진 이동 |
+		미사용_242 |
+		진영(Faction) 수정 |
+		언어 이해 |
+		해제 유형별 오라 지속 시간 수정 |
+		해제 유형별 오라 지속 시간 수정 (중첩 불가) |
+		시전자 복제 |
+		전투 결과 확률 수정 |
+		룬 변환 |
+		생명력 증가 2 수정 |
+		적 회피 확률 수정 |
+		모든 속도 감속 |
+		극대화 방어 확률 수정 |
+		보조무기 해제 |
+		받는 메카닉 피해 % 수정 |
+		재료 소모 없음 |
+		주문 클래스별 대상 저항 수정 |
+		미사용_258 |
+		주기적인 치유(HoT) % 수정 |
+		화면 효과 |
+		위상 (Phase) |
+		능력의 오라 상태 무시 |
+		다른 능력 사용 불가 |
+		미사용_264 |
+		미사용_265 |
+		미사용_266 |
+		오라 적용 속성 계열 면역 수정 |
+		능력치 비례 전투력 % 수정 |
+		대상 저항 무시 |
+		능력의 대상 저항 무시 |
+		미사용_270 |
+		근접 초기화 무시 |
+		엑스레이 (X-Ray) |
+		능력의 탄약 소모 없음 |
+		변신 무시 수정 |
+		미사용_276 |
+		미사용_277 |
+		원거리 무기 해제 |
+		이미지/환영 초기화 |
+		방어구 관통 % 수정 |
+		명예 점수 획득 % 수정 |
+		기본 생명력 % 수정 |
+		받는 치유량 % 수정 |
+		연결됨 (Linked) |
+		방어도 비례 전투력 수정 |
+		능력의 주기적 효과 극대화 가능 |
+		주문 굴절/빗겨내기 |
+		피격 방향 무시 |
+		미사용_289 |
+		극대화 % 수정 |
+		퀘스트 경험치 % 수정 |
+		야수 관리인 창 열기 |
+		주문 오버라이드 |
+		자원 재생 방지 |
+		미사용_295 |
+		차량/탈것 ID 설정 |
+		주문 계열 차단 |
+		絞殺 / 침묵 (Strangulate) |
+		미사용_299 |
+		피해 % 분산 |
+		계열 치유 흡수 보호막 |
+		미사용_302 |
+		오라 상태별 주는 피해 수정 |
+		가짜 만취 효과 |
+		최소 이동 속도 수정 |
+		미사용_306 |
+		치유 흡수 테스트 |
+		시전자 기준 극대화 확률 수정 |
+		미사용_309 |
+		크리처 광역 피해 감소(회피) 수정 |
+		미사용_311 |
+		미사용_312 |
+		미사용_313 |
+		부활 방지 |
+		수중 보행 |
+		주기적인 가속 (Periodic Haste)
+	</system:String>
+    <system:String x:Key="spell_aura_effect_names_tooltips">
+        SPELL_AURA_NONE (없음) |
+        SPELL_AURA_BIND_SIGHT (시야 공유) |
+        SPELL_AURA_MOD_POSSESS (정신 지배) |
+        SPELL_AURA_PERIODIC_DAMAGE (주기적인 피해) |
+        SPELL_AURA_DUMMY (더미) |
+        SPELL_AURA_MOD_CONFUSE (혼란) |
+        SPELL_AURA_MOD_CHARM (현혹) |
+        SPELL_AURA_MOD_FEAR (공포) |
+        SPELL_AURA_PERIODIC_HEAL (주기적인 치유) |
+        SPELL_AURA_MOD_ATTACKSPEED (공격 속도 변화) |
+        SPELL_AURA_MOD_THREAT (위협 수준 변화) |
+        SPELL_AURA_MOD_TAUNT (도발) |
+        SPELL_AURA_MOD_STUN (기절) |
+        SPELL_AURA_MOD_DAMAGE_DONE (주는 피해량 변화) |
+        SPELL_AURA_MOD_DAMAGE_TAKEN (받는 피해량 변화) |
+        SPELL_AURA_DAMAGE_SHIELD (피해 흡수 보호막) |
+        SPELL_AURA_MOD_STEALTH (은신) |
+        SPELL_AURA_MOD_STEALTH_DETECT (은신 감지) |
+        SPELL_AURA_MOD_INVISIBILITY (투명화) |
+        SPELL_AURA_MOD_INVISIBILITY_DETECT (투명화 감지) |
+        SPELL_AURA_OBS_MOD_HEALTH (관찰자-생명력 변화) |
+        SPELL_AURA_OBS_MOD_POWER (관찰자-자원 변화) |
+        SPELL_AURA_MOD_RESISTANCE (저항력 변화) |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL (주기적인 주문 발동) |
+        SPELL_AURA_PERIODIC_ENERGIZE (주기적인 자원 회복) |
+        SPELL_AURA_MOD_PACIFY (진정) |
+        SPELL_AURA_MOD_ROOT (이동 불가) |
+        SPELL_AURA_MOD_SILENCE (침묵) |
+        SPELL_AURA_REFLECT_SPELLS (주문 반사) |
+        SPELL_AURA_MOD_STAT (능력치 변화) |
+        SPELL_AURA_MOD_SKILL (숙련도 변화) |
+        SPELL_AURA_MOD_INCREASE_SPEED (이동 속도 증가) |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED (탈것 이동 속도 증가) |
+        SPELL_AURA_MOD_DECREASE_SPEED (이동 속도 감소) |
+        SPELL_AURA_MOD_INCREASE_HEALTH (최대 생명력 증가) |
+        SPELL_AURA_MOD_INCREASE_ENERGY (최대 자원 증가) |
+        SPELL_AURA_MOD_SHAPESHIFT (변신) |
+        SPELL_AURA_EFFECT_IMMUNITY (효과 면역) |
+        SPELL_AURA_STATE_IMMUNITY (상태 면역) |
+        SPELL_AURA_SCHOOL_IMMUNITY (계열 면역) |
+        SPELL_AURA_DAMAGE_IMMUNITY (피해 면역) |
+        SPELL_AURA_DISPEL_IMMUNITY (해제 면역) |
+        SPELL_AURA_PROC_TRIGGER_SPELL (발동 시 주문 발동) |
+        SPELL_AURA_PROC_TRIGGER_DAMAGE (발동 시 피해) |
+        SPELL_AURA_TRACK_CREATURES (추적-생명체) |
+        SPELL_AURA_TRACK_RESOURCES (추적-자원) |
+        SPELL_AURA_46 (알 수 없음 46) |
+        SPELL_AURA_MOD_PARRY_PERCENT (무기 막기 확률 변화) |
+        SPELL_AURA_48 (알 수 없음 48) |
+        SPELL_AURA_MOD_DODGE_PERCENT (회피 확률 변화) |
+        SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT (극대화 치유량 변화) |
+        SPELL_AURA_MOD_BLOCK_PERCENT (방패 막기 확률 변화) |
+        SPELL_AURA_MOD_WEAPON_CRIT_PERCENT (무기 극대화 확률 변화) |
+        SPELL_AURA_PERIODIC_LEECH (주기적인 생명력 흡수) |
+        SPELL_AURA_MOD_HIT_CHANCE (적중 확률 변화) |
+        SPELL_AURA_MOD_SPELL_HIT_CHANCE (주문 적중 확률 변화) |
+        SPELL_AURA_TRANSFORM (변형) |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE (주문 극대화 확률 변화) |
+        SPELL_AURA_MOD_INCREASE_SWIM_SPEED (수영 속도 증가) |
+        SPELL_AURA_MOD_DAMAGE_DONE_CREATURE (특정 유형 몬스터에게 주는 피해량 변화) |
+        SPELL_AURA_MOD_PACIFY_SILENCE (진정 및 침묵) |
+        SPELL_AURA_MOD_SCALE (크기 변화) |
+        SPELL_AURA_PERIODIC_HEALTH_FUNNEL (주기적인 생명력 이전) |
+        SPELL_AURA_63 (알 수 없음 63) |
+        SPELL_AURA_PERIODIC_MANA_LEECH (주기적인 마나 흡수) |
+        SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK (시전 속도 변화, 중첩 안 됨) |
+        SPELL_AURA_FEIGN_DEATH (죽은 척하기) |
+        SPELL_AURA_MOD_DISARM (무장 해제) |
+        SPELL_AURA_MOD_STALKED (추적됨) |
+        SPELL_AURA_SCHOOL_ABSORB (계열 흡수) |
+        SPELL_AURA_EXTRA_ATTACKS (추가 공격) |
+        SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL (계열별 주문 극대화 확률 변화) |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT (계열별 자원 소모량 % 변화) |
+        SPELL_AURA_MOD_POWER_COST_SCHOOL (계열별 자원 소모량 변화) |
+        SPELL_AURA_REFLECT_SPELLS_SCHOOL (계열별 주문 반사) |
+        SPELL_AURA_MOD_LANGUAGE (언어) |
+        SPELL_AURA_FAR_SIGHT (천리안) |
+        SPELL_AURA_MECHANIC_IMMUNITY (기술 면역) |
+        SPELL_AURA_MOUNTED (탈것 탑승) |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_DONE (주는 피해량 % 변화) |
+        SPELL_AURA_MOD_PERCENT_STAT (능력치 % 변화) |
+        SPELL_AURA_SPLIT_DAMAGE_PCT (피해 분산 %) |
+        SPELL_AURA_WATER_BREATHING (수중 호흡) |
+        SPELL_AURA_MOD_BASE_RESISTANCE (기본 저항력 변화) |
+        SPELL_AURA_MOD_REGEN (생명력/자원 재생 변화) |
+        SPELL_AURA_MOD_POWER_REGEN (자원 재생 변화) |
+        SPELL_AURA_CHANNEL_DEATH_ITEM (죽음의 아이템 정신 집중) |
+        SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN (받는 피해량 % 변화) |
+        SPELL_AURA_MOD_HEALTH_REGEN_PERCENT (생명력 재생 % 변화) |
+        SPELL_AURA_PERIODIC_DAMAGE_PERCENT (주기적인 피해 % 변화) |
+        SPELL_AURA_90 (알 수 없음 90) |
+        SPELL_AURA_MOD_DETECT_RANGE (탐지 범위 변화) |
+        SPELL_AURA_PREVENTS_FLEEING (도주 방지) |
+        SPELL_AURA_MOD_UNATTACKABLE (공격 불가) |
+        SPELL_AURA_INTERRUPT_REGEN (재생 방해) |
+        SPELL_AURA_GHOST (유령) |
+        SPELL_AURA_SPELL_MAGNET (주문 자석) |
+        SPELL_AURA_MANA_SHIELD (마나 보호막) |
+        SPELL_AURA_MOD_SKILL_TALENT (특성 숙련도 변화) |
+        SPELL_AURA_MOD_ATTACK_POWER (공격력 변화) |
+        SPELL_AURA_AURAS_VISIBLE (오라 보임) |
+        SPELL_AURA_MOD_RESISTANCE_PCT (저항력 % 변화) |
+        SPELL_AURA_MOD_MELEE_ATTACK_POWER_VERSUS (특정 대상에게 근접 공격력 변화) |
+        SPELL_AURA_MOD_TOTAL_THREAT (전체 위협 수준 변화) |
+        SPELL_AURA_WATER_WALK (수면 보행) |
+        SPELL_AURA_FEATHER_FALL (저속 낙하) |
+        SPELL_AURA_HOVER (공중 부양) |
+        SPELL_AURA_ADD_FLAT_MODIFIER (고정 수치 추가) |
+        SPELL_AURA_ADD_PCT_MODIFIER (백분율 수치 추가) |
+        SPELL_AURA_ADD_TARGET_TRIGGER (대상 지정 시 발동) |
+        SPELL_AURA_MOD_POWER_REGEN_PERCENT (자원 재생 % 변화) |
+        SPELL_AURA_ADD_CASTER_HIT_TRIGGER (시전자 적중 시 발동) |
+        SPELL_AURA_OVERRIDE_CLASS_SCRIPTS (클래스 스크립트 재정의) |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN (받는 원거리 피해량 변화) |
+        SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN_PCT (받는 원거리 피해량 % 변화) |
+        SPELL_AURA_MOD_HEALING (치유량 변화) |
+        SPELL_AURA_MOD_REGEN_DURING_COMBAT (전투 중 재생 변화) |
+        SPELL_AURA_MOD_MECHANIC_RESISTANCE (기술 저항력 변화) |
+        SPELL_AURA_MOD_HEALING_PCT (받는 치유량 % 변화) |
+        SPELL_AURA_119 (알 수 없음 119) |
+        SPELL_AURA_UNTRACKABLE (추적 불가) |
+        SPELL_AURA_EMPATHY (공감) |
+        SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT (보조 무기 공격력 % 변화) |
+        SPELL_AURA_MOD_TARGET_RESISTANCE (대상의 저항력 변화) |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER (원거리 공격력 변화) |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN (받는 근접 피해량 변화) |
+        SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT (받는 근접 피해량 % 변화) |
+        SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS (공격자 - 원거리 공격력 보너스) |
+        SPELL_AURA_MOD_POSSESS_PET (소환수 조종) |
+        SPELL_AURA_MOD_SPEED_ALWAYS (항상 이동 속도 변화) |
+        SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS (항상 탈것 이동 속도 변화) |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_VERSUS (특정 대상에게 원거리 공격력 변화) |
+        SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT (최대 기력 % 증가) |
+        SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT (최대 생명력 % 증가) |
+        SPELL_AURA_MOD_MANA_REGEN_INTERRUPT (마나 재생 방해) |
+        SPELL_AURA_MOD_HEALING_DONE (주는 치유량 변화) |
+        SPELL_AURA_MOD_HEALING_DONE_PERCENT (주는 치유량 % 변화) |
+        SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE (전체 능력치 % 변화) |
+        SPELL_AURA_MOD_MELEE_HASTE (근접 가속 변화) |
+        SPELL_AURA_FORCE_REACTION (강제 반응) |
+        SPELL_AURA_MOD_RANGED_HASTE (원거리 가속 변화) |
+        SPELL_AURA_MOD_RANGED_AMMO_HASTE (원거리 무기/탄약 가속 변화) |
+        SPELL_AURA_MOD_BASE_RESISTANCE_PCT (기본 저항력 % 변화) |
+        SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE (배타적 저항력 변화) |
+        SPELL_AURA_SAFE_FALL (안전 낙하) |
+        SPELL_AURA_MOD_PET_TALENT_POINTS (소환수 특성 점수 변화) |
+        SPELL_AURA_ALLOW_TAME_PET_TYPE (특정 유형 야수 길들이기 허용) |
+        SPELL_AURA_MECHANIC_IMMUNITY_MASK (기술 면역 마스크) |
+        SPELL_AURA_RETAIN_COMBO_POINTS (연계 점수 유지) |
+        SPELL_AURA_REDUCE_PUSHBACK (밀쳐내기 감소) |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT (방패 막기 값 % 변화) |
+        SPELL_AURA_TRACK_STEALTHED (은신 추적) |
+        SPELL_AURA_MOD_DETECTED_RANGE (탐지된 범위 변화) |
+        SPELL_AURA_SPLIT_DAMAGE_FLAT (고정 수치 피해 분산) |
+        SPELL_AURA_MOD_STEALTH_LEVEL (은신 레벨 변화) |
+        SPELL_AURA_MOD_WATER_BREATHING (수중 호흡 관련 변화 - 자세한 효과 불명) |
+        SPELL_AURA_MOD_REPUTATION_GAIN (평판 획득량 변화) |
+        SPELL_AURA_PET_DAMAGE_MULTI (소환수 공격력 배수 변화) |
+        SPELL_AURA_MOD_SHIELD_BLOCKVALUE (방패 막기 값 변화) |
+        SPELL_AURA_NO_PVP_CREDIT (PvP 점수 없음) |
+        SPELL_AURA_MOD_AOE_AVOIDANCE (광역 회피 변화) |
+        SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT (전투 중 생명력 재생 변화) |
+        SPELL_AURA_POWER_BURN (자원 연소) |
+        SPELL_AURA_MOD_CRIT_DAMAGE_BONUS (극대화 피해량 보너스 변화) |
+        SPELL_AURA_164 (알 수 없음 164) |
+        SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS (공격자 - 근접 공격력 보너스) |
+        SPELL_AURA_MOD_ATTACK_POWER_PCT (공격력 % 변화) |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_PCT (원거리 공격력 % 변화) |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS (특정 대상에게 주는 피해량 변화) |
+        SPELL_AURA_MOD_CRIT_PERCENT_VERSUS (특정 대상에게 극대화 확률 변화) |
+        SPELL_AURA_DETECT_AMORE (매혹 감지) |
+        SPELL_AURA_MOD_SPEED_NOT_STACK (이동 속도 변화, 중첩 안 됨) |
+        SPELL_AURA_MOD_MOUNTED_SPEED_NOT_STACK (탈것 이동 속도 변화, 중첩 안 됨) |
+        SPELL_AURA_173 (알 수 없음 173) |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT (능력치의 %만큼 주문 공격력 변화) |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT (능력치의 %만큼 주문 치유량 변화) |
+        SPELL_AURA_SPIRIT_OF_REDEMPTION (구원의 영혼) |
+        SPELL_AURA_AOE_CHARM (광역 현혹) |
+        SPELL_AURA_MOD_DEBUFF_RESISTANCE (약화 효과 저항력 변화) |
+        SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE (공격자의 주문 극대화 확률 변화) |
+        SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS (특정 대상에게 고정 수치 주문 피해 변화) |
+        SPELL_AURA_181 (알 수 없음 181) |
+        SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT (능력치의 %만큼 저항력 변화) |
+        SPELL_AURA_MOD_CRITICAL_THREAT (극대화 위협 수준 변화) |
+        SPELL_AURA_MOD_ATTACKER_MELEE_HIT_CHANCE (공격자의 근접 적중 확률 변화) |
+        SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE (공격자의 원거리 적중 확률 변화) |
+        SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE (공격자의 주문 적중 확률 변화) |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_CHANCE (공격자의 근접 극대화 확률 변화) |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_CHANCE (공격자의 원거리 극대화 확률 변화) |
+        SPELL_AURA_MOD_RATING (평점 변화) |
+        SPELL_AURA_MOD_FACTION_REPUTATION_GAIN (진영 평판 획득량 변화) |
+        SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED (일반 이동 속도 사용) |
+        SPELL_AURA_MOD_MELEE_RANGED_HASTE (근접 및 원거리 가속 변화) |
+        SPELL_AURA_MELEE_SLOW (근접 공격 속도 감소) |
+        SPELL_AURA_MOD_TARGET_ABSORB_SCHOOL (대상의 계열별 흡수량 변화) |
+        SPELL_AURA_MOD_TARGET_ABILITY_ABSORB_SCHOOL (대상의 기술 계열별 흡수량 변화) |
+        SPELL_AURA_MOD_COOLDOWN (재사용 대기시간 변화) |
+        SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE (공격자의 주문 및 무기 극대화 확률 변화) |
+        SPELL_AURA_198 (알 수 없음 198) |
+        SPELL_AURA_MOD_INCREASES_SPELL_PCT_TO_HIT (주문 적중 확률 % 증가) |
+        SPELL_AURA_MOD_XP_PCT (경험치 획득 % 변화) |
+        SPELL_AURA_FLY (비행) |
+        SPELL_AURA_IGNORE_COMBAT_RESULT (전투 결과 무시) |
+        SPELL_AURA_MOD_ATTACKER_MELEE_CRIT_DAMAGE (공격자의 근접 극대화 피해량 변화) |
+        SPELL_AURA_MOD_ATTACKER_RANGED_CRIT_DAMAGE (공격자의 원거리 극대화 피해량 변화) |
+        SPELL_AURA_MOD_SCHOOL_CRIT_DMG_TAKEN (받는 계열별 극대화 피해량 변화) |
+        SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED (탈것 비행 속도 증가) |
+        SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED (탈것에 탑승한 상태에서의 비행 속도 증가) |
+        SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED (비행 속도 증가) |
+        SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS (항상 탈것에 탑승한 상태에서의 비행 속도 증가) |
+        SPELL_AURA_MOD_VEHICLE_SPEED_ALWAYS (항상 탈것 속도 증가) |
+        SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK (비행 속도 변화, 중첩 안 됨) |
+        SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_STAT_PERCENT (능력치의 %만큼 원거리 공격력 변화) |
+        SPELL_AURA_MOD_RAGE_FROM_DAMAGE_DEALT (받는 피해로부터 분노 획득) |
+        SPELL_AURA_214 (알 수 없음 214) |
+        SPELL_AURA_ARENA_PREPARATION (투기장 준비) |
+        SPELL_AURA_HASTE_SPELLS (주문 가속) |
+        SPELL_AURA_MOD_MELEE_HASTE_2 (근접 가속 변화 2) |
+        SPELL_AURA_HASTE_RANGED (원거리 가속) |
+        SPELL_AURA_MOD_MANA_REGEN_FROM_STAT (능력치로부터 마나 재생) |
+        SPELL_AURA_MOD_RATING_FROM_STAT (능력치로부터 평점 획득) |
+        SPELL_AURA_MOD_DETAUNT (도발 해제) |
+        SPELL_AURA_222 (알 수 없음 222) |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE (돌진으로부터 공격대 발동 효과) |
+        SPELL_AURA_224 (알 수 없음 224) |
+        SPELL_AURA_RAID_PROC_FROM_CHARGE_WITH_VALUE (값과 함께 돌진으로부터 공격대 발동 효과) |
+        SPELL_AURA_PERIODIC_DUMMY (주기적인 더미) |
+        SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE (값과 함께 주기적인 주문 발동) |
+        SPELL_AURA_DETECT_STEALTH (은신 감지) |
+        SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE (광역 피해 감소) |
+        SPELL_AURA_230 (알 수 없음 230) |
+        SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE (값과 함께 발동 시 주문 발동) |
+        SPELL_AURA_MECHANIC_DURATION_MOD (기술 지속 시간 변화) |
+        SPELL_AURA_CHANGE_MODEL_FOR_ALL_HUMANOIDS (모든 인간형 외형 변경) |
+        SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK (기술 지속 시간 변화, 중첩 안 됨) |
+        SPELL_AURA_MOD_DISPEL_RESIST (해제 저항 변화) |
+        SPELL_AURA_CONTROL_VEHICLE (탈것 조종) |
+        SPELL_AURA_MOD_SPELL_DAMAGE_OF_ATTACK_POWER (공격력의 %만큼 주문 공격력 변화) |
+        SPELL_AURA_MOD_SPELL_HEALING_OF_ATTACK_POWER (공격력의 %만큼 주문 치유량 변화) |
+        SPELL_AURA_MOD_SCALE_2 (크기 변화 2) |
+        SPELL_AURA_MOD_EXPERTISE (숙련 변화) |
+        SPELL_AURA_FORCE_MOVE_FORWARD (강제 전방 이동) |
+        SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING (치유량의 %만큼 주문 공격력 변화) |
+        SPELL_AURA_MOD_FACTION (진영) |
+        SPELL_AURA_COMPREHEND_LANGUAGE (언어 이해) |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL (해제 유형에 따른 지속 시간 변화) |
+        SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK (해제 유형에 따른 지속 시간 변화, 중첩 안됨) |
+        SPELL_AURA_CLONE_CASTER (시전자 복제) |
+        SPELL_AURA_MOD_COMBAT_RESULT_CHANCE (전투 결과 확률 변화) |
+        SPELL_AURA_CONVERT_RUNE (룬 전환) |
+        SPELL_AURA_MOD_INCREASE_HEALTH_2 (최대 생명력 증가 2) |
+        SPELL_AURA_MOD_ENEMY_DODGE (적의 회피 변화) |
+        SPELL_AURA_MOD_SPEED_SLOW_ALL (모든 속도 감소) |
+        SPELL_AURA_MOD_BLOCK_CRIT_CHANCE (방패 막기 극대화 확률 변화) |
+        SPELL_AURA_MOD_DISARM_OFFHAND (보조 무기 무장 해제) |
+        SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT (받는 기술 피해 % 변화) |
+        SPELL_AURA_NO_REAGENT_USE (재료 사용 안 함) |
+        SPELL_AURA_MOD_TARGET_RESIST_BY_SPELL_CLASS (주문 계열별 대상 저항력 변화) |
+        SPELL_AURA_258 (알 수 없음 258) |
+        SPELL_AURA_MOD_HOT_PCT (HoT(주기적 치유) % 변화) |
+        SPELL_AURA_SCREEN_EFFECT (화면 효과) |
+        SPELL_AURA_PHASE (위상) |
+        SPELL_AURA_ABILITY_IGNORE_AURASTATE (오라 상태 무시) |
+        SPELL_AURA_ALLOW_ONLY_ABILITY (특정 기술만 허용) |
+        SPELL_AURA_264 (알 수 없음 264) |
+        SPELL_AURA_265 (알 수 없음 265) |
+        SPELL_AURA_266 (알 수 없음 266) |
+        SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL (특정 계열 오라 적용 면역) |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_STAT_PERCENT (능력치의 %만큼 공격력 변화) |
+        SPELL_AURA_MOD_IGNORE_TARGET_RESIST (대상 저항력 무시) |
+        SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST (기술 대상 저항력 무시) |
+        SPELL_AURA_MOD_DAMAGE_FROM_CASTER (시전자로부터 받는 피해량 변화) |
+        SPELL_AURA_IGNORE_MELEE_RESET (근접 공격 초기화 무시) |
+        SPELL_AURA_X_RAY (X-Ray) |
+        SPELL_AURA_ABILITY_CONSUME_NO_AMMO (탄약 소모 없는 기술) |
+        SPELL_AURA_MOD_IGNORE_SHAPESHIFT (변신 상태 무시) |
+        SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC (특정 기술에 대한 피해량 변화) |
+        SPELL_AURA_MOD_MAX_AFFECTED_TARGETS: 영향을 받는 최대 대상 수를 변경합니다. |
+        SPELL_AURA_MOD_DISARM_RANGED: 원거리 무기를 무장 해제합니다. |
+        SPELL_AURA_INITIALIZE_IMAGES: 이미지를 초기화합니다 (정확한 기능은 추가 정보 필요). |
+        SPELL_AURA_MOD_ARMOR_PENETRATION_PCT: 방어구 관통력을 % 단위로 변경합니다. |
+        SPELL_AURA_MOD_HONOR_GAIN_PCT: 명예 점수 획득량을 % 단위로 변경합니다. |
+        SPELL_AURA_MOD_BASE_HEALTH_PCT: 기본 생명력을 % 단위로 변경합니다. |
+        SPELL_AURA_MOD_HEALING_RECEIVED: 받는 치유량을 변경합니다 (증가 또는 감소). |
+        SPELL_AURA_LINKED: 다른 주문과 연결합니다 (연계 효과). |
+        SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR: 방어력에 비례하여 전투력을 변경합니다. |
+        SPELL_AURA_ABILITY_PERIODIC_CRIT: 주기적인 공격/능력의 치명타 확률을 변경합니다. |
+        SPELL_AURA_DEFLECT_SPELLS: 주문을 반사합니다. |
+        SPELL_AURA_IGNORE_HIT_DIRECTION: 공격 방향을 무시합니다 (후방 공격 등). |
+        SPELL_AURA_289: (데이터베이스에 정의되어 있지 않은 효과, 추가 정보 필요) |
+        SPELL_AURA_MOD_CRIT_PCT: 치명타 확률을 % 단위로 변경합니다. |
+        SPELL_AURA_MOD_XP_QUEST_PCT: 퀘스트 경험치 획득량을 % 단위로 변경합니다. |
+        SPELL_AURA_OPEN_STABLE: 야수 보관함을 엽니다 (사냥꾼). |
+        SPELL_AURA_OVERRIDE_SPELLS: 다른 주문을 재정의합니다. |
+        SPELL_AURA_PREVENT_REGENERATE_POWER: 자원 (마나, 기력, 분노 등) 재생을 방지합니다. |
+        SPELL_AURA_295: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_SET_VEHICLE_ID: 탈것 ID를 설정합니다. |
+        SPELL_AURA_BLOCK_SPELL_FAMILY: 특정 주문 계열을 차단합니다. |
+        SPELL_AURA_STRANGULATE: 침묵시키고 피해를 줍니다 (죽음의 기사). |
+        SPELL_AURA_299: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_SHARE_DAMAGE_PCT: 받는 피해의 일부를 % 단위로 다른 대상과 공유합니다. |
+        SPELL_AURA_SCHOOL_HEAL_ABSORB: 특정 계열의 치유 흡수 보호막을 생성합니다. |
+        SPELL_AURA_302: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE: 특정 오라 상태의 대상에게 주는 피해량을 변경합니다. |
+        SPELL_AURA_MOD_FAKE_INEBRIATE: 가짜 만취 효과를 부여합니다. |
+        SPELL_AURA_MOD_MINIMUM_SPEED: 최소 이동 속도를 변경합니다. |
+        SPELL_AURA_306: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_HEAL_ABSORB_TEST: (테스트용) 치유 흡수 효과. |
+        SPELL_AURA_MOD_CRIT_CHANCE_FOR_CASTER: 시전자의 치명타 확률을 변경합니다.(다른 아군에게 적용되는듯) |
+        SPELL_AURA_309: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE: 몬스터의 광역 공격 회피율을 변경합니다. |
+        SPELL_AURA_311: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_312: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_313: (데이터베이스에 정의되어 있지 않은 효과) |
+        SPELL_AURA_PREVENT_RESURRECTION: 부활을 방지합니다. |
+        SPELL_AURA_UNDERWATER_WALKING: 물 위를 걷게 합니다. |
+        SPELL_AURA_PERIODIC_HASTE: 주기적인 효과의 시전 속도를 변경합니다. (가속)
+    </system:String>
+	<system:String x:Key="spell_effect_names_clear">
+	없음 |
+	즉사 (Instakill) |
+	계열 마법 피해 |
+	더미 (Dummy) |
+	차원문 텔레포트 (미사용) |
+	유닛 텔레포트 |
+	오라 적용 |
+	환경 피해 |
+	자원 소모/드레인 |
+	생명력 흡수 |
+	치유 |
+	귀환석 위치 지정 (Bind) |
+	차원문 |
+	의식 기본형 (미사용) |
+	의식 전문화 (미사용) |
+	의식 차원문 활성화 (미사용) |
+	퀘스트 완료 |
+	무기 피해 + (속성 없음) |
+	부활 |
+	추가 공격 기회 |
+	피함 (Dodge) |
+	회피 (Evade) |
+	무기 막기 |
+	방어 |
+	아이템 생성 |
+	무기 숙련 |
+	방어 숙련 |
+	지속성 광역 오라 |
+	소환 |
+	도약 |
+	자원 충전/회복 |
+	무기 피해 % |
+	트리거 미사일 발사 |
+	잠긴 자물쇠 열기 |
+	아이템 변경 |
+	파티 광역 오라 적용 |
+	주문 습득 |
+	주문 방어 |
+	마법 해제 |
+	언어 |
+	쌍수 무기 장착 |
+	야수 소환 (리분: 점프) |
+	수호병 소환 (리분: 목적지 도약) |
+	시전자를 바라보도록 유닛 텔레포트 |
+	기술 숙련도 단계 증가 |
+	리분: 명예 점수 추가 |
+	스폰 (클라이언트 사이드) |
+	주문 시전 UI / 전문 기술 |
+	은신 |
+	감지 |
+	오브젝트 소환 |
+	강제 극대화 적중 |
+	보장된 적중 |
+	아이템 영구 마법부여 |
+	아이템 일시 마법부여 |
+	야수 길들이기 |
+	소환수 소환 |
+	소환수 주문 습득 |
+	무기 피해 + |
+	잠긴 자물쇠 열기 (아이템) |
+	숙련도 / 분류 |
+	이벤트 전송 |
+	자원 태우기 (파워 번) |
+	위협 수준 |
+	트리거 주문 시전 |
+	생명력 이전 (리분: 공격대 광역 오라 적용) |
+	자원 이전 (리분: 마나 보석 생성/충전) |
+	최대 생명력 치유 |
+	시전 차단 |
+	주의 분산 |
+	끌어당김 (Pull) |
+	소매치기 |
+	야수 눈빛 추가 |
+	정신 지배 대상 소환 |
+	토템 소환 (리분: 문양 적용) |
+	기계 치유 |
+	야생 오브젝트 소환 |
+	스크립트 효과 |
+	공격 |
+	성역 (Sanctuary) |
+	연계 점수 추가 |
+	건물 건설 |
+	시야 공유 |
+	결투 |
+	고립 탈출 (Stuck) |
+	플레이어 소환 |
+	오브젝트 활성화 |
+	토템 소환 (1번 슬롯) (리분: 게임오브젝트 피해) |
+	토템 소환 (2번 슬롯) (리분: 게임오브젝트 수리) |
+	토템 소환 (3번 슬롯) (리분: 게임오브젝트 파괴 상태 설정) |
+	토템 소환 (4번 슬롯) (리분: 처치 크레딧) |
+	위협 수준 (전체) |
+	들고 있는 아이템 마법부여 |
+	환영 소환 (리분: 강제 타겟 해제) |
+	윤회 / 자가 부復活 |
+	무도킹 (무도) |
+	돌진 |
+	소동물 소환 (리분: 시전 버튼) |
+	밀쳐내기 (Knock Back) |
+	마력 추출 (Disenchant) |
+	만취 |
+	소환수 먹이주기 |
+	소환수 해제 |
+	평판 |
+	오브젝트 소환 (1번 슬롯) |
+	오브젝트 소환 (2번 슬롯) |
+	오브젝트 소환 (3번 슬롯) |
+	오브젝트 소환 (4번 슬롯) |
+	메카닉 해제 |
+	죽은 소환수 소환 |
+	모든 토템 파괴 |
+	내구도 피해 |
+	악마 소환 |
+	부활 (고정 수치) |
+	도발 (나를 공격) |
+	내구도 % 피해 |
+	플레이어 시체 해부 (휘장 제거) |
+	영혼 치유 |
+	전문 기술 및 기타 |
+	소환수 광역 오라 적용 |
+	무덤 텔레포트 |
+	보정된 무기 피해 |
+	미사용 |
+	택시/정기항공편 전송 |
+	이동 처리 (끌어당김) |
+	위협 수준 % 수정 |
+	이로운 버프 훔치기 |
+	광석 추출 (Prospecting) |
+	아군 광역 오라 적용 |
+	적군 광역 오라 적용 |
+	위협 수준 전이 (속거 등) |
+	플레이어 알림 |
+	음악 재생 |
+	전문 기술 전문화 취소 |
+	처치 크레딧 |
+	소환수 부르기 |
+	생명력 % 치유 |
+	자원 % 회복 |
+	뒤로 도약 |
+	퀘스트 초기화 |
+	강제 시전 |
+	특정 수치 기반 강제 시전 |
+	특정 수치 기반 트리거 주문 시전 |
+	소유자 광역 오라 적용 |
+	목적지 밀쳐내기 |
+	목적지 끌어당김 (블랙홀 효과) |
+	룬 활성화 |
+	퀘스트 실패 |
+	특정 수치 기반 트리거 미사일 주문 |
+	목적지 돌진 |
+	퀘스트 시작 |
+	트리거 주문 2 (소환 유효성 검사?) |
+	친구 초대(RAF) 친구 소환 |
+	길들인 소환수 생성 |
+	정기항공편 노선 발견 |
+	티탄의 그립 |
+	프리즘 아이템 마법부여 |
+	아이템 생성 2 |
+	제분 (Milling) |
+	소환수 이름 변경 허용 |
+	??? |
+	이중 특성 개수 |
+	이중 특성 활성화 |
+	미사용 |
+	오라 제거
+	</system:String>
+	<system:String x:Key="spell_effect_names">
+		NONE |
+		INSTAKILL |
+		SCHOOL_DAMAGE |
+		DUMMY |
+		PORTAL_TELEPORT unused |
+		TELEPORT_UNITS |
+		APPLY_AURA |
+		ENVIRONMENTAL_DAMAGE |
+		POWER_DRAIN |
+		HEALTH_LEECH |
+		HEAL |
+		BIND |
+		PORTAL |
+		RITUAL_BASE unused |
+		RITUAL_SPECIALIZE unused |
+		RITUAL_ACTIVATE_PORTAL unused |
+		QUEST_COMPLETE |
+		WEAPON_DAMAGE_NOSCHOOL |
+		RESURRECT |
+		ADD_EXTRA_ATTACKS |
+		DODGE one spell: Dodge |
+		EVADE one spell: Evade (DND) |
+		PARRY one spell: Parry (DND) |
+		BLOCK one spell: Block (DND) |
+		WEAPON_SKILL |
+		DEFENSE |
+		PERSISTENT_AREA_AURA |
+		SUMMON |
+		LEAP |
+		ENERGIZE |
+		WEAPON_PERCENT_DAMAGE |
+		TRIGGER_MISSILE |
+		OPEN_LOCK |
+		SUMMON_CHANGE_ITEM |
+		APPLY_AREA_AURA_PARTY |
+		LEARN_SPELL |
+		SPELL_DEFENSE |
+		DISPEL |
+		LANGUAGE |
+		DUAL_WIELD |
+		SUMMON_WILD WotLK: Jump |
+		SUMMON_GUARDIAN WotLK: Jump Destination |
+		TELEPORT_UNITS_FACE_CASTER |
+		SKILL_STEP |
+		ADD_HONOR unused? WotLK: Add Honor |
+		SPAWN client side spawn |
+		TRADE_SKILL |
+		STEALTH |
+		DETECT |
+		TRANS_DOOR |
+		FORCE_CRIT |
+		GUARANTEED_HIT |
+		ENCHANT_ITEM |
+		ENCHANT_ITEM_TEMPORARY |
+		TAME_CREATURE |
+		SUMMON_PET |
+		LEARN_PET_SPELL |
+		WEAPON_DAMAGE |
+		OPEN_LOCK_ITEM |
+		PROFICIENCY |
+		SEND_EVENT |
+		POWER_BURN |
+		THREAT |
+		TRIGGER_SPELL |
+		HEALTH_FUNNEL WotLK: APPLY_AREA_AURA_RAID |
+		POWER_FUNNEL WotLK: CREATE_MANA_GEM |
+		HEAL_MAX_HEALTH |
+		INTERRUPT_CAST |
+		DISTRACT |
+		PULL |
+		PICKPOCKET |
+		ADD_FARSIGHT |
+		SUMMON_POSSESSED |
+		SUMMON_TOTEM WotLK: APPLY_GLYPH |
+		HEAL_MECHANICAL |
+		SUMMON_OBJECT_WILD |
+		SCRIPT_EFFECT |
+		ATTACK |
+		SANCTUARY |
+		ADD_COMBO_POINTS |
+		CREATE_HOUSE |
+		BIND_SIGHT |
+		DUEL |
+		STUCK |
+		SUMMON_PLAYER |
+		ACTIVATE_OBJECT |
+		SUMMON_TOTEM_SLOT1 WotLK: DAMAGE_GAME_OBJECT |
+		SUMMON_TOTEM_SLOT2 WotLK: REPAIR_GAME_OBJECT |
+		SUMMON_TOTEM_SLOT3 WotLK: SET_GAME_OBJECT_DESTROYED |
+		SUMMON_TOTEM_SLOT4 WotLK: KILL_CREDIT_GO |
+		THREAT_ALL |
+		ENCHANT_ITEM_PREROGATIVE |
+		SUMMON_PHANTOM WotLK: FORCE_DESELECT |
+		SELF_RESURRECT |
+		SKINNING |
+		CHARGE |
+		SUMMON_CRITTER WotLK: CAST_BUTTON |
+		KNOCK_BACK |
+		DISENCHANT |
+		INEBRIATE |
+		FEED_PET |
+		DISMISS_PET |
+		REPUTATION |
+		SUMMON_OBJECT_SLOT1 |
+		SUMMON_OBJECT_SLOT2 |
+		SUMMON_OBJECT_SLOT3 |
+		SUMMON_OBJECT_SLOT4 |
+		DISPEL_MECHANIC |
+		SUMMON_DEAD_PET |
+		DESTROY_ALL_TOTEMS |
+		DURABILITY_DAMAGE |
+		SUMMON_DEMON |
+		RESURRECT_FLAT |
+		ATTACK_ME |
+		DURABILITY_DAMAGE_PCT |
+		SKIN_PLAYER_CORPSE |
+		SPIRIT_HEAL |
+		SKILL |
+		APPLY_AREA_AURA_PET |
+		TELEPORT_GRAVEYARD |
+		NORMALIZED_WEAPON_DAMAGE |
+		122 unused |
+		SEND_TAXI |
+		PULL_TOWARDS |
+		MODIFY_THREAT_PERCENT |
+		STEAL_BENEFICIAL_BUFF |
+		PROSPECTING |
+		APPLY_AREA_AURA_FRIEND |
+		APPLY_AREA_AURA_ENEMY |
+		REDIRECT_THREAT |
+		PLAY_SOUND |
+		PLAY_MUSIC |
+		UNLEARN_SPECIALIZATION |
+		KILL_CREDIT |
+		CALL_PET |
+		HEAL_PCT |
+		ENERGIZE_PCT |
+		LEAP_BACK |
+		CLEAR_QUEST |
+		FORCE_CAST |
+		FORCE_CAST_WITH_VALUE |
+		TRIGGER_SPELL_WITH_VALUE |
+		APPLY_AREA_AURA_OWNER |
+		KNOCK_BACK_DEST |
+		PULL_TOWARDS_DEST |
+		ACTIVATE_RUNE |
+		QUEST_FAIL |
+		TRIGGER_MISSILE_SPELL_WITH_VALUE |
+		CHARGE_DEST |
+		QUEST_START |
+		TRIGGER_SPELL_2 |
+		SUMMON_RAF_FRIEND |
+		CREATE_TAMED_PET |
+		DISCOVER_TAXI |
+		TITANS_GRIP |
+		ENCHANT_ITEM_PRISMATIC |
+		CREATE_ITEM_2 |
+		MILLING |
+		ALLOW_RENAME_PET |
+		160 |
+		TALENT_SPEC_COUNT |
+		TALENT_SPEC_SELECT |
+		163 unused |
+		REMOVE_AURA
+	</system:String>
+	<system:String x:Key="mechanic_names">
+        없음 |
+        매혹됨 |
+        방향감각상실 |
+        무기 해제됨 |
+        주의 분산됨 |
+        도망침 (공포) |
+        서투름 |
+        이동 불가 (발묶임) |
+        행동 불가 (평화주의) |
+        침묵됨 |
+        수면 상태 |
+        속박됨 (감속) |
+        기절됨 |
+        빙결됨 |
+        행동 불능 (메즈) |
+        출혈 중 |
+        치유 중 |
+        변이됨 |
+        추방됨 |
+        보호막 적용됨 |
+        속박됨 (언데드 속박) |
+        탈것 탑승 |
+        유혹됨 |
+        돌려세워짐 (턴) |
+        공포에 질림 (Horrified) |
+        무적 상태 |
+        시전 차단됨 |
+        멍해짐 |
+        발견 |
+        무적 |
+        혼절시키기 (기절) |
+        분노함 (Enraged)
+    </system:String>
+	<system:String x:Key="spell_family_strings">
+		없음/일반 (Generic) |
+		이벤트/축제 |
+		미사용 |
+		마법사 |
+		전사 |
+		흑마법사 |
+		사제 |
+		드루이드 |
+		도적 |
+		사냥꾼 |
+		성기사 |
+		주술사 |
+		미사용 |
+		물약 |
+		미사용 |
+		죽음의 기사 |
+		미사용 |
+		소환수 |
+		사용자 지정 계열 1
+	</system:String>
+	<system:String x:Key="category_strings">
+		0 - 없음 |
+		1 - 기본 |
+		2 - 직접 피해 - 주문 |
+		4 - 아이템 - 전투용 소비품 (물약) |
+		11 - 아이템 - 음식 |
+		12 - 치유 - 주문 |
+		17 - 빠른 버프 (저항) - 주문 |
+		18 - 지속 피해 (DoT) - 주문 |
+		19 - 빠른 피해 - 주문 |
+		20 - 무적 (기타) |
+		21 - 빠른 버프 - 주문 |
+		22 - 빠른 디버프 - 주문 |
+		23 - 소환 |
+		24 - 아이템 - 전투용 소비품 (공격형) |
+		25 - 빠른 치유 - 주문 |
+		26 - 부활 (전체) |
+		27 - 아이템 - 두루마리 |
+		28 - 아이템 - 빠른 버프 |
+		29 - 아이템 - 디버프 |
+		30 - 아이템 - 치유 |
+		31 - 창조 (짧음) |
+		32 - 기절 |
+		33 - 군중제어 (Mez) |
+		34 - 이동 불가 (Root) |
+		35 - 직접 피해 (광역) - 주문 |
+		36 - 디버프 - 주문 |
+		37 - 무적 |
+		38 - 오라 |
+		39 - 변신 |
+		40 - 근접 공격 (일반) |
+		41 - 치명타 |
+		42 - 이동 속도 감소 (Snare) |
+		43 - 외침 (Shout) |
+		44 - 속도 |
+		45 - 토템 (돌발톱) |
+		46 - 치유 (파티/공격대) - 주문 |
+		47 - 전투 상태 |
+		49 - 직접 피해 (광역) - 능력/기술 |
+		50 - 직접 피해 (전방 원추형 광역) - 능력/기술 |
+		51 - 빠른 디버프 (DPS) - 주문 |
+		52 - 빠른 디버프 (DR) - 주문 |
+		54 - 빠른 버프 (DR) - 주문 |
+		55 - 빠른 버프 (DPS) - 주문 |
+		56 - 즉시 치유 - 주문 |
+		57 - 빠른 치유 (파티/공격대) - 주문 |
+		58 - 즉시 치유 (파티/공격대) - 주문 |
+		59 - 아이템 - 음료 |
+		60 - 무적 (일시적) |
+		61 - 자원 충전 (파티/공격대) - 주문 |
+		62 - 자원 충전 - 주문 |
+		63 - 강력한 직접 피해 - 주문 |
+		64 - 미니맵 특수 효과 |
+		65 - 근접 공격 (특수) |
+		66 - 회피 기동 |
+		67 - 방어 기동 |
+		68 - 무기 막기 기동 |
+		72 - 직접 피해 (지속성 광역) - 주문 |
+		73 - 무술 (일반) |
+		74 - 무술 (특수) |
+		75 - 감지 |
+		76 - 사격/투척 |
+		77 - 전문 기술 - 약초채집 |
+		78 - 전문 기술 - 채광 |
+		79 - 아이템 - 물약 (비전투용) |
+		82 - 도발/도발 소실 |
+		83 - 길들이기 |
+		84 - 도발 (광역) |
+		85 - 직접 피해 (연쇄 광역) - 능력/기술 |
+		86 - 소환수 |
+		87 - 창조 (길음) |
+		88 - 침묵 |
+		89 - 차원문 |
+		93 - 매혹 |
+		94 - 아이템 - 소환 |
+		95 - 종족 특성 종특 능력 |
+		96 - 종족 특성 종특 능력 2 |
+		97 - 보조 기술 - 응급치료/생존 |
+		98 - 강력한 직접 피해 - 주문 (2) |
+		99 - 즉시 시전 주문 |
+		100 - 아이템 - 생명석/마나 보석 |
+		101 - 지옥사냥개 |
+		102 - 아이템 - 장시간 버프 |
+		103 - 아이템 - 영웅 등급 |
+		104 - 토템 (치유) |
+		105 - 토템 (불타는/독사) |
+		106 - 토템 (감속) |
+		107 - 토템 (마나) |
+		108 - 토템 (투명화) |
+		109 - 근접 (무기 해제) |
+		132 - 수양 |
+		133 - 글로벌 |
+		150 - Item - 붕대 |
+		170 - 마무리 일격 (무기 공격력 비례) |
+		190 - 추반 |
+		230 - 토템 (근접 저항/마법 흡수) |
+		250 - 불꽃 폭풍 |
+		270 - 급급소 가격 |
+		290 - 불불꽃작열 |
+		310 - 변환 - 연금술 |
+		330 - 탈것 |
+		350 - 내면의 분노 |
+		351 - 원거리 무기 |
+		371 - 번개 보호막 |
+		391 - 퀘스트 - 지옥의 저주 |
+		411 - 덫 (냉기) |
+		431 - 신성한 폭발 |
+		451 - 신성한 불꽃 |
+		471 - 얼음 보호막 |
+		511 - 천상의 귀환 |
+		531 - 자연의 손아귀 |
+		551 - 경건한 자의 오라 |
+		571 - 칼날 바람 (허리케인) |
+		591 - 토템 (마나 해일) |
+		611 - 희망의 날개 |
+		631 - 영혼 불꽃 |
+		633 - 죽음의 고리 |
+		634 - 공포의 울부짖음 |
+		651 - 어둠의 연소 |
+		671 - 구사의 일생 (구원의 기도) |
+		672 - 점화 |
+		691 - 파멸의 역병 |
+		731 - 파멸의 수호병 소환 (인페르날) |
+		751 - 생명의 나무 형상 |
+		791 - 아이템 - 소금 흔들개 |
+		811 - 신성한 중재 |
+		831 - 영혼석 |
+		851 - 회복 |
+		871 - 그림자 숨기 |
+		891 - 칼날 폭풍 (소용돌이) |
+		892 - 신성한 충격 |
+		911 - 교란의 사격 |
+		931 - 신성한 방패 |
+		932 - 신성한 대지 (봉헌) |
+		951 - PvP 전장 아이템 - 장시간 (30분) |
+		971 - 필사의 일격 |
+		991 - 아이템 - 눈사람 제조기 |
+		1011 - 광포한 재생력 |
+		1031 - 아이템 - 30분 지속 |
+		1051 - 아이템 - 일어서라! 고블린 점퍼 케이블 |
+		1071 - 아이템 - 저블링 부화시키기 |
+		1091 - 전장 귀환 |
+		1111 - 비룡 쐐기 |
+		1131 - 복수의 망치 |
+		1132 - 위협 |
+		1133 - 요정의 불꽃 (야성) |
+		1134 - 응수 |
+		1135 - 반격 |
+		1136 - 축제 - 폭죽 로켓 |
+		1137 - 축제 - 폭죽 |
+		1138 - 원격 제어 무기 |
+		1139 - 아이템 - 퀘스트 (10분) |
+		1140 - 아이템 - 퀘스트 (1분) |
+		1141 - 아이템 - 극대화 장신구 |
+		1142 - 축제 - 온누리에 사랑을 향수/코롱 |
+		1143 - 아이템 - 표적 허수아비 |
+		1144 - 사제 종족 특성 |
+		1145 - 빛의 샘 |
+		1146 - 아이템 - 마법부여 막대 |
+		1147 - 용사 부활 |
+		1148 - 주문석 |
+		1149 - 퀘스트 - 1시간 |
+		1150 - 암흑 천둥벼락 |
+		1151 - 특성 - DPS |
+		1152 - 크리처 특수 기술 |
+		1153 - 아이템 - 전투용 소비품 (비공격형) |
+		1154 - 보석공예 - 보석 깎기 |
+		1155 - 아라시 분지 장신구 |
+		1156 - 윤회 |
+		1157 - 아이템 - 퀘스트 (10초) |
+		1158 - 봉쇄 |
+		1159 - 크리처 특수 기술 2 |
+		1160 - 아이템 - 사제 에픽 지팡이 |
+		1161 - 윤회 |
+		1162 - 투명화 |
+		1163 - 체스 대기시간, 이동 |
+		1164 - 퀘스트 - 핏빛안개 섬 탈것 |
+		1165 - 고통의 쐐기 |
+		1166 - 급장 (PvP 장신구/포세이큰의 의지) |
+		1167 - 퀘스트 - 바위 던지기 |
+		1168 - 연막탄 |
+		1169 - 어둠의 권능: 죽음 |
+		1170 - 퀘스트 - 공중 강습 |
+		1171 - 살상 명령 |
+		1172 - 신속한 사격 |
+		1173 - 신비한 사격 |
+		1174 - 마법부여 |
+		1175 - 독사의 쐐기 (더독 쐐기) |
+		1176 - 귀환석 |
+		1177 - 영혼의 의식/식탁 창조 |
+		1178 - 은신 시작 |
+		1179 - 파멸의 저주 |
+		1180 - 고블린 로켓 헬멧 |
+		1181 - 회복의 기원 |
+		1182 - PvP 직업별 장신구 |
+		1183 - 아이템 - 황새깍지룡 새끼용 |
+		1184 - 지역 영약 - 칼날 산맥 |
+		1185 - 지역 영약 - 샤트라스 |
+		1186 - 희생의 손길 |
+		1187 - 실명 |
+		1188 - 징벌 |
+		1189 - 비전 탄막 |
+		1190 - 아이템 - PvP 생명력 증가 |
+		1191 - 수호의 방패 깨기 |
+		1192 - 별빛 조각 |
+		1193 - 아이템 - 로봇 수리공 |
+		1194 - 지역 버프 - 태양샘 |
+		1195 - 대지의 보호막 |
+		1196 - 죽음의 일격 |
+		1197 - 축제 - 눈싸움용 눈뭉치 |
+		1198 - 변환 - 연금술 (금속) |
+		1199 - 변환 - 연금술 (미사용) |
+		1200 - 변환 - 연금술 (보석) |
+		1201 - 충격파 |
+		1202 - 자연의 신속함 (주술사) |
+		1203 - 아이템 - 가속/속도 |
+		1204 - 치유의 서클 |
+		1205 - 야성 돌진 |
+		1206 - 그림자 밟기 |
+		1207 - 피의 일격 |
+		1208 - 광폭화 |
+		1209 - 방패 밀쳐내기 |
+		1210 - 심판 |
+		1211 - 영웅의 도약 |
+		1212 - 달라란 텔레포트 - 에픽 반지 |
+		1213 - 아이템 - 추적 |
+		1214 - 살아있는 폭탄 |
+		1215 - 용의 숨결 |
+		1216 - 아이템 - 기계공학 마법부여 |
+		1217 - 태풍 |
+		1218 - 별빛추락 (별똥별) |
+		1219 - 돌진 |
+		1221 - 깊은 동결 |
+		1222 - 유령 출몰 |
+		1223 - 천둥폭풍 |
+		1224 - 용암 폭발 |
+		1225 - 혼돈의 화살 |
+		1226 - 살상 포착 (마무리 사격) |
+		1227 - 폭격기 - 피해 제어 |
+		1228 - 성난 해일 |
+		1229 - 아이템 - 귀환의 두루마리 |
+		1230 - 회개 |
+		1231 - 충격포 |
+		1232 - 아이템 - 다크문 타로 카드 |
+		1233 - 질풍의 무기 |
+		1234 - 축제 - 추수감사절 축제 탁자 |
+		1235 - 얼음왕관 폭격기 - 좌석 전환 |
+		1236 - 다크문 - 힘의 시험 |
+		1237 - 급속 성장 |
+		1238 - 추적 |
+		1239 - 추적 |
+		1240 - 시체 폭발 |
+		1241 - 웅크리기 |
+		1242 - 마음의 눈/주문 극대화 |
+		1243 - 권능의 방벽 (신의 권능: 방벽) |
+		1244 - 마상시합 - 탈것 근접 전투 |
+		1245 - 시체 되살리기 |
+		1246 - 마상시합 - 휘장/깃발 |
+		1247 - 서리폭풍 숨결 |
+		1248 - 울부짖는 한기 |
+		1249 - 덫 (자연) |
+		1250 - 덫 (화염) |
+		1251 - 일시적 생명력 증가 |
+		1252 - 고블린 로켓 벨트 |
+		1253 - 겨울의 뿔피리
+    </system:String>
+    <system:String x:Key="interrupt_strings">
+        없음 |
+        이동 시 차단 |
+        밀쳐내기 시 차단 |
+        시전 차단 시 처리 |
+        속성 계열 차단 시 처리 |
+        피해 입을 시 차단 |
+        모든 차단 조건 발생 시 처리
+    </system:String>
+    <system:String x:Key="aura_interrupt_strings">
+        없음 |
+        주문 피격 시 해제 |
+        피해 입을 시 해제 |
+        주문 시전 시 해제 |
+        이동 시 해제 |
+        방향 전환 시 해제 |
+        점프 시 해제 |
+        탈것에 타지 않았을 때 해제 |
+        수면에 있지 않을 때 해제 |
+        수중에 있지 않을 때 해제 |
+        무기를 집어넣지 않았을 때 해제 |
+        대화 시 해제 |
+        아이템/오브젝트 사용 시 해제 |
+        근접 공격 시 해제 |
+        주문 공격 시 해제 |
+        알 수 없음 14 |
+        변신 시 해제 |
+        알 수 없음 16 |
+        탈것 탑승 시 해제 |
+        앉아있지 않을 때 해제 |
+        지역/지도 변경 시 해제 |
+        면역 발생 또는 대상 상실 시 해제 |
+        알 수 없음 21 |
+        텔레포트 이동 시 해제 |
+        PvP 전투 진입 시 해제 |
+        직접 피해 입을 시 해제 |
+        착지 시 해제
+    </system:String>
+    <system:String x:Key="channel_interrupt_strings">
+        없음 |
+        조건 1 발생 시 |
+        조건 2 발생 시 |
+        조건 3 발생 시 |
+        조건 4 발생 시 |
+        조건 5 발생 시 |
+        조건 6 발생 시 |
+        조건 7 발생 시 |
+        조건 8 발생 시 |
+        조건 9 발생 시 |
+        조건 10 발생 시 |
+        조건 11 발생 시 |
+        조건 12 발생 시 |
+        조건 13 발생 시 |
+        조건 14 발생 시 |
+        조건 15 발생 시 |
+        조건 16 발생 시 |
+        조건 17 발생 시 |
+        조건 18 발생 시
+    </system:String>
+    <system:String x:Key="proc_strings">
+        없음 |
+        사망 시 |
+        대상 처치 시 (경험치 또는 명예 점수 제공 기준) |
+        근접 공격 성공 시 |
+        근접 공격 피격 시 |
+        물리 능력 피해 유발 시 |
+        물리 능력 피해 피격 시 |
+        원거리 자동 사격 성공 시 |
+        원거리 자동 사격 피격 시 |
+        원거리 능력 피해 유발 시 |
+        원거리 능력 피해 피격 시 |
+        치유 시 (피해 유형: 없음) |
+        치유받을 시 (피해 유형: 없음) |
+        주문 피해 유발 시 (피해 유형: 없음) |
+        주문 피해 피격 시 (피해 유형: 없음) |
+        치유 시 (피해 유형: 마법) |
+        치유받을 시 (피해 유형: 마법) |
+        주문 피해 유발 시 (피해 유형: 마법) |
+        주문 피해 피격 시 (피해 유형: 마법) |
+        주기적인 효과 발동 시 (지속 피해/지속 치유) |
+        주기적인 효과 피격 시 (지속 피해/지속 치유) |
+        모든 종류의 피해 피격 시 |
+        덫 발동 시 |
+        주무기 자동 공격 적중 시 |
+        보조무기 자동 공격 적중 시 |
+        사망 시 (중복 데이터)
+    </system:String>
+    </ResourceDictionary>
