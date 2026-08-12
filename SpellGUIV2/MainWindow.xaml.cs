@@ -1110,8 +1110,8 @@ namespace SpellEditor
                     {
                         ThreadSafeCheckBox box = new ThreadSafeCheckBox
                         {
-                            Content = creatureType,
-                            ToolTip = creatureType,
+                            Content = creatureType.ToString(),
+                            ToolTip = creatureType.ToString(),
                             Margin = new Thickness(0, 5, 0, 0)
                         };
 
