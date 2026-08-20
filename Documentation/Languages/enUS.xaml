@@ -491,8 +491,8 @@
         Not On AOE Immune
     </system:String>
     <system:String x:Key="attFlagsEx3_strings">
-        Ignore All Resistances |
-        Proc Only on Caster |
+        No Cast Log |
+        Class Trigger Only On Target |
         Continue to Tick while Offline |
         No Helpful Threat |
         No Harmful Threat |

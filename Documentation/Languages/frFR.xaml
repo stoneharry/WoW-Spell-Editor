@@ -475,8 +475,8 @@
 		Inconnu 31
     </system:String>
     <system:String x:Key="attFlagsEx3_strings">
-		Ignorer toutes les résistances |
-		Proc seulement sur le lanceur |
+		Pas de journal d'incantation |
+		Déclencheur de Classe seulement sur la cible |
 		Le décompte continue lorsque déconnecté |
 		Inconnu 3 |
 		Inconnu 4 |
