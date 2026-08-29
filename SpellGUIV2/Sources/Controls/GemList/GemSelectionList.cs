@@ -435,7 +435,7 @@ namespace SpellEditor.Sources.Controls
                 "spellcharges_4,spellppmRate_4,spellcooldown_4,spellcategory_4,spellcategorycooldown_4,spellid_5,spelltrigger_5,spellcharges_5,spellppmRate_5,spellcooldown_5,spellcategory_5," +
                 "spellcategorycooldown_5,bonding,description,PageText,LanguageID,PageMaterial,startquest,lockid,Material,sheath,RandomProperty,RandomSuffix,block,itemset,MaxDurability," +
                 "area,Map,BagFamily,TotemCategory,socketColor_1,socketContent_1,socketColor_2,socketContent_2,socketColor_3,socketContent_3,socketBonus,GemProperties,RequiredDisenchantSkill," +
-                "ArmorDamageModifier,duration,ItemLimitCategory,HolidayId,ScriptName,DisenchantID,FoodType,minMoneyLoot,maxMoneyLoot,flagsCustom,VerifiedBuild " +
+                "ArmorDamageModifier,duration,ItemLimitCategory,HolidayId,ScriptName,DisenchantID,FoodType,minMoneyLoot,maxMoneyLoot,flagsCustom,VerifiedBuild,uniqueId " +
                 $"FROM {_WorldTableName}.item_template " +
                 $"WHERE entry = {entry.SpellItemEnchantmentEntry.ItemCache.Id}");
             _Adapter.Execute(
