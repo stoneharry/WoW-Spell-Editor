@@ -1481,26 +1481,75 @@ namespace SpellEditor
             {
                 ((SpellIconDBC)DBCManager.GetInstance().FindDbcForBinding("SpellIcon"))?.SetIconFilter(FilterIcons.Text);
             }
-            else if (sender == Attributes1Search || sender == Attributes2Search)
+            else if (sender == Attributes1Search)
             {
-                var input = sender == Attributes1Search ? 
-                    Attributes1Search.Text.ToLower() : 
-                    Attributes2Search.Text.ToLower();
-                var controls = sender == Attributes1Search ?
-                    new StackPanel[] { Attributes1, Attributes2, Attributes3, Attributes4 } :
-                    new StackPanel[] { Attributes5, Attributes6, Attributes7, Attributes8, CustomAttributes };
+                ApplyAttributes1Filter();
+            }
+            else if (sender == Attributes2Search)
+            {
+                ApplyAttributes2Filter();
+            }
+        }
 
-                for (int i = 0; i < controls.Length; ++i)
+        #region Flag list filtering
+        private void FlagFilter_Changed(object sender, RoutedEventArgs e)
+        {
+            if (sender == Attributes1CheckedOnly)
+                ApplyAttributes1Filter();
+            else if (sender == Attributes2CheckedOnly)
+                ApplyAttributes2Filter();
+            else if (sender == InterruptsCheckedOnly)
+                ApplyInterruptsFilter();
+            else if (sender == MiscFlagsCheckedOnly)
+                ApplyMiscFlagsFilter();
+        }
+
+        private void ApplyAttributes1Filter() => ApplyFlagFilter(Attributes1CheckedOnly, Attributes1Search,
+            Attributes1, Attributes2, Attributes3, Attributes4);
+
+        private void ApplyAttributes2Filter() => ApplyFlagFilter(Attributes2CheckedOnly, Attributes2Search,
+            Attributes5, Attributes6, Attributes7, Attributes8, CustomAttributes);
+
+        private void ApplyInterruptsFilter() => ApplyFlagFilter(InterruptsCheckedOnly, null,
+            InterruptFlagsGrid, AuraInterruptFlagsGrid, ChannelInterruptFlagsGrid);
+
+        private void ApplyMiscFlagsFilter() => ApplyFlagFilter(MiscFlagsCheckedOnly, null,
+            TargetCreatureType, StancesGrid, StancesNotGrid);
+
+        /// <summary>Every flag list, for after the boxes have been filled in for a different spell.</summary>
+        private void ApplyFlagFilters()
+        {
+            ApplyAttributes1Filter();
+            ApplyAttributes2Filter();
+            ApplyInterruptsFilter();
+            ApplyMiscFlagsFilter();
+        }
+
+        /// <summary>
+        /// Search text and the only checked box narrow the same lists, so both go through here.
+        /// The checked filter is only reapplied on a filter change or a spell load, a box must not
+        /// vanish from under the pointer the moment it is cleared.
+        /// </summary>
+        private void ApplyFlagFilter(ThreadSafeCheckBox checkedOnly, ThreadSafeTextBox search, params StackPanel[] panels)
+        {
+            var input = search?.Text.ToLower() ?? string.Empty;
+            var onlyChecked = checkedOnly?.IsChecked == true;
+
+            foreach (var panel in panels)
+            {
+                foreach (var child in panel.Children)
                 {
-                    foreach (ThreadSafeCheckBox box in controls[i].Children)
-                    {
-                        box.Visibility = box.Content.ToString().Length <= 0 || box.Content.ToString().ToLower().Contains(input) ?
-                            Visibility.Visible :
-                            Visibility.Collapsed;
-                    }
+                    if (!(child is ThreadSafeCheckBox box))
+                        continue;
+
+                    var label = box.Content?.ToString() ?? string.Empty;
+                    var matchesSearch = label.Length == 0 || label.ToLower().Contains(input);
+                    var matchesChecked = !onlyChecked || box.IsChecked == true;
+                    box.Visibility = matchesSearch && matchesChecked ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
         }
+        #endregion
         #endregion
 
         #region ButtonClicks (and load spell god-function)
@@ -2307,6 +2356,8 @@ namespace SpellEditor
                     return;
 
                 loadSpell(LoadSpellReporter, data);
+                // The boxes now hold a different spell, so the tick filter has to be worked out again
+                ApplyFlagFilters();
 
                 // The tabs only reload once they are looked at, the attributes are not awaited
                 EmulatorIntegrationInstance?.SetSpell(spellId);
@@ -5135,6 +5186,8 @@ namespace SpellEditor
                 CustomAttributes.Children.Add(box);
                 customAttributes.Add(box);
             }
+
+            ApplyAttributes2Filter();
         }
 
         /// <summary>A null mask means the read never happened, so nothing is written back.</summary>
@@ -5176,6 +5229,9 @@ namespace SpellEditor
             ApplyCustomAttributes(mask ?? 0);
             foreach (var box in customAttributes)
                 box.IsEnabled = mask.HasValue;
+
+            // These arrive after the spell has loaded, so they need the tick filter of their own
+            ApplyAttributes2Filter();
         }
 
         private void ApplyCustomAttributes(uint mask)

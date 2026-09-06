@@ -749,6 +749,7 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="AUTO"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
@@ -756,16 +757,17 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Content="{DynamicResource labInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
-                                <ScrollViewer Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="0">
+                                <c2:ThreadSafeCheckBox x:Name="InterruptsCheckedOnly" HorizontalAlignment="Left" Margin="10,2,2,2" Grid.Row="0" Grid.Column="0" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                <Label Content="{DynamicResource labInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="0">
                                     <StackPanel Name="InterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAuraInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
-                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
+                                <Label Content="{DynamicResource labAuraInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="AuraInterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labChannelInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
-                                <ScrollViewer Margin="30,10,10,10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="2">
+                                <Label Content="{DynamicResource labChannelInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="2"/>
+                                <ScrollViewer Margin="30,10,10,10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="2">
                                     <StackPanel Name="ChannelInterruptFlagsGrid"/>
                                 </ScrollViewer>
                             </Grid>
@@ -784,7 +786,10 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Search: " HorizontalAlignment="Right" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                                <c2:ThreadSafeTextBox x:Name="Attributes1Search" HorizontalAlignment="Left" MinWidth="150" Margin="2" Grid.Row="0" Grid.Column="1" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">
+                                    <c2:ThreadSafeTextBox x:Name="Attributes1Search" MinWidth="150" Margin="2" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                    <c2:ThreadSafeCheckBox x:Name="Attributes1CheckedOnly" VerticalAlignment="Center" Margin="8,2,2,2" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                </StackPanel>
                                 <Label Content="{DynamicResource labAttributes}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="0"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="0" MinWidth="100">
                                     <StackPanel Name="Attributes1"/>
@@ -820,7 +825,10 @@
                                     <ColumnDefinition Width="Auto" MaxWidth="260"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Search: " HorizontalAlignment="Right" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                                <c2:ThreadSafeTextBox x:Name="Attributes2Search" HorizontalAlignment="Left" MinWidth="150" Margin="2" Grid.Row="0" Grid.Column="1" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">
+                                    <c2:ThreadSafeTextBox x:Name="Attributes2Search" MinWidth="150" Margin="2" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                    <c2:ThreadSafeCheckBox x:Name="Attributes2CheckedOnly" VerticalAlignment="Center" Margin="8,2,2,2" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                </StackPanel>
                                 <Label Content="{DynamicResource labAttributesEx4}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="0"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="0" MinWidth="100">
                                     <StackPanel Name="Attributes5"/>
@@ -847,6 +855,7 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="AUTO"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
@@ -854,16 +863,17 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Content="{DynamicResource labCreatureType}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
-                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="0">
+                                <c2:ThreadSafeCheckBox x:Name="MiscFlagsCheckedOnly" HorizontalAlignment="Left" Margin="10,2,2,2" Grid.Row="0" Grid.Column="0" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                <Label Content="{DynamicResource labCreatureType}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" Grid.Row="2" Grid.Column="0">
                                     <StackPanel Name="TargetCreatureType"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labStances}" ToolTip="{DynamicResource labStancesTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
-                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
+                                <Label Content="{DynamicResource labStances}" ToolTip="{DynamicResource labStancesTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="StancesGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labStancesNot}" ToolTip="{DynamicResource labStancesNotTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
-                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="2">
+                                <Label Content="{DynamicResource labStancesNot}" ToolTip="{DynamicResource labStancesNotTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="2"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="2">
                                     <StackPanel Name="StancesNotGrid"/>
                                 </ScrollViewer>
                             </Grid>

@@ -220,6 +220,8 @@
     <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
     <system:String x:Key="labCustomAttributes">Custom Attributes:</system:String>
     <system:String x:Key="labCustomAttributesTip">Server side attributes from spell_custom_attr, for the emulator picked in the settings. Saved with the spell.</system:String>
+    <system:String x:Key="attrCheckedOnly">Only checked</system:String>
+    <system:String x:Key="attrCheckedOnlyTip">Show only the boxes this spell has checked. Press it again for the full list. It refreshes when you press it or pick another spell, so a box you clear stays put.</system:String>
     <system:String x:Key="labCreatureType">Creature Type:</system:String>
     <system:String x:Key="labStances">Stances:</system:String>
     <system:String x:Key="labStancesTip">Shapeshift forms this spell can be cast in. Nothing checked means any form.</system:String>
@@ -2406,6 +2408,8 @@
     <system:String x:Key="emu_copy_sql">Copy SQL</system:String>
     <system:String x:Key="emu_copy_sql_tip">Copy the statements this save would run to the clipboard instead of applying them</system:String>
     <system:String x:Key="emu_raw_value">Raw value</system:String>
+    <system:String x:Key="emu_checked_only">Only checked</system:String>
+    <system:String x:Key="emu_checked_only_tip">Show only the flags that are checked. Press it again for the full list. It refreshes when you press it, so a box you clear stays put.</system:String>
     <system:String x:Key="emu_loading">Loading...</system:String>
     <system:String x:Key="emu_no_spell_selected">Pick a spell to see its data.</system:String>
     <system:String x:Key="emu_row_added">Added. It is not in the database until you save.</system:String>

@@ -34,6 +34,8 @@ namespace SpellEditor.Sources.Emulator
             new Dictionary<string, List<EnumValue>>();
         /// <summary>Extra context worked out while loading, see DescribeRows.</summary>
         private readonly Dictionary<DataRow, string> _rowNotes = new Dictionary<DataRow, string>();
+        /// <summary>Tick filter per flag column, so it survives the rebuild on every load.</summary>
+        private readonly Dictionary<string, bool> _flagFilters = new Dictionary<string, bool>();
 
         private WorldDatabase _database;
         private DataTable _data;
@@ -653,6 +655,27 @@ namespace SpellEditor.Sources.Emulator
                     Write(value);
             };
 
+            // Only reapplied when the button is pressed, a box must not vanish from under the
+            // pointer the moment it is unchecked
+            var checkedOnly = new CheckBox
+            {
+                IsChecked = _flagFilters.TryGetValue(column.Name, out var filtered) && filtered,
+                Content = Localise("emu_checked_only", "Only checked"),
+                ToolTip = Localise("emu_checked_only_tip", "Show only the flags that are checked"),
+                Margin = new Thickness(5, 0, 5, 3),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            void ApplyCheckedFilter()
+            {
+                var only = checkedOnly.IsChecked == true;
+                _flagFilters[column.Name] = only;
+                foreach (var box in boxes)
+                    box.Visibility = !only || box.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+            }
+            checkedOnly.Checked += (sender, args) => ApplyCheckedFilter();
+            checkedOnly.Unchecked += (sender, args) => ApplyCheckedFilter();
+            ApplyCheckedFilter();
+
             var footer = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 5) };
             footer.Children.Add(new TextBlock
             {
@@ -663,7 +686,16 @@ namespace SpellEditor.Sources.Emulator
             });
             footer.Children.Add(raw);
 
+            var header = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(3, 0, 0, 0)
+            };
+            header.Children.Add(checkedOnly);
+
             var panel = new StackPanel { Margin = new Thickness(0, 3, 0, 0) };
+            panel.Children.Add(header);
             panel.Children.Add(listHost);
             panel.Children.Add(footer);
             return panel;
