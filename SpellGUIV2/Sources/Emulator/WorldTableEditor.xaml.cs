@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using SpellEditor.Sources.Controls.ListPickerDialog;
 using System;
 using System.Collections.Generic;
@@ -9,13 +9,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace SpellEditor.Sources.TrinityCore
+namespace SpellEditor.Sources.Emulator
 {
     /// <summary>
     /// Form editor for one world table, scoped to the selected spell. Values are held as strings
     /// and parsed on save, changes are applied as one transaction.
     /// </summary>
-    public partial class TrinityTableEditor : UserControl
+    public partial class WorldTableEditor : UserControl
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -30,18 +30,18 @@ namespace SpellEditor.Sources.TrinityCore
         private static readonly Brush CardBorder = Frozen(Color.FromArgb(0x60, 0x80, 0x80, 0x80));
 
         private readonly MainWindow _mainWindow;
-        private readonly Dictionary<string, List<TrinityEnumValue>> _enumSources =
-            new Dictionary<string, List<TrinityEnumValue>>();
+        private readonly Dictionary<string, List<EnumValue>> _enumSources =
+            new Dictionary<string, List<EnumValue>>();
         /// <summary>Extra context worked out while loading, see DescribeRows.</summary>
         private readonly Dictionary<DataRow, string> _rowNotes = new Dictionary<DataRow, string>();
 
-        private TrinityDatabase _database;
+        private WorldDatabase _database;
         private DataTable _data;
-        private TrinityRankChain _chain;
+        private RankChain _chain;
         private uint _spellId;
         private bool _busy;
 
-        public TrinityTable Table { get; }
+        public WorldTable Table { get; }
 
         /// <summary>Raised after a save, the other tabs may no longer be showing the right rows.</summary>
         public event Action Saved;
@@ -51,7 +51,7 @@ namespace SpellEditor.Sources.TrinityCore
 
         public bool HasPendingChanges => _data != null && _data.GetChanges() != null;
 
-        public TrinityTableEditor(TrinityTable table, MainWindow mainWindow)
+        public WorldTableEditor(WorldTable table, MainWindow mainWindow)
         {
             InitializeComponent();
 
@@ -68,7 +68,7 @@ namespace SpellEditor.Sources.TrinityCore
             return brush;
         }
 
-        public void SetDatabase(TrinityDatabase database)
+        public void SetDatabase(WorldDatabase database)
         {
             _database = database;
             IsDataLoaded = false;
@@ -102,12 +102,12 @@ namespace SpellEditor.Sources.TrinityCore
             Table.ApplyLocalisedText();
 
             DescriptionText.Text = Table.Description;
-            AddRowButton.Content = Localise("trinity_add_row", "Add");
-            SaveButton.Content = Localise("trinity_save_changes", "Save Changes");
-            RevertButton.Content = Localise("trinity_revert", "Revert");
-            ReloadButton.Content = Localise("trinity_reload", "Reload");
-            CopySqlButton.Content = Localise("trinity_copy_sql", "Copy SQL");
-            CopySqlButton.ToolTip = Localise("trinity_copy_sql_tip",
+            AddRowButton.Content = Localise("emu_add_row", "Add");
+            SaveButton.Content = Localise("emu_save_changes", "Save Changes");
+            RevertButton.Content = Localise("emu_revert", "Revert");
+            ReloadButton.Content = Localise("emu_reload", "Reload");
+            CopySqlButton.Content = Localise("emu_copy_sql", "Copy SQL");
+            CopySqlButton.ToolTip = Localise("emu_copy_sql_tip",
                 "Copy the statements this save would run to the clipboard instead of applying them");
 
             BuildEnumSources();
@@ -132,8 +132,8 @@ namespace SpellEditor.Sources.TrinityCore
                         var raw = row[column.Name] as string;
                         if (string.IsNullOrEmpty(raw) || !known.Add(raw))
                             continue;
-                        values.Add(new TrinityEnumValue(ParseLongOrZero(raw),
-                            Localise("trinity_unknown_value", "Unknown")));
+                        values.Add(new EnumValue(ParseLongOrZero(raw),
+                            Localise("emu_unknown_value", "Unknown")));
                     }
                 }
 
@@ -170,12 +170,12 @@ namespace SpellEditor.Sources.TrinityCore
                 IsDataLoaded = false;
                 BuildRows();
                 UpdateRankText();
-                SetStatus(Localise("trinity_no_spell_selected", "Pick a spell to see its data."), false);
+                SetStatus(Localise("emu_no_spell_selected", "Pick a spell to see its data."), false);
                 return;
             }
 
             _busy = true;
-            SetStatus(Localise("trinity_loading", "Loading..."), false);
+            SetStatus(Localise("emu_loading", "Loading..."), false);
             try
             {
                 // The chain decides which rows the core would apply, so resolve it first
@@ -191,7 +191,7 @@ namespace SpellEditor.Sources.TrinityCore
 
                 _rowNotes.Clear();
                 IReadOnlyList<string> notes = null;
-                if (Table.DescribeRows != null && _data.Rows.Count > 0)
+                if (_data.Rows.Count > 0)
                 {
                     var loaded = _data;
                     notes = await System.Threading.Tasks.Task.Run(() => Table.DescribeRows(_database, loaded));
@@ -277,9 +277,9 @@ namespace SpellEditor.Sources.TrinityCore
             var label = DescribeValue(row[column.Name] as string);
 
             return rank == 0
-                ? string.Format(Localise("trinity_row_from_other_spell",
+                ? string.Format(Localise("emu_row_from_other_spell",
                     "Written against {0}, and the core applies it to this spell as well."), label)
-                : string.Format(Localise("trinity_row_from_rank",
+                : string.Format(Localise("emu_row_from_rank",
                     "Written against rank {0}, {1}. The core applies it to every rank in the chain, including this one."),
                     rank, label);
         }
@@ -291,7 +291,7 @@ namespace SpellEditor.Sources.TrinityCore
                 return;
 
             // This tab is the chain, saying it again above the rows adds nothing
-            if (_chain == null || !_chain.HasChain || Table.Name == "spell_ranks")
+            if (_chain == null || !_chain.HasChain || !Table.ShowsRankChainSummary)
             {
                 RankText.Visibility = Visibility.Collapsed;
                 return;
@@ -300,19 +300,19 @@ namespace SpellEditor.Sources.TrinityCore
             var first = DescribeValue(_chain.FirstSpellId.ToString(CultureInfo.InvariantCulture));
             if (!Table.InheritsRankChain)
             {
-                RankText.Text = string.Format(Localise("trinity_rank_chain_own",
+                RankText.Text = string.Format(Localise("emu_rank_chain_own",
                     "Rank {0} of {1}, chain starting at {2}. This table is not shared between ranks, each rank needs its own rows."),
                     _chain.Rank, _chain.Ranks.Count, first);
             }
             else if (_chain.IsFirstRank)
             {
-                RankText.Text = string.Format(Localise("trinity_rank_chain_first",
+                RankText.Text = string.Format(Localise("emu_rank_chain_first",
                     "Rank {0} of {1}, and the first rank of the chain. Rows written against it can cover every rank."),
                     _chain.Rank, _chain.Ranks.Count);
             }
             else
             {
-                RankText.Text = string.Format(Localise("trinity_rank_chain_shared",
+                RankText.Text = string.Format(Localise("emu_rank_chain_shared",
                     "Rank {0} of {1}. Rows written against rank 1, {2}, count for this rank too and are listed below."),
                     _chain.Rank, _chain.Ranks.Count, first);
             }
@@ -346,12 +346,16 @@ namespace SpellEditor.Sources.TrinityCore
                 id == 0)
                 return string.Empty;
 
-            // In spell_group a negative spell id is a nested group, not a spell
-            if (id < 0 && Table.Name == "spell_group")
-                return string.Format(Localise("trinity_nested_group", "Group {0}"), -id);
+            // Some tables read a negative id as something other than a spell, such as a nested group
+            if (id < 0)
+            {
+                var described = Table.DescribeNegativeSpellId(id);
+                if (described != null)
+                    return described;
+            }
 
             var name = _mainWindow?.GetSpellNameById((uint)Math.Abs(id));
-            return string.IsNullOrEmpty(name) ? Localise("trinity_unknown_spell", "Not in Spell.dbc") : name;
+            return string.IsNullOrEmpty(name) ? Localise("emu_unknown_spell", "Not in Spell.dbc") : name;
         }
         #endregion
 
@@ -413,7 +417,7 @@ namespace SpellEditor.Sources.TrinityCore
 
             var remove = new Button
             {
-                Content = Localise("trinity_delete_row", "Remove"),
+                Content = Localise("emu_delete_row", "Remove"),
                 MinWidth = 90,
                 Margin = new Thickness(5),
                 HorizontalAlignment = HorizontalAlignment.Left
@@ -494,7 +498,7 @@ namespace SpellEditor.Sources.TrinityCore
             return grid;
         }
 
-        private FrameworkElement BuildControl(TrinityColumn column, DataRow row, out bool fullWidth)
+        private FrameworkElement BuildControl(WorldColumn column, DataRow row, out bool fullWidth)
         {
             fullWidth = false;
 
@@ -525,7 +529,7 @@ namespace SpellEditor.Sources.TrinityCore
         }
 
         /// <summary>Never typed in, it follows the open spell. Only the sign is up to the user.</summary>
-        private FrameworkElement BuildPrimarySpellField(TrinityColumn column, DataRow row)
+        private FrameworkElement BuildPrimarySpellField(WorldColumn column, DataRow row)
         {
             var panel = new StackPanel { Orientation = Orientation.Horizontal };
             panel.Children.Add(new TextBlock
@@ -573,7 +577,7 @@ namespace SpellEditor.Sources.TrinityCore
                 : 0;
 
         /// <summary>One tick box per bit like the Attributes tab, plus a raw box for unnamed bits.</summary>
-        private FrameworkElement BuildFlagField(TrinityColumn column, DataRow row)
+        private FrameworkElement BuildFlagField(WorldColumn column, DataRow row)
         {
             var flags = column.Flags.Flags.Where(flag => flag.Value != 0).ToList();
             var boxes = new List<CheckBox>();
@@ -586,7 +590,7 @@ namespace SpellEditor.Sources.TrinityCore
             };
             var updating = false;
 
-            TrinityEnums.TryParseUInt(row[column.Name] as string, out var current);
+            WorldEnums.TryParseUInt(row[column.Name] as string, out var current);
 
             void Write(uint value)
             {
@@ -617,7 +621,7 @@ namespace SpellEditor.Sources.TrinityCore
                 {
                     if (updating)
                         return;
-                    TrinityEnums.TryParseUInt(row[column.Name] as string, out var value);
+                    WorldEnums.TryParseUInt(row[column.Name] as string, out var value);
                     var bit = (uint)((CheckBox)sender).Tag;
                     Write(((CheckBox)sender).IsChecked == true ? value | bit : value & ~bit);
                 }
@@ -645,14 +649,14 @@ namespace SpellEditor.Sources.TrinityCore
             {
                 if (updating)
                     return;
-                if (TrinityEnums.TryParseUInt(raw.Text, out var value))
+                if (WorldEnums.TryParseUInt(raw.Text, out var value))
                     Write(value);
             };
 
             var footer = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 2, 0, 5) };
             footer.Children.Add(new TextBlock
             {
-                Text = Localise("trinity_raw_value", "Raw value"),
+                Text = Localise("emu_raw_value", "Raw value"),
                 Margin = new Thickness(5, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 Opacity = 0.7
@@ -665,7 +669,7 @@ namespace SpellEditor.Sources.TrinityCore
             return panel;
         }
 
-        private FrameworkElement BuildEnumField(TrinityColumn column, DataRow row)
+        private FrameworkElement BuildEnumField(WorldColumn column, DataRow row)
         {
             var combo = new ComboBox
             {
@@ -686,7 +690,7 @@ namespace SpellEditor.Sources.TrinityCore
         }
 
         /// <summary>Another spell the row points at, typeable but with a picker and its name.</summary>
-        private FrameworkElement BuildSpellPickerField(TrinityColumn column, DataRow row)
+        private FrameworkElement BuildSpellPickerField(WorldColumn column, DataRow row)
         {
             var panel = new StackPanel { Orientation = Orientation.Horizontal };
             var box = new TextBox
@@ -725,14 +729,14 @@ namespace SpellEditor.Sources.TrinityCore
                 Width = 30,
                 Margin = new Thickness(0, 5, 5, 5),
                 VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = Localise("trinity_pick_spell", "Select spell")
+                ToolTip = Localise("emu_pick_spell", "Select spell")
             };
             pick.Click += (sender, args) =>
             {
                 if (_mainWindow == null)
                     return;
                 var dialog = new SpellPickerDialog(_mainWindow, (uint)AbsoluteOf(box.Text),
-                    Localise("trinity_pick_spell", "Select spell"));
+                    Localise("emu_pick_spell", "Select spell"));
                 if (dialog.ShowDialog() == true)
                     box.Text = dialog.SelectedId.ToString(CultureInfo.InvariantCulture);
             };
@@ -761,7 +765,7 @@ namespace SpellEditor.Sources.TrinityCore
             return panel;
         }
 
-        private FrameworkElement BuildTextField(TrinityColumn column, DataRow row)
+        private FrameworkElement BuildTextField(WorldColumn column, DataRow row)
         {
             var box = new TextBox
             {
@@ -865,14 +869,14 @@ namespace SpellEditor.Sources.TrinityCore
                     parts.Add($"`{column.Name}` IS NULL");
                     continue;
                 }
-                parts.Add(column.Kind == TrinityColumnKind.Text
-                    ? $"`{column.Name}` = '{TrinityDatabase.Escape(raw)}'"
+                parts.Add(column.Kind == ColumnKind.Text
+                    ? $"`{column.Name}` = '{WorldDatabase.Escape(raw)}'"
                     : $"`{column.Name}` = {raw.Trim()}");
             }
             return string.Join(" AND ", parts);
         }
 
-        private bool TryFormat(TrinityColumn column, string raw, int rowNumber, out string value, out string error)
+        private bool TryFormat(WorldColumn column, string raw, int rowNumber, out string value, out string error)
         {
             value = null;
             error = null;
@@ -880,9 +884,9 @@ namespace SpellEditor.Sources.TrinityCore
 
             if (raw.Length == 0)
             {
-                if (column.IsKey && column.Kind != TrinityColumnKind.Text)
+                if (column.IsKey && column.Kind != ColumnKind.Text)
                 {
-                    error = Fail(column, rowNumber, Localise("trinity_error_key_empty", "this field cannot be empty"));
+                    error = Fail(column, rowNumber, Localise("emu_error_key_empty", "this field cannot be empty"));
                     return false;
                 }
                 if (column.AllowNull)
@@ -895,40 +899,49 @@ namespace SpellEditor.Sources.TrinityCore
 
             switch (column.Kind)
             {
-                case TrinityColumnKind.Text:
-                    value = $"'{TrinityDatabase.Escape(raw)}'";
+                case ColumnKind.Text:
+                    value = $"'{WorldDatabase.Escape(raw)}'";
                     return true;
 
-                case TrinityColumnKind.Float:
+                case ColumnKind.Float:
                     if (!float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var number))
                     {
-                        error = Fail(column, rowNumber, Localise("trinity_error_not_float", "expected a number such as 0.15"));
+                        error = Fail(column, rowNumber, Localise("emu_error_not_float", "expected a number such as 0.15"));
                         return false;
                     }
                     value = number.ToString("R", CultureInfo.InvariantCulture);
                     return true;
 
-                case TrinityColumnKind.Int:
+                case ColumnKind.Int:
                     if (!int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var signed))
                     {
-                        error = Fail(column, rowNumber, Localise("trinity_error_not_int", "expected a whole number"));
+                        error = Fail(column, rowNumber, Localise("emu_error_not_int", "expected a whole number"));
                         return false;
                     }
                     value = signed.ToString(CultureInfo.InvariantCulture);
                     return true;
 
-                default:
-                    if (!TrinityEnums.TryParseUInt(raw, out var unsigned))
+                case ColumnKind.ULong:
+                    if (!WorldEnums.TryParseULong(raw, out var wide))
                     {
-                        error = Fail(column, rowNumber, Localise("trinity_error_not_uint",
+                        error = Fail(column, rowNumber, Localise("emu_error_not_uint",
                             "expected a positive whole number, or a mask written as 0x1F"));
                         return false;
                     }
-                    if (!IsSpellGroupIdValid(column, unsigned))
+                    value = wide.ToString(CultureInfo.InvariantCulture);
+                    return true;
+
+                default:
+                    if (!WorldEnums.TryParseUInt(raw, out var unsigned))
                     {
-                        error = Fail(column, rowNumber, string.Format(Localise("trinity_error_group_range",
-                            "group ids from {0} to {1} are reserved for groups the core declares itself, use {1} or higher"),
-                            TrinityEnums.SpellGroupCoreRangeMax, TrinityEnums.SpellGroupDbRangeMin));
+                        error = Fail(column, rowNumber, Localise("emu_error_not_uint",
+                            "expected a positive whole number, or a mask written as 0x1F"));
+                        return false;
+                    }
+                    var rejected = Table.Validate(column, unsigned);
+                    if (rejected != null)
+                    {
+                        error = Fail(column, rowNumber, rejected);
                         return false;
                     }
                     value = unsigned.ToString(CultureInfo.InvariantCulture);
@@ -936,16 +949,8 @@ namespace SpellEditor.Sources.TrinityCore
             }
         }
 
-        /// <summary>The core rejects group ids in the reserved band, see LoadSpellGroups.</summary>
-        private bool IsSpellGroupIdValid(TrinityColumn column, uint value)
-        {
-            if (Table.Name != "spell_group" || column.Name != "id")
-                return true;
-            return value < TrinityEnums.SpellGroupCoreRangeMax || value > TrinityEnums.SpellGroupDbRangeMin;
-        }
-
-        private string Fail(TrinityColumn column, int rowNumber, string reason) =>
-            string.Format(Localise("trinity_error_cell", "Row {0}, {1}: {2}"), rowNumber,
+        private string Fail(WorldColumn column, int rowNumber, string reason) =>
+            string.Format(Localise("emu_error_cell", "Row {0}, {1}: {2}"), rowNumber,
                 column.Label ?? column.Name, reason);
         #endregion
 
@@ -955,10 +960,10 @@ namespace SpellEditor.Sources.TrinityCore
             if (_data == null || _database == null)
                 return;
 
-            var context = new TrinityNewRowContext
+            var context = new NewRowContext
             {
                 Database = _database,
-                Chain = _chain ?? new TrinityRankChain(_spellId),
+                Chain = _chain ?? new RankChain(_spellId),
                 Rows = LiveRows()
             };
 
@@ -975,7 +980,7 @@ namespace SpellEditor.Sources.TrinityCore
             _data.Rows.Add(row);
 
             BuildRows();
-            SetStatus(Localise("trinity_row_added", "Added. It is not in the database until you save."), false);
+            SetStatus(Localise("emu_row_added", "Added. It is not in the database until you save."), false);
         }
 
         private void RemoveRow(DataRow row)
@@ -985,7 +990,7 @@ namespace SpellEditor.Sources.TrinityCore
 
             row.Delete();
             BuildRows();
-            SetStatus(Localise("trinity_row_removed", "Marked for removal. Save to apply."), false);
+            SetStatus(Localise("emu_row_removed", "Marked for removal. Save to apply."), false);
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
@@ -1000,18 +1005,18 @@ namespace SpellEditor.Sources.TrinityCore
             }
             if (statements.Count == 0)
             {
-                SetStatus(Localise("trinity_nothing_to_save", "Nothing has changed."), false);
+                SetStatus(Localise("emu_nothing_to_save", "Nothing has changed."), false);
                 return;
             }
 
             _busy = true;
-            SetStatus(Localise("trinity_saving", "Saving..."), false);
+            SetStatus(Localise("emu_saving", "Saving..."), false);
             try
             {
                 await _database.ExecuteTransactionAsync(statements);
                 // A save can move data between ranks, so no other tab can trust what it has
                 _database.ClearRankChains();
-                SetStatus(string.Format(Localise("trinity_saved",
+                SetStatus(string.Format(Localise("emu_saved",
                     "Saved {0} change(s). Reload the server or run .reload for it to take effect."),
                     statements.Count), false);
                 _busy = false;
@@ -1032,7 +1037,7 @@ namespace SpellEditor.Sources.TrinityCore
                 return;
             _data.RejectChanges();
             BuildRows();
-            SetStatus(Localise("trinity_reverted", "Unsaved changes discarded."), false);
+            SetStatus(Localise("emu_reverted", "Unsaved changes discarded."), false);
         }
 
         private async void Reload_Click(object sender, RoutedEventArgs e) => await LoadAsync();
@@ -1046,14 +1051,14 @@ namespace SpellEditor.Sources.TrinityCore
             }
             if (statements.Count == 0)
             {
-                SetStatus(Localise("trinity_nothing_to_save", "Nothing has changed."), false);
+                SetStatus(Localise("emu_nothing_to_save", "Nothing has changed."), false);
                 return;
             }
 
             try
             {
                 Clipboard.SetText(string.Join(Environment.NewLine, statements));
-                SetStatus(string.Format(Localise("trinity_sql_copied",
+                SetStatus(string.Format(Localise("emu_sql_copied",
                     "{0} statement(s) copied to the clipboard."), statements.Count), false);
             }
             catch (Exception exception)

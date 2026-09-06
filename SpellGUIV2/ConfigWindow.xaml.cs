@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using NLog;
 using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Emulator;
 using SpellEditor.Sources.VersionControl;
 using static System.Environment;
 using Application = System.Windows.Application;
@@ -72,7 +73,7 @@ namespace SpellEditor
             // Bindings and directory settings, 2 rows
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            // Optional TrinityCore world database row
+            // Optional emulator world database row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -141,7 +142,7 @@ namespace SpellEditor
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
 
-            currentRow = BuildTrinityConfigUI(ConfigGrid, ++currentRow);
+            currentRow = BuildEmulatorConfigUI(ConfigGrid, ++currentRow);
 
             ++currentRow;
             BuildSQLiteConfigUI(currentRow);
@@ -501,7 +502,7 @@ namespace SpellEditor
         }
 
         /// <summary>A separate server to the one holding the DBC data, so it gets its own fields.</summary>
-        private int BuildTrinityConfigUI(Grid parent, int currentRow)
+        private int BuildEmulatorConfigUI(Grid parent, int currentRow)
         {
             var grid = new Grid();
             Grid.SetRow(grid, currentRow);
@@ -511,55 +512,78 @@ namespace SpellEditor
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            for (var i = 0; i < 8; ++i)
+            for (var i = 0; i < 9; ++i)
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             var margin = new Thickness(10, 5, 10, 5);
             var header = new Label
             {
-                Content = "TrinityCore 3.3.5 world database (optional)",
+                Content = "Emulator world database (optional)",
                 Margin = new Thickness(10, 20, 10, 5),
                 FontWeight = FontWeights.Bold
             };
 
-            var enabledLabel = new Label { Content = "Enable TrinityCore tab:", Margin = margin };
+            var enabledLabel = new Label { Content = "Enable world database tabs:", Margin = margin };
             var enabledCheckbox = new System.Windows.Controls.CheckBox
             {
                 Margin = margin,
-                IsChecked = Config.TrinityEnabled,
+                IsChecked = Config.EmulatorEnabled,
                 VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = "Adds a tab for editing the server side spell tables of a TrinityCore 3.3.5 world database. " +
+                ToolTip = "Adds tabs for editing the server side spell tables of an emulator world database. " +
                     "This only works against a WotLK core, so leave it off for anything else."
             };
 
-            var hostLabel = new Label { Content = "Hostname: ", Margin = margin };
-            var hostText = new TextBox { Text = Config.TrinityHost, MinWidth = 200, Margin = margin };
-            var portLabel = new Label { Content = "Port: ", Margin = margin };
-            var portText = new TextBox { Text = Config.TrinityPort, MinWidth = 200, Margin = margin };
-            var userLabel = new Label { Content = "Username: ", Margin = margin };
-            var userText = new TextBox { Text = Config.TrinityUser, MinWidth = 200, Margin = margin };
-            var passLabel = new Label { Content = "Password: ", Margin = margin };
-            var passText = new TextBox { Text = Config.TrinityPass, MinWidth = 200, Margin = margin };
-            var databaseLabel = new Label { Content = "World database: ", Margin = margin };
-            var databaseText = new TextBox { Text = Config.TrinityDatabase, MinWidth = 200, Margin = margin };
+            var selected = Emulators.Lookup(Config.EmulatorType);
+            var emulatorLabel = new Label { Content = "Emulator: ", Margin = margin };
+            var emulatorButton = new SplitButton { Margin = margin, MinWidth = 200 };
+            foreach (var emulator in Emulators.All)
+                emulatorButton.Items.Add(emulator.Name);
+            emulatorButton.SelectedIndex = Emulators.All.ToList().IndexOf(selected);
+            emulatorButton.ToolTip = selected.Description;
 
-            var confirmBtn = new TrinityConfirmButton(enabledCheckbox, hostText, portText, userText, passText, databaseText)
+            var hostLabel = new Label { Content = "Hostname: ", Margin = margin };
+            var hostText = new TextBox { Text = Config.EmulatorHost, MinWidth = 200, Margin = margin };
+            var portLabel = new Label { Content = "Port: ", Margin = margin };
+            var portText = new TextBox { Text = Config.EmulatorPort, MinWidth = 200, Margin = margin };
+            var userLabel = new Label { Content = "Username: ", Margin = margin };
+            var userText = new TextBox { Text = Config.EmulatorUser, MinWidth = 200, Margin = margin };
+            var passLabel = new Label { Content = "Password: ", Margin = margin };
+            var passText = new TextBox { Text = Config.EmulatorPass, MinWidth = 200, Margin = margin };
+            var databaseLabel = new Label { Content = "World database: ", Margin = margin };
+            var databaseText = new TextBox { Text = Config.EmulatorDatabase, MinWidth = 200, Margin = margin };
+
+            // Only swap the defaults across when the fields still hold the other core's defaults
+            var previous = selected;
+            emulatorButton.SelectionChanged += (sender, args) =>
+            {
+                var chosen = Emulators.All.FirstOrDefault(entry => entry.Name == emulatorButton.SelectedItem?.ToString());
+                if (chosen == null)
+                    return;
+                if (userText.Text.Trim() == previous.DefaultUser)
+                    userText.Text = chosen.DefaultUser;
+                if (databaseText.Text.Trim() == previous.DefaultDatabase)
+                    databaseText.Text = chosen.DefaultDatabase;
+                emulatorButton.ToolTip = chosen.Description;
+                previous = chosen;
+            };
+
+            var confirmBtn = new EmulatorConfirmButton(enabledCheckbox, emulatorButton, hostText, portText, userText, passText, databaseText)
             {
                 Content = "Save Changes",
                 Foreground = Brushes.Black,
                 Margin = new Thickness(10, 10, 10, 5),
                 MinHeight = 40
             };
-            confirmBtn.Click += SaveTrinityConfirmBtn_Click;
+            confirmBtn.Click += SaveEmulatorConfirmBtn_Click;
 
-            var testBtn = new TrinityConfirmButton(enabledCheckbox, hostText, portText, userText, passText, databaseText)
+            var testBtn = new EmulatorConfirmButton(enabledCheckbox, emulatorButton, hostText, portText, userText, passText, databaseText)
             {
                 Content = "Test Connection",
                 Foreground = Brushes.Black,
                 Margin = new Thickness(10, 10, 10, 5),
                 MinHeight = 40
             };
-            testBtn.Click += TestTrinityConnection_Click;
+            testBtn.Click += TestEmulatorConnection_Click;
 
             var row = 0;
             Grid.SetRow(header, row++);
@@ -578,6 +602,7 @@ namespace SpellEditor
 
             grid.Children.Add(header);
             AddPair(enabledLabel, enabledCheckbox);
+            AddPair(emulatorLabel, emulatorButton);
             AddPair(hostLabel, hostText);
             AddPair(portLabel, portText);
             AddPair(userLabel, userText);
@@ -595,42 +620,44 @@ namespace SpellEditor
             return currentRow;
         }
 
-        private void SaveTrinityConfirmBtn_Click(object sender, RoutedEventArgs e)
+        private void SaveEmulatorConfirmBtn_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as TrinityConfirmButton;
-            Config.TrinityHost = button.Host();
-            Config.TrinityPort = button.Port();
-            Config.TrinityUser = button.Username();
-            Config.TrinityPass = button.Pass();
-            Config.TrinityDatabase = button.Database();
-            // Set last, it is the flag the main window watches to show or hide the tab
-            Config.TrinityEnabled = button.Enabled();
+            var button = sender as EmulatorConfirmButton;
+            Config.EmulatorType = button.Emulator().Id;
+            Config.EmulatorHost = button.Host();
+            Config.EmulatorPort = button.Port();
+            Config.EmulatorUser = button.Username();
+            Config.EmulatorPass = button.Pass();
+            Config.EmulatorDatabase = button.Database();
+            // Set last, it is the flag the main window watches to show or hide the tabs
+            Config.EmulatorEnabled = button.Enabled();
 
-            (Application.Current.MainWindow as MainWindow)?.UpdateTrinityTabVisibility();
-            ShowFlyoutMessage("Saved config.xml - The TrinityCore tab connects the next time you open it");
+            (Application.Current.MainWindow as MainWindow)?.ReloadEmulatorIntegration();
+            ShowFlyoutMessage($"Saved config.xml - The {button.Emulator().Name} tabs connect the next time you open one");
         }
 
-        private async void TestTrinityConnection_Click(object sender, RoutedEventArgs e)
+        private async void TestEmulatorConnection_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as TrinityConfirmButton;
+            var button = sender as EmulatorConfirmButton;
+            var emulator = button.Emulator();
             button.IsEnabled = false;
             try
             {
-                var database = new Sources.TrinityCore.TrinityDatabase(button.Host(), button.Port(),
+                var database = new WorldDatabase(emulator, button.Host(), button.Port(),
                     button.Username(), button.Pass(), button.Database());
                 var missing = await System.Threading.Tasks.Task.Run(() =>
                 {
                     database.TestConnection();
-                    return database.FindMissingTables(Sources.TrinityCore.TrinityTables.All.Select(table => table.Name));
+                    return database.FindMissingTables(emulator.Tables.Select(table => table.Name));
                 });
 
                 ShowFlyoutMessage(missing.Count == 0
-                    ? $"Connected to {button.Database()} and found all the spell tables."
+                    ? $"Connected to {button.Database()} and found all the {emulator.Name} spell tables."
                     : $"Connected to {button.Database()}, but these tables are missing: {string.Join(", ", missing)}");
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "TrinityCore test connection failed");
+                Logger.Error(exception, $"{emulator.Name} test connection failed");
                 ShowFlyoutMessage("Could not connect: " + exception.Message);
             }
             finally
@@ -747,15 +774,17 @@ namespace SpellEditor
             public string Database() => _Database.Text;
         }
 
-        private class TrinityConfirmButton : Button
+        private class EmulatorConfirmButton : Button
         {
             private readonly System.Windows.Controls.CheckBox _Enabled;
+            private readonly SplitButton _Emulator;
             private readonly TextBox _Host, _Port, _User, _Pass, _Database;
 
-            public TrinityConfirmButton(System.Windows.Controls.CheckBox enabled, TextBox host, TextBox port,
-                TextBox user, TextBox pass, TextBox database)
+            public EmulatorConfirmButton(System.Windows.Controls.CheckBox enabled, SplitButton emulator, TextBox host,
+                TextBox port, TextBox user, TextBox pass, TextBox database)
             {
                 _Enabled = enabled;
+                _Emulator = emulator;
                 _Host = host;
                 _Port = port;
                 _User = user;
@@ -764,6 +793,9 @@ namespace SpellEditor
             }
 
             public bool Enabled() => _Enabled.IsChecked == true;
+
+            public Sources.Emulator.Emulator Emulator() =>
+                Emulators.All.FirstOrDefault(entry => entry.Name == _Emulator.SelectedItem?.ToString()) ?? Emulators.Default;
 
             public string Host() => _Host.Text.Trim();
 

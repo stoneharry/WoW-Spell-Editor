@@ -173,58 +173,68 @@ namespace SpellEditor.Sources.Config
             }
         }
 
-        // Optional TrinityCore 3.3.5 world database, off by default and separate to the DBC one
-        public static bool TrinityEnabled
+        // Optional emulator world database, off by default and separate to the DBC one
+        public static bool EmulatorEnabled
         {
-            get { return "true".Equals(GetConfigValue("TrinityCore/Enabled")); }
+            get { return "true".Equals(GetConfigValue("Emulator/Enabled")); }
             set
             {
-                UpdateConfigValue("TrinityCore/Enabled", value ? "true" : "false");
+                UpdateConfigValue("Emulator/Enabled", value ? "true" : "false");
                 Save();
             }
         }
-        public static string TrinityHost
+        // Which core the world database belongs to, see Sources/Emulator/Emulator.cs
+        public static string EmulatorType
         {
-            get { return GetConfigValue("TrinityCore/Host"); }
+            get { return GetConfigValue("Emulator/Type"); }
             set
             {
-                UpdateConfigValue("TrinityCore/Host", value);
+                UpdateConfigValue("Emulator/Type", value);
                 Save();
             }
         }
-        public static string TrinityUser
+        public static string EmulatorHost
         {
-            get { return GetConfigValue("TrinityCore/Username"); }
+            get { return GetConfigValue("Emulator/Host"); }
             set
             {
-                UpdateConfigValue("TrinityCore/Username", value);
+                UpdateConfigValue("Emulator/Host", value);
                 Save();
             }
         }
-        public static string TrinityPass
+        public static string EmulatorUser
         {
-            get { return GetConfigValue("TrinityCore/Password"); }
+            get { return GetConfigValue("Emulator/Username"); }
             set
             {
-                UpdateConfigValue("TrinityCore/Password", value);
+                UpdateConfigValue("Emulator/Username", value);
                 Save();
             }
         }
-        public static string TrinityPort
+        public static string EmulatorPass
         {
-            get { return GetConfigValue("TrinityCore/Port"); }
+            get { return GetConfigValue("Emulator/Password"); }
             set
             {
-                UpdateConfigValue("TrinityCore/Port", value);
+                UpdateConfigValue("Emulator/Password", value);
                 Save();
             }
         }
-        public static string TrinityDatabase
+        public static string EmulatorPort
         {
-            get { return GetConfigValue("TrinityCore/Database"); }
+            get { return GetConfigValue("Emulator/Port"); }
             set
             {
-                UpdateConfigValue("TrinityCore/Database", value);
+                UpdateConfigValue("Emulator/Port", value);
+                Save();
+            }
+        }
+        public static string EmulatorDatabase
+        {
+            get { return GetConfigValue("Emulator/Database"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Database", value);
                 Save();
             }
         }
@@ -295,22 +305,27 @@ namespace SpellEditor.Sources.Config
                 SqlMapperDirectory = Environment.CurrentDirectory + "\\SqlMap\\AzerothCore";
             }
 
-            // Defaults so the TrinityCore fields are not empty, it stays disabled until turned on
-            if (TrinityHost.Length == 0)
+            // Defaults so the emulator fields are not empty, it stays disabled until turned on
+            if (EmulatorType.Length == 0)
             {
-                TrinityHost = "127.0.0.1";
+                EmulatorType = Emulator.Emulators.Default.Id;
             }
-            if (TrinityPort.Length == 0)
+            var emulator = Emulator.Emulators.Lookup(EmulatorType);
+            if (EmulatorHost.Length == 0)
             {
-                TrinityPort = "3306";
+                EmulatorHost = "127.0.0.1";
             }
-            if (TrinityUser.Length == 0)
+            if (EmulatorPort.Length == 0)
             {
-                TrinityUser = "trinity";
+                EmulatorPort = "3306";
             }
-            if (TrinityDatabase.Length == 0)
+            if (EmulatorUser.Length == 0)
             {
-                TrinityDatabase = "world";
+                EmulatorUser = emulator.DefaultUser;
+            }
+            if (EmulatorDatabase.Length == 0)
+            {
+                EmulatorDatabase = emulator.DefaultDatabase;
             }
         }
 

@@ -41,7 +41,7 @@ using SpellEditor.Sources.Locale;
 using SpellEditor.Sources.SpellStringTools;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
 using SpellEditor.Sources.Tools.VisualTools;
-using SpellEditor.Sources.TrinityCore;
+using SpellEditor.Sources.Emulator;
 using SpellEditor.Sources.VersionControl;
 
 namespace SpellEditor
@@ -59,7 +59,7 @@ namespace SpellEditor
         private readonly List<ThreadSafeCheckBox> attributes5 = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> attributes6 = new List<ThreadSafeCheckBox>();
         private readonly List<ThreadSafeCheckBox> attributes7 = new List<ThreadSafeCheckBox>();
-        /// <summary>TrinityCore spell_custom_attr bits, shown next to the Spell.dbc attributes.</summary>
+        /// <summary>Emulator spell_custom_attr bits, shown next to the Spell.dbc attributes.</summary>
         private readonly List<ThreadSafeCheckBox> customAttributes = new List<ThreadSafeCheckBox>();
         /// <summary>The mask as read for the selected spell, null when it was never read.</summary>
         private uint? loadedCustomAttributes;
@@ -385,21 +385,7 @@ namespace SpellEditor
             }
 
             // From spell_custom_attr rather than the DBC, see SaveCustomAttributes
-            CustomAttributes.Children.Clear();
-            customAttributes.Clear();
-            foreach (var flag in TrinityEnums.SpellCustomAttributes.Flags)
-            {
-                ThreadSafeCheckBox box = new ThreadSafeCheckBox
-                {
-                    Content = flag.Name,
-                    ToolTip = $"{flag.Name} (0x{flag.Value:X})",
-                    Tag = flag.Value,
-                    Margin = new Thickness(0, 5, 0, 0)
-                };
-
-                CustomAttributes.Children.Add(box);
-                customAttributes.Add(box);
-            }
+            RefreshCustomAttributeBoxes();
 
             CasterAuraState.Items.Clear();
             string[] caster_aura_state_strings = SafeTryFindResource("aura_state_strings").Split('|');
@@ -2323,7 +2309,7 @@ namespace SpellEditor
                 loadSpell(LoadSpellReporter, data);
 
                 // The tabs only reload once they are looked at, the attributes are not awaited
-                TrinityIntegrationInstance?.SetSpell(spellId);
+                EmulatorIntegrationInstance?.SetSpell(spellId);
                 _ = RefreshCustomAttributesAsync(spellId);
             }
             catch (Exception ex)
@@ -5068,9 +5054,9 @@ namespace SpellEditor
                 uint.TryParse(idStr, out var id);
                 UpdateSpellVisualTab(id);
             }
-            else if (TrinityIntegrationInstance != null && TrinityIntegrationInstance.Owns(tab))
+            else if (EmulatorIntegrationInstance != null && EmulatorIntegrationInstance.Owns(tab))
             {
-                TrinityIntegrationInstance.Activate(tab);
+                EmulatorIntegrationInstance.Activate(tab);
             }
         }
 
@@ -5084,29 +5070,71 @@ namespace SpellEditor
             foreach (var tab in spellEditorTabs)
                 tab.Visibility = visibility;
 
-            UpdateTrinityTabVisibility();
+            UpdateEmulatorTabVisibility();
 
             if (_selectedID == 0 && MainTabControl.SelectedIndex != 0)
                 MainTabControl.SelectedIndex = 0;
         }
 
-        #region TrinityCore
-        private TrinityIntegration TrinityIntegrationInstance;
+        #region Emulator world database
+        private WorldIntegration EmulatorIntegrationInstance;
 
         /// <summary>Hides the world tables unless the integration is turned on in the settings.</summary>
-        public void UpdateTrinityTabVisibility()
+        public void UpdateEmulatorTabVisibility()
         {
-            var visibility = TrinityDatabase.IsConfigured ? Visibility.Visible : Visibility.Collapsed;
+            // Not every core has a spell_custom_attr table, VMangos for one
+            var showCustomAttributes = WorldDatabase.IsConfigured && Emulators.Current.CustomAttributes != null;
+            var visibility = showCustomAttributes ? Visibility.Visible : Visibility.Collapsed;
             CustomAttributesLabel.Visibility = visibility;
             CustomAttributesScroll.Visibility = visibility;
 
-            if (TrinityIntegrationInstance == null)
+            if (EmulatorIntegrationInstance == null)
             {
-                if (!TrinityDatabase.IsConfigured)
+                if (!WorldDatabase.IsConfigured)
                     return;
-                TrinityIntegrationInstance = new TrinityIntegration(this, MainTabControl);
+                EmulatorIntegrationInstance = new WorldIntegration(this, MainTabControl, Emulators.Current);
             }
-            TrinityIntegrationInstance.UpdateTabs(_selectedID != 0);
+            EmulatorIntegrationInstance.UpdateTabs(_selectedID != 0);
+        }
+
+        /// <summary>
+        /// Called after the settings are saved. The connection details, and possibly the core the
+        /// tabs were built for, have changed, so the old integration is thrown away.
+        /// </summary>
+        public void ReloadEmulatorIntegration()
+        {
+            EmulatorIntegrationInstance?.RemoveTabs();
+            EmulatorIntegrationInstance = null;
+            loadedCustomAttributes = null;
+            RefreshCustomAttributeBoxes();
+            UpdateEmulatorTabVisibility();
+            EmulatorIntegrationInstance?.SetSpell(_selectedID);
+            _ = RefreshCustomAttributesAsync(_selectedID);
+        }
+
+        /// <summary>The bits differ per core, so the list is rebuilt when the emulator changes.</summary>
+        private void RefreshCustomAttributeBoxes()
+        {
+            CustomAttributes.Children.Clear();
+            customAttributes.Clear();
+
+            var flags = Emulators.Current.CustomAttributes;
+            if (flags == null)
+                return;
+
+            foreach (var flag in flags.Flags)
+            {
+                ThreadSafeCheckBox box = new ThreadSafeCheckBox
+                {
+                    Content = flag.Name,
+                    ToolTip = $"{flag.Name} (0x{flag.Value:X})",
+                    Tag = flag.Value,
+                    Margin = new Thickness(0, 5, 0, 0)
+                };
+
+                CustomAttributes.Children.Add(box);
+                customAttributes.Add(box);
+            }
         }
 
         /// <summary>A null mask means the read never happened, so nothing is written back.</summary>
@@ -5118,22 +5146,24 @@ namespace SpellEditor
                 return;
 
             uint? mask = null;
-            if (spellId != 0 && TrinityDatabase.IsConfigured && TrinityIntegrationInstance != null)
+            if (spellId != 0 && WorldDatabase.IsConfigured && EmulatorIntegrationInstance != null)
             {
+                var emulator = EmulatorIntegrationInstance.Emulator;
                 mask = await Task.Run(() =>
                 {
-                    var database = TrinityIntegrationInstance.EnsureDatabase();
+                    var database = EmulatorIntegrationInstance.EnsureDatabase();
                     if (database == null)
                         return (uint?)null;
                     try
                     {
                         var value = database.QuerySingleValue(
-                            $"SELECT `attributes` FROM `spell_custom_attr` WHERE `entry` = {spellId} LIMIT 1");
+                            $"SELECT `{emulator.CustomAttrValueColumn}` FROM `{emulator.CustomAttrTable}` " +
+                            $"WHERE `{emulator.CustomAttrSpellColumn}` = {spellId} LIMIT 1");
                         return value == null ? 0u : Convert.ToUInt32(value);
                     }
                     catch (Exception exception)
                     {
-                        Logger.Error(exception, "Failed to read spell_custom_attr");
+                        Logger.Error(exception, $"Failed to read {emulator.CustomAttrTable}");
                         return (uint?)null;
                     }
                 });
@@ -5178,21 +5208,24 @@ namespace SpellEditor
 
             try
             {
-                var database = TrinityIntegrationInstance?.EnsureDatabase();
+                var database = EmulatorIntegrationInstance?.EnsureDatabase();
                 if (database == null)
-                    throw new Exception(SafeTryFindResource("trinity_custom_attr_unavailable"));
+                    throw new Exception(SafeTryFindResource("emu_custom_attr_unavailable"));
 
+                var emulator = EmulatorIntegrationInstance.Emulator;
                 database.Execute(mask == 0
-                    ? $"DELETE FROM `spell_custom_attr` WHERE `entry` = {spellId}"
-                    : $"INSERT INTO `spell_custom_attr` (`entry`, `attributes`) VALUES ({spellId}, {mask}) " +
-                      $"ON DUPLICATE KEY UPDATE `attributes` = {mask}");
+                    ? $"DELETE FROM `{emulator.CustomAttrTable}` WHERE `{emulator.CustomAttrSpellColumn}` = {spellId}"
+                    : $"INSERT INTO `{emulator.CustomAttrTable}` " +
+                      $"(`{emulator.CustomAttrSpellColumn}`, `{emulator.CustomAttrValueColumn}`) " +
+                      $"VALUES ({spellId}, {mask}) " +
+                      $"ON DUPLICATE KEY UPDATE `{emulator.CustomAttrValueColumn}` = {mask}");
                 loadedCustomAttributes = mask;
                 return true;
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "Failed to save spell_custom_attr");
-                error = string.Format(SafeTryFindResource("trinity_custom_attr_save_failed"), exception.Message);
+                Logger.Error(exception, "Failed to save the spell custom attributes");
+                error = string.Format(SafeTryFindResource("emu_custom_attr_save_failed"), exception.Message);
                 return false;
             }
         }
@@ -5660,10 +5693,10 @@ namespace SpellEditor
             string path = $"pack://SiteOfOrigin:,,,/Languages/{language}.xaml";
             System.Windows.Application.Current.Resources.MergedDictionaries[0].Source = new Uri(path);
             Config.Language = language;
-            // The TrinityCore flag and tooltip labels are cached, drop them so they are read again
-            TrinityEnums.InvalidateLocalisation();
-            UpdateTrinityTabVisibility();
-            TrinityIntegrationInstance?.RefreshLocalisation();
+            // The world database flag and tooltip labels are cached, drop them so they are read again
+            WorldEnums.InvalidateLocalisation();
+            UpdateEmulatorTabVisibility();
+            EmulatorIntegrationInstance?.RefreshLocalisation();
             RefreshAllUIElements();
         }
 

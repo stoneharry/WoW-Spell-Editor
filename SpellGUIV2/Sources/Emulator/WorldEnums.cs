@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace SpellEditor.Sources.TrinityCore
+namespace SpellEditor.Sources.Emulator
 {
-    public class TrinityFlag
+    public class FlagValue
     {
         public uint Value;
         public string Name;
 
-        public TrinityFlag(uint value, string name)
+        public FlagValue(uint value, string name)
         {
             Value = value;
             Name = name;
@@ -21,21 +21,21 @@ namespace SpellEditor.Sources.TrinityCore
     }
 
     /// <summary>
-    /// A bitmask column such as spell_proc.ProcFlags. Values from the TrinityCore headers,
-    /// labels from the language files.
+    /// A bitmask column such as spell_proc.ProcFlags. Values from the core headers, labels from
+    /// the language files.
     /// </summary>
-    public class TrinityFlagSet
+    public class FlagSet
     {
         private readonly uint[] _values;
         private readonly string[] _fallbackNames;
-        private IReadOnlyList<TrinityFlag> _cached;
+        private IReadOnlyList<FlagValue> _cached;
         private int _cachedGeneration = -1;
 
         public string Name { get; }
         public string ResourceKey { get; }
 
         /// <param name="values">Bit value of each flag, in the order the language file lists them.</param>
-        public TrinityFlagSet(string name, string resourceKey, uint[] values, string[] fallbackNames)
+        public FlagSet(string name, string resourceKey, uint[] values, string[] fallbackNames)
         {
             if (values.Length != fallbackNames.Length)
                 throw new ArgumentException($"Flag set {name} has {values.Length} values but {fallbackNames.Length} names");
@@ -46,16 +46,16 @@ namespace SpellEditor.Sources.TrinityCore
             _fallbackNames = fallbackNames;
         }
 
-        public IReadOnlyList<TrinityFlag> Flags
+        public IReadOnlyList<FlagValue> Flags
         {
             get
             {
-                if (_cached != null && _cachedGeneration == TrinityEnums.LocalisationGeneration)
+                if (_cached != null && _cachedGeneration == WorldEnums.LocalisationGeneration)
                     return _cached;
 
-                var names = TrinityEnums.ReadStringList(ResourceKey, _values.Length) ?? _fallbackNames;
-                _cached = _values.Select((value, index) => new TrinityFlag(value, names[index])).ToList();
-                _cachedGeneration = TrinityEnums.LocalisationGeneration;
+                var names = WorldEnums.ReadStringList(ResourceKey, _values.Length) ?? _fallbackNames;
+                _cached = _values.Select((value, index) => new FlagValue(value, names[index])).ToList();
+                _cachedGeneration = WorldEnums.LocalisationGeneration;
                 return _cached;
             }
         }
@@ -88,13 +88,13 @@ namespace SpellEditor.Sources.TrinityCore
         }
     }
 
-    public class TrinityEnumValue
+    public class EnumValue
     {
         // String so it binds straight to the string backed table columns
         public string Value { get; }
         public string Label { get; }
 
-        public TrinityEnumValue(long value, string label)
+        public EnumValue(long value, string label)
         {
             Value = value.ToString();
             Label = $"{value} - {label}";
@@ -103,17 +103,17 @@ namespace SpellEditor.Sources.TrinityCore
         public override string ToString() => Label;
     }
 
-    /// <summary>A value list column. Same idea as TrinityFlagSet but exclusive, not a mask.</summary>
-    public class TrinityEnumSet
+    /// <summary>A value list column. Same idea as FlagSet but exclusive, not a mask.</summary>
+    public class EnumSet
     {
         private readonly long[] _values;
         private readonly string[] _fallbackNames;
-        private IReadOnlyList<TrinityEnumValue> _cached;
+        private IReadOnlyList<EnumValue> _cached;
         private int _cachedGeneration = -1;
 
         public string ResourceKey { get; }
 
-        public TrinityEnumSet(string resourceKey, long[] values, string[] fallbackNames)
+        public EnumSet(string resourceKey, long[] values, string[] fallbackNames)
         {
             if (values.Length != fallbackNames.Length)
                 throw new ArgumentException($"Enum set {resourceKey} has {values.Length} values but {fallbackNames.Length} names");
@@ -123,16 +123,16 @@ namespace SpellEditor.Sources.TrinityCore
             _fallbackNames = fallbackNames;
         }
 
-        public IReadOnlyList<TrinityEnumValue> Values
+        public IReadOnlyList<EnumValue> Values
         {
             get
             {
-                if (_cached != null && _cachedGeneration == TrinityEnums.LocalisationGeneration)
+                if (_cached != null && _cachedGeneration == WorldEnums.LocalisationGeneration)
                     return _cached;
 
-                var names = TrinityEnums.ReadStringList(ResourceKey, _values.Length) ?? _fallbackNames;
-                _cached = _values.Select((value, index) => new TrinityEnumValue(value, names[index])).ToList();
-                _cachedGeneration = TrinityEnums.LocalisationGeneration;
+                var names = WorldEnums.ReadStringList(ResourceKey, _values.Length) ?? _fallbackNames;
+                _cached = _values.Select((value, index) => new EnumValue(value, names[index])).ToList();
+                _cachedGeneration = WorldEnums.LocalisationGeneration;
                 return _cached;
             }
         }
@@ -145,9 +145,10 @@ namespace SpellEditor.Sources.TrinityCore
     }
 
     /// <summary>
-    /// Mirrors the spell enums from TrinityCore 3.3.5 SpellMgr.h, SpellInfo.h and SharedDefines.h.
+    /// Spell enums shared by the supported 3.3.5 cores. Anything the cores disagree on lives on
+    /// the emulator definition instead, see Emulators.
     /// </summary>
-    public static class TrinityEnums
+    public static class WorldEnums
     {
         /// <summary>Bumped when the display language changes so cached labels are rebuilt.</summary>
         public static int LocalisationGeneration { get; private set; }
@@ -173,12 +174,12 @@ namespace SpellEditor.Sources.TrinityCore
 
         private static uint[] Bits(int count) => Enumerable.Range(0, count).Select(index => 1u << index).ToArray();
 
-        public static readonly TrinityFlagSet SchoolMask = new TrinityFlagSet("SpellSchoolMask", "trinity_school_mask_strings",
+        public static readonly FlagSet SchoolMask = new FlagSet("SpellSchoolMask", "emu_school_mask_strings",
             Bits(7),
             new[] { "Physical", "Holy", "Fire", "Nature", "Frost", "Shadow", "Arcane" });
 
         /// <summary>Reuses the aura editor list, which starts with a None entry before the 25 bits.</summary>
-        public static readonly TrinityFlagSet ProcFlags = new TrinityFlagSet("ProcFlags", "proc_strings",
+        public static readonly FlagSet ProcFlags = new FlagSet("ProcFlags", "proc_strings",
             new uint[] { 0 }.Concat(Bits(25)).ToArray(),
             new[]
             {
@@ -194,15 +195,15 @@ namespace SpellEditor.Sources.TrinityCore
                 "Main hand attack done", "Off hand attack done", "Death"
             });
 
-        public static readonly TrinityFlagSet ProcSpellTypeMask = new TrinityFlagSet("ProcFlagsSpellType", "trinity_proc_spell_type_strings",
+        public static readonly FlagSet ProcSpellTypeMask = new FlagSet("ProcFlagsSpellType", "emu_proc_spell_type_strings",
             Bits(3),
             new[] { "Damage", "Heal", "Neither damage nor heal" });
 
-        public static readonly TrinityFlagSet ProcSpellPhaseMask = new TrinityFlagSet("ProcFlagsSpellPhase", "trinity_proc_spell_phase_strings",
+        public static readonly FlagSet ProcSpellPhaseMask = new FlagSet("ProcFlagsSpellPhase", "emu_proc_spell_phase_strings",
             Bits(3),
             new[] { "Cast", "Hit", "Finish" });
 
-        public static readonly TrinityFlagSet ProcHitMask = new TrinityFlagSet("ProcFlagsHit", "trinity_proc_hit_strings",
+        public static readonly FlagSet ProcHitMask = new FlagSet("ProcFlagsHit", "emu_proc_hit_strings",
             Bits(14),
             new[]
             {
@@ -211,33 +212,17 @@ namespace SpellEditor.Sources.TrinityCore
                 "Reflect", "Interrupt", "Full block"
             });
 
-        public static readonly TrinityFlagSet ProcAttributesMask = new TrinityFlagSet("ProcAttributes", "trinity_proc_attributes_strings",
-            new uint[] { 0x001, 0x002, 0x004, 0x008, 0x080, 0x100 },
-            new[]
-            {
-                "Proc target must give exp or honor", "Can proc from triggered spells",
-                "Triggering spell must have a mana cost", "Triggering spell must be affected by this aura",
-                "Reduced proc chance above level 60", "Cannot proc from a spell cast by an item"
-            });
-
-        public static readonly TrinityFlagSet EffectIndexMask = new TrinityFlagSet("EffectIndexMask", "trinity_effect_mask_strings",
+        public static readonly FlagSet EffectIndexMask = new FlagSet("EffectIndexMask", "emu_effect_mask_strings",
             Bits(3),
             new[] { "Effect 1", "Effect 2", "Effect 3" });
 
-        public static readonly TrinityFlagSet SpellCustomAttributes = new TrinityFlagSet("SpellCustomAttributes", "trinity_custom_attr_strings",
-            Bits(26),
-            new[]
-            {
-                "Enchant proc", "Cone back", "Cone line", "Share damage", "No initial threat", "Aura is crowd control",
-                "Does not break stealth", "Can crit", "Direct damage", "Charge", "Pickpocket", "Rolling periodic",
-                "Negative effect 1", "Negative effect 2", "Negative effect 3", "Ignore armor",
-                "Target must face caster", "Caster must be behind target", "Allow in flight target",
-                "Needs ammo data", "Binary spell", "Physical school counts as magic", "Deprecated liquid aura (do not reuse)",
-                "Is talent (master branch only)", "Aura cannot be saved", "Can target any private object (master branch only)"
-            });
+        /// <summary>One effect rather than a mask of them, so the value is the index itself.</summary>
+        public static readonly EnumSet EffectIndexValues = new EnumSet("emu_effect_index_strings",
+            new long[] { 0, 1, 2 },
+            new[] { "Effect 1", "Effect 2", "Effect 3" });
 
         /// <summary>Reuses the editor's spell family list, where the index is the family id.</summary>
-        public static readonly TrinityEnumSet SpellFamilyNames = new TrinityEnumSet("spell_family_strings",
+        public static readonly EnumSet SpellFamilyNames = new EnumSet("spell_family_strings",
             Enumerable.Range(0, 19).Select(index => (long)index).ToArray(),
             new[]
             {
@@ -246,7 +231,7 @@ namespace SpellEditor.Sources.TrinityCore
                 "Pet", "Custom"
             });
 
-        public static readonly TrinityEnumSet SpellLinkedTypes = new TrinityEnumSet("trinity_linked_type_strings",
+        public static readonly EnumSet SpellLinkedTypes = new EnumSet("emu_linked_type_strings",
             new long[] { 0, 1, 2 },
             new[]
             {
@@ -254,14 +239,6 @@ namespace SpellEditor.Sources.TrinityCore
                 "Hit",
                 "Aura (negative effect applies immunity instead)"
             });
-
-        /// <summary>Core defined group ids. Anything else must be 1000 or greater.</summary>
-        public static readonly TrinityEnumSet CoreSpellGroups = new TrinityEnumSet("trinity_spell_group_strings",
-            new long[] { 1, 2, 3, 4 },
-            new[] { "Elixir Battle", "Elixir Guardian", "Elixir Unstable", "Elixir Shattrath" });
-
-        public const uint SpellGroupCoreRangeMax = 5;
-        public const uint SpellGroupDbRangeMin = 1000;
 
         public static bool TryParseUInt(string text, out uint value)
         {
@@ -273,6 +250,18 @@ namespace SpellEditor.Sources.TrinityCore
                 return uint.TryParse(text.Substring(2), System.Globalization.NumberStyles.HexNumber,
                     System.Globalization.CultureInfo.InvariantCulture, out value);
             return uint.TryParse(text, out value);
+        }
+
+        public static bool TryParseULong(string text, out ulong value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(text))
+                return true;
+            text = text.Trim();
+            if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                return ulong.TryParse(text.Substring(2), System.Globalization.NumberStyles.HexNumber,
+                    System.Globalization.CultureInfo.InvariantCulture, out value);
+            return ulong.TryParse(text, out value);
         }
     }
 }

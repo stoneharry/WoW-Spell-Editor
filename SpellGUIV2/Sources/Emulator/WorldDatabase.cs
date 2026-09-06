@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -6,29 +6,32 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SpellEditor.Sources.TrinityCore
+namespace SpellEditor.Sources.Emulator
 {
     /// <summary>
-    /// Optional connection to a TrinityCore 3.3.5 world database, separate from IDatabaseAdapter.
+    /// Optional connection to a 3.3.5 emulator world database, separate from IDatabaseAdapter.
+    /// The schema differences between the supported cores live on Emulator.
     /// </summary>
-    public class TrinityDatabase
+    public class WorldDatabase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly string _connectionString;
-        private readonly Dictionary<uint, TrinityRankChain> _rankChains = new Dictionary<uint, TrinityRankChain>();
+        private readonly Dictionary<uint, RankChain> _rankChains = new Dictionary<uint, RankChain>();
 
+        public Emulator Emulator { get; }
         public string DatabaseName { get; }
         public string Host { get; }
         public string Port { get; }
 
-        public TrinityDatabase(string host, string port, string user, string pass, string database)
+        public WorldDatabase(Emulator emulator, string host, string port, string user, string pass, string database)
         {
             if (string.IsNullOrWhiteSpace(host))
-                throw new ArgumentException("TrinityCore host is not configured");
+                throw new ArgumentException("World database host is not configured");
             if (string.IsNullOrWhiteSpace(database))
-                throw new ArgumentException("TrinityCore database is not configured");
+                throw new ArgumentException("World database name is not configured");
 
+            Emulator = emulator ?? Emulators.Default;
             Host = host;
             Port = string.IsNullOrWhiteSpace(port) ? "3306" : port;
             DatabaseName = database;
@@ -37,16 +40,17 @@ namespace SpellEditor.Sources.TrinityCore
                 "Charset=utf8mb4;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=10;Connection Lifetime=300;Default Command Timeout=60;";
         }
 
-        public static TrinityDatabase FromConfig() => new TrinityDatabase(
-            Config.Config.TrinityHost,
-            Config.Config.TrinityPort,
-            Config.Config.TrinityUser,
-            Config.Config.TrinityPass,
-            Config.Config.TrinityDatabase);
+        public static WorldDatabase FromConfig() => new WorldDatabase(
+            Emulators.Current,
+            Config.Config.EmulatorHost,
+            Config.Config.EmulatorPort,
+            Config.Config.EmulatorUser,
+            Config.Config.EmulatorPass,
+            Config.Config.EmulatorDatabase);
 
-        public static bool IsConfigured => Config.Config.TrinityEnabled
-            && Config.Config.TrinityHost.Length > 0
-            && Config.Config.TrinityDatabase.Length > 0;
+        public static bool IsConfigured => Config.Config.EmulatorEnabled
+            && Config.Config.EmulatorHost.Length > 0
+            && Config.Config.EmulatorDatabase.Length > 0;
 
         private MySqlConnection OpenConnection()
         {
@@ -142,7 +146,7 @@ namespace SpellEditor.Sources.TrinityCore
         }
 
         /// <summary>Cached until a write could have changed it, every tab asks for the same spell.</summary>
-        public TrinityRankChain GetRankChain(uint spellId)
+        public RankChain GetRankChain(uint spellId)
         {
             lock (_rankChains)
             {
@@ -150,7 +154,7 @@ namespace SpellEditor.Sources.TrinityCore
                     return cached;
             }
 
-            var chain = TrinityRankChain.Load(this, spellId);
+            var chain = RankChain.Load(this, spellId);
             lock (_rankChains)
                 _rankChains[spellId] = chain;
             return chain;
