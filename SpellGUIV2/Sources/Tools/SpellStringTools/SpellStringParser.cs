@@ -11,8 +11,12 @@ namespace SpellEditor.Sources.SpellStringTools
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        // Holds a $ inside an error message so the token pass below does not eat it
+        private const string DOLLAR_PLACEHOLDER = "\u0001";
+
         public static readonly string MODIFY_FORMULA_REGEX      = @"\$(\/|\*|\-|)\d+\;\d*\w+";                      // $/10;17057s1 | $/10;s1
         public static readonly string FORMULA_REGEX             = @"\$\{.*?}|\$\w*";                                // ${1 + $s1} | $s1
+        public static readonly string EXPRESSION_REGEX          = @"\$\{([^}]*)\}(?:\.([1-9]))?";                   // ${$abs($m1)} | ${$m1/3}.2
         public static readonly string LOCALE_STR_REGEX          = @"\$l(\w+\:)+\w+\;";                              // $lone_thing:two_things:three_things:four_things;
         public static readonly string CONDITIONAL_FORMULA_REGEX = @"\$\?(.+?)\[(.*?)\]\[(.*?)\]";                   // $?(s70937)[true condition][false $70907d]
         public static readonly string FORMULA_TAG_REGEX         = @"\$\<\w+\>";                                     // $<mult>
@@ -33,6 +37,7 @@ namespace SpellEditor.Sources.SpellStringTools
         private static readonly Regex LocaleStrRegex = new Regex(LOCALE_STR_REGEX, RegexOptions.Compiled);
         private static readonly Regex ConditionalFormulaRegex = new Regex(CONDITIONAL_FORMULA_REGEX, RegexOptions.Compiled);
         private static readonly Regex FormulaTagRegex = new Regex(FORMULA_TAG_REGEX, RegexOptions.Compiled);
+        private static readonly Regex ExpressionRegex = new Regex(EXPRESSION_REGEX, RegexOptions.Compiled);
         private static readonly Regex AllFormulaRegex = new Regex(ALL_FORMULA_REGEX, RegexOptions.Compiled);
         private static readonly Regex TokenRegex = new Regex(TOKEN_REGEX, RegexOptions.Compiled);
 
@@ -68,6 +73,7 @@ namespace SpellEditor.Sources.SpellStringTools
                 // Strip formula tags
                 str = str.Replace(match.ToString(), "0");
             }
+            str = ParseExpressions(str, spell, mainWindow);
             // Parse formulas and resolve
             var formulas = FindFormulas(str);
             foreach (var formula in formulas)
@@ -76,7 +82,40 @@ namespace SpellEditor.Sources.SpellStringTools
                     Logger.Trace(formula + "\t----\t" + "Processing");
                 str = str.Replace(formula, ParseFormula(formula, spell, mainWindow));
             }
-            return str;
+            return str.Replace(DOLLAR_PLACEHOLDER, "$");
+        }
+
+        // Resolve every ${} through the game's formula grammar, see SpellFormula.
+        private string ParseExpressions(string str, DataRow spell, MainWindow mainWindow)
+        {
+            if (str.IndexOf("${", StringComparison.Ordinal) < 0)
+                return str;
+
+            // One pass, so a formula that is the prefix of a longer one cannot eat it
+            var resolved = new Dictionary<string, string>();
+            return ExpressionRegex.Replace(str, match =>
+            {
+                if (resolved.TryGetValue(match.Value, out var cached))
+                    return cached;
+
+                var decimals = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+                string replacement;
+                if (SpellFormula.TryEvaluate(match.Groups[1].Value, spell, mainWindow, out var value, out var error))
+                {
+                    replacement = SpellFormula.Format(value, decimals);
+                }
+                else
+                {
+                    // A formula the game cannot work out renders as a bare $, so say what is
+                    // wrong rather than show a number that will never appear in a tooltip.
+                    replacement = "<ERROR: " + error.Replace("$", DOLLAR_PLACEHOLDER) + ">";
+                    if (Logger.IsTraceEnabled)
+                        Logger.Trace($"{match.Value}\t----\t{error}");
+                }
+
+                resolved[match.Value] = replacement;
+                return replacement;
+            });
         }
 
         // Find ${} and $vars in the formula string
