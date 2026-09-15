@@ -1,0 +1,11 @@
+IGNORE_ORDER true
+uint ID
+uint raceID
+uint sexID
+uint baseSection
+uint textureName1 string
+uint textureName2 string
+uint textureName3 string
+uint flags
+uint variationIndex
+uint colorIndex

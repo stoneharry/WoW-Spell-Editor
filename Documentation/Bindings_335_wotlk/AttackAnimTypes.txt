@@ -1,0 +1,2 @@
+uint animID
+uint animName string

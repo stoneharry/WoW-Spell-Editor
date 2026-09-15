@@ -1,0 +1,13 @@
+uint ID
+uint soundFilterID
+uint orderIndex
+uint filterType
+float params1
+float params2
+float params3
+float params4
+float params5
+float params6
+float params7
+float params8
+float params9

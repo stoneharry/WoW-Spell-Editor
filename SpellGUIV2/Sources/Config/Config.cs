@@ -111,20 +111,6 @@ namespace SpellEditor.Sources.Config
                 Save();
             }
         }
-        public static bool RenderImagesInView
-        {
-            get
-            {
-                var str = GetConfigValue("RenderImagesInView");
-                return "true".Equals(str);
-            }
-            set
-            {
-                UpdateConfigValue("RenderImagesInView", value ? "true" : "false");
-                Save();
-            }
-        }
-
         public static bool DynamicMiscValueFields
         {
             get
@@ -135,6 +121,34 @@ namespace SpellEditor.Sources.Config
             set
             {
                 UpdateConfigValue("DynamicMiscValueFields", value ? "true" : "false");
+                Save();
+            }
+        }
+
+        // Off by default. When on, everything that used to be read up front is read up front
+        // again: the optional DBCs and the full spell family class mask index.
+        public static bool CacheAllOnLoad
+        {
+            get { return "true".Equals(GetConfigValue("CacheAllOnLoad")); }
+            set
+            {
+                UpdateConfigValue("CacheAllOnLoad", value ? "true" : "false");
+                Save();
+            }
+        }
+
+        // On by default. Selecting a spell refetches its row and drops the cached data that
+        // belongs to it, so the editor always shows what is currently in the database.
+        public static bool RefreshCacheOnSpellSelection
+        {
+            get
+            {
+                var str = GetConfigValue("RefreshCacheOnSpellSelection");
+                return "true".Equals(str) || str == string.Empty;
+            }
+            set
+            {
+                UpdateConfigValue("RefreshCacheOnSpellSelection", value ? "true" : "false");
                 Save();
             }
         }
@@ -155,6 +169,72 @@ namespace SpellEditor.Sources.Config
             set
             {
                 UpdateConfigValue("SqlMapperDirectory", value);
+                Save();
+            }
+        }
+
+        // Optional emulator world database, off by default and separate to the DBC one
+        public static bool EmulatorEnabled
+        {
+            get { return "true".Equals(GetConfigValue("Emulator/Enabled")); }
+            set
+            {
+                UpdateConfigValue("Emulator/Enabled", value ? "true" : "false");
+                Save();
+            }
+        }
+        // Which core the world database belongs to, see Sources/Emulator/Emulator.cs
+        public static string EmulatorType
+        {
+            get { return GetConfigValue("Emulator/Type"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Type", value);
+                Save();
+            }
+        }
+        public static string EmulatorHost
+        {
+            get { return GetConfigValue("Emulator/Host"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Host", value);
+                Save();
+            }
+        }
+        public static string EmulatorUser
+        {
+            get { return GetConfigValue("Emulator/Username"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Username", value);
+                Save();
+            }
+        }
+        public static string EmulatorPass
+        {
+            get { return GetConfigValue("Emulator/Password"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Password", value);
+                Save();
+            }
+        }
+        public static string EmulatorPort
+        {
+            get { return GetConfigValue("Emulator/Port"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Port", value);
+                Save();
+            }
+        }
+        public static string EmulatorDatabase
+        {
+            get { return GetConfigValue("Emulator/Database"); }
+            set
+            {
+                UpdateConfigValue("Emulator/Database", value);
                 Save();
             }
         }
@@ -223,6 +303,29 @@ namespace SpellEditor.Sources.Config
             if (SqlMapperDirectory.Length == 0)
             {
                 SqlMapperDirectory = Environment.CurrentDirectory + "\\SqlMap\\AzerothCore";
+            }
+
+            // Defaults so the emulator fields are not empty, it stays disabled until turned on
+            if (EmulatorType.Length == 0)
+            {
+                EmulatorType = Emulator.Emulators.Default.Id;
+            }
+            var emulator = Emulator.Emulators.Lookup(EmulatorType);
+            if (EmulatorHost.Length == 0)
+            {
+                EmulatorHost = "127.0.0.1";
+            }
+            if (EmulatorPort.Length == 0)
+            {
+                EmulatorPort = "3306";
+            }
+            if (EmulatorUser.Length == 0)
+            {
+                EmulatorUser = emulator.DefaultUser;
+            }
+            if (EmulatorDatabase.Length == 0)
+            {
+                EmulatorDatabase = emulator.DefaultDatabase;
             }
         }
 

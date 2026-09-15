@@ -1,0 +1,11 @@
+uint ID
+int nameMD5_1
+uint nameMD5_2
+int nameMD5_3
+uint nameMD5_4
+int versionMD5_1
+uint versionMD5_2
+int versionMD5_3
+uint versionMD5_4
+uint lastModified
+uint flags

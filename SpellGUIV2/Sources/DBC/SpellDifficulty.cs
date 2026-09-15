@@ -72,17 +72,36 @@ namespace SpellEditor.Sources.DBC
                 watch.Start();
                 Logger.Debug("Loading SpellDifficulty tooltips lazily");
                 var column = "SpellName" + Math.Max(0, _locale - 1);
+
+                // One query for every referenced spell instead of four per record
+                var referenced = new HashSet<string>();
                 for (int i = 1; i < Lookups.Count; ++i)
                 {
-                    if (cancelToken.IsCancellationRequested)
+                    var record = Body.RecordMaps[i - 1];
+                    for (int diffIndex = 1; diffIndex <= 4; ++diffIndex)
                     {
-                        Logger.Debug($"Aborted SpellDifficulty Tooltips loading after {watch.ElapsedMilliseconds}ms");
-                        break;
+                        var difficulty = record["Difficulties" + diffIndex].ToString();
+                        if (difficulty != "0")
+                            referenced.Add(difficulty);
                     }
-                    if (i % 25 == 0)
-                    {
-                        Logger.Debug($"Loaded {i} / {Lookups.Count} difficulty tooltips");
-                    }
+                }
+                var names = new Dictionary<string, string>();
+                if (referenced.Count > 0)
+                {
+                    var table = _adapter.Query($"SELECT `ID`, {column} FROM `spell` WHERE `ID` IN ({string.Join(",", referenced)})");
+                    foreach (System.Data.DataRow row in table.Rows)
+                        names[row[0].ToString()] = row[1].ToString();
+                }
+
+                if (cancelToken.IsCancellationRequested)
+                {
+                    Logger.Debug($"Aborted SpellDifficulty Tooltips loading after {watch.ElapsedMilliseconds}ms");
+                    return;
+                }
+
+                var updates = new List<Action>(Lookups.Count);
+                for (int i = 1; i < Lookups.Count; ++i)
+                {
                     var record = Body.RecordMaps[i - 1];
                     var label = Lookups[i].ItemLabel();
                     var tooltip = "";
@@ -92,17 +111,22 @@ namespace SpellEditor.Sources.DBC
                         var difficulty = record["Difficulties" + diffIndex].ToString();
                         content += difficulty + ", ";
                         tooltip += "[" + difficulty + "] ";
-                        var result = _adapter.QuerySingleValue(string.Format("SELECT {0} FROM `{1}` WHERE `ID` = '{2}' LIMIT 1", column, "spell", difficulty));
-                        if (result != null)
-                        {
-                            tooltip += result.ToString();
-                        }
+                        if (names.TryGetValue(difficulty, out var name))
+                            tooltip += name;
                         tooltip += "\n";
                     }
-                    label.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    updates.Add(() =>
                     {
                         label.Content += content;
                         label.ToolTip = tooltip;
+                    });
+                }
+                if (updates.Count > 0)
+                {
+                    Lookups[1].ItemLabel().Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        foreach (var update in updates)
+                            update();
                     }));
                 }
                 watch.Stop();

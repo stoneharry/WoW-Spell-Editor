@@ -1,0 +1,5 @@
+IGNORE_ORDER true
+uint ID
+uint name string
+uint raceID
+uint sex

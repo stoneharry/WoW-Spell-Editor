@@ -1,0 +1,4 @@
+uint ID
+uint violencelevel1
+uint violencelevel2
+uint violencelevel3

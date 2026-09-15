@@ -1,4 +1,5 @@
 # AreaTrigger.dbc structure for 3.3.5a 12340
+IGNORE_ORDER true
 uint ID
 uint ContinentID
 float X

@@ -17,24 +17,27 @@ namespace SpellEditor.Sources.Tools.SpellStringTools
             DetermineType();
         }
 
-        // Interpret what the string token represents with regex
+        // Interpret what the string token represents. Single character operators are the common case
+        // and are settled with a char compare before touching a regex.
         private void DetermineType()
         {
+            if (Value.Length == 1)
+            {
+                switch (Value[0])
+                {
+                    case '+': Type = TokenType.PLUS; return;
+                    case '-': Type = TokenType.MINUS; return;
+                    case '/': Type = TokenType.DIVIDE; return;
+                    case '*': Type = TokenType.MULTIPLY; return;
+                }
+            }
             // Reference must be checked before Number because the regex for number can also detect references
-            if (Regex.IsMatch(Value, SpellStringParser.REFERENCE_REGEX))
+            if (SpellStringParser.ReferenceRegex.IsMatch(Value))
                 Type = TokenType.REFERENCE;
-            else if (Regex.IsMatch(Value, SpellStringParser.MODIFY_FORMULA_REGEX))
+            else if (SpellStringParser.ModifyFormulaRegex.IsMatch(Value))
                 Type = TokenType.MODIFY_FORMULA;
-            else if (Regex.IsMatch(Value, SpellStringParser.NUMBER_REGEX))
+            else if (SpellStringParser.NumberRegex.IsMatch(Value))
                 Type = TokenType.NUMBER;
-            else if (Regex.IsMatch(Value, SpellStringParser.PLUS_REGEX))
-                Type = TokenType.PLUS;
-            else if (Regex.IsMatch(Value, SpellStringParser.MINUS_REGEX))
-                Type = TokenType.MINUS;
-            else if (Regex.IsMatch(Value, SpellStringParser.DIVIDE_REGEX))
-                Type = TokenType.DIVIDE;
-            else if (Regex.IsMatch(Value, SpellStringParser.MULTIPLY_REGEX))
-                Type = TokenType.MULTIPLY;
         }
 
         /**

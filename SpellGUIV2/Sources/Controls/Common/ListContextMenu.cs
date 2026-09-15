@@ -90,6 +90,12 @@ namespace SpellEditor.Sources.Controls.Common
             };
             duplicateItem.Click += entry.CopyItemClick;
             items.Add(duplicateItem);
+            var copyIdItem = new MenuItem
+            {
+                Header = TryFindResource("ListCopyIdContextMenu") ?? "Copy ID"
+            };
+            copyIdItem.Click += entry.CopyIdItemClick;
+            items.Add(copyIdItem);
             return items;
         }
 

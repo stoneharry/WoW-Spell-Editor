@@ -1,0 +1,9 @@
+int ID
+int chunkX
+int chunkY
+int subchunkX
+int subchunkY
+int zoneIntroMusicID
+int zoneMusicID
+int soundAmbienceID
+int soundProviderPreferencesID

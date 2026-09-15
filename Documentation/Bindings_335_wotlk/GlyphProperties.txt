@@ -1,0 +1,4 @@
+uint ID
+uint spellID
+uint glyphSlotFlags
+uint spellIconID

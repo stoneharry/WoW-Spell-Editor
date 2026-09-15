@@ -1,0 +1,4 @@
+uint ID
+uint objectEffectPackageID
+uint objectEffectGroupID
+uint stateType

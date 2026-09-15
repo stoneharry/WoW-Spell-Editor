@@ -1,0 +1,17 @@
+uint ID
+uint mapAreaID
+uint areaID1
+uint areaID2
+uint areaID3
+uint areaID4
+uint mapPointX
+uint mapPointY
+uint textureName string
+uint textureWidth
+uint textureHeight
+uint offsetX
+uint offsetY
+uint hitRectTop
+uint hitRectLeft
+uint hitRectBottom
+uint hitRectRight

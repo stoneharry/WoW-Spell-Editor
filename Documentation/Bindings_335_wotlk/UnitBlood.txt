@@ -1,0 +1,10 @@
+uint ID
+uint combatBloodSpurtFront1
+uint combatBloodSpurtFront2
+uint combatBloodSpurtBack1
+uint combatBloodSpurtBack2
+uint groundBlood1 string
+uint groundBlood2 string
+uint groundBlood3 string
+uint groundBlood4 string
+uint groundBlood5 string

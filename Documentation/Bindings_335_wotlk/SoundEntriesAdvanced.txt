@@ -1,0 +1,24 @@
+uint ID
+uint soundEntryID
+float innerRadius2d
+uint timeA
+uint timeB
+uint timeC
+uint timeD
+uint randomOffsetRange
+uint usage
+uint timeIntervalMin
+uint timeIntervalMax
+uint volumeSliderCategory
+float duckToSfx
+float duckToMusic
+float duckToAmbience
+float innerRadiusOfInfluence
+float outerRadiusOfInfluence
+uint timeToDuck
+uint timeToUnduck
+float insideAngle
+float outsideAngle
+float outsideVolume
+float outerRadius2d
+uint name string

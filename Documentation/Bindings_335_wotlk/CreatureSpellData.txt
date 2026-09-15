@@ -1,0 +1,9 @@
+uint ID
+uint spells1
+uint spells2
+uint spells3
+uint spells4
+uint availability1
+uint availability2
+uint availability3
+uint availability4

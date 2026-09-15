@@ -15,7 +15,9 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Flyout" Position="Bottom" Height="65" AutoCloseInterval="1700" IsAutoCloseEnabled="true" IsPinned="false">
-                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize="20" VerticalAlignment="Center"
+                           Margin="10,0,10,0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
@@ -331,7 +333,7 @@
                     </TabControl>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Base}">
+            <TabItem Name="BaseTab" Header="{DynamicResource Base}">
                 <Grid Name="BaseTabGrid">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -443,6 +445,16 @@
                     <c2:ThreadSafeComboBox x:Name="SpellDescriptionVariables" Margin="5,5,5,5"  Width="150" SelectionChanged="ComboBox_SelectionChanged" Grid.Row="13" Grid.Column="3"/>
                     <Label Content="{DynamicResource labSpellPriority}" Margin="5,5,5,5" Grid.Row="14" Grid.Column="0"/>
                     <c2:ThreadSafeTextBox x:Name="SpellPriority" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="14" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labStanceBarOrder}" ToolTip="{DynamicResource labStanceBarOrderTip}" Margin="5,5,5,5" Grid.Row="14" Grid.Column="2"/>
+                    <c2:ThreadSafeTextBox x:Name="StanceBarOrder" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="14" Grid.Column="3"/>
+                    <Label Content="{DynamicResource labModalNextSpell}" ToolTip="{DynamicResource labModalNextSpellTip}" Margin="5,5,5,5" Grid.Row="15" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="3">
+                        <c2:UIntTextBox x:Name="ModalNextSpell" Margin="5,5,0,5" Width="120" Height="26" ValueChanged="SpellRef_ValueChanged"/>
+                        <Button x:Name="ModalNextSpellPick" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" Margin="4,5,5,5" Width="26" Height="26" Padding="0" Click="SpellRef_Click"/>
+                        <TextBlock x:Name="ModalNextSpellName" VerticalAlignment="Center" Width="180" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                    <Label Content="{DynamicResource labPowerDisplayId}" ToolTip="{DynamicResource labPowerDisplayIdTip}" Margin="5,5,5,5" Grid.Row="15" Grid.Column="4"/>
+                    <c2:ThreadSafeTextBox x:Name="PowerDisplayId" Margin="5,5,5,5" Width="150" TextWrapping="Wrap" Grid.Row="15" Grid.Column="5"/>
                     <Grid Grid.Row="0" Grid.Column="6" Grid.RowSpan="10" Margin="20,5,5,5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -474,7 +486,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Effects1}">
+            <TabItem Name="Effects1Tab" Header="{DynamicResource Effects1}">
                 <Grid>
                     <Label Content="{DynamicResource labTargets}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="130,10,0,0"/>
                     <ScrollViewer Margin="7,41,962,38">
@@ -490,7 +502,7 @@
                     <c2:ThreadSafeTextBox x:Name="ProcChance" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="817.5,262,0,0" Width="90" TextWrapping="Wrap"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Effects2}">
+            <TabItem Name="Effects2Tab" Header="{DynamicResource Effects2}">
                 <Grid>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="647" Width="1276">
                         <TabItem Header="{DynamicResource SpellEffects1}" x:Name="effect1TabItem" Width="250" MaxWidth="250">
@@ -522,7 +534,9 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <Button x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
+                                <c2:UIntTextBox x:Name="TriggerSpell1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="80" Height="26" ValueChanged="TriggerSpell_ValueChanged"/>
+                                <Button x:Name="TriggerSpellPick1" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="694,41,0,0" Width="26" Height="26" Padding="0" Click="TriggerSpell_Click"/>
+                                <TextBlock x:Name="TriggerSpellName1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="726,46,0,0" Width="184" TextTrimming="CharacterEllipsis"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -535,6 +549,9 @@
                                 <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labEffectBonusMultiplier1}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" TextWrapping="Wrap"/>
+
+                                <Button x:Name="EffectCopyFrom1" Content="{DynamicResource effectCopyFrom}" ToolTip="{DynamicResource effectCopyFromTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="152,455,0,0" Width="145" Click="EffectCopyFrom_Click"/>
+                                <Button x:Name="EffectReset1" Content="{DynamicResource effectReset}" ToolTip="{DynamicResource effectResetTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="307,455,0,0" Width="145" Click="EffectReset_Click"/>
 
                                 <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,321,0,0"/>
                                 <ListBox x:Name="EffectSpellFamiliesList1" VerticalAlignment="Top" HorizontalAlignment="Left" Height="235" Margin="610,228,0,0" Width="300" BorderThickness="1"/>
@@ -570,7 +587,9 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0" />
-                                <Button x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
+                                <c2:UIntTextBox x:Name="TriggerSpell2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="80" Height="26" ValueChanged="TriggerSpell_ValueChanged"/>
+                                <Button x:Name="TriggerSpellPick2" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="694,41,0,0" Width="26" Height="26" Padding="0" Click="TriggerSpell_Click"/>
+                                <TextBlock x:Name="TriggerSpellName2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="726,46,0,0" Width="184" TextTrimming="CharacterEllipsis"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -583,6 +602,9 @@
                                 <c2:ThreadSafeTextBox x:Name="EffectDamageMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,166,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labEffectBonusMultiplier2}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,197,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" TextWrapping="Wrap"/>
+
+                                <Button x:Name="EffectCopyFrom2" Content="{DynamicResource effectCopyFrom}" ToolTip="{DynamicResource effectCopyFromTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="152,455,0,0" Width="145" Click="EffectCopyFrom_Click"/>
+                                <Button x:Name="EffectReset2" Content="{DynamicResource effectReset}" ToolTip="{DynamicResource effectResetTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="307,455,0,0" Width="145" Click="EffectReset_Click"/>
 
                                 <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,321,0,0"/>
                                 <ListBox x:Name="EffectSpellFamiliesList2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="235" Margin="610,228,0,0" Width="300" BorderThickness="1"/>
@@ -618,7 +640,9 @@
                                 <Label Content="{DynamicResource labItemType}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,413,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="ItemType3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="152,413,0,0" Width="300" TextWrapping="Wrap"/>
                                 <Label Content="{DynamicResource labTriggerSpell}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,42,0,0"/>
-                                <Button x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="300" HorizontalContentAlignment="Left" Click="TriggerSpell_Click"/>
+                                <c2:UIntTextBox x:Name="TriggerSpell3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,41,0,0" Width="80" Height="26" ValueChanged="TriggerSpell_ValueChanged"/>
+                                <Button x:Name="TriggerSpellPick3" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="694,41,0,0" Width="26" Height="26" Padding="0" Click="TriggerSpell_Click"/>
+                                <TextBlock x:Name="TriggerSpellName3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="726,46,0,0" Width="184" TextTrimming="CharacterEllipsis"/>
                                 <Label Content="{DynamicResource labPointsPerComboPoint}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,72,0,0"/>
                                 <c2:ThreadSafeTextBox x:Name="PointsPerComboPoint3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="610,72,0,0" Width="300" TextWrapping="Wrap"/>
 
@@ -633,6 +657,9 @@
                                 <c2:ThreadSafeTextBox x:Name="EffectBonusMultiplier3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="23" Margin="610,197,0,0" Width="300" TextWrapping="Wrap"/>
 
 
+                                <Button x:Name="EffectCopyFrom3" Content="{DynamicResource effectCopyFrom}" ToolTip="{DynamicResource effectCopyFromTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="152,455,0,0" Width="145" Click="EffectCopyFrom_Click"/>
+                                <Button x:Name="EffectReset3" Content="{DynamicResource effectReset}" ToolTip="{DynamicResource effectResetTip}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Margin="307,455,0,0" Width="145" Click="EffectReset_Click"/>
+
                                 <Label Content="{DynamicResource targetClassMaskSpells}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="471,321,0,0"/>
                                 <ListBox x:Name="EffectSpellFamiliesList3" VerticalAlignment="Top" HorizontalAlignment="Left" Height="235" Margin="610,228,0,0" Width="300" BorderThickness="1"/>
                                 <Button x:Name="EffectSpellsFamiliesButton3" VerticalAlignment="Top" Content="Edit Families" HorizontalAlignment="Left"  Height="30" Margin="610,468,0,0" Width="300" Click="EditEffectFamiliesButton_Click"/>
@@ -642,7 +669,7 @@
                     </TabControl>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Items}">
+            <TabItem Name="ItemsTab" Header="{DynamicResource Items}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="AUTO"/>
@@ -715,12 +742,13 @@
                     <c2:ThreadSafeTextBox x:Name="ReagentCount8" Margin="5" Width="120" TextWrapping="Wrap" Grid.Row="9" Grid.Column="3"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Flags}">
+            <TabItem Name="FlagsTab" Header="{DynamicResource Flags}">
                 <Grid>
                     <TabControl VerticalAlignment="Top" HorizontalAlignment="Left">
                         <TabItem Header="{DynamicResource Interrupts}">
                             <Grid>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="AUTO"/>
                                     <RowDefinition Height="AUTO"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
@@ -729,16 +757,17 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Content="{DynamicResource labInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
-                                <ScrollViewer Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="0">
+                                <c2:ThreadSafeCheckBox x:Name="InterruptsCheckedOnly" HorizontalAlignment="Left" Margin="10,2,2,2" Grid.Row="0" Grid.Column="0" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                <Label Content="{DynamicResource labInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="0">
                                     <StackPanel Name="InterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAuraInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
-                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
+                                <Label Content="{DynamicResource labAuraInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="AuraInterruptFlagsGrid"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labChannelInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="2"/>
-                                <ScrollViewer Margin="30,10,10,10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="2">
+                                <Label Content="{DynamicResource labChannelInterruptFlags}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="2"/>
+                                <ScrollViewer Margin="30,10,10,10" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="2">
                                     <StackPanel Name="ChannelInterruptFlagsGrid"/>
                                 </ScrollViewer>
                             </Grid>
@@ -757,20 +786,23 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Search: " HorizontalAlignment="Right" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                                <c2:ThreadSafeTextBox x:Name="Attributes1Search" HorizontalAlignment="Left" MinWidth="150" Margin="2" Grid.Row="0" Grid.Column="1" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                                <Label Content="{DynamicResource labAttributes}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">
+                                    <c2:ThreadSafeTextBox x:Name="Attributes1Search" MinWidth="150" Margin="2" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                    <c2:ThreadSafeCheckBox x:Name="Attributes1CheckedOnly" VerticalAlignment="Center" Margin="8,2,2,2" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                </StackPanel>
+                                <Label Content="{DynamicResource labAttributes}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="0"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="0" MinWidth="100">
                                     <StackPanel Name="Attributes1"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="1"/>
+                                <Label Content="{DynamicResource labAttributesEx}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="1"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="Attributes2"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx2}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="2"/>
+                                <Label Content="{DynamicResource labAttributesEx2}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="2"/>
                                 <ScrollViewer Margin="5" MaxWidth="300" Grid.Row="2" Grid.Column="2">
                                     <StackPanel Name="Attributes3"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx3}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="3"/>
+                                <Label Content="{DynamicResource labAttributesEx3}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="3"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="3">
                                     <StackPanel Name="Attributes4"/>
                                 </ScrollViewer>
@@ -788,24 +820,34 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
+                                    <!-- Auto so it takes no room when the custom attributes are collapsed,
+                                         capped so it cannot squeeze the four DBC columns -->
+                                    <ColumnDefinition Width="Auto" MaxWidth="260"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="Search: " HorizontalAlignment="Right" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                                <c2:ThreadSafeTextBox x:Name="Attributes2Search" HorizontalAlignment="Left" MinWidth="150" Margin="2" Grid.Row="0" Grid.Column="1" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                                <Label Content="{DynamicResource labAttributes}" HorizontalAlignment="Center" MinWidth="250" Margin="2" Grid.Row="1" Grid.Column="0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">
+                                    <c2:ThreadSafeTextBox x:Name="Attributes2Search" MinWidth="150" Margin="2" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
+                                    <c2:ThreadSafeCheckBox x:Name="Attributes2CheckedOnly" VerticalAlignment="Center" Margin="8,2,2,2" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                </StackPanel>
+                                <Label Content="{DynamicResource labAttributesEx4}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="0"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="0" MinWidth="100">
                                     <StackPanel Name="Attributes5"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="1"/>
+                                <Label Content="{DynamicResource labAttributesEx5}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="1"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="Attributes6"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx2}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="2"/>
+                                <Label Content="{DynamicResource labAttributesEx6}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="2"/>
                                 <ScrollViewer Margin="5" MaxWidth="300" Grid.Row="2" Grid.Column="2">
                                     <StackPanel Name="Attributes7"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labAttributesEx3}" HorizontalAlignment="Center" MinWidth="300" Margin="2" Grid.Row="1" Grid.Column="3"/>
+                                <Label Content="{DynamicResource labAttributesEx7}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="3"/>
                                 <ScrollViewer Margin="5" Grid.Row="2" Grid.Column="3">
                                     <StackPanel Name="Attributes8"/>
+                                </ScrollViewer>
+                                <Label x:Name="CustomAttributesLabel" Content="{DynamicResource labCustomAttributes}" ToolTip="{DynamicResource labCustomAttributesTip}" HorizontalAlignment="Center" Margin="2" Grid.Row="1" Grid.Column="4" Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="CustomAttributesScroll" Margin="5" Grid.Row="2" Grid.Column="4" Visibility="Collapsed" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel Name="CustomAttributes"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
@@ -813,19 +855,26 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="AUTO"/>
+                                    <RowDefinition Height="AUTO"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Content="{DynamicResource labCreatureType}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="0"/>
-                                <ScrollViewer Margin="10" Grid.Row="1" Grid.Column="0">
+                                <c2:ThreadSafeCheckBox x:Name="MiscFlagsCheckedOnly" HorizontalAlignment="Left" Margin="10,2,2,2" Grid.Row="0" Grid.Column="0" Content="{DynamicResource attrCheckedOnly}" ToolTip="{DynamicResource attrCheckedOnlyTip}" Checked="FlagFilter_Changed" Unchecked="FlagFilter_Changed"/>
+                                <Label Content="{DynamicResource labCreatureType}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="0"/>
+                                <ScrollViewer Margin="10" Grid.Row="2" Grid.Column="0">
                                     <StackPanel Name="TargetCreatureType"/>
                                 </ScrollViewer>
-                                <Label Content="{DynamicResource labStances}" HorizontalAlignment="Center" Margin="10" Grid.Row="0" Grid.Column="1"/>
-                                <ScrollViewer Margin="30,10,10,10" Grid.Row="1" Grid.Column="1">
+                                <Label Content="{DynamicResource labStances}" ToolTip="{DynamicResource labStancesTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="1"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="1">
                                     <StackPanel Name="StancesGrid"/>
+                                </ScrollViewer>
+                                <Label Content="{DynamicResource labStancesNot}" ToolTip="{DynamicResource labStancesNotTip}" HorizontalAlignment="Center" Margin="10" Grid.Row="1" Grid.Column="2"/>
+                                <ScrollViewer Margin="30,10,10,10" Grid.Row="2" Grid.Column="2">
+                                    <StackPanel Name="StancesNotGrid"/>
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
@@ -857,12 +906,95 @@
                     <Image Name="NewIcon" Margin="5" Height="64" Width="64" Grid.Row="1" Grid.Column="3"/>
                     <Label Content="{DynamicResource labFiltericons}" Margin="5" Grid.Row="1" Grid.Column="4"/>
                     <c2:ThreadSafeTextBox x:Name="FilterIcons" Margin="5" Height="30" VerticalAlignment="Top" Width="145" Grid.Row="1" Grid.Column="5" TextWrapping="NoWrap" KeyDown="_KeyDown" KeyUp="_KeyUp"/>
-                    <Slider x:Name="slider" Margin="20,10,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="32" Cursor="SizeWE"
+                    <Slider x:Name="slider" Margin="20,10,20,10" VerticalAlignment="Top" AutoToolTipPlacement="TopLeft" Maximum="128" Value="64" Cursor="SizeWE"
                             ValueChanged="slider_ValueChanged" Minimum="2" SmallChange="1" ToolTip="{DynamicResource sliderChangeIconSizeTooltip}" 
                             Focusable="False" Grid.Row="1" Grid.Column="6"/>
-                    <ScrollViewer Name="IconScrollViewer" Margin="10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" >
-                        <WrapPanel Name="IconGrid" Orientation="Horizontal"/>
-                    </ScrollViewer>
+                    <ItemsControl Name="IconGrid" Margin="10" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7"
+                                  ItemsSource="{Binding Icons}"
+                                  MouseDown="IconGrid_MouseDown"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="ItemsControl">
+                                <ScrollViewer Name="IconScrollViewer" Focusable="False" CanContentScroll="True"
+                                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <c2:VirtualizingWrapPanel ItemWidth="{Binding ItemWidth}" ItemHeight="{Binding ItemHeight}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Source}" ToolTip="{Binding ToolTip}" Margin="4"
+                                       Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </TabItem>
+            <TabItem Name="ReqsTab" Header="{DynamicResource Reqs}">
+                <Grid Name="RequirementsTabGrid" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="{DynamicResource labCasterAuraStateNot}" ToolTip="{DynamicResource labCasterAuraStateNotTip}" Margin="5" Grid.Row="0" Grid.Column="0"/>
+                    <c2:ThreadSafeComboBox x:Name="CasterAuraStateNot" Margin="5" Width="150" Grid.Row="0" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labTargetAuraStateNot}" ToolTip="{DynamicResource labTargetAuraStateNotTip}" Margin="5" Grid.Row="1" Grid.Column="0"/>
+                    <c2:ThreadSafeComboBox x:Name="TargetAuraStateNot" Margin="5" Width="150" Grid.Row="1" Grid.Column="1"/>
+
+                    <Label Content="{DynamicResource labCasterAuraSpell}" ToolTip="{DynamicResource labCasterAuraSpellTip}" Margin="5" Grid.Row="2" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3">
+                        <c2:UIntTextBox x:Name="CasterAuraSpell" Margin="5,5,0,5" Width="120" Height="26" ValueChanged="SpellRef_ValueChanged"/>
+                        <Button x:Name="CasterAuraSpellPick" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" Margin="4,5,5,5" Width="26" Height="26" Padding="0" Click="SpellRef_Click"/>
+                        <TextBlock x:Name="CasterAuraSpellName" VerticalAlignment="Center" Width="260" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <Label Content="{DynamicResource labTargetAuraSpell}" ToolTip="{DynamicResource labTargetAuraSpellTip}" Margin="5" Grid.Row="3" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
+                        <c2:UIntTextBox x:Name="TargetAuraSpell" Margin="5,5,0,5" Width="120" Height="26" ValueChanged="SpellRef_ValueChanged"/>
+                        <Button x:Name="TargetAuraSpellPick" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" Margin="4,5,5,5" Width="26" Height="26" Padding="0" Click="SpellRef_Click"/>
+                        <TextBlock x:Name="TargetAuraSpellName" VerticalAlignment="Center" Width="260" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <Label Content="{DynamicResource labExcludeCasterAuraSpell}" ToolTip="{DynamicResource labExcludeCasterAuraSpellTip}" Margin="5" Grid.Row="4" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3">
+                        <c2:UIntTextBox x:Name="ExcludeCasterAuraSpell" Margin="5,5,0,5" Width="120" Height="26" ValueChanged="SpellRef_ValueChanged"/>
+                        <Button x:Name="ExcludeCasterAuraSpellPick" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" Margin="4,5,5,5" Width="26" Height="26" Padding="0" Click="SpellRef_Click"/>
+                        <TextBlock x:Name="ExcludeCasterAuraSpellName" VerticalAlignment="Center" Width="260" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <Label Content="{DynamicResource labExcludeTargetAuraSpell}" ToolTip="{DynamicResource labExcludeTargetAuraSpellTip}" Margin="5" Grid.Row="5" Grid.Column="0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3">
+                        <c2:UIntTextBox x:Name="ExcludeTargetAuraSpell" Margin="5,5,0,5" Width="120" Height="26" ValueChanged="SpellRef_ValueChanged"/>
+                        <Button x:Name="ExcludeTargetAuraSpellPick" Content="..." ToolTip="{DynamicResource labTriggerSpellPickTip}" Margin="4,5,5,5" Width="26" Height="26" Padding="0" Click="SpellRef_Click"/>
+                        <TextBlock x:Name="ExcludeTargetAuraSpellName" VerticalAlignment="Center" Width="260" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+
+                    <Label Content="{DynamicResource labMinimumFactionId}" ToolTip="{DynamicResource labMinimumFactionIdTip}" Margin="5" Grid.Row="6" Grid.Column="0"/>
+                    <c2:ThreadSafeTextBox x:Name="MinimumFactionId" Margin="5" Width="150" TextWrapping="Wrap" Grid.Row="6" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labMinimumReputation}" ToolTip="{DynamicResource labMinimumReputationTip}" Margin="5" Grid.Row="7" Grid.Column="0"/>
+                    <c2:ThreadSafeComboBox x:Name="MinimumReputation" Margin="5" Width="150" Grid.Row="7" Grid.Column="1"/>
+                    <Label Content="{DynamicResource labRequiredAuraVision}" ToolTip="{DynamicResource labRequiredAuraVisionTip}" Margin="5" Grid.Row="8" Grid.Column="0"/>
+                    <c2:ThreadSafeTextBox x:Name="RequiredAuraVision" Margin="5" Width="150" TextWrapping="Wrap" Grid.Row="8" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Name="VisualTab" Header="{DynamicResource Visual}">

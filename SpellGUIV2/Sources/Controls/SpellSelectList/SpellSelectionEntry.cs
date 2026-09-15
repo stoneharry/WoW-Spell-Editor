@@ -109,8 +109,20 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             {
                 _Dirty = false;
                 var iconId = uint.Parse(image.ToolTip.ToString());
-                var filePath = loadIcons.GetIconPath(iconId) + ".blp";
-                image.Source = BlpManager.GetInstance().GetImageSourceFromBlpPath(filePath);
+                var iconPath = loadIcons.GetIconPath(iconId);
+                if (iconPath.Length == 0)
+                {
+                    image.Source = null;
+                }
+                else
+                {
+                    var expectedToolTip = iconId.ToString();
+                    BlpManager.GetInstance().RequestImageSource(iconPath + ".blp", source =>
+                    {
+                        if (image.ToolTip != null && image.ToolTip.ToString() == expectedToolTip)
+                            image.Source = source;
+                    });
+                }
             }
             // Load context menu
             if (ContextMenu == null)
@@ -119,7 +131,7 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             }
         }
 
-        private string BuildText(DataRow row, int language) => $" {row["id"]} - {row[$"SpellName{language - 1}"]}\n  {row[$"SpellRank{language - 1}"]}";
+        private string BuildText(DataRow row, int language) => SpellRecord.BuildText(row, language);
 
         public override void CopyItemClick(object sender, RoutedEventArgs args)
         {
@@ -169,6 +181,11 @@ namespace SpellEditor.Sources.Controls.SpellSelectList
             _DuplicatePanel = panel;
             // Update new ID with paste action hook
             InvokePasteAction();
+        }
+
+        public override void CopyIdItemClick(object sender, RoutedEventArgs args)
+        {
+            Clipboard.SetDataObject(GetSpellId().ToString(), true);
         }
 
         public override void DeleteItemClick(object sender, RoutedEventArgs args)

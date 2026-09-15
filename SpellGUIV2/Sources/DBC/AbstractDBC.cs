@@ -80,13 +80,32 @@ namespace SpellEditor.Sources.DBC
         {
             if (_stringsMap == null)
                 return "";
-            if (!_stringsMap.ContainsKey(offset))
+            if (_stringsMap.TryGetValue(offset, out var entry))
+                return entry.Value;
+
+            // Points part way into a string, which files do to share a common ending
+            var tail = LookupStringTail(offset);
+            if (tail != null)
+                return tail;
+
+            var errorMsg = $"ERROR: Unknown string offset {offset}. This value will be read as an empty string!";
+            Logger.Error(errorMsg, new KeyNotFoundException(errorMsg));
+            return "";
+        }
+
+        private string LookupStringTail(uint offset)
+        {
+            for (var start = offset; start > 0; --start)
             {
-                var errorMsg = $"ERROR: Unknown string offset {offset}. This value will be replaced by the spell editor!";
-                Logger.Error(errorMsg, new KeyNotFoundException(errorMsg));
-                return $"Unknown String: {offset}";
+                if (!_stringsMap.TryGetValue(start - 1, out var candidate))
+                    continue;
+
+                var bytes = Encoding.UTF8.GetBytes(candidate.Value);
+                var skip = (int)(offset - (start - 1));
+                // Past the end of the nearest string means it points at nothing
+                return skip > bytes.Length ? null : Encoding.UTF8.GetString(bytes, skip, bytes.Length - skip);
             }
-            return _stringsMap[offset].Value;
+            return null;
         }
 
         public void CleanStringsMap()
@@ -226,17 +245,15 @@ namespace SpellEditor.Sources.DBC
                             }
                             else if (entry.Type == BindingType.STRING_OFFSET)
                             {
-                                writer.Write(data.Length == 0 ? 0 : body.OffsetStorage[data.GetHashCode()]);
+                                writer.Write(data.Length == 0 ? 0 : body.OffsetStorage[data]);
                             }
                             else
                                 throw new Exception($"Unknown type: {entry.Type} on entry {entry.Name} binding {binding.Name}");
                         }
                     }
-                    // Write string block
-                    int[] offsetsStored = body.OffsetStorage.Values.ToArray();
                     writer.Write(Encoding.UTF8.GetBytes("\0"));
-                    for (int i = 0; i < offsetsStored.Length; ++i)
-                        writer.Write(Encoding.UTF8.GetBytes(body.ReverseStorage[offsetsStored[i]] + "\0"));
+                    foreach (var offset in body.ReverseStorage.Keys.OrderBy(o => o))
+                        writer.Write(Encoding.UTF8.GetBytes(body.ReverseStorage[offset] + "\0"));
                 }
             }
         }

@@ -19,4 +19,4 @@ uint Name16 string
 uint NameFlags
 uint Combinations
 uint ImmunityPossible
-uint InternalName
+uint InternalName string

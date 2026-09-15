@@ -1,0 +1,17 @@
+uint ID
+uint field1
+uint field2
+uint eax2SampleRoom
+uint field4
+uint field5
+float field6
+uint field7
+float eax2SampleOcclusionLfratio
+float eax2SampleOcclusionRoomRatio
+uint field10
+float eax1EffectLevel
+uint field12
+float field13
+float eax3SampleExclusion
+float field15
+uint field16

@@ -1,0 +1,12 @@
+uint ID
+uint name string
+uint objectEffectGroupID
+uint triggerType
+uint eventType
+uint effectRecType
+uint effectRecID
+uint attachment
+float offset1
+float offset2
+float offset3
+uint objectEffectModifierID

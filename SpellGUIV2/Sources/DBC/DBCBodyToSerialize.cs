@@ -1,4 +1,5 @@
 ﻿using SpellEditor.Sources.Binding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SpellEditor.Sources.DBC
     public class DBCBodyToSerialize
     {
         public List<Dictionary<string, object>> Records;
-        public Dictionary<int, int> OffsetStorage;
+        public Dictionary<string, int> OffsetStorage;
         public Dictionary<int, string> ReverseStorage;
 
         // Returns new header stringBlockOffset
@@ -18,7 +19,7 @@ namespace SpellEditor.Sources.DBC
             int stringBlockOffset = 1;
             // Performance gain by collecting the fields to iterate first
             var fields = binding.Fields.Where(field => field.Type == BindingType.STRING_OFFSET).ToArray();
-            OffsetStorage = new Dictionary<int, int>();
+            OffsetStorage = new Dictionary<string, int>(StringComparer.Ordinal);
             ReverseStorage = new Dictionary<int, string>();
             // Populate string <-> offset lookup maps
             for (int i = 0; i < Records.Count; ++i)
@@ -29,10 +30,9 @@ namespace SpellEditor.Sources.DBC
                     string str = record[entry.Name].ToString();
                     if (str.Length == 0)
                         continue;
-                    var key = str.GetHashCode();
-                    if (!OffsetStorage.ContainsKey(key))
+                    if (!OffsetStorage.ContainsKey(str))
                     {
-                        OffsetStorage.Add(key, stringBlockOffset);
+                        OffsetStorage.Add(str, stringBlockOffset);
                         ReverseStorage.Add(stringBlockOffset, str);
                         stringBlockOffset += Encoding.UTF8.GetByteCount(str) + 1;
                     }

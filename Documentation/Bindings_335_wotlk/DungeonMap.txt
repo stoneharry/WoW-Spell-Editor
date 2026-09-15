@@ -1,0 +1,9 @@
+IGNORE_ORDER true
+uint ID
+uint mapID
+uint floorIndex
+float minX
+float maxX
+float minY
+float maxY
+uint parentWorldMapID

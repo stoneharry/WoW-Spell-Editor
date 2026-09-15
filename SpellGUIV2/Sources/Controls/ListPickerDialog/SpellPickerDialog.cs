@@ -1,26 +1,23 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using MahApps.Metro.Controls;
 using SpellEditor.Sources.Controls.SpellSelectList;
 
 namespace SpellEditor.Sources.Controls.ListPickerDialog
 {
     public partial class SpellPickerDialog : ListPickerDialogBase
     {
-        private readonly SpellSelectionList _selectSpell;
+        private readonly ListBox _selectSpell;
         private readonly uint _selectedParentId; // selected id from the parent caller control
+        private List<SpellRecord> _records;
 
         public SpellPickerDialog(MainWindow mainWindow, uint selectedParentId, string selectionType)
             : base(mainWindow)
         {
             InitializeComponent();
 
-            // Populate Spell List
-            _selectSpell = new SpellSelectionList();
+            _selectSpell = new ListBox();
             _selectedParentId = selectedParentId;
 
             Title = "Spell Picker";
@@ -30,119 +27,80 @@ namespace SpellEditor.Sources.Controls.ListPickerDialog
             LoadItemsList();
         }
 
-        private volatile bool imageLoadEventRunning = false;
         protected override void FilterFromText(string input)
         {
-            if (imageLoadEventRunning)
+            var view = CollectionViewSource.GetDefaultView(_selectSpell.ItemsSource);
+            if (view == null)
                 return;
-            imageLoadEventRunning = true;
 
-            var badInput = string.IsNullOrEmpty(input);
-            if (badInput && _selectSpell.GetLoadedRowCount() == _selectSpell.Items.Count)
+            if (string.IsNullOrEmpty(input))
             {
-                imageLoadEventRunning = false;
+                view.Filter = null;
                 return;
             }
 
-            ICollectionView view = CollectionViewSource.GetDefaultView(_selectSpell.Items);
-            view.Filter = o =>
-            {
-                var panel = (StackPanel)o;
-                using (var enumerator = panel.GetChildObjects().GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        if (!(enumerator.Current is TextBlock block))
-                            continue;
-                        return input.Length == 0 ? true : block.Text.ToLower().Contains(input);
-                    }
-                }
-                return false;
-            };
-
-            imageLoadEventRunning = false;
+            var lower = input.ToLower();
+            view.Filter = o => o is SpellRecord record && record.Name.ToLower().Contains(lower);
         }
 
         protected override uint GetSelectedItemId()
         {
-            StackPanel panel = (StackPanel)_selectSpell.SelectedItem;
-            using (var enumerator = panel.GetChildObjects().GetEnumerator())
-            {
-                while (enumerator.MoveNext())
-                {
-                    if (enumerator.Current is TextBlock block)
-                    {
-                        string name = block.Text;
-                        SelectedId = uint.Parse(name.Substring(1, name.IndexOf(' ', 1)));
+            if (!(_selectSpell.SelectedItem is SpellRecord record))
+                return 0;
 
-                        return SelectedId;
-                    }
-                }
-            }
-            return 0;
+            SelectedId = record.Id;
+
+            return SelectedId;
         }
 
         protected override void GoToId(uint id)
         {
-            int count = 0;
-            foreach (StackPanel obj in _selectSpell.Items)
+            foreach (var record in _records)
             {
-                foreach (var item in obj.Children)
-                    if (item is TextBlock tb)
-                    {
-                        if (uint.Parse(tb.Text.Split(' ')[1]) == id)
-                        {
-                            _selectSpell.SelectedIndex = count;
-                            _selectSpell.ScrollIntoView(obj);
-
-                            return;
-                        }
-                    }
-
-                count++;
+                if (record.Id != id)
+                    continue;
+                _selectSpell.SelectedItem = record;
+                _selectSpell.ScrollIntoView(record);
+                return;
             }
         }
 
         protected override void LoadItemsList()
         {
-            // set virtualization
             VirtualizingStackPanel.SetIsVirtualizing(_selectSpell, true);
-            VirtualizingStackPanel.SetVirtualizationMode(
-                _selectSpell,
-                VirtualizationMode.Recycling);
+            VirtualizingStackPanel.SetVirtualizationMode(_selectSpell, VirtualizationMode.Recycling);
             ScrollViewer.SetCanContentScroll(_selectSpell, true);
 
             _selectSpell.BorderThickness = new Thickness(1);
+            _selectSpell.ItemTemplate = (DataTemplate)Application.Current.Resources["SpellRecordTemplate"];
 
-            _selectSpell.SetAdapter(_mainWindow.GetDBAdapter())
-                .SetLanguage(_mainWindow.GetLanguage())
-                .Initialise();
-
-            Debug.Assert(_selectSpell.IsInitialised());
-            Debug.Assert(_selectSpell.HasAdapter());
-
-            // SelectSpell.PopulateSelectSpell();
-            _selectSpell.PopulateFromOther(_mainWindow.SelectSpell);
+            _records = _mainWindow.SelectSpell.GetRecords();
+            // Own view so filtering here does not disturb the main window list
+            _selectSpell.ItemsSource = new CollectionViewSource { Source = _records }.View;
 
             SetItemsControl(_selectSpell);
 
-            // bring selected into view
+            SelectInitialItem();
+        }
+
+        private void SelectInitialItem()
+        {
+            if (_records.Count == 0)
+                return;
+
             if (_selectedParentId > 0)
             {
-                var items = _selectSpell.Items;
-                for (int i = items.Count - 1; i >= 0; --i)
+                for (int i = _records.Count - 1; i >= 0; --i)
                 {
-                    SpellSelectionEntry item = items.GetItemAt(i) as SpellSelectionEntry;
-                    if (item != null && item.GetSpellId() == _selectedParentId)
-                    {
-                        _selectSpell.ScrollIntoView(item);
-                        _selectSpell.SelectedItem = item;
-                        break;
-                    }
+                    if (_records[i].Id != _selectedParentId)
+                        continue;
+                    _selectSpell.SelectedItem = _records[i];
+                    _selectSpell.ScrollIntoView(_records[i]);
+                    return;
                 }
             }
-            else
-                _selectSpell.SelectedItem = _selectSpell.Items.GetItemAt(0);
+
+            _selectSpell.SelectedItem = _records[0];
         }
     }
 }

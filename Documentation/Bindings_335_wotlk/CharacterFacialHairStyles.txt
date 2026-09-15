@@ -1,0 +1,9 @@
+IGNORE_ORDER true
+uint raceID
+uint sexID
+uint variationID
+uint geoset1
+uint geoset2
+uint geoset3
+int geoset4
+int geoset5

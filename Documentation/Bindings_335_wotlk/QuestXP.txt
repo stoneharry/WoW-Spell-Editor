@@ -1,0 +1,11 @@
+uint ID
+uint difficulty1
+uint difficulty2
+uint difficulty3
+uint difficulty4
+uint difficulty5
+uint difficulty6
+uint difficulty7
+uint difficulty8
+uint difficulty9
+uint difficulty10

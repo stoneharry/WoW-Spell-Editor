@@ -1,0 +1,8 @@
+IGNORE_ORDER true
+uint ID
+uint gameObjectsID
+uint timeIndex
+float rot1
+float rot2
+float rot3
+float rot4

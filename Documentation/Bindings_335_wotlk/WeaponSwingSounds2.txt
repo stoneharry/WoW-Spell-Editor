@@ -1,0 +1,4 @@
+uint ID
+uint swingType
+uint crit
+uint soundID

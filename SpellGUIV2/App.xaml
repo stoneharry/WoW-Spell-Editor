@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:SpellEditor.Sources.Controls"
              xmlns:c2="clr-namespace:SpellEditor.Sources.Controls.Common"
+             xmlns:c3="clr-namespace:SpellEditor.Sources.Controls.SpellSelectList"
              StartupUri="MainWindow.xaml"
              Startup="Application_Startup"
              Exit="Application_Exit">
@@ -27,6 +28,10 @@
             <Style TargetType="c2:ListContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}"/>
             <Style TargetType="c2:SyntaxHighlightBox" BasedOn="{StaticResource {x:Type RichTextBox}}"/>
             <Style TargetType="c:SpellSelectionList" BasedOn="{StaticResource {x:Type ListBox}}"/>
+
+            <DataTemplate x:Key="SpellRecordTemplate" DataType="{x:Type c3:SpellRecord}">
+                <c3:SpellSelectionEntry SpellName="{Binding Name}" SpellIcon="{Binding Icon}"/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

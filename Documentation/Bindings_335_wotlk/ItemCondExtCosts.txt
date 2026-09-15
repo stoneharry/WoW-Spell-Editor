@@ -1,0 +1,4 @@
+uint ID
+uint condExtendedCost
+uint itemExtendedCostEntry
+uint arenaSeason

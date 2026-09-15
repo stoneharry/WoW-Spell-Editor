@@ -1,0 +1,23 @@
+uint ID
+uint vendorID
+uint deviceID
+uint farclipIdx
+uint terrainLoddistIdx
+uint terrainShadowLod
+uint detailDoodadDensityIdx
+uint detailDoodadAlpha
+uint animatingDoodadIdx
+uint trilinear
+uint numLights
+uint specularity
+uint waterLodidx
+uint particleDensityIdx
+uint unitDrawDistIdx
+uint smallCullDistIdx
+uint resolutionIdx
+uint baseMipLevel
+uint oglOverrides string
+uint d3DOverrides string
+uint fixLag
+uint multisample
+uint atlasdisable

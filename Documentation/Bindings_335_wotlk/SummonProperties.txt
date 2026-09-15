@@ -1,0 +1,6 @@
+uint ID
+uint control
+uint faction
+uint title
+uint slot
+uint flags

@@ -1,0 +1,8 @@
+uint ID
+uint textureVariation1 string
+uint textureVariation2 string
+uint textureVariation3 string
+uint attachModel1 string
+uint attachModel2 string
+uint attachModel3 string
+uint attachModel4 string

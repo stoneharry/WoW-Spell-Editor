@@ -1,0 +1,6 @@
+IGNORE_ORDER true
+uint ID
+uint mapID
+uint wmogroupID
+uint dungeonMapID
+float minZ

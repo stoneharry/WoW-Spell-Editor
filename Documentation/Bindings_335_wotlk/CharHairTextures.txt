@@ -1,0 +1,8 @@
+uint ID
+uint race
+uint gender
+uint field4
+uint raceMask
+int hairTextureIndex
+int field7
+int field8

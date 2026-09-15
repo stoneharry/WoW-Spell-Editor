@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using SpellEditor.Sources.Controls.Common;
 using SpellEditor.Sources.Controls.SpellFamilyNames;
 using SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser;
@@ -25,6 +26,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
         public List<CheckBox> _maskCheckBoxes = new List<CheckBox>(); // 32 x 3
 
         private readonly bool[] _family_has_definitions_cache = new bool[3 * 32];
+        private readonly int[] _family_spell_counts = new int[3 * 32];
 
         private readonly uint[] _original_families_values = new uint[3];
         public readonly uint[] _active_families_values; // reference to the original array in MainWindow
@@ -109,37 +111,16 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
         private void CreateFamilyCheckboxes()
         {
-            bool has_definition = SpellFamilyNames.familyFlagsNames.ContainsKey((int)_familyId);
-            Dictionary<int, string> definitions = new Dictionary<int, string>();
-
-            if (has_definition)
-                definitions = SpellFamilyNames.familyFlagsNames[(int)_familyId];
-
             for (int category = 0; category < _maskCount; category++)
             {
                 for (int i = 0; i < 32; i++)
                 {
                     uint mask = 1u << i;
-
-                    int dict_index = (32 * category) + i + 1;
-                    string content = "";
-                    if (has_definition && definitions.ContainsKey(dict_index))
-                    {
-                        string data = definitions[dict_index];
-                        if (!string.IsNullOrEmpty(data))
-                            content = data;
-                    }
-                    // couldn't load name definition
-                    bool bit_has_definition = !string.IsNullOrEmpty(content);
-                    _family_has_definitions_cache[dict_index -1] = bit_has_definition;
-                    if (!bit_has_definition)
-                        // content = $"family{category}: 0x{mask:X8}";
-                        content = $"{category}: 0x{mask:X8}";
+                    int index = (32 * category) + i;
 
                     var tb = new TextBlock
                     {
-                        Text = content,
-                        // when checkbox has been modified from base values, 
+                        // when checkbox has been modified from base values,
                         // Background = new SolidColorBrush(Color.FromArgb(125, 158, 14, 64)),
                         Padding = new Thickness(2)
                     };
@@ -152,7 +133,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                         HorizontalAlignment = HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                     };
-                    // cb.ContextMenu = BuildContextMenu(cb);
+                    cb.ContextMenu = BuildContextMenu(cb);
 
                     var bordered = new Border
                     {
@@ -169,29 +150,22 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
                     // generate tooltips (copied form spellFamilyClassMaskParser)
                     ArrayList al = _mainwindow.spellFamilyClassMaskParser.GetSpellList(_familyId, (uint)category, (uint)i);
-                    string _tooltipStr = "";
-                    _tooltipStr += $"Spell Class Mask {category}: 0x{mask:X8}, (bit {i})\n";
-                    if (al != null && al.Count != 0)
-                    {
-                        // cb.Content += $" ({al.Count})";
-                        tb.Text = content += $" ({al.Count})";
-                        _tooltipStr += $"Users : ({al.Count})\n";
+                    _family_spell_counts[index] = al == null ? 0 : al.Count;
 
+                    string _tooltipStr = $"Spell Class Mask {category}: 0x{mask:X8}, (bit {i})\n";
+                    _tooltipStr += $"Users : ({_family_spell_counts[index]})\n";
+                    if (al != null)
+                    {
                         foreach (uint spellId in al)
                         {
                             _tooltipStr += spellId.ToString() + " - " + _mainwindow.GetSpellNameById(spellId) + "\n";
                         }
                     }
-                    else
-                    {
-                        // cb.Content += $" (0)";
-                        tb.Text = content + " (0)";
-                        _tooltipStr += $"Users : (0)\n";
-                    }
                     cb.ToolTip = _tooltipStr;
 
-                    bool used = bit_has_definition || (al != null && al.Count != 0);
-                    if (used)
+                    RefreshBitLabel(cb, category, i);
+
+                    if (_family_has_definitions_cache[index] || _family_spell_counts[index] != 0)
                         bordered.Background = new SolidColorBrush(Color.FromArgb(30, 0, 120, 215)); // very light blue overlay
                     else
                     {
@@ -208,6 +182,22 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                 }
             }
         }
+
+        // definition name if we have one, otherwise the raw mask, always suffixed with the user count
+        private void RefreshBitLabel(CheckBox cb, int group, int bit)
+        {
+            int index = (32 * group) + bit;
+
+            string name = SpellFamilyNames.GetFamilyFlagName((int)_familyId, index + 1);
+            _family_has_definitions_cache[index] = !string.IsNullOrEmpty(name);
+
+            if (!_family_has_definitions_cache[index])
+                name = $"{group}: 0x{1u << bit:X8}";
+
+            ((TextBlock)cb.Content).Text = $"{name} ({_family_spell_counts[index]})";
+        }
+
+        private string GetBitLabel(CheckBox cb) => ((TextBlock)cb.Content).Text;
 
         private void CheckBoxBitChanged(object sender, RoutedEventArgs e)
         {
@@ -239,9 +229,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                 {
                     // figure out color again
                     int index = (32 * group) + bit;
-                    // use tooltip to check the number of users instead of looking up spells again
-                    var lol = cb.ToolTip.ToString().Split('\n');
-                    if (_family_has_definitions_cache[index] || cb.ToolTip.ToString().Split('\n').Length > 3) // we have two default tooltip lines
+                    if (_family_has_definitions_cache[index] || _family_spell_counts[index] != 0)
                         border.Background = new SolidColorBrush(Color.FromArgb(30, 0, 120, 215));
                     else
                         border.ClearValue(Border.BackgroundProperty);
@@ -294,7 +282,8 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
                     }
                 }
 
-                if (box.Content.ToString().Length <= 0 || box.Content.ToString().ToLower().Contains(search_text))
+                var label = GetBitLabel(box);
+                if (label.Length <= 0 || label.ToLower().Contains(search_text))
                 {
                     // family name matches
                     border.Visibility = Visibility.Visible;
@@ -303,7 +292,7 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
                 // search linked spells. Only bother doing it if user input more than 3 characters. (eg "fire" works, but not "fir"
                 bool found = false;
-                if (box.Content.ToString().Length > 3)
+                if (label.Length > 3)
                 {
                     var spells_list = _mainwindow.spellFamilyClassMaskParser.GetSpellList(_familyId, (uint)group, (uint)bit);
                     if (spells_list != null && spells_list.Count != 0)
@@ -397,18 +386,45 @@ namespace SpellEditor.Sources.Controls.SpellFamilyNames
 
             var menu = new ContextMenu();
 
-            var item = new MenuItem { Header = "Preview Spell Effects" };
-            item.Click += Menu_preview_Click;
+            var rename = new MenuItem { Header = "Rename Family Bit", Tag = cb };
+            rename.Click += Menu_rename_Click;
 
-            menu.Items.Add(item);
-
+            menu.Items.Add(rename);
 
             return menu;
         }
 
-        private void Menu_preview_Click(object sender, RoutedEventArgs e)
+        private async void Menu_rename_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var cb = (CheckBox)((MenuItem)sender).Tag;
+            var (group, bit) = ((int g, int bit))cb.Tag;
+            int flagId = (32 * group) + bit + 1;
+
+            string current = SpellFamilyNames.GetFamilyFlagName((int)_familyId, flagId) ?? "";
+
+            string input = await this.ShowInputAsync("Rename Family Bit",
+                $"Name for spell class mask {group}, bit {bit} (0x{1u << bit:X8}).\nLeave empty to remove the name.",
+                new MetroDialogSettings { DefaultText = current });
+
+            // cancelled
+            if (input == null)
+                return;
+
+            input = input.Trim();
+            if (input == current)
+                return;
+
+            try
+            {
+                SpellFamilyNames.SetFamilyFlagName((int)_familyId, flagId, input);
+            }
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync("Rename Family Bit", "Failed to save the family definition:\n" + ex.Message);
+                return;
+            }
+
+            RefreshBitLabel(cb, group, bit);
         }
 
         private void FilterClassMaskSpells_TextChanged(object sender, TextChangedEventArgs e)

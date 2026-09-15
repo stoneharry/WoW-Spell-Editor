@@ -1,0 +1,9 @@
+IGNORE_ORDER true
+uint ID
+uint lfg_id
+uint expansion_level
+uint random_id
+uint hard_level_min
+uint hard_level_max
+uint target_level_min
+uint target_level_max

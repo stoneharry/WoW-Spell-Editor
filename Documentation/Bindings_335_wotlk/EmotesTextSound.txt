@@ -1,0 +1,6 @@
+IGNORE_ORDER true
+uint ID
+uint emotesTextID
+uint raceID
+uint sexID
+uint soundID

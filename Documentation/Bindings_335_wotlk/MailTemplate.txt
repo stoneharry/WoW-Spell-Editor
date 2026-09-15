@@ -1,0 +1,35 @@
+uint ID
+uint subject1 string
+uint subject2 string
+uint subject3 string
+uint subject4 string
+uint subject5 string
+uint subject6 string
+uint subject7 string
+uint subject8 string
+uint subject9 string
+uint subject10 string
+uint subject11 string
+uint subject12 string
+uint subject13 string
+uint subject14 string
+uint subject15 string
+uint subject16 string
+uint subjectFlags
+uint body1 string
+uint body2 string
+uint body3 string
+uint body4 string
+uint body5 string
+uint body6 string
+uint body7 string
+uint body8 string
+uint body9 string
+uint body10 string
+uint body11 string
+uint body12 string
+uint body13 string
+uint body14 string
+uint body15 string
+uint body16 string
+uint bodyFlags

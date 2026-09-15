@@ -1,0 +1,10 @@
+uint ID
+float position1
+float position2
+float position3
+float direction1
+float direction2
+float direction3
+uint soundEntryAdvancedID
+uint mapID
+uint name string

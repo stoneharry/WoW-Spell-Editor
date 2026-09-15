@@ -1,0 +1,2 @@
+uint ID
+uint backgroundTexture string

@@ -87,6 +87,41 @@
     <system:String x:Key="labRuneCost">Rune Cost:</system:String>
     <system:String x:Key="labSpellDescriptionVariables">Spell Description Variables:</system:String>
 	<system:String x:Key="labSpellPriority">Spell Priority:</system:String>
+    <system:String x:Key="labStanceBarOrder">Stance Bar Order:</system:String>
+    <system:String x:Key="labStanceBarOrderTip">Position this spell takes on the shapeshift bar, 0 when it is not a bar spell.</system:String>
+    <system:String x:Key="labModalNextSpell">Modal Next Spell:</system:String>
+    <system:String x:Key="labModalNextSpellTip">Spell the client puts on the cursor after this one is cast, used by things like the Ritual of Summoning portal.</system:String>
+    <system:String x:Key="labPowerDisplayId">Power Display Id:</system:String>
+    <system:String x:Key="labPowerDisplayIdTip">PowerDisplay.dbc entry that names the custom power bar this spell uses, 0 for none.</system:String>
+    <system:String x:Key="Reqs">Reqs</system:String>
+    <system:String x:Key="labCasterAuraStateNot">Caster Aura State Not:</system:String>
+    <system:String x:Key="labCasterAuraStateNotTip">Aura state the caster must not be in for this spell to be cast.</system:String>
+    <system:String x:Key="labTargetAuraStateNot">Target Aura State Not:</system:String>
+    <system:String x:Key="labTargetAuraStateNotTip">Aura state the target must not be in for this spell to be cast on them.</system:String>
+    <system:String x:Key="labCasterAuraSpell">Caster Aura Spell:</system:String>
+    <system:String x:Key="labCasterAuraSpellTip">Spell the caster must already have on them, 0 for no requirement.</system:String>
+    <system:String x:Key="labTargetAuraSpell">Target Aura Spell:</system:String>
+    <system:String x:Key="labTargetAuraSpellTip">Spell the target must already have on them, 0 for no requirement.</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpell">Exclude Caster Aura Spell:</system:String>
+    <system:String x:Key="labExcludeCasterAuraSpellTip">Spell that blocks the cast if the caster has it, 0 for no requirement.</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpell">Exclude Target Aura Spell:</system:String>
+    <system:String x:Key="labExcludeTargetAuraSpellTip">Spell that blocks the cast if the target has it, 0 for no requirement.</system:String>
+    <system:String x:Key="labMinimumFactionId">Minimum Faction Id:</system:String>
+    <system:String x:Key="labMinimumFactionIdTip">Faction.dbc entry the caster needs reputation with, 0 for no requirement.</system:String>
+    <system:String x:Key="labMinimumReputation">Minimum Reputation:</system:String>
+    <system:String x:Key="labMinimumReputationTip">Reputation rank needed with the minimum faction above.</system:String>
+    <system:String x:Key="labRequiredAuraVision">Required Aura Vision:</system:String>
+    <system:String x:Key="labRequiredAuraVisionTip">Aura vision value the caster needs before this spell can be used, 0 for no requirement.</system:String>
+    <system:String x:Key="reputation_rank_strings">
+        Hated |
+        Hostile |
+        Unfriendly |
+        Neutral |
+        Friendly |
+        Honored |
+        Revered |
+        Exalted
+    </system:String>
     <system:String x:Key="labSchool">School:</system:String>
     <system:String x:Key="checkboxPhysical">Physical</system:String>
     <system:String x:Key="checkboxHoly">Holy</system:String>
@@ -114,6 +149,7 @@
     <system:String x:Key="labChainTarget">Chain Target:</system:String>
     <system:String x:Key="labItemType">Item Type:</system:String>
     <system:String x:Key="labTriggerSpell">Trigger Spell:</system:String>
+    <system:String x:Key="labTriggerSpellPickTip">Browse for a spell</system:String>
     <system:String x:Key="labPointsPerComboPoint">Points Per Combo Point:</system:String>
     <system:String x:Key="labMiscValueA">Misc Value A:</system:String>
     <system:String x:Key="labMiscValueB">Misc Value B:</system:String>
@@ -126,6 +162,12 @@
     <system:String x:Key="labEffectBonusMultiplier2">EffectBonusMultiplier 2:</system:String>
     <system:String x:Key="labDamageMultiplier3">Damage Multiplier 3:</system:String>
     <system:String x:Key="labEffectBonusMultiplier3">EffectBonusMultiplier 3:</system:String>
+    <system:String x:Key="effectCopyFrom">Copy From Spell</system:String>
+    <system:String x:Key="effectCopyFromTip">Pick another spell and copy the same numbered effect from it into this one.</system:String>
+    <system:String x:Key="effectCopyFromPrompt">Selecting the spell to copy Effect#{0} from</system:String>
+    <system:String x:Key="effectCopyFromMissing">Spell {0} was not found.</system:String>
+    <system:String x:Key="effectReset">Reset Effect</system:String>
+    <system:String x:Key="effectResetTip">Clear this effect, putting every field back to the value an unused effect has.</system:String>
     <system:String x:Key="targetClassMaskSpells">Class Mask Target Spells:</system:String>
     <system:String x:Key="filterClassMaskSpells">Filter Target Spells:</system:String>
 	<system:String x:Key="labSpellSchoolMask">Effect School Types :</system:String>
@@ -176,8 +218,15 @@
     <system:String x:Key="labAttributesEx5">Attributes Ex5:</system:String>
     <system:String x:Key="labAttributesEx6">Attributes Ex6:</system:String>
     <system:String x:Key="labAttributesEx7">Attributes Ex7:</system:String>
+    <system:String x:Key="labCustomAttributes">Custom Attributes:</system:String>
+    <system:String x:Key="labCustomAttributesTip">Server side attributes from spell_custom_attr, for the emulator picked in the settings. Saved with the spell.</system:String>
+    <system:String x:Key="attrCheckedOnly">Only checked</system:String>
+    <system:String x:Key="attrCheckedOnlyTip">Show only the boxes this spell has checked. Press it again for the full list. It refreshes when you press it or pick another spell, so a box you clear stays put.</system:String>
     <system:String x:Key="labCreatureType">Creature Type:</system:String>
     <system:String x:Key="labStances">Stances:</system:String>
+    <system:String x:Key="labStancesTip">Shapeshift forms this spell can be cast in. Nothing checked means any form.</system:String>
+    <system:String x:Key="labStancesNot">Stances Not:</system:String>
+    <system:String x:Key="labStancesNotTip">Shapeshift forms this spell cannot be cast in. Nothing checked means no form is excluded.</system:String>
     <system:String x:Key="labCurrentIcon">Current Icon:</system:String>
     <system:String x:Key="labNewIcon">New Icon:</system:String>
     <system:String x:Key="labFiltericons">Filter icons:</system:String>
@@ -2337,6 +2386,831 @@
         On Mainhand Autoattack Hit |
         On Offhand Autoattack Hit |
         On Death
+    </system:String>
+    <!--#endregion-->
+    <!--#endregion-->
+    <!--#region Emulator world database integration-->
+    <!--#region Emulator UI-->
+    <system:String x:Key="emu_connect">Connect</system:String>
+    <system:String x:Key="emu_reconnect">Reconnect</system:String>
+    <system:String x:Key="emu_settings">Settings</system:String>
+    <system:String x:Key="emu_not_connected">Not connected.</system:String>
+    <system:String x:Key="emu_connecting">Connecting...</system:String>
+    <system:String x:Key="emu_connected">Connected to {0} on {1}.</system:String>
+    <system:String x:Key="emu_connect_failed">Could not connect: {0}</system:String>
+    <system:String x:Key="emu_missing_tables">These tables are not in the database, so their tabs are turned off: {0}.</system:String>
+    <system:String x:Key="emu_disabled">The world database integration is turned off. Turn it on and enter your server details in the settings.</system:String>
+    <system:String x:Key="emu_add_row">Add</system:String>
+    <system:String x:Key="emu_delete_row">Remove</system:String>
+    <system:String x:Key="emu_save_changes">Save Changes</system:String>
+    <system:String x:Key="emu_revert">Revert</system:String>
+    <system:String x:Key="emu_reload">Reload</system:String>
+    <system:String x:Key="emu_copy_sql">Copy SQL</system:String>
+    <system:String x:Key="emu_copy_sql_tip">Copy the statements this save would run to the clipboard instead of applying them</system:String>
+    <system:String x:Key="emu_raw_value">Raw value</system:String>
+    <system:String x:Key="emu_checked_only">Only checked</system:String>
+    <system:String x:Key="emu_checked_only_tip">Show only the flags that are checked. Press it again for the full list. It refreshes when you press it, so a box you clear stays put.</system:String>
+    <system:String x:Key="emu_loading">Loading...</system:String>
+    <system:String x:Key="emu_no_spell_selected">Pick a spell to see its data.</system:String>
+    <system:String x:Key="emu_row_added">Added. It is not in the database until you save.</system:String>
+    <system:String x:Key="emu_row_removed">Marked for removal. Save to apply.</system:String>
+    <system:String x:Key="emu_nothing_to_save">Nothing has changed.</system:String>
+    <system:String x:Key="emu_saving">Saving...</system:String>
+    <system:String x:Key="emu_saved">Saved {0} change(s). Reload the server or run .reload for it to take effect.</system:String>
+    <system:String x:Key="emu_reverted">Unsaved changes discarded.</system:String>
+    <system:String x:Key="emu_sql_copied">{0} statement(s) copied to the clipboard.</system:String>
+    <system:String x:Key="emu_pick_spell">Select spell</system:String>
+    <system:String x:Key="emu_unknown_value">Unknown</system:String>
+    <system:String x:Key="emu_unknown_spell">Not in Spell.dbc</system:String>
+    <system:String x:Key="emu_nested_group">Group {0}</system:String>
+    <system:String x:Key="emu_rank_chain_first">Rank {0} of {1}, and the first rank of the chain. Rows written against it can cover every rank.</system:String>
+    <system:String x:Key="emu_rank_chain_shared">Rank {0} of {1}. Rows written against rank 1, {2}, count for this rank too and are listed below.</system:String>
+    <system:String x:Key="emu_rank_chain_own">Rank {0} of {1}, chain starting at {2}. This table is not shared between ranks, each rank needs its own rows.</system:String>
+    <system:String x:Key="emu_row_from_rank">Written against rank {0}, {1}. The core applies it to every rank in the chain, including this one.</system:String>
+    <system:String x:Key="emu_row_from_other_spell">Written against {0}, and the core applies it to this spell as well.</system:String>
+    <system:String x:Key="emu_option_all_ranks">Apply to every rank of this spell</system:String>
+    <system:String x:Key="emu_option_on_aura_removed">Fire when the aura is removed</system:String>
+    <system:String x:Key="emu_option_remove_instead">Remove it, or grant immunity, instead of applying it</system:String>
+    <system:String x:Key="emu_error_cell">Row {0}, {1}: {2}</system:String>
+    <system:String x:Key="emu_error_key_empty">this field cannot be empty</system:String>
+    <system:String x:Key="emu_error_not_float">expected a number such as 0.15</system:String>
+    <system:String x:Key="emu_error_not_int">expected a whole number</system:String>
+    <system:String x:Key="emu_error_not_uint">expected a positive whole number, or a mask written as 0x1F</system:String>
+    <system:String x:Key="emu_error_group_range">group ids from {0} to {1} are reserved for groups the core declares itself, use {1} or higher</system:String>
+    <system:String x:Key="emu_group_only_member">This spell is the only member of the group.</system:String>
+    <system:String x:Key="emu_group_members">{0} other member(s): {1}</system:String>
+    <system:String x:Key="emu_vm_build_skipped">Written for builds {0} to {1}, so a core built for {2} does not load this row.</system:String>
+    <system:String x:Key="emu_cm_error_group_range">the core packs the group into a bit of a 64 bit mask, so the id has to be from 1 to {0}</system:String>
+    <system:String x:Key="emu_cm_group_missing">No group {0} in spell_group, so the core throws this row away.</system:String>
+    <system:String x:Key="emu_cm_group_rule">{0}, rule {1}.</system:String>
+    <!--#endregion-->
+    <!--#region Emulator table headers and descriptions-->
+    <system:String x:Key="emu_tab_spell_proc">Proc</system:String>
+    <system:String x:Key="emu_desc_spell_proc">Controls when and how often the aura on this spell procs.</system:String>
+    <system:String x:Key="emu_empty_spell_proc">This spell has no proc data. The core falls back to the proc chance and flags in Spell.dbc.</system:String>
+    <system:String x:Key="emu_tab_spell_linked_spell">Links</system:String>
+    <system:String x:Key="emu_desc_spell_linked_spell">Casts, applies, or removes another spell when this one is cast, hits, or applies its aura.</system:String>
+    <system:String x:Key="emu_empty_spell_linked_spell">This spell is not linked to any other spell.</system:String>
+    <system:String x:Key="emu_tab_spell_script_names">Scripts</system:String>
+    <system:String x:Key="emu_desc_spell_script_names">Attaches a C++ SpellScript or AuraScript from the server binary to this spell.</system:String>
+    <system:String x:Key="emu_empty_spell_script_names">No scripts are attached to this spell.</system:String>
+    <system:String x:Key="emu_tab_spell_bonus_data">Bonus</system:String>
+    <system:String x:Key="emu_desc_spell_bonus_data">Overrides the spell power and attack power coefficients the core would otherwise calculate.</system:String>
+    <system:String x:Key="emu_empty_spell_bonus_data">This spell has no coefficient override. The core works them out from the cast time and effects.</system:String>
+    <system:String x:Key="emu_tab_spell_group">Groups</system:String>
+    <system:String x:Key="emu_desc_spell_group">Groups this spell belongs to. spell_group_stack_rules then decides how the members stack.</system:String>
+    <system:String x:Key="emu_empty_spell_group">This spell is not in any group.</system:String>
+    <system:String x:Key="emu_tab_spell_threat">Threat</system:String>
+    <system:String x:Key="emu_desc_spell_threat">Overrides how much threat this spell generates.</system:String>
+    <system:String x:Key="emu_empty_spell_threat">This spell has no threat override. Threat comes from the damage or healing done.</system:String>
+    <system:String x:Key="emu_custom_attr_unavailable">the world database could not be reached</system:String>
+    <system:String x:Key="emu_custom_attr_save_failed">Saved the spell, but the custom attributes could not be written: {0}</system:String>
+    <system:String x:Key="emu_tab_spell_ranks">Ranks</system:String>
+    <system:String x:Key="emu_desc_spell_ranks">The rank chain this spell is part of. Proc data, coefficients, threat, groups and scripts written against rank 1 apply to the whole chain.</system:String>
+    <system:String x:Key="emu_empty_spell_ranks">This spell is not part of a rank chain. Talent ranks come from Talent.dbc rather than this table, so they are never listed here.</system:String>
+    <system:String x:Key="emu_tab_spell_cooldown_overrides">Cooldown</system:String>
+    <system:String x:Key="emu_desc_spell_cooldown_overrides">Overrides the cooldown fields this spell would otherwise take from Spell.dbc.</system:String>
+    <system:String x:Key="emu_empty_spell_cooldown_overrides">This spell has no cooldown override. The cooldowns come from Spell.dbc.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_proc_event">Proc</system:String>
+    <system:String x:Key="emu_vm_desc_spell_proc_event">When the aura on this spell fires. Anything left at zero falls back to what Spell.dbc says, so only fill in what needs to differ.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_proc_event">This spell has no proc event row. It procs on the conditions in Spell.dbc alone.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_chain">Ranks</system:String>
+    <system:String x:Key="emu_vm_desc_spell_chain">The rank chain this spell is part of. Proc data, threat and groups written against rank 1 apply to the whole chain.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_chain">No rows here for this spell. The core builds most chains from Spell.dbc, the talent data and the trainer lists, and only reads this table for the ones it cannot work out on its own.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_threat">Threat</system:String>
+    <system:String x:Key="emu_vm_desc_spell_threat">How much threat this spell makes on top of the damage or healing it does.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_threat">This spell has no threat row. It makes the threat its damage or healing earns and nothing more.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_group">Groups</system:String>
+    <system:String x:Key="emu_vm_desc_spell_group">Groups this spell belongs to. spell_group_stack_rules then decides how the members stack against each other.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_group">This spell is not in any group.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_elixir">Elixir</system:String>
+    <system:String x:Key="emu_vm_desc_spell_elixir">Marks the spell as a battle or guardian elixir, which caps how many of each can be up at once. Ticking both makes it a flask.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_elixir">This spell is not an elixir or a well fed buff.</system:String>
+    <system:String x:Key="emu_vm_tab_spell_disabled">Disabled</system:String>
+    <system:String x:Key="emu_vm_desc_spell_disabled">A row here stops players casting the spell and stops trainers teaching it. Game masters can still cast it.</system:String>
+    <system:String x:Key="emu_vm_empty_spell_disabled">This spell is not disabled.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_proc_event">Proc</system:String>
+    <system:String x:Key="emu_cm_desc_spell_proc_event">When the aura on this spell fires. Anything left at zero falls back to what Spell.dbc says, so only fill in what needs to differ.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_proc_event">This spell has no proc event row. It procs on the conditions in Spell.dbc alone.</system:String>
+    <system:String x:Key="emu_cmw_tab_spell_proc_event">Proc</system:String>
+    <system:String x:Key="emu_cmw_desc_spell_proc_event">When the aura on this spell fires. Anything left at zero falls back to what Spell.dbc says, so only fill in what needs to differ.</system:String>
+    <system:String x:Key="emu_cmw_empty_spell_proc_event">This spell has no proc event row. It procs on the conditions in Spell.dbc alone.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_threat">Threat</system:String>
+    <system:String x:Key="emu_cm_desc_spell_threat">How much threat this spell makes on top of the damage or healing it does.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_threat">This spell has no threat row. It makes the threat its damage or healing earns and nothing more.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_group_spell">Groups</system:String>
+    <system:String x:Key="emu_cm_desc_spell_group_spell">Groups this spell belongs to. The group itself, with the stacking rule and the name, lives in spell_group.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_group_spell">This spell is not in any group.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_elixir">Elixir</system:String>
+    <system:String x:Key="emu_cm_desc_spell_elixir">Marks the spell as a battle or guardian elixir, which caps how many of each can be up at once. Ticking both makes it a flask.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_elixir">This spell is not an elixir or a well fed buff.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_learn_spell">Teaches</system:String>
+    <system:String x:Key="emu_cm_desc_spell_learn_spell">Other spells learned at the same time as this one.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_learn_spell">Learning this spell does not teach anything else.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_pet_auras">Pet auras</system:String>
+    <system:String x:Key="emu_cm_desc_spell_pet_auras">Auras the pet gets while the owner has this spell.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_pet_auras">This spell gives the pet nothing.</system:String>
+    <system:String x:Key="emu_cmw_tab_spell_pet_auras">Pet auras</system:String>
+    <system:String x:Key="emu_cmw_desc_spell_pet_auras">Auras the pet gets while the owner has this spell.</system:String>
+    <system:String x:Key="emu_cmw_empty_spell_pet_auras">This spell gives the pet nothing.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_affect">Affects</system:String>
+    <system:String x:Key="emu_cm_desc_spell_affect">Which spells a talent or aura effect changes, when the mask in Spell.dbc is wrong or missing.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_affect">No overrides for this spell. The effects use the family mask from Spell.dbc.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_chain">Ranks</system:String>
+    <system:String x:Key="emu_cm_desc_spell_chain">The rank chain this spell is part of. Proc data and threat written against rank 1 apply to the whole chain.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_chain">No rows here for this spell. The core builds most chains from Spell.dbc, the talent data and the trainer lists, and only reads this table for the ones it cannot work out on its own.</system:String>
+    <system:String x:Key="emu_cm_tab_spell_facing">Facing</system:String>
+    <system:String x:Key="emu_cm_desc_spell_facing">Makes the cast fail unless the caster is turned the right way.</system:String>
+    <system:String x:Key="emu_cm_empty_spell_facing">This spell has no facing requirement.</system:String>
+    <!--#endregion-->
+    <!--#region Emulator field labels, one entry per column in column order-->
+    <system:String x:Key="emu_labels_spell_proc">
+        Spell |
+        Required school |
+        Required spell family |
+        Family mask 1 |
+        Family mask 2 |
+        Family mask 3 |
+        Proc flags |
+        Required spell type |
+        Proc phase |
+        Required hit result |
+        Proc attributes |
+        Effects that do not proc |
+        Procs per minute |
+        Proc chance |
+        Internal cooldown (ms) |
+        Charges
+    </system:String>
+    <system:String x:Key="emu_labels_spell_linked_spell">
+        Trigger spell |
+        Linked spell |
+        Fires on |
+        Comment
+    </system:String>
+    <system:String x:Key="emu_labels_spell_script_names">
+        Spell |
+        Script name
+    </system:String>
+    <system:String x:Key="emu_labels_spell_bonus_data">
+        Spell |
+        Direct spell power |
+        Periodic spell power |
+        Direct attack power |
+        Periodic attack power |
+        Comment
+    </system:String>
+    <system:String x:Key="emu_labels_spell_group">
+        Group id |
+        Spell
+    </system:String>
+    <system:String x:Key="emu_labels_spell_threat">
+        Spell |
+        Flat threat |
+        Threat multiplier |
+        Attack power share
+    </system:String>
+    <system:String x:Key="emu_labels_spell_ranks">
+        First rank |
+        Spell |
+        Rank
+    </system:String>
+    <system:String x:Key="emu_labels_spell_cooldown_overrides">
+        Spell |
+        Cooldown (ms) |
+        Category cooldown (ms) |
+        Global cooldown (ms) |
+        Global cooldown category |
+        Comment
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_proc_event">
+        Spell |
+        School mask |
+        Spell family |
+        Family mask effect 1 |
+        Family mask effect 2 |
+        Family mask effect 3 |
+        Proc flags |
+        Proc extra flags |
+        Procs per minute |
+        Custom chance |
+        Internal cooldown (s) |
+        First build |
+        Last build
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_chain">
+        Spell |
+        Previous rank |
+        First rank |
+        Rank |
+        Required spell |
+        First build |
+        Last build
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_threat">
+        Spell |
+        Flat threat |
+        Threat multiplier |
+        Effects the flat bonus skips |
+        First build |
+        Last build
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_group">
+        Group id |
+        Position in group |
+        Spell |
+        First build |
+        Last build
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_elixir">
+        Spell |
+        Kind |
+        First build |
+        Last build
+    </system:String>
+    <system:String x:Key="emu_vm_labels_spell_disabled">
+        Spell
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_proc_event">
+        Spell |
+        School mask |
+        Spell family |
+        Family mask effect 1 |
+        Family mask effect 2 |
+        Family mask effect 3 |
+        Proc flags |
+        Proc extra flags |
+        Procs per minute |
+        Custom chance |
+        Internal cooldown (s)
+    </system:String>
+    <system:String x:Key="emu_cmw_labels_spell_proc_event">
+        Spell |
+        School mask |
+        Spell family |
+        Family mask A, effect 1 |
+        Family mask A, effect 2 |
+        Family mask A, effect 3 |
+        Family mask B, effect 1 |
+        Family mask B, effect 2 |
+        Family mask B, effect 3 |
+        Family mask C, effect 1 |
+        Family mask C, effect 2 |
+        Family mask C, effect 3 |
+        Proc flags |
+        Proc extra flags |
+        Procs per minute |
+        Custom chance |
+        Internal cooldown (s)
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_threat">
+        Spell |
+        Flat threat |
+        Threat multiplier |
+        Attack power share |
+        Effects the flat bonus skips
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_group_spell">
+        Group id |
+        Spell
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_elixir">
+        Spell |
+        Kind
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_learn_spell">
+        Spell |
+        Also learns |
+        Active
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_pet_auras">
+        Spell |
+        Pet |
+        Pet aura
+    </system:String>
+    <system:String x:Key="emu_cmw_labels_spell_pet_auras">
+        Spell |
+        Effect |
+        Pet |
+        Pet aura
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_affect">
+        Spell |
+        Effect |
+        Affected spell family mask
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_chain">
+        Spell |
+        Previous rank |
+        First rank |
+        Rank |
+        Required spell
+    </system:String>
+    <system:String x:Key="emu_cm_labels_spell_facing">
+        Spell |
+        Facing flags
+    </system:String>
+    <!--#endregion-->
+    <!--#region Emulator column tooltips, one entry per column in column order-->
+    <system:String x:Key="emu_tips_spell_proc">
+        Spell id the proc data belongs to. A negative id applies it to every rank of the spell. |
+        If not zero, the triggering spell must be of one of these schools. |
+        If not zero, the triggering spell must have this SpellFamilyName. |
+        If not zero, the triggering spell must match these SpellFamilyFlags (first 32 bits). |
+        If not zero, the triggering spell must match these SpellFamilyFlags (second 32 bits). |
+        If not zero, the triggering spell must match these SpellFamilyFlags (third 32 bits). |
+        If not zero, overrides the ProcTypeMask from Spell.dbc and decides which events can proc. |
+        If not zero, the triggering spell must do damage, healing, or neither. |
+        If not zero, the phase of the cast the proc happens on. |
+        If not zero, the hit result required for the proc. Defaults to normal and critical hits. |
+        Extra proc requirements, see ProcAttributes in SpellMgr.h. |
+        Spell effects that should not proc this aura. |
+        If not zero, proc chance is this value multiplied by the caster weapon speed over 60. |
+        If not zero, overrides the proc chance from Spell.dbc. Ignored when procs per minute is set. |
+        Internal cooldown in milliseconds between procs. |
+        If not zero, overrides the proc charges from Spell.dbc. Zero means unlimited.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_linked_spell">
+        Spell that triggers the link. A negative id means the link fires when the aura is removed. |
+        Spell that gets applied. A negative id removes that spell instead, or grants immunity for aura links. |
+        When the link fires. Cast, hit, or aura applied. |
+        Free text note, shown only in the database.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_script_names">
+        Spell id the script is attached to. A negative id applies it to every rank of the spell. |
+        Name the script registers itself with in the server source.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_bonus_data">
+        Spell id the coefficients apply to. |
+        Spell power coefficient for the direct damage or healing part. |
+        Spell power coefficient for the periodic part. |
+        Attack power coefficient for the direct damage or healing part. |
+        Attack power coefficient for the periodic part. |
+        Free text note, shown only in the database.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_group">
+        Group id. Ids 1 to 4 are defined by the core, custom groups must be 1000 or greater. |
+        Spell in the group.
+    </system:String>
+    <system:String x:Key="emu_ac_tips_spell_group">
+        Group id. Ids 1 and 2 are defined by the core, custom groups must be 1000 or greater. |
+        Spell in the group.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_threat">
+        Spell id the threat data applies to. |
+        Flat threat added on top of the damage or healing done. Leave empty for none. |
+        Threat multiplier for the damage or healing done. |
+        Extra threat taken from a share of the caster attack power.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_ranks">
+        Rank 1 of the chain. Every row in the same chain repeats this id. |
+        Spell that sits at this rank. Each spell can only be in one chain. |
+        Position in the chain, starting at 1. The core drops the chain if the ranks are not 1 to n with no gaps.
+    </system:String>
+    <system:String x:Key="emu_tips_spell_cooldown_overrides">
+        Spell id the cooldowns apply to. |
+        Replaces RecoveryTime, the cooldown on the spell itself. |
+        Replaces CategoryRecoveryTime, the cooldown shared by everything in the same category. |
+        Replaces StartRecoveryTime, the global cooldown the cast triggers. |
+        Replaces StartRecoveryCategory, which global cooldown category the cast uses. |
+        Free text note, shown only in the database.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_proc_event">
+        Spell the aura sits on. Write the row against rank 1 and the core applies it to every rank. |
+        Only spells of these schools can set the proc off. Zero means any school. |
+        Only spells of this family can set the proc off, used together with the family masks. |
+        Which spells of the family can set the proc off, matched against effect 1. Zero means any. |
+        Same for effect 2. |
+        Same for effect 3. |
+        What the wearer has to do for the proc to be considered. Zero falls back to the ProcFlags field in Spell.dbc. |
+        Narrows the proc down to particular hit results. None means a normal hit or a crit. |
+        Chance expressed as procs per minute of weapon speed. Zero turns it off. |
+        Flat percentage chance, overriding the ProcChance field in Spell.dbc. Zero turns it off. |
+        Seconds before the proc can happen again. Zero means no internal cooldown. |
+        Oldest client build the row applies to. 0 means no lower limit. |
+        Newest client build the row applies to. The core skips the row unless the build it was compiled for falls in the range.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_chain">
+        Spell that sits at this rank. Each spell can only be in one chain. |
+        Rank directly below this one. Leave at zero on the first rank. |
+        Rank 1 of the chain. Every row in the same chain repeats this id. |
+        Position in the chain, starting at 1. |
+        Spell that has to be known before this rank can be learned. Zero for none. |
+        Oldest client build the row applies to. 0 means no lower limit. |
+        Newest client build the row applies to. The core skips the row unless the build it was compiled for falls in the range.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_threat">
+        Spell the threat applies to. Write the row against rank 1 and the core applies it to every rank. |
+        Threat added on top of the damage or healing, split between everything the spell hits. |
+        Multiplies the threat the damage or healing would have made on its own. 1 leaves it alone. |
+        Effects that do not get the flat bonus, so a spell that both damages and applies an aura can put the threat on one of them. |
+        Oldest client build the row applies to. 0 means no lower limit. |
+        Newest client build the row applies to. The core skips the row unless the build it was compiled for falls in the range.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_group">
+        Group the spell belongs to. Any id is allowed, the core reserves none of them. |
+        Orders the members inside the group. It only decides the order the core reads them in. |
+        Spell in the group. |
+        Oldest client build the row applies to. 0 means no lower limit. |
+        Newest client build the row applies to. The core skips the row unless the build it was compiled for falls in the range.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_elixir">
+        Buff the elixir applies, not the potion item. |
+        Battle and guardian together make a flask. Well fed is for food that sits in the potion spell family. |
+        Oldest client build the row applies to. 0 means no lower limit. |
+        Newest client build the row applies to. The core skips the row unless the build it was compiled for falls in the range.
+    </system:String>
+    <system:String x:Key="emu_vm_tips_spell_disabled">
+        Spell to turn off.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_proc_event">
+        Spell the aura sits on. Write the row against rank 1 and the core applies it to every rank. |
+        Only spells of these schools can set the proc off. Zero means any school. |
+        Only spells of this family can set the proc off, used together with the family masks. |
+        Which spells of the family can set the proc off, matched against effect 1. Zero means any. |
+        Same for effect 2. |
+        Same for effect 3. |
+        What the wearer has to do for the proc to be considered. Zero falls back to the ProcFlags field in Spell.dbc. |
+        Narrows the proc down to particular hit results. None means a normal hit or a crit. |
+        Chance expressed as procs per minute of weapon speed. Zero turns it off. |
+        Flat percentage chance, overriding the ProcChance field in Spell.dbc. Zero turns it off. |
+        Seconds before the proc can happen again. Zero means no internal cooldown.
+    </system:String>
+    <system:String x:Key="emu_cmw_tips_spell_proc_event">
+        Spell the aura sits on. Write the row against rank 1 and the core applies it to every rank. |
+        Only spells of these schools can set the proc off. Zero means any school. |
+        Only spells of this family can set the proc off, used together with the family masks. |
+        First 32 bits of the family mask matched against effect 1. Zero across A, B and C means any spell of the family. |
+        First 32 bits of the family mask matched against effect 2. |
+        First 32 bits of the family mask matched against effect 3. |
+        Middle 32 bits of the family mask matched against effect 1. |
+        Middle 32 bits of the family mask matched against effect 2. |
+        Middle 32 bits of the family mask matched against effect 3. |
+        Last 32 bits of the family mask matched against effect 1. |
+        Last 32 bits of the family mask matched against effect 2. |
+        Last 32 bits of the family mask matched against effect 3. |
+        What the wearer has to do for the proc to be considered. Zero falls back to the ProcFlags field in Spell.dbc. |
+        Narrows the proc down to particular hit results. None means a normal hit or a crit. |
+        Chance expressed as procs per minute of weapon speed. Zero turns it off. |
+        Flat percentage chance, overriding the ProcChance field in Spell.dbc. Zero turns it off. |
+        Seconds before the proc can happen again. Zero means no internal cooldown.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_threat">
+        Spell the threat applies to. Write the row against rank 1 and the core applies it to every rank. |
+        Threat added on top of the damage or healing, split between everything the spell hits. |
+        Multiplies the threat the damage or healing would have made on its own. 1 leaves it alone. |
+        Extra threat taken from a share of the caster attack power. |
+        Effects that do not get the flat bonus, so a spell that both damages and applies an aura can put the threat on one of them.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_group_spell">
+        Group the spell belongs to. It has to already exist in spell_group, and the id has to be from 1 to 64. |
+        Spell in the group.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_elixir">
+        Buff the elixir applies, not the potion item. |
+        Battle and guardian together make a flask. Well fed is for food that sits in the potion spell family.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_learn_spell">
+        Spell being learned. |
+        Spell handed over with it. |
+        1 puts the learned spell on the action bar as a normal castable spell, 0 keeps it passive and hidden.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_pet_auras">
+        Spell on the owner. |
+        Creature id of the pet the aura is for. 0 covers every pet. |
+        Spell applied to the pet.
+    </system:String>
+    <system:String x:Key="emu_cmw_tips_spell_pet_auras">
+        Spell on the owner. |
+        Effect index the pet aura hangs off. |
+        Creature id of the pet the aura is for. 0 covers every pet. |
+        Spell applied to the pet.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_affect">
+        Spell holding the effect, usually a talent. |
+        Effect index the mask replaces the Spell.dbc one on. |
+        Spells of the same family the effect applies to. Zero makes the effect apply to nothing at all.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_chain">
+        Spell that sits at this rank. Each spell can only be in one chain. |
+        Rank directly below this one. Leave at zero on the first rank. |
+        Rank 1 of the chain. Every row in the same chain repeats this id. |
+        Position in the chain, starting at 1. |
+        Spell that has to be known before this rank can be learned. Zero for none.
+    </system:String>
+    <system:String x:Key="emu_cm_tips_spell_facing">
+        Spell the requirement applies to. |
+        The cast fails with a facing error unless the target is inside the caster arc.
+    </system:String>
+    <!--#endregion-->
+    <!--#region Emulator flag and value lists-->
+    <system:String x:Key="emu_vm_proc_strings">
+        None |
+        On tick (heartbeat) |
+        Killed a target |
+        Melee auto attack done |
+        Melee auto attack taken |
+        Melee weapon ability done |
+        Melee weapon ability taken |
+        Ranged auto attack done |
+        Ranged auto attack taken |
+        Ranged weapon ability done |
+        Ranged weapon ability taken |
+        Positive none damage class spell done |
+        Positive none damage class spell taken |
+        Negative none damage class spell done |
+        Negative none damage class spell taken |
+        Positive magic damage class spell done |
+        Positive magic damage class spell taken |
+        Negative magic damage class spell done |
+        Negative magic damage class spell taken |
+        Periodic done |
+        Periodic taken |
+        Any damage taken |
+        Trap activation |
+        Main hand attack done |
+        Off hand attack done
+    </system:String>
+    <system:String x:Key="emu_vm_proc_ex_strings">
+        None (hit or crit only) |
+        Normal (non critical) hit |
+        Critical |
+        Miss |
+        Full resist |
+        Dodge |
+        Parry |
+        Block |
+        Evade |
+        Immune |
+        Deflect |
+        Absorb |
+        Reflect |
+        Interrupt |
+        Reserved 1 |
+        Reserved 2 |
+        Reserved 3 |
+        Always trigger, whatever the other flags say |
+        Never proc from a periodic tick |
+        Periodic heal rather than periodic damage |
+        On the end of the cast only
+    </system:String>
+    <system:String x:Key="emu_vm_elixir_strings">
+        Battle elixir |
+        Guardian elixir |
+        Well fed
+    </system:String>
+    <system:String x:Key="emu_cm_proc_strings">
+        None |
+        On tick (heartbeat) |
+        Killed a target |
+        Melee auto attack done |
+        Melee auto attack taken |
+        Melee weapon ability done |
+        Melee weapon ability taken |
+        Ranged auto attack done |
+        Ranged auto attack taken |
+        Ranged weapon ability done |
+        Ranged weapon ability taken |
+        Positive none damage class spell done |
+        Positive none damage class spell taken |
+        Negative none damage class spell done |
+        Negative none damage class spell taken |
+        Positive magic damage class spell done |
+        Positive magic damage class spell taken |
+        Negative magic damage class spell done |
+        Negative magic damage class spell taken |
+        Periodic done |
+        Periodic taken |
+        Any damage taken |
+        Trap activation |
+        Main hand attack done |
+        Off hand attack done
+    </system:String>
+    <system:String x:Key="emu_cm_proc_death_strings">
+        None |
+        On tick (heartbeat) |
+        Killed a target |
+        Melee auto attack done |
+        Melee auto attack taken |
+        Melee weapon ability done |
+        Melee weapon ability taken |
+        Ranged auto attack done |
+        Ranged auto attack taken |
+        Ranged weapon ability done |
+        Ranged weapon ability taken |
+        Positive none damage class spell done |
+        Positive none damage class spell taken |
+        Negative none damage class spell done |
+        Negative none damage class spell taken |
+        Positive magic damage class spell done |
+        Positive magic damage class spell taken |
+        Negative magic damage class spell done |
+        Negative magic damage class spell taken |
+        Periodic done |
+        Periodic taken |
+        Any damage taken |
+        Trap activation |
+        Main hand attack done |
+        Off hand attack done |
+        Death
+    </system:String>
+    <system:String x:Key="emu_cm_proc_ex_strings">
+        None (hit or crit only) |
+        Normal (non critical) hit |
+        Critical |
+        Miss |
+        Full resist |
+        Dodge |
+        Parry |
+        Block |
+        Evade |
+        Immune |
+        Deflect |
+        Absorb |
+        Reflect |
+        Interrupt |
+        Reserved 1 |
+        Reserved 2 |
+        Reserved 3 |
+        Trigger even when no damage was done |
+        Trigger once and then stop |
+        Periodic heal rather than periodic damage |
+        On the end of the cast only |
+        Spell was redirected by a magnet |
+        Set by the core for a heal over time, not for the database
+    </system:String>
+    <system:String x:Key="emu_cmw_proc_ex_strings">
+        None (hit or crit only) |
+        Normal (non critical) hit |
+        Critical |
+        Miss |
+        Full resist |
+        Dodge |
+        Parry |
+        Block |
+        Evade |
+        Immune |
+        Deflect |
+        Absorb |
+        Reflect |
+        Interrupt |
+        Full block |
+        Reserved 2 |
+        Reserved 3 |
+        Trigger even when no damage was done |
+        Trigger once and then stop |
+        Periodic heal rather than periodic damage |
+        On the end of the cast only |
+        Spell was redirected by a magnet |
+        Set by the core for a heal over time, not for the database
+    </system:String>
+    <system:String x:Key="emu_cm_elixir_strings">
+        Battle elixir |
+        Guardian elixir |
+        Well fed
+    </system:String>
+    <system:String x:Key="emu_cm_elixir_tbc_strings">
+        Battle elixir |
+        Guardian elixir |
+        Unstable elixir |
+        Shattrath elixir |
+        Well fed
+    </system:String>
+    <system:String x:Key="emu_cm_group_rule_strings">
+        Only one of the group at a time |
+        Only one of the group per caster
+    </system:String>
+    <system:String x:Key="emu_cm_facing_strings">
+        Caster has to be facing the target
+    </system:String>
+    <system:String x:Key="emu_effect_index_strings">
+        Effect 1 |
+        Effect 2 |
+        Effect 3
+    </system:String>
+    <system:String x:Key="emu_school_mask_strings">
+        Physical |
+        Holy |
+        Fire |
+        Nature |
+        Frost |
+        Shadow |
+        Arcane
+    </system:String>
+    <system:String x:Key="emu_proc_spell_type_strings">
+        Damage |
+        Heal |
+        Neither damage nor heal
+    </system:String>
+    <system:String x:Key="emu_proc_spell_phase_strings">
+        Cast |
+        Hit |
+        Finish
+    </system:String>
+    <system:String x:Key="emu_proc_hit_strings">
+        Normal (non critical) hit |
+        Critical |
+        Miss |
+        Full resist |
+        Dodge |
+        Parry |
+        Block (partial or full) |
+        Evade |
+        Immune |
+        Deflect |
+        Absorb (partial or full) |
+        Reflect |
+        Interrupt |
+        Full block
+    </system:String>
+    <system:String x:Key="emu_tc_proc_attributes_strings">
+        Proc target must give exp or honor |
+        Can proc from triggered spells |
+        Triggering spell must have a mana cost |
+        Triggering spell must be affected by this aura |
+        Reduced proc chance above level 60 |
+        Cannot proc from a spell cast by an item
+    </system:String>
+    <system:String x:Key="emu_ac_proc_attributes_strings">
+        Proc target must give exp or honor |
+        Can proc from triggered spells |
+        Triggering spell must have a mana cost |
+        Triggering spell must be affected by this aura |
+        Consume a stack rather than a charge |
+        Reduced proc chance above level 60 |
+        Cannot proc from a spell cast by an item
+    </system:String>
+    <system:String x:Key="emu_effect_mask_strings">
+        Effect 1 |
+        Effect 2 |
+        Effect 3
+    </system:String>
+    <system:String x:Key="emu_tc_custom_attr_strings">
+        Enchant proc |
+        Cone back |
+        Cone line |
+        Share damage |
+        No initial threat |
+        Aura is crowd control |
+        Does not break stealth |
+        Can crit |
+        Direct damage |
+        Charge |
+        Pickpocket |
+        Rolling periodic |
+        Negative effect 1 |
+        Negative effect 2 |
+        Negative effect 3 |
+        Ignore armor |
+        Target must face caster |
+        Caster must be behind target |
+        Allow in flight target |
+        Needs ammo data |
+        Binary spell |
+        Physical school counts as magic |
+        Deprecated liquid aura (do not reuse) |
+        Is talent (master branch only) |
+        Aura cannot be saved |
+        Can target any private object (master branch only)
+    </system:String>
+    <system:String x:Key="emu_ac_custom_attr_strings">
+        Enchant proc |
+        Cone back |
+        Cone line |
+        Share damage |
+        No initial threat |
+        Aura is crowd control |
+        Does not break stealth |
+        Does not set the PvP flag |
+        Direct damage |
+        Charge |
+        Pickpocket |
+        Ignore evade |
+        Negative effect 1 |
+        Negative effect 2 |
+        Negative effect 3 |
+        Ignore armor |
+        Target must face caster |
+        Caster must be behind target |
+        Allow in flight target |
+        Needs ammo data |
+        Binary spell |
+        No positive taken bonus |
+        Single aura stack |
+        Physical school counts as magic |
+        Aura cannot be saved |
+        Positive effect 1 |
+        Positive effect 2 |
+        Positive effect 3 |
+        Force send category cooldowns |
+        Only one area aura |
+        Encounter reward |
+        Bypass mechanic immunity
+    </system:String>
+    <system:String x:Key="emu_linked_type_strings">
+        Cast (negative effect removes instead) |
+        Hit |
+        Aura (negative effect applies immunity instead)
     </system:String>
     <!--#endregion-->
     <!--#endregion-->

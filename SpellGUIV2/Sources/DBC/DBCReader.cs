@@ -2,7 +2,6 @@
 using SpellEditor.Sources.Binding;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -29,7 +28,7 @@ namespace SpellEditor.Sources.DBC
         private Struct ReadStruct<Struct>(byte[] readBuffer)
         {
             Struct structure;
-            GCHandle handle;
+            GCHandle handle = default;
             try
             {
                 handle = GCHandle.Alloc(readBuffer, GCHandleType.Pinned);
@@ -40,8 +39,11 @@ namespace SpellEditor.Sources.DBC
                 Logger.Info(e);
                 throw new Exception(e.Message);
             }
-            if (handle != null)
-                handle.Free();
+            finally
+            {
+                if (handle.IsAllocated)
+                    handle.Free();
+            }
             return structure;
         }
 
@@ -146,44 +148,41 @@ namespace SpellEditor.Sources.DBC
         public Dictionary<uint, VirtualStrTableEntry> ReadStringBlock()
         {
             // Read string block into memory
-            string StringBlock;
+            byte[] stringBlock;
             using (FileStream fileStream = new FileStream(_filePath, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
                     reader.BaseStream.Position = _filePosition;
-                    StringBlock = Encoding.UTF8.GetString(reader.ReadBytes(_header.StringBlockSize));
+                    stringBlock = reader.ReadBytes(_header.StringBlockSize);
                 }
             }
 
-            // create offsets to string entry lookups
+            // Records point at byte offsets, so split on the raw terminators and decode each
+            // string on its own. Counting characters instead puts every offset out on non ASCII.
             var stringsMap = new Dictionary<uint, VirtualStrTableEntry>();
-           
-            string strTokens = "";
-            uint strOffset = 0;
-            int strBlockOffset = 0;
-            int strBlockLength = new StringInfo(StringBlock).LengthInTextElements;
-            while (strBlockOffset < strBlockLength)
+            var start = 0;
+            for (var i = 0; i < stringBlock.Length; ++i)
             {
-                var token = StringBlock[strBlockOffset];
-                // Read until we hit a string terminator
-                if (token == '\0')
-                {
-                    stringsMap.Add(strOffset, new VirtualStrTableEntry
-                    {
-                        Value = strTokens,
-                        NewValue = 0
-                    });
+                if (stringBlock[i] != 0)
+                    continue;
 
-                    // account for the string terminator char (+ 1)
-                    strOffset += (uint)Encoding.UTF8.GetByteCount(strTokens) + 1;
-                    strTokens = "";
-                }
-                else
+                stringsMap[(uint)start] = new VirtualStrTableEntry
                 {
-                    strTokens += token;
-                }
-                ++strBlockOffset;
+                    Value = Encoding.UTF8.GetString(stringBlock, start, i - start),
+                    NewValue = 0
+                };
+                start = i + 1;
+            }
+
+            // A well formed block ends on a terminator, but do not lose a truncated tail
+            if (start < stringBlock.Length)
+            {
+                stringsMap[(uint)start] = new VirtualStrTableEntry
+                {
+                    Value = Encoding.UTF8.GetString(stringBlock, start, stringBlock.Length - start),
+                    NewValue = 0
+                };
             }
 
             return stringsMap;

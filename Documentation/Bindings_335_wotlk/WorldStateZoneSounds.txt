@@ -1,0 +1,9 @@
+IGNORE_ORDER true
+uint worldStateID
+uint worldStateValue
+uint areaID
+uint wmoareaID
+uint zoneIntroMusicID
+uint zoneMusicID
+uint soundAmbienceID
+uint soundProviderPreferencesID

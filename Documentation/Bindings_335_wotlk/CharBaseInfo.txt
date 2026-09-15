@@ -1,0 +1,3 @@
+IGNORE_ORDER true
+uint8 raceID
+uint8 classID

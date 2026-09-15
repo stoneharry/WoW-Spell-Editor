@@ -1,0 +1,8 @@
+uint ID
+int hideGeoset1
+int hideGeoset2
+int hideGeoset3
+int hideGeoset4
+int hideGeoset5
+int hideGeoset6
+int hideGeoset7

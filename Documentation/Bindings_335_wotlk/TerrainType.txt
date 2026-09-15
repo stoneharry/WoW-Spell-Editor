@@ -1,0 +1,6 @@
+uint terrainID
+uint terrainDesc string
+uint footstepSprayRun
+uint footstepSprayWalk
+uint soundID
+uint flags

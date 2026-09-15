@@ -1,0 +1,22 @@
+uint ID
+uint continent
+float loc1
+float loc2
+float loc3
+uint areaName1 string
+uint areaName2 string
+uint areaName3 string
+uint areaName4 string
+uint areaName5 string
+uint areaName6 string
+uint areaName7 string
+uint areaName8 string
+uint areaName9 string
+uint areaName10 string
+uint areaName11 string
+uint areaName12 string
+uint areaName13 string
+uint areaName14 string
+uint areaName15 string
+uint areaName16 string
+uint areaNameFlags

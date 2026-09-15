@@ -1,0 +1,5 @@
+uint ID
+uint sizeClass
+uint terrainTypeSoundID
+uint soundEntryID
+uint soundEntryIdwater

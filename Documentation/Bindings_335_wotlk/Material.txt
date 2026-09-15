@@ -1,0 +1,5 @@
+uint ID
+uint flags
+uint foleySoundID
+uint sheatheSoundID
+uint unsheatheSoundID

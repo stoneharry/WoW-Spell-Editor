@@ -8,6 +8,7 @@ namespace SpellEditor.Sources.Controls.Common
         void DeleteItemClick(object sender, RoutedEventArgs args);
         void PasteItemClick(object sender, RoutedEventArgs args);
         void CopyItemClick(object sender, RoutedEventArgs args);
+        void CopyIdItemClick(object sender, RoutedEventArgs args);
 
         void CancelItemClick(object sender, RoutedEventArgs args);
 

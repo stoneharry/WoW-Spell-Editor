@@ -1,0 +1,4 @@
+uint ID
+uint realmType
+uint playerKillingAllowed
+uint roleplaying

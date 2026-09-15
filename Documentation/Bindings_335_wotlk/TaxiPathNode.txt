@@ -1,3 +1,4 @@
+IGNORE_ORDER true
 uint id
 uint pathId
 uint nodeIndex

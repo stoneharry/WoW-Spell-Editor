@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace SpellEditor.Sources.Database
 {
@@ -14,5 +15,9 @@ namespace SpellEditor.Sources.Database
         string EscapeString(string str);
         string GetTableCreateString(Binding.Binding binding);
         object QuerySingleValue(string query);
+
+        Task<DataTable> QueryAsync(string query) => Task.Run(() => Query(query));
+        Task<object> QuerySingleValueAsync(string query) => Task.Run(() => QuerySingleValue(query));
+        Task ExecuteAsync(string p) => Task.Run(() => Execute(p));
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using NLog;
 using SpellEditor.Sources.Config;
+using SpellEditor.Sources.Emulator;
 using SpellEditor.Sources.VersionControl;
 using static System.Environment;
 using Application = System.Windows.Application;
@@ -61,12 +63,17 @@ namespace SpellEditor
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // misc value fields config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // caching config rows
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Icon config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // MPQ name config row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Bindings and directory settings, 2 rows
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // Optional emulator world database row
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             // Database type specific grid
             ConfigGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -129,11 +136,13 @@ namespace SpellEditor
 
             currentRow = BuildMiscValueFieldsConfig(ConfigGrid, currentRow);
 
-            currentRow = BuildIconConfig(ConfigGrid, currentRow);
+            currentRow = BuildCachingConfig(ConfigGrid, currentRow);
 
             currentRow = BuildMpqConfig(ConfigGrid, currentRow);
 
             currentRow = BuildBindingsAndDbcUI(ConfigGrid, currentRow);
+
+            currentRow = BuildEmulatorConfigUI(ConfigGrid, ++currentRow);
 
             ++currentRow;
             BuildSQLiteConfigUI(currentRow);
@@ -189,9 +198,9 @@ namespace SpellEditor
             };
             confirmBtn.Click += SaveSQLiteConfirmBtn_Click;
 
-            dbFileNameText.Margin =  new Thickness(10, 5, 10, 5);
+            dbFileNameLabel.Margin = new Thickness(10, 5, 10, 5);
             dbFileNameText.Margin = new Thickness(10, 5, 10, 5);
-            confirmBtn.Margin = new Thickness(3, 10, 3, 2);
+            confirmBtn.Margin = new Thickness(10, 10, 10, 5);
             confirmBtn.MinHeight = 40;
 
             Grid.SetRow(dbFileNameLabel, row);
@@ -256,7 +265,7 @@ namespace SpellEditor
             portText.Margin = margin;
             databaseLabel.Margin = margin;
             databaseText.Margin = margin;
-            confirmBtn.Margin = new Thickness(3, 10, 3, 2);
+            confirmBtn.Margin = new Thickness(10, 10, 10, 5);
             confirmBtn.MinHeight = 40;
 
             Grid.SetRow(hostLabel, row);
@@ -335,31 +344,8 @@ namespace SpellEditor
             checkbox.IsChecked = Config.DynamicMiscValueFields;
             checkbox.Checked += DynamicMiscValueFields_Checked;
             checkbox.Unchecked += DynamicMiscValueFields_Checked;
-            checkbox.ToolTip = "When this is turned on, MiscValue fields UI will dynamically update based on content type, for example a power selection dropdown for Power auras.";
-
-            Grid.SetRow(label, currentRow);
-            Grid.SetRow(checkbox, currentRow++);
-            Grid.SetColumn(label, 0);
-            Grid.SetColumn(checkbox, 1);
-
-            grid.Children.Add(label);
-            grid.Children.Add(checkbox);
-
-            return currentRow;
-        }
-
-        private int BuildIconConfig(Grid grid, int currentRow)
-        {
-            var label = new Label { Content = "Render only spell icons in view:" };
-            label.Margin = new Thickness(10);
-
-            var checkbox = new System.Windows.Controls.CheckBox { };
-            checkbox.Margin = new Thickness(10);
-
-            checkbox.IsChecked = Config.RenderImagesInView;
-            checkbox.Checked += RenderIconsInView_Checked;
-            checkbox.Unchecked += RenderIconsInView_Checked;
-            checkbox.ToolTip = "When this is turned on, the Icon tab will only load the images currently visible on the screen. It makes it slower to scroll but it can handle more images without crashing.";
+            checkbox.ToolTip = "When this is turned on, MiscValue fields UI will dynamically update based on content type, for example a power selection dropdown for Power auras. " +
+                "It also greys out the effect fields the selected spell effect does not use. Turn it off to leave every effect field editable.";
 
             Grid.SetRow(label, currentRow);
             Grid.SetRow(checkbox, currentRow++);
@@ -398,14 +384,69 @@ namespace SpellEditor
             return currentRow;
         }
 
-        private void RenderIconsInView_Checked(object sender, RoutedEventArgs e)
-        {
-            Config.RenderImagesInView = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
-        }
-
         private void DynamicMiscValueFields_Checked(object sender, RoutedEventArgs e)
         {
             Config.DynamicMiscValueFields = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
+        }
+
+        private int BuildCachingConfig(Grid grid, int currentRow)
+        {
+            var cacheAllLabel = new Label
+            {
+                Content = "Cache Everything On Load:",
+                Margin = new Thickness(10)
+            };
+            var cacheAllCheckbox = new System.Windows.Controls.CheckBox
+            {
+                Margin = new Thickness(10),
+                IsChecked = Config.CacheAllOnLoad,
+                ToolTip = "Off by default. When off, optional DBCs and spell family class masks are only read when something asks for them, " +
+                    "which makes startup much faster. Turn this on to read it all up front instead."
+            };
+            cacheAllCheckbox.Checked += CacheAllOnLoad_Checked;
+            cacheAllCheckbox.Unchecked += CacheAllOnLoad_Checked;
+
+            var refreshLabel = new Label
+            {
+                Content = "Refresh Cache On Spell Selection:",
+                Margin = new Thickness(10)
+            };
+            var refreshCheckbox = new System.Windows.Controls.CheckBox
+            {
+                Margin = new Thickness(10),
+                IsChecked = Config.RefreshCacheOnSpellSelection,
+                ToolTip = "On by default. Selecting a spell refetches it and the spells it references from the database, so edits made elsewhere show up. " +
+                    "Turn this off to reuse cached spell data until it is saved or reloaded."
+            };
+            refreshCheckbox.Checked += RefreshCacheOnSpellSelection_Checked;
+            refreshCheckbox.Unchecked += RefreshCacheOnSpellSelection_Checked;
+
+            Grid.SetRow(cacheAllLabel, currentRow);
+            Grid.SetRow(cacheAllCheckbox, currentRow++);
+            Grid.SetColumn(cacheAllLabel, 0);
+            Grid.SetColumn(cacheAllCheckbox, 1);
+
+            Grid.SetRow(refreshLabel, currentRow);
+            Grid.SetRow(refreshCheckbox, currentRow++);
+            Grid.SetColumn(refreshLabel, 0);
+            Grid.SetColumn(refreshCheckbox, 1);
+
+            grid.Children.Add(cacheAllLabel);
+            grid.Children.Add(cacheAllCheckbox);
+            grid.Children.Add(refreshLabel);
+            grid.Children.Add(refreshCheckbox);
+
+            return currentRow;
+        }
+
+        private void CacheAllOnLoad_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.CacheAllOnLoad = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
+        }
+
+        private void RefreshCacheOnSpellSelection_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.RefreshCacheOnSpellSelection = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
         }
 
         private int BuildBindingsAndDbcUI(Grid grid, int currentRow)
@@ -458,6 +499,171 @@ namespace SpellEditor
             grid.Children.Add(changeDbcButton);
 
             return currentRow;
+        }
+
+        /// <summary>A separate server to the one holding the DBC data, so it gets its own fields.</summary>
+        private int BuildEmulatorConfigUI(Grid parent, int currentRow)
+        {
+            var grid = new Grid();
+            Grid.SetRow(grid, currentRow);
+            Grid.SetColumn(grid, 0);
+            Grid.SetColumnSpan(grid, 3);
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            for (var i = 0; i < 9; ++i)
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            var margin = new Thickness(10, 5, 10, 5);
+            var header = new Label
+            {
+                Content = "Emulator world database (optional)",
+                Margin = new Thickness(10, 20, 10, 5),
+                FontWeight = FontWeights.Bold
+            };
+
+            var enabledLabel = new Label { Content = "Enable world database tabs:", Margin = margin };
+            var enabledCheckbox = new System.Windows.Controls.CheckBox
+            {
+                Margin = margin,
+                IsChecked = Config.EmulatorEnabled,
+                VerticalAlignment = VerticalAlignment.Center,
+                ToolTip = "Adds tabs for editing the server side spell tables of an emulator world database. " +
+                    "This only works against a WotLK core, so leave it off for anything else."
+            };
+
+            var selected = Emulators.Lookup(Config.EmulatorType);
+            var emulatorLabel = new Label { Content = "Emulator: ", Margin = margin };
+            var emulatorButton = new SplitButton { Margin = margin, MinWidth = 200 };
+            foreach (var emulator in Emulators.All)
+                emulatorButton.Items.Add(emulator.Name);
+            emulatorButton.SelectedIndex = Emulators.All.ToList().IndexOf(selected);
+            emulatorButton.ToolTip = selected.Description;
+
+            var hostLabel = new Label { Content = "Hostname: ", Margin = margin };
+            var hostText = new TextBox { Text = Config.EmulatorHost, MinWidth = 200, Margin = margin };
+            var portLabel = new Label { Content = "Port: ", Margin = margin };
+            var portText = new TextBox { Text = Config.EmulatorPort, MinWidth = 200, Margin = margin };
+            var userLabel = new Label { Content = "Username: ", Margin = margin };
+            var userText = new TextBox { Text = Config.EmulatorUser, MinWidth = 200, Margin = margin };
+            var passLabel = new Label { Content = "Password: ", Margin = margin };
+            var passText = new TextBox { Text = Config.EmulatorPass, MinWidth = 200, Margin = margin };
+            var databaseLabel = new Label { Content = "World database: ", Margin = margin };
+            var databaseText = new TextBox { Text = Config.EmulatorDatabase, MinWidth = 200, Margin = margin };
+
+            // Only swap the defaults across when the fields still hold the other core's defaults
+            var previous = selected;
+            emulatorButton.SelectionChanged += (sender, args) =>
+            {
+                var chosen = Emulators.All.FirstOrDefault(entry => entry.Name == emulatorButton.SelectedItem?.ToString());
+                if (chosen == null)
+                    return;
+                if (userText.Text.Trim() == previous.DefaultUser)
+                    userText.Text = chosen.DefaultUser;
+                if (databaseText.Text.Trim() == previous.DefaultDatabase)
+                    databaseText.Text = chosen.DefaultDatabase;
+                emulatorButton.ToolTip = chosen.Description;
+                previous = chosen;
+            };
+
+            var confirmBtn = new EmulatorConfirmButton(enabledCheckbox, emulatorButton, hostText, portText, userText, passText, databaseText)
+            {
+                Content = "Save Changes",
+                Foreground = Brushes.Black,
+                Margin = new Thickness(10, 10, 10, 5),
+                MinHeight = 40
+            };
+            confirmBtn.Click += SaveEmulatorConfirmBtn_Click;
+
+            var testBtn = new EmulatorConfirmButton(enabledCheckbox, emulatorButton, hostText, portText, userText, passText, databaseText)
+            {
+                Content = "Test Connection",
+                Foreground = Brushes.Black,
+                Margin = new Thickness(10, 10, 10, 5),
+                MinHeight = 40
+            };
+            testBtn.Click += TestEmulatorConnection_Click;
+
+            var row = 0;
+            Grid.SetRow(header, row++);
+            Grid.SetColumn(header, 0);
+            Grid.SetColumnSpan(header, 3);
+
+            void AddPair(Label label, UIElement field)
+            {
+                Grid.SetRow(label, row);
+                Grid.SetColumn(label, 0);
+                Grid.SetRow(field, row++);
+                Grid.SetColumn(field, 1);
+                grid.Children.Add(label);
+                grid.Children.Add(field);
+            }
+
+            grid.Children.Add(header);
+            AddPair(enabledLabel, enabledCheckbox);
+            AddPair(emulatorLabel, emulatorButton);
+            AddPair(hostLabel, hostText);
+            AddPair(portLabel, portText);
+            AddPair(userLabel, userText);
+            AddPair(passLabel, passText);
+            AddPair(databaseLabel, databaseText);
+
+            Grid.SetRow(confirmBtn, row);
+            Grid.SetColumn(confirmBtn, 1);
+            Grid.SetRow(testBtn, row);
+            Grid.SetColumn(testBtn, 2);
+            grid.Children.Add(confirmBtn);
+            grid.Children.Add(testBtn);
+
+            parent.Children.Add(grid);
+            return currentRow;
+        }
+
+        private void SaveEmulatorConfirmBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as EmulatorConfirmButton;
+            Config.EmulatorType = button.Emulator().Id;
+            Config.EmulatorHost = button.Host();
+            Config.EmulatorPort = button.Port();
+            Config.EmulatorUser = button.Username();
+            Config.EmulatorPass = button.Pass();
+            Config.EmulatorDatabase = button.Database();
+            // Set last, it is the flag the main window watches to show or hide the tabs
+            Config.EmulatorEnabled = button.Enabled();
+
+            (Application.Current.MainWindow as MainWindow)?.ReloadEmulatorIntegration();
+            ShowFlyoutMessage($"Saved config.xml - The {button.Emulator().Name} tabs connect the next time you open one");
+        }
+
+        private async void TestEmulatorConnection_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as EmulatorConfirmButton;
+            var emulator = button.Emulator();
+            button.IsEnabled = false;
+            try
+            {
+                var database = new WorldDatabase(emulator, button.Host(), button.Port(),
+                    button.Username(), button.Pass(), button.Database());
+                var missing = await System.Threading.Tasks.Task.Run(() =>
+                {
+                    database.TestConnection();
+                    return database.FindMissingTables(emulator.Tables.Select(table => table.Name));
+                });
+
+                ShowFlyoutMessage(missing.Count == 0
+                    ? $"Connected to {button.Database()} and found all the {emulator.Name} spell tables."
+                    : $"Connected to {button.Database()}, but these tables are missing: {string.Join(", ", missing)}");
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, $"{emulator.Name} test connection failed");
+                ShowFlyoutMessage("Could not connect: " + exception.Message);
+            }
+            finally
+            {
+                button.IsEnabled = true;
+            }
         }
 
         private void OpenDirButton_Click(object sender, RoutedEventArgs e)
@@ -566,6 +772,40 @@ namespace SpellEditor
             public string Port() => _Port.Text;
 
             public string Database() => _Database.Text;
+        }
+
+        private class EmulatorConfirmButton : Button
+        {
+            private readonly System.Windows.Controls.CheckBox _Enabled;
+            private readonly SplitButton _Emulator;
+            private readonly TextBox _Host, _Port, _User, _Pass, _Database;
+
+            public EmulatorConfirmButton(System.Windows.Controls.CheckBox enabled, SplitButton emulator, TextBox host,
+                TextBox port, TextBox user, TextBox pass, TextBox database)
+            {
+                _Enabled = enabled;
+                _Emulator = emulator;
+                _Host = host;
+                _Port = port;
+                _User = user;
+                _Pass = pass;
+                _Database = database;
+            }
+
+            public bool Enabled() => _Enabled.IsChecked == true;
+
+            public Sources.Emulator.Emulator Emulator() =>
+                Emulators.All.FirstOrDefault(entry => entry.Name == _Emulator.SelectedItem?.ToString()) ?? Emulators.Default;
+
+            public string Host() => _Host.Text.Trim();
+
+            public string Port() => _Port.Text.Trim();
+
+            public string Username() => _User.Text.Trim();
+
+            public string Pass() => _Pass.Text;
+
+            public string Database() => _Database.Text.Trim();
         }
 
         private class SQLiteConfirmButton : Button

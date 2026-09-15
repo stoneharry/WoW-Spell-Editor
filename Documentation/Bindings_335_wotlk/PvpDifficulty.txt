@@ -1,0 +1,6 @@
+uint ID
+uint mapID
+uint rangeIndex
+uint minLevel
+uint maxLevel
+uint difficulty

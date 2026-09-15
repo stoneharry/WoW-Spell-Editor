@@ -1,0 +1,21 @@
+IGNORE_ORDER true
+uint ID
+uint sortIndex
+uint gmsurveyQuestionID
+uint answer1 string
+uint answer2 string
+uint answer3 string
+uint answer4 string
+uint answer5 string
+uint answer6 string
+uint answer7 string
+uint answer8 string
+uint answer9 string
+uint answer10 string
+uint answer11 string
+uint answer12 string
+uint answer13 string
+uint answer14 string
+uint answer15 string
+uint answer16 string
+uint answerFlags

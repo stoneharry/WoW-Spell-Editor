@@ -1,0 +1,16 @@
+uint ID
+uint epic1
+uint epic2
+uint epic3
+uint epic4
+uint epic5
+uint superior1
+uint superior2
+uint superior3
+uint superior4
+uint superior5
+uint good1
+uint good2
+uint good3
+uint good4
+uint good5

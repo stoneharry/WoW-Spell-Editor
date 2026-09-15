@@ -23,7 +23,9 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Name="Flyout" Position="Bottom" Height="65">
-                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize ="20" VerticalAlignment="Center"/>
+                <TextBlock Name="FlyoutText" Text="Placeholder" FontSize="20" VerticalAlignment="Center"
+                           Margin="10,0,10,0" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>

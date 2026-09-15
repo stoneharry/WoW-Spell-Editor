@@ -1,0 +1,5 @@
+IGNORE_ORDER true
+uint ID
+uint declinedWordID
+uint caseIndex
+uint declinedWord string

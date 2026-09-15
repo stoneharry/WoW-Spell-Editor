@@ -1,0 +1,18 @@
+uint ID
+uint category1 string
+uint category2 string
+uint category3 string
+uint category4 string
+uint category5 string
+uint category6 string
+uint category7 string
+uint category8 string
+uint category9 string
+uint category10 string
+uint category11 string
+uint category12 string
+uint category13 string
+uint category14 string
+uint category15 string
+uint category16 string
+uint categoryFlags

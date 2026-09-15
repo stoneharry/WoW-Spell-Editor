@@ -1,0 +1,45 @@
+uint ID
+uint name string
+uint flags
+uint soundBank
+uint soundID
+uint spellID
+float maxDarkenDepth
+float fogDarkenIntensity
+float ambDarkenIntensity
+float dirDarkenIntensity
+uint lightID
+float particleScale
+uint particleMovement
+uint particleTexSlots
+uint materialID
+uint texture1 string
+uint texture2 string
+uint texture3 string
+uint texture4 string
+uint texture5 string
+uint texture6 string
+uint color1
+uint color2
+float float1
+float float2
+float float3
+float float4
+float float5
+float float6
+float float7
+float float8
+float float9
+float float10
+float float11
+float float12
+float float13
+float float14
+float float15
+float float16
+float float17
+float float18
+uint int1
+uint int2
+uint int3
+uint int4

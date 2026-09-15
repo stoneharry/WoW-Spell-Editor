@@ -1,29 +1,40 @@
-﻿using NLog;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace SpellEditor.Sources.BLP
 {
     class BlpManager
     {
+        private const int MaxDecodeDimension = 128;
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        // For garbage collection of Bitmap handles
-        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeleteObject(IntPtr hObject);
-
         private static BlpManager _Instance = new BlpManager();
-        private ConcurrentDictionary<string, ImageSource> _ImageMap = new ConcurrentDictionary<string, ImageSource>();
+
+        private readonly ConcurrentDictionary<string, ImageSource> _ImageMap = new ConcurrentDictionary<string, ImageSource>();
+        private readonly ConcurrentStack<PendingLoad> _PendingLoads = new ConcurrentStack<PendingLoad>();
+        private readonly SemaphoreSlim _PendingSignal = new SemaphoreSlim(0);
 
         private BlpManager()
         {
+            var workerCount = Math.Max(2, Math.Min(4, Environment.ProcessorCount - 1));
+            for (var i = 0; i < workerCount; ++i)
+            {
+                var thread = new Thread(WorkerLoop)
+                {
+                    Name = "BlpLoader" + i,
+                    IsBackground = true,
+                    Priority = ThreadPriority.BelowNormal
+                };
+                thread.Start();
+            }
         }
 
         public static BlpManager GetInstance()
@@ -37,41 +48,110 @@ namespace SpellEditor.Sources.BLP
             {
                 return source;
             }
+            source = Decode(filePath);
+            _ImageMap.TryAdd(filePath, source);
+            return source;
+        }
+
+        public void RequestImageSource(string filePath, Action<ImageSource> onLoaded)
+        {
+            if (_ImageMap.TryGetValue(filePath, out ImageSource source))
+            {
+                onLoaded(source);
+                return;
+            }
+            var dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+            _PendingLoads.Push(new PendingLoad(filePath, onLoaded, dispatcher));
+            _PendingSignal.Release();
+        }
+
+        private void WorkerLoop()
+        {
+            while (true)
+            {
+                _PendingSignal.Wait();
+                if (!_PendingLoads.TryPop(out PendingLoad load))
+                {
+                    continue;
+                }
+                var source = GetImageSourceFromBlpPath(load.FilePath);
+                load.Dispatcher.BeginInvoke(DispatcherPriority.Background, load.OnLoaded, source);
+            }
+        }
+
+        private ImageSource Decode(string filePath)
+        {
             try
             {
-                using (var fileStream = new FileStream(filePath, FileMode.Open))
+                using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+                    32 * 1024, FileOptions.SequentialScan))
                 {
                     using (var blpImage = new SereniaBLPLib.BlpFile(fileStream))
                     {
-                        using (var bit = blpImage.getBitmap(0))
+                        var level = PickMipMapLevel(blpImage);
+                        var width = blpImage.GetMipMapWidth(level);
+                        var height = blpImage.GetMipMapHeight(level);
+                        var stride = width * 4;
+                        var required = stride * height;
+                        if (required <= 0)
                         {
-                            var handle = bit.GetHbitmap();
-                            try
-                            {
-                                source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                                    handle, IntPtr.Zero, Int32Rect.Empty,
-                                    BitmapSizeOptions.FromWidthAndHeight(bit.Width, bit.Height));
-                                // Freeze so that it can be accessed on any thread
-                                source.Freeze();
-                                _ImageMap.TryAdd(filePath, source);
-                                return source;
-                            }
-                            finally
-                            {
-                                DeleteObject(handle);
-                            }
+                            return null;
                         }
+                        var pixels = blpImage.getImageBytes(level);
+                        if (pixels == null || pixels.Length < required)
+                        {
+                            return null;
+                        }
+                        SwapRedAndBlue(pixels, required);
+                        var source = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null,
+                            pixels, stride);
+                        source.Freeze();
+                        return source;
                     }
                 }
             }
             catch (Exception e)
             {
-                // Logging full exception is quite costly here
                 Logger.Info($"[BlpManager] WARNING Unable to load image: {filePath} - {e.Message}");
-                // Making the choice here to not try to load the resource again until the program is restarted
-                _ImageMap.TryAdd(filePath, null);
+                return null;
             }
-            return null;
+        }
+
+        private static int PickMipMapLevel(SereniaBLPLib.BlpFile blpImage)
+        {
+            var count = blpImage.MipMapCount;
+            var level = 0;
+            while (level + 1 < count &&
+                   blpImage.GetMipMapWidth(level + 1) >= MaxDecodeDimension &&
+                   blpImage.GetMipMapHeight(level + 1) >= MaxDecodeDimension)
+            {
+                ++level;
+            }
+            return level;
+        }
+
+        private static void SwapRedAndBlue(byte[] pixels, int length)
+        {
+            for (var i = 0; i + 2 < length; i += 4)
+            {
+                var tmp = pixels[i];
+                pixels[i] = pixels[i + 2];
+                pixels[i + 2] = tmp;
+            }
+        }
+
+        private struct PendingLoad
+        {
+            public readonly string FilePath;
+            public readonly Action<ImageSource> OnLoaded;
+            public readonly Dispatcher Dispatcher;
+
+            public PendingLoad(string filePath, Action<ImageSource> onLoaded, Dispatcher dispatcher)
+            {
+                FilePath = filePath;
+                OnLoaded = onLoaded;
+                Dispatcher = dispatcher;
+            }
         }
     }
 }

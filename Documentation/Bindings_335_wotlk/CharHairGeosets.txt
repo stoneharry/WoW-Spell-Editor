@@ -1,0 +1,6 @@
+uint ID
+uint raceID
+uint sexID
+uint variationID
+uint geosetID
+uint showscalp

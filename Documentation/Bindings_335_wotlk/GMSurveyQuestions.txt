@@ -1,0 +1,18 @@
+uint ID
+uint question1 string
+uint question2 string
+uint question3 string
+uint question4 string
+uint question5 string
+uint question6 string
+uint question7 string
+uint question8 string
+uint question9 string
+uint question10 string
+uint question11 string
+uint question12 string
+uint question13 string
+uint question14 string
+uint question15 string
+uint question16 string
+uint questionFlags

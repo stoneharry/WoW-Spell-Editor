@@ -1,0 +1,11 @@
+uint ID
+uint mapID
+uint areaID
+uint areaName string
+float locLeft
+float locRight
+float locTop
+float locBottom
+int displayMapID
+int defaultDungeonFloor
+uint parentWorldMapID

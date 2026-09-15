@@ -1,0 +1,7 @@
+uint ID
+uint emoteSlashCommand string
+uint animID
+uint emoteFlags
+uint emoteSpecProc
+uint emoteSpecProcParam
+int eventSoundID

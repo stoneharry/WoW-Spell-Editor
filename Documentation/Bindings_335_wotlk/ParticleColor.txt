@@ -1,0 +1,10 @@
+uint ID
+int start1
+int start2
+int start3
+int mid1
+int mid2
+int mid3
+int end1
+int end2
+int end3

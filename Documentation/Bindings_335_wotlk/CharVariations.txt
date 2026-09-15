@@ -1,0 +1,7 @@
+IGNORE_ORDER true
+int raceID
+int sexID
+int textureHoldLayer1
+int textureHoldLayer2
+int textureHoldLayer3
+int textureHoldLayer4

@@ -1,0 +1,14 @@
+uint ID
+uint mapID
+uint leftBoundary
+uint rightBoundary
+uint topBoundary
+uint bottomBoundary
+float continentOffset1
+float continentOffset2
+float scale
+float taxiMin1
+float taxiMin2
+float taxiMax1
+float taxiMax2
+uint worldMapID

@@ -1,0 +1,8 @@
+uint ID
+uint shakeType
+uint direction
+float amplitude
+float frequency
+float duration
+float phase
+float coefficient

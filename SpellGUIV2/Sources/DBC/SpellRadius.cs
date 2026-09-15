@@ -7,9 +7,17 @@ namespace SpellEditor.Sources.DBC
     {
         public List<DBCBoxContainer> Lookups = new List<DBCBoxContainer>();
 
+        // The body is thrown away below, so keep the radius for the ${$a1} formula variable.
+        private readonly Dictionary<uint, float> _radiusById = new Dictionary<uint, float>();
+
         public SpellRadius()
         {
             ReadDBCFile(Config.Config.DbcDirectory + "\\SpellRadius.dbc");
+        }
+
+        public float LookupRadius(uint id)
+        {
+            return _radiusById.TryGetValue(id, out var radius) ? radius : 0f;
         }
 
         public override void LoadGraphicUserInterface()
@@ -26,6 +34,7 @@ namespace SpellEditor.Sources.DBC
                 uint id = (uint)record["ID"];
                 string label = $"{radius} - {maximumRadius}";
 
+                _radiusById[id] = radius;
                 Lookups.Add(new DBCBoxContainer(id, label, boxIndex));
 
                 ++boxIndex;

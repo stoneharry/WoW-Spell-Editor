@@ -1,0 +1,10 @@
+uint ID
+uint mapID
+float regionMin1
+float regionMin2
+float regionMax1
+float regionMax2
+uint newMapID
+float regionOffset1
+float regionOffset2
+uint newDungeonMapID

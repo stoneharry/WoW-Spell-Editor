@@ -1,0 +1,4 @@
+IGNORE_ORDER true
+uint itemButtonName string
+uint slotIcon string
+uint slotNumber

@@ -23,6 +23,8 @@ namespace SpellEditor.Sources.Controls.Common
 
         public virtual void PasteItemClick(object sender, RoutedEventArgs args) => InvokePasteAction();
 
+        public virtual void CopyIdItemClick(object sender, RoutedEventArgs args) { }
+
         public virtual void DeleteItemClick(object sender, RoutedEventArgs args) => InvokeDeleteAction();
 
         public virtual void CancelItemClick(object sender, RoutedEventArgs args) => InvokeCancelAction();

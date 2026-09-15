@@ -2,7 +2,7 @@
 uint Id
 uint Field01
 uint DisplayPower
-uint PetNameToken
+uint PetNameToken string
 uint Name1 string
 uint Name2 string
 uint Name3 string

@@ -16,67 +16,137 @@ using SpellEditor.Sources.VersionControl;
 namespace SpellEditor.Sources.Tools.SpellFamilyClassMaskStoreParser
 {
     public class SpellFamilyClassMaskParser
-    {        
-        //classMaskStore[spellFamily,MaskIndex,MaskSlot] = spellList
-        public ArrayList[,,] SpellFamilyClassMaskStore;
+    {
+        // classMaskStore[MaskIndex,MaskSlot] = spellList, one of these per spell family.
+        // Families are read from the database the first time something asks about them
+        // rather than indexing the whole spell table up front.
+        private readonly Dictionary<uint, ArrayList[,]> _FamilyStore = new Dictionary<uint, ArrayList[,]>();
+        private readonly IDatabaseAdapter _Adapter;
+        private bool _AllFamiliesCached;
 
         public SpellFamilyClassMaskParser(IDatabaseAdapter adapter)
         {
-            SpellFamilyClassMaskStore = new ArrayList[100, 3, 32]; // 18 -> 100 : I'm testing if we can create new spellfamilies just
+            _Adapter = adapter;
+        }
 
+        // The old startup behaviour, one pass over the whole spell table. Only used when
+        // the cache everything on load option is turned on.
+        public void CacheAllFamilies()
+        {
             var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
             var query = isWotlkOrGreater ?
                 "SELECT id,SpellFamilyName,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell" :
                 "SELECT id,SpellFamilyName,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell";
 
-            using (DataTable dt = adapter?.Query(query))
+            using (DataTable dt = _Adapter?.Query(query))
             {
                 if (dt == null)
                     return;
 
-                foreach (DataRow dr in dt.Rows)
+                lock (_FamilyStore)
                 {
-                    uint id = uint.Parse(dr[0].ToString());
-                    uint SpellFamilyName = uint.Parse(dr[1].ToString());
-                    uint[] SpellFamilyFlag;
-                    if (isWotlkOrGreater)
+                    _FamilyStore.Clear();
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()), uint.Parse(dr[4].ToString()) };
-                    }
-                    else
-                    {
-                        SpellFamilyFlag = new uint[] { uint.Parse(dr[2].ToString()), uint.Parse(dr[3].ToString()) };
-                    }
+                        uint spellFamilyName = uint.Parse(dr[1].ToString());
+                        if (spellFamilyName == 0)
+                            continue;
 
-                    if (SpellFamilyName == 0)
-                        continue;
-
-                    for (uint MaskIndex = 0; MaskIndex < (isWotlkOrGreater ? 3 : 2); MaskIndex++)
-                    {
-                        if (SpellFamilyFlag[MaskIndex] != 0)
+                        if (!_FamilyStore.TryGetValue(spellFamilyName, out var store))
                         {
-                            for (uint i = 0; i < 32; i++)
-                            {
-                                uint Mask = 1u << (int)i;
-
-                                if ((SpellFamilyFlag[MaskIndex] & Mask) != 0)
-                                {
-                                    if (SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] == null)
-                                        SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i] = new ArrayList();
-
-                                    SpellFamilyClassMaskStore[SpellFamilyName, MaskIndex, i].Add(id);
-                                }
-                            }
+                            store = new ArrayList[3, 32];
+                            _FamilyStore[spellFamilyName] = store;
                         }
+                        StoreSpellFlags(store, dr, 2, isWotlkOrGreater);
                     }
+                    _AllFamiliesCached = true;
                 }
             }
         }
 
+        public void InvalidateFamily(uint familyName)
+        {
+            lock (_FamilyStore)
+            {
+                _FamilyStore.Remove(familyName);
+                _AllFamiliesCached = false;
+            }
+        }
+
+        public void InvalidateAll()
+        {
+            lock (_FamilyStore)
+            {
+                _FamilyStore.Clear();
+                _AllFamiliesCached = false;
+            }
+        }
 
         public ArrayList GetSpellList(uint familyName, uint MaskIndex, uint MaskSlot)
         {
-            return (ArrayList)SpellFamilyClassMaskStore.GetValue(familyName, MaskIndex, MaskSlot);
+            if (MaskIndex > 2 || MaskSlot > 31)
+                return null;
+            var store = GetFamilyStore(familyName);
+            return store?[MaskIndex, MaskSlot];
+        }
+
+        private ArrayList[,] GetFamilyStore(uint familyName)
+        {
+            if (familyName == 0)
+                return null;
+
+            lock (_FamilyStore)
+            {
+                if (_FamilyStore.TryGetValue(familyName, out var cached))
+                    return cached;
+                if (_AllFamiliesCached)
+                    return null;
+            }
+
+            var isWotlkOrGreater = WoWVersionManager.IsWotlkOrGreaterSelected;
+            var query = isWotlkOrGreater ?
+                $"SELECT id,SpellFamilyFlags,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell WHERE SpellFamilyName = {familyName}" :
+                $"SELECT id,SpellFamilyFlags1,SpellFamilyFlags2 FROM spell WHERE SpellFamilyName = {familyName}";
+
+            var store = new ArrayList[3, 32];
+            using (DataTable dt = _Adapter?.Query(query))
+            {
+                if (dt == null)
+                    return null;
+
+                foreach (DataRow dr in dt.Rows)
+                    StoreSpellFlags(store, dr, 1, isWotlkOrGreater);
+            }
+
+            lock (_FamilyStore)
+            {
+                _FamilyStore[familyName] = store;
+            }
+            return store;
+        }
+
+        // Row layout is id, then the family flag columns starting at flagsColumn
+        private static void StoreSpellFlags(ArrayList[,] store, DataRow row, int flagsColumn, bool isWotlkOrGreater)
+        {
+            uint id = uint.Parse(row[0].ToString());
+            var maskCount = isWotlkOrGreater ? 3 : 2;
+            for (uint maskIndex = 0; maskIndex < maskCount; maskIndex++)
+            {
+                uint flags = uint.Parse(row[flagsColumn + (int)maskIndex].ToString());
+                if (flags == 0)
+                    continue;
+
+                for (uint i = 0; i < 32; i++)
+                {
+                    if ((flags & (1u << (int)i)) == 0)
+                        continue;
+
+                    if (store[maskIndex, i] == null)
+                        store[maskIndex, i] = new ArrayList();
+
+                    store[maskIndex, i].Add(id);
+                }
+            }
         }
 
         public void UpdateAllEffectFamiliesLists(MainWindow window, uint familyName, IDatabaseAdapter adapter)

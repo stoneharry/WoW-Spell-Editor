@@ -11,8 +11,12 @@ namespace SpellEditor.Sources.SpellStringTools
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        // Holds a $ inside an error message so the token pass below does not eat it
+        private const string DOLLAR_PLACEHOLDER = "\u0001";
+
         public static readonly string MODIFY_FORMULA_REGEX      = @"\$(\/|\*|\-|)\d+\;\d*\w+";                      // $/10;17057s1 | $/10;s1
         public static readonly string FORMULA_REGEX             = @"\$\{.*?}|\$\w*";                                // ${1 + $s1} | $s1
+        public static readonly string EXPRESSION_REGEX          = @"\$\{([^}]*)\}(?:\.([1-9]))?";                   // ${$abs($m1)} | ${$m1/3}.2
         public static readonly string LOCALE_STR_REGEX          = @"\$l(\w+\:)+\w+\;";                              // $lone_thing:two_things:three_things:four_things;
         public static readonly string CONDITIONAL_FORMULA_REGEX = @"\$\?(.+?)\[(.*?)\]\[(.*?)\]";                   // $?(s70937)[true condition][false $70907d]
         public static readonly string FORMULA_TAG_REGEX         = @"\$\<\w+\>";                                     // $<mult>
@@ -23,8 +27,19 @@ namespace SpellEditor.Sources.SpellStringTools
         public static readonly string MINUS_REGEX               = @"\-";                                            // -
         public static readonly string MULTIPLY_REGEX            = @"\*";                                            // *
         public static readonly string DIVIDE_REGEX              = @"\/";                                            // /
-        public static readonly string TOKEN_REGEX = 
+        public static readonly string TOKEN_REGEX =
             $"{MODIFY_FORMULA_REGEX }|{ REFERENCE_REGEX }|{ PLUS_REGEX }|{ MINUS_REGEX }|{ DIVIDE_REGEX }|{ MULTIPLY_REGEX }|{ NUMBER_REGEX }";
+
+        // Compiled once, the static Regex methods only cache 15 patterns and this file alone exceeds that
+        public static readonly Regex ModifyFormulaRegex = new Regex(MODIFY_FORMULA_REGEX, RegexOptions.Compiled);
+        public static readonly Regex ReferenceRegex = new Regex(REFERENCE_REGEX, RegexOptions.Compiled);
+        public static readonly Regex NumberRegex = new Regex(NUMBER_REGEX, RegexOptions.Compiled);
+        private static readonly Regex LocaleStrRegex = new Regex(LOCALE_STR_REGEX, RegexOptions.Compiled);
+        private static readonly Regex ConditionalFormulaRegex = new Regex(CONDITIONAL_FORMULA_REGEX, RegexOptions.Compiled);
+        private static readonly Regex FormulaTagRegex = new Regex(FORMULA_TAG_REGEX, RegexOptions.Compiled);
+        private static readonly Regex ExpressionRegex = new Regex(EXPRESSION_REGEX, RegexOptions.Compiled);
+        private static readonly Regex AllFormulaRegex = new Regex(ALL_FORMULA_REGEX, RegexOptions.Compiled);
+        private static readonly Regex TokenRegex = new Regex(TOKEN_REGEX, RegexOptions.Compiled);
 
         protected string ResolveReference(string reference, DataRow spell, MainWindow mainWindow)
         {
@@ -35,8 +50,12 @@ namespace SpellEditor.Sources.SpellStringTools
         // Can parse references like "$s1"
         public string ParseString(string str, DataRow spell, MainWindow mainWindow)
         {
+            // Nothing in here does anything without a $, and this runs on every keystroke
+            if (string.IsNullOrEmpty(str) || str.IndexOf('$') < 0)
+                return str;
+
             // Replace locale strings first
-            foreach (var localeMatch in Regex.Matches(str, LOCALE_STR_REGEX))
+            foreach (var localeMatch in LocaleStrRegex.Matches(str))
             {
                 var localeFormula = localeMatch.ToString();
                 // The correct string to use appears to depend on the localisation.
@@ -44,34 +63,73 @@ namespace SpellEditor.Sources.SpellStringTools
                 var useWord = localeFormula.Substring(2, localeFormula.IndexOf(':') - 2);
                 str = str.Replace(localeFormula, useWord);
             }
-            foreach (Match conditionMatch in Regex.Matches(str, CONDITIONAL_FORMULA_REGEX))
+            foreach (Match conditionMatch in ConditionalFormulaRegex.Matches(str))
             {
                 // Always take the true condition value because we don't have a player context
                 str = str.Replace(conditionMatch.ToString(), conditionMatch.Groups[2].Value);
             }
-            foreach (var match in Regex.Matches(str, FORMULA_TAG_REGEX))
+            foreach (var match in FormulaTagRegex.Matches(str))
             {
                 // Strip formula tags
                 str = str.Replace(match.ToString(), "0");
             }
+            str = ParseExpressions(str, spell, mainWindow);
             // Parse formulas and resolve
             var formulas = FindFormulas(str);
             foreach (var formula in formulas)
             {
-                Logger.Info(formula + "\t----\t" + "Processing");
+                if (Logger.IsTraceEnabled)
+                    Logger.Trace(formula + "\t----\t" + "Processing");
                 str = str.Replace(formula, ParseFormula(formula, spell, mainWindow));
             }
-            return str;
+            return str.Replace(DOLLAR_PLACEHOLDER, "$");
+        }
+
+        // Resolve every ${} through the game's formula grammar, see SpellFormula.
+        private string ParseExpressions(string str, DataRow spell, MainWindow mainWindow)
+        {
+            if (str.IndexOf("${", StringComparison.Ordinal) < 0)
+                return str;
+
+            // One pass, so a formula that is the prefix of a longer one cannot eat it
+            var resolved = new Dictionary<string, string>();
+            return ExpressionRegex.Replace(str, match =>
+            {
+                if (resolved.TryGetValue(match.Value, out var cached))
+                    return cached;
+
+                var decimals = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+                string replacement;
+                if (SpellFormula.TryEvaluate(match.Groups[1].Value, spell, mainWindow, out var value, out var error))
+                {
+                    replacement = SpellFormula.Format(value, decimals);
+                }
+                else
+                {
+                    // A formula the game cannot work out renders as a bare $, so say what is
+                    // wrong rather than show a number that will never appear in a tooltip.
+                    replacement = "<ERROR: " + error.Replace("$", DOLLAR_PLACEHOLDER) + ">";
+                    if (Logger.IsTraceEnabled)
+                        Logger.Trace($"{match.Value}\t----\t{error}");
+                }
+
+                resolved[match.Value] = replacement;
+                return replacement;
+            });
         }
 
         // Find ${} and $vars in the formula string
         protected List<string> FindFormulas(string str)
         {
-            var regexMatches = Regex.Matches(str, ALL_FORMULA_REGEX);
+            var regexMatches = AllFormulaRegex.Matches(str);
             var tokenList = new List<string>(regexMatches.Count);
+            // The caller replaces every occurrence at once, so a repeated formula resolves once
+            var seen = new HashSet<string>();
             foreach (var tokenStr in regexMatches)
             {
-                tokenList.Add(tokenStr.ToString());
+                var formula = tokenStr.ToString();
+                if (seen.Add(formula))
+                    tokenList.Add(formula);
             }
             return tokenList;
         }
@@ -79,7 +137,7 @@ namespace SpellEditor.Sources.SpellStringTools
         // Parse a formula string resolving all references and calculating arithmetic
         private string ParseFormula(string formula, DataRow spell, MainWindow mainWindow)
         {
-            var matches = Regex.Matches(formula, TOKEN_REGEX);
+            var matches = TokenRegex.Matches(formula);
             var tokens = TokenizeFormulaMatches(matches, spell, mainWindow);
             // Derive token values
             for (int index = 0; index < tokens.Count; ++index)
@@ -89,11 +147,11 @@ namespace SpellEditor.Sources.SpellStringTools
             // Replace tokens with derived token values in formula
             for (int index = 0; index < tokens.Count; ++index)
             {
-                Logger.Info($"> Token '{ tokens[index].Value }' derived value '{ tokens[index].ResolvedValue }'");
+                if (Logger.IsTraceEnabled)
+                    Logger.Trace($"> Token '{ tokens[index].Value }' derived value '{ tokens[index].ResolvedValue }'");
                 if (tokens[index].ResolvedValue != null)
                 {
-                    var regex = new Regex(Regex.Escape(tokens[index].Value));
-                    formula = regex.Replace(formula, tokens[index].ResolvedValue.ToString(), 1);
+                    formula = ReplaceFirst(formula, tokens[index].Value, tokens[index].ResolvedValue.ToString());
                 }
             }
             // Strip prefix ${ and suffix }
@@ -103,6 +161,14 @@ namespace SpellEditor.Sources.SpellStringTools
             else if (formula.StartsWith("$"))
                 return formula.Substring(1).Trim();
             return formula.Trim();
+        }
+
+        private static string ReplaceFirst(string str, string find, string replace)
+        {
+            var at = str.IndexOf(find, StringComparison.Ordinal);
+            if (at < 0)
+                return str;
+            return str.Substring(0, at) + replace + str.Substring(at + find.Length);
         }
 
         // Return true if the token is a arithmetic operator
@@ -123,10 +189,12 @@ namespace SpellEditor.Sources.SpellStringTools
                 prevToken.Type != TokenType.NUMBER ||
                 nextToken.Type != TokenType.NUMBER)
             {
+                if (!Logger.IsTraceEnabled)
+                    return false;
                 if (prevToken == null || nextToken == null)
-                    Logger.Info($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
+                    Logger.Trace($"Unexpected null token: [{ prevToken }][{ token.Type }][{ nextToken }]");
                 else
-                    Logger.Info($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
+                    Logger.Trace($"Unexpected tokens [{ prevToken.Value }, { prevToken.Type }] { token.Type } [{ nextToken.Value }, { nextToken.Type }]");
                 return false;
             }
             return true;
@@ -231,7 +299,8 @@ namespace SpellEditor.Sources.SpellStringTools
                         }
                 }
                 tokens.Add(token);
-                Logger.Info($"Token: [{ token.Value }, {token.Type.ToString() }, { token.ResolvedValue }]");
+                if (Logger.IsTraceEnabled)
+                    Logger.Trace($"Token: [{ token.Value }, { token.Type }, { token.ResolvedValue }]");
             }
             return tokens;
         }

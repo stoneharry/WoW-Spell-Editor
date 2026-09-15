@@ -1,0 +1,7 @@
+uint ID
+uint vocalUienum
+uint raceID
+int normalSoundID1
+int normalSoundID2
+int pissedSoundID1
+int pissedSoundID2

@@ -1,0 +1,8 @@
+uint ID
+uint ambienceID
+uint effectType
+float transitionSkyBox
+float effectColor1
+float effectColor2
+float effectColor3
+uint effectTexture string

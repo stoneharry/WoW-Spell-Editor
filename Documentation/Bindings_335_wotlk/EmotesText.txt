@@ -1,0 +1,19 @@
+uint ID
+uint name string
+uint emoteID
+uint emoteText1
+uint emoteText2
+uint emoteText3
+uint emoteText4
+uint emoteText5
+uint emoteText6
+uint emoteText7
+uint emoteText8
+uint emoteText9
+uint emoteText10
+uint emoteText11
+uint emoteText12
+uint emoteText13
+uint emoteText14
+uint emoteText15
+uint emoteText16

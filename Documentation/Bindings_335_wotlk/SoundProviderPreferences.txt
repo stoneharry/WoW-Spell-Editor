@@ -1,0 +1,24 @@
+uint ID
+uint description string
+uint flags
+int eaxenvironmentSelection
+float eaxdecayTime
+float eax2EnvironmentSize
+float eax2EnvironmentDiffusion
+int eax2Room
+int eax2RoomHf
+float eax2DecayHfratio
+int eax2Reflections
+float eax2ReflectionsDelay
+int eax2Reverb
+float eax2ReverbDelay
+float eax2RoomRolloff
+float eax2AirAbsorption
+uint eax3RoomLf
+float eax3DecayLfratio
+float eax3EchoTime
+float eax3EchoDepth
+float eax3ModulationTime
+float eax3ModulationDepth
+float eax3Hfreference
+float eax3Lfreference

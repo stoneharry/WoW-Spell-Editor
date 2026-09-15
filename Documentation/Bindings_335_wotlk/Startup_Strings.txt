@@ -1,0 +1,19 @@
+uint ID
+uint name string
+uint message1 string
+uint message2 string
+uint message3 string
+uint message4 string
+uint message5 string
+uint message6 string
+uint message7 string
+uint message8 string
+uint message9 string
+uint message10 string
+uint message11 string
+uint message12 string
+uint message13 string
+uint message14 string
+uint message15 string
+uint message16 string
+uint messageFlags

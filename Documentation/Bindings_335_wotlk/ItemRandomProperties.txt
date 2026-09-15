@@ -1,0 +1,24 @@
+uint ID
+uint name string
+uint enchantment1
+uint enchantment2
+uint enchantment3
+uint enchantment4
+uint enchantment5
+uint name_lang1 string
+uint name_lang2 string
+uint name_lang3 string
+uint name_lang4 string
+uint name_lang5 string
+uint name_lang6 string
+uint name_lang7 string
+uint name_lang8 string
+uint name_lang9 string
+uint name_lang10 string
+uint name_lang11 string
+uint name_lang12 string
+uint name_lang13 string
+uint name_lang14 string
+uint name_lang15 string
+uint name_lang16 string
+uint name_langFlags

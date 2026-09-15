@@ -1,0 +1,11 @@
+uint ID
+uint field1
+uint field2
+uint field3
+uint field4
+uint field5
+uint field6
+uint field7
+uint field8
+uint field9
+uint field10

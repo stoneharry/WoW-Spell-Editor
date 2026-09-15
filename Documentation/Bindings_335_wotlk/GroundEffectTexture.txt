@@ -1,0 +1,12 @@
+IGNORE_ORDER true
+uint ID
+uint doodadID1
+uint doodadID2
+uint doodadID3
+uint doodadID4
+uint doodadWeight1
+uint doodadWeight2
+uint doodadWeight3
+uint doodadWeight4
+uint density
+uint sound

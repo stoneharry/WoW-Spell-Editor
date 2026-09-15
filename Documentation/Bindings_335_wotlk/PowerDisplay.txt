@@ -1,0 +1,6 @@
+uint ID
+uint actualType
+uint globalStringBaseTag string
+uint8 red
+uint8 green
+uint8 blue

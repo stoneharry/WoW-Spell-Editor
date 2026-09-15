@@ -1,0 +1,18 @@
+uint ID
+uint infoName1 string
+uint infoName2 string
+uint infoName3 string
+uint infoName4 string
+uint infoName5 string
+uint infoName6 string
+uint infoName7 string
+uint infoName8 string
+uint infoName9 string
+uint infoName10 string
+uint infoName11 string
+uint infoName12 string
+uint infoName13 string
+uint infoName14 string
+uint infoName15 string
+uint infoName16 string
+uint infoNameFlags

@@ -1,0 +1,219 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to create (e.g. v2.3.2)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark this release as a prerelease'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  RUNTIME_ID: win-x64
+  PRODUCT_NAME: WoW Spell Editor
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag does not already exist
+        shell: pwsh
+        run: |
+          $tag = '${{ inputs.tag }}'
+          if ($tag -notmatch '^[A-Za-z0-9._\-\+/]+$') {
+            throw "Tag '$tag' contains characters that are not valid in a git ref."
+          }
+          if (git tag --list $tag) {
+            throw "Tag '$tag' already exists. Pick a different tag or delete the existing one."
+          }
+          Write-Host "Tag '$tag' is available."
+
+      - name: Verify icon pack is present
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'Icons/Interface.zip')) {
+            throw "Icons/Interface.zip is missing from the repository. It must be committed for the release to include spell icons."
+          }
+          $mb = [math]::Round((Get-Item 'Icons/Interface.zip').Length / 1MB, 1)
+          Write-Host "Found Icons/Interface.zip ($mb MB)."
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore SpellGUIV2.sln
+
+      - name: Build
+        run: dotnet build SpellGUIV2.sln -c Release --no-restore
+
+      - name: Publish single-file self-contained
+        run: >
+          dotnet publish SpellGUIV2/SpellEditor.csproj
+          -c Release
+          -r ${{ env.RUNTIME_ID }}
+          --self-contained true
+          -o staging
+
+      - name: Extract spell icons into package
+        shell: pwsh
+        run: |
+          & 'C:\Program Files\7-Zip\7z.exe' x 'Icons\Interface.zip' '-ostaging' -y
+          if ($LASTEXITCODE -ne 0) { throw "Failed to extract Icons/Interface.zip" }
+          $blp = (Get-ChildItem 'staging\Interface' -Recurse -Filter *.blp | Measure-Object).Count
+          if ($blp -eq 0) { throw "No .blp files landed in staging\Interface after extraction." }
+          Write-Host "Extracted $blp icon files."
+
+      - name: Verify package contents
+        shell: pwsh
+        run: |
+          $required = @(
+            'staging\SpellEditor.exe',
+            'staging\Bindings_335_wotlk',
+            'staging\Languages',
+            'staging\Interface\Icons'
+          )
+          $missing = $required | Where-Object { -not (Test-Path $_) }
+          if ($missing) { throw "Missing from package:`n" + ($missing -join "`n") }
+
+          $strays = Get-ChildItem 'staging' -Recurse -File -Include *.dll, *.pdb, *.deps.json, *.runtimeconfig.json
+          if ($strays) {
+            throw "Package is not self-contained, these should be inside SpellEditor.exe:`n" + ($strays.FullName -join "`n")
+          }
+
+          $bytes = [System.IO.File]::ReadAllBytes('staging\SpellEditor.exe')
+          $text = [System.Text.Encoding]::UTF8.GetString($bytes)
+          foreach ($native in @('StormLib.dll', 'SQLite.Interop.dll')) {
+            if ($text -notmatch [regex]::Escape($native)) {
+              throw "$native was not bundled into SpellEditor.exe."
+            }
+          }
+
+          $exeMb = [math]::Round((Get-Item 'staging\SpellEditor.exe').Length / 1MB, 1)
+          $size = [math]::Round((Get-ChildItem 'staging' -Recurse -File | Measure-Object Length -Sum).Sum / 1MB, 1)
+          $count = (Get-ChildItem 'staging' -Recurse -File | Measure-Object).Count
+          Write-Host "SpellEditor.exe: $exeMb MB. Package: $count files, $size MB"
+
+      - name: Build archives
+        shell: pwsh
+        run: |
+          $tag = '${{ inputs.tag }}'
+          $safeTag = $tag -replace '[\\/:*?"<>|]', '-'
+          $base = "SpellEditor-$safeTag-${{ env.RUNTIME_ID }}"
+          "BASE_NAME=$base" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+          $sevenZip = 'C:\Program Files\7-Zip\7z.exe'
+          $sfxModule = 'C:\Program Files\7-Zip\7z.sfx'
+          if (-not (Test-Path $sfxModule)) { throw "7z.sfx module not found at $sfxModule" }
+
+          & $sevenZip a -t7z -mx=9 -mmt=on "$base.7z" ".\staging\*"
+          if ($LASTEXITCODE -ne 0) { throw "7z archive creation failed" }
+
+          & $sevenZip a -tzip -mx=9 -mmt=on "$base.zip" ".\staging\*"
+          if ($LASTEXITCODE -ne 0) { throw "zip archive creation failed" }
+
+          $installer = "$base-Setup.exe"
+          $out = [System.IO.File]::Create((Join-Path $PWD $installer))
+          try {
+            foreach ($part in @($sfxModule, (Join-Path $PWD "$base.7z"))) {
+              $bytes = [System.IO.File]::ReadAllBytes($part)
+              $out.Write($bytes, 0, $bytes.Length)
+            }
+          } finally {
+            $out.Dispose()
+          }
+
+          if ((Get-Item $installer).Length -le (Get-Item "$base.7z").Length) {
+            throw "Installer stub concatenation produced an unexpected size."
+          }
+          Get-ChildItem "$base.*" | ForEach-Object {
+            "{0,-55} {1,8:N1} MB" -f $_.Name, ($_.Length / 1MB)
+          }
+
+      - name: Smoke test the installer
+        shell: pwsh
+        run: |
+          $installer = "${{ env.BASE_NAME }}-Setup.exe"
+          & 'C:\Program Files\7-Zip\7z.exe' t $installer
+          if ($LASTEXITCODE -ne 0) { throw "Installer failed its 7-Zip integrity check." }
+
+          $listing = & 'C:\Program Files\7-Zip\7z.exe' l $installer
+          if ($LASTEXITCODE -ne 0) { throw "Could not list the installer contents." }
+          $listing | Select-String -Pattern 'SpellEditor\.exe|Interface\\Icons' | Select-Object -First 5
+
+      - name: Generate checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem "${{ env.BASE_NAME }}.7z", "${{ env.BASE_NAME }}.zip", "${{ env.BASE_NAME }}-Setup.exe" |
+            ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } |
+            Out-File -FilePath 'SHA256SUMS.txt' -Encoding ascii
+          Get-Content 'SHA256SUMS.txt'
+
+      - name: Create tag
+        shell: pwsh
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag -a '${{ inputs.tag }}' -m '${{ env.PRODUCT_NAME }} ${{ inputs.tag }}'
+          git push origin 'refs/tags/${{ inputs.tag }}'
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $name = '${{ env.BASE_NAME }}'
+          $notes = @(
+            'Self-contained build for ${{ env.RUNTIME_ID }}. No .NET runtime install is required.',
+            '',
+            '## Downloads',
+            '',
+            "- **$name-Setup.exe** - self-extracting installer. Run it and choose a folder.",
+            "- **$name.7z** - extract it yourself with 7-Zip.",
+            "- **$name.zip** - plain zip, no extra tools needed.",
+            '',
+            'Spell icons are bundled, so Interface\Icons is already populated on first launch.',
+            'Verify your download against SHA256SUMS.txt.'
+          )
+          $notes | Set-Content -Path 'release-notes.md' -Encoding utf8
+
+          $ghArgs = @(
+            'release', 'create', '${{ inputs.tag }}',
+            "$name-Setup.exe",
+            "$name.7z",
+            "$name.zip",
+            'SHA256SUMS.txt',
+            '--title', '${{ env.PRODUCT_NAME }} ${{ inputs.tag }}',
+            '--notes-file', 'release-notes.md'
+          )
+          if ('${{ inputs.prerelease }}' -eq 'true') { $ghArgs += '--prerelease' }
+          gh @ghArgs
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: spell-editor-${{ inputs.tag }}
+          path: |
+            ${{ env.BASE_NAME }}-Setup.exe
+            SHA256SUMS.txt
+          if-no-files-found: warn
+          retention-days: 14

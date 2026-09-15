@@ -1,465 +1,69 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" />
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CB1E1DBC-5F26-4F7E-9B44-3E1F62D1D30A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>SpellEditor</RootNamespace>
     <AssemblyName>SpellEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+    <NoWarn>$(NoWarn);CA1416;SYSLIB0014</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
+
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
-      <HintPath>..\packages\Costura.Fody.4.1.0\lib\net40\Costura.dll</HintPath>
-    </Reference>
-    <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.33.1.0\lib\net48\CsvHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Protobuf, Version=3.19.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.19.4\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Compression.LZ4, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Compression.LZ4.1.2.6\lib\net45\K4os.Compression.LZ4.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.2.6.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.2.6\lib\net45\K4os.Compression.LZ4.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Hash.xxHash, Version=1.0.6.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Hash.xxHash.1.0.6\lib\net45\K4os.Hash.xxHash.dll</HintPath>
-    </Reference>
-    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.4.11\lib\net47\MahApps.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data, Version=8.0.29.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.29\lib\net452\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="SereniaBLPLib">
-      <HintPath>Resources\SereniaBLPLib.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net451\System.Data.SQLite.dll</HintPath>
-      <Private>True</Private>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="System.Data.SQLite.EF6, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.104.0\lib\net451\System.Data.SQLite.EF6.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.104.0\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.29\lib\net452\Ubiety.Dns.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="ZstdNet, Version=1.4.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.29\lib\net452\ZstdNet.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="ConfigWindow.xaml.cs">
-      <DependentUpon>ConfigWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="OpenAIWindow.xaml.cs">
-      <DependentUpon>OpenAIWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LogBookWindow.xaml.cs">
-      <DependentUpon>LogBookWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ImportExportWindow.xaml.cs">
-      <DependentUpon>ImportExportWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\AI\AIController.cs" />
-    <Compile Include="Sources\AI\AiEnumRegistry.cs" />
-    <Compile Include="Sources\AI\AISemanticRegistry.cs" />
-    <Compile Include="Sources\AI\AiSimilarSpellFinder.cs" />
-    <Compile Include="Sources\AI\AiSimilarSpellSummary.cs" />
-    <Compile Include="Sources\AI\AiSpellDefinition.cs" />
-    <Compile Include="Sources\AI\AiSpellMapper.cs" />
-    <Compile Include="Sources\AI\AiSpellResult.cs" />
-    <Compile Include="Sources\AI\AiSpellSemanticExtractor.cs" />
-    <Compile Include="Sources\AI\OpenAIClient.cs" />
-    <Compile Include="Sources\AI\SpellDbcEnumProvider.cs" />
-    <Compile Include="Sources\Constants\SpellCategoyNames.cs" />
-    <Compile Include="Sources\Controls\ListPickerDialog\ListPickerDialogBase.xaml.cs">
-      <DependentUpon>ListPickerDialogBase.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Controls\ListPickerDialog\SpellPickerDialog.cs" />
-    <Compile Include="Sources\Controls\SpellSelectList\PinIconConverter.cs" />
-    <Compile Include="Sources\Controls\SpellSelectList\RelayCommand.cs" />
-    <Compile Include="Sources\Binding\Binding.cs" />
-    <Compile Include="Sources\Binding\BindingType.cs" />
-    <Compile Include="Sources\Binding\BindingEntry.cs" />
-    <Compile Include="Sources\Binding\BindingManager.cs" />
-    <Compile Include="Sources\BLP\BlpManager.cs" />
-    <Compile Include="Sources\Config\Config.cs" />
-    <Compile Include="Sources\Constants\MiscValueData.cs" />
-    <Compile Include="Sources\Controls\Common\FilteredComboBox.cs" />
-    <Compile Include="Sources\Controls\Common\FriendlyLabel.cs" />
-    <Compile Include="Sources\Controls\Common\TextOnlyNumericUpDown.cs" />
-    <Compile Include="Sources\Controls\SpellFamilyNames\SpellFamiliesWindow.xaml.cs">
-      <DependentUpon>SpellFamiliesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Controls\SpellFamilyNames\SpellFamilyNames.cs" />
-    <Compile Include="Sources\Controls\SpellSelectList\SpellLogRecord.cs" />
-    <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionEntry.cs" />
-    <Compile Include="Sources\Controls\SpellSelectList\SpellSelectionList.cs" />
-    <Compile Include="Sources\Controls\Common\SyntaxHighlightBox.cs" />
-    <Compile Include="Sources\Controls\Common\AbstractListEntry.cs" />
-    <Compile Include="Sources\Controls\Common\IListEntry.cs" />
-    <Compile Include="Sources\Controls\Common\ListContextMenu.cs" />
-    <Compile Include="Sources\Controls\Visual\VisualMissileSelectMenuItem.cs" />
-    <Compile Include="Sources\Controls\Visual\VisualPasteListEntry.cs" />
-    <Compile Include="Sources\Controls\Visual\VisualEffectListEntry.cs" />
-    <Compile Include="Sources\Controls\Visual\VisualKitListEntry.cs" />
-    <Compile Include="Sources\Database\SqlFileStorage.cs" />
-    <Compile Include="Sources\Database\CsvFileStorage.cs" />
-    <Compile Include="Sources\Database\DbcFileStorage.cs" />
-    <Compile Include="Sources\Database\StorageAdapter.cs" />
-    <Compile Include="Sources\Database\StorageFactory.cs" />
-    <Compile Include="Sources\Database\ImportExportType.cs" />
-    <Compile Include="Sources\Database\AdapterFactory.cs" />
-    <Compile Include="Sources\DBC\AnimationData.cs" />
-    <Compile Include="Sources\DBC\DBCBodyToSerialize.cs" />
-    <Compile Include="Sources\DBC\IGraphicUserInterfaceDBC.cs" />
-    <Compile Include="Sources\DBC\Languages.cs" />
-    <Compile Include="Sources\DBC\SpellShapeshiftForm.cs" />
-    <Compile Include="Sources\DBC\CreatureType.cs" />
-    <Compile Include="Sources\DBC\ScreenEffect.cs" />
-    <Compile Include="Sources\DBC\SkillLineCategory.cs" />
-    <Compile Include="Sources\DBC\MutableGenericDbc.cs" />
-    <Compile Include="Sources\Constants\SpellVisualKitModelAttach.cs" />
-    <Compile Include="Sources\DBC\LockType.cs" />
-    <Compile Include="Sources\DBC\SkillLine.cs" />
-    <Compile Include="Sources\Locale\LocaleManager.cs" />
-    <Compile Include="Sources\Tools\MPQ\MpqExport.cs" />
-    <Compile Include="Sources\Tools\VisualTools\VisualController.cs" />
-    <Compile Include="Sources\Tools\VisualTools\VisualMapBuilder.cs" />
-    <Compile Include="Sources\VersionControl\WoWVersion.cs" />
-    <Compile Include="Sources\Controls\DBC\IBoxContentProvider.cs" />
-    <Compile Include="Sources\Controls\DBC\DBCBoxContainer.cs" />
-    <Compile Include="Sources\Database\IDatabaseAdapter.cs" />
-    <Compile Include="Sources\Constants\Locale.cs" />
-    <Compile Include="Sources\Constants\Targets.cs" />
-    <Compile Include="Sources\Constants\TextFlags.cs" />
-    <Compile Include="Sources\Controls\Common\ThreadSafeCheckBox.cs" />
-    <Compile Include="Sources\Controls\Common\ThreadSafeComboBox.cs" />
-    <Compile Include="Sources\Controls\Common\ThreadSafeTextBox.cs" />
-    <Compile Include="Sources\DBC\AreaGroup.cs" />
-    <Compile Include="Sources\DBC\DBCManager.cs" />
-    <Compile Include="Sources\DBC\GenericDbc.cs" />
-    <Compile Include="Sources\DBC\AreaTable.cs" />
-    <Compile Include="Sources\DBC\DBCReader.cs" />
-    <Compile Include="Sources\DBC\ItemClass.cs" />
-    <Compile Include="Sources\DBC\ItemSubClass.cs" />
-    <Compile Include="Sources\DBC\SpellCastTimes.cs" />
-    <Compile Include="Sources\DBC\SpellCategory.cs" />
-    <Compile Include="Sources\DBC\SpellDBC.cs" />
-    <Compile Include="Sources\DBC\SpellDescriptionVariables.cs" />
-    <Compile Include="Sources\DBC\SpellDifficulty.cs" />
-    <Compile Include="Sources\DBC\SpellDispelType.cs" />
-    <Compile Include="Sources\DBC\SpellDuration.cs" />
-    <Compile Include="Sources\DBC\SpellFocusObject.cs" />
-    <Compile Include="Sources\DBC\SpellIconDBC.cs" />
-    <Compile Include="Sources\DBC\SpellMechanic.cs" />
-    <Compile Include="Sources\DBC\SpellRadius.cs" />
-    <Compile Include="Sources\DBC\SpellRange.cs" />
-    <Compile Include="Sources\DBC\SpellRuneCost.cs" />
-    <Compile Include="Sources\DBC\TotemCategory.cs" />
-    <Compile Include="Sources\Database\MySQL.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\SpellFamilyClassMaskParser.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\SpellStringReferenceResolver.cs" />
-    <Compile Include="Sources\Database\SQLite.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\SpellStringParser.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\Token.cs" />
-    <Compile Include="Sources\Tools\SpellStringTools\TokenType.cs" />
-    <Compile Include="Sources\VersionControl\WoWVersionManager.cs" />
-    <Page Include="ConfigWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="OpenAIWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="LogBookWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ImportExportWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Sources\Controls\ListPickerDialog\ListPickerDialogBase.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sources\Controls\SpellFamilyNames\SpellFamiliesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-    <Compile Include="Sources\DBC\AbstractDBC.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Page Remove="Resources\**\*.xaml" />
+    <None Remove="Resources\**\*.xaml" />
+    <None Remove="icon.ico" />
+    <None Remove="Sources\Controls\SpellFamilyNames\icon.ico" />
     <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\stormlibsharp\src\StormLibSharp\StormLibSharp.csproj">
-      <Project>{D0139C61-6BA0-4F07-B1E8-551023CD2624}</Project>
-      <Name>StormLibSharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.8 %28x86 et x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Sources\Controls\SpellFamilyNames\icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Costura32\StormLib.dll" />
-    <EmbeddedResource Include="Costura64\StormLib.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Costura32\SQLite.Interop.dll" />
-    <EmbeddedResource Include="Costura64\SQLite.Interop.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.4.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.4.2.1\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props'))" />
-  </Target>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <PropertyGroup>
-    <PostBuildEvent>rem ---- Remove unwanted XML doc files, keep config.xml ----
-for %25%25f in ("$(TargetDir)*.xml") do (
-    if /I not "%25%25~nxf"=="config.xml" (
-        del "%25%25f"
-    )
-)
 
-xcopy "$(ProjectDir)..\Documentation\*" "$(TargetDir)" /E /Y /I</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.11" />
+    <PackageReference Include="MySql.Data" Version="26.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.2.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SereniaBLPLib\SereniaBLPLib.csproj" />
+    <ProjectReference Include="..\StormLibSharp\StormLibSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Documentation\**\*">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="BundleStormLibAsNative" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <_StormLibAll Include="@(ResolvedFileToPublish)" Condition="'%(Filename)%(Extension)' == 'StormLib.dll'" />
+      <_StormLibForRid Include="@(_StormLibAll)" Condition="'%(RelativePath)' == 'runtimes\$(RuntimeIdentifier)\native\StormLib.dll'" />
+      <ResolvedFileToPublish Remove="@(_StormLibAll)" />
+      <ResolvedFileToPublish Include="@(_StormLibForRid)" AssetType="native" RelativePath="StormLib.dll" />
+    </ItemGroup>
+    <Error Condition="'@(_StormLibForRid)' == ''" Text="No StormLib.dll found for runtime identifier '$(RuntimeIdentifier)'." />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Import Project="..\packages\Costura.Fody.4.1.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.targets')" />
-  <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
+
 </Project>

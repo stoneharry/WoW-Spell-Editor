@@ -1,0 +1,18 @@
+uint ID
+uint text1 string
+uint text2 string
+uint text3 string
+uint text4 string
+uint text5 string
+uint text6 string
+uint text7 string
+uint text8 string
+uint text9 string
+uint text10 string
+uint text11 string
+uint text12 string
+uint text13 string
+uint text14 string
+uint text15 string
+uint text16 string
+uint textFlags

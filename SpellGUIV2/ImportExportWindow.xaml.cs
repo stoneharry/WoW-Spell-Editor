@@ -407,7 +407,7 @@ namespace SpellEditor
         {
             var manager = DBCManager.GetInstance();
             manager.ClearDbcBinding(bindingName);
-            var abstractDbc = manager.FindDbcForBinding(bindingName);
+            var abstractDbc = manager.FindLoadedDbc(bindingName);
             if (abstractDbc == null)
             {
                 try

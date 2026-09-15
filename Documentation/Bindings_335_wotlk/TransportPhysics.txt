@@ -1,0 +1,11 @@
+uint ID
+float waveAmp
+float waveTimeScale
+float rollAmp
+float rollTimeScale
+float pitchAmp
+float pitchTimeScale
+float maxBank
+float maxBankTurnSpeed
+float speedDampThresh
+float speedDamp

@@ -1,4 +1,5 @@
 # GameTips 3.3.5 wotlk
+IGNORE_ORDER true
 uint ID
 uint Name1 string
 uint Name2 string

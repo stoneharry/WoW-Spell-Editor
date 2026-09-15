@@ -2,9 +2,9 @@
 uint ID
 uint higlightSky
 uint skyboxId
-int cloudType
 float glow
 float waterShallowAlpha
 float waterDeepAlpha
 float oceanShallowAlpha
 float oceanDeepAlpha
+int flags

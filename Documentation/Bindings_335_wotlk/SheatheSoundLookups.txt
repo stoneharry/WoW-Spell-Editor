@@ -1,0 +1,7 @@
+uint ID
+uint classID
+uint subclassID
+uint material
+uint checkMaterial
+uint sheatheSound
+uint unsheatheSound

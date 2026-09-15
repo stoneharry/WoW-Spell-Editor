@@ -1,10 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using SpellEditor.Sources.Binding;
 using System;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using NLog;
 
 namespace SpellEditor.Sources.Database
@@ -13,71 +12,58 @@ namespace SpellEditor.Sources.Database
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly object _syncLock = new object();
-        private readonly MySqlConnection _connection;
-        private Timer _heartbeat;
+        // Every operation takes a connection out of the ADO.NET pool and hands it straight back,
+        // so queries can run concurrently instead of serialising behind one shared connection.
+        private readonly string _connectionString;
+
         public bool Updating { get; set; }
 
         public MySQL(bool initialiseDatabase)
         {
-            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";Charset=utf8mb4;";
-
-            _connection = new MySqlConnection { ConnectionString = connectionString };
-            _connection.Open();
+            var baseString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";" +
+                "Charset=utf8mb4;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=20;Connection Lifetime=300;Default Command Timeout=0;";
 
             if (initialiseDatabase)
             {
-                // Create DB if not exists and use
-                using (var cmd = _connection.CreateCommand())
+                using (var connection = new MySqlConnection(baseString))
                 {
-                    cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`; USE `{0}`;", Config.Config.Database);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            else
-            {
-                // Use DB
-                using (var cmd = _connection.CreateCommand())
-                {
-                    cmd.CommandText = string.Format("USE `{0}`;", Config.Config.Database);
-                    cmd.ExecuteNonQuery();
+                    connection.Open();
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", Config.Config.Database);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
 
-            // Heartbeat keeps the connection alive, otherwise it can be killed by remote for inactivity
-            // Object reference needs to be held to prevent garbage collection.
-            _heartbeat = CreateKeepAliveTimer(TimeSpan.FromMinutes(2));
+            _connectionString = baseString + $"database={Config.Config.Database};";
+
+            if (!initialiseDatabase)
+                return;
+
+            // Callers depend on the constructor throwing to report a bad config
+            OpenConnection().Dispose();
         }
 
         public void Dispose()
         {
-            _heartbeat?.Dispose();
-            _heartbeat = null;
-            if (_connection != null && _connection.State != ConnectionState.Closed)
-            {
-                try
-                {
-                    _connection.Close();
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception);
-                }
-                finally
-                {
-                    _connection.Dispose();
-                }
-            }
+        }
+
+        private MySqlConnection OpenConnection()
+        {
+            var connection = new MySqlConnection(_connectionString);
+            connection.Open();
+            return connection;
         }
 
         public void CreateAllTablesFromBindings()
         {
-            lock (_syncLock)
+            var bindings = BindingManager.GetInstance().GetAllBindings();
+            using (var connection = OpenConnection())
             {
-                var bindings = BindingManager.GetInstance().GetAllBindings();
                 foreach (var binding in bindings)
                 {
-                    using (var cmd = _connection.CreateCommand())
+                    using (var cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = string.Format(GetTableCreateString(binding), binding.Name.ToLower());
                         Logger.Trace(cmd.CommandText);
@@ -90,9 +76,9 @@ namespace SpellEditor.Sources.Database
         public DataTable Query(string query)
         {
             Logger.Trace(query);
-            lock (_syncLock)
+            using (var connection = OpenConnection())
             {
-                using (var adapter = new MySqlDataAdapter(query, _connection))
+                using (var adapter = new MySqlDataAdapter(query, connection))
                 {
                     using (var dataSet = new DataSet())
                     {
@@ -107,17 +93,14 @@ namespace SpellEditor.Sources.Database
         public object QuerySingleValue(string query)
         {
             Logger.Trace(query);
-            lock (_syncLock)
+            using (var connection = OpenConnection())
             {
-                using (var adapter = new MySqlDataAdapter(query, _connection))
+                using (var cmd = connection.CreateCommand())
                 {
-                    using (var dataSet = new DataSet())
-                    {
-                        adapter.SelectCommand.CommandTimeout = 0;
-                        adapter.Fill(dataSet);
-                        var table = dataSet.Tables[0];
-                        return table.Rows.Count > 0 ? table.Rows[0][0] : null;
-                    }
+                    cmd.CommandText = query;
+                    cmd.CommandTimeout = 0;
+                    var result = cmd.ExecuteScalar();
+                    return result == DBNull.Value ? null : result;
                 }
             }
         }
@@ -128,14 +111,14 @@ namespace SpellEditor.Sources.Database
                 return;
 
             Logger.Trace(query);
-            lock (_syncLock)
+            using (var connection = OpenConnection())
             {
                 using (var adapter = new MySqlDataAdapter())
                 {
                     using (var mcb = new MySqlCommandBuilder(adapter))
                     {
                         mcb.ConflictOption = ConflictOption.OverwriteChanges;
-                        adapter.SelectCommand = new MySqlCommand(query, _connection);
+                        adapter.SelectCommand = new MySqlCommand(query, connection);
                         adapter.Update(dataTable);
                         dataTable.AcceptChanges();
                     }
@@ -149,11 +132,12 @@ namespace SpellEditor.Sources.Database
                 return;
 
             Logger.Trace(p);
-            lock (_syncLock)
+            using (var connection = OpenConnection())
             {
-                using (var cmd = _connection.CreateCommand())
+                using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = p;
+                    cmd.CommandTimeout = 0;
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -205,15 +189,6 @@ namespace SpellEditor.Sources.Database
             keyWord = keyWord.Replace("'", "''");
             keyWord = keyWord.Replace("\\", "\\\\");
             return keyWord;
-        }
-
-        private Timer CreateKeepAliveTimer(TimeSpan interval)
-        {
-            return new Timer(
-                (e) => Execute("SELECT 1"),
-                null,
-                interval,
-                interval);
         }
     }
 }

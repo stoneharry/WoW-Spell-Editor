@@ -1,0 +1,29 @@
+uint ID
+uint name1 string
+uint name2 string
+uint name3 string
+uint name4 string
+uint name5 string
+uint name6 string
+uint name7 string
+uint name8 string
+uint name9 string
+uint name10 string
+uint name11 string
+uint name12 string
+uint name13 string
+uint name14 string
+uint name15 string
+uint name16 string
+uint nameFlags
+uint internalName string
+uint enchantment1
+uint enchantment2
+uint enchantment3
+uint enchantment4
+uint enchantment5
+uint allocationPct1
+uint allocationPct2
+uint allocationPct3
+uint allocationPct4
+uint allocationPct5

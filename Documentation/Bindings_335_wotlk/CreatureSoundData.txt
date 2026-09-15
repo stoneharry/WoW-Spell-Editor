@@ -30,8 +30,8 @@ uint SoundJumpEndID
 uint SoundPetAttackID
 uint SoundPetOrderID
 uint SoundPetDismissID
-uint FidgetDelaySecondsMin
-uint FidgetDelaySecondsMax
+float FidgetDelaySecondsMin
+float FidgetDelaySecondsMax
 uint BirthSoundID
 uint SpellCastDirectedSoundID
 uint SubmergeSoundID

@@ -113,7 +113,7 @@ namespace SereniaBLPLib
 
                 data = new byte[this.mippmapSize[MipmapLevel]];
                 this.str.Position = (int)this.mipmapOffsets[MipmapLevel];
-                this.str.Read(data, 0, data.Length);
+                this.str.ReadExactly(data, 0, data.Length);
                 return data;
             }
             return null;
@@ -129,9 +129,29 @@ namespace SereniaBLPLib
             get
             {
                 int i = 0;
-                while (this.mipmapOffsets[i] != 0) i++;
+                while (i < this.mipmapOffsets.Length && this.mipmapOffsets[i] != 0) i++;
                 return i;
             }
+        }
+
+        public int Width
+        {
+            get { return this.width; }
+        }
+
+        public int Height
+        {
+            get { return this.height; }
+        }
+
+        public int GetMipMapWidth(int MipmapLevel)
+        {
+            return Math.Max(1, this.width >> MipmapLevel);
+        }
+
+        public int GetMipMapHeight(int MipmapLevel)
+        {
+            return Math.Max(1, this.height >> MipmapLevel);
         }
         #endregion
 
@@ -141,44 +161,44 @@ namespace SereniaBLPLib
             this.str = _str;
             byte[] buffer = new byte[4];
             // Well, have to fix this... looks weird o.O
-            this.str.Read(buffer, 0, 4);
+            this.str.ReadExactly(buffer, 0, 4);
 
             // Checking for correct Magic-Code
             if ((new ASCIIEncoding()).GetString(buffer) != "BLP2")
                 throw new Exception("Invalid BLP Format");
 
             // Reading type
-            str.Read(buffer, 0, 4);
+            str.ReadExactly(buffer, 0, 4);
             this.type = BitConverter.ToUInt32(buffer, 0);
             if (this.type != 1)
                 throw new Exception("Invalid BLP-Type! Should be 1 but " + this.type + " was found");
 
             // Reading encoding, alphaBitDepth, alphaEncoding and hasMipmaps
-            this.str.Read(buffer, 0, 4);
+            this.str.ReadExactly(buffer, 0, 4);
             this.encoding = buffer[0];
             this.alphaDepth = buffer[1];
             this.alphaEncoding = buffer[2];
             this.hasMipmaps = buffer[3];
 
             // Reading width
-            str.Read(buffer, 0, 4);
+            str.ReadExactly(buffer, 0, 4);
             this.width = BitConverter.ToInt32(buffer, 0);
 
             // Reading height
-            str.Read(buffer, 0, 4);
+            str.ReadExactly(buffer, 0, 4);
             this.height = BitConverter.ToInt32(buffer, 0);
 
             // Reading MipmapOffset Array
             for (int i = 0; i < 16; i++)
             {
-                _str.Read(buffer, 0, 4);
+                _str.ReadExactly(buffer, 0, 4);
                 this.mipmapOffsets[i] = BitConverter.ToUInt32(buffer, 0);
             }
 
             // Reading MipmapSize Array
             for (int i = 0; i < 16; i++)
             {
-                str.Read(buffer, 0, 4);
+                str.ReadExactly(buffer, 0, 4);
                 this.mippmapSize[i] = BitConverter.ToUInt32(buffer, 0);
             }
 
@@ -189,7 +209,7 @@ namespace SereniaBLPLib
                 for (int i = 0; i < 256; i++)
                 {
                     byte[] color = new byte[4];
-                    str.Read(color, 0, 4);
+                    str.ReadExactly(color, 0, 4);
                     this.paletteBGRA[i].blue = color[0];
                     this.paletteBGRA[i].green = color[1];
                     this.paletteBGRA[i].red = color[2];

@@ -1,3 +1,4 @@
+IGNORE_ORDER true
 uint ID
 uint8 race
 uint8 class

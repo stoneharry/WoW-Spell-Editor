@@ -1,0 +1,4 @@
+uint ID
+uint cameraShake1
+uint cameraShake2
+uint cameraShake3

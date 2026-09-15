@@ -1,0 +1,40 @@
+uint ID
+uint type
+uint displayName1 string
+uint displayName2 string
+uint displayName3 string
+uint displayName4 string
+uint displayName5 string
+uint displayName6 string
+uint displayName7 string
+uint displayName8 string
+uint displayName9 string
+uint displayName10 string
+uint displayName11 string
+uint displayName12 string
+uint displayName13 string
+uint displayName14 string
+uint displayName15 string
+uint displayName16 string
+uint displayNameFlags
+uint description1 string
+uint description2 string
+uint description3 string
+uint description4 string
+uint description5 string
+uint description6 string
+uint description7 string
+uint description8 string
+uint description9 string
+uint description10 string
+uint description11 string
+uint description12 string
+uint description13 string
+uint description14 string
+uint description15 string
+uint description16 string
+int descriptionFlags
+float costModifier
+uint race
+uint sex
+uint data
