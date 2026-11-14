@@ -92,18 +92,14 @@ namespace SpellEditor.Sources.Database
                 throw new Exception("No rows to export");
 
             var rowsRead = new int[1];
-            var extraAdapters = new IDatabaseAdapter[chunks.Length];
             try
             {
+                // Chunks are only planned for MySQL, whose QueryReader is safe to call concurrently
                 var tasks = new List<Task>();
                 for (int i = 1; i < chunks.Length; ++i)
                 {
                     var index = i;
-                    tasks.Add(Task.Run(() =>
-                    {
-                        extraAdapters[index] = AdapterFactory.Instance.GetAdapter(false);
-                        ReadChunk(extraAdapters[index], chunks[index], $"SELECT {columns} FROM `{tableName}`{chunks[index].Where}{orderClause}", types, recordSize, rowsRead, null, totalCount);
-                    }));
+                    tasks.Add(Task.Run(() => ReadChunk(adapter, chunks[index], $"SELECT {columns} FROM `{tableName}`{chunks[index].Where}{orderClause}", types, recordSize, rowsRead, null, totalCount)));
                 }
                 // The first chunk runs on the calling task so progress reports keep its task id
                 ReadChunk(adapter, chunks[0], $"SELECT {columns} FROM `{tableName}`{chunks[0].Where}{orderClause}", types, recordSize, rowsRead, updateProgress, totalCount);
@@ -113,11 +109,6 @@ namespace SpellEditor.Sources.Database
             {
                 var inner = (e as AggregateException)?.Flatten().InnerExceptions.FirstOrDefault() ?? e;
                 throw new Exception($"Failed to export {binding.Name}.dbc using binding {binding.Name}.txt: {inner.Message}", inner);
-            }
-            finally
-            {
-                foreach (var extra in extraAdapters)
-                    extra?.Dispose();
             }
 
             var rows = chunks.Sum(c => c.Rows);

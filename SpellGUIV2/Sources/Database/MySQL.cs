@@ -16,6 +16,7 @@ namespace SpellEditor.Sources.Database
         private readonly object _syncLock = new object();
         private readonly MySqlConnection _connection;
         private Timer _heartbeat;
+        private readonly string _readerConnectionString;
         public bool Updating { get; set; }
 
         public MySQL(bool initialiseDatabase)
@@ -24,6 +25,17 @@ namespace SpellEditor.Sources.Database
             var host = Config.Config.Host ?? "";
             var isLocal = host.Equals("localhost", StringComparison.OrdinalIgnoreCase) || host == "127.0.0.1" || host == "::1" || host == ".";
             string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";Charset=utf8mb4;UseCompression={(isLocal ? "false" : "true")}";
+            _readerConnectionString = new MySqlConnector.MySqlConnectionStringBuilder
+            {
+                Server = Config.Config.Host,
+                Port = uint.TryParse(Config.Config.Port, out var port) ? port : 3306u,
+                UserID = Config.Config.User,
+                Password = Config.Config.Pass,
+                Database = Config.Config.Database,
+                UseCompression = !isLocal,
+                // Reader queries never change session state, so skip the reset round trip on pool reuse
+                ConnectionReset = false
+            }.ConnectionString;
 
             _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
@@ -107,12 +119,15 @@ namespace SpellEditor.Sources.Database
             }
         }
 
+        // Uses a pooled MySqlConnector connection per call: it parses rows far faster than MySql.Data
+        // and is safe to call concurrently on the same adapter
         public void QueryReader(string query, Action<IDataReader> read)
         {
             Logger.Trace(query);
-            lock (_syncLock)
+            using (var connection = new MySqlConnector.MySqlConnection(_readerConnectionString))
             {
-                using (var cmd = _connection.CreateCommand())
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = query;
                     cmd.CommandTimeout = 0;
