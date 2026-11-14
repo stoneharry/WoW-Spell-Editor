@@ -75,6 +75,23 @@ namespace SpellEditor.Sources.Database
             }
         }
 
+        public void QueryReader(string query, Action<IDataReader> read)
+        {
+            Logger.Trace(query);
+            lock (_syncLock)
+            {
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.CommandTimeout = 0;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        read(reader);
+                    }
+                }
+            }
+        }
+
         public object QuerySingleValue(string query)
         {
             Logger.Trace(query);

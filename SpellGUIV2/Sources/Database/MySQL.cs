@@ -20,7 +20,10 @@ namespace SpellEditor.Sources.Database
 
         public MySQL(bool initialiseDatabase)
         {
-            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";Charset=utf8mb4;";
+            // Compression roughly halves bulk export time over a network but only costs CPU locally
+            var host = Config.Config.Host ?? "";
+            var isLocal = host.Equals("localhost", StringComparison.OrdinalIgnoreCase) || host == "127.0.0.1" || host == "::1" || host == ".";
+            string connectionString = $"server={Config.Config.Host};port={Config.Config.Port};uid={Config.Config.User};pwd=\"{Config.Config.Pass}\";Charset=utf8mb4;UseCompression={(isLocal ? "false" : "true")}";
 
             _connection = new MySqlConnection { ConnectionString = connectionString };
             _connection.Open();
@@ -99,6 +102,23 @@ namespace SpellEditor.Sources.Database
                         adapter.SelectCommand.CommandTimeout = 0;
                         adapter.Fill(dataSet);
                         return dataSet.Tables[0];
+                    }
+                }
+            }
+        }
+
+        public void QueryReader(string query, Action<IDataReader> read)
+        {
+            Logger.Trace(query);
+            lock (_syncLock)
+            {
+                using (var cmd = _connection.CreateCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.CommandTimeout = 0;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        read(reader);
                     }
                 }
             }
