@@ -57,14 +57,12 @@ namespace HeadlessExport
                 Config.connectionType = Config.ConnectionType.MySQL;
 
                 SpawnAdapters(ref adapters);
-                var adapterIndex = 0;
 
                 Console.WriteLine("Reading all bindings...");
                 var bindingManager = BindingManager.GetInstance();
                 Console.WriteLine($"Got {bindingManager.GetAllBindings().Count()} bindings to export");
 
                 Console.WriteLine("Exporting all DBC files...");
-                var taskList = new List<Task<Stopwatch>>();
                 _TaskNameLookup = new ConcurrentDictionary<int, string>();
                 _TaskProgressLookup = new ConcurrentDictionary<int, int>();
                 _HeadlessDbcLookup = new ConcurrentDictionary<int, HeadlessDbc>();
@@ -72,28 +70,36 @@ namespace HeadlessExport
                 exportWatch.Start();
                 var bindings = bindingManager.GetAllBindings();
                 Array.Sort(bindings, PrioritiseSpellCompareBindings);
-                foreach (var binding in bindings)
+                // Each adapter pulls the next binding when free so nothing queues behind Spell
+                var queue = new ConcurrentQueue<Binding>(bindings);
+                var results = new ConcurrentBag<Tuple<string, Stopwatch>>();
+                var errors = new ConcurrentBag<Exception>();
+                var workers = adapters.Select((adapter, index) => Task.Run(async () =>
                 {
-                    Console.WriteLine($"Exporting {binding.Name} using Adapter{adapterIndex + 1}...");
-                    var adapter = adapters[adapterIndex++];
-                    if (adapterIndex >= adapters.Count)
-                        adapterIndex = 0;
-                    var dbc = new HeadlessDbc();
-                    var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name, ImportExportType.DBC);
-                    _TaskNameLookup.TryAdd(dbc.TaskId, binding.Name);
-                    _TaskNameLookup.TryAdd(task.Id, binding.Name);
-                    _HeadlessDbcLookup.TryAdd(dbc.TaskId, dbc);
-                    taskList.Add(task);
-                }
-                Task.WaitAll(taskList.ToArray());
+                    while (queue.TryDequeue(out var binding))
+                    {
+                        WriteLine($"Exporting {binding.Name} using Adapter{index + 1}...");
+                        try
+                        {
+                            var dbc = new HeadlessDbc();
+                            var task = dbc.TimedExportToDBC(adapter, binding.Fields[0].Name, binding.Name, ImportExportType.DBC);
+                            _TaskNameLookup.TryAdd(dbc.TaskId, binding.Name);
+                            _HeadlessDbcLookup.TryAdd(dbc.TaskId, dbc);
+                            results.Add(Tuple.Create(binding.Name, await task));
+                        }
+                        catch (Exception e)
+                        {
+                            errors.Add(e);
+                        }
+                    }
+                })).ToArray();
+                Task.WaitAll(workers);
                 exportWatch.Stop();
-                taskList.Sort((x, y) => x.Result.ElapsedMilliseconds.CompareTo(y.Result.ElapsedMilliseconds));
-                taskList.ForEach(task =>
-                {
-                    var bindingName = _TaskNameLookup.Keys.Contains(task.Id) ? _TaskNameLookup[task.Id] : task.Id.ToString();
-                    Console.WriteLine($" - [{bindingName}]: {Math.Round(task.Result.Elapsed.TotalSeconds, 2)} seconds");
-                });
-                Console.WriteLine($"Finished exporting {taskList.Count()} dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
+                if (!errors.IsEmpty)
+                    throw new AggregateException(errors);
+                foreach (var result in results.OrderBy(r => r.Item2.ElapsedMilliseconds))
+                    Console.WriteLine($" - [{result.Item1}]: {Math.Round(result.Item2.Elapsed.TotalSeconds, 2)} seconds");
+                Console.WriteLine($"Finished exporting {results.Count} dbc files in {Math.Round(exportWatch.Elapsed.TotalSeconds, 2)} seconds.");
             }
             catch (Exception e)
             {

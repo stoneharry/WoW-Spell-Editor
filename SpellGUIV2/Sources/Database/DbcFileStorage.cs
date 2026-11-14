@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SpellEditor.Sources.DBC;
 using static SpellEditor.Sources.DBC.AbstractDBC;
@@ -20,32 +21,52 @@ namespace SpellEditor.Sources.Database
                 if (binding == null)
                     throw new Exception("Binding not found: " + bindingName);
 
-                var orderClause = "";
-                if (binding.OrderOutput)
-                {
-                    orderClause = binding.Fields.FirstOrDefault(f => f.Name.Equals(IdKey)) != null ? $" ORDER BY `{IdKey}`" : "";
-                }
-
-                var header = WriteDbcFile(adapter, binding, orderClause, updateProgress);
+                var ordered = binding.OrderOutput && binding.Fields.Any(f => f.Name.Equals(IdKey));
+                var header = WriteDbcFile(adapter, binding, IdKey, ordered, updateProgress);
                 dbc.UpdateHeader(header);
             });
         }
 
-        // Streams the table straight into the DBC file in a single ordered query
-        private static DBCHeader WriteDbcFile(IDatabaseAdapter adapter, Binding.Binding binding, string orderClause, MainWindow.UpdateProgressFunc updateProgress)
+        // Tables at least this large are read as parallel key ranges on extra connections
+        private const int ParallelRowThreshold = 20000;
+        private const int RowsPerChunk = 8000;
+        private const int MaxChunks = 8;
+
+        private class Chunk
+        {
+            public string Where = "";
+            public int ExpectedRows;
+            public MemoryStream Records;
+            public int Rows;
+            // String slots hold (index into Strings + 1) until the merge assigns real offsets
+            public List<string> Strings = new List<string>();
+        }
+
+        private static DBCHeader WriteDbcFile(IDatabaseAdapter adapter, Binding.Binding binding, string idKey, bool ordered, MainWindow.UpdateProgressFunc updateProgress)
         {
             var fields = binding.Fields;
             var types = fields.Select(f => f.Type).ToArray();
+            var recordSize = binding.CalcRecordSize();
+            var stringPositions = new List<int>();
+            int position = 0;
             for (int i = 0; i < types.Length; ++i)
             {
                 switch (types[i])
                 {
                     case BindingType.INT:
                     case BindingType.UINT:
-                    case BindingType.UINT8:
                     case BindingType.FLOAT:
-                    case BindingType.DOUBLE:
+                        position += 4;
+                        break;
                     case BindingType.STRING_OFFSET:
+                        stringPositions.Add(position);
+                        position += 4;
+                        break;
+                    case BindingType.UINT8:
+                        position += 1;
+                        break;
+                    case BindingType.DOUBLE:
+                        position += 8;
                         break;
                     default:
                         throw new Exception($"Unknown type: {types[i]} on entry {fields[i].Name} binding {binding.Name}");
@@ -53,115 +74,128 @@ namespace SpellEditor.Sources.Database
             }
 
             var tableName = binding.Name.ToLower();
-            int totalCount = 0;
-            if (updateProgress != null)
-                totalCount = Convert.ToInt32(adapter.QuerySingleValue($"SELECT COUNT(*) FROM `{tableName}`"));
+            var columns = string.Join(", ", fields.Select(f => $"`{f.Name}`"));
+            var orderClause = ordered ? $" ORDER BY `{idKey}`" : "";
 
-            var path = $"Export/{binding.Name}.dbc";
-            var tempPath = path + ".tmp";
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            Chunk[] chunks;
+            int totalCount;
+            try
+            {
+                totalCount = Convert.ToInt32(adapter.QuerySingleValue($"SELECT COUNT(*) FROM `{tableName}`"));
+                chunks = PlanChunks(adapter, tableName, idKey, ordered, totalCount);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to export {binding.Name}.dbc using binding {binding.Name}.txt: {e.Message}", e);
+            }
+            if (totalCount == 0)
+                throw new Exception("No rows to export");
+
+            var rowsRead = new int[1];
+            var extraAdapters = new IDatabaseAdapter[chunks.Length];
+            try
+            {
+                var tasks = new List<Task>();
+                for (int i = 1; i < chunks.Length; ++i)
+                {
+                    var index = i;
+                    tasks.Add(Task.Run(() =>
+                    {
+                        extraAdapters[index] = AdapterFactory.Instance.GetAdapter(false);
+                        ReadChunk(extraAdapters[index], chunks[index], $"SELECT {columns} FROM `{tableName}`{chunks[index].Where}{orderClause}", types, recordSize, rowsRead, null, totalCount);
+                    }));
+                }
+                // The first chunk runs on the calling task so progress reports keep its task id
+                ReadChunk(adapter, chunks[0], $"SELECT {columns} FROM `{tableName}`{chunks[0].Where}{orderClause}", types, recordSize, rowsRead, updateProgress, totalCount);
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch (Exception e)
+            {
+                var inner = (e as AggregateException)?.Flatten().InnerExceptions.FirstOrDefault() ?? e;
+                throw new Exception($"Failed to export {binding.Name}.dbc using binding {binding.Name}.txt: {inner.Message}", inner);
+            }
+            finally
+            {
+                foreach (var extra in extraAdapters)
+                    extra?.Dispose();
+            }
+
+            var rows = chunks.Sum(c => c.Rows);
+            if (rows == 0)
+                throw new Exception("No rows to export");
 
             var header = new DBCHeader
             {
                 FieldCount = (uint)fields.Length,
                 // Magic is always 'WDBC' https://wowdev.wiki/DBC
                 Magic = 1128416343,
-                RecordSize = (uint)binding.CalcRecordSize()
+                RecordCount = (uint)rows,
+                RecordSize = (uint)recordSize
             };
 
-            // Offset 0 is the empty string
+            var path = $"Export/{binding.Name}.dbc";
+            var tempPath = path + ".tmp";
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            // Offset 0 is the empty string; chunks are merged in order so strings keep first-seen order
             var stringOffsets = new Dictionary<string, int>(StringComparer.Ordinal);
             var stringBlock = new MemoryStream();
             stringBlock.WriteByte(0);
             var utf8 = new UTF8Encoding(false);
 
             using (var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None, 1 << 20))
-            using (var writer = new BinaryWriter(fileStream))
             {
-                // Header is rewritten once the counts are known
-                writer.Write(new byte[HeaderSize]);
-
-                var columns = string.Join(", ", fields.Select(f => $"`{f.Name}`"));
-                var query = $"SELECT {columns} FROM `{tableName}`{orderClause}";
-                uint rows = 0;
-                try
+                fileStream.Write(new byte[HeaderSize], 0, HeaderSize);
+                foreach (var chunk in chunks)
                 {
-                    adapter.QueryReader(query, reader =>
+                    var map = new int[chunk.Strings.Count + 1];
+                    for (int i = 0; i < chunk.Strings.Count; ++i)
                     {
-                        while (reader.Read())
+                        var str = chunk.Strings[i];
+                        if (!stringOffsets.TryGetValue(str, out int offset))
                         {
-                            for (int i = 0; i < types.Length; ++i)
-                            {
-                                var value = reader.GetValue(i);
-                                switch (types[i])
-                                {
-                                    case BindingType.INT:
-                                        writer.Write(ToInt(value));
-                                        break;
-                                    case BindingType.UINT:
-                                        writer.Write(ToUInt(value));
-                                        break;
-                                    case BindingType.UINT8:
-                                        writer.Write(ToByte(value));
-                                        break;
-                                    case BindingType.FLOAT:
-                                        writer.Write(ToFloat(value));
-                                        break;
-                                    case BindingType.DOUBLE:
-                                        writer.Write(ToDouble(value));
-                                        break;
-                                    case BindingType.STRING_OFFSET:
-                                        {
-                                            var str = value as string ?? value.ToString();
-                                            if (str.Length == 0)
-                                            {
-                                                writer.Write(0);
-                                                break;
-                                            }
-                                            if (!stringOffsets.TryGetValue(str, out int offset))
-                                            {
-                                                offset = (int)stringBlock.Length;
-                                                stringOffsets.Add(str, offset);
-                                                var bytes = utf8.GetBytes(str);
-                                                stringBlock.Write(bytes, 0, bytes.Length);
-                                                stringBlock.WriteByte(0);
-                                            }
-                                            writer.Write(offset);
-                                            break;
-                                        }
-                                }
-                            }
-                            ++rows;
-                            if (updateProgress != null && totalCount > 0 && rows % 250 == 0)
-                                updateProgress(Math.Min(1D, (double)rows / totalCount));
+                            offset = (int)stringBlock.Length;
+                            stringOffsets.Add(str, offset);
+                            var bytes = utf8.GetBytes(str);
+                            stringBlock.Write(bytes, 0, bytes.Length);
+                            stringBlock.WriteByte(0);
                         }
-                    });
-                }
-                catch (Exception e)
-                {
-                    writer.Dispose();
-                    File.Delete(tempPath);
-                    throw new Exception($"Failed to export {binding.Name}.dbc using binding {binding.Name}.txt: {e.Message}", e);
+                        map[i + 1] = offset;
+                    }
+
+                    var buffer = chunk.Records.GetBuffer();
+                    if (stringPositions.Count > 0)
+                    {
+                        for (int r = 0; r < chunk.Rows; ++r)
+                        {
+                            int rowStart = r * recordSize;
+                            foreach (var stringPosition in stringPositions)
+                            {
+                                int p = rowStart + stringPosition;
+                                int value = map[BitConverter.ToInt32(buffer, p)];
+                                buffer[p] = (byte)value;
+                                buffer[p + 1] = (byte)(value >> 8);
+                                buffer[p + 2] = (byte)(value >> 16);
+                                buffer[p + 3] = (byte)(value >> 24);
+                            }
+                        }
+                    }
+                    fileStream.Write(buffer, 0, (int)chunk.Records.Length);
+                    chunk.Records = null;
                 }
 
-                if (rows == 0)
-                {
-                    writer.Dispose();
-                    File.Delete(tempPath);
-                    throw new Exception("No rows to export");
-                }
-
-                writer.Flush();
                 stringBlock.WriteTo(fileStream);
-                header.RecordCount = rows;
                 header.StringBlockSize = (int)stringBlock.Length;
 
-                writer.Seek(0, SeekOrigin.Begin);
-                writer.Write(header.Magic);
-                writer.Write(header.RecordCount);
-                writer.Write(header.FieldCount);
-                writer.Write(header.RecordSize);
-                writer.Write(header.StringBlockSize);
+                fileStream.Seek(0, SeekOrigin.Begin);
+                using (var writer = new BinaryWriter(fileStream, utf8, true))
+                {
+                    writer.Write(header.Magic);
+                    writer.Write(header.RecordCount);
+                    writer.Write(header.FieldCount);
+                    writer.Write(header.RecordSize);
+                    writer.Write(header.StringBlockSize);
+                }
             }
 
             if (File.Exists(path))
@@ -169,6 +203,120 @@ namespace SpellEditor.Sources.Database
             File.Move(tempPath, path);
             updateProgress?.Invoke(1D);
             return header;
+        }
+
+        // Splits large ordered MySQL tables into key ranges of roughly equal row counts
+        private static Chunk[] PlanChunks(IDatabaseAdapter adapter, string tableName, string idKey, bool ordered, int totalCount)
+        {
+            int chunkCount = Math.Min(MaxChunks, Math.Max(2, Environment.ProcessorCount));
+            chunkCount = Math.Min(chunkCount, (totalCount + RowsPerChunk - 1) / RowsPerChunk);
+            if (!ordered || !(adapter is MySQL) || totalCount < ParallelRowThreshold || chunkCount < 2)
+                return new[] { new Chunk { ExpectedRows = totalCount } };
+
+            var keys = new List<long>(totalCount);
+            var integral = true;
+            adapter.QueryReader($"SELECT `{idKey}` FROM `{tableName}` WHERE `{idKey}` IS NOT NULL ORDER BY `{idKey}`", reader =>
+            {
+                while (reader.Read())
+                {
+                    var value = reader.GetValue(0);
+                    if (!(value is int || value is uint || value is long || value is short || value is ushort || value is byte || value is sbyte))
+                    {
+                        integral = false;
+                        return;
+                    }
+                    keys.Add(Convert.ToInt64(value));
+                }
+            });
+            if (!integral || keys.Count < ParallelRowThreshold)
+                return new[] { new Chunk { ExpectedRows = totalCount } };
+
+            // Boundaries are distinct key values so duplicate keys never straddle two chunks
+            var bounds = new List<long>();
+            for (int i = 1; i < chunkCount; ++i)
+            {
+                var bound = keys[(int)((long)keys.Count * i / chunkCount)];
+                if (bounds.Count == 0 || bound > bounds[bounds.Count - 1])
+                    bounds.Add(bound);
+            }
+
+            var key = $"`{idKey}`";
+            var chunks = new Chunk[bounds.Count + 1];
+            for (int i = 0; i < chunks.Length; ++i)
+            {
+                string where;
+                if (i == 0)
+                    where = $" WHERE ({key} < {bounds[0]} OR {key} IS NULL)";
+                else if (i == chunks.Length - 1)
+                    where = $" WHERE {key} >= {bounds[i - 1]}";
+                else
+                    where = $" WHERE {key} >= {bounds[i - 1]} AND {key} < {bounds[i]}";
+                chunks[i] = new Chunk { Where = where, ExpectedRows = keys.Count / chunks.Length + 1 };
+            }
+            return chunks;
+        }
+
+        private static void ReadChunk(IDatabaseAdapter adapter, Chunk chunk, string query, BindingType[] types, int recordSize,
+            int[] rowsRead, MainWindow.UpdateProgressFunc updateProgress, int totalCount)
+        {
+            chunk.Records = new MemoryStream(Math.Max(1, chunk.ExpectedRows) * recordSize);
+            var localStrings = new Dictionary<string, int>(StringComparer.Ordinal);
+            var strings = chunk.Strings;
+            using (var writer = new BinaryWriter(chunk.Records, Encoding.UTF8, true))
+            {
+                adapter.QueryReader(query, reader =>
+                {
+                    while (reader.Read())
+                    {
+                        for (int i = 0; i < types.Length; ++i)
+                        {
+                            var value = reader.GetValue(i);
+                            switch (types[i])
+                            {
+                                case BindingType.INT:
+                                    writer.Write(ToInt(value));
+                                    break;
+                                case BindingType.UINT:
+                                    writer.Write(ToUInt(value));
+                                    break;
+                                case BindingType.UINT8:
+                                    writer.Write(ToByte(value));
+                                    break;
+                                case BindingType.FLOAT:
+                                    writer.Write(ToFloat(value));
+                                    break;
+                                case BindingType.DOUBLE:
+                                    writer.Write(ToDouble(value));
+                                    break;
+                                case BindingType.STRING_OFFSET:
+                                    {
+                                        var str = value as string ?? value.ToString();
+                                        if (str.Length == 0)
+                                        {
+                                            writer.Write(0);
+                                            break;
+                                        }
+                                        if (!localStrings.TryGetValue(str, out int index))
+                                        {
+                                            strings.Add(str);
+                                            index = strings.Count;
+                                            localStrings.Add(str, index);
+                                        }
+                                        writer.Write(index);
+                                        break;
+                                    }
+                            }
+                        }
+                        ++chunk.Rows;
+                        if (chunk.Rows % 250 == 0)
+                        {
+                            int total = Interlocked.Add(ref rowsRead[0], 250);
+                            if (updateProgress != null && totalCount > 0)
+                                updateProgress(Math.Min(1D, (double)total / totalCount));
+                        }
+                    }
+                });
+            }
         }
 
         private const int HeaderSize = 20;
